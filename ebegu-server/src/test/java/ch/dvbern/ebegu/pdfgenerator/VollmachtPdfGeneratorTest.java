@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -68,7 +69,9 @@ public class VollmachtPdfGeneratorTest {
 		this.fall = new Fall();
 		this.fall.setFallNummer(1);
 		this.fall.setBesitzer(null);
-		this.fall.setMandant(new Mandant());
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		this.fall.setMandant(mandant);
 		this.fall.setNextNumberKind(1);
 
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
@@ -86,6 +89,7 @@ public class VollmachtPdfGeneratorTest {
 		Sozialdienst sozialdienst = new Sozialdienst();
 		sozialdienst.setName("Sozialdienst Stadt London");
 		sozialdienstFall.setSozialdienst(sozialdienst);
+		sozialdienst.setMandant(mandant);
 
 		this.fall.setSozialdienstFall(sozialdienstFall);
 	}

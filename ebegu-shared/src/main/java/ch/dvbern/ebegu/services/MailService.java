@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -161,7 +162,7 @@ public interface MailService {
 	 */
 	void sendInfoStatistikGeneriert(
 		@Nonnull String receiverEmail, @Nonnull String downloadurl,
-		@Nonnull Locale locale);
+		@Nonnull Locale locale, @Nonnull Mandant mandant);
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung

@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
@@ -120,7 +121,7 @@ public class PDFServiceBean implements PDFService {
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
 			false, false);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Nonnull
@@ -148,7 +149,7 @@ public class PDFServiceBean implements PDFService {
 		default:
 			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
 		}
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Override
@@ -166,7 +167,7 @@ public class PDFServiceBean implements PDFService {
 
 		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten,
 			benoetigteUnterlagen);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Override
@@ -183,7 +184,7 @@ public class PDFServiceBean implements PDFService {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
 		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Nonnull
@@ -214,7 +215,7 @@ public class PDFServiceBean implements PDFService {
 
 			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(
 				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum, FinanzielleSituationRechnerFactory.getRechner(gesuch));
-			return generateDokument(pdfGenerator, !writeProtected, locale);
+			return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 		}
 		return BYTES;
 	}
@@ -251,7 +252,7 @@ public class PDFServiceBean implements PDFService {
 			art,
 			showInfoKontingentierung,
 			stadtBernAsivConfigured);
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Nonnull
@@ -277,7 +278,7 @@ public class PDFServiceBean implements PDFService {
 
 		AnmeldebestaetigungTSPDFGenerator pdfGenerator = new AnmeldebestaetigungTSPDFGenerator(gesuch,
 			stammdaten, art , anmeldungTagesschule, mahlzeitenverguenstigungEnabled.getValueAsBoolean());
-		return generateDokument(pdfGenerator, !writeProtected, locale);
+		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 	}
 
 	@Nonnull
@@ -292,7 +293,9 @@ public class PDFServiceBean implements PDFService {
 		String unterschriftPath = ebeguConfiguration.getNotverordnungUnterschriftPath();
 		RueckforderungProvVerfuegungPdfGenerator pdfGenerator =
 			new RueckforderungProvVerfuegungPdfGenerator(rueckforderungFormular, nameVerantwortlichePerson, unterschriftPath);
-		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale(),
+				Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten().getInstitution()
+						.getMandant()));
 	}
 
 	@Nonnull
@@ -319,7 +322,9 @@ public class PDFServiceBean implements PDFService {
 			pdfGenerator = new RueckforderungPublicVerfuegungPdfGenerator(
 				rueckforderungFormular, nameVerantwortlichePerson);
 		}
-		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale());
+		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale(),
+				Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten().getInstitution()
+						.getMandant()));
 	}
 
 	/**
@@ -347,17 +352,17 @@ public class PDFServiceBean implements PDFService {
 
 	@Nonnull
 	private byte[] generateDokument(
-		@Nonnull KibonPdfGenerator pdfGenerator,
-		boolean entwurf,
-		@Nonnull Locale locale
-	) throws MergeDocException {
+			@Nonnull KibonPdfGenerator pdfGenerator,
+			boolean entwurf,
+			@Nonnull Locale locale,
+			Mandant mandant) throws MergeDocException {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			pdfGenerator.generate(baos);
 			byte[] content = baos.toByteArray();
 			if (entwurf) {
-				return PdfUtil.addEntwurfWatermark(content, locale);
+				return PdfUtil.addEntwurfWatermark(content, locale, mandant);
 			}
 			return content;
 		} catch (InvoiceGeneratorException | IOException e) {
@@ -370,7 +375,8 @@ public class PDFServiceBean implements PDFService {
 	private byte[] generateDokument(
 		@Nonnull MandantPdfGenerator pdfGenerator,
 		boolean entwurf,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) throws MergeDocException {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -378,7 +384,7 @@ public class PDFServiceBean implements PDFService {
 			pdfGenerator.generate(baos);
 			byte[] content = baos.toByteArray();
 			if (entwurf) {
-				return PdfUtil.addEntwurfWatermark(content, locale);
+				return PdfUtil.addEntwurfWatermark(content, locale, mandant);
 			}
 			return content;
 		} catch (InvoiceGeneratorException | IOException e) {

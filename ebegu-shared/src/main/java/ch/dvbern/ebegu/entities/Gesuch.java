@@ -1336,4 +1336,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	public void setInternePendenz(Boolean internePendenz) {
 		this.internePendenz = internePendenz;
 	}
+
+	@Nonnull
+	public Mandant extractMandant() {
+		return Objects.requireNonNull(getFall().getMandant());
+	}
 }

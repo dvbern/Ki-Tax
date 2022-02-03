@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class FinanzielleSituationRow {
@@ -105,15 +106,15 @@ public class FinanzielleSituationRow {
 		this.gs2 = PdfUtil.printBigDecimal(gs2);
 	}
 
-	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich, Locale locale) {
+	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich, Locale locale, Mandant mandant) {
 		this.gs1Urspruenglich = gs1Urspruenglich == null
-			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + " -"
-			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + PdfUtil.printBigDecimal(gs1Urspruenglich);
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale, mandant) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale, mandant) + PdfUtil.printBigDecimal(gs1Urspruenglich);
 	}
 
-	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich, Locale locale) {
+	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich, Locale locale, Mandant mandant) {
 		this.gs2Urspruenglich = gs2Urspruenglich == null
-			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + " -"
-			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + PdfUtil.printBigDecimal(gs2Urspruenglich);
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale, mandant) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale, mandant) + PdfUtil.printBigDecimal(gs2Urspruenglich);
 	}
 }

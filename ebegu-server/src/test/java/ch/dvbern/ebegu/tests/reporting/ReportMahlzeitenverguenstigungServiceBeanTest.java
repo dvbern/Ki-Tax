@@ -18,21 +18,32 @@
 package ch.dvbern.ebegu.tests.reporting;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.mocks.FileSaverServiceMock;
+import ch.dvbern.ebegu.mocks.GemeindeServiceMock;
 import ch.dvbern.ebegu.mocks.ReportMahlzeitenverguenstigungServiceMock;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import org.easymock.EasyMock;
+import org.easymock.EasyMockRunner;
+import org.easymock.Mock;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.needle4j.annotation.InjectIntoMany;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleRule;
 
 import static org.junit.Assert.assertNotNull;
 
+@RunWith(EasyMockRunner.class)
 public class ReportMahlzeitenverguenstigungServiceBeanTest {
 	@Rule
 	public NeedleRule needleRule = new NeedleRule();
@@ -42,6 +53,9 @@ public class ReportMahlzeitenverguenstigungServiceBeanTest {
 
 	@InjectIntoMany
 	private FileSaverService fileSaverService = new FileSaverServiceMock();
+
+	@InjectIntoMany
+	private GemeindeService gemeindeService = new GemeindeServiceMock();
 
 	@Test
 	public void generateExcelReportMahlzeiten() throws Exception {

@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -35,6 +36,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.service.spi.Manageable;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -87,7 +89,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		}
 		int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
 		int minimum = getMinimumErwerbspensum(platz);
-		int roundedAnspruch = checkAndRoundAnspruch(inputData, anspruch, minimum, erwerbspensumOffset, getLocale());
+		int roundedAnspruch = checkAndRoundAnspruch(inputData, anspruch, minimum, erwerbspensumOffset, getLocale(), platz.extractGesuch().extractMandant());
 		inputData.setAnspruchspensumProzent(roundedAnspruch);
 		inputData.setMinimalErforderlichesPensum(minimum);
 	}
@@ -106,12 +108,12 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * Am Ende wird der Wert gerundet und zurueckgegeben
 	 */
 	private int checkAndRoundAnspruch(
-		@Nonnull BGCalculationInput inputData,
-		int anspruch,
-		int minimum,
-		int erwerbspensumOffset,
-		@Nonnull Locale locale
-	) {
+			@Nonnull BGCalculationInput inputData,
+			int anspruch,
+			int minimum,
+			int erwerbspensumOffset,
+			@Nonnull Locale locale,
+			Mandant mandant) {
 		if (anspruch <= 0) {
 			anspruch = 0;
 			inputData.setMinimalesEwpUnterschritten(true);
@@ -131,7 +133,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 				anspruch += inputData.getErwerbspensumZuschlag();
 			}
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
-			addVerfuegungsBemerkung(inputData);
+			addVerfuegungsBemerkung(inputData, mandant);
 			// Falls durch eine vorherige Erwerbspensum-Regel bereits auf KEIN-ANSPRUCH gesetzt war, muss sowohl
 			// das Flag wie auch die Bemerkung zurueckgesetzt werden (umgekehrt kann es nicht vorkommen)
 			inputData.setMinimalesEwpUnterschritten(false);
@@ -144,8 +146,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return MathUtil.roundIntToFives(anspruch);
 	}
 
-	protected void addVerfuegungsBemerkung(@Nonnull BGCalculationInput inputData) {
-		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale());
+	protected void addVerfuegungsBemerkung(
+			@Nonnull BGCalculationInput inputData,
+			Mandant mandant) {
+		String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(inputData, getLocale(), mandant);
 		inputData.addBemerkung(MsgKey.ERWERBSPENSUM_ANSPRUCH, getLocale(), vorhandeneBeschaeftigungen);
 	}
 
@@ -198,10 +202,13 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private String getBeschaeftigungsTypen(@Nonnull BGCalculationInput inputData, @Nonnull Locale locale) {
+	private String getBeschaeftigungsTypen(
+			@Nonnull BGCalculationInput inputData,
+			@Nonnull Locale locale,
+			Mandant mandant) {
 		StringBuilder sb = new StringBuilder();
 		for (Taetigkeit taetigkeit : inputData.getTaetigkeiten()) {
-			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale, requireNonNull(mandant)));
 			sb.append(", ");
 		}
 		// Das letzte Komma entfernen

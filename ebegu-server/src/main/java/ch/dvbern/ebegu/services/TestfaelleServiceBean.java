@@ -1079,7 +1079,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
 		mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 		mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
-		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale);
+		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale,
+				requireNonNull(gesuch.getFall().getMandant()));
 
 		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
 		anmeldung.setId(firstBetreuung.getId());

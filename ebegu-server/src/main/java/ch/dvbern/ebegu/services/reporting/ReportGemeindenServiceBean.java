@@ -145,7 +145,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 						dataRow.setKorrespondenzspracheGemeinde(
 							ServerMessageUtil.getMessage(
 								"Reports_" + gemeindeStammdaten.getKorrespondenzsprache(),
-								locale));
+								locale, requireNonNull(gemeinde.getMandant())));
 						if (!gemeindeStammdaten.getGutscheinSelberAusgestellt()
 							&& gemeindeStammdaten.getGemeindeAusgabestelle() != null) {
 							dataRow.setGutscheinausgabestelle(gemeindeStammdaten.getGemeindeAusgabestelle().getName());
@@ -163,7 +163,8 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 							gemeinde,
 							gesuchsperiode);
 					gemeindenDatenDataRow.setLimitierungKita(
-						ServerMessageUtil.getMessage("EinschulungTyp_" + gmeindeBGBisUndMit.getValue(), locale));
+						ServerMessageUtil.getMessage("EinschulungTyp_" + gmeindeBGBisUndMit.getValue(), locale,
+								requireNonNull(gesuchsperiode.getMandant())));
 
 					Einstellung erwerbspensumZuschlag =
 						einstellungService.findEinstellung(
@@ -179,7 +180,8 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 							gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
 							gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
 							gemeindenDatenDataRow.setLimitierungTfo(
-									ServerMessageUtil.getMessage("EinschulungTyp_" + gemeindeKennzahlen.getLimitierungTfo(), locale)
+									ServerMessageUtil.getMessage("EinschulungTyp_" + gemeindeKennzahlen.getLimitierungTfo(), locale,
+											requireNonNull(gemeinde.getMandant()))
 							);
 						}
 

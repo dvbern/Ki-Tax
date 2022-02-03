@@ -119,6 +119,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	@Inject
 	private ReportService reportService;
 
+
 	@Nonnull
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -138,9 +139,13 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<MahlzeitenverguenstigungDataRow> reportData = getReportMahlzeitenverguenstigung(datumVon, datumBis, gemeindeId);
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getReportDataMahlzeitenverguenstigung", gemeindeId));
+
+		List<MahlzeitenverguenstigungDataRow> reportData = getReportMahlzeitenverguenstigung(datumVon, datumBis, gemeinde);
 		ExcelMergerDTO excelMergerDTO =
-			mahlzeitenverguenstigungExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
+			mahlzeitenverguenstigungExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
+					Objects.requireNonNull(gemeinde.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		mahlzeitenverguenstigungExcelConverter.applyAutoSize(sheet);
@@ -149,7 +154,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 		return fileSaverService.save(
 			bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN, gemeinde.getMandant()) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -159,11 +164,8 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 	public List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull String gemeindeId
+		@Nonnull Gemeinde gemeinde
 	) {
-
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"getReportDataMahlzeitenverguenstigung", gemeindeId));
 
 		List<VerfuegungZeitabschnitt> zeitabschnittList =
 			getBetreuungenReportDataMahlzeitenverguenstigung(datumVon, datumBis, gemeinde);

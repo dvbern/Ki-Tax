@@ -22,6 +22,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
@@ -98,11 +99,11 @@ public class VerfuegungsBemerkungDTO {
 		this.gueltigkeit = gueltigkeit;
 	}
 
-	public String getTranslated() {
+	public String getTranslated(Mandant mandant) {
 		if (args != null) {
-			return ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
+			return ServerMessageUtil.translateEnumValue(msgKey, sprache, mandant, args);
 		} else {
-			return ServerMessageUtil.translateEnumValue(msgKey, sprache);
+			return ServerMessageUtil.translateEnumValue(msgKey, sprache, mandant);
 		}
 	}
 

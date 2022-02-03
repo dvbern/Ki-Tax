@@ -163,6 +163,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			String text = ServerMessageUtil.getMessage(
 				"lats_verfuegung_text_paedagogisch",
 				sprache.getLocale(),
+				Objects.requireNonNull(container.getGemeinde().getMandant()),
 				container.getGemeinde().getName(),
 				lohnnormkosten.getValue()
 			);
@@ -176,6 +177,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			String text = ServerMessageUtil.getMessage(
 				"lats_verfuegung_text_nicht_paedagogisch",
 				sprache.getLocale(),
+				Objects.requireNonNull(container.getGemeinde().getMandant()),
 				container.getGemeinde().getName(),
 				lohnnormkosten.getValue()
 			);
