@@ -50,18 +50,18 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
-		if (kindHasTooHighEinschulungstyp(platz)) {
+		if (kindIsEingeschult(platz.getKind().getKindJA())) {
 			return;
 		}
 		inputData.setGeschwisternBonusKind2(getHasGeschwistersBonusKind2(betreuung));
 		inputData.setGeschwisternBonusKind3(getHasGeschwistersBonusKind3(betreuung));
 	}
 
-	private boolean kindHasTooHighEinschulungstyp(AbstractPlatz platz) {
-		if (platz.getKind().getKindJA().getEinschulungTyp() == null) {
+	private boolean kindIsEingeschult(Kind kind) {
+		if (kind.getEinschulungTyp() == null) {
 			return false;
 		}
-		return platz.getKind().getKindJA().getEinschulungTyp().isKindergarten() || platz.getKind().getKindJA().getEinschulungTyp().isEingeschult();
+		return kind.getEinschulungTyp().isEingeschult();
 	}
 
 	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung) {
@@ -80,6 +80,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 				.stream()
 				.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
 				.map(KindContainer::getKindJA)
+				.filter(kindJA -> !kindIsEingeschult(kindJA))
 				.sorted(Comparator.comparing(AbstractPersonEntity::getGeburtsdatum)
 						.thenComparing(AbstractEntity::getTimestampErstellt))
 				.collect(Collectors.toList());

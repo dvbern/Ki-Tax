@@ -233,6 +233,21 @@ public class GeschwistertenBonusCalcRuleTest {
 	}
 
 	@Test
+	public void testKindWithOlderKindergartenGeschwisterShouldHaveNoBonus() {
+		KindContainer kindContainer = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+
+		kindContainer.getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+
+		kindContainer.getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isGeschwisternBonusKind2());
+		Assert.assertFalse(inputData.isGeschwisternBonusKind3());
+	}
+
+	@Test
 	public void testSchulKindHasNoBonus() {
 		createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
 
