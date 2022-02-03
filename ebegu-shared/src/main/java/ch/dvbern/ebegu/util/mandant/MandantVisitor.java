@@ -17,10 +17,7 @@
 
 package ch.dvbern.ebegu.util.mandant;
 
-import ch.dvbern.ebegu.entities.Mandant;
-
 public interface MandantVisitor<T> {
-	T process(Mandant mandant);
 	T visitBern();
 	T visitLuzern();
 	T visitSolothurn();

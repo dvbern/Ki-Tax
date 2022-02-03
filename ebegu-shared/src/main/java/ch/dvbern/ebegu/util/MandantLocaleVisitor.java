@@ -34,7 +34,6 @@ public class MandantLocaleVisitor implements MandantVisitor<Locale> {
 		this.locale = locale;
 	}
 
-	@Override
 	public Locale process(Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);
 	}
