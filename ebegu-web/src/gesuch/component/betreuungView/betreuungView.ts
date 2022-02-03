@@ -46,7 +46,6 @@ import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
-import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
 import {TSKindContainer} from '../../../models/TSKindContainer';
@@ -698,10 +697,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return undefined;
-    }
-
-    public getFamiliensituation(): TSFamiliensituation {
-        return this.gesuchModelManager.getFamiliensituation();
     }
 
     public getBetreuungspensen(): Array<TSBetreuungspensumContainer> {
