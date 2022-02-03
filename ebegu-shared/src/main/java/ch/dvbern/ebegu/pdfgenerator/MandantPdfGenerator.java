@@ -59,6 +59,7 @@ public abstract class MandantPdfGenerator {
 	protected static final String PLZ_ORT = "PdfGeneration_PlzOrt";
 	// verwendet werden
 	protected Locale sprache;
+	protected Mandant mandant;
 
 	@Nonnull
 	private PdfGenerator pdfGenerator;
@@ -75,6 +76,7 @@ public abstract class MandantPdfGenerator {
 		}
 		initSprache(sprache);
 		initGenerator(mandantLogo, mandant);
+		this.mandant = mandant;
 	}
 
 	private void initSprache(Sprache sprache){
