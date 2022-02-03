@@ -212,13 +212,15 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             .afterClosed()
             .pipe(filter(result => !!result))
             .subscribe(() => {
-                this.zahlungRS.createZahlungsauftrag(
+            this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_AUSGELOEST_INFO'));
+            this.zahlungRS.createZahlungsauftrag(
                     this.zahlungslaufTyp,
                     this.gemeinde,
                     this.beschrieb,
                     this.faelligkeitsdatum,
                     this.datumGeneriert,
                 ).subscribe((response: TSZahlungsauftrag) => {
+                        this.errorService.clearAll();
                         this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
                         this.zahlungsAuftraege.push(response);
                         this.resetEditZahlungsauftrag();

@@ -46,7 +46,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.rechner.TagesschuleRechner;
+import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -79,7 +79,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private boolean stadtBernAsivConfiguered = false;
 
-	private TagesschuleRechner rechner = new TagesschuleRechner();
+	private TagesschuleBernRechner rechner = new TagesschuleBernRechner();
 
 
 	@Before

@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerrechnungKibon;
 import ch.dvbern.ebegu.entities.VerrechnungKibonDetail;
 import ch.dvbern.ebegu.entities.VerrechnungKibonDetail_;
@@ -106,13 +107,13 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@Nonnull
 	@Override
 	public List<VerrechnungKibonDataRow> getReportVerrechnungKibon(
-		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale
+		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale, @Nonnull Mandant mandant
 	) {
 		List<VerrechnungKibonDataRow> allGemeindenUndPerioden = new ArrayList<>();
 
 		// Es müssen alle aktiven Gesuchsperioden und alle aktiven Gemeinden berücksichtigt werden
 		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllAktivUndInaktivGesuchsperioden();
-		Collection<Gemeinde> gemeinden = gemeindeService.getAktiveGemeinden();
+		Collection<Gemeinde> gemeinden = gemeindeService.getAktiveGemeinden(mandant);
 
 		// Die Daten der letzten Verrechnung lesen
 		List<VerrechnungKibonDetail> letzteVerrechnungDetails = getLetzteVerrechnungDetails();
@@ -357,7 +358,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportVerrechnungKibon(
-		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale
+		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale, @Nonnull Mandant mandant
 	) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON;
@@ -368,7 +369,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<VerrechnungKibonDataRow> reportData = getReportVerrechnungKibon(doSave, betragProKind, locale);
+		List<VerrechnungKibonDataRow> reportData = getReportVerrechnungKibon(doSave, betragProKind, locale, mandant);
 		ExcelMergerDTO excelMergerDTO = verrechnungKibonExcelConverter.toExcelMergerDTO(reportData);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());

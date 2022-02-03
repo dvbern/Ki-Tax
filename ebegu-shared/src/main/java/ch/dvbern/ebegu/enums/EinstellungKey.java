@@ -242,7 +242,10 @@ public enum EinstellungKey {
 
 	// Frage für Besondere Beduerfnisse in Luzern aktivieren
 	// Siehe KIBON-2189
-	BESONDERE_BEDUERFNISSE_LUZERN;
+	BESONDERE_BEDUERFNISSE_LUZERN,
+
+	// Wie hich ist das maximale Pensum bei ausserordentlichem Anspruch
+	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
 
 
 	private EinstellungTyp typ;

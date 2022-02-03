@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -25,9 +26,12 @@ import javax.persistence.EntityManager;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GemeindeService;
 
 /**
  * Allgemeine Utils fuer Betreuung
@@ -96,5 +100,13 @@ public final class BetreuungUtil {
 
 	public static boolean validateBGNummer(String bgNummer) {
 		return bgNummer.matches("^\\d{2}\\.\\d{6}.\\d{3}\\.\\d+\\.\\d+$");
+	}
+
+	public static Mandant getMandantByGemeindeFromBgNummer(@Nonnull GemeindeService gemeindeService, @Nonnull String bgNummer) {
+		final int gemeindeNummer = getGemeindeFromBGNummer(bgNummer);
+		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+
+		return Objects.requireNonNull(gemeinde.getMandant());
 	}
 }

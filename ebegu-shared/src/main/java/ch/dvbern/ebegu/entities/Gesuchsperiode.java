@@ -59,7 +59,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	@Enumerated(EnumType.STRING)
 	private GesuchsperiodeStatus status = GesuchsperiodeStatus.ENTWURF;
 
-	@NotNull
+	@NotNull @Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchsperiode_mandant_id"))
 	private Mandant mandant;
@@ -389,14 +389,14 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 		return "(" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public Mandant getMandant() {
 		return mandant;
 	}
 
 	@Override
-	public void setMandant(Mandant mandant) {
+	public void setMandant(@Nonnull Mandant mandant) {
 		this.mandant = mandant;
 	}
 }

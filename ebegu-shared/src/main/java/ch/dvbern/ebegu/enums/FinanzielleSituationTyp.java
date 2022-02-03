@@ -21,5 +21,6 @@ package ch.dvbern.ebegu.enums;
 public enum FinanzielleSituationTyp {
 	BERN,
 	LUZERN,
-	SOLOTHURN
+	SOLOTHURN,
+	BERN_FKJV,
 }

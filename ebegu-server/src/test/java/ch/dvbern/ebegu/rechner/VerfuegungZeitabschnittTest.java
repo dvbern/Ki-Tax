@@ -35,7 +35,7 @@ import org.junit.Test;
 public class VerfuegungZeitabschnittTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final TageselternRechner tageselternRechner = new TageselternRechner(Collections.emptyList());
+	private final TageselternBernRechner tageselternRechner = new TageselternBernRechner(Collections.emptyList());
 
 	@Nonnull
 	private static final BigDecimal MAX_STUNDEN_MONTH = MathUtil.DEFAULT.from(220);

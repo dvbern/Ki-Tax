@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -79,8 +80,10 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Superklasse für Testfaelle des JA
@@ -213,6 +216,22 @@ public abstract class AbstractTestfall {
 		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
 		familiensituation.setMinDauerKonkubinat(5);
+		// LU
+		setAuszahlungsdatenInforma(familiensituation);
+	}
+
+	private void setAuszahlungsdatenInforma(@NotNull Familiensituation familiensituation) {
+		Auszahlungsdaten auszahlungsdatenInforma = new Auszahlungsdaten();
+		auszahlungsdatenInforma.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		if (gesuch.getGesuchsteller1() != null) {
+			auszahlungsdatenInforma.setKontoinhaber(gesuch.getGesuchsteller1().extractFullName());
+		} else {
+			auszahlungsdatenInforma.setKontoinhaber("kiBon Test");
+		}
+		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInforma);
+		familiensituation.setInfomaKreditorennummer("0010");
+		familiensituation.setInfomaBankcode("00-1-00");
+
 	}
 
 	protected Gesuch createAlleinerziehend() {

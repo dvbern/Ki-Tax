@@ -83,7 +83,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public List<GemeindeKennzahlen> createGemeindeKennzahlen(
 			@Nonnull Gesuchsperiode gesuchsperiode) {
-		return gemeindeService.getAktiveGemeinden()
+		return gemeindeService.getAktiveGemeinden(gesuchsperiode.getMandant())
 				.stream()
 				.filter(Gemeinde::isAngebotBG)
 				.filter(gemeinde -> !antragAlreadyExisting(gemeinde, gesuchsperiode))

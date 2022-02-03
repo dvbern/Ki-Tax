@@ -82,6 +82,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
+import {FamiliensituationRS} from './familiensituationRS.rest';
 import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
 import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
@@ -94,7 +95,7 @@ export class GesuchModelManager {
     public static $inject = [
         'GesuchRS', 'GesuchstellerRS', 'FinanzielleSituationRS', 'KindRS', 'FachstelleRS',
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
-        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
+        'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'FamiliensituationRS',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
         'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'InternePendenzenRS',
     ];
@@ -133,6 +134,7 @@ export class GesuchModelManager {
         private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
         private readonly verfuegungRS: VerfuegungRS,
         private readonly wizardStepManager: WizardStepManager,
+        private readonly familiensitutaionRS: FamiliensituationRS,
         private readonly antragStatusHistoryRS: AntragStatusHistoryRS,
         private readonly ebeguUtil: EbeguUtil,
         private readonly errorService: ErrorService,
@@ -317,6 +319,18 @@ export class GesuchModelManager {
                 return;
             }
         }
+    }
+
+    public updateVerguenstigungGewuenschtFlag(): void {
+        if (!this.gesuch.areThereOnlyBgBetreuungen()) {
+            return;
+        }
+
+        this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
+        this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
+            .then((response: TSFamiliensituationContainer) => {
+                this.gesuch.familiensituationContainer = response;
+            });
     }
 
     public updateFachstellenAnspruchList(): void {
@@ -1376,6 +1390,18 @@ export class GesuchModelManager {
         }
 
         return false;
+    }
+
+    /**
+     * Returns true when all Betreuungen are of kind BG.
+     * Returns false also if there are no Kinder with betreuungsbedarf
+     */
+    public areThereOnlyBgBetreuungen(): boolean {
+        if (!this.getGesuch()) {
+            return false;
+        }
+
+        return this.getGesuch().areThereOnlyBgBetreuungen();
     }
 
     /**

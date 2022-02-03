@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -69,7 +70,8 @@ public class GesuchsperiodeEmailServiceBean extends AbstractBaseService implemen
 	public void getAndSaveGesuchsperiodeEmailCandidates(
 		@Nonnull Gesuchsperiode lastGesuchsperiode,
 		@Nonnull Gesuchsperiode nextGesuchsperiode) {
-		Collection<Dossier> allDossiers = dossierService.getAllDossiersForMandant(true);
+		Collection<Dossier> allDossiers = dossierService.getAllDossiersForMandant(Objects.requireNonNull(
+				lastGesuchsperiode.getMandant()), true);
 		allDossiers.forEach(dossier -> {
 			GesuchsperiodeEmailCandidate candidate = new GesuchsperiodeEmailCandidate(dossier, lastGesuchsperiode, nextGesuchsperiode);
 			persistence.persist(candidate);

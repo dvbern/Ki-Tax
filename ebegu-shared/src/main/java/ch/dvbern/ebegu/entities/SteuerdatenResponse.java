@@ -28,6 +28,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity
@@ -474,11 +475,13 @@ public class SteuerdatenResponse extends AbstractEntity {
 		this.liegenschaftsAbzuege = liegenschaftsAbzuege;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	@Nullable
 	public BigDecimal getNettovermoegen() {
 		return nettovermoegen;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	public void setNettovermoegen(@Nullable BigDecimal nettovermoegen) {
 		this.nettovermoegen = nettovermoegen;
 	}
