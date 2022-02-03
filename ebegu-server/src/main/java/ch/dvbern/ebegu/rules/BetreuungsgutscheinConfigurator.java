@@ -311,17 +311,41 @@ public class BetreuungsgutscheinConfigurator {
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann.
 		// Wir haben je eine Anspruch-Regel für ASIV und FKJV, die entsprechend der Einstellungen aktiv sind
+		Einstellung minErwerbspensumNichtEingeschult = getAusserordentlicherAnspruchMinErwerbspensumNichtEingeschult(einstellungMap);
+		Einstellung minErwerbspensumEingeschult = getAusserordentlicherAnspruchMinErwerbspensumEingeschult(einstellungMap);
 		Einstellung paramMaxDifferenzBeschaeftigungspensum = einstellungMap.get(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM);
 		Objects.requireNonNull(paramMaxDifferenzBeschaeftigungspensum, "Parameter FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM muss gesetzt sein");
 		AusserordentlicherAnspruchCalcRule ausserordntlAsiv = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntlAsiv, einstellungMap);
 		FKJVAusserordentlicherAnspruchCalcRule ausserordntlFkjv = new FKJVAusserordentlicherAnspruchCalcRule(
-				einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).getValueAsInteger(),
-				einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT).getValueAsInteger(),
+				minErwerbspensumNichtEingeschult.getValueAsInteger(),
+				minErwerbspensumEingeschult.getValueAsInteger(),
 				paramMaxDifferenzBeschaeftigungspensum.getValueAsInteger(),
 				defaultGueltigkeit,
 				locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntlFkjv, einstellungMap);
+	}
+
+	private Einstellung getAusserordentlicherAnspruchMinErwerbspensumNichtEingeschult(Map<EinstellungKey, Einstellung> einstellungMap) {
+		Einstellung mandant = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		Einstellung gemeinde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+
+		if (gemeinde.getValueAsInteger() != null) {
+			return gemeinde;
+		}
+		Objects.requireNonNull(mandant, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		return mandant;
+	}
+
+	private Einstellung getAusserordentlicherAnspruchMinErwerbspensumEingeschult(Map<EinstellungKey, Einstellung> einstellungMap) {
+		Einstellung mandant = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung gemeinde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);
+
+		if (gemeinde.getValueAsInteger() != null) {
+			return gemeinde;
+		}
+		Objects.requireNonNull(mandant, "Parameter GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		return mandant;
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
