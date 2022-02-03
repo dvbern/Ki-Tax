@@ -224,6 +224,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_PARAM, gemeinde.getId());
 		}
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
+		jobParameters.setProperty(WorkJobConstants.REPORT_MANDANT_ID, Objects.requireNonNull(principalBean.getMandant())
+				.getId());
 		jobOperator.getJobNames();
 		workJob.setStatus(BatchJobStatus.REQUESTED);
 		workJob = this.saveWorkjob(workJob);

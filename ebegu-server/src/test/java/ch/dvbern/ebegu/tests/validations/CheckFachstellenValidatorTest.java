@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -33,6 +34,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
@@ -134,7 +136,10 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 		var gesuchsperiode = new Gesuchsperiode();
 		var gesuch = new Gesuch();
 		var dossier = new Dossier();
+		var fall = new Fall();
+		var mandant = TestDataUtil.createDefaultMandant();
 
+		fall.setMandant(mandant);
 		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setIntegrationTyp(integrationTyp);
 		kind.setPensumFachstelle(pensumFachstelle);
@@ -142,6 +147,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 		kindContainer.setKindJA(kind);
 		gesuch.setDossier(dossier);
 		dossier.setGemeinde(gemeinde);
+		dossier.setFall(fall);
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		kindContainer.setGesuch(gesuch);
 		return kindContainer;

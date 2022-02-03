@@ -249,7 +249,7 @@ public final class EbeguRuleTestsHelper {
 			result = abschlussNormalizer.execute(platz, result);
 		}
 
-		BemerkungsMerger.prepareGeneratedBemerkungen(result);
+		BemerkungsMerger.prepareGeneratedBemerkungen(result, platz.extractGesuch().extractMandant());
 		executorToUse.executeRestanspruchInitializer(platz, result);
 		return result;
 	}

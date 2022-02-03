@@ -21,9 +21,12 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.services.GemeindeServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 public class GemeindeServiceMock extends GemeindeServiceBean {
 
@@ -36,5 +39,15 @@ public class GemeindeServiceMock extends GemeindeServiceBean {
 		// Aktuell wird als Adresse immer Jugendamt verwendet
 		gemeindeWithStammdaten.getAdresse().setOrganisation("Jugendamt");
 		return Optional.of(gemeindeWithStammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
+		Gemeinde gemeinde = new Gemeinde();
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		gemeinde.setMandant(mandant);
+		return Optional.of(gemeinde);
 	}
 }

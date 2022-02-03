@@ -305,7 +305,8 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Nonnull
 	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
 		String angebot = ServerMessageUtil
-			.translateEnumValue(getBetreuungsangebotTyp(), locale);
+			.translateEnumValue(getBetreuungsangebotTyp(), locale,
+					Objects.requireNonNull(getInstitutionStammdaten().getInstitution().getMandant()));
 		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
 	}
 

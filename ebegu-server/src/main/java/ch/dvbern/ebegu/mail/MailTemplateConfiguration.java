@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -190,7 +191,8 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
-		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale()));
+		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale(),
+				requireNonNull(fall.getMandant())));
 
 		return processTemplateBetreuungGeloescht(
 			betreuung,
@@ -228,11 +230,12 @@ public class MailTemplateConfiguration {
 	public String sendInfoStatistikGeneriert(
 		@Nonnull String empfaengerMail,
 		@Nonnull String downloadurl,
-		@Nonnull Sprache sprache
+		@Nonnull Sprache sprache,
+		@Nonnull Mandant mandant
 	) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("downloadurl", downloadurl);
-		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale()));
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale(), mandant));
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
 	}
 
@@ -413,8 +416,9 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
-		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de")));
-		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr")));
+		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"),
+				requireNonNull(gemeinde.getMandant())));
+		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), gemeinde.getMandant()));
 		paramMap.put("gemeinde", gemeinde);
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
 	}
@@ -446,12 +450,13 @@ public class MailTemplateConfiguration {
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
 				french,
+				einladender.getMandant(),
 				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), french),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), french, eingeladener.getMandant()),
 				getRollenZusatz(einladung, eingeladener)
 			)
 		);
-		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", french));
+		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", french, einladender.getMandant()));
 	}
 
 	@Nonnull

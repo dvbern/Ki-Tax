@@ -89,7 +89,7 @@ export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
  */
 export function isOfAnyBetreuungsangebotTyp(
     betreuungsangebotTyp: TSBetreuungsangebotTyp,
-    types: TSBetreuungsangebotTyp[],
+    types: ReadonlyArray<TSBetreuungsangebotTyp>,
 ): boolean {
     return types.filter(type => betreuungsangebotTyp === type).length > 0;
 }

@@ -120,7 +120,7 @@ export class TSKind extends TSAbstractPersonEntity {
     }
 
     public isGeprueft(): boolean {
-        return this._kinderabzugErstesHalbjahr !== null;
+        return this._einschulungTyp !== null;
     }
 
     public get zukunftigeGeburtsdatum(): boolean {
