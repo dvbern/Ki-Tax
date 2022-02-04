@@ -564,7 +564,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         if (this.isDuplicated) {
             return true;
         }
-        if (!this.gesuchModelManager.getGesuch() || !this.isAnmeldungTSEditable()) {
+        if (!this.gesuchModelManager.getGesuch() || !this.isEditableOrNew()) {
             return false;
         }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
@@ -573,5 +573,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return !this.isSavingData
             && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
+    }
+
+    private isEditableOrNew(): boolean {
+        // alle Status die Bearbeitung erlauben ausser "AUSSTEHEND"
+        return this.isAnmeldungTSEditable()
+            // neue Anmeldungen haben Status AUSSTEHEND
+        || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
     }
 }
