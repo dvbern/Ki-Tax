@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
@@ -175,11 +176,12 @@ public class EbeguExceptionReport {
 		Response.Status status,
 		EbeguException ex,
 		Locale localeFromHeader,
+		Mandant mandant,
 		boolean addDebugInfo) {
 
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
 		Object[] args = ex.getArgs().toArray();
-		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, args);
+		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, mandant, args);
 
 		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(
 			ex.getClass().getSimpleName(),
@@ -202,6 +204,7 @@ public class EbeguExceptionReport {
 		Response.Status status,
 		EbeguRuntimeException ex,
 		Locale localeFromHeader,
+		Mandant mandant,
 		boolean addDebugInfo) {
 
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
@@ -212,7 +215,7 @@ public class EbeguExceptionReport {
 		}
 
 		Object[] args = ex.getArgs().toArray();
-		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, args);
+		String translatedEnumMessage = translateEnumValue(ex.getErrorCodeEnum(), localeFromHeader, mandant, args);
 		EbeguExceptionReport exceptionReport = new EbeguExceptionReport(
 			ex.getClass().getSimpleName(),
 			ex.getErrorCodeEnum(),

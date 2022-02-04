@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,6 +31,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
@@ -54,6 +56,9 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected final GemeindeStammdaten gemeindeStammdaten;
 
+	@Nonnull
+	protected final Mandant mandant;
+
 	protected Locale sprache;
 
 
@@ -61,6 +66,7 @@ public abstract class KibonPdfGenerator {
 	protected KibonPdfGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten) {
 		this.gesuch = gesuch;
 		this.gemeindeStammdaten = stammdaten;
+		this.mandant = Objects.requireNonNull(gemeindeStammdaten.getGemeinde().getMandant());
 		initLocale(stammdaten);
 		initGenerator(stammdaten);
 	}
@@ -169,16 +175,16 @@ public abstract class KibonPdfGenerator {
 
 	@Nonnull
 	protected String translateEnumValue(@Nullable final Enum<?> key) {
-		return ServerMessageUtil.translateEnumValue(key, sprache);
+		return ServerMessageUtil.translateEnumValue(key, sprache, mandant);
 	}
 
 	@Nonnull
 	protected String translate(String key) {
-		return ServerMessageUtil.getMessage(key, sprache);
+		return ServerMessageUtil.getMessage(key, sprache, mandant);
 	}
 
 	@Nonnull
 	protected String translate(String key, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, args);
+		return ServerMessageUtil.getMessage(key, sprache, mandant, args);
 	}
 }

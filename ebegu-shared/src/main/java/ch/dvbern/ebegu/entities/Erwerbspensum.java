@@ -118,9 +118,11 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		return pensumIsSame && taetigkeitSame && bezeichnungSame && urlaubSame;
 	}
 
-	public String getName(@Nonnull Locale locale) {
+	public String getName(
+			@Nonnull Locale locale,
+			Mandant mandant) {
 		if (bezeichnung == null || bezeichnung.isEmpty()) {
-			return ServerMessageUtil.translateEnumValue(taetigkeit, locale) + ' ' + getPensum() + '%';
+			return ServerMessageUtil.translateEnumValue(taetigkeit, locale, mandant) + ' ' + getPensum() + '%';
 		}
 		return bezeichnung;
 	}

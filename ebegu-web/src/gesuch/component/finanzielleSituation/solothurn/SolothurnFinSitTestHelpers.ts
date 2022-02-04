@@ -66,7 +66,8 @@ export class SolothurnFinSitTestHelpers {
                 'isGesuchReadonly',
                 'getGesuchsperiode',
                 'getGemeinde',
-                'isKorrekturModusJugendamt'
+                'isKorrekturModusJugendamt',
+                'areThereOnlyBgBetreuungen'
             ]);
     }
 

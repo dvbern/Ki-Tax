@@ -17,6 +17,7 @@ import * as moment from 'moment';
 import {isAtLeastFreigegeben, TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
+    getBgInstitutionenBetreuungsangebote,
     getSchulamtBetreuungsangebotTypValues,
     isJugendamt,
     isOfAnyBetreuungsangebotTyp,
@@ -272,7 +273,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
      * Returns true when all Betreuungen are of one of the given types.
      * ACHTUNG! Diese Methode gibt auch true zurueck wenn es keine Betreuungen gibt, was nicht immer richtig ist
      */
-    private areThereOnlyAngeboteOfType(types: TSBetreuungsangebotTyp[]): boolean {
+    private areThereOnlyAngeboteOfType(types: ReadonlyArray<TSBetreuungsangebotTyp>): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         if (kinderWithBetreuungList.length <= 0) {
             return false; // no Kind with bedarf
@@ -305,6 +306,15 @@ export class TSGesuch extends TSAbstractAntragEntity {
      */
     public areThereOnlySchulamtAngebote(): boolean {
         return this.areThereOnlyAngeboteOfType(getSchulamtBetreuungsangebotTypValues());
+    }
+
+    /**
+     * Returns true when all Betreuungen are of kind SCHULAMT.
+     * Returns false also if there are no Kinder with betreuungsbedarf
+     */
+    public areThereOnlyBgBetreuungen(): boolean {
+        return this.areThereOnlyAngeboteOfType(getBgInstitutionenBetreuungsangebote())
+            && !this.areThereNoBetreuungenAtAll();
     }
 
     /**

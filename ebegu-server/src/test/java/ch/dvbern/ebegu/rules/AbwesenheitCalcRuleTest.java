@@ -21,13 +21,16 @@ import java.time.Month;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -40,6 +43,14 @@ public class AbwesenheitCalcRuleTest {
 	private final LocalDate ENDE_PERIODE = LocalDate.of(2017, Month.JULY, 31);
 	private final DateRange PERIODE = new DateRange(START_PERIODE, ENDE_PERIODE);
 
+	private Mandant mandant;
+
+	@Before
+	public void setUp() {
+		mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+	}
+
 	@Test
 	public void testSchulamtBetreuungWithAbwesenheit() {
 		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
@@ -48,7 +59,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
-		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
 		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertTrue(zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
@@ -62,7 +73,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
-		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
 		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertEquals(1, zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().size());
@@ -81,7 +92,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
-		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
 		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
 		Assert.assertTrue(zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());

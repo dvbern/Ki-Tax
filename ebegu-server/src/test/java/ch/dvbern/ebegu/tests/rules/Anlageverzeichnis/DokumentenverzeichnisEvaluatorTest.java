@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -84,6 +86,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	private final KindDokumente kindDokumente = new KindDokumente();
 	private final ErwerbspensumDokumente erwerbspensumDokumente = new ErwerbspensumDokumente();
 	private Gesuch testgesuch;
+	private Mandant mandant;
 
 	@BeforeEach
 	public void setUpCalculator() {
@@ -93,6 +96,12 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
 		testgesuch.setKindContainers(new HashSet<>());
 		testgesuch.setDossier(new Dossier());
+		mandant = TestDataUtil.getMandantKantonBern();
+		Fall fall = new Fall();
+		fall.setMandant(mandant);
+		Dossier dossier = new Dossier();
+		dossier.setFall(fall);
+		testgesuch.setDossier(dossier);
 	}
 
 	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
@@ -231,7 +240,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokumentGrund.getDokumentGrundTyp());
 		Assert.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokumentGrund.getPersonType());
 		Assert.assertEquals(Integer.valueOf(1), dokumentGrund.getPersonNumber());
-		Assert.assertEquals(erwerbspensum.getName(Constants.DEFAULT_LOCALE), dokumentGrund.getTag());
+		Assert.assertEquals(erwerbspensum.getName(Constants.DEFAULT_LOCALE, mandant), dokumentGrund.getTag());
 		return dokumentGrund;
 	}
 
@@ -298,7 +307,8 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, dokumentList.size());
 		DokumentGrund nachweisSelbstaendigkeit = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
-		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(Constants.DEFAULT_LOCALE),
+		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(Constants.DEFAULT_LOCALE,
+						mandant),
 			DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 	}
 

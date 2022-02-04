@@ -422,6 +422,7 @@ describe('betreuungView', () => {
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
         spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
+        spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {});
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // tslint:disable-next-line:no-unbound-method

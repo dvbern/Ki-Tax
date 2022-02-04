@@ -352,6 +352,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 		@Nonnull
 		private Capture<Betreuungsmitteilung> expectNewMitteilung() {
+			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
+					.andReturn(Optional.of(mandant));
 			Capture<Betreuungsmitteilung> captured = EasyMock.newCapture();
 			//noinspection ConstantConditions
 			mitteilungService.replaceBetreungsmitteilungen(EasyMock.capture(captured));

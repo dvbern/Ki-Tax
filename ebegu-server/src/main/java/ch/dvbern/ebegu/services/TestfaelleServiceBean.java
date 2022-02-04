@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
@@ -92,6 +93,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.MandantSozialdienstVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
@@ -198,10 +200,12 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private PrincipalBean principalBean;
 
 	private InstitutionStammdatenBuilderVisitor testfallDependenciesVisitor;
+	private MandantSozialdienstVisitor mandantSozialdienstVisitor;
 
 	@PostConstruct
 	public void createFactory(){
 		testfallDependenciesVisitor = new InstitutionStammdatenBuilderVisitor(institutionStammdatenService);
+		mandantSozialdienstVisitor = new MandantSozialdienstVisitor(sozialdienstService);
 	}
 
 	@Override
@@ -322,7 +326,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 						institutionStammdatenBuilder), verfuegen, besitzer);
 				responseString.append("Fall ASIV 10 Fallnummer: ").append(gesuch.getFall().getFallNummer()).append("', AntragID: ").append(gesuch.getId());
 			} else if (SOZIALDIENST.equals(fallid)) {
-				Sozialdienst sozialdienst = getBernerSozialdienst();
+				Sozialdienst sozialdienst = mandantSozialdienstVisitor.process(mandant);
 				Testfall_Sozialdienst testfallSozialdienst = new Testfall_Sozialdienst(
 					gesuchsperiode,
 						betreuungenBestaetigt,
@@ -362,7 +366,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 						true, gemeinde,
 						institutionStammdatenBuilder), verfuegen, besitzer);
 				createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode,
-						betreuungenBestaetigt, gemeinde, getBernerSozialdienst(),
+						betreuungenBestaetigt, gemeinde, mandantSozialdienstVisitor.process(mandant),
 						institutionStammdatenBuilder), verfuegen, null);
 				responseString.append("Testfaelle 1-11, ASIV-Testfaelle 1-10 und Sozialdiensttestfall erstellt");
 			} else {
@@ -466,7 +470,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		}
 		if (SOZIALDIENST.equals(fallid)) {
 			return createAndSaveGesuch(new Testfall_Sozialdienst(gesuchsperiode,
-					betreuungenBestaetigt, gemeinde, getBernerSozialdienst(),
+					betreuungenBestaetigt, gemeinde, mandantSozialdienstVisitor.process(mandant),
 					institutionStammdatenBuilder), verfuegen, null);
 		}
 		throw new IllegalArgumentException("Unbekannter Testfall: " + fallid);
@@ -702,9 +706,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		familiensituationService.saveFamiliensituation(mutation, mutation.getFamiliensituationContainer(), null);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.GESUCHSTELLER).getId());
-		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.FINANZIELLE_SITUATION).getId());
+		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(),
+				getFinSitWizardStepName(mutation)).getId());
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.EINKOMMENSVERSCHLECHTERUNG).getId());
 		return mutation;
+	}
+
+	private WizardStepName getFinSitWizardStepName(Gesuch mutation) {
+		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
+			return WizardStepName.FINANZIELLE_SITUATION_LUZERN;
+		}
+		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
+			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
+		}
+		return WizardStepName.FINANZIELLE_SITUATION;
 	}
 
 	private void setWizardStepOkayAndVerfuegbar(@Nonnull String wizardStepId) {
@@ -1064,7 +1079,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
 		mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 		mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
-		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale);
+		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale,
+				requireNonNull(gesuch.getFall().getMandant()));
 
 		AnmeldungTagesschule anmeldung = new AnmeldungTagesschule();
 		anmeldung.setId(firstBetreuung.getId());
@@ -1157,11 +1173,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		return savedAntrag;
 	}
 
-	@Nonnull
-	private Sozialdienst getBernerSozialdienst() {
-		return sozialdienstService.findSozialdienst(AbstractTestfall.ID_BERNER_SOZIALDIENST)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getBernerSozialdienst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-	}
 
 	private void createAndSaveSozialdienstFallDokument(@Nonnull Fall fall) {
 		requireNonNull(fall.getSozialdienstFall());

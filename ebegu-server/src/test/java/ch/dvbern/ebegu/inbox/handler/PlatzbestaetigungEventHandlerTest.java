@@ -1316,6 +1316,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));
+
+			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
+					.andReturn(Optional.of(mandant));
 		}
 
 		@Nonnull

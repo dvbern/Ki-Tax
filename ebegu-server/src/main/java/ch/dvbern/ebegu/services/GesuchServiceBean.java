@@ -247,7 +247,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 
-		setFinSitTyp(gesuchToCreate);
+		setFinSitTyp(gesuchToPersist);
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
