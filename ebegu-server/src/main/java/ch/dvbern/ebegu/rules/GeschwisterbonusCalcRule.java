@@ -61,10 +61,12 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 		}
 		boolean hasBonusKind2 = getHasGeschwistersBonusKind2(betreuung);
 		if (hasBonusKind2) {
+			inputData.setGeschwisternBonusKind2(hasBonusKind2);
 			inputData.addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_2, getLocale());
 		}
 		boolean hasBonusKind3 = getHasGeschwistersBonusKind3(betreuung);
 		if (hasBonusKind3) {
+			inputData.setGeschwisternBonusKind2(hasBonusKind3);
 			inputData.addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_3, getLocale());
 		}
 	}
@@ -88,14 +90,16 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 
 	private List<Kind> getRelevantKinderSortedByAgeFromBetreuung(Betreuung betreuung) {
 		return betreuung.extractGesuch()
-				.getKindContainers()
-				.stream()
-				.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
-				.map(KindContainer::getKindJA)
-				.filter(this::kindCouldHaveBG)
-				.sorted(Comparator.comparing(AbstractPersonEntity::getGeburtsdatum)
-						.thenComparing(AbstractEntity::getTimestampErstellt))
-				.collect(Collectors.toList());
+			.getKindContainers()
+			.stream()
+			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
+			.map(KindContainer::getKindJA)
+			.filter(this::kindCouldHaveBG)
+			.sorted(
+				Comparator
+					.comparing(AbstractPersonEntity::getGeburtsdatum).reversed()
+					.thenComparing(AbstractEntity::getTimestampErstellt))
+			.collect(Collectors.toList());
 	}
 
 	@Override
