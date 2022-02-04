@@ -2757,5 +2757,6 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungsaufwand konfigurierbar",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
+    "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
