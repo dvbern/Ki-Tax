@@ -1859,7 +1859,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
-        if (finanzielleSituation.selbstdeklaration) {
+        if (EbeguUtil.isNotNullOrUndefined(finanzielleSituation.selbstdeklaration)) {
             restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
         }
         return restFinanzielleSituation;
