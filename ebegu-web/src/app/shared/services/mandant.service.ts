@@ -112,7 +112,6 @@ export class MandantService {
 
         if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
             await this.setMandantRedirectCookie(mandantFromUrl);
-        } else {
         }
     }
 
