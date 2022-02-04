@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -45,8 +46,11 @@ public class KitaPlusZuschlagCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
-		inputData.setKitaPlusZuschlag(getHasKitaPlusZuschlagNullsafe(betreuung));
-
+		boolean hasZuschlag = getHasKitaPlusZuschlagNullsafe(betreuung);
+		inputData.setKitaPlusZuschlag(hasZuschlag);
+		if (hasZuschlag) {
+			inputData.addBemerkung(MsgKey.KITAPLUS_ZUSCHLAG, getLocale());
+		}
 	}
 
 	private boolean getHasKitaPlusZuschlagNullsafe(Betreuung betreuung) {
