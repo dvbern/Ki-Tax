@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-import org.apache.maven.wagon.InputData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +74,7 @@ public class GeschwistertenBonusCalcRuleTest {
 				.getErwerbspensenContainers());
 		Objects.requireNonNull(betreuung.extractGesuch().getGesuchsteller1())
 				.addErwerbspensumContainer(erwerbspensumContainer);
-		ruleToTest = new GeschwisterbonusCalcRule(validy, Constants.DEUTSCH_LOCALE);
+		ruleToTest = new GeschwisterbonusCalcRule(EinschulungTyp.VORSCHULALTER, validy, Constants.DEUTSCH_LOCALE);
 		assert betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null;
 		inputData = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
 	}

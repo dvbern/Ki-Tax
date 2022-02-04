@@ -34,34 +34,39 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
 public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 
+	private EinschulungTyp einstellungBgAusstellenBisStufe;
+
 	protected GeschwisterbonusCalcRule(
-			@Nonnull DateRange validityPeriod,
-			@Nonnull Locale locale) {
+		@Nonnull EinschulungTyp einstellungBgAusstellenBisStufe,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale) {
 		super(RuleKey.GESCHWISTERBONUS, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+		this.einstellungBgAusstellenBisStufe = einstellungBgAusstellenBisStufe;
 	}
 
 	@Override
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
-		if (kindIsEingeschult(platz.getKind().getKindJA())) {
+		if (kindCouldHaveBG(platz.getKind().getKindJA())) {
 			return;
 		}
 		inputData.setGeschwisternBonusKind2(getHasGeschwistersBonusKind2(betreuung));
 		inputData.setGeschwisternBonusKind3(getHasGeschwistersBonusKind3(betreuung));
 	}
 
-	private boolean kindIsEingeschult(Kind kind) {
+	private boolean kindCouldHaveBG(Kind kind) {
 		if (kind.getEinschulungTyp() == null) {
 			return false;
 		}
-		return kind.getEinschulungTyp().isEingeschult();
+		return kind.getEinschulungTyp().ordinal() <= this.einstellungBgAusstellenBisStufe.ordinal();
 	}
 
 	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung) {
@@ -80,7 +85,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 				.stream()
 				.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
 				.map(KindContainer::getKindJA)
-				.filter(kindJA -> !kindIsEingeschult(kindJA))
+				.filter(kindJA -> !kindCouldHaveBG(kindJA))
 				.sorted(Comparator.comparing(AbstractPersonEntity::getGeburtsdatum)
 						.thenComparing(AbstractEntity::getTimestampErstellt))
 				.collect(Collectors.toList());
