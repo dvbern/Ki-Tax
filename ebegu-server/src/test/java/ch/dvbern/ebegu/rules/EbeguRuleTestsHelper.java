@@ -90,6 +90,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
@@ -296,6 +297,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		// LU
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
