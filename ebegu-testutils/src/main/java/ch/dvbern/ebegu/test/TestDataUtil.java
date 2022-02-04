@@ -188,6 +188,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERU
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
@@ -1864,6 +1865,7 @@ public final class TestDataUtil {
 		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode, persistence);
 		saveEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode, persistence);
 		saveEinstellung(FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH, "100", gesuchsperiode, persistence);
+		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode, persistence);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode, persistence);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode, persistence);
 	}

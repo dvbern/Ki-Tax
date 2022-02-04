@@ -77,7 +77,7 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
 		Assert.assertEquals(Integer.valueOf(60), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
-		Assert.assertEquals(0, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(80), zeitabschnitt.getBetreuungspensumProzent());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, zeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), zeitabschnitt.getBgPensum());
@@ -106,9 +106,9 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
 		Assert.assertEquals(Integer.valueOf(5), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
-		Assert.assertEquals(0, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
-		Assert.assertEquals(0 , zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.DEFAULT.from(0 ), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
+		Assert.assertEquals(30 , zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(30 ), zeitabschnitt.getBgPensum());
 	}
 
 	@Test
