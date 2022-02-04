@@ -116,7 +116,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
 			BigDecimal abzuegeGS1;
-			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+			if (!calculateByVeranlagung(finanzielleSituationGS1)) {
 				abzuegeGS1 = finanzielleSituationGS1.getSelbstdeklaration().calculateAbzuege();
 			} else {
 				abzuegeGS1 = calcAbzuegeFromVeranlagung(finanzielleSituationGS1);
@@ -125,7 +125,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		}
 		if (finanzielleSituationGS2 != null) {
 			BigDecimal abzuegeGS2;
-			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+			if (!calculateByVeranlagung(finanzielleSituationGS2)) {
 				abzuegeGS2 = finanzielleSituationGS2.getSelbstdeklaration().calculateAbzuege();
 			} else {
 				abzuegeGS2 = calcAbzuegeFromVeranlagung(finanzielleSituationGS2);
@@ -148,7 +148,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
 		BigDecimal gs1SteuerbaresVermoegen = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
-			if (finanzielleSituationGS1.getSelbstdeklaration() != null) {
+			if (!calculateByVeranlagung(finanzielleSituationGS1)) {
 				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSelbstdeklaration().calculateVermoegen();
 			} else {
 				gs1SteuerbaresVermoegen = finanzielleSituationGS1.getSteuerbaresVermoegen();
@@ -156,7 +156,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		}
 		BigDecimal gs2SteuerbaresVermoegen = BigDecimal.ZERO;
 		if (finanzielleSituationGS2 != null) {
-			if (finanzielleSituationGS2.getSelbstdeklaration() != null) {
+			if (!calculateByVeranlagung(finanzielleSituationGS2)) {
 				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSelbstdeklaration().calculateVermoegen();
 			} else {
 				gs2SteuerbaresVermoegen = finanzielleSituationGS2.getSteuerbaresVermoegen();
@@ -186,7 +186,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		@Nonnull BigDecimal total
 	) {
 		if (abstractFinanzielleSituation != null) {
-			if (abstractFinanzielleSituation.getSelbstdeklaration() != null) {
+			if (!calculateByVeranlagung(abstractFinanzielleSituation)) {
 				total = total.add(abstractFinanzielleSituation.getSelbstdeklaration().calculateEinkuenfte());
 			} else {
 				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
@@ -194,5 +194,34 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			}
 		}
 		return total;
+	}
+
+	private boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		// for Einkommensverschlechterung we always use Selbstdeklaration
+		if (!(abstractFinanzielleSituation instanceof FinanzielleSituation)) {
+			return false;
+		}
+		FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+		if (
+			finanzielleSituation.getQuellenbesteuert() == null
+			|| finanzielleSituation.getVeranlagt() == null
+		) {
+			return false;
+		}
+		return !finanzielleSituation.getQuellenbesteuert()
+			&& isSameVeranlagungAsVorjahr(finanzielleSituation)
+			&& finanzielleSituation.getVeranlagt();
+	}
+
+	// one of gemeinsameStekVorjahr or alleinigeStekVorjahr could be null
+	private boolean isSameVeranlagungAsVorjahr(@Nonnull FinanzielleSituation finanzielleSituation) {
+		boolean same = false;
+		if (finanzielleSituation.getGemeinsameStekVorjahr() != null) {
+			same = finanzielleSituation.getGemeinsameStekVorjahr();
+		}
+		if (finanzielleSituation.getAlleinigeStekVorjahr() != null) {
+			same |= finanzielleSituation.getAlleinigeStekVorjahr();
+		}
+		return same;
 	}
 }

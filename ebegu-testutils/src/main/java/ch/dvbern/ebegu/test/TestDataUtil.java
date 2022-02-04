@@ -220,8 +220,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50;
@@ -414,10 +415,23 @@ public final class TestDataUtil {
 		return fall;
 	}
 
+	public static Fall createDefaultFall(Mandant mandant) {
+		var fall = new Fall();
+		fall.setMandant(mandant);
+		return fall;
+	}
+
 	public static Dossier createDefaultDossier() {
 		Dossier dossier = new Dossier();
 		dossier.setFall(createDefaultFall());
 		dossier.setGemeinde(createGemeindeLondon());
+		return dossier;
+	}
+
+	public static Dossier createDefaultDossier(Mandant mandant) {
+		Dossier dossier = new Dossier();
+		dossier.setFall(createDefaultFall(mandant));
+		dossier.setGemeinde(createGemeindeLondon(mandant));
 		return dossier;
 	}
 
@@ -573,6 +587,24 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
+	@Nonnull
+	public static Gemeinde createGemeindeLondon(Mandant mandant) {
+		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setId(GEMEINDE_LONDON_ID);
+		gemeinde.setName("London");
+		gemeinde.setStatus(GemeindeStatus.AKTIV);
+		gemeinde.setGemeindeNummer(2);
+		gemeinde.setBfsNummer(99999L);
+		gemeinde.setMandant(mandant);
+		gemeinde.setAngebotBG(true);
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
+		gemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		gemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2020, 8, 1));
+		GemeindeStammdaten stammdaten = createGemeindeStammdaten(gemeinde);
+		stammdaten.setId(GEMEINDE_LONDON_ID);
+		return gemeinde;
+	}
+
 	public static Fachstelle createDefaultFachstelle() {
 		Fachstelle fachstelle = new Fachstelle();
 		fachstelle.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
@@ -624,11 +656,27 @@ public final class TestDataUtil {
 		return institution;
 	}
 
+	public static Institution createDefaultInstitution(Mandant mandant) {
+		Institution institution = new Institution();
+		institution.setName("Institution1");
+		institution.setMandant(mandant);
+		institution.setTraegerschaft(createDefaultTraegerschaft(institution.getMandant()));
+		return institution;
+	}
+
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
 		return createInstitutionStammdaten(
 			UUID.randomUUID().toString(),
 			"Testinstitution",
 			BetreuungsangebotTyp.KITA);
+	}
+
+	public static InstitutionStammdaten createDefaultInstitutionStammdaten(Mandant mandant) {
+		return createInstitutionStammdaten(
+			UUID.randomUUID().toString(),
+			"Testinstitution",
+			BetreuungsangebotTyp.KITA,
+			mandant);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenKitaWeissenstein() {
@@ -790,6 +838,25 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
+	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp, Mandant mandant) {
+		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
+		instStammdaten.setId(id);
+		instStammdaten.setMail(TESTMAIL);
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
+		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
+		instStammdaten.setInstitution(createDefaultInstitution(mandant));
+		instStammdaten.getInstitution().setName(name);
+		instStammdaten.setAdresse(createDefaultAdresse());
+		InstitutionStammdatenBetreuungsgutscheine institutionStammdatenBetreuungsgutscheine = new InstitutionStammdatenBetreuungsgutscheine();
+		institutionStammdatenBetreuungsgutscheine.setAnzahlPlaetze(BigDecimal.TEN);
+		Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
+		auszahlungsdaten.setIban(new IBAN(iban));
+		auszahlungsdaten.setKontoinhaber("Kontoinhaber " + name);
+		institutionStammdatenBetreuungsgutscheine.setAuszahlungsdaten(auszahlungsdaten);
+		instStammdaten.setInstitutionStammdatenBetreuungsgutscheine(institutionStammdatenBetreuungsgutscheine);
+		return instStammdaten;
+	}
+
 	public static Collection<InstitutionStammdaten> saveInstitutionsstammdatenForTestfaelle(@Nonnull Persistence persistence, Gesuchsperiode gesuchsperiode) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = createInstitutionStammdatenKitaBruennen();
@@ -877,6 +944,7 @@ public final class TestDataUtil {
 		kind.setFamilienErgaenzendeBetreuung(true);
 		kind.setSprichtAmtssprache(true);
 		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		kind.setTimestampErstellt(LocalDateTime.now());
 		return kind;
 	}
 
@@ -1019,6 +1087,19 @@ public final class TestDataUtil {
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(createDefaultKindContainer());
+		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweitContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweitContainer);
+		return betreuung;
+	}
+
+	public static Betreuung createDefaultBetreuung(KindContainer kindContainer) {
+		Betreuung betreuung = new Betreuung();
+		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
+		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+		betreuung.setBetreuungspensumContainers(new TreeSet<>());
+		betreuung.setAbwesenheitContainers(new HashSet<>());
+		betreuung.setKind(kindContainer);
 		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweitContainer.setBetreuung(betreuung);
 		betreuung.setErweiterteBetreuungContainer(erweitContainer);
@@ -1292,6 +1373,42 @@ public final class TestDataUtil {
 		betreuung.getKind().setGesuch(gesuch);
 		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
+		betreuung.setErweiterteBetreuungContainer(TestDataUtil.createDefaultErweiterteBetreuungContainer());
+		return betreuung;
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller, Mandant mandant) {
+		Gesuch gesuch = new Gesuch();
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718(mandant));
+		gesuch.setDossier(createDefaultDossier(mandant));
+		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
+		if (zweiGesuchsteller) {
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		} else {
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		}
+		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(new FinanzielleSituation());
+		if (zweiGesuchsteller) {
+			gesuch.setGesuchsteller2(new GesuchstellerContainer());
+			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+			gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.setFinanzielleSituationJA(new FinanzielleSituation());
+		}
+		Betreuung betreuung = new Betreuung();
+		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+		KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.getBetreuungen().add(betreuung);
+		betreuung.setKind(kindContainer);
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		betreuung.getKind().setGesuch(gesuch);
+		gesuch.getKindContainers().add(betreuung.getKind());
+		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten(mandant));
 		betreuung.setErweiterteBetreuungContainer(TestDataUtil.createDefaultErweiterteBetreuungContainer());
 		return betreuung;
 	}
@@ -1868,6 +1985,7 @@ public final class TestDataUtil {
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode, persistence);
 		saveEinstellung(KESB_PLATZIERUNG_DEAKTIVIEREN, "false", gesuchsperiode, persistence);
 		saveEinstellung(BESONDERE_BEDUERFNISSE_LUZERN, "false", gesuchsperiode, persistence);
+		saveEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

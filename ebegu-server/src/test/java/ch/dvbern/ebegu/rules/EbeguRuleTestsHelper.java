@@ -34,11 +34,13 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
@@ -89,6 +91,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -170,39 +174,39 @@ public final class EbeguRuleTestsHelper {
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executorWithSpecificAbschlussRules);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenAbschlussRules, boolean doMonatsstueckelung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		BetreuungsgutscheinExecutor executorWithSpecificAbschlussRules = new BetreuungsgutscheinExecutor(isDebug, einstellungenAbschlussRules);
 		return calculateAllRules(betreuung, einstellungenGemaessAsiv, initialenRestanspruchAbschnitte, executorWithSpecificAbschlussRules, doMonatsstueckelung);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung, @Nonnull Map<EinstellungKey, Einstellung> einstellungenRules) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenRules, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculate(AbstractPlatz betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateWithCustomEinstellungen(AbstractPlatz betreuung, Map<EinstellungKey, Einstellung> einstellungMap) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungMap, executor);
 	}
 
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
 
@@ -212,7 +216,7 @@ public final class EbeguRuleTestsHelper {
 	 */
 	public static List<VerfuegungZeitabschnitt> calculateWithRemainingRestanspruch(Betreuung betreuung, int existingRestanspruch) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), new FinanzielleSituationBernRechner());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch(), FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : initialenRestanspruchAbschnitte) {
 			verfuegungZeitabschnitt.setAnspruchspensumRestForAsivAndGemeinde(existingRestanspruch);
 		}
@@ -293,6 +297,9 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
+		// LU
+		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
@@ -406,10 +413,51 @@ public final class EbeguRuleTestsHelper {
 		BetreuungsangebotTyp angebot,
 		int pensum,
 		BigDecimal monatlicheBetreuungskosten,
+		Mandant mandant
+	) {
+		return createBetreuungWithPensum(von, bis, angebot, pensum, monatlicheBetreuungskosten, BigDecimal.ZERO, BigDecimal.ZERO, mandant);
+	}
+
+	public static Betreuung createBetreuungWithPensum(
+		LocalDate von, LocalDate bis,
+		BetreuungsangebotTyp angebot,
+		int pensum,
+		BigDecimal monatlicheBetreuungskosten,
 		BigDecimal monatlicheHauptmahlzeiten,
 		BigDecimal monatlicheNebenmahlzeiten
 	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		final Gesuch gesuch = betreuung.extractGesuch();
+		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
+		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
+		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
+		betreuungspensumContainer.setBetreuung(betreuung);
+		DateRange gueltigkeit = new DateRange(von, bis);
+		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(pensum));
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(monatlicheHauptmahlzeiten);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(monatlicheNebenmahlzeiten);
+		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+
+		ErweiterteBetreuungContainer container = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		container.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(container);
+
+		return betreuung;
+	}
+
+	public static Betreuung createBetreuungWithPensum(
+		LocalDate von, LocalDate bis,
+		BetreuungsangebotTyp angebot,
+		int pensum,
+		BigDecimal monatlicheBetreuungskosten,
+		BigDecimal monatlicheHauptmahlzeiten,
+		BigDecimal monatlicheNebenmahlzeiten,
+		Mandant mandant
+	) {
+		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false, mandant);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);

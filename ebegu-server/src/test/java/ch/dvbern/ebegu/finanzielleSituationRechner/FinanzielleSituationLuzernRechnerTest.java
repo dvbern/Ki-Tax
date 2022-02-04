@@ -19,12 +19,14 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -78,10 +80,18 @@ public class FinanzielleSituationLuzernRechnerTest {
 			assert gesuch.getGesuchsteller1() != null;
 			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
 			FinanzielleSituation emptyFinanzielleSituationForTest = new FinanzielleSituation();
+			setPropertiesToCalculateByVeranlagung(emptyFinanzielleSituationForTest);
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(emptyFinanzielleSituationForTest);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
 		}
+	}
+
+	private void setPropertiesToCalculateByVeranlagung(@Nonnull FinanzielleSituation finanzielleSituation) {
+		finanzielleSituation.setQuellenbesteuert(false);
+		finanzielleSituation.setAlleinigeStekVorjahr(true);
+		finanzielleSituation.setGemeinsameStekVorjahr(null);
+		finanzielleSituation.setVeranlagt(true);
 	}
 
 
@@ -103,6 +113,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 		finanzielleSituationForTest.setGeschaeftsverlust(BigDecimal.valueOf(1000));
 		finanzielleSituationForTest.setAbzuegeLiegenschaft(BigDecimal.valueOf(1000));
 		finanzielleSituationForTest.setEinkaeufeVorsorge(BigDecimal.valueOf(1000));
+		setPropertiesToCalculateByVeranlagung(finanzielleSituationForTest);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
 		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		return gesuchstellerContainer;

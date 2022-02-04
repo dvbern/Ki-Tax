@@ -248,7 +248,12 @@ public enum EinstellungKey {
 	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
 
 	// Welche ausserordentliche Anspruch Rule soll verwendet werden
-	AUSSERORDENTLICHER_ANSPRUCH_RULE;
+	AUSSERORDENTLICHER_ANSPRUCH_RULE,
+
+	FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
+
+	// Luzern: definiert, ob ein Geschwisternbonus ausbezahlt wird für Kind 2 oder 3
+	GESCHWISTERNBONUS_AKTIVIERT;
 
 
 	private EinstellungTyp typ;

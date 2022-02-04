@@ -147,6 +147,10 @@ public class BGCalculationInput {
 
 	private boolean kitaPlusZuschlag = false;
 
+	private boolean geschwisternBonusKind2 = false;
+
+	private boolean geschwisternBonusKind3 = false;
+
 	@Valid
 	@NotNull
 	@Nonnull
@@ -1048,5 +1052,21 @@ public class BGCalculationInput {
 
 	public void setBesondereBeduerfnisseZuschlag(@Nullable BigDecimal besondereBeduerfnisseZuschlag) {
 		this.besondereBeduerfnisseZuschlag = besondereBeduerfnisseZuschlag;
+	}
+
+	public boolean isGeschwisternBonusKind3() {
+		return geschwisternBonusKind3;
+	}
+
+	public void setGeschwisternBonusKind3(boolean geschwisternBonusKind3) {
+		this.geschwisternBonusKind3 = geschwisternBonusKind3;
+	}
+
+	public boolean isGeschwisternBonusKind2() {
+		return geschwisternBonusKind2;
+	}
+
+	public void setGeschwisternBonusKind2(boolean geschwisternBonusKind2) {
+		this.geschwisternBonusKind2 = geschwisternBonusKind2;
 	}
 }

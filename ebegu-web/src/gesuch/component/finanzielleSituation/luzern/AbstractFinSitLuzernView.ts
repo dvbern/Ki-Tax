@@ -72,16 +72,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return !this.gesuchModelManager.isGesuchsteller2Required();
     }
 
-    public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
-        if (newQuellenBesteuert.value === false) {
-            return;
-        }
-        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
-        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
-        this.getModel().finanzielleSituationJA.veranlagt = undefined;
-        this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
-    }
-
     public gemeinsameStekVisible(): boolean {
         return this.isGemeinsam() && EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.quellenbesteuert);
     }
@@ -95,30 +85,40 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             || EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr);
     }
 
+    public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
+        if (newQuellenBesteuert.value === true) {
+            this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+            this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+            this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        }
+        this.initOrResetDekarationen();
+    }
+
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
         if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
-        if (newGemeinsameStek.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
-        }
+        this.initOrResetDekarationen();
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
         if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
-        if (newAlleinigeStekVorjahr.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
-        }
+        this.initOrResetDekarationen();
     }
 
-    public veranlagtChange(newVeranlagt: MatRadioChange): void {
-        if (newVeranlagt.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+    public veranlagtChange(): void {
+        this.initOrResetDekarationen();
+    }
+
+    private initOrResetDekarationen(): void {
+        if (this.showVeranlagung()) {
+            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
         }
-        if (newVeranlagt.value === false) {
+        if (this.showSelbstdeklaration()) {
             this.resetVeranlagungValues();
+            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
     }
 
