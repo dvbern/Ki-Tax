@@ -130,7 +130,8 @@ describe('betreuungView', () => {
             einstellungRS,
             $injector.get('GlobalCacheService'),
             $timeout,
-            undefined);
+            undefined,
+            $injector.get('ApplicationPropertyRS'));
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
@@ -158,6 +159,7 @@ describe('betreuungView', () => {
                     undefined,
                     undefined,
                     $timeout,
+                    undefined,
                     undefined);
                 myBetreuungView.model = betreuung;
                 expect(myBetreuungView.getBetreuungspensen()).toBeDefined();

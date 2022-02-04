@@ -20,6 +20,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../../admin/service/ferieninselStammdatenRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
@@ -82,6 +83,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'ApplicationPropertyRS',
         'FerieninselStammdatenRS',
     ];
 
@@ -113,6 +115,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        applicationPropertyRS: ApplicationPropertyRS,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
     ) {
         super($state,
@@ -131,7 +134,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             einstellungRS,
             globalCacheService,
             $timeout,
-            $translate);
+            $translate,
+            applicationPropertyRS);
     }
 
     public $onInit(): void {
