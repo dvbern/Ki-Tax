@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -55,11 +56,17 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
-		if (kindCouldHaveBG(platz.getKind().getKindJA())) {
+		if (!kindCouldHaveBG(platz.getKind().getKindJA())) {
 			return;
 		}
-		inputData.setGeschwisternBonusKind2(getHasGeschwistersBonusKind2(betreuung));
-		inputData.setGeschwisternBonusKind3(getHasGeschwistersBonusKind3(betreuung));
+		boolean hasBonusKind2 = getHasGeschwistersBonusKind2(betreuung);
+		if (hasBonusKind2) {
+			inputData.addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_2, getLocale());
+		}
+		boolean hasBonusKind3 = getHasGeschwistersBonusKind3(betreuung);
+		if (hasBonusKind3) {
+			inputData.addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_3, getLocale());
+		}
 	}
 
 	private boolean kindCouldHaveBG(Kind kind) {
@@ -85,7 +92,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 				.stream()
 				.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
 				.map(KindContainer::getKindJA)
-				.filter(kindJA -> !kindCouldHaveBG(kindJA))
+				.filter(this::kindCouldHaveBG)
 				.sorted(Comparator.comparing(AbstractPersonEntity::getGeburtsdatum)
 						.thenComparing(AbstractEntity::getTimestampErstellt))
 				.collect(Collectors.toList());
