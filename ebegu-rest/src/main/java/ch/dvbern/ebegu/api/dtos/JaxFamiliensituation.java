@@ -91,9 +91,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private String infomaBankcode;
 
-	@Nonnull
-	private Boolean auszahlungAnEltern;
-
 
 	@Nullable
 	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
@@ -265,15 +262,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setInfomaBankcode(@Nullable String infomaBankcode) {
 		this.infomaBankcode = infomaBankcode;
-	}
-
-	@Nonnull
-	public Boolean getAuszahlungAnEltern() {
-		return auszahlungAnEltern;
-	}
-
-	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
-		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	@Nullable

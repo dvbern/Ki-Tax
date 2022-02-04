@@ -116,9 +116,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String infomaBankcode;
 
-	@Column(nullable = false)
-	private boolean auszahlungAnEltern = false;
-
 
 	@Enumerated(value = EnumType.STRING)
 	@Nullable
@@ -261,14 +258,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.infomaBankcode = infomaBankcode;
 	}
 
-	public boolean isAuszahlungAnEltern() {
-		return auszahlungAnEltern;
-	}
-
-	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
-		this.auszahlungAnEltern = auszahlungAnEltern;
-	}
-
 	@Nullable
 	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
 		return gesuchstellerKardinalitaet;
@@ -350,7 +339,6 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
 			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
 			target.setInfomaBankcode(this.getInfomaBankcode());
-			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());

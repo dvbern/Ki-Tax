@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 
@@ -51,7 +53,7 @@ public final class MitteilungUtil {
 		betreuungsmitteilung.setSender(currentBenutzer);
 		betreuungsmitteilung.setEmpfaenger(betreuung.extractGesuch().getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage("mutationsmeldung_betreff", locale));
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage("mutationsmeldung_betreff", locale, currentBenutzer.getMandant()));
 	}
 
 	@Nonnull
@@ -87,6 +89,7 @@ public final class MitteilungUtil {
 	) {
 		String datumAb = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
+		Mandant mandant = Objects.requireNonNull(pensumMitteilung.getBetreuungsmitteilung().getDossier().getFall().getMandant());
 
 		if (mahlzeitenverguenstigungEnabled) {
 			BigDecimal hauptmahlzeiten = pensumMitteilung.getMonatlicheHauptmahlzeiten();
@@ -97,7 +100,8 @@ public final class MitteilungUtil {
 			BigDecimal tarifNeben = pensumMitteilung.getTarifProNebenmahlzeit();
 
 			return ServerMessageUtil.getMessage(
-				"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, index,
+				"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, mandant,
+				index,
 				datumAb,
 				datumBis,
 				pensumMitteilung.getPensum(),
@@ -107,7 +111,8 @@ public final class MitteilungUtil {
 				tarifHaupt,
 				tarifNeben);
 		} else {
-			return ServerMessageUtil.getMessage("mutationsmeldung_message", locale, index,
+			return ServerMessageUtil.getMessage("mutationsmeldung_message", locale, mandant,
+				index,
 				datumAb,
 				datumBis,
 				pensumMitteilung.getPensum(),

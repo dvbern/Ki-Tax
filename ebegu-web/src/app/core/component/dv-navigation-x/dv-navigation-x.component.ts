@@ -408,9 +408,6 @@ export class DvNavigationXComponent implements OnInit {
             case TSFinanzielleSituationSubStepName.LUZERN_GS2:
                 this.navigateToLuzernGS2();
                 return;
-            case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
-                this.navigateToLuzernResultate();
-                return;
             case TSFinanzielleSituationSubStepName.SOLOTHURN_START:
                 this.navigateToSolothurnStart();
                 return;
@@ -544,13 +541,6 @@ export class DvNavigationXComponent implements OnInit {
     // tslint:disable-next-line:no-identical-functions
     private navigateToLuzernGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Luzern', {
-            gesuchId: this.getGesuchId(),
-        });
-    }
-
-    // tslint:disable-next-line:no-identical-functions
-    private navigateToLuzernResultate(): any {
-        return this.$state.go('gesuch.finanzielleSituationResultateLuzern', {
             gesuchId: this.getGesuchId(),
         });
     }

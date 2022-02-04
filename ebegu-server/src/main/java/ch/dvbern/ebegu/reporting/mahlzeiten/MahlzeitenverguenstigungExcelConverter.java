@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldMahlzeitenverguenstigung;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -43,16 +44,17 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 		@Nonnull List<MahlzeitenverguenstigungDataRow> data,
 		@Nonnull Locale locale,
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis)
+		@Nonnull LocalDate datumBis,
+		@Nonnull Mandant mandant)
 	{
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 		//Headers
-		addHeaders(excelMerger, locale);
+		addHeaders(excelMerger, locale, mandant);
 		//Parameters
 		excelMerger.addValue(MergeFieldMahlzeitenverguenstigung.auswertungVon.getMergeField(), datumVon);
 		excelMerger.addValue(MergeFieldMahlzeitenverguenstigung.auswertungBis.getMergeField(), datumBis);
 		//Inhalt
-		mergeRows(excelMerger, data, locale);
+		mergeRows(excelMerger, data, locale, mandant);
 		return excelMerger;
 	}
 
@@ -60,7 +62,8 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 	public void mergeRows(
 		@Nonnull ExcelMergerDTO excelMerger,
 		@Nonnull List<MahlzeitenverguenstigungDataRow> data,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldMahlzeitenverguenstigung.repeatRow);
@@ -69,7 +72,7 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(
 				MergeFieldMahlzeitenverguenstigung.angebot,
-				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale));
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale, mandant));
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.traegerschaft, dataRow.getTraegerschaft());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.kindName, dataRow.getKindName());
 			excelRowGroup.addValue(MergeFieldMahlzeitenverguenstigung.kindVorname, dataRow.getKindVorname());
@@ -109,122 +112,123 @@ public class MahlzeitenverguenstigungExcelConverter implements ExcelConverter {
 
 	private void addHeaders(
 		@Nonnull ExcelMergerDTO mergerDTO,
-		@Nonnull Locale locale) {
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant) {
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.mahlzeitenverguenstigungTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_mahlzeitenverguenstigungTitle", locale));
+			ServerMessageUtil.getMessage("Reports_mahlzeitenverguenstigungTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.parameterTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
+			ServerMessageUtil.getMessage("Reports_parameterTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.vonTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_vonTitle", locale));
+			ServerMessageUtil.getMessage("Reports_vonTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.bisTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+			ServerMessageUtil.getMessage("Reports_bisTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.institutionTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+			ServerMessageUtil.getMessage("Reports_institutionTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.traegerschaftTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
+			ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.angebotTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_angebotTitle", locale));
+			ServerMessageUtil.getMessage("Reports_angebotTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.vornameTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+			ServerMessageUtil.getMessage("Reports_vornameTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.nachnameTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+			ServerMessageUtil.getMessage("Reports_nachnameTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.sozialhilfebezuegerTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_sozialhilfebezuegerTitle", locale));
+			ServerMessageUtil.getMessage("Reports_sozialhilfebezuegerTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.ibanTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_ibanTitle", locale));
+			ServerMessageUtil.getMessage("Reports_ibanTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_massEinkommenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_massEinkommenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenVorFamAbzugTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenVorFamAbzugTitle", locale));
+			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenVorFamAbzugTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.famGroesseTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_famGroesseTitle", locale));
+			ServerMessageUtil.getMessage("Reports_famGroesseTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.massgebendesEinkommenNachFamAbzugTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenNachFamAbzugTitle", locale));
+			ServerMessageUtil.getMessage("Reports_massgebendesEinkommenNachFamAbzugTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.geburtsdatumTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+			ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.gesuchsteller1Title.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_gesuchsteller1Title", locale));
+			ServerMessageUtil.getMessage("Reports_gesuchsteller1Title", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.gesuchsteller2Title.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_gesuchsteller2Title", locale));
+			ServerMessageUtil.getMessage("Reports_gesuchsteller2Title", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.bgNummerTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale));
+			ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.fallNummerTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_fallnummerTitle", locale));
+			ServerMessageUtil.getMessage("Reports_fallnummerTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.betreuungTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_betreuungTitle", locale));
+			ServerMessageUtil.getMessage("Reports_betreuungTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.betreuungVonTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_betreuungVonTitle", locale));
+			ServerMessageUtil.getMessage("Reports_betreuungVonTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.betreuungBisTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale));
+			ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.mahlzeitenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_mahlzeitenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_mahlzeitenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.anzahlHauptmahlzeitenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_anzahlHauptmahlzeitenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_anzahlHauptmahlzeitenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.anzahlNebenmahlzeitenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_anzahlNebenmahlzeitenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_anzahlNebenmahlzeitenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.kostenHauptmahlzeitenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_kostenHauptmahlzeitenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_kostenHauptmahlzeitenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.kostenNebenmahlzeitenTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_kostenNebenmahlzeitenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_kostenNebenmahlzeitenTitle", locale, mandant));
 
 		mergerDTO.addValue(
 			MergeFieldMahlzeitenverguenstigung.berechneteMahlzeitenverguenstigungTitle.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_berechneteMahlzeitenverguenstigungTitle", locale));
+			ServerMessageUtil.getMessage("Reports_berechneteMahlzeitenverguenstigungTitle", locale, mandant));
 	}
 }

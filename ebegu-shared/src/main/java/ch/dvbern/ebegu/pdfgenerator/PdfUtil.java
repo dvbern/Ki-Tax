@@ -30,6 +30,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -222,7 +223,8 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable createIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
+	public static PdfPTable createIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale, @Nonnull
+			Mandant mandant) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = { 1, 2 };
@@ -233,7 +235,7 @@ public final class PdfUtil {
 		setTableDefaultStyles(table);
 
 		for (TableRowLabelValue entry : entries) {
-			table.addCell(new Phrase(entry.getTranslatedLabel(locale), DEFAULT_FONT));
+			table.addCell(new Phrase(entry.getTranslatedLabel(locale, mandant), DEFAULT_FONT));
 			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * FONT_SIZE * 2);
@@ -377,7 +379,7 @@ public final class PdfUtil {
 	/**
 	 * Setzt ein Wasserzeichen auf jede Seite des PDF
 	 */
-	public static byte[] addEntwurfWatermark(byte[] content, @Nonnull Locale locale) throws IOException, DocumentException {
+	public static byte[] addEntwurfWatermark(byte[] content, @Nonnull Locale locale, @Nonnull Mandant mandant) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(new ByteArrayInputStream(content));
 		ByteArrayOutputStream destOutputStream = new ByteArrayOutputStream();
 
@@ -386,7 +388,7 @@ public final class PdfUtil {
 
 		// text watermark
 		Phrase watermarkPhrase = new Phrase(
-			ServerMessageUtil.getMessage(WATERMARK, locale),
+			ServerMessageUtil.getMessage(WATERMARK, locale, mandant),
 			FontFactory.getFont(FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK)
 		);
 

@@ -303,9 +303,9 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		findAllIdsOfAbstractEntities(mutation, entitiesMutation, 0);
 		int anzahlObjekteMutation = entitiesMutation.size();
 
-		// Die Mutation hat immer 1 Objekte mehr als Erstgesuch, und die "FamiliensituationErstgesuch.
-		// Deswegen muessen wir 1 subtrahieren
-		Assert.assertEquals(anzahlObjekteErstgesuch, anzahlObjekteMutation - 1);
+		// Die Mutation hat immer 2 Objekte mehr als Erstgesuch, und die "FamiliensituationErstgesuch.
+		// Deswegen muessen wir 2 subtrahieren
+		Assert.assertEquals(anzahlObjekteErstgesuch, anzahlObjekteMutation - 2);
 
 		Set<String> intersection = new HashSet<>(entitiesErstgesuch.keySet());
 		intersection.retainAll(entitiesMutation.keySet());
@@ -345,7 +345,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Map<String, AbstractEntity> entitiesFolgegesuch = new TreeMap<>();
 		findAllIdsOfAbstractEntities(erneuerungPersisted, entitiesFolgegesuch, 0);
 		int anzahlObjekteFolgegesuch = entitiesFolgegesuch.size();
-		Assert.assertEquals(11, anzahlObjekteFolgegesuch);
+		Assert.assertEquals(12, anzahlObjekteFolgegesuch);
 
 		Set<String> intersection = new HashSet<>(entitiesErstgesuch.keySet());
 		intersection.retainAll(entitiesFolgegesuch.keySet());

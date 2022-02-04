@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
@@ -70,6 +71,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 		"X  ________________________________________________________";
 
 	protected Locale sprache;
+	protected Mandant mandant;
 	private BaseGenerator<VollmachtPdfLayoutConfiguration> pdfGenerator;
 
 	private SozialdienstFall sozialdienstFall;
@@ -77,6 +79,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
 	public VollmachtPdfGenerator(Sprache sprache, @Nonnull SozialdienstFall sozialdienstFall) {
 		initSprache(sprache);
+		this.mandant = sozialdienstFall.getSozialdienst().getMandant();
 		this.sozialdienstFall = sozialdienstFall;
 		initGenerator();
 	}
@@ -241,7 +244,7 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 
 	@Nonnull
 	protected String translate(String key, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, args);
+		return ServerMessageUtil.getMessage(key, sprache, mandant, args);
 	}
 
 	protected void createFusszeile(

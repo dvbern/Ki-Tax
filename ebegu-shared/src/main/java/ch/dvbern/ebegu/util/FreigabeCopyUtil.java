@@ -155,7 +155,6 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setAbweichendeZahlungsadresseInfoma(familiensituationJA.isAbweichendeZahlungsadresseInfoma());
 		familiensituationGS.setInfomaKreditorennummer(familiensituationJA.getInfomaKreditorennummer());
 		familiensituationGS.setInfomaBankcode(familiensituationJA.getInfomaBankcode());
-		familiensituationGS.setAuszahlungAnEltern(familiensituationJA.isAuszahlungAnEltern());
 
 	}
 

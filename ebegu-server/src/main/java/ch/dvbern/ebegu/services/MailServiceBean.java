@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
@@ -426,13 +427,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public void sendInfoStatistikGeneriert(
 		@Nonnull String receiverEmail,
 		@Nonnull String downloadurl,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		Sprache sprache = Sprache.DEUTSCH;
 		if (Locale.FRENCH.getLanguage().equals(locale.getLanguage())) {
 			sprache = Sprache.FRANZOESISCH;
 		}
-		String message = mailTemplateConfig.sendInfoStatistikGeneriert(receiverEmail, downloadurl, sprache);
+		String message = mailTemplateConfig.sendInfoStatistikGeneriert(receiverEmail, downloadurl, sprache, mandant);
 
 		try {
 			sendMessageWithTemplate(message, receiverEmail);

@@ -613,7 +613,6 @@ export class EbeguRestUtil {
                 this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
             restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
             restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
-            restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
@@ -694,7 +693,6 @@ export class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
             familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
             familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
-            familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
@@ -2372,6 +2370,7 @@ export class EbeguRestUtil {
         restBetreuung.anmeldungMutationZustand = betreuung.anmeldungMutationZustand;
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
+        restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
         return restBetreuung;
     }
 
@@ -2546,6 +2545,7 @@ export class EbeguRestUtil {
             betreuungTS.anmeldungTagesschuleZeitabschnitts =
                 this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
+            betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
             return betreuungTS;
         }
         return undefined;

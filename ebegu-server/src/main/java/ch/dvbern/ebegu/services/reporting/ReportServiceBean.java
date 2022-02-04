@@ -58,7 +58,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
@@ -348,7 +347,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID, mandant);
-		ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale);
+		ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		gesuchStichtagExcelConverter.applyAutoSize(sheet);
@@ -357,7 +356,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, mandant),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -445,7 +444,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, mandant),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -628,11 +627,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				locale,
 				datumVon,
 				datumBis,
-				kantonSelbstbehalt
-				);
+				kantonSelbstbehalt,
+				requireNonNull(principalBean.getMandant()));
 
 		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);
-		return saveExcelDokument(reportVorlage, rowFiller, locale);
+		return saveExcelDokument(reportVorlage, rowFiller, locale, principalBean.getMandant());
 	}
 
 	// MitarbeterInnen
@@ -862,7 +861,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis, mandant);
 		ExcelMergerDTO excelMergerDTO =
-			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
+			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
+					requireNonNull(principalBean.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
@@ -871,14 +871,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, principalBean.getMandant()),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
 
 	@Nonnull
-	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale) {
-		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx";
+	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale, @Nonnull Mandant mandant) {
+		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale, mandant) + ".xlsx";
 	}
 
 	@Override
@@ -1003,7 +1003,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ExcelMergerDTO excelMergerDTO = zahlungAuftragDetailsExcelConverter.toExcelMergerDTO(
 			zahlungenBerechtigt,
 			locale,
-			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
+			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale,
+					requireNonNull(gemeinde.getMandant()), bezeichnung),
 			datumGeneriert,
 			datumFaellig,
 			gemeinde
@@ -1016,7 +1017,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ExcelMergerDTO excelMergerTotalsDTO = zahlungAuftragTotalsExcelConverter.toExcelMergerDTO(
 			zahlungenBerechtigt,
 			locale,
-			ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale, bezeichnung),
+			ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale,
+					requireNonNull(gemeinde.getMandant()), bezeichnung),
 			datumGeneriert,
 			datumFaellig,
 			gemeinde
@@ -1068,7 +1070,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
 			allZahlungen,
 			gesuchsperiode.getGesuchsperiodeString(),
-			locale);
+			locale,
+			requireNonNull(gesuchsperiode.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
@@ -1077,7 +1080,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, gesuchsperiode.getMandant()),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -1293,7 +1296,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
-		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale));
+		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale,
+				requireNonNull(gesuch.getFall().getMandant())));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
 			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
@@ -1423,7 +1427,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			: StringUtils.EMPTY);
 
 		row.setKindIntegration(kind.getPensumFachstelle() != null
-			? ServerMessageUtil.translateEnumValue(kind.getPensumFachstelle().getIntegrationTyp(), locale)
+			? ServerMessageUtil.translateEnumValue(kind.getPensumFachstelle().getIntegrationTyp(), locale,
+				requireNonNull(betreuung.extractGemeinde().getMandant()))
 			: StringUtils.EMPTY);
 
 		row.setKindErwBeduerfnisse(betreuung.hasErweiterteBetreuung());
@@ -1444,7 +1449,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Betreuungsstatus.class.getSimpleName()
 				+ '_'
 				+ betreuung.getBetreuungsstatus().name(),
-			locale
+			locale,
+			requireNonNull(betreuung.extractGemeinde().getMandant())
 			)
 		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
@@ -1486,7 +1492,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
 		PensumUnits zeiteinheit =
 			betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
-		row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale));
+		row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale,
+				requireNonNull(betreuung.extractGemeinde().getMandant())));
 
 		row.setVollkosten(zeitabschnitt.getVollkosten());
 		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
@@ -1550,11 +1557,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				datumVon,
 				datumBis,
 				gesuchsperiode,
-				locale);
+				locale,
+				requireNonNull(principalBean.getMandant()));
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
-		return saveExcelDokument(reportResource, rowFiller, locale);
+		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
@@ -1816,11 +1824,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				datumVon,
 				datumBis,
 				gesuchsperiode,
-				locale);
+				locale,
+				requireNonNull(principalBean.getMandant()));
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
-		return saveExcelDokument(reportResource, rowFiller, locale);
+		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
@@ -1922,10 +1931,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				reportData,
 				sheet,
 				stichtag,
-				locale);
+				locale,
+				requireNonNull(principalBean.getMandant()));
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
-		return saveExcelDokument(reportResource, rowFiller, locale);
+		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	/**
@@ -1947,7 +1957,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		gesuchstellerKinderBetreuungExcelConverter.mergeRows(
 			rowFiller,
 			reportData,
-			locale
+			locale,
+			requireNonNull(principalBean.getMandant())
 		);
 		gesuchstellerKinderBetreuungExcelConverter.applyAutoSize(sheet);
 
@@ -1982,7 +1993,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private UploadFileInfo saveExcelDokument(
 		ReportVorlage reportVorlage,
 		RowFiller rowFiller,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
 
@@ -1990,7 +2002,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, mandant),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -2072,7 +2084,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<BenutzerDataRow> reportData = getReportDataBenutzer(locale, mandant);
 
-		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale);
+		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		benutzerExcelConverter.applyAutoSize(sheet);
@@ -2081,7 +2093,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, mandant),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -2121,7 +2133,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setNachname(benutzer.getNachname());
 		row.setVorname(benutzer.getVorname());
 		row.setEmail(benutzer.getEmail());
-		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole(), locale));
+		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole(), locale, benutzer.getMandant()));
 		LocalDate gueltigAb = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigAb();
 		if (gueltigAb.isAfter(Constants.START_OF_TIME)) {
 			row.setRoleGueltigAb(gueltigAb);
@@ -2216,7 +2228,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<InstitutionenDataRow> reportData = getReportDataInstitutionen(locale);
 
-		ExcelMergerDTO excelMergerDTO = institutionenExcelConverter.toExcelMergerDTO(reportData, locale);
+		ExcelMergerDTO excelMergerDTO = institutionenExcelConverter.toExcelMergerDTO(reportData, locale,
+				requireNonNull(principalBean.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		institutionenExcelConverter.applyAutoSize(sheet);
@@ -2225,7 +2238,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, principalBean.getMandant()),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -2276,7 +2289,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		InstitutionenDataRow row = new InstitutionenDataRow();
 
 		String angebotTyp =
-			ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
+			ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale,
+					requireNonNull(institution.getMandant()));
 		row.setTyp(angebotTyp);
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
@@ -2394,7 +2408,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<FerienbetreuungDataRow> reportData = getReportDataFerienbetreuung();
 
-		ExcelMergerDTO excelMergerDTO = ferienbetreuungExcelConverter.toExcelMergerDTO(reportData);
+		ExcelMergerDTO excelMergerDTO = ferienbetreuungExcelConverter.toExcelMergerDTO(reportData,
+				requireNonNull(principalBean.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		ferienbetreuungExcelConverter.applyAutoSize(sheet);
@@ -2403,7 +2418,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			getFileName(reportVorlage, locale),
+			getFileName(reportVorlage, locale, principalBean.getMandant()),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}

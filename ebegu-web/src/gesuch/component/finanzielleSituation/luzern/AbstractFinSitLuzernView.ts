@@ -21,6 +21,7 @@ import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzielleSituationSelbstdeklaration} from '../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -78,7 +79,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
         this.getModel().finanzielleSituationJA.veranlagt = undefined;
-        this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+        this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
     }
 
     public gemeinsameStekVisible(): boolean {
@@ -99,7 +100,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
         if (newGemeinsameStek.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
     }
 
@@ -108,13 +109,13 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
         if (newAlleinigeStekVorjahr.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
     }
 
     public veranlagtChange(newVeranlagt: MatRadioChange): void {
         if (newVeranlagt.value === true) {
-            this.getModel().finanzielleSituationJA.selbstdeklaration = undefined;
+            this.getModel().finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
         if (newVeranlagt.value === false) {
             this.resetVeranlagungValues();
@@ -204,6 +205,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+
+    public getAntragsteller2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
 
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not

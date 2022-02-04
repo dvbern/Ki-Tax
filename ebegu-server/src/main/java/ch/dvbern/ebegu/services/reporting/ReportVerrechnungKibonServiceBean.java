@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +47,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -101,6 +103,9 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 
 	@SuppressWarnings("SimplifyStreamApiCallChains")
@@ -378,7 +383,8 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+					Objects.requireNonNull(principalBean.getMandant())) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
