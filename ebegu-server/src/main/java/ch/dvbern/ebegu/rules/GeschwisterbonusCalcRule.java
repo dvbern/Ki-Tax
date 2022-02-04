@@ -98,7 +98,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung kitaPlusZuschlagAktiv = einstellungMap.get(EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT);
-		return kitaPlusZuschlagAktiv.getValueAsBoolean();
+		Einstellung geschwisternbonusAktiv = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT);
+		return geschwisternbonusAktiv.getValueAsBoolean();
 	}
 }
