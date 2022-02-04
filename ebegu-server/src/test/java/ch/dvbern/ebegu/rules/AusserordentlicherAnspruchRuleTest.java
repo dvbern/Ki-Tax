@@ -107,8 +107,8 @@ public class AusserordentlicherAnspruchRuleTest {
 		VerfuegungZeitabschnitt zeitabschnitt = result.get(0);
 		Assert.assertEquals(Integer.valueOf(5), zeitabschnitt.getBgCalculationInputAsiv().getErwerbspensumGS1());
 		Assert.assertEquals(30, zeitabschnitt.getBgCalculationInputAsiv().getAusserordentlicherAnspruch());
-		Assert.assertEquals(0 , zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.DEFAULT.from(0 ), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(30 , zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(30 ), zeitabschnitt.getBgPensum());
 	}
 
 	@Test
