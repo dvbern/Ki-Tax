@@ -19,7 +19,7 @@
     <div class="col-xs-12 margin-bottom-30">
         <mat-divider class="margin-bottom-50"></mat-divider>
         <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">{{'VERANLAGUNG_GEMEINSAM_TITLE' | translate:{gs1: antragsteller1Name(), gs2: antragsteller2Name(), year: year} }}</h3>
-        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">{{'VERANLAGUNG_ALLEINE_TITLE'}}Selbstdeklaration alleine für Antragsteller {{antragsteller1Name()}} für Jahr {{year}}</h3>
+        <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">{{'VERANLAGUNG_ALLEINE_TITLE' | translate:{gs1: antragsteller1Name(), year: year} }}</h3>
     </div>
 </div>
 <fieldset>

@@ -125,8 +125,8 @@ public class GeschwistertenBonusCalcRuleTest {
 	@Test
 	public void kindWithTwoOrMoreOlderGeschwisterWithBGShouldHaveBonus3() {
 		// middle Kind
-		KindContainer second = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
-		Betreuung secondBetreuung = second.getBetreuungen().stream().findFirst().orElseThrow();
+		KindContainer thirdOldest = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
+		Betreuung thirdOldestBetreuung = thirdOldest.getBetreuungen().stream().findFirst().orElseThrow();
 		// Second-oldest kind
 		KindContainer secondOldest = createOldestKindWithBetreuungForGesuch(betreuung.extractGesuch());
 		Betreuung secondOldestBetreuung = secondOldest.getBetreuungen().stream().findFirst().orElseThrow();
@@ -138,7 +138,7 @@ public class GeschwistertenBonusCalcRuleTest {
 		Assert.assertTrue(inputData.isGeschwisternBonusKind3());
 		// second-youngest Kind
 		BGCalculationInput secondInputData = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
-		ruleToTest.executeRule(secondBetreuung, secondInputData);
+		ruleToTest.executeRule(thirdOldestBetreuung, secondInputData);
 		Assert.assertFalse(secondInputData.isGeschwisternBonusKind2());
 		Assert.assertTrue(secondInputData.isGeschwisternBonusKind3());
 		// Second-oldest kind
@@ -177,7 +177,7 @@ public class GeschwistertenBonusCalcRuleTest {
 	}
 
 	@Test
-	public void kindWithOlderGeschwisterWithoutBGAndYoungerGeschwisterWithBGShouldHaveBonus2() {
+	public void kindWithOlderGeschwisterWithoutBGAndYoungerGeschwisterWithBGShouldNotHaveBonus2() {
 		createOldestKindForGesuch(betreuung.extractGesuch());
 		createYoungestKindWithBetreuungForGesuch(betreuung.extractGesuch());
 
@@ -304,9 +304,9 @@ public class GeschwistertenBonusCalcRuleTest {
 
 	private KindContainer createOldestKindForGesuch(Gesuch gesuch) {
 		KindContainer toAdd = TestDataUtil.createDefaultKindContainer();
-		Optional<KindContainer> currentYoungest =
+		Optional<KindContainer> currentOldest =
 				findOldestKind(gesuch);
-		currentYoungest.ifPresent(kind -> toAdd.getKindJA()
+		currentOldest.ifPresent(kind -> toAdd.getKindJA()
 				.setGeburtsdatum(kind.getKindJA().getGeburtsdatum().minusDays(1)));
 		toAdd.setGesuch(gesuch);
 		return toAdd;

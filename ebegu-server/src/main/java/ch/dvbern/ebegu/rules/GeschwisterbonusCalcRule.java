@@ -66,7 +66,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 		}
 		boolean hasBonusKind3 = getHasGeschwistersBonusKind3(betreuung);
 		if (hasBonusKind3) {
-			inputData.setGeschwisternBonusKind2(hasBonusKind3);
+			inputData.setGeschwisternBonusKind3(hasBonusKind3);
 			inputData.addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_3, getLocale());
 		}
 	}
@@ -97,7 +97,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 			.filter(this::kindCouldHaveBG)
 			.sorted(
 				Comparator
-					.comparing(AbstractPersonEntity::getGeburtsdatum).reversed()
+					.comparing(AbstractPersonEntity::getGeburtsdatum)
 					.thenComparing(AbstractEntity::getTimestampErstellt))
 			.collect(Collectors.toList());
 	}
