@@ -481,10 +481,13 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	@Nonnull
 	public BigDecimal calculateVermoegen() {
 		BigDecimal total = BigDecimal.ZERO;
-		return MathUtil.EXACT.addNullSafe(
+		total = MathUtil.EXACT.addNullSafe(total, vermoegen);
+		total = MathUtil.EXACT.subtractNullSafe(
 			total,
-			vermoegen,
-			abzugSteuerfreierBetragErwachsene,
+			abzugSteuerfreierBetragErwachsene
+		);
+		return MathUtil.EXACT.subtractNullSafe(
+			total,
 			abzugSteuerfreierBetragKinder
 		);
 	}
