@@ -28,6 +28,7 @@ import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/inf
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
+import {MassgebendesEinkommenComponent} from './component/finanzielleSituation/solothurn/resultat/massgebendes-einkommen.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
 import {BruttolohnComponent} from './component/finanzielleSituation/solothurn/bruttolohn/bruttolohn.component';
@@ -69,7 +70,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         BruttolohnComponent,
         SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
-        AngabenGs2Component
+        AngabenGs2Component,
+        MassgebendesEinkommenComponent
     ],
     exports: [
         DvSwitchComponent,
