@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -63,6 +65,9 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 	@Inject
 	private FileSaverService fileSaverService;
 
+	@Inject
+	private PrincipalBean principalBean;
+
 	@Nonnull
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -81,7 +86,8 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 
 		List<LastenausgleichSelbstbehaltDataRow> reportData = getReportLastenausgleichKibon(dateFrom);
 		ExcelMergerDTO excelMergerDTO = lastenausgleichKibonExcelConverter
-			.toExcelMergerDTO(reportData, dateFrom.getYear(), locale);
+			.toExcelMergerDTO(reportData, dateFrom.getYear(), locale,
+					Objects.requireNonNull(principalBean.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		lastenausgleichKibonExcelConverter.applyAutoSize(sheet);
@@ -89,7 +95,8 @@ public class ReportLastenausgleichSelbstbehaltServiceBean extends AbstractReport
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+					Objects.requireNonNull(principalBean.getMandant())) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}

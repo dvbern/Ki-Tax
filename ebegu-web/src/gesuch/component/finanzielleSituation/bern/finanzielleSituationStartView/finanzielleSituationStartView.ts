@@ -65,6 +65,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public finanzielleSituationRequired: boolean;
     public areThereOnlySchulamtangebote: boolean;
     public areThereOnlyFerieninsel: boolean;
+    public areThereOnlyBgBetreuungen: boolean;
     public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
@@ -102,6 +103,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
+        this.areThereOnlyBgBetreuungen = this.gesuchModelManager.areThereOnlyBgBetreuungen();
         this.areThereOnlySchulamtangebote = this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
                                                                                                     // just once
         this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once

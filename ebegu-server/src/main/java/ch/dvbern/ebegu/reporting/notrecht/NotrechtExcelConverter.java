@@ -24,6 +24,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldNotrecht;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -40,7 +41,7 @@ public class NotrechtExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<NotrechtDataRow> data, boolean zahlungenausloesen) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<NotrechtDataRow> data, boolean zahlungenausloesen, Mandant mandant) {
 
 		checkNotNull(data);
 
@@ -49,14 +50,14 @@ public class NotrechtExcelConverter implements ExcelConverter {
 
 		excelMerger.addValue(MergeFieldNotrecht.datumErstellt, LocalDate.now());
 		String zahlungenAusloesenKey = zahlungenausloesen ? "label_true" : "label_false";
-		excelMerger.addValue(MergeFieldNotrecht.flagZahlungenAusloesen, ServerMessageUtil.getMessage(zahlungenAusloesenKey, locale));
+		excelMerger.addValue(MergeFieldNotrecht.flagZahlungenAusloesen, ServerMessageUtil.getMessage(zahlungenAusloesenKey, locale, mandant));
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldNotrecht.repeatRow);
 
 			excelRowGroup.addValue(MergeFieldNotrecht.institution, dataRow.getInstitution());
-			excelRowGroup.addValue(MergeFieldNotrecht.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale));
-			excelRowGroup.addValue(MergeFieldNotrecht.betreuungsangebotTyp, ServerMessageUtil.translateEnumValue(dataRow.getBetreuungsangebotTyp(), locale));
+			excelRowGroup.addValue(MergeFieldNotrecht.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale, mandant));
+			excelRowGroup.addValue(MergeFieldNotrecht.betreuungsangebotTyp, ServerMessageUtil.translateEnumValue(dataRow.getBetreuungsangebotTyp(), locale, mandant));
 			excelRowGroup.addValue(MergeFieldNotrecht.traegerschaft, dataRow.getTraegerschaft());
 			excelRowGroup.addValue(MergeFieldNotrecht.email, dataRow.getEmail());
 			excelRowGroup.addValue(MergeFieldNotrecht.adresseOrganisation, dataRow.getAdresseOrganisation());
@@ -78,7 +79,7 @@ public class NotrechtExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1FreigabeAusbezahltAm, dataRow.getStufe1FreigabeAusbezahltAm());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe1ZahlungJetztAusgeloest, dataRow.getStufe1ZahlungJetztAusgeloest());
 
-			excelRowGroup.addValue(MergeFieldNotrecht.institutionTyp, ServerMessageUtil.translateEnumValue(dataRow.getInstitutionTyp(), locale));
+			excelRowGroup.addValue(MergeFieldNotrecht.institutionTyp, ServerMessageUtil.translateEnumValue(dataRow.getInstitutionTyp(), locale, mandant));
 
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlTage, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlTage());
 			excelRowGroup.addValue(MergeFieldNotrecht.stufe2InstitutionKostenuebernahmeAnzahlStunden, dataRow.getStufe2InstitutionKostenuebernahmeAnzahlStunden());

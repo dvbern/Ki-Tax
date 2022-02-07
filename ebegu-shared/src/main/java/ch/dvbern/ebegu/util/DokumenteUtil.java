@@ -23,6 +23,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
@@ -105,36 +106,37 @@ public final class DokumenteUtil {
 	public static String getFileNameForGeneratedDokumentTyp(
 		final GeneratedDokumentTyp typ,
 		final String identificationNumber,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		//Liste in server-messages.properties erganzen.
 		switch (typ) {
 		case BEGLEITSCHREIBEN:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.BEGLEITSCHREIBEN, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.BEGLEITSCHREIBEN, locale, mandant, identificationNumber);
 		case FINANZIELLE_SITUATION:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FINANZIELLE_SITUATION, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FINANZIELLE_SITUATION, locale, mandant, identificationNumber);
 		case VERFUEGUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.VERFUEGUNG, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.VERFUEGUNG, locale, mandant, identificationNumber);
 		case MAHNUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.MAHNUNG, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.MAHNUNG, locale, mandant, identificationNumber);
 		case NICHTEINTRETEN:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NICHTEINTRETEN, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NICHTEINTRETEN, locale, mandant, identificationNumber);
 		case FREIGABEQUITTUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, locale, mandant, identificationNumber);
 		case PAIN001:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, locale, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, locale, mandant, identificationNumber);
 		case ANMELDEBESTAETIGUNGMITTARIF:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, locale,
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, locale, mandant,
 				identificationNumber);
 		case ANMELDEBESTAETIGUNGOHNETARIF:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, locale,
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGOHNETARIF, locale, mandant,
 				identificationNumber);
 		case NOTRECHT_PROVISORISCHE_VERFUEGUNG:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NOTRECHT_PROVISORISCHE_VERFUEGUNG,
-				locale, identificationNumber);
+				locale, mandant, identificationNumber);
 		case NOTRECHT_DEFINITIVE_VERFUEGUNG:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NOTRECHT_DEFINITIVE_VERFUEGUNG,
-				locale, identificationNumber);
+				locale, mandant, identificationNumber);
 		default:
 			return "file.pdf";
 		}

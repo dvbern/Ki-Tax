@@ -49,14 +49,16 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = 1991251126987562205L;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	@Embedded
 	@CheckIBANUppercase
 	@Valid
 	private IBAN iban;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	private String kontoinhaber;
@@ -65,7 +67,6 @@ public class Auszahlungsdaten extends AbstractEntity {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_auszahlungsdaten_adressekontoinhaber_id"), nullable = true)
 	private Adresse adresseKontoinhaber;
-
 
 	@Nonnull
 	public IBAN getIban() {
@@ -114,18 +115,10 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	@Nonnull
 	public Auszahlungsdaten copyAuszahlungsdaten(@Nonnull Auszahlungsdaten target, @Nonnull AntragCopyType copyType) {
-		switch (copyType) {
-		case MUTATION:
-		case MUTATION_NEUES_DOSSIER:
-			target.setIban(this.getIban());
-			target.setKontoinhaber(this.getKontoinhaber());
-			if (this.getAdresseKontoinhaber() != null) {
-				target.setAdresseKontoinhaber(this.getAdresseKontoinhaber().copyAdresse(new Adresse(), copyType));
-			}
-			break;
-		case ERNEUERUNG:
-		case ERNEUERUNG_NEUES_DOSSIER:
-			break;
+		target.setIban(this.getIban());
+		target.setKontoinhaber(this.getKontoinhaber());
+		if (this.getAdresseKontoinhaber() != null) {
+			target.setAdresseKontoinhaber(this.getAdresseKontoinhaber().copyAdresse(new Adresse(), copyType));
 		}
 		return target;
 	}

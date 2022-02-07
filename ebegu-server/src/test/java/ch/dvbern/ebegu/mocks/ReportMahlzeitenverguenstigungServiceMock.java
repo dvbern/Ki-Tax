@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.reporting.mahlzeiten.MahlzeitenverguenstigungDataRow;
 import ch.dvbern.ebegu.services.reporting.ReportMahlzeitenServiceBean;
@@ -35,7 +36,7 @@ public class ReportMahlzeitenverguenstigungServiceMock extends ReportMahlzeitenS
 	public List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nonnull String gemeindeId) {
+		@Nonnull Gemeinde gemeinde) {
 
 		List<MahlzeitenverguenstigungDataRow> dataRows = new ArrayList<>();
 		dataRows.add(createDataRow("John", "20.007569.002.1.1", 7569L, BetreuungsangebotTyp.KITA));

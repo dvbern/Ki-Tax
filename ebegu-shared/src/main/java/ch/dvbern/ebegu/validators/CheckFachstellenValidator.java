@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -86,13 +87,14 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	private boolean validateSozialeIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {
 		var gemeinde = kindContainer.getGesuch().extractGemeinde();
 		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
+		var mandant = kindContainer.getGesuch().extractMandant();
 		Einstellung schulstufeEinstellung = findSchulstufeEinstellung(gemeinde, gesuchsperiode);
 		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
 		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
 		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
 			return true;
 		}
-		createConstraintViolation("invalid_fachstellen_sozial", maxEinschulungTyp, context);
+		createConstraintViolation("invalid_fachstellen_sozial", maxEinschulungTyp, context, mandant);
 		return false;
 	}
 
@@ -121,7 +123,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		if (kindContainer.getKindJA().getEinschulungTyp() == EinschulungTyp.VORSCHULALTER) {
 			return true;
 		}
-		createConstraintViolation("invalid_fachstellen_sprachlich", EinschulungTyp.VORSCHULALTER, context);
+		createConstraintViolation("invalid_fachstellen_sprachlich", EinschulungTyp.VORSCHULALTER, context, kindContainer.getGesuch().extractMandant());
 		return false;
 	}
 
@@ -142,13 +144,13 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	private void createConstraintViolation(
-		@Nonnull String translationKey,
-		@Nonnull EinschulungTyp einschulungTyp,
-		@Nonnull ConstraintValidatorContext context
-	) {
+			@Nonnull String translationKey,
+			@Nonnull EinschulungTyp einschulungTyp,
+			@Nonnull ConstraintValidatorContext context,
+			Mandant mandant) {
 		if (context != null) {
 			String message = ValidationMessageUtil.getMessage(translationKey);
-			String einschulungTypTranslated = ServerMessageUtil.translateEnumValue(einschulungTyp, LocaleThreadLocal.get());
+			String einschulungTypTranslated = ServerMessageUtil.translateEnumValue(einschulungTyp, LocaleThreadLocal.get(), mandant);
 			message = MessageFormat.format(message, einschulungTypTranslated);
 
 			context.disableDefaultConstraintViolation();

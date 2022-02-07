@@ -24,7 +24,10 @@ import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedCo
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {VeranlagungComponent} from './veranlagung.component';
 
 describe('VeranlagungComponent', () => {
@@ -32,6 +35,8 @@ describe('VeranlagungComponent', () => {
     let fixture: ComponentFixture<VeranlagungComponent>;
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -43,7 +48,8 @@ describe('VeranlagungComponent', () => {
             ],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
-                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -65,5 +71,12 @@ describe('VeranlagungComponent', () => {
         const finanzielleSituationContainer = new TSFinanzielleSituationContainer();
         finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
         return finanzielleSituationContainer;
+    }
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        return gesuch;
     }
 });

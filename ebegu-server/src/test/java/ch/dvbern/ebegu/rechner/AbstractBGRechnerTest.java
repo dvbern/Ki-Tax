@@ -233,6 +233,23 @@ public abstract class AbstractBGRechnerTest {
 	}
 
 	/**
+	 * Stellt alle für die Berechnung benötigten Parameter für Luzern zusammen
+	 */
+	public static BGRechnerParameterDTO getRechnerParameterLuzern() {
+		BGRechnerParameterDTO defaultParameter = getParameter();
+
+		//SET Parameters for LU
+		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(15));
+		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(48000));
+		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(125000));
+		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(11));
+		return defaultParameter;
+	}
+
+	/**
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */
 	protected Verfuegung prepareVerfuegungKita(

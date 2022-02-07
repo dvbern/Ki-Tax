@@ -43,7 +43,6 @@ public class FinanzielleSituationStartDTO {
 	final private @Nullable Adresse zahlungsadresseInfoma;
 	final private @Nullable String infomaKreditorennummer;
 	final private @Nullable String infomaBankcode;
-	final private @Nullable Boolean auszahlungAnEltern;
 
 	public FinanzielleSituationStartDTO(
 		@Nonnull Boolean sozialhilfeBezueger,
@@ -59,8 +58,7 @@ public class FinanzielleSituationStartDTO {
 		boolean abweichendeZahlungsadresseInfoma,
 		@Nullable Adresse zahlungsadresseInfoma,
 		@Nullable String infomaKreditorennummer,
-		@Nullable String infomaBankcode,
-		@Nullable Boolean auszahlungAnEltern
+		@Nullable String infomaBankcode
 	) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
 		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
@@ -76,7 +74,6 @@ public class FinanzielleSituationStartDTO {
 		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
 		this.infomaKreditorennummer = infomaKreditorennummer;
 		this.infomaBankcode = infomaBankcode;
-		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	@Nonnull
@@ -143,10 +140,5 @@ public class FinanzielleSituationStartDTO {
 	@Nullable
 	public String getInfomaBankcode() {
 		return infomaBankcode;
-	}
-
-	@Nullable
-	public Boolean getAuszahlungAnEltern() {
-		return auszahlungAnEltern;
 	}
 }

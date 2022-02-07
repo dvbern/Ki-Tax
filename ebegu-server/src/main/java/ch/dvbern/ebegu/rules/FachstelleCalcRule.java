@@ -18,12 +18,14 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -100,9 +102,11 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 			return "";
 		}
 		// we cannot translate the Enum directly because we need another translation specific for this Bemerkung
+		final Mandant mandant = Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant());
 		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION ?
-			ServerMessageUtil.getMessage("Sozialen_Indikation", getLocale()) :
-			ServerMessageUtil.getMessage("Sprachlichen_Indikation", getLocale());
+			ServerMessageUtil.getMessage("Sozialen_Indikation", getLocale(),
+					mandant) :
+			ServerMessageUtil.getMessage("Sprachlichen_Indikation", getLocale(), mandant);
 	}
 
 	private String getFachstelle(@Nonnull Betreuung betreuung) {
@@ -112,6 +116,6 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		}
 		return ServerMessageUtil.translateEnumValue(
 			pensumFachstelle.getFachstelle().getName(),
-			getLocale());
+			getLocale(), Objects.requireNonNull(betreuung.extractGemeinde().getMandant()));
 	}
 }

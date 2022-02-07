@@ -45,7 +45,7 @@ public class GemeindenExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		addHeaders(excelMerger, locale);
+		addHeaders(excelMerger, locale, mandant);
 
 		excelMerger.addValue(MergeFieldGemeinden.mandant, mandant.getName());
 
@@ -80,30 +80,30 @@ public class GemeindenExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void addHeaders(ExcelMergerDTO excelMerger, Locale locale) {
-		excelMerger.addValue(MergeFieldGemeinden.gemeindenTitle, ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale));
+	private void addHeaders(ExcelMergerDTO excelMerger, Locale locale, Mandant mandant) {
+		excelMerger.addValue(MergeFieldGemeinden.gemeindenTitle, ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale, mandant));
 		excelMerger.addValue(
 				MergeFieldGemeinden.gemeindenPeriodenTitle,
-				ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale) + " / " + ServerMessageUtil.getMessage(
+				ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale, mandant) + " / " + ServerMessageUtil.getMessage(
 						"Reports_periodeTitle",
-						locale));
+						locale, mandant));
 
-		excelMerger.addValue(MergeFieldGemeinden.nameGemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.bfsNummerTitle, ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale));
+		excelMerger.addValue(MergeFieldGemeinden.nameGemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.bfsNummerTitle, ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale, mandant));
 
-		excelMerger.addValue(MergeFieldGemeinden.gutscheinausgabestelleTitle, ServerMessageUtil.getMessage("Reports_gutscheinausgabestelleTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.korrespondenzspracheGemeindeTitle, ServerMessageUtil.getMessage("Reports_korrespondenzspracheTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.angebotBGTitle, ServerMessageUtil.getMessage("Reports_angebotBGTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.angebotTSTitle, ServerMessageUtil.getMessage("Reports_angebotTSTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.startdatumBGTitle, ServerMessageUtil.getMessage("Reports_startdatumBGTitle", locale));
+		excelMerger.addValue(MergeFieldGemeinden.gutscheinausgabestelleTitle, ServerMessageUtil.getMessage("Reports_gutscheinausgabestelleTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.korrespondenzspracheGemeindeTitle, ServerMessageUtil.getMessage("Reports_korrespondenzspracheTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.angebotBGTitle, ServerMessageUtil.getMessage("Reports_angebotBGTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.angebotTSTitle, ServerMessageUtil.getMessage("Reports_angebotTSTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.startdatumBGTitle, ServerMessageUtil.getMessage("Reports_startdatumBGTitle", locale, mandant));
 
-		excelMerger.addValue(MergeFieldGemeinden.limitierungKitaTitle, ServerMessageUtil.getMessage("Reports_limitierungKitaTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.erwerbspensumZuschlagTitle, ServerMessageUtil.getMessage("Reports_erwerbspensumZuschlagTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.kontingentierungTitle, ServerMessageUtil.getMessage("Reports_kontingentierungTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.gesuchsperiodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.nachfrageErfuelltTitle, ServerMessageUtil.getMessage("Reports_nachfrageErfuelltTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.nachfrageAnzahlTitle, ServerMessageUtil.getMessage("Reports_nachfrageAnzahlTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.nachfrageDauerTitle, ServerMessageUtil.getMessage("Reports_nachfrageDauerTitle", locale));
-		excelMerger.addValue(MergeFieldGemeinden.limitierungtfoTitle, ServerMessageUtil.getMessage("Reports_limitierungTfoTitle", locale));
+		excelMerger.addValue(MergeFieldGemeinden.limitierungKitaTitle, ServerMessageUtil.getMessage("Reports_limitierungKitaTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.erwerbspensumZuschlagTitle, ServerMessageUtil.getMessage("Reports_erwerbspensumZuschlagTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.kontingentierungTitle, ServerMessageUtil.getMessage("Reports_kontingentierungTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.gesuchsperiodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.nachfrageErfuelltTitle, ServerMessageUtil.getMessage("Reports_nachfrageErfuelltTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.nachfrageAnzahlTitle, ServerMessageUtil.getMessage("Reports_nachfrageAnzahlTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.nachfrageDauerTitle, ServerMessageUtil.getMessage("Reports_nachfrageDauerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.limitierungtfoTitle, ServerMessageUtil.getMessage("Reports_limitierungTfoTitle", locale, mandant));
 	}
 }

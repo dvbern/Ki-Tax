@@ -43,6 +43,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class Testfall09_Abwesenheit extends AbstractTestfall {
 
+	static final int VERMOEGEN = 12147;
+	static final int EINKOMMEN = 53265;
+
 	public Testfall09_Abwesenheit(
 			Gesuchsperiode gesuchsperiode,
 			boolean betreuungenBestaetigt,
@@ -92,10 +95,22 @@ public class Testfall09_Abwesenheit extends AbstractTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(53265));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(12147)));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(VERMOEGEN)));
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN));
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
+		finanzielleSituationContainer.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN));
+
+		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 
 		createEmptyEKVInfoContainer(gesuch);
 

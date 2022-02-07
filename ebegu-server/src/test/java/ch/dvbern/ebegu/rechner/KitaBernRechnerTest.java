@@ -43,10 +43,10 @@ import static org.hamcrest.Matchers.is;
 /**
  * Testet den Kita-Rechner
  */
-public class KitaRechnerTest extends AbstractBGRechnerTest {
+public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
-	private final KitaRechner kitaRechner = new KitaRechner(Collections.emptyList());
+	private final KitaBernRechner kitaRechner = new KitaBernRechner(Collections.emptyList());
 
 	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
 	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);

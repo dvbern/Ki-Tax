@@ -439,6 +439,32 @@
                         </div>
                     </div>
 
+                    <div class="row" ng-if="vm.showAbrechungDerGutscheineFrage">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                 <span class="ebegu-h1 required">
+                                    <span data-translate="ABRECHNUNG_DER_GUTSCHEINE"></span>
+                                </span>
+                                <dv-radio-container name="abrechnungGutscheine"
+                                                    id="abrechnungGutscheine"
+                                                    class="input-element"
+                                                    ng-model="vm.getBetreuungModel().auszahlungAnEltern"
+                                                    aria-label="{{'ABRECHNUNG_DER_GUTSCHEINE'|translate}}"
+                                                    true-option-label="{{'UEBER_ELTERN' | translate}}"
+                                                    false-option-label="{{'UEBER_INSTITUTION' | translate}}"
+                                                    aria-described-by="abrechnungGutscheine-error"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    dv-enable-expression="vm.isBetreuungsstatusWarten() && !vm.isSavingData">
+                                    <dv-error-messages input-id="abrechnungGutscheine"
+                                                       for="vm.form.abrechnungGutscheine.$error"
+                                                       class="error">
+                                    </dv-error-messages>
+                                </dv-radio-container>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Eingewoehnung Periode-->
                     <div class="row" ng-if="vm.showEingewoehnung() && !vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">

@@ -15,15 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnInit,
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
 const LOG = LogFactory.createLog('ResultatComponent');
@@ -43,16 +38,14 @@ export class ResultatComponent implements OnInit {
     public year: number | string;
 
     @Input()
-    public nameGS1: string;
-
-    @Input()
-    public nameGS2: string;
+    public antragstellerNummer: number;
 
     public resultate?: TSFinanzielleSituationResultateDTO;
 
     public constructor(
         protected ref: ChangeDetectorRef,
         private readonly finSitLuService: FinanzielleSituationLuzernService,
+        private readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -66,5 +59,13 @@ export class ResultatComponent implements OnInit {
                 this.ref.markForCheck();
             }, error => LOG.error(error),
         );
+    }
+
+    public getAntragsteller1Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+    }
+
+    public getAntragsteller2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 }

@@ -41,9 +41,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Berechnet die Vollkosten, den Elternbeitrag und die Vergünstigung für einen Zeitabschnitt (innerhalb eines Monats)
  * einer Betreuung für das Angebot Tageseltern.
  */
-public class TageselternKitaxRechner extends AbstractKitaxRechner {
+public class TageselternKitaxBernRechner extends AbstractKitaxBernRechner {
 
-	public TageselternKitaxRechner(
+	public TageselternKitaxBernRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale

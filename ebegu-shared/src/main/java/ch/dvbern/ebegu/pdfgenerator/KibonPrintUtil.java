@@ -159,7 +159,7 @@ public final class KibonPrintUtil {
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
 			final String additionalInformation = extractAdditionalInformation(dokumentGrund, gesuch);
 			String key = dokumentGrund.getDokumentGrundTyp() + "_" + dokumentGrund.getDokumentTyp();
-			return ServerMessageUtil.getMessage(key, locale) + additionalInformation;
+			return ServerMessageUtil.getMessage(key, locale, Objects.requireNonNull(gesuch.getFall().getMandant())) + additionalInformation;
 		}
 		return "";
 	}

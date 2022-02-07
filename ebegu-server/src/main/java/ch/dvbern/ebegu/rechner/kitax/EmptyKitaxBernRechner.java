@@ -28,15 +28,15 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Regelwerk;
-import ch.dvbern.ebegu.rechner.AbstractRechner;
+import ch.dvbern.ebegu.rechner.AbstractBernRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
-public class EmptyKitaxRechner extends AbstractRechner {
+public class EmptyKitaxBernRechner extends AbstractBernRechner {
 
 	private Locale locale;
 	private MsgKey bemerkung;
 
-	public EmptyKitaxRechner(@Nonnull Locale locale, MsgKey bemerkung) {
+	public EmptyKitaxBernRechner(@Nonnull Locale locale, MsgKey bemerkung) {
 		this.locale = locale;
 		this.bemerkung = bemerkung;
 	}
