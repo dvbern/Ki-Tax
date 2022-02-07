@@ -57,7 +57,7 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _keineDetailinformationen: boolean = false;
     private _anmeldungTagesschuleZeitabschnitts: Array<TSAnmeldungTagesschuleZeitabschnitt> = [];
     private _eingewoehnung: boolean = false;
-    private _auszahlungAnEltern: boolean;
+    private _auszahlungAnEltern: boolean = false;
 
     public constructor() {
         super();
