@@ -84,6 +84,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM": "Das Geburtsdatum von {{namegs2}} der Steuererklärung stimmt nicht mit dem Geburtsdatum überein, das in kiBon angegeben wurde. Das Formular konnte nicht automatisch ausgefüllt werden",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM": "Die Abfrage liefert eine gemeinsam eingereichte Steuererklärung als Resultat. Sie haben aber angegeben, dass die Steuererklärung alleine eingereicht wurde. Das Formular konnte nicht automatisch ausgefüllt werden",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Das Formular wurde automatisch anhand der Steuerdaten ausgefüllt",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Die Abfrage liefert eine unterjährige Steuererklärung als Antwort. Das Formular konnte nicht automatisch ausgefüllt werden",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",
