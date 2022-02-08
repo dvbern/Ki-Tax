@@ -147,6 +147,10 @@ public class BGCalculationInput {
 
 	private boolean kitaPlusZuschlag = false;
 
+	private boolean geschwisternBonusKind2 = false;
+
+	private boolean geschwisternBonusKind3 = false;
+
 	@Valid
 	@NotNull
 	@Nonnull
@@ -238,6 +242,8 @@ public class BGCalculationInput {
 		this.kitaPlusZuschlag = toCopy.kitaPlusZuschlag;
 		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
 		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
+		this.geschwisternBonusKind2 = toCopy.geschwisternBonusKind2;
+		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 	}
 
@@ -807,6 +813,8 @@ public class BGCalculationInput {
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
 		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
+		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
+		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -929,7 +937,9 @@ public class BGCalculationInput {
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
 			this.kitaPlusZuschlag == other.kitaPlusZuschlag &&
-			this.isKesbPlatzierung == other.isKesbPlatzierung;
+			this.isKesbPlatzierung == other.isKesbPlatzierung &&
+			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
+			this.geschwisternBonusKind3== other.geschwisternBonusKind3;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -1048,5 +1058,21 @@ public class BGCalculationInput {
 
 	public void setBesondereBeduerfnisseZuschlag(@Nullable BigDecimal besondereBeduerfnisseZuschlag) {
 		this.besondereBeduerfnisseZuschlag = besondereBeduerfnisseZuschlag;
+	}
+
+	public boolean isGeschwisternBonusKind3() {
+		return geschwisternBonusKind3;
+	}
+
+	public void setGeschwisternBonusKind3(boolean geschwisternBonusKind3) {
+		this.geschwisternBonusKind3 = geschwisternBonusKind3;
+	}
+
+	public boolean isGeschwisternBonusKind2() {
+		return geschwisternBonusKind2;
+	}
+
+	public void setGeschwisternBonusKind2(boolean geschwisternBonusKind2) {
+		this.geschwisternBonusKind2 = geschwisternBonusKind2;
 	}
 }

@@ -176,9 +176,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			String url = benutzerService.createInvitationLink(presentUser, Einladung.forRolle(presentUser));
 			externalBenutzer.setInvitationLink(url);
 			externalBenutzer.setInvitationPending(true);
-			String rolleIst = ServerMessageUtil.translateEnumValue(UserRole.GESUCHSTELLER, LocaleThreadLocal.get());
-			String rolleSoll = ServerMessageUtil.translateEnumValue(presentUser.getRole(), LocaleThreadLocal.get());
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get(), rolleIst, rolleSoll);
+			String rolleIst = ServerMessageUtil.translateEnumValue(UserRole.GESUCHSTELLER, LocaleThreadLocal.get(), mandant);
+			String rolleSoll = ServerMessageUtil.translateEnumValue(presentUser.getRole(), LocaleThreadLocal.get(), mandant);
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get(), mandant, rolleIst, rolleSoll);
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
 
@@ -213,7 +213,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (existingBenutzer == null) {
 			return convertBenutzerResponseWrapperToJax(
 				externalBenutzer,
-				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get())
+				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get(), mandantService.getMandantBern())
 			);
 		}
 
@@ -224,6 +224,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			String msg = ServerMessageUtil.translateEnumValue(
 				ERROR_EMAIL_MISMATCH,
 				LocaleThreadLocal.get(),
+				existingBenutzer.getMandant(),
 				persistedEmail,
 				externalEmail
 			);

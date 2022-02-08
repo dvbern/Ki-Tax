@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldInstitutionen;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -39,12 +40,12 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<InstitutionenDataRow> data, @Nonnull Locale locale) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<InstitutionenDataRow> data, @Nonnull Locale locale, @Nonnull Mandant mandant) {
 		checkNotNull(data);
 
 		ExcelMergerDTO mergerDTO = new ExcelMergerDTO();
 
-		addHeaders(mergerDTO, locale);
+		addHeaders(mergerDTO, locale, mandant);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = mergerDTO.createGroup(MergeFieldInstitutionen.repeatInstitutionenRow);
@@ -97,113 +98,113 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 		return mergerDTO;
 	}
 
-	private void addHeaders(@Nonnull ExcelMergerDTO mergerDTO, @Nonnull Locale locale) {
-		mergerDTO.addValue(MergeFieldInstitutionen.typTitle, ServerMessageUtil.getMessage("Reports_typTitle", locale));
+	private void addHeaders(@Nonnull ExcelMergerDTO mergerDTO, @Nonnull Locale locale, @Nonnull Mandant mandant) {
+		mergerDTO.addValue(MergeFieldInstitutionen.typTitle, ServerMessageUtil.getMessage("Reports_typTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.traegerschaftTitle,
-			ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
+			ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.traegerschaftEmailTitle,
-			ServerMessageUtil.getMessage("Reports_traegerschaftEmailTitle", locale));
+			ServerMessageUtil.getMessage("Reports_traegerschaftEmailTitle", locale, mandant));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.emailTitle,
-				ServerMessageUtil.getMessage("Reports_emailKitaTitle", locale));
+				ServerMessageUtil.getMessage("Reports_emailKitaTitle", locale, mandant));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.familienportalEmailTitle,
-				ServerMessageUtil.getMessage("Reports_familienportalEmailTitle", locale));
+				ServerMessageUtil.getMessage("Reports_familienportalEmailTitle", locale, mandant));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.emailBenachrichtigungKiBonTitle,
-				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonTitle", locale));
+				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonTitle", locale, mandant));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.emailBenachrichtigungKiBonMailTitle,
-				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonMailTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.nameTitle, ServerMessageUtil.getMessage("Reports_nameTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.anschriftTitle, ServerMessageUtil.getMessage("Reports_anschriftTitle", locale));
+				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonMailTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.nameTitle, ServerMessageUtil.getMessage("Reports_nameTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.anschriftTitle, ServerMessageUtil.getMessage("Reports_anschriftTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.strasseTitle,
-			ServerMessageUtil.getMessage("Reports_strasseTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.bfsGemeindeTitle, ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale));
+			ServerMessageUtil.getMessage("Reports_strasseTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.bfsGemeindeTitle, ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.telefonTitle,
-			ServerMessageUtil.getMessage("Reports_telefonTitle", locale));
-		mergerDTO.addValue(MergeFieldInstitutionen.urlTitle, ServerMessageUtil.getMessage("Reports_urlTitle", locale));
+			ServerMessageUtil.getMessage("Reports_telefonTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.urlTitle, ServerMessageUtil.getMessage("Reports_urlTitle", locale, mandant));
 		mergerDTO.addValue(
 				MergeFieldInstitutionen.oeffnungstageProJahrTitle,
-				ServerMessageUtil.getMessage("Reports_oeffnungstageProJahrTitle", locale));
+				ServerMessageUtil.getMessage("Reports_oeffnungstageProJahrTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.gueltigAbTitle,
-			ServerMessageUtil.getMessage("Reports_gueltigAbTitle", locale));
+			ServerMessageUtil.getMessage("Reports_gueltigAbTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.gueltigBisTitle,
-			ServerMessageUtil.getMessage("Reports_gueltigBisTitle", locale));
+			ServerMessageUtil.getMessage("Reports_gueltigBisTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungVor630Title,
-			ServerMessageUtil.getMessage("Reports_oeffnungVor630Title", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungVor630Title", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungNach1830Title,
-			ServerMessageUtil.getMessage("Reports_oeffnungNach1830Title", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungNach1830Title", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungAnWochenendenTitle,
-			ServerMessageUtil.getMessage("Reports_oeffnungAnWochenendenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungAnWochenendenTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.uebernachtungMoeglichTitle,
-			ServerMessageUtil.getMessage("Reports_uebernachtungMoeglichTitle", locale));
+			ServerMessageUtil.getMessage("Reports_uebernachtungMoeglichTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.grundSchliessungTitle,
-			ServerMessageUtil.getMessage("Reports_grundSchliessungTitle", locale));
+			ServerMessageUtil.getMessage("Reports_grundSchliessungTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungstageTitle,
-			ServerMessageUtil.getMessage("Reports_oeffnungstageTitle", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungstageTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungszeitAbTitle,
-			ServerMessageUtil.getMessage("Reports_oeffnungszeitAbTitle", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungszeitAbTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungszeitenBisTitle,
-			ServerMessageUtil.getMessage("Reports_oeffnungszeitBisTitle", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungszeitBisTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.oeffnungsAbweichungenTitle,
-			ServerMessageUtil.getMessage("Reports_oeffnungsabweichungenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_oeffnungsabweichungenTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.babyTitle,
-			ServerMessageUtil.getMessage("Reports_babyTitle", locale));
+			ServerMessageUtil.getMessage("Reports_babyTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.vorschulkindTitle,
-			ServerMessageUtil.getMessage("Reports_vorschulkindTitle", locale));
+			ServerMessageUtil.getMessage("Reports_vorschulkindTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.kindergartenTitle,
-			ServerMessageUtil.getMessage("Reports_kindergartenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_kindergartenTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.schulkindTitle,
-			ServerMessageUtil.getMessage("Reports_schulkindTitle", locale));
+			ServerMessageUtil.getMessage("Reports_schulkindTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.subventioniertTitle,
-			ServerMessageUtil.getMessage("Reports_subventioniertTitle", locale));
+			ServerMessageUtil.getMessage("Reports_subventioniertTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.kapazitaetTitle,
-			ServerMessageUtil.getMessage("Reports_kapazitaetTitle", locale));
+			ServerMessageUtil.getMessage("Reports_kapazitaetTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.reserviertFuerFirmenTitle,
-			ServerMessageUtil.getMessage("Reports_reserviertFuerFirmenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_reserviertFuerFirmenTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.zuletztGeaendertTitle,
-			ServerMessageUtil.getMessage("Reports_zuletztGeaendertTitle", locale));
+			ServerMessageUtil.getMessage("Reports_zuletztGeaendertTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.auslastungTitle,
-			ServerMessageUtil.getMessage("Reports_auslastungTitle", locale));
+			ServerMessageUtil.getMessage("Reports_auslastungTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.anzahlKinderWartelisteTitle,
-			ServerMessageUtil.getMessage("Reports_anzahlKinderWartelisteTitle", locale));
+			ServerMessageUtil.getMessage("Reports_anzahlKinderWartelisteTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.summePensumWartelisteTitle,
-			ServerMessageUtil.getMessage("Reports_summePensumWarteliste", locale));
+			ServerMessageUtil.getMessage("Reports_summePensumWarteliste", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.dauerWartelisteTitle,
-			ServerMessageUtil.getMessage("Reports_dauerWartelisteTitle", locale));
+			ServerMessageUtil.getMessage("Reports_dauerWartelisteTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.reportInstitutionenTitle,
-			ServerMessageUtil.getMessage("Reports_reportInstitutionenTitle", locale));
+			ServerMessageUtil.getMessage("Reports_reportInstitutionenTitle", locale, mandant));
 	}
 }

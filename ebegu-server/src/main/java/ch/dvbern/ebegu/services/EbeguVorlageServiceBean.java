@@ -44,6 +44,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.EbeguVorlage_;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
@@ -156,27 +157,33 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Override
 	@Nullable
-	public Vorlage getVorlageNotrechtOeffentlicheInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+	public Vorlage getVorlageNotrechtOeffentlicheInstitutionen(
+			@Nonnull String language,
+			@Nonnull BetreuungsangebotTyp angebotTyp,
+			Mandant mandant) {
 		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlageOeffentlicheInstitutionen(language, angebotTyp);
-		return getVorlage(language, key);
+		return getVorlage(language, key, mandant);
 	}
 
 	@Override
 	@Nullable
-	public Vorlage getVorlageNotrechtPrivateInstitutionen(@Nonnull String language, @Nonnull BetreuungsangebotTyp angebotTyp) {
+	public Vorlage getVorlageNotrechtPrivateInstitutionen(
+			@Nonnull String language,
+			@Nonnull BetreuungsangebotTyp angebotTyp,
+			Mandant mandant) {
 		EbeguVorlageKey key = EbeguVorlageKey.getNotrechtVorlagePrivateInstitutionen(language, angebotTyp);
-		return getVorlage(language, key);
+		return getVorlage(language, key, mandant);
 	}
 
 	@Nullable
-	private Vorlage getVorlage(@Nonnull String language, @Nullable EbeguVorlageKey key) {
+	private Vorlage getVorlage(@Nonnull String language, @Nullable EbeguVorlageKey key, Mandant mandant) {
 		if (key == null) {
 			return null;
 		}
 		try {
 			Vorlage vorlage = new Vorlage();
 			vorlage.setFilesize("10");
-			final String filename = ServerMessageUtil.getMessage(key.name(), new Locale(language)) + ".xlsx";
+			final String filename = ServerMessageUtil.getMessage(key.name(), new Locale(language), mandant) + ".xlsx";
 			vorlage.setFilename(filename);
 			// Das Defaultfile lesen und im Filesystem ablegen
 			InputStream is = EbeguVorlageServiceBean.class.getResourceAsStream(key.getDefaultVorlagePath());

@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class KibonAnfrageServiceBean implements KibonAnfrageService {
 	private IKibonAnfrageWebService kibonAnfrageWebService;
 
 	@Override
-	@Nullable
+	@Nonnull
 	public SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr)
 		throws KiBonAnfrageServiceException {
 		return kibonAnfrageWebService.getSteuerDaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);

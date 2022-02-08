@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -162,6 +163,9 @@ public class Betreuung extends AbstractPlatz {
 
 	@Column(nullable = false)
 	private @NotNull boolean eingewoehnung = false;
+
+	@Column(nullable = false)
+	private boolean auszahlungAnEltern = false;
 
 	public Betreuung() {
 	}
@@ -338,7 +342,8 @@ public class Betreuung extends AbstractPlatz {
 	 */
 	@Transient
 	public String getBetreuungsangebotTypTranslated(@Nonnull String sprache) {
-		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), Locale.forLanguageTag(sprache));
+		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), Locale.forLanguageTag(sprache),
+				Objects.requireNonNull(extractGemeinde().getMandant()));
 	}
 
 	/**
@@ -561,5 +566,13 @@ public class Betreuung extends AbstractPlatz {
 
 	public void setEingewoehnung(boolean eingewoehnung) {
 		this.eingewoehnung = eingewoehnung;
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }

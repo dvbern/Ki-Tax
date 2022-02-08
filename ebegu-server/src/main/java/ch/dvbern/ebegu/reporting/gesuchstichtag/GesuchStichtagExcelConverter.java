@@ -17,9 +17,11 @@ package ch.dvbern.ebegu.reporting.gesuchstichtag;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.ManagedBean;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -42,12 +44,12 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchStichtagDataRow> data, @Nonnull Locale locale) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchStichtagDataRow> data, @Nonnull Locale locale, @Nonnull Mandant mandant) {
 		checkNotNull(data);
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		addHeaders(excelMerger, locale);
+		addHeaders(excelMerger, locale, mandant);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchStichtag.repeatGesuchStichtagRow);
@@ -56,7 +58,7 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.betreuungsTyp,
-				ServerMessageUtil.translateEnumValue(BetreuungsangebotTyp.valueOf(dataRow.getBetreuungsTyp()), locale));
+				ServerMessageUtil.translateEnumValue(BetreuungsangebotTyp.valueOf(dataRow.getBetreuungsTyp()), locale, mandant));
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.periode, dataRow.getPeriode());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.nichtFreigegeben, dataRow.getNichtFreigegeben());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.mahnungen, dataRow.getMahnungen());
@@ -66,15 +68,15 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
-		excelMerger.addValue(MergeFieldGesuchStichtag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.angebotTitle, ServerMessageUtil.getMessage("Reports_angebotTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.gesuchLaufNrTitle, ServerMessageUtil.getMessage("Reports_gesuchLaufNrTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.nichtFreigegebenTitle, ServerMessageUtil.getMessage("Reports_nichtFreigegebenTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.mahnungenTitle, ServerMessageUtil.getMessage("Reports_mahnungenTitle", locale));
-		excelMerger.addValue(MergeFieldGesuchStichtag.beschwerdeTitle, ServerMessageUtil.getMessage("Reports_beschwerdeTitle", locale));
+	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale, @Nonnull Mandant mandant) {
+		excelMerger.addValue(MergeFieldGesuchStichtag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.angebotTitle, ServerMessageUtil.getMessage("Reports_angebotTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.gesuchLaufNrTitle, ServerMessageUtil.getMessage("Reports_gesuchLaufNrTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.nichtFreigegebenTitle, ServerMessageUtil.getMessage("Reports_nichtFreigegebenTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.mahnungenTitle, ServerMessageUtil.getMessage("Reports_mahnungenTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGesuchStichtag.beschwerdeTitle, ServerMessageUtil.getMessage("Reports_beschwerdeTitle", locale, mandant));
 	}
 }

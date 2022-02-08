@@ -22,6 +22,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichSelbstbehalt;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
@@ -41,7 +42,8 @@ public class LastenausgleichSelbstbehaltExcelConverter implements ExcelConverter
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<LastenausgleichSelbstbehaltDataRow> data,
 		int year,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 		checkNotNull(data);
 
@@ -60,9 +62,9 @@ public class LastenausgleichSelbstbehaltExcelConverter implements ExcelConverter
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.bgPensum, dataRow.getBgPensum());
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.institution, dataRow.getInstitution());
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.betreuungsTyp,
-				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale));
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale, mandant));
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.tarif,
-				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getTarif()), locale));
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getTarif()), locale, mandant));
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.zusatz, dataRow.getZusatz());
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.gutschein, dataRow.getGutschein());
 			fallRowGroup.addValue(MergeFieldLastenausgleichSelbstbehalt.keinSelbstbehaltDurchGemeinde, dataRow.getKeinSelbstbehaltDurchGemeinde());

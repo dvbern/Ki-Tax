@@ -19,14 +19,14 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
 public interface KibonAnfrageService {
 
-	@Nullable
+	@Nonnull
 	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr) throws
 		KiBonAnfrageServiceException;
 }

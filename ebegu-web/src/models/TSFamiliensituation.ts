@@ -38,7 +38,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _zahlungsadresseInfoma: TSAdresse;
     private _infomaKreditorennummer: string;
     private _infomaBankcode: string;
-    private _auszahlungAnEltern: boolean;
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
     private _fkjvFamSit: boolean;
     private _minDauerKonkubinat: number;
@@ -181,14 +180,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set infomaBankcode(value: string) {
         this._infomaBankcode = value;
-    }
-
-    public get auszahlungAnEltern(): boolean {
-        return this._auszahlungAnEltern;
-    }
-
-    public set auszahlungAnEltern(value: boolean) {
-        this._auszahlungAnEltern = value;
     }
 
     public get gesuchstellerKardinalitaet(): TSGesuchstellerKardinalitaet {

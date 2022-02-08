@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -106,7 +107,7 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		closeEntityManager(em);
 
 		if (!Range.between(minValueAllowed, maxValueAllowed).contains(pensumFachstelle.getPensum())) {
-			createConstraintViolation(minValueAllowed, maxValueAllowed, pensumFachstelle.getIntegrationTyp(), context);
+			createConstraintViolation(minValueAllowed, maxValueAllowed, pensumFachstelle.getIntegrationTyp(), context, kindContainer.getGesuch().extractMandant());
 			return false;
 		}
 
@@ -164,13 +165,13 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 	 * Creates a ConstraintViolation with the given parameters. A customized message will be created.
 	 */
 	private void createConstraintViolation(
-		@Nonnull Integer minValueAllowed,
-		@Nonnull Integer maxValueAllowed,
-		@Nonnull IntegrationTyp integrationTyp,
-		ConstraintValidatorContext context
-	) {
+			@Nonnull Integer minValueAllowed,
+			@Nonnull Integer maxValueAllowed,
+			@Nonnull IntegrationTyp integrationTyp,
+			ConstraintValidatorContext context,
+			Mandant mandant) {
 		String message = ValidationMessageUtil.getMessage("invalid_pensumfachstelle");
-		String integrationTypTranslated = ServerMessageUtil.translateEnumValue(integrationTyp, LocaleThreadLocal.get());
+		String integrationTypTranslated = ServerMessageUtil.translateEnumValue(integrationTyp, LocaleThreadLocal.get(), mandant);
 		message = MessageFormat.format(message, minValueAllowed, maxValueAllowed, integrationTypTranslated);
 
 		context.disableDefaultConstraintViolation();

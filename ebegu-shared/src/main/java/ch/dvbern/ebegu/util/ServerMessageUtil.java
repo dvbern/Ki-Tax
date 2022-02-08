@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -30,21 +31,21 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class ServerMessageUtil {
 
-	private static final ResourceBundle bundle_de = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
-	private static final ResourceBundle bundle_fr = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.FRENCH_LOCALE);
+	private static final MandantLocaleVisitor MANDANT_LOCALE_VISITOR_DE = new MandantLocaleVisitor(Constants.DEUTSCH_LOCALE);
+	private static final MandantLocaleVisitor MANDANT_LOCALE_VISITOR_FR = new MandantLocaleVisitor(Constants.FRENCH_LOCALE);
 
 	private ServerMessageUtil() {
 	}
 
-	private static ResourceBundle selectBundleToUse(Locale locale) {
+	private static ResourceBundle selectBundleToUse(Locale locale, Mandant mandant) {
 		if (locale.getLanguage().equalsIgnoreCase("FR")) {
-			return bundle_fr;
+			return ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, MANDANT_LOCALE_VISITOR_FR.process(mandant));
 		}
-		return bundle_de;
+		return ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, MANDANT_LOCALE_VISITOR_DE.process(mandant));
 	}
 
-	public static String getMessage(String key, Locale locale) {
-		ResourceBundle bundle = selectBundleToUse(locale);
+	public static String getMessage(String key, Locale locale, Mandant mandant) {
+		ResourceBundle bundle = selectBundleToUse(locale, mandant);
 		return readStringFromBundleOrReturnKey(bundle, key);
 	}
 
@@ -60,19 +61,19 @@ public final class ServerMessageUtil {
 		}
 	}
 
-	public static String getMessage(String key, Locale locale, Object... args) {
-		return MessageFormat.format(getMessage(key, locale), args);
+	public static String getMessage(String key, Locale locale, Mandant mandant, Object... args) {
+		return MessageFormat.format(getMessage(key, locale, mandant), args);
 	}
 
 	/**
 	 * Uebersetzt einen Enum-Wert
 	 */
 	@Nonnull
-	public static String translateEnumValue(@Nullable final Enum<?> e, Locale locale, Object... args) {
+	public static String translateEnumValue(@Nullable final Enum<?> e, Locale locale, Mandant mandant, Object... args) {
 		if (e == null) {
 			return StringUtils.EMPTY;
 		}
-		return getMessage(getKey(e), locale, args);
+		return getMessage(getKey(e), locale, mandant, args);
 	}
 
 	/**

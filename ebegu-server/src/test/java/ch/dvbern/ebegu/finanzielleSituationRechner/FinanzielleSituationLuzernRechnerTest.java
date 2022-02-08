@@ -19,12 +19,16 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.wildfly.common.Assert;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -78,10 +82,65 @@ public class FinanzielleSituationLuzernRechnerTest {
 			assert gesuch.getGesuchsteller1() != null;
 			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
 			FinanzielleSituation emptyFinanzielleSituationForTest = new FinanzielleSituation();
+			setPropertiesToCalculateByVeranlagung(emptyFinanzielleSituationForTest);
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(emptyFinanzielleSituationForTest);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
 			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
 		}
+
+		@Test
+		public void testBerechnungAufgrundSelbstdeklarationOrVeranlagt() {
+			FinanzielleSituation finSit = new FinanzielleSituation();
+			finSit.setQuellenbesteuert(false);
+			finSit.setGemeinsameStekVorjahr(true);
+			finSit.setVeranlagt(true);
+			Assert.assertTrue(finSitRechner.calculateByVeranlagung(finSit));
+
+			FinanzielleSituation finSit2 = new FinanzielleSituation();
+			finSit2.setQuellenbesteuert(false);
+			finSit2.setAlleinigeStekVorjahr(true);
+			finSit2.setVeranlagt(true);
+			Assert.assertTrue(finSitRechner.calculateByVeranlagung(finSit2));
+
+			FinanzielleSituation finSit3 = new FinanzielleSituation();
+			finSit2.setQuellenbesteuert(true);
+			Assert.assertFalse(finSitRechner.calculateByVeranlagung(finSit3));
+
+			FinanzielleSituation finSit4 = new FinanzielleSituation();
+			finSit4.setQuellenbesteuert(false);
+			finSit4.setGemeinsameStekVorjahr(false);
+			Assert.assertFalse(finSitRechner.calculateByVeranlagung(finSit4));
+
+			FinanzielleSituation finSit5 = new FinanzielleSituation();
+			finSit5.setQuellenbesteuert(false);
+			finSit5.setAlleinigeStekVorjahr(false);
+			Assert.assertFalse(finSitRechner.calculateByVeranlagung(finSit5));
+
+			FinanzielleSituation finSit6 = new FinanzielleSituation();
+			finSit6.setQuellenbesteuert(true);
+			finSit6.setGemeinsameStekVorjahr(true);
+			finSit6.setVeranlagt(false);
+			Assert.assertFalse(finSitRechner.calculateByVeranlagung(finSit6));
+		}
+
+		@Test
+		public void testCalculateSelbstdeklaration() {
+			Gesuch gesuch = prepareGesuch(false);
+			assert gesuch.getGesuchsteller1() != null;
+			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+			FinanzielleSituation finSit = new FinanzielleSituation();
+			finSit.setSelbstdeklaration(createSelbstdeklaration());
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
+			finSitRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(210573)));
+		}
+	}
+
+	private void setPropertiesToCalculateByVeranlagung(@Nonnull FinanzielleSituation finanzielleSituation) {
+		finanzielleSituation.setQuellenbesteuert(false);
+		finanzielleSituation.setAlleinigeStekVorjahr(true);
+		finanzielleSituation.setGemeinsameStekVorjahr(null);
+		finanzielleSituation.setVeranlagt(true);
 	}
 
 
@@ -103,8 +162,39 @@ public class FinanzielleSituationLuzernRechnerTest {
 		finanzielleSituationForTest.setGeschaeftsverlust(BigDecimal.valueOf(1000));
 		finanzielleSituationForTest.setAbzuegeLiegenschaft(BigDecimal.valueOf(1000));
 		finanzielleSituationForTest.setEinkaeufeVorsorge(BigDecimal.valueOf(1000));
+		setPropertiesToCalculateByVeranlagung(finanzielleSituationForTest);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
 		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		return gesuchstellerContainer;
+	}
+
+	private FinanzielleSituationSelbstdeklaration createSelbstdeklaration() {
+		var deklaration = new FinanzielleSituationSelbstdeklaration();
+		deklaration.setEinkunftErwerb(new BigDecimal("35678.00"));
+		deklaration.setEinkunftVersicherung(new BigDecimal("31319.00"));
+		deklaration.setEinkunftAusgleichskassen(new BigDecimal("42249.00"));
+		deklaration.setEinkunftWertschriften(new BigDecimal("13668.00"));
+		deklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(new BigDecimal("37851.00"));
+		deklaration.setEinkunftUnterhaltsbeitragKinder(new BigDecimal("40936.00"));
+		deklaration.setEinkunftUeberige(new BigDecimal("16005.00"));
+		deklaration.setEinkunftLiegenschaften(new BigDecimal("23805.00"));
+		deklaration.setAbzugBerufsauslagen(new BigDecimal("3940.00"));
+		deklaration.setAbzugUnterhaltsbeitragEhepartner(new BigDecimal("2183.00"));
+		deklaration.setAbzugUnterhaltsbeitragKinder(new BigDecimal("4279.00"));
+		deklaration.setAbzugRentenleistungen(new BigDecimal("3346.00"));
+		deklaration.setAbzugSaeule3A(new BigDecimal("2358.00"));
+		deklaration.setAbzugVersicherungspraemien(new BigDecimal("4521.00"));
+		deklaration.setAbzugKrankheitsUnfallKosten(new BigDecimal("1061.00"));
+		deklaration.setAbzugFreiweiligeZuwendungPartien(new BigDecimal("1929.00"));
+		deklaration.setAbzugKinderVorschule(new BigDecimal("2684.00"));
+		deklaration.setAbzugKinderSchule(new BigDecimal("1381.00"));
+		deklaration.setAbzugKinderAuswaertigerAufenthalt(new BigDecimal("3041.00"));
+		deklaration.setAbzugEigenbetreuung(new BigDecimal("2370.00"));
+		deklaration.setAbzugFremdbetreuung(new BigDecimal("4211.00"));
+		deklaration.setAbzugErwerbsunfaehigePersonen(new BigDecimal("2891.00"));
+		deklaration.setVermoegen(new BigDecimal("100000.00"));
+		deklaration.setAbzugSteuerfreierBetragErwachsene(new BigDecimal("2652.00"));
+		deklaration.setAbzugSteuerfreierBetragKinder(new BigDecimal("4783.00"));
+		return deklaration;
 	}
 }

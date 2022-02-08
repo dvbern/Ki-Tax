@@ -21,11 +21,15 @@ import java.util.Set;
 
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import org.apache.commons.math3.stat.inference.TestUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,6 +37,14 @@ import org.junit.Test;
  */
 
 public class DokumenteUtilTest {
+
+	private Mandant mandant;
+
+	@Before
+	public void setUp() {
+		mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+	}
 
 	@Test
 	public void testAllPersistedInNeeded() {
@@ -68,7 +80,8 @@ public class DokumenteUtilTest {
 			.getFileNameForGeneratedDokumentTyp(
 				GeneratedDokumentTyp.BEGLEITSCHREIBEN,
 				"16.000001",
-				Constants.DEFAULT_LOCALE
+				Constants.DEFAULT_LOCALE,
+				mandant
 			)
 		);
 	}
@@ -79,7 +92,8 @@ public class DokumenteUtilTest {
 			.getFileNameForGeneratedDokumentTyp(
 				GeneratedDokumentTyp.FINANZIELLE_SITUATION,
 				"16.000001",
-				Constants.DEFAULT_LOCALE
+				Constants.DEFAULT_LOCALE,
+				mandant
 			)
 		);
 	}
@@ -90,7 +104,8 @@ public class DokumenteUtilTest {
 			.getFileNameForGeneratedDokumentTyp(
 				GeneratedDokumentTyp.VERFUEGUNG,
 				"16.000001.1.1",
-				Constants.DEFAULT_LOCALE
+				Constants.DEFAULT_LOCALE,
+				mandant
 			)
 		);
 	}

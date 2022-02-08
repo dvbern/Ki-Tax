@@ -295,7 +295,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Nonnull
 	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale) {
-		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx";
+		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+				requireNonNull(principalBean.getMandant())) + ".xlsx";
 	}
 
 	@Override
@@ -316,7 +317,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			getReportDataTagesschuleRechnungsstellung(stichtag);
 
 		ExcelMergerDTO excelMergerDTO =
-			tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale);
+			tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
+					requireNonNull(principalBean.getMandant()));
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);

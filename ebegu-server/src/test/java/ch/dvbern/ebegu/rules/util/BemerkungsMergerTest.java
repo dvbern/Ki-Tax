@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
@@ -73,7 +74,7 @@ public class BemerkungsMergerTest {
 		Collections.addAll(verfZeitabschn, jan, feb, mar, apr, mai);
 
 		//test output
-		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn);
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(5, strings.length);
@@ -95,7 +96,7 @@ public class BemerkungsMergerTest {
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, overlappWithJan);
 		try {
-			BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn);
+			BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
 			Assert.fail("Should throw exception because of overlap");
 		} catch (IllegalArgumentException ignore) {
 			//noop
@@ -118,7 +119,7 @@ public class BemerkungsMergerTest {
 		Collections.addAll(verfZeitabschn, jan, feb);
 
 		//test output
-		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn);
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(2, strings.length);

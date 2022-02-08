@@ -23,11 +23,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
@@ -111,7 +113,9 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 		@Nonnull String nameVerantwortlichePerson,
 		@Nonnull String pathToUnterschrift
 	) {
-		super(rueckforderungFormular.getKorrespondenzSprache());
+		super(rueckforderungFormular.getKorrespondenzSprache(),
+				Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten().getInstitution()
+						.getMandant()));
 		this.institutionStammdaten = rueckforderungFormular.getInstitutionStammdaten();
 		this.rueckforderungFormular = rueckforderungFormular;
 		this.nameVerantwortlichePerson = nameVerantwortlichePerson;
@@ -137,7 +141,7 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 		Adresse adresse = institutionStammdaten.getAdresse();
 		empfaengerAdresse.add(adresse.getAddressAsString());
 		empfaengerAdresse.add("");
-		empfaengerAdresse.add(translate(VERSAND_PER_EMAIL_AN));
+		empfaengerAdresse.add(translate(VERSAND_PER_EMAIL_AN, mandant));
 		empfaengerAdresse.add(this.institutionStammdaten.getMail()); //auf zwei Zeilen wegen der Abstand
 		empfaengerAdresse.add("");
 		empfaengerAdresse.add("");
@@ -174,13 +178,13 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 	private void createEndBegruessung(Document document, PdfContentByte directContent) {
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
 		if (sprache.equals(Locale.GERMAN)) {
-			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE), 520, 122,
+			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE, mandant), 520, 122,
 				defaultFont,10f);
 		} else {
-			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE)));
+			document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE, mandant)));
 		}
 
-		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT), 495, 122,
+		createContentWhereIWant(directContent, translate(BEGRUESSUNG_AMT, mandant), 495, 122,
 			defaultFont, 10f);
 		try {
 			byte[] signature = IOUtils.toByteArray(new FileInputStream(this.pathToUnterschrift));
@@ -194,7 +198,7 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 		}
 		createContentWhereIWant(directContent, nameVerantwortlichePerson, 375, 122,
 			defaultFont, 10f);
-		createContentWhereIWant(directContent, translate(VORSTEHERIN), 360, 122,
+		createContentWhereIWant(directContent, translate(VORSTEHERIN, mandant), 360, 122,
 			defaultFont, 10f);
 	}
 
@@ -205,49 +209,49 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 		createContentWhereIWant(directContent, "Canton de Berne", 765, 20,
 			getPageConfiguration().getFonts().getFontBold()
 			, 10);
-		createContentWhereIWant(directContent, translate(PROVISORISCHE_VERFUEGUNG_TITLE), 775, 122,
+		createContentWhereIWant(directContent, translate(PROVISORISCHE_VERFUEGUNG_TITLE, mandant), 775, 122,
 			getPageConfiguration().getFonts().getFont(),
 			6.5f);
-		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO), 760, 122,
+		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO, mandant), 760, 122,
 			getPageConfiguration().getFonts().getFont(), 6.5f);
 	}
 
 	private void createErsteSeite(Document document) {
-		Paragraph title = new Paragraph(translate(PROVISORISCHE_VERFUEGUNG_TITLE), PdfUtil.FONT_H2);
+		Paragraph title = new Paragraph(translate(PROVISORISCHE_VERFUEGUNG_TITLE, mandant), PdfUtil.FONT_H2);
 		title.setSpacingAfter(15);
-		Paragraph intro = new Paragraph(translate(VERFUEGUNG_INTRO), PdfUtil.FONT_H2);
+		Paragraph intro = new Paragraph(translate(VERFUEGUNG_INTRO, mandant), PdfUtil.FONT_H2);
 		intro.setSpacingAfter(30);
 		document.add(title);
 		document.add(intro);
-		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG)));
+		document.add(PdfUtil.createParagraph(translate(BEGRUESSUNG, mandant)));
 		// Absatz 1 mit Fusszeilen erstellen
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A), 1);
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(INHALT_1A, mandant), 1);
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B)));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1B, mandant)));
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1C)));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1C, mandant)));
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("3", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1D)));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1D, mandant)));
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("4", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1E)));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1E, mandant)));
 		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("5", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
-		paragraphWithSupertext.add(new Chunk(translate(INHALT_1F)));
+		paragraphWithSupertext.add(new Chunk(translate(INHALT_1F, mandant)));
 		document.add(paragraphWithSupertext);
 
-		document.add(PdfUtil.createParagraph(translate(INHALT_2,
+		document.add(PdfUtil.createParagraph(translate(INHALT_2, mandant,
 			this.rueckforderungFormular.getStufe2VoraussichtlicheBetrag())));
-		document.add(PdfUtil.createParagraph(translate(INHALT_3,
+		document.add(PdfUtil.createParagraph(translate(INHALT_3, mandant,
 			this.rueckforderungFormular.getStufe1FreigabeBetrag())));
 	}
 
 	private void createZweiteSeite(Document document) {
 		List<Element> verfuegungElements = new ArrayList();
-		verfuegungElements.add(PdfUtil.createParagraph(translate(GRUNDEN)));
-		verfuegungElements.add(PdfUtil.createParagraph(translate(VERFUEGT), 2, PdfUtil.DEFAULT_FONT_BOLD));
+		verfuegungElements.add(PdfUtil.createParagraph(translate(GRUNDEN, mandant)));
+		verfuegungElements.add(PdfUtil.createParagraph(translate(VERFUEGT, mandant), 2, PdfUtil.DEFAULT_FONT_BOLD));
 		List<String> verfuegtList = new ArrayList();
-		verfuegtList.add(translate(GRUND_1));
-		verfuegtList.add(translate(GRUND_2, this.rueckforderungFormular.getStufe2VoraussichtlicheBetrag()));
-		verfuegtList.add(translate(GRUND_3, this.rueckforderungFormular.getStufe1FreigabeBetrag()));
+		verfuegtList.add(translate(GRUND_1, mandant));
+		verfuegtList.add(translate(GRUND_2, mandant, this.rueckforderungFormular.getStufe2VoraussichtlicheBetrag()));
+		verfuegtList.add(translate(GRUND_3, mandant, this.rueckforderungFormular.getStufe1FreigabeBetrag()));
 		verfuegungElements.add(PdfUtil.createListOrdered(verfuegtList));
 		document.add(PdfUtil.createKeepTogetherTable(verfuegungElements, 0, 2));
 	}
@@ -255,8 +259,8 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2), translate(FUSSZEILE_3),
-				translate(FUSSZEILE_4), translate(FUSSZEILE_5)),
+			Lists.newArrayList(translate(FUSSZEILE_1, mandant), translate(FUSSZEILE_2, mandant), translate(FUSSZEILE_3, mandant),
+				translate(FUSSZEILE_4, mandant), translate(FUSSZEILE_5, mandant)),
 			0, 0
 		);
 	}

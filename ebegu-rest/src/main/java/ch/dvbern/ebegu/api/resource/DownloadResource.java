@@ -78,7 +78,6 @@ import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
-import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
@@ -276,7 +275,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrechtOeffentlicheInstitutionen(language,
-			angebotTyp);
+			angebotTyp, requireNonNull(principalBean.getMandant()));
 		return getFileDownloadResponse(uriInfo, ip, vorlageNotrecht);
 	}
 
@@ -293,7 +292,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 		FileMetadata vorlageNotrecht = ebeguVorlageService.getVorlageNotrechtPrivateInstitutionen(language,
-			angebotTyp);
+			angebotTyp, requireNonNull(principalBean.getMandant()));
 		return getFileDownloadResponse(uriInfo, ip, vorlageNotrecht);
 	}
 

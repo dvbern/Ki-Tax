@@ -16,13 +16,17 @@
 package ch.dvbern.ebegu.api.errors;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import ch.dvbern.ebegu.api.validation.EbeguExceptionReport;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.services.GesuchServiceBean;
+import ch.dvbern.ebegu.services.MandantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +49,8 @@ public class EbeguExceptionMapper extends AbstractEbeguExceptionMapper<EbeguExce
 	@Nonnull
 	@Override
 	protected Response buildViolationReportResponse(EbeguException exception, Response.Status status) {
-		return EbeguExceptionReport.buildResponse(status, exception, getLocaleFromHeader(), configuration.getIsDevmode());
+		Mandant mandant = principalBean.getMandant() != null ? principalBean.getMandant() : mandantService.getMandantBern();
+		return EbeguExceptionReport.buildResponse(status, exception, getLocaleFromHeader(), mandant, configuration.getIsDevmode());
 
 	}
 }

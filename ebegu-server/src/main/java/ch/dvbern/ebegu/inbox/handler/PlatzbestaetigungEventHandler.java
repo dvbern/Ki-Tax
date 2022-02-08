@@ -57,6 +57,8 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
@@ -415,6 +417,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr()).orElseThrow(() -> new EbeguRuntimeException(
+				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
@@ -423,7 +427,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale)
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant)
 			+ ' '
 			+ ctx.getEventMonitor().getClientName());
 		betreuungsmitteilung.setBetreuung(betreuung);
@@ -436,8 +440,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.forEach(p -> p.setVollstaendig(false));
 
 		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVerguenstigungEnabled() ?
-			mahlzeitenMessage(locale) :
-			defaultMessage(locale);
+			mahlzeitenMessage(locale, mandant) :
+			defaultMessage(locale, mandant);
 
 		betreuungsmitteilung.setMessage(getMessage(messageMapper, betreuungsmitteilung.getBetreuungspensen()));
 
@@ -469,10 +473,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	@Nonnull
-	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(@Nonnull Locale lang) {
+	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(
+			@Nonnull Locale lang,
+			Mandant mandant) {
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_MAHLZEIT_KEY,
 			lang,
+			mandant,
 			counter,
 			pensum.getGueltigkeit().getGueltigAb(),
 			pensum.getGueltigkeit().getGueltigBis(),
@@ -485,10 +492,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	@Nonnull
-	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(@Nonnull Locale lang) {
+	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(
+			@Nonnull Locale lang,
+			Mandant mandant) {
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_KEY,
 			lang,
+			mandant,
 			counter,
 			pensum.getGueltigkeit().getGueltigAb(),
 			pensum.getGueltigkeit().getGueltigBis(),

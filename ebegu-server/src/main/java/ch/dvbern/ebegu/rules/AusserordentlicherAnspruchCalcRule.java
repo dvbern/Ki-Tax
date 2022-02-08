@@ -17,44 +17,36 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.rules.AbstractAusserordentlicherAnspruchCalcRule.AusserordentlicherAnspruchType.ASIV;
 
 /**
- * Regel für den ausserordentlichen Anspruch. Sie beachtet:
+ * Regel für den ausserordentlichen Anspruch unter ASIV. Sie beachtet:
  * Ausserordentliches Pensum übersteuert den Anspruch, der aus anderen Reglen berechnet wurde, AUSSER dieser wäre
- * höher. Die maximale Differenz zwischen dem effektiven Anspruch und dem ausserodentlichen Anspruch, darf nicht mehr als der
- * konfigurierte Wert sein.
+ * höher.
  * Diese Regel kann also den Anspruch nur hinaufsetzen, nie hinunter.
  */
-public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
-
-	private final int maxDifferenzBeschaeftigungspensum;
+public class AusserordentlicherAnspruchCalcRule extends AbstractAusserordentlicherAnspruchCalcRule {
 
 	public AusserordentlicherAnspruchCalcRule(
-		@Nonnull DateRange validityPeriod,
-		int maxDifferenzBeschaeftigungspensum,
-		@Nonnull Locale locale) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
-		this.maxDifferenzBeschaeftigungspensum = maxDifferenzBeschaeftigungspensum;
+			@Nonnull DateRange validityPeriod,
+			@Nonnull Locale locale) {
+		super(validityPeriod, locale);
 	}
 
-	@Override
-	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
-	}
 
 	@Override
 	protected void executeRule(
@@ -62,11 +54,6 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
-
-		if(!hasAnspruchAufAusserordnelticherAnspruch(platz, inputData)) {
-			inputData.setAusserordentlicherAnspruch(0);
-			return;
-		}
 
 		// Es wird der grössere der beiden Werte genommen!
 		if (ausserordentlicherAnspruch > pensumAnspruch) {
@@ -77,41 +64,13 @@ public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 		}
 	}
 
-	private boolean hasAnspruchAufAusserordnelticherAnspruch(AbstractPlatz platz, BGCalculationInput inputData) {
-		return !hasOneGSAndZeroBeschaeftigungsPensum(platz, inputData) &&
-			!isMaxDifferenzPensenUeberschritten(inputData.getMinimalErforderlichesPensum(), getEffektivesErwerbspensum(inputData));
+	@Override
+	public boolean isRelevantForGemeinde(
+			@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		Einstellung ausserOrdentlicherAnspruchRuleTyp = einstellungMap.get(AUSSERORDENTLICHER_ANSPRUCH_RULE);
+		Objects.requireNonNull(ausserOrdentlicherAnspruchRuleTyp,"Parameter AUSSERORDENTLICHER_ANSPRUCH_RULE muss gesetzt sein");
+
+		return ausserOrdentlicherAnspruchRuleTyp.getValue().equals(ASIV.toString());
 	}
 
-	private boolean hasOneGSAndZeroBeschaeftigungsPensum(AbstractPlatz platz, BGCalculationInput inputData) {
-		if(hasSecondGesuchsteller(platz)) {
-			return false;
-		}
-
-		return hasZeroBeschaeftitungsPensum(inputData.getErwerbspensumGS1());
-	}
-
-	private boolean hasZeroBeschaeftitungsPensum(Integer erwerbspensumGS1) {
-		return erwerbspensumGS1 == null || erwerbspensumGS1 == 0;
-	}
-
-	private boolean hasSecondGesuchsteller(AbstractPlatz platz) {
-		return platz.extractGesuch().getGesuchsteller2() != null;
-	}
-
-	private int getEffektivesErwerbspensum(BGCalculationInput inputData) {
-		int erwerbspensumOffset = inputData.getErwerbspensumGS2() == null ? 0 : 100;
-		return calculateErwerbspensum(inputData.getErwerbspensumGS1()) + calculateErwerbspensum(inputData.getErwerbspensumGS2()) - erwerbspensumOffset;
-	}
-
-	private int calculateErwerbspensum(Integer erwerbspensum) {
-		if(erwerbspensum == null) {
-			return 0;
-		}
-
-		return erwerbspensum > 100 ? 100 : erwerbspensum;
-	}
-
-	private boolean isMaxDifferenzPensenUeberschritten(int erforderlichesPensum, int effektivesPensum) {
-		return Math.abs(effektivesPensum-erforderlichesPensum) > this.maxDifferenzBeschaeftigungspensum;
-	}
 }

@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -46,6 +47,8 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import org.junit.Before;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -64,6 +67,14 @@ public class EinkommenCalcRuleTest {
 
 	private final BigDecimal EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(100000);
 	private final BigDecimal EINKOMMEN_HOCH = MathUtil.DEFAULT.fromNullSafe(180000);
+
+	private Mandant mandant;
+
+	@Before
+	public void setUp() {
+		mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+	}
 
 	@Test
 	public void testNormalfallKita() {
@@ -187,7 +198,7 @@ public class EinkommenCalcRuleTest {
 			+ TestDataUtil.PERIODE_JAHR_1;
 		VerfuegungsBemerkungDTO bemerkungEkvAccept1 = bemerkungenAbschnitt2.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
 		assertNotNull(bemerkungEkvAccept1);
-		assertTrue(bemerkungEkvAccept1.getTranslated().contains(bemerkungEKV1));
+		assertTrue(bemerkungEkvAccept1.getTranslated(mandant).contains(bemerkungEKV1));
 
 		VerfuegungZeitabschnitt abschnittZweitesHalbjahrEKV1 = result.get(1);
 		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
@@ -201,7 +212,7 @@ public class EinkommenCalcRuleTest {
 			+ TestDataUtil.PERIODE_JAHR_2;
 		VerfuegungsBemerkungDTO bemerkungEkvAccept2 = bemerkungenAbschnitt3.findFirstBemerkungByMsgKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG);
 		assertNotNull(bemerkungEkvAccept2);
-		assertTrue(bemerkungEkvAccept2.getTranslated().contains(bemerkungEKV2));
+		assertTrue(bemerkungEkvAccept2.getTranslated(mandant).contains(bemerkungEKV2));
 	}
 
 	@Test
