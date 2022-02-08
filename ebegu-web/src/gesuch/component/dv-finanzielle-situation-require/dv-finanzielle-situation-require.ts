@@ -89,7 +89,12 @@ export class DVFinanzielleSituationRequireController implements IController {
             && !this.sozialhilfeBezueger;
 
         if (this.isFinSitTypFkjv) {
-            return isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen;
+            if (isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen) {
+                return true;
+            }
+            this.verguenstigungGewuenscht = true;
+            this.setFinanziellesituationRequired();
+            return false;
         }
 
         return isNotSozialhilfeBezueger;
