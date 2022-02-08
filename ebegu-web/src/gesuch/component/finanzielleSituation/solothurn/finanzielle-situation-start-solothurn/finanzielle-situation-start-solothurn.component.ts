@@ -26,9 +26,10 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
+        protected readonly finSitSoService: FinanzielleSituationSolothurnService,
         protected wizardStepManager: WizardStepManager
     ) {
-        super(gesuchModelManager, wizardStepManager, 1);
+        super(gesuchModelManager, wizardStepManager, finSitSoService, 1);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN,
             TSWizardStepStatus.IN_BEARBEITUNG);
     }

@@ -18,22 +18,22 @@
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.services.AbstractBaseService;
 
 public final class FinanzielleSituationRechnerFactory {
 
 	@Nonnull
 	public static AbstractFinanzielleSituationRechner getRechner(@Nonnull Gesuch gesuch) {
-		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.LUZERN)) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
 			return new FinanzielleSituationLuzernRechner();
 		}
-		if (gesuch.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV) {
 			return new FinanzielleSituationFKJVRechner();
+		}
+		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.SOLOTHURN) {
+			return new FinanzielleSituationSolothurnRechner();
 		}
 		// per default ist der Berner Rechner genommen
 		return new FinanzielleSituationBernRechner();

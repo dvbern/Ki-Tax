@@ -613,7 +613,6 @@ export class EbeguRestUtil {
                 this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
             restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
             restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
-            restFamiliensituation.auszahlungAnEltern = familiensituation.auszahlungAnEltern;
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
@@ -694,7 +693,6 @@ export class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
             familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
             familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
-            familiensituation.auszahlungAnEltern = familiensituationFromServer.auszahlungAnEltern;
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
@@ -1859,7 +1857,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
-        if (finanzielleSituation.selbstdeklaration) {
+        if (EbeguUtil.isNotNullOrUndefined(finanzielleSituation.selbstdeklaration)) {
             restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
         }
         return restFinanzielleSituation;
@@ -1959,7 +1957,6 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.abzuegeLiegenschaft =
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
-
             abstractFinanzielleSituationTS.abzugSchuldzinsen = abstractFinanzielleSituationFromServer.abzugSchuldzinsen;
             abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft = abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
             abstractFinanzielleSituationTS.nettoVermoegen = abstractFinanzielleSituationFromServer.nettoVermoegen;
@@ -1969,7 +1966,7 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
             abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
             abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
-
+            abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2372,6 +2369,7 @@ export class EbeguRestUtil {
         restBetreuung.anmeldungMutationZustand = betreuung.anmeldungMutationZustand;
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
+        restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
         return restBetreuung;
     }
 
@@ -2546,6 +2544,7 @@ export class EbeguRestUtil {
             betreuungTS.anmeldungTagesschuleZeitabschnitts =
                 this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
+            betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
             return betreuungTS;
         }
         return undefined;

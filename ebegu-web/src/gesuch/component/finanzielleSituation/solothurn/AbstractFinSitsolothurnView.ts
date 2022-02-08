@@ -18,6 +18,7 @@
 import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
+import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituation} from '../../../../models/TSFinanzielleSituation';
@@ -27,14 +28,17 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
+import {FinanzielleSituationSolothurnService} from './finanzielle-situation-solothurn.service';
 
 export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TSFinanzModel> {
 
     public readonly: boolean = false;
+    public finanzielleSituationResultate?: TSFinanzielleSituationResultateDTO;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected readonly finSitSoService: FinanzielleSituationSolothurnService,
         protected gesuchstellerNumber: number,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
@@ -43,6 +47,8 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
             gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
+        this.calculateMassgebendesEinkommen();
+        this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
     }
 
     private setupForm(): void {
@@ -238,6 +244,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.getFinanzielleSituationJA().nettolohn = null;
         this.getFinanzielleSituationJA().unterhaltsBeitraege = null;
         this.getFinanzielleSituationJA().steuerbaresVermoegen = null;
+        this.calculateMassgebendesEinkommen();
     }
 
     protected resetVeranlagungSolothurnGS2(): void {
@@ -245,10 +252,12 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         this.getFinanzielleSituationJAGS2().nettolohn = null;
         this.getFinanzielleSituationJAGS2().unterhaltsBeitraege = null;
         this.getFinanzielleSituationJAGS2().steuerbaresVermoegen = null;
+        this.calculateMassgebendesEinkommen();
     }
 
     protected resetBruttoLohn(): void {
         this.getFinanzielleSituationJA().bruttoLohn = null;
+        this.calculateMassgebendesEinkommen();
     }
 
     private getFinanzielleSituationJA(): TSFinanzielleSituation {
@@ -261,6 +270,13 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     private getFinanzielleSituationJAGS2(): TSFinanzielleSituation {
         return this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+    }
+    public onValueChangeFunction = (): void => {
+       this.calculateMassgebendesEinkommen();
+    }
+
+    protected calculateMassgebendesEinkommen(): void {
+        this.finSitSoService.calculateMassgebendesEinkommen(this.model);
     }
 
     public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;

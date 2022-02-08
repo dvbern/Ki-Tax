@@ -20,9 +20,10 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -30,6 +31,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -53,6 +55,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean steuerdatenZugriff;
+
+	@Nullable
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
 
 	@Nullable
 	@Column(nullable = true)
@@ -89,11 +96,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal bruttoLohn;
-
-	@Nullable
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanziellesituation_selbstdeklaration_id"), nullable = true)
-	private FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public FinanzielleSituation() {
 	}
@@ -179,15 +181,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public FinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
-		return selbstdeklaration;
-	}
-
-	public void setSelbstdeklaration(@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		this.selbstdeklaration = selbstdeklaration;
-	}
-
-	@Nullable
 	public BigDecimal getUnterhaltsBeitraege() {
 		return unterhaltsBeitraege;
 	}
@@ -212,6 +205,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
 		this.bruttoLohn = bruttoLohn;
+	}
+
+	@Nullable
+	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
+		return steuerdatenAbfrageStatus;
+	}
+
+	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
+		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
 	}
 
 	@Nonnull

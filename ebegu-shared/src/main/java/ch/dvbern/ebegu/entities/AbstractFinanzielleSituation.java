@@ -19,10 +19,14 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -47,39 +51,51 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Column(nullable = true)
 	private BigDecimal nettolohn;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal familienzulage;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal ersatzeinkommen;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal erhalteneAlimente;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal bruttovermoegen;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal schulden;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahr;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal geleisteteAlimente;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal steuerbaresEinkommen;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal steuerbaresVermoegen;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal abzuegeLiegenschaft;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal geschaeftsverlust;
 
+	@Nullable
 	@Column(nullable = true)
 	private BigDecimal einkaeufeVorsorge;
 
@@ -115,12 +131,19 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Transient
 	private BigDecimal durchschnittlicherGeschaeftsgewinn;
 
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true)
+	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
+
 	public AbstractFinanzielleSituation() {
 	}
 
 	public abstract Boolean getSteuerveranlagungErhalten();
 
 	public abstract Boolean getSteuererklaerungAusgefuellt();
+
+	public abstract Boolean getSteuerdatenZugriff();
 
 	@Nullable
 	public BigDecimal getNettolohn() {
@@ -131,59 +154,66 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.nettolohn = nettolohn;
 	}
 
+	@Nullable
 	public BigDecimal getFamilienzulage() {
 		return familienzulage;
 	}
 
-	public void setFamilienzulage(final BigDecimal familienzulage) {
+	public void setFamilienzulage(@Nullable final BigDecimal familienzulage) {
 		this.familienzulage = familienzulage;
 	}
 
+	@Nullable
 	public BigDecimal getErsatzeinkommen() {
 		return ersatzeinkommen;
 	}
 
-	public void setErsatzeinkommen(final BigDecimal ersatzeinkommen) {
+	public void setErsatzeinkommen(@Nullable final BigDecimal ersatzeinkommen) {
 		this.ersatzeinkommen = ersatzeinkommen;
 	}
 
+	@Nullable
 	public BigDecimal getErhalteneAlimente() {
 		return erhalteneAlimente;
 	}
 
-	public void setErhalteneAlimente(final BigDecimal erhalteneAlimente) {
+	public void setErhalteneAlimente(@Nullable final BigDecimal erhalteneAlimente) {
 		this.erhalteneAlimente = erhalteneAlimente;
 	}
 
+	@Nullable
 	public BigDecimal getBruttovermoegen() {
 		return bruttovermoegen;
 	}
 
-	public void setBruttovermoegen(final BigDecimal bruttovermoegen) {
+	public void setBruttovermoegen(@Nullable final BigDecimal bruttovermoegen) {
 		this.bruttovermoegen = bruttovermoegen;
 	}
 
+	@Nullable
 	public BigDecimal getSchulden() {
 		return schulden;
 	}
 
-	public void setSchulden(final BigDecimal schulden) {
+	public void setSchulden(@Nullable final BigDecimal schulden) {
 		this.schulden = schulden;
 	}
 
+	@Nullable
 	public BigDecimal getGeschaeftsgewinnBasisjahr() {
 		return geschaeftsgewinnBasisjahr;
 	}
 
-	public void setGeschaeftsgewinnBasisjahr(final BigDecimal geschaeftsgewinnBasisjahr) {
+	public void setGeschaeftsgewinnBasisjahr(@Nullable final BigDecimal geschaeftsgewinnBasisjahr) {
 		this.geschaeftsgewinnBasisjahr = geschaeftsgewinnBasisjahr;
 	}
 
+	@Nullable
 	public BigDecimal getGeleisteteAlimente() {
 		return geleisteteAlimente;
 	}
 
-	public void setGeleisteteAlimente(final BigDecimal geleisteteAlimente) {
+	public void setGeleisteteAlimente(@Nullable final BigDecimal geleisteteAlimente) {
 		this.geleisteteAlimente = geleisteteAlimente;
 	}
 
@@ -196,43 +226,48 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.durchschnittlicherGeschaeftsgewinn = durchschnittlicherGeschaeftsgewinn;
 	}
 
+	@Nullable
 	public BigDecimal getSteuerbaresEinkommen() {
 		return steuerbaresEinkommen;
 	}
 
-	public void setSteuerbaresEinkommen(BigDecimal steuerbaresEinkommen) {
+	public void setSteuerbaresEinkommen(@Nullable BigDecimal steuerbaresEinkommen) {
 		this.steuerbaresEinkommen = steuerbaresEinkommen;
 	}
 
+	@Nullable
 	public BigDecimal getSteuerbaresVermoegen() {
 		return steuerbaresVermoegen;
 	}
 
-	public void setSteuerbaresVermoegen(BigDecimal steuerbaresVermoegen) {
+	public void setSteuerbaresVermoegen(@Nullable BigDecimal steuerbaresVermoegen) {
 		this.steuerbaresVermoegen = steuerbaresVermoegen;
 	}
 
+	@Nullable
 	public BigDecimal getAbzuegeLiegenschaft() {
 		return abzuegeLiegenschaft;
 	}
 
-	public void setAbzuegeLiegenschaft(BigDecimal abzuegeLiegenschaft) {
+	public void setAbzuegeLiegenschaft(@Nullable BigDecimal abzuegeLiegenschaft) {
 		this.abzuegeLiegenschaft = abzuegeLiegenschaft;
 	}
 
+	@Nullable
 	public BigDecimal getGeschaeftsverlust() {
 		return geschaeftsverlust;
 	}
 
-	public void setGeschaeftsverlust(BigDecimal geschaeftsverlust) {
+	public void setGeschaeftsverlust(@Nullable BigDecimal geschaeftsverlust) {
 		this.geschaeftsverlust = geschaeftsverlust;
 	}
 
+	@Nullable
 	public BigDecimal getEinkaeufeVorsorge() {
 		return einkaeufeVorsorge;
 	}
 
-	public void setEinkaeufeVorsorge(BigDecimal einkaeufeVorsorge) {
+	public void setEinkaeufeVorsorge(@Nullable BigDecimal einkaeufeVorsorge) {
 		this.einkaeufeVorsorge = einkaeufeVorsorge;
 	}
 
@@ -301,6 +336,15 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
 		this.abzugSchuldzinsen = abzugSchuldzinsen;
+	}
+
+	@Nullable
+	public FinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
+		return selbstdeklaration;
+	}
+
+	public void setSelbstdeklaration(@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		this.selbstdeklaration = selbstdeklaration;
 	}
 
 	@Nonnull

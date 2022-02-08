@@ -24,7 +24,6 @@ import {WizardStepManager} from '../service/wizardStepManager';
 @Directive()
 export class AbstractGesuchViewX<T> implements AfterViewInit {
 
-    public onlyFerieninselBetreuungen = false;
     private _model: T;
 
     public constructor(
@@ -33,7 +32,6 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
         protected stepName: TSWizardStepName
     ) {
         this.wizardStepManager.setCurrentStep(stepName);
-        this.onlyFerieninselBetreuungen = this.gesuchModelManager.areThereOnlyFerieninsel();
     }
 
     // reset transitionInProgress after new form is loaded

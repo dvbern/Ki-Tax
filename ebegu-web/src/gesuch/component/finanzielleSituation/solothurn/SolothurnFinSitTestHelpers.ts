@@ -27,9 +27,11 @@ import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../models/TSGesuchstellerContainer';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
+import {FinanzielleSituationSolothurnService} from './finanzielle-situation-solothurn.service';
 import SpyObj = jasmine.SpyObj;
 
 export class SolothurnFinSitTestHelpers {
@@ -67,7 +69,26 @@ export class SolothurnFinSitTestHelpers {
                 'getGesuchsperiode',
                 'getGemeinde',
                 'isKorrekturModusJugendamt',
-                'areThereOnlyBgBetreuungen'
+                'areThereOnlyBgBetreuungen',
+                'isKorrekturModusJugendamt',
+                'setGesuchstellerNumber'
+            ]);
+    }
+
+    public static getMockProvidersExceptFinSitSolothurnServiceMock(): { provide: any, useValue: any }[] {
+        const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
+            BerechnungsManager.name,
+            ['calculateFinanzielleSituationTemp']);
+        return [
+            {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+        ];
+    }
+
+    public static createFinSitSolothurnServiceMock(): SpyObj<FinanzielleSituationSolothurnService> {
+        return jasmine.createSpyObj<FinanzielleSituationSolothurnService>(FinanzielleSituationSolothurnService.name,
+            [
+                'massgebendesEinkommenStore',
+                'calculateMassgebendesEinkommen'
             ]);
     }
 

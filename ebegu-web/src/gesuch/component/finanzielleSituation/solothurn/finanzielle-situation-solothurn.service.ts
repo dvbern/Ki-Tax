@@ -16,7 +16,11 @@
  */
 
 import {Injectable} from '@angular/core';
+import {Observable, ReplaySubject, Subject} from 'rxjs';
+import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
+import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
@@ -24,7 +28,9 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 })
 export class FinanzielleSituationSolothurnService {
 
-    public constructor() {
+    private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
+
+    public constructor (private readonly berechnungsManager: BerechnungsManager) {
     }
 
     public static finSitIsGemeinsam(gesuchModelManager: GesuchModelManager): boolean {
@@ -43,5 +49,14 @@ export class FinanzielleSituationSolothurnService {
     private static startKonkubinatMoreThan5YearsAgo(): boolean {
         // TODO finsit Luzern: migrate once Konkubinat time is in configuration
         return true;
+    }
+
+    public massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
+        return this._massgebendesEinkommenStore.asObservable();
+    }
+
+    public calculateMassgebendesEinkommen(model: TSFinanzModel): void {
+        this.berechnungsManager.calculateFinanzielleSituationTemp(model)
+            .then(result => this._massgebendesEinkommenStore.next(result));
     }
 }

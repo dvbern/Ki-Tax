@@ -123,6 +123,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	private boolean eingewoehnung = false;
 
+	@Nonnull
+	private Boolean auszahlungAnEltern;
+
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
@@ -366,5 +369,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setEingewoehnung(boolean eingewoehnung) {
 		this.eingewoehnung = eingewoehnung;
+	}
+
+	@Nonnull
+	public Boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }

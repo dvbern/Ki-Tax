@@ -121,9 +121,9 @@ public abstract class AbstractTestfall {
 	protected final InstitutionStammdatenBuilder institutionStammdatenBuilder;
 
 	protected AbstractTestfall(
-			Gesuchsperiode gesuchsperiode,
-			boolean betreuungenBestaetigt,
-			InstitutionStammdatenBuilder institutionStammdatenBuilder) {
+		Gesuchsperiode gesuchsperiode,
+		boolean betreuungenBestaetigt,
+		InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		this.gesuchsperiode = gesuchsperiode;
 		this.institutionStammdatenBuilder = institutionStammdatenBuilder;
 		this.institutionStammdatenList = institutionStammdatenBuilder.buildStammdaten();
@@ -131,9 +131,9 @@ public abstract class AbstractTestfall {
 	}
 
 	protected AbstractTestfall(
-			Gesuchsperiode gesuchsperiode,
-			boolean betreuungenBestaetigt, Gemeinde gemeinde,
-			InstitutionStammdatenBuilder institutionStammdatenBuilder
+		Gesuchsperiode gesuchsperiode,
+		boolean betreuungenBestaetigt, Gemeinde gemeinde,
+		InstitutionStammdatenBuilder institutionStammdatenBuilder
 	) {
 		this(gesuchsperiode, betreuungenBestaetigt, institutionStammdatenBuilder);
 		this.gemeinde = gemeinde;
@@ -190,8 +190,8 @@ public abstract class AbstractTestfall {
 		testGemeinde.setName("Testgemeinde");
 		testGemeinde.setBfsNummer(1L);
 		testGemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
-		testGemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018,8,1));
-		testGemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2018,8,1));
+		testGemeinde.setTagesschulanmeldungenStartdatum(LocalDate.of(2018, 8, 1));
+		testGemeinde.setFerieninselanmeldungenStartdatum(LocalDate.of(2018, 8, 1));
 		return testGemeinde;
 	}
 
@@ -383,6 +383,7 @@ public abstract class AbstractTestfall {
 		ErweiterteBetreuung erwBed = new ErweiterteBetreuung();
 		erwBed.setErweiterteBeduerfnisse(false);
 		erwBed.setKeineKesbPlatzierung(true);
+		erwBed.setKitaPlusZuschlag(false);
 		erwBed.setBetreuungInGemeinde(Boolean.TRUE);
 		erwBedContainer.setErweiterteBetreuungJA(erwBed);
 		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
@@ -395,7 +396,7 @@ public abstract class AbstractTestfall {
 		return betreuung;
 	}
 
-	protected AnmeldungTagesschule createTagesschuleAnmeldung(String institutionStammdatenId){
+	protected AnmeldungTagesschule createTagesschuleAnmeldung(String institutionStammdatenId) {
 		AnmeldungTagesschule anmeldungTagesschule = new AnmeldungTagesschule();
 		anmeldungTagesschule.setInstitutionStammdaten(createInstitutionStammdaten(institutionStammdatenId));
 		anmeldungTagesschule.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
@@ -407,10 +408,12 @@ public abstract class AbstractTestfall {
 
 		assert anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule() != null;
 		Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
-			anmeldungTagesschule.getInstitutionStammdaten().getInstitutionStammdatenTagesschule().getEinstellungenTagesschule();
+			anmeldungTagesschule.getInstitutionStammdaten()
+				.getInstitutionStammdatenTagesschule()
+				.getEinstellungenTagesschule();
 
 		EinstellungenTagesschule einstellungenTagesschule = einstellungenTagesschuleSet.iterator().next();
-		Set<ModulTagesschuleGroup> modulTagesschuleGroupSet =  einstellungenTagesschule.getModulTagesschuleGroups();
+		Set<ModulTagesschuleGroup> modulTagesschuleGroupSet = einstellungenTagesschule.getModulTagesschuleGroups();
 
 		Iterator<ModulTagesschuleGroup> modTSGroupIterator = modulTagesschuleGroupSet.iterator();
 
@@ -419,7 +422,7 @@ public abstract class AbstractTestfall {
 
 		Set<BelegungTagesschuleModul> belegungTagesschuleModulSet = new TreeSet();
 		Iterator<ModulTagesschule> modulTagesschuleIterator = modulTagesschuleSet.iterator();
-		for(int i = 0; i < 3; i++){
+		for (int i = 0; i < 3; i++) {
 			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
 			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
@@ -430,7 +433,7 @@ public abstract class AbstractTestfall {
 		modulTagesschuleGroup = modTSGroupIterator.next();
 		modulTagesschuleSet = modulTagesschuleGroup.getModule();
 		modulTagesschuleIterator = modulTagesschuleSet.iterator();
-		for(int i = 0; i < 3; i++){
+		for (int i = 0; i < 3; i++) {
 			BelegungTagesschuleModul belegungTagesschuleModul = new BelegungTagesschuleModul();
 			belegungTagesschuleModul.setBelegungTagesschule(belegungTagesschule);
 			belegungTagesschuleModul.setModulTagesschule(modulTagesschuleIterator.next());
@@ -520,7 +523,9 @@ public abstract class AbstractTestfall {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setSteuerveranlagungErhalten(true);
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
-		finanzielleSituation.setSteuerdatenZugriff(true);
+		if (gesuch.getEingangsart().isOnlineGesuch()) {
+			finanzielleSituation.setSteuerdatenZugriff(true);
+		}
 
 		setFinSitDefaultValues(finanzielleSituation);
 
