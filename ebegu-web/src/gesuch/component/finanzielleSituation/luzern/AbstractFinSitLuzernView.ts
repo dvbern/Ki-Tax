@@ -45,6 +45,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
+        this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
     }
 
     private setupForm(): void {
