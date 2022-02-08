@@ -15,16 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+export enum TSSteuerdatenAnfrageStatus {
+    OFFEN = 'OFFEN',
+    PROVISORISCH = 'PROVISORISCH',
+    RECHTSKRAEFTIG = 'RECHTSKRAEFTIG',
+    FAILED = 'FAILED',
+    FAILED_KEIN_PARTNER_GEMEINSAM = 'FAILED_KEIN_PARTNER_GEMEINSAM',
+    FAILED_PARTNER_NICHT_GEMEINSAM = 'FAILED_PARTNER_NICHT_GEMEINSAM',
+    FAILED_GEBURTSDATUM = 'FAILED_GEBURTSDATUM',
+    FAILED_UNTERJAEHRIGER_FALL = 'FAILED_UNTERJAEHRIGER_FALL',
+}
 
-public enum SteuerdatenAnfrageStatus {
-
-	OFFEN,
-	PROVISORISCH,
-	RECHTSKRAEFTIG,
-	FAILED,
-	FAILED_KEIN_PARTNER_GEMEINSAM,
-	FAILED_PARTNER_NICHT_GEMEINSAM,
-	FAILED_GEBURTSDATUM,
-	FAILED_UNTERJAEHRIGER_FALL;
+export function isSteuerdatenAnfrageStatusErfolgreich(status: TSSteuerdatenAnfrageStatus): boolean {
+    return status === TSSteuerdatenAnfrageStatus.OFFEN
+    || status === TSSteuerdatenAnfrageStatus.PROVISORISCH
+    || status === TSSteuerdatenAnfrageStatus.RECHTSKRAEFTIG;
 }

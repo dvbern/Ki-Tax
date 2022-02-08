@@ -34,6 +34,30 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
+                    <div ng-if="vm.showZugriffFailed()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
+                    </div>
+
+                    <div ng-if="vm.showWarningPartnerNichtGemeinsam()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM"></p>
+                    </div>
+
+                    <div ng-if="vm.showZugriffUnterjaehrigeFall()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG"></p>
+                    </div>
+
+                    <div ng-if="vm.showZugriffErfolgreich()"
+                         class="well well-status-bestaetigt minus-margin">
+                        <p class="ebegu-h3"
+                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH"></p>
+                    </div>
+
                     <!--Steuerveranlagung -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
@@ -100,10 +124,11 @@
                                                     dv-enable-element
                                                     true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
                                                     false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
                                                     dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                     aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
-                                                    aria-described-by="steuerdatenzugriff-error">
+                                                    aria-described-by="steuerdatenzugriff-error"
+                                                    ng-change="vm.steuerdatenzugriffClicked()">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="steuerdatenzugriff"
                                                    for="vm.form.steuerdatenzugriff.$error"
@@ -112,399 +137,418 @@
                         </div>
                     </div>
 
-                    <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
-                         class="well well-status-warten minus-margin">
-                        <p class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
-                    </div>
+                    <div ng-if="vm.showForm">
 
-                    <!-- Infotext -->
-                    <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
-                       translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
-
-                    <!-- Nettolohn -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="nettolohn">
-                                    <span data-translate="FINANZIELLE_SITUATION_NETTOLOHN"></span>
-                                    <dv-tooltip input-id="nettolohn"
-                                                text="'FINANZIELLE_SITUATION_NETTOLOHN_HELP' | translate"></dv-tooltip>
-                                </label>
-                                <dv-valueinput input-id="nettolohn" name="nettolohn"
-                                               ng-model="vm.getModel().finanzielleSituationJA.nettolohn"
-                                               class="input-element" required>
-                                </dv-valueinput>
-                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettolohn"
-                                           ja="vm.getModel().finanzielleSituationJA.nettolohn"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn"
-                                                   for="vm.form.nettolohn.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
+                        <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
+                             class="well well-status-warten minus-margin">
+                            <p class="ebegu-h3"
+                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                         </div>
-                    </div>
 
-                    <!-- Familienzulage -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="familienzulage">
-                                    <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
-                                    <dv-tooltip input-id="familienzulage"
-                                                text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="familienzulage" name="familienzulage"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
-                                               ja="vm.getModel().finanzielleSituationJA.familienzulage"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
+                        <!-- Infotext -->
+                        <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
+                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
 
-                    <!-- Ersatzeinkommen -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="ersatzeinkommen">
-                                    <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
-                                    <dv-tooltip input-id="ersatzeinkommen"
-                                                text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"
-                                    ></dv-tooltip>
-                                </label>
-                                <dv-valueinput input-id="ersatzeinkommen" name="ersatzeinkommen"
-                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
-                                               class="input-element" required>
-                                </dv-valueinput>
-                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
-                                           ja="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                <dv-error-messages input-id="ersatzeinkommen" for="vm.form.ersatzeinkommen.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Erhaltene Alimente -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="erhalteneAlimente">
-                                    <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
-                                    <dv-tooltip input-id="erhalteneAlimente"
-                                                text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
-                                               ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!--Checkbox Selbstaendigkeit -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox">
-                                <md-checkbox ng-model="vm.showSelbstaendig"
-                                             name="showSelbstaendig"
-                                             id="showSelbstaendig"
-                                             aria-label="{{'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT'|translate}}"
-                                             ng-change="vm.showSelbstaendigClicked()"
-                                             ng-disabled="vm.isGesuchReadonly()">
-                                    <span data-translate="FINANZIELLE_SITUATION_SELBSTAENDIGKEIT"></span>
-                                </md-checkbox>
-                                <dv-tooltip input-id="showSelbstaendig"
-                                            text="'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
-                                <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
-                                           ja="vm.showSelbstaendig"
-                                           specific-bisher-text="vm.getTextSelbstaendigKorrektur()"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"
-                                           show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Geschaeftsgewinn Basisjahr -->
-                    <div ng-if="vm.showSelbstaendig">
+                        <!-- Nettolohn -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
-                                           for="geschaeftsgewinnBasisjahr"
-                                           translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></label>
-                                    <dv-valueinput input-id="geschaeftsgewinnBasisjahr" name="geschaeftsgewinnBasisjahr"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
-                                                   ng-required="vm.showSelbstaendig"
-                                                   allow-negative=true
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element">
+                                    <label class="md-no-float required" for="nettolohn">
+                                        <span data-translate="FINANZIELLE_SITUATION_NETTOLOHN"></span>
+                                        <dv-tooltip input-id="nettolohn"
+                                                    text="'FINANZIELLE_SITUATION_NETTOLOHN_HELP' | translate"></dv-tooltip>
+                                    </label>
+                                    <dv-valueinput input-id="nettolohn" name="nettolohn"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.nettolohn"
+                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
+                                                   class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-error-messages input-id="geschaeftsgewinnBasisjahr"
-                                                       for="vm.form.geschaeftsgewinnBasisjahr.$error"
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettolohn"
+                                               ja="vm.getModel().finanzielleSituationJA.nettolohn"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="nettolohn"
+                                                       for="vm.form.nettolohn.$error"
                                                        class="error"></dv-error-messages>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahr"
-                                               ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
                                 </dv-input-container>
                             </div>
                         </div>
 
-                        <!-- Geschäftsgewinn Basisjahr - 1 -->
+                        <!-- Familienzulage -->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="familienzulage">
+                                        <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
+                                        <dv-tooltip input-id="familienzulage"
+                                                    text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="familienzulage" name="familienzulage"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
+                                                   ja="vm.getModel().finanzielleSituationJA.familienzulage"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
+                            </div>
+                        </div>
+
+                        <!-- Ersatzeinkommen -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
-                                           for="geschaeftsgewinnBasisjahrMinus1"
-                                           translate-values="{basisjahr: {{vm.getBasisjahrMinus1()}}}"></label>
-                                    <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
-                                                   name="geschaeftsgewinnBasisjahrMinus1"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
-                                                   allow-negative=true
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element">
+                                    <label class="md-no-float required" for="ersatzeinkommen">
+                                        <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
+                                        <dv-tooltip input-id="ersatzeinkommen"
+                                                    text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"
+                                        ></dv-tooltip>
+                                    </label>
+                                    <dv-valueinput input-id="ersatzeinkommen" name="ersatzeinkommen"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
+                                                   ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
+                                                   class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-bisher
-                                        gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus1"
-                                        ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
-                                        show-if-bisher-none="false"
-                                        block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
+                                               ja="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-error-messages input-id="ersatzeinkommen" for="vm.form.ersatzeinkommen.$error"
+                                                       class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>
                         </div>
 
-                        <!-- Geschäftsgewinn Basisjahr - 2 -->
+                        <!-- Erhaltene Alimente -->
                         <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
+                            <div class="col-sm-12 dv-input-container-medium">
                                 <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
-                                           for="geschaeftsgewinnBasisjahrMinus2"
-                                           translate-values="{basisjahr: {{vm.getBasisjahrMinus2()}}}"></label>
-                                    <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
-                                                   name="geschaeftsgewinnBasisjahrMinus2"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
-                                                   allow-negative=true
-                                                   dv-on-blur="vm.calculate()"
-                                                   class="input-element">
-                                    </dv-valueinput>
-                                    <dv-bisher
-                                        gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus2"
-                                        ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
-                                        show-if-bisher-none="false"
-                                        block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                    <label class="md-no-float required" for="erhalteneAlimente">
+                                        <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
+                                        <dv-tooltip input-id="erhalteneAlimente"
+                                                    text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
+                                                   ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="erhalteneAlimente"
+                                                           for="vm.form.erhalteneAlimente.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
                                 </dv-input-container>
                             </div>
                         </div>
 
-                        <!-- Durchschnitt Geschäftsgewinn -->
+                        <!--Checkbox Selbstaendigkeit -->
                         <div class="row">
-                            <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group  no-margin"
-                                                    ng-if="vm.model.getGesuchstellerNumber() === 1">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
-                                           for="geschaeftsgewinnDurchschnittGS1"></label>
-                                    <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS1"
-                                                   name="geschaeftsgewinnDurchschnittGS1"
-                                                   ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller1"
-                                                   ng-disabled="true">
-                                    </dv-valueinput>
-                                    <div class="dv-error-messages"></div>
-                                </dv-input-container>
-                                <dv-input-container class="form-group  no-margin"
-                                                    ng-if="vm.model.getGesuchstellerNumber() === 2">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
-                                           for="geschaeftsgewinnDurchschnittGS2"></label>
-                                    <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS2"
-                                                   name="geschaeftsgewinnDurchschnittGS2"
-                                                   ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller2"
-                                                   ng-disabled="true">
-                                    </dv-valueinput>
-                                    <div class="dv-error-messages"></div>
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox">
+                                    <md-checkbox ng-model="vm.showSelbstaendig"
+                                                 name="showSelbstaendig"
+                                                 id="showSelbstaendig"
+                                                 aria-label="{{'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT'|translate}}"
+                                                 ng-change="vm.showSelbstaendigClicked()"
+                                                 ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                        <span data-translate="FINANZIELLE_SITUATION_SELBSTAENDIGKEIT"></span>
+                                    </md-checkbox>
+                                    <dv-tooltip input-id="showSelbstaendig"
+                                                text="'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                    <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
+                                               ja="vm.showSelbstaendig"
+                                               specific-bisher-text="vm.getTextSelbstaendigKorrektur()"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"
+                                               show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Geschaeftsgewinn Basisjahr -->
+                        <div ng-if="vm.showSelbstaendig">
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHR"
+                                               for="geschaeftsgewinnBasisjahr"
+                                               translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></label>
+                                        <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
+                                                       name="geschaeftsgewinnBasisjahr"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
+                                                       ng-required="vm.showSelbstaendig"
+                                                       allow-negative=true
+                                                       dv-on-blur="vm.calculate()"
+                                                       class="input-element"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                        </dv-valueinput>
+                                        <dv-error-messages input-id="geschaeftsgewinnBasisjahr"
+                                                           for="vm.form.geschaeftsgewinnBasisjahr.$error"
+                                                           class="error"></dv-error-messages>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahr"
+                                                   ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- Geschäftsgewinn Basisjahr - 1 -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
+                                               for="geschaeftsgewinnBasisjahrMinus1"
+                                               translate-values="{basisjahr: {{vm.getBasisjahrMinus1()}}}"></label>
+                                        <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
+                                                       name="geschaeftsgewinnBasisjahrMinus1"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
+                                                       allow-negative=true
+                                                       dv-on-blur="vm.calculate()"
+                                                       class="input-element"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                        </dv-valueinput>
+                                        <dv-bisher
+                                            gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus1"
+                                            ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
+                                            show-if-bisher-none="false"
+                                            block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- Geschäftsgewinn Basisjahr - 2 -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
+                                               for="geschaeftsgewinnBasisjahrMinus2"
+                                               translate-values="{basisjahr: {{vm.getBasisjahrMinus2()}}}"></label>
+                                        <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
+                                                       name="geschaeftsgewinnBasisjahrMinus2"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
+                                                       allow-negative=true
+                                                       dv-on-blur="vm.calculate()"
+                                                       class="input-element"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                        </dv-valueinput>
+                                        <dv-bisher
+                                            gs="vm.getModel().finanzielleSituationGS.geschaeftsgewinnBasisjahrMinus2"
+                                            ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
+                                            show-if-bisher-none="false"
+                                            block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!-- Durchschnitt Geschäftsgewinn -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small">
+                                    <dv-input-container class="form-group  no-margin"
+                                                        ng-if="vm.model.getGesuchstellerNumber() === 1">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
+                                               for="geschaeftsgewinnDurchschnittGS1"></label>
+                                        <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS1"
+                                                       name="geschaeftsgewinnDurchschnittGS1"
+                                                       ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller1"
+                                                       ng-disabled="true">
+                                        </dv-valueinput>
+                                        <div class="dv-error-messages"></div>
+                                    </dv-input-container>
+                                    <dv-input-container class="form-group  no-margin"
+                                                        ng-if="vm.model.getGesuchstellerNumber() === 2">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
+                                               for="geschaeftsgewinnDurchschnittGS2"></label>
+                                        <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS2"
+                                                       name="geschaeftsgewinnDurchschnittGS2"
+                                                       ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller2"
+                                                       ng-disabled="true">
+                                        </dv-valueinput>
+                                        <div class="dv-error-messages"></div>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bruttoertraege aus Vermögen  -->
+                        <div class="row" ng-if="vm.isFKJV()">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="bruttoErtraegeVermoegen">
+                                        <span data-translate="FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN"></span>
+                                        <dv-tooltip input-id="geleisteteAlimente"
+                                                    text="'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN_TOOLTIP' | translate"></dv-tooltip>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
+                                                   ja="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="bruttoErtraegeVermoegen"
+                                                           for="vm.form.bruttoertraegeVermoegen.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
                                 </dv-input-container>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Bruttoertraege aus Vermögen  -->
-                    <div class="row" ng-if="vm.isFKJV()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="bruttoErtraegeVermoegen">
-                                    <span data-translate="FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN"></span>
-                                    <dv-tooltip input-id="geleisteteAlimente"
-                                                text="'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN_TOOLTIP' | translate"></dv-tooltip>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
-                                               ja="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="bruttoErtraegeVermoegen" for="vm.form.bruttoertraegeVermoegen.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
+                        <!-- Nettoerträge ausErbengemeinschaften  -->
+                        <div class="row" ng-if="vm.isFKJV()">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="nettoertraege_erbengemeinschaften">
+                                        <span data-translate="FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN"></span>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
+                                                       name="nettoertraegeErbengemeinschaft"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                                       class="input-element"
+                                                       required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
+                                                   ja="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="nettoertraege_erbengemeinschaften"
+                                                           for="vm.form.nettoertraegeErbengemeinschaft.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Nettoerträge ausErbengemeinschaften  -->
-                    <div class="row" ng-if="vm.isFKJV()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="nettoertraege_erbengemeinschaften">
-                                    <span data-translate="FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN"></span>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="nettoertraege_erbengemeinschaften" name="nettoertraegeErbengemeinschaft"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
-                                               ja="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="nettoertraege_erbengemeinschaften" for="vm.form.nettoertraegeErbengemeinschaft.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
 
 
-
-                    <!-- Has Nettoerträge aus vereinfachten Verfahren -->
-                    <div class="row" ng-if="vm.isFKJV()">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <div class="form-group">
+                        <!-- Has Nettoerträge aus vereinfachten Verfahren -->
+                        <div class="row" ng-if="vm.isFKJV()">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="form-group">
                             <span class="ebegu-h1 required">
                                 <span data-translate="FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN"></span>
                             </span>
-                                <dv-radio-container name="einkommenInVereinfachtemVerfahrenAbgerechnet1"
-                                                    class="input-element radio"
-                                                    input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
-                                                    ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
-                                                    ng-required="true"
-                                                    true-option-label="{{ 'LABEL_JA' | translate}}"
-                                                    false-option-label="{{'LABEL_NEIN' | translate}}"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
-                                                    aria-described-by="einkommenInVereinfachtemVerfahrenAbgerechnet1-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
-                                                   for="vm.form.einkommenInVereinfachtemVerfahrenAbgerechnet1.$error"
-                                                   class="error"></dv-error-messages>
+                                    <dv-radio-container name="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                                        class="input-element radio"
+                                                        input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                                        ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
+                                                        ng-required="true"
+                                                        true-option-label="{{ 'LABEL_JA' | translate}}"
+                                                        false-option-label="{{'LABEL_NEIN' | translate}}"
+                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
+                                                        aria-described-by="einkommenInVereinfachtemVerfahrenAbgerechnet1-error">
+                                    </dv-radio-container>
+                                    <dv-error-messages input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                                       for="vm.form.einkommenInVereinfachtemVerfahrenAbgerechnet1.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nettoerträge aus vereinfachten Verfahren  -->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium"
+                                 ng-if="vm.isFKJV() && vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet === true">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="amount_vereinfacht_abgerechnet">
+                                        <span data-translate="FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_AMOUNT"></span>
+                                    </label>
+                                    <div class="dv-input-container-medium-label">
+                                        <dv-valueinput input-id="amount_vereinfacht_abgerechnet" name="testasd"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
+                                                   ja="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"></dv-bisher>
+                                        <dv-error-messages input-id="amount_vereinfacht_abgerechnet"
+                                                           for="vm.form.testasd.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
+                            </div>
+                        </div>
+
+                        <!-- Geleistete Alimente -->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="geleisteteAlimente">
+                                        <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
+                                        <dv-tooltip input-id="geleisteteAlimente"
+                                                    text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
+                                                   ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="geleisteteAlimente"
+                                                           for="vm.form.geleisteteAlimente.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
+                            </div>
+                        </div>
+
+                        <!-- Abzug Schuldzinsen  -->
+                        <div class="row" ng-if="vm.isFKJV()">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="abzug_schuldzinsen">
+                                        <span data-translate="FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN"></span>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
+                                                   ja="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="abzug_schuldzinsen"
+                                                           for="vm.form.abzugSchuldzinsen.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
+                            </div>
+                        </div>
+
+                        <!-- Abzug Schuldzinsen  -->
+                        <div class="row" ng-if="vm.isFKJV()">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float required" for="abzug_gewinnungskosten">
+                                        <span data-translate="FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN"></span>
+                                    </label>
+                                    <div class="dv-input-container-medium-select">
+                                        <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
+                                                       ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                                       class="input-element" required>
+                                        </dv-valueinput>
+                                        <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
+                                                   ja="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-error-messages input-id="abzug_gewinnungskosten"
+                                                           for="vm.form.gewinnungskosten.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </dv-input-container>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Nettoerträge aus vereinfachten Verfahren  -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.isFKJV() && vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet === true">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="amount_vereinfacht_abgerechnet">
-                                    <span data-translate="FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_AMOUNT"></span>
-                                </label>
-                                <div class="dv-input-container-medium-label">
-                                    <dv-valueinput input-id="amount_vereinfacht_abgerechnet" name="testasd"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
-                                               ja="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"></dv-bisher>
-                                    <dv-error-messages input-id="amount_vereinfacht_abgerechnet"
-                                                       for="vm.form.testasd.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Geleistete Alimente -->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="geleisteteAlimente">
-                                    <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
-                                    <dv-tooltip input-id="geleisteteAlimente"
-                                                text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
-                                               ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Abzug Schuldzinsen  -->
-                    <div class="row" ng-if="vm.isFKJV()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="abzug_schuldzinsen">
-                                    <span data-translate="FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN"></span>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
-                                               ja="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="abzug_schuldzinsen" for="vm.form.abzugSchuldzinsen.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Abzug Schuldzinsen  -->
-                    <div class="row" ng-if="vm.isFKJV()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float required" for="abzug_gewinnungskosten">
-                                    <span data-translate="FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN"></span>
-                                </label>
-                                <div class="dv-input-container-medium-select">
-                                    <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
-                                                   ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
-                                                   class="input-element" required>
-                                    </dv-valueinput>
-                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
-                                               ja="vm.getModel().finanzielleSituationJA.gewinnungskosten"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
-                                    <dv-error-messages input-id="abzug_gewinnungskosten" for="vm.form.gewinnungskosten.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
                 </fieldset>
 
                 <!--Buttons-->

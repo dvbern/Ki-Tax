@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-
-public interface KibonAnfrageService {
-
-	@Nonnull
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr) throws
-		KiBonAnfrageServiceException;
-}
+alter table finanzielle_situation add steuerdaten_abfrage_status varchar(255);
+alter table finanzielle_situation_aud add steuerdaten_abfrage_status varchar(255);

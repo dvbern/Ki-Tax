@@ -22,6 +22,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+
 /**
  * DTO fuer Finanzielle Situation
  */
@@ -68,6 +70,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	@Nullable
 	private BigDecimal bruttoLohn;
+
+	@Nullable
+	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
 
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
@@ -182,5 +187,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
 		this.bruttoLohn = bruttoLohn;
+	}
+
+	@Nullable
+	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
+		return steuerdatenAbfrageStatus;
+	}
+
+	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
+		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
 	}
 }
