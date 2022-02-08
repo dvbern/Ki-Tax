@@ -21,7 +21,10 @@ import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../../models/enums/TSRole';
-import {TSSteuerdatenAnfrageStatus} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
+import {
+    isSteuerdatenAnfrageStatusErfolgreich,
+    TSSteuerdatenAnfrageStatus
+} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -240,11 +243,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public isSteueranfrageErfolgreich(): boolean {
-        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff) &&
-            !this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED')) {
-            return true;
-        }
-        return false;
+        return this.steuerSchnittstelleAktiv
+            && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
+            && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
     public isFKJV(): boolean {

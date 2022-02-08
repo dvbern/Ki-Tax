@@ -25,3 +25,8 @@ export enum TSSteuerdatenAnfrageStatus {
     FAILED_GEBURTSDATUM = 'FAILED_GEBURTSDATUM',
     FAILED_UNTERJAEHRIGER_FALL = 'FAILED_UNTERJAEHRIGER_FALL',
 }
+
+export function isSteuerdatenAnfrageStatusErfolgreich(status: TSSteuerdatenAnfrageStatus): boolean {
+    return status === TSSteuerdatenAnfrageStatus.PROVISORISCH
+    || status === TSSteuerdatenAnfrageStatus.RECHTSKRAEFTIG;
+}

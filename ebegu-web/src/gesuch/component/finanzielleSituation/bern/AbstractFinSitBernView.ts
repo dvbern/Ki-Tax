@@ -16,7 +16,10 @@
  */
 
 import {IScope, ITimeoutService} from 'angular';
-import {TSSteuerdatenAnfrageStatus} from '../../../../models/enums/TSSteuerdatenAnfrageStatus';
+import {
+    isSteuerdatenAnfrageStatusErfolgreich,
+    TSSteuerdatenAnfrageStatus
+} from '../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
@@ -49,7 +52,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
 
     public showZugriffErfolgreich(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus) &&
-            !this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus.toString().startsWith('FAILED')
+            isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
