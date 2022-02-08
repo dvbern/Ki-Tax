@@ -132,7 +132,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	private BigDecimal durchschnittlicherGeschaeftsgewinn;
 
 	@Nullable
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	@JoinColumn(nullable = true)
 	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
 

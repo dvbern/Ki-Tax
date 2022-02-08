@@ -63,7 +63,6 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
-    // hier neu init
     public steuerveranlagungClicked(): void {
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2

@@ -169,7 +169,6 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 				LOGGER.info("KibonAnfrageService QName: {}", qname);
 				final Service service = Service.create(url, qname);
 				service.setHandlerResolver(portInfo -> Collections.singletonList(wssUsernameTokenSecurityHandler)); // handler that adds assertion to header, we need to check how it need to be apadted for this interface
-				//Ich hoffe eigentlich das die STS Server fur kiBonAnfrage ist gleich als die von Geres, wenn nicht muss man die STS Spezifikation anschauen und adaptieren der Handler entspechend
 				LOGGER.info("KibonAnfrageService created: {}", service);
 				port = service.getPort(KiBonAnfragePort.class);
 				LOGGER.info("KibonAnfrageService Port created: {}", port);
