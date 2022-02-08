@@ -182,9 +182,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 			familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-			familiensituation.setAuszahlungAnEltern(
-				finSitStartDTO.getAuszahlungAnEltern() != null && finSitStartDTO.getAuszahlungAnEltern()
-			);
 		}
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}

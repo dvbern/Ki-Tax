@@ -19,10 +19,14 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -126,6 +130,11 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Nullable
 	@Transient
 	private BigDecimal durchschnittlicherGeschaeftsgewinn;
+
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+	@JoinColumn(nullable = true)
+	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
 	public AbstractFinanzielleSituation() {
 	}
@@ -327,6 +336,15 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
 		this.abzugSchuldzinsen = abzugSchuldzinsen;
+	}
+
+	@Nullable
+	public FinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
+		return selbstdeklaration;
+	}
+
+	public void setSelbstdeklaration(@Nullable FinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		this.selbstdeklaration = selbstdeklaration;
 	}
 
 	@Nonnull

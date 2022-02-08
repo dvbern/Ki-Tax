@@ -36,8 +36,13 @@
 			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
 			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
 									  [model]="getModel()"
+                                      [dvValueChange]="onValueChangeFunction"
 									  [readOnly]="gesuchModelManager.isGesuchReadonly()"></dv-veranlagung-solothurn>
-			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()" [model]="getModel()"></dv-bruttolohn>
+			<dv-bruttolohn *ngIf="!hasSteuerveranlagungErhalten()"
+                           [model]="getModel()"
+						   [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
+            <dv-massgebendes-einkommen
+                [hasZweiGesuchsteller]="isGemeinsam()"></dv-massgebendes-einkommen>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
 			<dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>

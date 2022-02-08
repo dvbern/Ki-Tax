@@ -430,8 +430,6 @@ export class NavigatorController implements IController {
                 return this.navigateToLuzernStart();
             case TSFinanzielleSituationSubStepName.LUZERN_GS2:
                 return this.navigateToLuzernGS2();
-            case TSFinanzielleSituationSubStepName.LUZERN_RESULTATE:
-                return this.navigateToLuzernResultate();
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -541,13 +539,6 @@ export class NavigatorController implements IController {
     // tslint:disable-next-line:no-identical-functions
     private navigateToLuzernGS2(): any {
         return this.state.go('gesuch.finanzielleSituationGS2Luzern', {
-            gesuchId: this.getGesuchId(),
-        });
-    }
-
-    // tslint:disable-next-line:no-identical-functions
-    private navigateToLuzernResultate(): any {
-        return this.state.go('gesuch.finanzielleSituationResultateLuzern', {
             gesuchId: this.getGesuchId(),
         });
     }
