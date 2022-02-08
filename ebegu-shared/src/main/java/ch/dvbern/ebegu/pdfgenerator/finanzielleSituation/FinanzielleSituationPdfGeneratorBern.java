@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,21 +8,20 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.pdfgenerator;
+package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,11 +33,11 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
-import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -53,11 +52,9 @@ import com.lowagie.text.pdf.PdfPTable;
 
 import static java.util.Objects.requireNonNull;
 
-public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
+public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPdfGenerator {
 
-	private static final String TITLE = "PdfGeneration_FinSit_Title";
 	private static final String BASISJAHR = "PdfGeneration_FinSit_BasisJahr";
-	private static final String NAME = "PdfGeneration_FinSit_Name";
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String NETTOLOHN = "PdfGeneration_FinSit_Nettolohn";
 	private static final String FAMILIENZULAGEN = "PdfGeneration_FinSit_Familienzulagen";
@@ -91,11 +88,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
-	private final Verfuegung verfuegungFuerMassgEinkommen;
-	private final LocalDate erstesEinreichungsdatum;
-	private final boolean hasSecondGesuchsteller;
-	private final Mandant mandant;
-
 	@Nonnull
 	private FinanzielleSituation basisJahrGS1;
 	@Nullable
@@ -108,62 +100,18 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private Einkommensverschlechterung ekv2GS1;
 	@Nullable
 	private Einkommensverschlechterung ekv2GS2;
-	@Nonnull
-	private AbstractFinanzielleSituationRechner finanzielleSituationRechner;
 
-	public FinanzielleSituationPdfGenerator(
+	public FinanzielleSituationPdfGeneratorBern(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull LocalDate erstesEinreichungsdatum,
 		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
 	) {
-		super(gesuch, stammdaten);
-		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
-		this.erstesEinreichungsdatum = erstesEinreichungsdatum;
-
-		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt
-		// und
-		// der zweite GS bereits existiert.
-		boolean hasSecondGsEndeGP = hasSecondGesuchsteller();
-		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
-		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
-		this.finanzielleSituationRechner = finanzielleSituationRechner;
-		this.mandant = gesuch.getFall().getMandant();
+		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
 	}
 
-	@Nonnull
-	@Override
-	protected String getDocumentTitle() {
-		return translate(TITLE);
-	}
-
-	@Nonnull
-	@Override
-	protected CustomGenerator getCustomGenerator() {
-		return (generator, ctx) -> {
-			Document document = generator.getDocument();
-
-			initializeValues();
-
-			// Basisjahr
-			createPageBasisJahr(generator, document);
-			// Eventuelle Einkommenverschlechterung
-			EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-			if (ekvInfo != null) {
-				if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
-					createPageEkv1(generator, document);
-				}
-				if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
-					createPageEkv2(generator, document);
-				}
-			}
-			// Massgebendes Einkommen
-			createPageMassgebendesEinkommen(document);
-		};
-	}
-
-	private void initializeValues() {
+	protected void initializeValues() {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
@@ -204,7 +152,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		}
 	}
 
-	private void createPageBasisJahr(
+	protected void createPageBasisJahr(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
 		@Nonnull Document document
 	) {
@@ -264,7 +212,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.add(createTableZusammenzug(basisJahrGS1, basisJahrGS2));
 	}
 
-	private void createPageEkv1(
+	protected void createPageEkv1(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
 		@Nonnull Document document
 	) {
@@ -294,7 +242,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		addTablesToDocument(document, ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich);
 	}
 
-	private void createPageEkv2(
+	protected void createPageEkv2(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
 		@Nonnull Document document
 	) {
@@ -335,7 +283,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		return MathUtil.roundToFrankenRappen(durchschnitt);
 	}
 
-	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
+	protected void createPageMassgebendesEinkommen(@Nonnull Document document) {
 		List<String[]> values = new ArrayList<>();
 		String[] titles = {
 			translate(VON),
@@ -383,33 +331,11 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
 	}
 
-	private boolean isAbschnittZuSpaetEingereicht(VerfuegungZeitabschnitt abschnitt) {
-		return !abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum);
-	}
-
-	@Nonnull
-	private PdfPTable createIntroBasisjahr() {
-		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introBasisjahr.add(new TableRowLabelValue(
-			BASISJAHR,
-			String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
-		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
-	}
-
 	@Nonnull
 	private PdfPTable createIntroEkv() {
 		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		return PdfUtil.createIntroTable(introEkv1, sprache, mandant);
-	}
-
-	@Nonnull
-	private PdfPTable createIntroMassgebendesEinkommen() {
-		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
-		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
-		return PdfUtil.createIntroTable(introMassgEinkommen, sprache, mandant);
 	}
 
 	@Nonnull
@@ -476,29 +402,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		tableEinkommen.addRow(zwischentotal);
 		tableEinkommen.addRow(total);
 		return tableEinkommen.createTable();
-	}
-
-	private FinanzielleSituationRow createRow(
-		String message,
-		Function<AbstractFinanzielleSituation, BigDecimal> getter,
-		@Nullable AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2,
-		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
-		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
-	) {
-		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
-		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
-		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
-		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
-		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
-		row.setGs2(gs2BigDecimal);
-		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
-		}
-		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
-			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, mandant);
-		}
-		return row;
 	}
 
 	@Nonnull
