@@ -38,16 +38,24 @@ import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
+import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.pdf.PdfPTable;
 
 public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
 
-	protected static final String TITLE = "PdfGeneration_FinSit_Title";
+	private static final String TITLE = "PdfGeneration_FinSit_Title";
 	private static final String NAME = "PdfGeneration_FinSit_Name";
 	private static final String BASISJAHR = "PdfGeneration_FinSit_BasisJahr";
+	protected static final String VON = "PdfGeneration_MassgEinkommen_Von";
+	protected static final String BIS = "PdfGeneration_MassgEinkommen_Bis";
+	protected static final String JAHR = "PdfGeneration_MassgEinkommen_Jahr";
+	protected static final String MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEink";
+	protected static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	protected final Verfuegung verfuegungFuerMassgEinkommen;
 	protected final LocalDate erstesEinreichungsdatum;
@@ -106,7 +114,45 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected abstract void createPageBasisJahr(@Nonnull PdfGenerator generator, @Nonnull Document document);
 	protected abstract void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document);
 	protected abstract void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document);
-	protected abstract void createPageMassgebendesEinkommen(@Nonnull Document document);
+
+	protected void createPageMassgebendesEinkommen(@Nonnull Document document) {
+		List<String[]> values = new ArrayList<>();
+		String[] titles = {
+			translate(VON),
+			translate(BIS),
+			translate(JAHR),
+			translate(MASSG_EINK) };
+		values.add(titles);
+		// Falls alle Abschnitte *nach* dem ersten Einreichungsdatum liegen, wird das ganze Dokument nicht gedruckt
+		if (isAbschnittZuSpaetEingereicht(Iterables.getLast(verfuegungFuerMassgEinkommen.getZeitabschnitte()))) {
+			return;
+		}
+		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
+			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
+			if (isAbschnittZuSpaetEingereicht(abschnitt)) {
+				continue;
+			}
+			String[] data = {
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
+				String.valueOf(abschnitt.getEinkommensjahr()),
+				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
+			};
+			values.add(data);
+		}
+		final float[] widthMassgebendesEinkommen = { 5, 5, 6, 10 };
+		final int[] alignmentMassgebendesEinkommen = {
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT
+		};
+//		document.setPageSize(PageSize.A4.rotate());
+		document.newPage();
+		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
+		document.add(createIntroMassgebendesEinkommen());
+		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
+	};
 
 	@Nonnull
 	@Override
