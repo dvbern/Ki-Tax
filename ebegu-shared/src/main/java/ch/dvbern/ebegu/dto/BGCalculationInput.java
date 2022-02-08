@@ -242,6 +242,8 @@ public class BGCalculationInput {
 		this.kitaPlusZuschlag = toCopy.kitaPlusZuschlag;
 		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
 		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
+		this.geschwisternBonusKind2 = toCopy.geschwisternBonusKind2;
+		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 	}
 
@@ -811,6 +813,8 @@ public class BGCalculationInput {
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
 		this.betreuungInGemeinde = this.betreuungInGemeinde || other.betreuungInGemeinde;
 		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
+		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
+		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -933,7 +937,9 @@ public class BGCalculationInput {
 			this.tsInputOhneBetreuung.isSame(other.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == other.sozialhilfeempfaenger &&
 			this.kitaPlusZuschlag == other.kitaPlusZuschlag &&
-			this.isKesbPlatzierung == other.isKesbPlatzierung;
+			this.isKesbPlatzierung == other.isKesbPlatzierung &&
+			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
+			this.geschwisternBonusKind3== other.geschwisternBonusKind3;
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
