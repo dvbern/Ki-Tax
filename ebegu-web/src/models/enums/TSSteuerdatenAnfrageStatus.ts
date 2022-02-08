@@ -27,6 +27,7 @@ export enum TSSteuerdatenAnfrageStatus {
 }
 
 export function isSteuerdatenAnfrageStatusErfolgreich(status: TSSteuerdatenAnfrageStatus): boolean {
-    return status === TSSteuerdatenAnfrageStatus.PROVISORISCH
+    return status === TSSteuerdatenAnfrageStatus.OFFEN
+    || status === TSSteuerdatenAnfrageStatus.PROVISORISCH
     || status === TSSteuerdatenAnfrageStatus.RECHTSKRAEFTIG;
 }

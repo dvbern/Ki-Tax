@@ -409,8 +409,7 @@ public class FinanzielleSituationResource {
 	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS,
-		SACHBEARBEITER_BG, GESUCHSTELLER })
+	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
