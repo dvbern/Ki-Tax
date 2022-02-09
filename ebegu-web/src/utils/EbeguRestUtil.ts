@@ -1957,7 +1957,6 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.abzuegeLiegenschaft =
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
-
             abstractFinanzielleSituationTS.abzugSchuldzinsen = abstractFinanzielleSituationFromServer.abzugSchuldzinsen;
             abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft = abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
             abstractFinanzielleSituationTS.nettoVermoegen = abstractFinanzielleSituationFromServer.nettoVermoegen;
@@ -1967,7 +1966,7 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
             abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
             abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
-
+            abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
             return abstractFinanzielleSituationTS;
         }
         return undefined;

@@ -1483,4 +1483,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public changeKeineKesbPlatzierung(): void {
         this.getErweiterteBetreuungJA().keineKesbPlatzierung = !this.isKesbPlatzierung;
     }
+
+    public showAbrechnungGutscheine(): boolean {
+        return !this.isSavingData &&
+            (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
+    }
 }

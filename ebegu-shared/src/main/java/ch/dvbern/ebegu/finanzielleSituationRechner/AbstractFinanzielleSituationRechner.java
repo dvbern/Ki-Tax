@@ -355,16 +355,26 @@ public abstract class AbstractFinanzielleSituationRechner {
 	public static BigDecimal calcVermoegen5Prozent(
 		@Nullable AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2) {
-
-		final BigDecimal totalBruttovermoegen = add(
-			gs1 != null ? gs1.getBruttovermoegen() : BigDecimal.ZERO,
-			gs2 != null ? gs2.getBruttovermoegen() : BigDecimal.ZERO);
-
-		final BigDecimal totalSchulden = add(
-			gs1 != null ? gs1.getSchulden() : BigDecimal.ZERO,
-			gs2 != null ? gs2.getSchulden() : BigDecimal.ZERO);
+		BigDecimal totalBruttovermoegen = BigDecimal.ZERO;
+		BigDecimal totalSchulden = BigDecimal.ZERO;
+		BigDecimal nettovermoegen = BigDecimal.ZERO;
+		if(gs1 != null && Boolean.TRUE.equals(gs1.getSteuerdatenZugriff())) {
+			nettovermoegen = gs1.getNettoVermoegen();
+		}
+		else {
+			totalBruttovermoegen = gs1 != null ? gs1.getBruttovermoegen() : BigDecimal.ZERO;
+			totalSchulden = gs1 != null ? gs1.getSchulden() : BigDecimal.ZERO;
+		}
+		if(gs2 != null && Boolean.TRUE.equals(gs2.getSteuerdatenZugriff())) {
+			nettovermoegen = add(nettovermoegen, gs2.getNettoVermoegen());
+		}
+		else {
+			totalBruttovermoegen = add(totalBruttovermoegen, gs2 != null ? gs2.getBruttovermoegen() : BigDecimal.ZERO);
+			totalSchulden = add(totalSchulden, gs2 != null ? gs2.getSchulden() : BigDecimal.ZERO);
+		}
 
 		BigDecimal total = subtract(totalBruttovermoegen, totalSchulden);
+		total = add(total, nettovermoegen);
 		if (total.compareTo(BigDecimal.ZERO) < 0) {
 			total = BigDecimal.ZERO;
 		} //total vermoegen + schulden muss gruesser null sein, individuell pro gs kann es aber negativ sein

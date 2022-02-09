@@ -256,6 +256,17 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
 	}
 
+	@Nonnull
+	@Override
+	public FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
+		// Die eigentliche FinSit speichern
+		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+
+		return  finanzielleSituationPersisted;
+	}
+
 	/**
 	 * Es wird nach dem Param PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG gesucht, der einen Wert von 0 bis 100 haben muss.
 	 * Sollte der Parameter nicht definiert sein, wird 0 zurueckgegeben, d.h. keine Grenze fuer EKV

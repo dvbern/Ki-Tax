@@ -21,15 +21,20 @@ import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../../models/enums/TSRole';
+import {
+    isSteuerdatenAnfrageStatusErfolgreich,
+    TSSteuerdatenAnfrageStatus
+} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../../../abstractGesuchView';
+import {AbstractFinSitBernView} from '../AbstractFinSitBernView';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -43,7 +48,7 @@ export class FinanzielleSituationViewComponentConfig implements IComponentOption
     public controllerAs = 'vm';
 }
 
-export class FinanzielleSituationViewController extends AbstractGesuchViewController<TSFinanzModel> {
+export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public static $inject: string[] = [
         '$stateParams',
@@ -55,13 +60,14 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         '$scope',
         '$translate',
         '$timeout',
-        'EinstellungRS'
+        'EinstellungRS',
     ];
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
+    public showForm: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -79,7 +85,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
         let parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
@@ -99,15 +104,14 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
-        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
-        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
-            ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
+        this.initSelbstaendigkeit();
 
         this.settings.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
             this.gesuchModelManager.getGemeinde()?.id,
             this.gesuchModelManager.getGesuchsperiode()?.id)
             .then(setting => {
                 this.steuerSchnittstelleAktiv = (setting.value === 'true');
+                this.showFormular();
             });
     }
 
@@ -115,6 +119,12 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         if (!this.showSelbstaendig) {
             this.resetSelbstaendigFields();
         }
+    }
+
+    private initSelbstaendigkeit(): void {
+        this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
+        this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
+            ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
     }
 
     private resetSelbstaendigFields(): void {
@@ -141,30 +151,9 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
             return false;
         }
 
-        return this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt;
-    }
-
-    // hier neu init
-    public steuerveranlagungClicked(): void {
-        // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
-        // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
-        // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
-        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
-            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            if (this.model.gemeinsameSteuererklaerung) {
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            }
-        } else if (!this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
-            // Steuerveranlagung neu NEIN -> Fragen loeschen
-            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
-            if (this.model.gemeinsameSteuererklaerung) {
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
-                this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
-                    undefined;
-            }
-        }
+        return (this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
+            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt) &&
+            this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
@@ -193,10 +182,6 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         this.initViewModel();
     }
 
-    public getModel(): TSFinanzielleSituationContainer {
-        return this.model.getFiSiConToWorkWith();
-    }
-
     public getResultate(): TSFinanzielleSituationResultateDTO {
         return this.berechnungsManager.finanzielleSituationResultate;
     }
@@ -223,12 +208,52 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     public steuererklaerungClicked(): void {
-        if (this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt) {
+        this.showFormular();
+    }
+
+    public steuerdatenzugriffClicked(): void {
+        if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
+            this.callKiBonAnfrageAndUpdateFinSit();
+        } else {
+            this.showFormular();
+        }
+    }
+
+    private callKiBonAnfrageAndUpdateFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
+                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                this.initSelbstaendigkeit();
+                this.showFormular();
+            },
+        );
+    }
+
+    public showFormular(): void {
+        if (this.steuerSchnittstelleAktiv
+            && this.gesuchModelManager.getGesuch().isOnlineGesuch()
+            && this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt
+            && (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff))
+            && !this.model.gemeinsameSteuererklaerung
+        ) {
+            this.showForm = false;
             return;
         }
+        this.showForm = true;
+    }
+
+    public isSteueranfrageErfolgreich(): boolean {
+        return this.steuerSchnittstelleAktiv
+            && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
+            && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
     public isFKJV(): boolean {
         return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+    }
+
+    public showWarningPartnerNichtGemeinsam(): boolean {
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 }
