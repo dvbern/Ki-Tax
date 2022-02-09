@@ -17,16 +17,12 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -39,7 +35,6 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
@@ -176,29 +171,6 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 			BASISJAHR,
 			String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
 		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
-	}
-
-	protected final FinanzielleSituationRow createRow(
-		String message,
-		Function<AbstractFinanzielleSituation, BigDecimal> getter,
-		@Nullable AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2,
-		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
-		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
-	) {
-		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
-		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
-		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
-		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
-		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
-		row.setGs2(gs2BigDecimal);
-		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
-		}
-		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
-			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, mandant);
-		}
-		return row;
 	}
 
 	protected final boolean isAbschnittZuSpaetEingereicht(VerfuegungZeitabschnitt abschnitt) {

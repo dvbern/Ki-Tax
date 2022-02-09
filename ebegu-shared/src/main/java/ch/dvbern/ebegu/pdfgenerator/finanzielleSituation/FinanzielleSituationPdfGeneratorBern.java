@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,17 +90,17 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	@Nonnull
-	private FinanzielleSituation basisJahrGS1;
+	protected FinanzielleSituation basisJahrGS1;
 	@Nullable
-	private FinanzielleSituation basisJahrGS2;
+	protected FinanzielleSituation basisJahrGS2;
 	@Nullable
-	private Einkommensverschlechterung ekv1GS1;
+	protected Einkommensverschlechterung ekv1GS1;
 	@Nullable
-	private Einkommensverschlechterung ekv1GS2;
+	protected Einkommensverschlechterung ekv1GS2;
 	@Nullable
-	private Einkommensverschlechterung ekv2GS1;
+	protected Einkommensverschlechterung ekv2GS1;
 	@Nullable
-	private Einkommensverschlechterung ekv2GS2;
+	protected Einkommensverschlechterung ekv2GS2;
 
 	public FinanzielleSituationPdfGeneratorBern(
 		@Nonnull Gesuch gesuch,
@@ -444,6 +445,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 			vermoegen5Percent.setGs2(vermoegen5Prozent);
 		} else {
 			// Total wird bei 1 GS beim 1. GS eingetragen
+			// Total wird bei 1 GS beim 1. GS eingetragen
 			total.setGs1(totalVermoegenBeiderGS);
 			vermoegen5Percent.setGs1(vermoegen5Prozent);
 		}
@@ -543,5 +545,28 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 			translate(FUSSZEILE_EINKOMMEN),
 			translate(FUSSZEILE_VERMOEGEN),
 			translate(FUSSZEILE_ABZUEGE)));
+	}
+
+	protected final FinanzielleSituationRow createRow(
+		String message,
+		Function<AbstractFinanzielleSituation, BigDecimal> getter,
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
+	) {
+		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
+		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
+		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
+		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
+		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
+		row.setGs2(gs2BigDecimal);
+		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
+		}
+		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
+			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, mandant);
+		}
+		return row;
 	}
 }

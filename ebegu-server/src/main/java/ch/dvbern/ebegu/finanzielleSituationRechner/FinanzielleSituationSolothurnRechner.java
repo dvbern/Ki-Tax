@@ -113,7 +113,7 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 	}
 
 	private BigDecimal calcualteStuerbaresVermoegen5Prozent(BigDecimal steuerbaresVermoegen) {
-		if(isNullOrZero(steuerbaresVermoegen)) {
+		if (isNullOrZero(steuerbaresVermoegen)) {
 			return BigDecimal.ZERO;
 		}
 
