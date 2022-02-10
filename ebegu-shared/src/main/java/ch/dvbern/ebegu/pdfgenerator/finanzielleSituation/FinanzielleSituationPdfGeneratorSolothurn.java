@@ -53,7 +53,9 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	private static final String GESCHAEFTSGEWINN = "PdfGeneration_FinSit_Geschaeftsgewinn";
 	private static final String EINKOMMEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_EinkommenZwischentotal";
 	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
-	private static final String NETTOVERMOEGEN = "PdfGeneration_FinSit_Nettovermoegen";
+	private static final String STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_SteuerbaresVermoegen";
+	private static final String STEUERBARES_VERMOEGEN_5_PERCENT = "PdfGeneration_FinSit_SteuerbaresVermoegen5Percent";
+	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
 	private static final String BRUTTOVERMOEGEN = "PdfGeneration_FinSit_Bruttovermoegen";
 	private static final String SCHULDEN = "PdfGeneration_FinSit_Schulden";
 	private static final String NETTOVERMOEGEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_Nettovermoegen_Zwischentotal";
@@ -123,15 +125,31 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		createFusszeile(generator.getDirectContent());
 		document.add(createIntroBasisjahr());
 
-		var table = createVeranlagungTable(
-			basisJahrGS1.getFinanzielleSituationJA(),
-			basisJahrGS1.getFinanzielleSituationGS()
-		);
-		document.add(table);
+		createVeranlagungTable(document);
 		// TODO: continue
 	}
 
-	private PdfPTable createVeranlagungTable(
+	private void createVeranlagungTable(
+		@Nonnull Document document
+	) {
+		var einkommenTable = createEinkommenTable(
+			basisJahrGS1.getFinanzielleSituationJA(),
+			basisJahrGS1.getFinanzielleSituationGS()
+		);
+		var abzuegeTable = createAbzuegeTable(
+			basisJahrGS1.getFinanzielleSituationJA(),
+			basisJahrGS1.getFinanzielleSituationGS()
+		);
+		var vermoegenTable = createVermoegenTable(
+			basisJahrGS1.getFinanzielleSituationJA(),
+			basisJahrGS1.getFinanzielleSituationGS()
+		);
+		document.add(einkommenTable);
+		document.add(abzuegeTable);
+		document.add(vermoegenTable);
+	}
+
+	private PdfPTable createEinkommenTable(
 		@Nonnull FinanzielleSituation finSit,
 		@Nonnull FinanzielleSituation finSitUrsprunglich
 	) {
@@ -140,10 +158,10 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 				getPageConfiguration(),
 				false,
 				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
-				true);
+				false);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(MASSG_EINK_TITLE, mandant), gs1.getFullName());
+			translate(EIKOMMEN_TITLE, mandant), gs1.getFullName());
 
 		FinanzielleSituationRow nettolohn = createRow(
 			translate(NETTOLOHN, mandant),
@@ -159,6 +177,26 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finSitUrsprunglich
 		);
 
+		tableEinkommen.addRow(title);
+		tableEinkommen.addRow(nettolohn);
+		tableEinkommen.addRow(unterhaltsbeitraege);
+		return tableEinkommen.createTable();
+	}
+
+	private PdfPTable createAbzuegeTable(
+		@Nonnull FinanzielleSituation finSit,
+		@Nonnull FinanzielleSituation finSitUrsprunglich
+	) {
+		FinanzielleSituationTable tableAbzuege =
+			new FinanzielleSituationTable(
+				getPageConfiguration(),
+				false,
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+				false);
+
+		FinanzielleSituationRow title = new FinanzielleSituationRow(
+			translate(ABZUEGE, mandant), "");
+
 		FinanzielleSituationRow abzuegeKinder = createRow(
 			translate(KINDER_IN_AUSBILDUNG, mandant),
 			FinanzielleSituation::getAbzuegeKinderAusbildung,
@@ -166,9 +204,28 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finSitUrsprunglich
 		);
 
+		tableAbzuege.addRow(title);
+		tableAbzuege.addRow(abzuegeKinder);
+		return tableAbzuege.createTable();
+	}
+
+	private PdfPTable createVermoegenTable(
+		@Nonnull FinanzielleSituation finSit,
+		@Nonnull FinanzielleSituation finSitUrsprunglich
+	) {
+		FinanzielleSituationTable vermoegenTable =
+			new FinanzielleSituationTable(
+				getPageConfiguration(),
+				false,
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+				true);
+
+		FinanzielleSituationRow title = new FinanzielleSituationRow(
+			translate(VERMOEGEN, mandant), "");
+
 		FinanzielleSituationRow nettovermoegen = createRow(
-			translate(NETTOVERMOEGEN, mandant),
-			FinanzielleSituation::getNettoVermoegen,
+			translate(STEUERBARES_VERMOEGEN, mandant),
+			FinanzielleSituation::getSteuerbaresVermoegen,
 			finSit,
 			finSitUrsprunglich
 		);
@@ -177,7 +234,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, false);
 
 		FinanzielleSituationRow nettoVermoegen5Percent = new FinanzielleSituationRow(
-			translate(NETTOVERMOEGEN_5_PROZENT, mandant),
+			translate(STEUERBARES_VERMOEGEN_5_PERCENT, mandant),
 			finSitCalculate.getMassgebendesEinkVorAbzFamGrGS1()
 		);
 
@@ -185,16 +242,11 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			translate(MASSG_EINK, mandant),
 			finSitCalculate.getMassgebendesEinkVorAbzFamGrGS1()
 		);
-
-		tableEinkommen.addRow(title);
-		tableEinkommen.addRow(nettolohn);
-		tableEinkommen.addRow(unterhaltsbeitraege);
-		tableEinkommen.addRow(abzuegeKinder);
-		tableEinkommen.addRow(nettovermoegen);
-		tableEinkommen.addRow(nettoVermoegen5Percent);
-		tableEinkommen.addRow(massgEinkommen);
-
-		return tableEinkommen.createTable();
+		vermoegenTable.addRow(title);
+		vermoegenTable.addRow(nettovermoegen);
+		vermoegenTable.addRow(nettoVermoegen5Percent);
+		vermoegenTable.addRow(massgEinkommen);
+		return vermoegenTable.createTable();
 	}
 
 	protected final FinanzielleSituationRow createRow(
