@@ -91,7 +91,11 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 			return BigDecimal.ZERO;
 		}
 
-		return MathUtil.EXACT.multiply(finanzielleSituation.getBruttoLohn(), BigDecimal.valueOf(0.75));
+		var bruttovermoegenMultiplicated =
+			MathUtil.EXACT.multiply(finanzielleSituation.getBruttoLohn(), BigDecimal.valueOf(0.75));
+		BigDecimal steuerbaresVermoegen5Prozent =
+			calcualteStuerbaresVermoegen5Prozent(finanzielleSituation.getSteuerbaresVermoegen());
+		return MathUtil.EXACT.addNullSafe(bruttovermoegenMultiplicated, steuerbaresVermoegen5Prozent);
 	}
 
 	private BigDecimal calcuateMassgebendesEinkommenBasedOnNettoeinkommen(FinanzielleSituation finanzielleSituation) {
