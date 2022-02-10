@@ -30,7 +30,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
-        areThereOnlyBgBetreuungen: '=',
+        areThereAnyBgBetreuungen: '=',
         form: '=',
     };
     public template = require('./dv-finanzielle-situation-require.html');
@@ -47,7 +47,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
     public verguenstigungGewuenscht: boolean;
-    public areThereOnlyBgBetreuungen: boolean;
+    public areThereAnyBgBetreuungen: boolean;
     public isFinSitTypFkjv: boolean = false;
 
     public maxMassgebendesEinkommen: string;
@@ -89,7 +89,7 @@ export class DVFinanzielleSituationRequireController implements IController {
             && !this.sozialhilfeBezueger;
 
         if (this.isFinSitTypFkjv) {
-            if (isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen) {
+            if (isNotSozialhilfeBezueger && !this.areThereAnyBgBetreuungen) {
                 return true;
             }
             this.verguenstigungGewuenscht = true;
