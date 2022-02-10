@@ -26,7 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -53,10 +52,6 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 	@Inject
 	@SuppressWarnings("checkstyle:VisibilityModifier")
 	protected EbeguConfiguration configuration;
-
-	@Inject
-	@SuppressWarnings("checkstyle:VisibilityModifier")
-	protected PrincipalBean principalBean;
 
 	@Inject
 	@SuppressWarnings("checkstyle:VisibilityModifier")

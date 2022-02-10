@@ -55,8 +55,7 @@ public class EbeguRuntimeExceptionMapper extends AbstractEbeguExceptionMapper<Eb
 	@Nonnull
 	@Override
 	protected Response buildViolationReportResponse(EbeguRuntimeException exception, Response.Status status) {
-		Mandant mandant = principalBean.getMandant() != null ? principalBean.getMandant():
-				mandantService.getMandantBern();
+		Mandant mandant = exception.getMandant() != null ? exception.getMandant() : mandantService.getMandantBern();
 		return EbeguExceptionReport.buildResponse(status, exception, getLocaleFromHeader(), mandant, configuration.getIsDevmode());
 	}
 

@@ -87,7 +87,8 @@ public class EbeguConstraintValidationExceptionMapper
 			}
 			EbeguExistingAntragException ebeguExistingAntragException = new EbeguExistingAntragException(null, errorCodeEnum,
 				constraintViolationException, "", constraintName);
-			Mandant mandant = principalBean.getMandant() != null ? principalBean.getMandant() : mandantService.getMandantBern();
+			//No Mandant specific Exception possible for the constraints
+			Mandant mandant = mandantService.getMandantBern();
 			return EbeguExceptionReport.buildResponse(Status.CONFLICT, ebeguExistingAntragException, getLocaleFromHeader(), mandant, false);
 		}
 		// wir bauen hier auch eine eigene response fuer EJBTransactionRolledbackException die wir nicht erwarten
