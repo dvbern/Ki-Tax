@@ -55,7 +55,6 @@ import static java.util.Objects.requireNonNull;
 
 public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPdfGenerator {
 
-	private static final String BASISJAHR = "PdfGeneration_FinSit_BasisJahr";
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String NETTOLOHN = "PdfGeneration_FinSit_Nettolohn";
 	private static final String FAMILIENZULAGEN = "PdfGeneration_FinSit_Familienzulagen";
