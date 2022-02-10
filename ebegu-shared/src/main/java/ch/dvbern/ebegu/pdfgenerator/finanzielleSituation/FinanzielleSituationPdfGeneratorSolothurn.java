@@ -19,14 +19,16 @@ package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -45,30 +47,15 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String NETTOLOHN = "PdfGeneration_FinSit_Nettolohn";
-	private static final String FAMILIENZULAGEN = "PdfGeneration_FinSit_Familienzulagen";
-	private static final String ERSATZEINKOMMEN = "PdfGeneration_FinSit_Ersatzeinkommen";
 	private static final String ERH_UNTERHALTSBEITRAEGE = "PdfGeneration_FinSit_ErhalteneUnterhaltsbeitraege";
 	private static final String KINDER_IN_AUSBILDUNG = "PdfGeneration_KinderInAusbildung";
-	private static final String GESCHAEFTSGEWINN = "PdfGeneration_FinSit_Geschaeftsgewinn";
-	private static final String EINKOMMEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_EinkommenZwischentotal";
-	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
 	private static final String STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_SteuerbaresVermoegen";
-	private static final String STEUERBARES_VERMOEGEN_5_PERCENT = "PdfGeneration_FinSit_SteuerbaresVermoegen5Percent";
+	private static final String FOOTER_STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_FooterSteuerbaresVermoegen";
 	private static final String BRUTTOLOHN = "PdfGeneration_FinSit_Bruttolohn";
+	private static final String FOOTER_BRUTTOLOHN = "PdfGeneration_FinSit_FooterBruttolohn";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
-	private static final String BRUTTOVERMOEGEN = "PdfGeneration_FinSit_Bruttovermoegen";
-	private static final String SCHULDEN = "PdfGeneration_FinSit_Schulden";
-	private static final String NETTOVERMOEGEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_Nettovermoegen_Zwischentotal";
-	private static final String NETTOVERMOEGEN_TOTAL = "PdfGeneration_FinSit_Nettovermoegen_Total";
-	private static final String NETTOVERMOEGEN_5_PROZENT = "PdfGeneration_FinSit_Nettovermoegen_5_Prozent";
 	private static final String ABZUEGE = "PdfGeneration_FinSit_Abzuege";
-	private static final String UNTERHALTSBEITRAEGE_BEZAHLT = "PdfGeneration_FinSit_UnterhaltsbeitraegeBezahlt";
-	private static final String ABZUEGE_TOTAL = "PdfGeneration_FinSit_Abzuege_Total";
 	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
-	private static final String FUSSZEILE_EINKOMMEN = "PdfGeneration_FinSit_Fusszeile_Einkuenfte";
-	private static final String FUSSZEILE_VERMOEGEN = "PdfGeneration_FinSit_Fusszeile_Vermoegen";
-	private static final String FUSSZEILE_ABZUEGE = "PdfGeneration_FinSit_Fusszeile_Abzuege";
-	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 
 	@Nonnull
 	private Gesuchsteller gs1;
@@ -79,15 +66,9 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	@Nullable
 	private FinanzielleSituationContainer basisJahrGS2;
 	@Nullable
-	private Einkommensverschlechterung ekv1GS1;
-	@Nullable
-	private Einkommensverschlechterung ekv1GS2;
-	@Nullable
-	private Einkommensverschlechterung ekv2GS1;
-	@Nullable
-	private Einkommensverschlechterung ekv2GS2;
-	@Nullable
 	private FinanzielleSituationResultateDTO finanzDatenDTO;
+
+	private final List<String> footers = new ArrayList<>();
 
 	public FinanzielleSituationPdfGeneratorSolothurn(
 		@Nonnull Gesuch gesuch,
@@ -164,6 +145,12 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			addSpacing(document);
 			createTablezusammenzug(document);
 		}
+
+		var translatedFooters = footers.stream()
+			.map(this::translate)
+			.collect(Collectors.toList());
+
+		createFusszeile(generator.getDirectContent(), translatedFooters);
 	}
 
 	private void createMassgebendesEinkommenTableForGesuchsteller(
@@ -282,6 +269,8 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finSitUrsprunglich
 		);
 
+		addFooter(nettovermoegen, FOOTER_STEUERBARES_VERMOEGEN);
+
 		FinanzielleSituationRow massgEinkommen = new FinanzielleSituationRow(
 			translate(MASSG_EINK, mandant),
 			massgebendesEinkommen
@@ -299,21 +288,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		@Nonnull FinanzielleSituation finanzielleSituationGS,
 		@Nonnull String gesuchstellerName
 	) {
-		var bruttolohnTable = createBruttolohnTable(
-			finanzielleSituationJA,
-			finanzielleSituationGS,
-			gesuchstellerName
-		);
 
-		document.add(bruttolohnTable);
-	}
-
-	@Nonnull
-	private PdfPTable createBruttolohnTable(
-		@Nonnull FinanzielleSituation finSit,
-		@Nonnull FinanzielleSituation finSitUrsprunglich,
-		String gesuchstellerName
-	) {
 		FinanzielleSituationTable bruttolohnTable =
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
@@ -327,13 +302,24 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		FinanzielleSituationRow bruttolohn = createRow(
 			translate(BRUTTOLOHN, mandant),
 			FinanzielleSituation::getBruttoLohn,
-			finSit,
-			finSitUrsprunglich
+			finanzielleSituationJA,
+			finanzielleSituationGS
 		);
 
+		addFooter(bruttolohn, FOOTER_BRUTTOLOHN);
 		bruttolohnTable.addRow(title);
 		bruttolohnTable.addRow(bruttolohn);
-		return bruttolohnTable.createTable();
+
+		document.add(bruttolohnTable.createTable());
+
+	}
+
+	private void addFooter(@Nonnull FinanzielleSituationRow row, @Nonnull String footer) {
+		if (!footers.contains(footer)) {
+			footers.add(footer);
+		}
+		int supertext = footers.indexOf(footer) + 1;
+		row.setSupertext(" " + supertext);
 	}
 
 	private void createTablezusammenzug(@Nonnull Document document) {
