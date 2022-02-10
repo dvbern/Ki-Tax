@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.ApplicationException;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
 /**
@@ -37,8 +38,11 @@ public class EbeguException extends Exception {
 
 	private final String methodName;
 	private final List<Serializable> args;
+	@Nullable
 	private ErrorCodeEnum errorCodeEnum;
 	private String customMessage;
+	@Nullable
+	private Mandant mandant;
 
 	protected EbeguException(@Nullable String methodeName, @Nullable String message, @Nonnull Serializable... args) {
 		super(message);
@@ -73,6 +77,14 @@ public class EbeguException extends Exception {
 		this.args = Collections.unmodifiableList(Arrays.asList(args));
 	}
 
+	public EbeguException(@Nullable String methodName, @Nullable ErrorCodeEnum errorCodeEnum, @Nullable Mandant mandant, @Nullable Serializable... args) {
+		super();
+		this.errorCodeEnum = errorCodeEnum;
+		this.methodName = methodName;
+		this.mandant = mandant;
+		this.args = Collections.unmodifiableList(Arrays.asList(args));
+	}
+
 	public List<Serializable> getArgs() {
 		return args;
 	}
@@ -81,6 +93,7 @@ public class EbeguException extends Exception {
 		return methodName;
 	}
 
+	@Nullable
 	public ErrorCodeEnum getErrorCodeEnum() {
 		return errorCodeEnum;
 	}
@@ -88,4 +101,7 @@ public class EbeguException extends Exception {
 	public String getCustomMessage() {
 		return customMessage;
 	}
+
+	@Nullable
+	public Mandant getMandant() { return mandant;}
 }

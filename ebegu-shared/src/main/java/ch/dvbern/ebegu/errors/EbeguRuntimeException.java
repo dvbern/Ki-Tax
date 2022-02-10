@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.ApplicationException;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
 /**
@@ -42,6 +43,8 @@ public class EbeguRuntimeException extends RuntimeException {
 	private final ErrorCodeEnum errorCodeEnum;
 	@Nullable
 	private final String customMessage;
+	@Nullable
+	private Mandant mandant;
 
 	private KibonLogLevel logLevel = KibonLogLevel.WARN; // Defaultmaessig loggen wir im WARN-level
 
@@ -182,6 +185,20 @@ public class EbeguRuntimeException extends RuntimeException {
 	}
 
 	public EbeguRuntimeException(
+		@Nullable String methodName,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nullable Mandant mandant,
+		@Nonnull Serializable... args) {
+
+		super(errorCodeEnum != null ? errorCodeEnum.name() : null);
+		this.methodName = methodName;
+		this.errorCodeEnum = errorCodeEnum;
+		this.args = Collections.unmodifiableList(Arrays.asList(args));
+		this.mandant = mandant;
+		customMessage = null;
+	}
+
+	public EbeguRuntimeException(
 		@Nonnull KibonLogLevel logLevel,
 		@Nullable String methodName,
 		@Nullable ErrorCodeEnum errorCodeEnum,
@@ -234,4 +251,7 @@ public class EbeguRuntimeException extends RuntimeException {
 	public void setLogLevel(KibonLogLevel logLevel) {
 		this.logLevel = logLevel;
 	}
+
+	@Nullable
+	public Mandant getMandant() { return mandant;}
 }
