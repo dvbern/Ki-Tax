@@ -201,10 +201,10 @@ export class MandantService {
     public getMandantLoginState(mandant: KiBonMandant): string {
         switch (mandant) {
             case KiBonMandant.BE:
+            case KiBonMandant.NONE:
                 return 'authentication.login';
             case KiBonMandant.SO:
             case KiBonMandant.LU:
-            case KiBonMandant.NONE:
             default:
                 return 'authentication.locallogin';
         }
