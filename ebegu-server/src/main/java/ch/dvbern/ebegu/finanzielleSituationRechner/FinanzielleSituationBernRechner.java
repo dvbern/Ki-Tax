@@ -23,8 +23,10 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Gesuch;
+import org.apache.commons.lang.NotImplementedException;
 
 public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituationRechner {
 
@@ -113,5 +115,11 @@ public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituatio
 		}
 		gesuch.setFinanzDatenDTO_alleine(finanzDatenDTOAlleine);
 		gesuch.setFinanzDatenDTO_zuZweit(finanzDatenDTOZuZweit);
+	}
+
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		// bei Bern rechnen wir nie nach Veranlagung.
+		throw new NotImplementedException();
 	}
 }
