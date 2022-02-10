@@ -55,6 +55,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
 	private static final String STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_SteuerbaresVermoegen";
 	private static final String STEUERBARES_VERMOEGEN_5_PERCENT = "PdfGeneration_FinSit_SteuerbaresVermoegen5Percent";
+	private static final String BRUTTOLOHN = "PdfGeneration_FinSit_Bruttolohn";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
 	private static final String BRUTTOVERMOEGEN = "PdfGeneration_FinSit_Bruttovermoegen";
 	private static final String SCHULDEN = "PdfGeneration_FinSit_Schulden";
@@ -125,11 +126,15 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		createFusszeile(generator.getDirectContent());
 		document.add(createIntroBasisjahr());
 
-		createVeranlagungTable(document);
+		if (finanzielleSituationRechner.calculateByVeranlagung(basisJahrGS1.getFinanzielleSituationJA())) {
+			createTablesDeklarationByVeranlagung(document);
+		} else {
+			createTablesDeklarationByBruttolohn(document);
+		}
 		// TODO: continue
 	}
 
-	private void createVeranlagungTable(
+	private void createTablesDeklarationByVeranlagung(
 		@Nonnull Document document
 	) {
 		var einkommenTable = createEinkommenTable(
@@ -247,6 +252,48 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		vermoegenTable.addRow(nettoVermoegen5Percent);
 		vermoegenTable.addRow(massgEinkommen);
 		return vermoegenTable.createTable();
+	}
+
+	private void createTablesDeklarationByBruttolohn(@Nonnull Document document) {
+		var bruttolohnTable = createBruttolohnTable(
+			basisJahrGS1.getFinanzielleSituationJA(),
+			basisJahrGS1.getFinanzielleSituationGS()
+		);
+
+		var vermoegenTable = createVermoegenTable(
+			basisJahrGS1.getFinanzielleSituationJA(),
+			basisJahrGS1.getFinanzielleSituationGS()
+		);
+
+		document.add(bruttolohnTable);
+		document.add(vermoegenTable);
+	}
+
+	@Nonnull
+	private PdfPTable createBruttolohnTable(
+		@Nonnull FinanzielleSituation finSit,
+		@Nonnull FinanzielleSituation finSitUrsprunglich
+	) {
+		FinanzielleSituationTable bruttolohnTable =
+			new FinanzielleSituationTable(
+				getPageConfiguration(),
+				false,
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+				false);
+
+		FinanzielleSituationRow title = new FinanzielleSituationRow(
+			translate(BRUTTOLOHN, mandant), gs1.getFullName());
+
+		FinanzielleSituationRow bruttolohn = createRow(
+			translate(BRUTTOLOHN, mandant),
+			FinanzielleSituation::getBruttoLohn,
+			finSit,
+			finSitUrsprunglich
+		);
+
+		bruttolohnTable.addRow(title);
+		bruttolohnTable.addRow(bruttolohn);
+		return bruttolohnTable.createTable();
 	}
 
 	protected final FinanzielleSituationRow createRow(
