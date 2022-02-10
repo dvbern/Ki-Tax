@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
@@ -55,7 +54,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected final Verfuegung verfuegungFuerMassgEinkommen;
 	protected final LocalDate erstesEinreichungsdatum;
 	protected final boolean hasSecondGesuchsteller;
-	protected final Mandant mandant;
+
 	@Nonnull
 	protected AbstractFinanzielleSituationRechner finanzielleSituationRechner;
 
@@ -77,7 +76,6 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
 		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
 		this.finanzielleSituationRechner = finanzielleSituationRechner;
-		this.mandant = gesuch.getFall().getMandant();
 	}
 
 	@Nonnull
