@@ -122,6 +122,15 @@
         </dv-input-label-field>
     </div>
 </div>
+<div class="row">
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [model]="getEinkommenForCurrentAntragsteller()"
+            [labelMessageKey]="'FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'"
+            [inputDisabled]="true">
+        </dv-input-label-field>
+    </div>
+</div>
 <mat-divider></mat-divider>
 <h3 class="margin-bottom-20">{{'ABZUEGE_IM_JAHR' | translate}} {{year}}</h3>
 <div class="row">
@@ -304,6 +313,15 @@
         </dv-input-label-field>
     </div>
 </div>
+<div class="row">
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [model]="getAbzuegeForCurrentAntragsteller()"
+            [labelMessageKey]="'FINANZIELLE_SITUATION_TOTAL_ABZUEGE'"
+            [inputDisabled]="true">
+        </dv-input-label-field>
+    </div>
+</div>
 <mat-divider></mat-divider>
 <h3 class="margin-bottom-20">{{'VERMOEGEN_IM_JAHR' | translate }} {{year}}</h3>
 <div class="row">
@@ -339,6 +357,16 @@
             [inputRequired]="true"
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly">
+        </dv-input-label-field>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6">
+        <dv-input-label-field
+            [model]="getEinkommenForCurrentAntragsteller()"
+            [labelMessageKey]="'STEUERBARES_EINKOMMEN_GEMAESS_SELBSTDEKLARATION'"
+            [inputDisabled]="true">
         </dv-input-label-field>
     </div>
 </div>

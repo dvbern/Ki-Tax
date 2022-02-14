@@ -30,22 +30,37 @@ public class FinanzielleSituationResultateDTO {
 	private BigDecimal geschaeftsgewinnDurchschnittGesuchsteller1 = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal geschaeftsgewinnDurchschnittGesuchsteller2 = BigDecimal.ZERO;
-	@Nullable
-	private BigDecimal einkommenBeiderGesuchsteller = BigDecimal.ZERO;
 	private BigDecimal nettovermoegenXProzent = BigDecimal.ZERO;
 	private BigDecimal anrechenbaresEinkommen = BigDecimal.ZERO;
-	private BigDecimal abzuegeBeiderGesuchsteller = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkVorAbzFamGr = BigDecimal.ZERO;
 
 	private BigDecimal massgebendesEinkVorAbzFamGrGS1 = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkVorAbzFamGrGS2 = BigDecimal.ZERO;
+
+	@Nullable
+	private BigDecimal einkommenBeiderGesuchsteller = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal einkommenGS1 = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal einkommenGS2 = BigDecimal.ZERO;
+
+	private BigDecimal abzuegeBeiderGesuchsteller = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal abzuegeGS1 = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal abzuegeGS2 = BigDecimal.ZERO;
+
+	@Nullable
+	private BigDecimal vermoegenGS1 = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal vermoegenGS2 = BigDecimal.ZERO;
 
 	public FinanzielleSituationResultateDTO() {
 		initToZero();
 	}
 
 	private void initToZero() {
-		// Alle Werte auf 0 initialisieren, falls Null
+		// Alle Werte, die nicht null sein dürfen, auf 0 initialisieren, falls Null
 		// Wenn negativ -> 0
 		geschaeftsgewinnDurchschnittGesuchsteller1 = MathUtil.positiveNonNullAndRound(geschaeftsgewinnDurchschnittGesuchsteller1);
 		geschaeftsgewinnDurchschnittGesuchsteller2 = MathUtil.positiveNonNullAndRound(geschaeftsgewinnDurchschnittGesuchsteller2);
@@ -129,5 +144,59 @@ public class FinanzielleSituationResultateDTO {
 
 	public void setMassgebendesEinkVorAbzFamGrGS2(BigDecimal massgebendesEinkVorAbzFamGrGS2) {
 		this.massgebendesEinkVorAbzFamGrGS2 = massgebendesEinkVorAbzFamGrGS2;
+	}
+
+	@Nullable
+	public BigDecimal getEinkommenGS1() {
+		return einkommenGS1;
+	}
+
+	public void setEinkommenGS1(@Nullable BigDecimal einkommenGS1) {
+		this.einkommenGS1 = einkommenGS1;
+	}
+
+	@Nullable
+	public BigDecimal getEinkommenGS2() {
+		return einkommenGS2;
+	}
+
+	public void setEinkommenGS2(@Nullable BigDecimal einkommenGS2) {
+		this.einkommenGS2 = einkommenGS2;
+	}
+
+	@Nullable
+	public BigDecimal getAbzuegeGS1() {
+		return abzuegeGS1;
+	}
+
+	public void setAbzuegeGS1(@Nullable BigDecimal abzuegeGS1) {
+		this.abzuegeGS1 = abzuegeGS1;
+	}
+
+	@Nullable
+	public BigDecimal getAbzuegeGS2() {
+		return abzuegeGS2;
+	}
+
+	public void setAbzuegeGS2(@Nullable BigDecimal abzuegeGS2) {
+		this.abzuegeGS2 = abzuegeGS2;
+	}
+
+	@Nullable
+	public BigDecimal getVermoegenGS1() {
+		return vermoegenGS1;
+	}
+
+	public void setVermoegenGS1(@Nullable BigDecimal vermoegenGS1) {
+		this.vermoegenGS1 = vermoegenGS1;
+	}
+
+	@Nullable
+	public BigDecimal getVermoegenGS2() {
+		return vermoegenGS2;
+	}
+
+	public void setVermoegenGS2(@Nullable BigDecimal vermoegenGS2) {
+		this.vermoegenGS2 = vermoegenGS2;
 	}
 }
