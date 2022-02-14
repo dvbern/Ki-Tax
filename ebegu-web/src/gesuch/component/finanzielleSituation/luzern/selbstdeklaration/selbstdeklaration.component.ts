@@ -87,6 +87,9 @@ export class SelbstdeklarationComponent implements OnInit {
     }
 
     public getEinkommenForCurrentAntragsteller(): number  {
+        if (!this.resultate) {
+            return null;
+        }
         if (this.antragstellerNummer === 1) {
             return this.resultate.einkommenGS1;
         }
@@ -97,6 +100,9 @@ export class SelbstdeklarationComponent implements OnInit {
     }
 
     public getAbzuegeForCurrentAntragsteller(): number  {
+        if (!this.resultate) {
+            return null;
+        }
         if (this.antragstellerNummer === 1) {
             return this.resultate.abzuegeGS1;
         }
@@ -107,6 +113,9 @@ export class SelbstdeklarationComponent implements OnInit {
     }
 
     public getVermoegenForCurrentAntragsteller(): number  {
+        if (!this.resultate) {
+            return null;
+        }
         if (this.antragstellerNummer === 1) {
             return this.resultate.vermoegenGS1;
         }
