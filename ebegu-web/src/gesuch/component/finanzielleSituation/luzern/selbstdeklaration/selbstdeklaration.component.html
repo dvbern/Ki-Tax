@@ -364,8 +364,9 @@
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
-            [model]="getEinkommenForCurrentAntragsteller()"
-            [labelMessageKey]="'STEUERBARES_EINKOMMEN_GEMAESS_SELBSTDEKLARATION'"
+            [model]="getVermoegenForCurrentAntragsteller()"
+            [labelMessageKey]="'ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION'"
+            [tooltipMessageKey]="'ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION_HINT'"
             [inputDisabled]="true">
         </dv-input-label-field>
     </div>

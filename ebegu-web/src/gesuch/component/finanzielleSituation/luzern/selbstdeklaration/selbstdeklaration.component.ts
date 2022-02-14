@@ -117,10 +117,10 @@ export class SelbstdeklarationComponent implements OnInit {
             return null;
         }
         if (this.antragstellerNummer === 1) {
-            return this.resultate.vermoegenGS1;
+            return this.resultate.vermoegenXPercentAnrechenbarGS1;
         }
         if (this.antragstellerNummer === 2) {
-            return this.resultate.vermoegenGS2;
+            return this.resultate.vermoegenXPercentAnrechenbarGS2;
         }
         return null;
     }

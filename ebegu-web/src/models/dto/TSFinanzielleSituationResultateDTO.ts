@@ -27,8 +27,8 @@ export class TSFinanzielleSituationResultateDTO {
     private _einkommenGS2: number;
     private _abzuegeGS1: number;
     private _abzuegeGS2: number;
-    private _vermoegenGS1: number;
-    private _vermoegenGS2: number;
+    private _vermoegenXPercentAnrechenbarGS1: number;
+    private _vermoegenXPercentAnrechenbarGS2: number;
 
     public constructor(
         geschaeftsgewinnDurchschnittGesuchsteller1?: number,
@@ -151,19 +151,19 @@ export class TSFinanzielleSituationResultateDTO {
         this._abzuegeGS2 = value;
     }
 
-    public get vermoegenGS1(): number {
-        return this._vermoegenGS1;
+    public get vermoegenXPercentAnrechenbarGS1(): number {
+        return this._vermoegenXPercentAnrechenbarGS1;
     }
 
-    public set vermoegenGS1(value: number) {
-        this._vermoegenGS1 = value;
+    public set vermoegenXPercentAnrechenbarGS1(value: number) {
+        this._vermoegenXPercentAnrechenbarGS1 = value;
     }
 
-    public get vermoegenGS2(): number {
-        return this._vermoegenGS2;
+    public get vermoegenXPercentAnrechenbarGS2(): number {
+        return this._vermoegenXPercentAnrechenbarGS2;
     }
 
-    public set vermoegenGS2(value: number) {
-        this._vermoegenGS2 = value;
+    public set vermoegenXPercentAnrechenbarGS2(value: number) {
+        this._vermoegenXPercentAnrechenbarGS2 = value;
     }
 }
