@@ -2185,6 +2185,7 @@ export class EbeguRestUtil {
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
+        restKind.inPruefung = kind.inPruefung;
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
         }
@@ -2250,6 +2251,7 @@ export class EbeguRestUtil {
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
+            kindTS.inPruefung = kindFromServer.inPruefung;
             if (kindFromServer.pensumFachstelle) {
                 kindTS.pensumFachstelle =
                     this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
