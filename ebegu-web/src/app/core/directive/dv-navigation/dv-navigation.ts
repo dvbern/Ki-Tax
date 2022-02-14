@@ -309,7 +309,8 @@ export class NavigatorController implements IController {
                 nextSubStep,
                 nextMainStep);
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -423,7 +424,6 @@ export class NavigatorController implements IController {
             case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 return this.navigateToFinanziellSituationResultate();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
-                return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.LUZERN_START:
@@ -468,6 +468,7 @@ export class NavigatorController implements IController {
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
                 return this.state.go('gesuch.dokumente', gesuchIdParam);
@@ -495,7 +496,18 @@ export class NavigatorController implements IController {
     }
 
     private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            return this.navigateToStepEinkommensverschlechterungLuzern(gsNumber, basisjahrPlus);
+        }
         return this.state.go('gesuch.einkommensverschlechterung', {
+            gesuchstellerNumber: gsNumber ? gsNumber : '1',
+            basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToStepEinkommensverschlechterungLuzern(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+        return this.state.go('gesuch.einkommensverschlechterungLuzern', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),

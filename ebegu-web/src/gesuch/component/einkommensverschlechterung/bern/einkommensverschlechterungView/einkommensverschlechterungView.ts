@@ -14,19 +14,19 @@
  */
 
 import {IComponentOptions, ILogService, IPromise, IQService} from 'angular';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSRole} from '../../../models/enums/TSRole';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSEinkommensverschlechterung} from '../../../models/TSEinkommensverschlechterung';
-import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
-import {TSFinanzModel} from '../../../models/TSFinanzModel';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {IEinkommensverschlechterungStateParams} from '../../gesuch.route';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSRole} from '../../../../../models/enums/TSRole';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
+import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {IEinkommensverschlechterungStateParams} from '../../../../gesuch.route';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;

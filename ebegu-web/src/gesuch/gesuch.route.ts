@@ -700,6 +700,32 @@ export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration
     };
 }
 
+export class EbeguEinkommensverschlechterungLuzernState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungLuzern';
+    public url = '/lu/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
+    public params = {
+        gesuchstellerNumber: '1',
+        basisjahrPlus: '1',
+    };
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<einkommensverschlechterung-luzern-view>',
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
     public name = 'gesuch.einkommensverschlechterungResultate';
     public url = '/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
@@ -895,6 +921,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguVerfuegenState(),
     new EbeguEinkommensverschlechterungInfoState(),
     new EbeguEinkommensverschlechterungState(),
+    new EbeguEinkommensverschlechterungLuzernState(),
     new EbeguEinkommensverschlechterungResultateState(),
     new EbeguDokumenteState(),
     new EbeguFreigabeState(),

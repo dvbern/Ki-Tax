@@ -14,18 +14,18 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSEinkommensverschlechterung} from '../../../models/TSEinkommensverschlechterung';
-import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
-import {TSFinanzModel} from '../../../models/TSFinanzModel';
-import {IEinkommensverschlechterungResultateStateParams} from '../../gesuch.route';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
+import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {IEinkommensverschlechterungResultateStateParams} from '../../../../gesuch.route';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;

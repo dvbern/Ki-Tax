@@ -270,7 +270,8 @@ export class DvNavigationXComponent implements OnInit {
                 nextMainStep);
             return;
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -466,6 +467,7 @@ export class DvNavigationXComponent implements OnInit {
                 this.$state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
                 return;
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
                 this.$state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
                 return;
             case TSWizardStepName.DOKUMENTE:
@@ -497,7 +499,18 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            return this.navigateToStepEinkommensverschlechterungLuzern(gsNumber, basisjahrPlus);
+        }
         return this.$state.go('gesuch.einkommensverschlechterung', {
+            gesuchstellerNumber: gsNumber ? gsNumber : '1',
+            basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToStepEinkommensverschlechterungLuzern(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+        return this.$state.go('gesuch.einkommensverschlechterungLuzern', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
@@ -556,7 +569,7 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToSolothurnGS1(): any {
         return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 1
+            gsNummer: 1,
         });
     }
 
@@ -564,7 +577,7 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToSolothurnGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 2
+            gsNummer: 2,
         });
     }
 
