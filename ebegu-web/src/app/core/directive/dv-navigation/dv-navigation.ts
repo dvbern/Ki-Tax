@@ -384,12 +384,13 @@ export class NavigatorController implements IController {
             return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
         }
 
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-                return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             if (this.dvSubStep === 3) {
                 return this.navigatePreviousEVSubStep3();
@@ -668,13 +669,13 @@ export class NavigatorController implements IController {
         if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             // ist Zustand 2/1
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
         }
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) { // ist Zustand 1/2
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/2
@@ -683,7 +684,7 @@ export class NavigatorController implements IController {
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
         }
         // ist Zustand 2/2
         if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
@@ -695,7 +696,7 @@ export class NavigatorController implements IController {
         if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
             return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
         }
-        return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+        return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
     }
 
     private navigatePreviousEVSubStep4(): TransitionPromise {

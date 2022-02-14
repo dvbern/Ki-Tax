@@ -84,7 +84,7 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationSelbstdeklarationLuzern', downgradeComponent({component: SelbstdeklarationComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
-        .component('EinkommensverschlechterungLuzernView,', downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
+        .component('einkommensverschlechterungLuzernView,', downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())

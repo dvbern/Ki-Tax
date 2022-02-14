@@ -16,7 +16,7 @@
               #form="ngForm"
               novalidate>
             <div class="col-md-12">
-                <dv-selbstdeklaration [antragstellerNummer]="getAntragstellerNummer()"
+                <dv-selbstdeklaration [antragstellerNummer]="this.model.getGesuchstellerNumber()"
                                       [isGemeinsam]="false"
                                       [readOnly]=" this.gesuchModelManager.isGesuchReadonly()"
                                       [finanzModel]="model"
@@ -24,8 +24,8 @@
                                       [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith()"
                                       [isEKV]="true"
                 ></dv-selbstdeklaration>
-                <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="true" [dvNext]="true"
-                                 [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+                <dv-navigation-x (dvSave)="save()" [dvPrevious]="true" [dvNext]="true"
+                                 [dvSubStep]="3"></dv-navigation-x>
             </div>
         </form>
     </div>

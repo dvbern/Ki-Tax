@@ -15,11 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
@@ -31,8 +35,9 @@ import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/l
     styleUrls: ['./einkommensverschlechterung-luzern-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel>
-    implements OnInit {
+export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
+
+    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -58,7 +63,30 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
-    ngOnInit(): void {
+    public save(): IPromise<TSEinkommensverschlechterungContainer> {
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
+        if (!this.form.dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return Promise.resolve(this.model.getEkvContToWorkWith());
+        }
+        this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveEinkommensverschlechterungContainer();
     }
 
+    private isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            for (const control in this.form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
+                    this.form.controls[control].markAsTouched({onlySelf: true});
+                }
+            }
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
+    }
 }

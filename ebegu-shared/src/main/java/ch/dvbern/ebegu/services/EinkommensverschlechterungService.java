@@ -40,7 +40,7 @@ public interface EinkommensverschlechterungService {
 	 * @return Die aktualisierte EinkommensverschlechterungContainer
 	 */
 	@Nonnull
-	EinkommensverschlechterungContainer saveEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, String gesuchId);
+	EinkommensverschlechterungContainer saveEinkommensverschlechterungContainer(@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, Gesuch gesuch);
 
 	/**
 	 * @param key PK (id) der EinkommensverschlechterungContainer

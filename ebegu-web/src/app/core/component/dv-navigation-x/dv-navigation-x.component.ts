@@ -354,12 +354,13 @@ export class DvNavigationXComponent implements OnInit {
             return;
         }
 
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-                this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             if (this.dvSubStep === 3) {
                 this.navigatePreviousEVSubStep3();
@@ -705,7 +706,7 @@ export class DvNavigationXComponent implements OnInit {
         if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                this.navigateToStep(this.wizardStepManager.getCurrentStepName());
                 return;
             }
             // ist Zustand 2/1
@@ -713,7 +714,7 @@ export class DvNavigationXComponent implements OnInit {
                 this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
                 return;
             }
-            this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             return;
         }
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) { // ist Zustand 1/2
@@ -725,7 +726,7 @@ export class DvNavigationXComponent implements OnInit {
                 this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
                 return;
             }
-            this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             return;
         }
         // ist Zustand 2/2

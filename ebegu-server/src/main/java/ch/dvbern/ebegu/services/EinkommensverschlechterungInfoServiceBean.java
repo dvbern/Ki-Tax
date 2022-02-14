@@ -85,7 +85,7 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 		convertedEkvi.setGesuch(gesuchService.updateGesuch(gesuch, false, null)); // saving gesuch cascades and saves Ekvi too
 
 		wizardStepService.updateSteps(gesuch.getId(), oldEVData,
-			convertedEkvi, WizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+			convertedEkvi, wizardStepService.getEKVWizardStepNameForGesuch(gesuch));
 
 		//cannot return convertedEkvi because it hasn't been updated after the Gesuch was saved. So we need to take
 		// it from the Gesuch

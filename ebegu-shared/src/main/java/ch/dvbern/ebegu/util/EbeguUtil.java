@@ -270,7 +270,7 @@ public final class EbeguUtil {
 				return false;
 			}
 		}
-		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
+		if ((wizardStepName == null || wizardStepName.isEKVWizardStepName())
 			&& gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
 			.getEinkommensverschlechterung()) {
