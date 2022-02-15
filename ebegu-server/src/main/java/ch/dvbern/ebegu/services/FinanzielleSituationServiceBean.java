@@ -180,9 +180,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 			familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 			familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-			familiensituation.setAuszahlungAnEltern(
-				finSitStartDTO.getAuszahlungAnEltern() != null && finSitStartDTO.getAuszahlungAnEltern()
-			);
 		}
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}
@@ -257,6 +254,17 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch) {
 		final BigDecimal minimumEKV = calculateGrenzwertEKV(gesuch);
 		FinanzielleSituationRechnerFactory.getRechner(gesuch).calculateFinanzDaten(gesuch, minimumEKV);
+	}
+
+	@Nonnull
+	@Override
+	public FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation) {
+		authorizer.checkWriteAuthorization(finanzielleSituation);
+
+		// Die eigentliche FinSit speichern
+		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+
+		return  finanzielleSituationPersisted;
 	}
 
 	/**

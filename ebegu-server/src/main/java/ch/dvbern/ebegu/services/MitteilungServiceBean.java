@@ -1252,7 +1252,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				joinBesitzer,
 				joinSender,
 				joinEmpfaenger,
-				joinEmpfaengerBerechtigungen
+				joinEmpfaengerBerechtigungen,
+				user.getMandant()
 			);
 			break;
 		case COUNT:
@@ -1301,16 +1302,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@SuppressWarnings("ReuseOfLocalVariable")
 	private void constructOrderByClause(
-		@Nonnull MitteilungTableFilterDTO tableFilterDTO,
-		CriteriaBuilder cb,
-		CriteriaQuery query,
-		Root<Mitteilung> root,
-		Join<Dossier, Fall> joinFall,
-		Join<Fall, Benutzer> joinBesitzer,
-		Join<Mitteilung, Benutzer> joinSender,
-		@Nullable Join<Mitteilung, Benutzer> joinEmpfaenger,
-		@Nullable SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen
-	) {
+			@Nonnull MitteilungTableFilterDTO tableFilterDTO,
+			CriteriaBuilder cb,
+			CriteriaQuery query,
+			Root<Mitteilung> root,
+			Join<Dossier, Fall> joinFall,
+			Join<Fall, Benutzer> joinBesitzer,
+			Join<Mitteilung, Benutzer> joinSender,
+			@Nullable Join<Mitteilung, Benutzer> joinEmpfaenger,
+			@Nullable SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen,
+			Mandant mandant) {
 		Expression<?> expression = null;
 		if (tableFilterDTO.getSort() != null && tableFilterDTO.getSort().getPredicate() != null) {
 			switch (tableFilterDTO.getSort().getPredicate()) {
@@ -1352,10 +1353,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					Expression<Boolean> isActiveBg = cb.and(predicateActive, predicateBg);
 					Expression<Boolean> isActiveTs = cb.and(predicateActive, predicateTs);
 					Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
-					String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache);
-					String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache);
+					String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache, mandant);
+					String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache, mandant);
 					String bg_ts =
-						ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache);
+						ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache, mandant);
 					expression = cb.selectCase().when(isActiveBg, bg).when(isActiveTs, ts).otherwise(bg_ts);
 				}
 				break;

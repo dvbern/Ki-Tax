@@ -13,6 +13,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 export class BruttolohnComponent implements OnInit {
 
   @Input() public model: TSFinanzielleSituationContainer;
+  @Input() public dvValueChange: () => void;
 
   public constructor(
       public gesuchModelManager: GesuchModelManager

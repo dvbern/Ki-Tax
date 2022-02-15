@@ -34,11 +34,10 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Regelwerk;
-import ch.dvbern.ebegu.rechner.AbstractRechner;
+import ch.dvbern.ebegu.rechner.AbstractBernRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungBGRechnerRule;
-import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -47,7 +46,7 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 /**
  * Superklasse für BG-Rechner
  */
-public abstract class AbstractKitaxRechner extends AbstractRechner {
+public abstract class AbstractKitaxBernRechner extends AbstractBernRechner {
 
 	private final RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
 
@@ -63,7 +62,7 @@ public abstract class AbstractKitaxRechner extends AbstractRechner {
 	protected static final BigDecimal ZWANZIG = MathUtil.EXACT.from(20L);
 	protected static final BigDecimal ZWEIHUNDERTVIERZIG = MathUtil.EXACT.from(240L);
 
-	protected AbstractKitaxRechner(
+	protected AbstractKitaxBernRechner(
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
 		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,
 		@Nonnull Locale locale

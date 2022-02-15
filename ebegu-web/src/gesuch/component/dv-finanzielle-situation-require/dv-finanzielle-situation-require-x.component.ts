@@ -16,12 +16,17 @@ import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from 
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+
+const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
 
 @Component({
     selector: 'dv-finanzielle-situation-require-x',
@@ -44,7 +49,12 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public finanzielleSituationRequired: boolean;
     @Output()
     public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
+
+    @Input()
+    public areThereOnlyBgBetreuungen: boolean;
+
     private maxMassgebendesEinkommen: string;
+    private isFinSitTypFkjv: boolean = false;
 
     public allowedRoles: ReadonlyArray<TSRole>;
 
@@ -53,7 +63,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly translate: TranslateService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS
     ) {
     }
 
@@ -67,12 +78,18 @@ export class DvFinanzielleSituationRequireX implements OnInit {
                 this.maxMassgebendesEinkommen = response.value;
             });
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+
+        this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
+            this.gesuchModelManager.getGemeinde())
+            .subscribe(typ => {
+                this.isFinSitTypFkjv = TSFinanzielleSituationTyp.BERN_FKJV === typ;
+            },  err => LOG.error(err));
     }
 
     public setFinanziellesituationRequired(): void {
         const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger,
             this.verguenstigungGewuenscht);
-        // Wenn es sich geändert und nicht den Initialwert "undefined" hat, müssen gewisse Daten gesetzt werden
+        // Wenn es sich geï¿½ndert und nicht den Initialwert "undefined" hat, mï¿½ssen gewisse Daten gesetzt werden
         if (EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
             required !== this.finanzielleSituationRequired &&
             this.gesuchModelManager.getGesuch()) {
@@ -84,12 +101,24 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt,
+     * wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde und
+     * wenn es sich um keinen reinen BG-Antrag in der FKJV FinSit handelt
      */
     public showFinanzielleSituationDeklarieren(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
+        const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
             && !this.sozialhilfeBezueger;
+
+        if (this.isFinSitTypFkjv) {
+            if (isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen) {
+                return true;
+            }
+            this.verguenstigungGewuenscht = true;
+            this.setFinanziellesituationRequired();
+            return false;
+        }
+
+        return isNotSozialhilfeBezueger;
     }
 
     public getMaxMassgebendesEinkommen(): string {

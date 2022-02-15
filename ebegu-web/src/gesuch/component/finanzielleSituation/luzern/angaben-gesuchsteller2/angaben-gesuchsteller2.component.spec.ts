@@ -46,7 +46,8 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchMod
         'isGesuchsteller2Required',
         'isGesuchReadonly',
         'getGesuchsperiode',
-        'getGemeinde'
+        'getGemeinde',
+        'setGesuchstellerNumber'
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name,

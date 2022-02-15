@@ -15,9 +15,9 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,6 +46,9 @@ import ch.dvbern.ebegu.util.MathUtil;
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/1
  */
 public class Testfall_Sozialdienst extends AbstractTestfall {
+
+	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(53265);
+	private static final BigDecimal VERMOEGEN_GS1 = MathUtil.DEFAULT.from(12147);
 
 	private final Sozialdienst sozialdienst;
 
@@ -114,10 +117,20 @@ public class Testfall_Sozialdienst extends AbstractTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(53265));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(12147)));
+		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(EINKOMMEN_GS1);
+		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(VERMOEGEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
+
+		// LU
+		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
+		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
+		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
+
+		// SO
+		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
+		finanzielleSituationContainer.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
 
 		createEmptyEKVInfoContainer(gesuch);
 

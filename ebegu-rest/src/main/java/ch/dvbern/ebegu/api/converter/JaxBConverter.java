@@ -790,7 +790,6 @@ public class JaxBConverter extends AbstractConverter {
 			familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
 			familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
 			familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
-			familiensituation.setAuszahlungAnEltern(familiensituationJAXP.getAuszahlungAnEltern());
 		}
 
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
@@ -836,7 +835,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAbweichendeZahlungsadresseInfoma(persistedFamiliensituation.isAbweichendeZahlungsadresseInfoma());
 		jaxFamiliensituation.setInfomaKreditorennummer(persistedFamiliensituation.getInfomaKreditorennummer());
 		jaxFamiliensituation.setInfomaBankcode(persistedFamiliensituation.getInfomaBankcode());
-		jaxFamiliensituation.setAuszahlungAnEltern(persistedFamiliensituation.isAuszahlungAnEltern());
 		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
@@ -2348,6 +2346,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
+		jaxKind.setInPruefung(persistedKind.getInPruefung());
 		return jaxKind;
 	}
 
@@ -2499,6 +2498,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 		kind.setZukunftigeGeburtsdatum(kindJAXP.getZukunftigeGeburtsdatum());
+		kind.setInPruefung(kindJAXP.getInPruefung());
 		return kind;
 	}
 
@@ -2801,6 +2801,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
+		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
 
 		return jaxFinanzielleSituation;
 	}
@@ -3124,6 +3125,7 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setAbwesenheitMutiert(betreuungJAXP.getAbwesenheitMutiert());
 
 		betreuung.setEingewoehnung(betreuungJAXP.isEingewoehnung());
+		betreuung.setAuszahlungAnEltern(betreuungJAXP.isAuszahlungAnEltern());
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
@@ -3624,6 +3626,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungMutiert(betreuungFromServer.getBetreuungMutiert());
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
 		jaxBetreuung.setEingewoehnung(betreuungFromServer.isEingewoehnung());
+		jaxBetreuung.setAuszahlungAnEltern(betreuungFromServer.isAuszahlungAnEltern());
 		return jaxBetreuung;
 	}
 

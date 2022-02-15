@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
@@ -48,6 +49,7 @@ import {TSFachstelle} from '../../../models/TSFachstelle';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
 import {TSKindContainer} from '../../../models/TSKindContainer';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -99,6 +101,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'GlobalCacheService',
         '$timeout',
         '$translate',
+        'ApplicationPropertyRS'
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -137,6 +140,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
+    public showAbrechungDerGutscheineFrage: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -156,6 +160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -270,6 +275,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.besondereBeduerfnisseAufwandKonfigurierbar = true;
                     }
                 });
+
         });
 
         this.einstellungRS.findEinstellung(
@@ -287,6 +293,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+            });
     }
 
     /**
@@ -423,6 +434,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
+            this.gesuchModelManager.updateVerguenstigungGewuenschtFlag();
             this.isSavingData = false;
             this.form.$setPristine();
             if (nextStep) {
@@ -1470,5 +1482,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public changeKeineKesbPlatzierung(): void {
         this.getErweiterteBetreuungJA().keineKesbPlatzierung = !this.isKesbPlatzierung;
+    }
+
+    public showAbrechnungGutscheine(): boolean {
+        return !this.isSavingData &&
+            (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
     }
 }

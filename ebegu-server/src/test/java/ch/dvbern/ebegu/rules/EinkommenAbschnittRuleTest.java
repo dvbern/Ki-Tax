@@ -219,7 +219,7 @@ public class EinkommenAbschnittRuleTest {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = einkommenAbschnittRule.createVerfuegungsZeitabschnitteIfApplicable(betreuung);
 		zeitabschnitte = einkommenCalcRule.calculate(betreuung, zeitabschnitte);
 		Assert.assertNotNull(zeitabschnitte);
-		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitte);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitte, gesuch.extractMandant());
 		return zeitabschnitte;
 	}
 

@@ -49,10 +49,34 @@
                             </dv-input-container>
                         </div>
                     </div>
-
+                    <!-- Nettovermoegen GS1-->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="nettovermoegenGS1">
+                                    <span data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1"
+                                          translate-values="{namegs1: vm.extractFullNameGS1()}"></span>
+                                </label>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-valueinput input-id="nettovermoegenGS1" name="nettovermoegenGS1"
+                                                   aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1'|translate}}"
+                                                   ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.nettoVermoegen"
+                                        ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                    <dv-error-messages input-id="nettovermoegenGS1" for="vm.form.nettovermoegenGS1.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
                     <!-- Vermoegen GS 1 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float required" for="bruttovermoegen1">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_1"
@@ -79,7 +103,8 @@
 
                     <!-- Vermoegen GS 2 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="vm.showGS2() && !vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float required" for="bruttovermoegen2">
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
@@ -106,7 +131,8 @@
 
                     <!-- Schulden GS 1 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="!vm.hasGS1SteuerDatenErfolgreichAbgefragt()">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float required" for="schulden1">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_1"
@@ -133,7 +159,8 @@
 
                     <!-- Schulden GS 2 -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-medium" ng-if="vm.showGS2()">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="vm.showGS2() && !vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float required" for="schulden2">
                                     <span data-translate="FINANZIELLE_SITUATION_SCHULDEN_GS_2"
@@ -152,6 +179,30 @@
                                                ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"></dv-bisher>
                                     <dv-error-messages input-id="schulden2"
                                                        for="vm.form.schulden2.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <!-- Nettovermoegen GS2-->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium"
+                             ng-if="vm.showGS2() && vm.hasGS2SteuerDatenErfolgreichAbgefragt()">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="nettovermoegenGS2">
+                                    <span data-translate="FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2"
+                                          translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
+                                </label>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-valueinput input-id="nettovermoegenGS2" name="nettovermoegenGS2"
+                                                   aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2'|translate}}"
+                                                   ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
+                                                   class="input-element" required>
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.nettoVermoegen"
+                                        ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                    <dv-error-messages input-id="nettovermoegenGS2" for="vm.form.nettovermoegenGS2.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
                             </dv-input-container>
@@ -201,9 +252,10 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label  class="md-no-float"
+                                <label class="md-no-float"
                                        for="abzuegeBeiderGesuchsteller">
-                                    <span ng-if="!vm.isFKJV()" data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"></span>
+                                    <span ng-if="!vm.isFKJV()"
+                                          data-translate="FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE"></span>
                                     <span ng-if="vm.isFKJV()" data-translate="FINANZIELLE_SITUATION_ABZUEGE"></span>
                                 </label>
                                 <div class="dv-input-container-medium-label">

@@ -19,10 +19,12 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -399,4 +401,95 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			MathUtil.isSame(getAbzugSteuerfreierBetragKinder(), otherSelbstdeklaration.getAbzugSteuerfreierBetragKinder()) &&
 			MathUtil.isSame(getVermoegen(), otherSelbstdeklaration.getVermoegen());
 	}
+
+	public FinanzielleSituationSelbstdeklaration copySelbsteklaration(
+			FinanzielleSituationSelbstdeklaration target,
+			AntragCopyType copyType) {
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setEinkunftErwerb(this.getEinkunftErwerb());
+			target.setEinkunftVersicherung(this.getEinkunftVersicherung());
+			target.setEinkunftAusgleichskassen(this.getEinkunftAusgleichskassen());
+			target.setEinkunftWertschriften(this.getEinkunftWertschriften());
+			target.setEinkunftUnterhaltsbeitragSteuerpflichtige(this.getEinkunftUnterhaltsbeitragSteuerpflichtige());
+			target.setEinkunftUnterhaltsbeitragKinder(this.getEinkunftUnterhaltsbeitragKinder());
+			target.setEinkunftUeberige(this.getEinkunftUeberige());
+			target.setEinkunftLiegenschaften(this.getEinkunftLiegenschaften());
+			target.setAbzugBerufsauslagen(this.getAbzugBerufsauslagen());
+			target.setAbzugUnterhaltsbeitragEhepartner(this.getAbzugUnterhaltsbeitragEhepartner());
+			target.setAbzugUnterhaltsbeitragKinder(this.getAbzugUnterhaltsbeitragKinder());
+			target.setAbzugRentenleistungen(this.getAbzugRentenleistungen());
+			target.setAbzugSaeule3A(this.getAbzugSaeule3A());
+			target.setAbzugVersicherungspraemien(this.getAbzugVersicherungspraemien());
+			target.setAbzugKrankheitsUnfallKosten(this.getAbzugKrankheitsUnfallKosten());
+			target.setAbzugFreiweiligeZuwendungPartien(this.getAbzugFreiweiligeZuwendungPartien());
+			target.setAbzugKinderVorschule(this.getAbzugKinderVorschule());
+			target.setAbzugKinderSchule(this.getAbzugKinderSchule());
+			target.setAbzugKinderAuswaertigerAufenthalt(this.getAbzugKinderAuswaertigerAufenthalt());
+			target.setAbzugEigenbetreuung(this.getAbzugEigenbetreuung());
+			target.setAbzugErwerbsunfaehigePersonen(this.getAbzugErwerbsunfaehigePersonen());
+			target.setAbzugFremdbetreuung(this.getAbzugFremdbetreuung());
+			target.setAbzugSteuerfreierBetragErwachsene(this.getAbzugSteuerfreierBetragErwachsene());
+			target.setAbzugSteuerfreierBetragKinder(this.getAbzugSteuerfreierBetragKinder());
+			target.setVermoegen(this.getVermoegen());
+			break;
+		default:
+			break;
+		}
+		return target;
+	}
+
+	@Nonnull
+	public BigDecimal calculateEinkuenfte() {
+		BigDecimal total = BigDecimal.ZERO;
+		return MathUtil.EXACT.addNullSafe(
+			total,
+			einkunftErwerb,
+			einkunftVersicherung,
+			einkunftAusgleichskassen,
+			einkunftWertschriften,
+			einkunftUnterhaltsbeitragSteuerpflichtige,
+			einkunftUnterhaltsbeitragKinder,
+			einkunftUeberige,
+			einkunftLiegenschaften
+		);
+	}
+
+	@Nonnull
+	public BigDecimal calculateAbzuege() {
+		BigDecimal total = BigDecimal.ZERO;
+		return MathUtil.EXACT.addNullSafe(
+			total,
+			abzugBerufsauslagen,
+			abzugUnterhaltsbeitragEhepartner,
+			abzugUnterhaltsbeitragKinder,
+			abzugRentenleistungen,
+			abzugSaeule3A,
+			abzugVersicherungspraemien,
+			abzugKrankheitsUnfallKosten,
+			abzugFreiweiligeZuwendungPartien,
+			abzugKinderVorschule,
+			abzugKinderSchule,
+			abzugKinderAuswaertigerAufenthalt,
+			abzugEigenbetreuung,
+			abzugFremdbetreuung,
+			abzugErwerbsunfaehigePersonen
+		);
+	}
+
+	@Nonnull
+	public BigDecimal calculateVermoegen() {
+		BigDecimal total = BigDecimal.ZERO;
+		total = MathUtil.EXACT.addNullSafe(total, vermoegen);
+		total = MathUtil.EXACT.subtractNullSafe(
+			total,
+			abzugSteuerfreierBetragErwachsene
+		);
+		return MathUtil.EXACT.subtractNullSafe(
+			total,
+			abzugSteuerfreierBetragKinder
+		);
+	}
+
 }

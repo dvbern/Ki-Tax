@@ -39,7 +39,7 @@ import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situat
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name,
-    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly', 'getGesuchsperiode', 'getGemeinde']);
+    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly', 'getGesuchsperiode', 'getGemeinde', 'setGesuchstellerNumber']);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
         'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
@@ -50,7 +50,7 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
 berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
-FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
 
 describe('FinanzielleSituationStartViewLuzernComponent', () => {
     let component: FinanzielleSituationStartViewLuzernComponent;
@@ -95,7 +95,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Gemeinsame Veranlagung letztes Jahr"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
         setFormValues(false, true, null, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
@@ -108,7 +108,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Alleinige Veranlagung letztes Jahr"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => true;
         setFormValues(false, null, true, true);
 
         expect(component.showSelbstdeklaration()).toBeFalse();
@@ -121,7 +121,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Gemeinsame Selbstdeklaration aktuelles Jahr"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
         setFormValues(false, false, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -134,7 +134,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Alleinige Selbstdeklaration aktuelles Jahr"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => true;
         setFormValues(false, null, false, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -147,7 +147,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
         setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -160,7 +160,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (quellenbesteuert)"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => true;
         setFormValues(true, null, null, null);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -173,7 +173,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Gemeinsame Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
         setFormValues(false, true, null, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -186,7 +186,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should test "Alleinige Selbstdeklaration letztes Jahr (nicht veranlagt)"', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => true;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => true;
         setFormValues(false, null, true, false);
 
         expect(component.showSelbstdeklaration()).toBeTrue();
@@ -199,7 +199,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     });
 
     it('should return empty antragsteller name', () => {
-        FinanzielleSituationLuzernService.finSitNeedsTwoAntragsteller = () => false;
+        FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
         setFormValues(false, true, true, null);
         expect(component.getYearForDeklaration()).toBe('');
     });

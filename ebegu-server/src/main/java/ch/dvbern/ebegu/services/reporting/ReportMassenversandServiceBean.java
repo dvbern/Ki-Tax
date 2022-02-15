@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -191,7 +193,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		return fileSaverService.save(
 			bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+					Objects.requireNonNull(gesuchsperiode.getMandant())) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -215,9 +218,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(
 					getEingangsartFromFallBesitzer(gesuch),
-					locale));
-				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus(), locale));
-				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp(), locale));
+					locale, gesuch.extractMandant()));
+				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus(), locale, gesuch.extractMandant()));
+				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp(), locale, gesuch.extractMandant()));
 
 				return row;
 			})

@@ -155,7 +155,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
-			final String typ = ServerMessageUtil.translateEnumValue(zahlungslaufHelper.getZahlungslaufTyp(), Locale.GERMAN);
+			final String typ = ServerMessageUtil.translateEnumValue(zahlungslaufHelper.getZahlungslaufTyp(), Locale.GERMAN,
+					Objects.requireNonNull(gemeinde.getMandant()));
 			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ", " + typ + ')';
 			String autragResult = "Pending";
 			if (potentielleFehlerList.isEmpty()) {

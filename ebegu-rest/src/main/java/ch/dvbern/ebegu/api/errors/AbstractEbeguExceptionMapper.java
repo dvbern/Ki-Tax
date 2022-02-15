@@ -29,6 +29,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.Constants;
 import org.jboss.resteasy.api.validation.Validation;
 import org.slf4j.Logger;
@@ -51,6 +52,10 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 	@Inject
 	@SuppressWarnings("checkstyle:VisibilityModifier")
 	protected EbeguConfiguration configuration;
+
+	@Inject
+	@SuppressWarnings("checkstyle:VisibilityModifier")
+	protected MandantService mandantService;
 
 	protected Response buildResponse(Object entity, String mediaType, Response.Status status) {
 		Response.ResponseBuilder builder = Response.status(status).entity(entity);

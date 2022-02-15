@@ -144,4 +144,13 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     public isFKJV(): boolean {
         return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
+
+    public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
+        return this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff &&
+            !this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+    }
+    public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
+        return this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff &&
+            !this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+    }
 }

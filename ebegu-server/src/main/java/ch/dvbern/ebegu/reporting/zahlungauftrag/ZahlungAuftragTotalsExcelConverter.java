@@ -29,6 +29,7 @@ import javax.enterprise.context.Dependent;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
@@ -79,7 +80,7 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
 		ZahlungslaufTyp zahlungslaufTyp = extractZahlungslaufTyp(zahlungenBerechtigt);
-		addHeaders(excelMerger, zahlungslaufTyp, locale);
+		addHeaders(excelMerger, zahlungslaufTyp, locale, Objects.requireNonNull(gemeinde.getMandant()));
 
 		excelMerger.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAm, datumGeneriert);
@@ -99,7 +100,8 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institution.getName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institutionId, institution.getId());
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTyp,
-					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale));
+					ServerMessageUtil.translateEnumValue(zahlung.getBetreuungsangebotTyp(), locale,
+							Objects.requireNonNull(institution.getMandant())));
 				if (traegerschaft != null) {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.traegerschaft, traegerschaft);
 				}
@@ -126,28 +128,32 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull Locale locale) {
-		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionNameTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionIdTitle, ServerMessageUtil.getMessage("Reports_institutionIdTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTypTitle, ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
+	private void addHeaders(
+			@Nonnull ExcelMergerDTO excelMerger,
+			@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+			@Nonnull Locale locale,
+			@Nonnull Mandant mandant) {
+		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionNameTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionIdTitle, ServerMessageUtil.getMessage("Reports_institutionIdTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.betreuungsangebotTypTitle, ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale, mandant));
 		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
-			excelMerger.addValue(MergeFieldZahlungAuftrag.antragstellerTitle, ServerMessageUtil.getMessage("Reports_antragstellerTitle", locale));
-			excelMerger.addValue(MergeFieldZahlungAuftrag.antragsteller2Title, ServerMessageUtil.getMessage("Reports_antragsteller2Title", locale));
+			excelMerger.addValue(MergeFieldZahlungAuftrag.antragstellerTitle, ServerMessageUtil.getMessage("Reports_antragstellerTitle", locale, mandant));
+			excelMerger.addValue(MergeFieldZahlungAuftrag.antragsteller2Title, ServerMessageUtil.getMessage("Reports_antragsteller2Title", locale, mandant));
 		}
-		excelMerger.addValue(MergeFieldZahlungAuftrag.auszahlungTitle, ServerMessageUtil.getMessage("Reports_auszahlungTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.betragAusbezahltTitle, ServerMessageUtil.getMessage("Reports_betragAusbezahltTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.ibanTitle, ServerMessageUtil.getMessage("Reports_ibanTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.kontoinhaberTitle, ServerMessageUtil.getMessage("Reports_kontoinhaberTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.organisationTitle, ServerMessageUtil.getMessage("Reports_organisationTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.strasseTitle, ServerMessageUtil.getMessage("Reports_strasseTitle", locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.hausnummerTitle, ServerMessageUtil.getMessage("Reports_hausnummerTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.auszahlungTitle, ServerMessageUtil.getMessage("Reports_auszahlungTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.betragAusbezahltTitle, ServerMessageUtil.getMessage("Reports_betragAusbezahltTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.ibanTitle, ServerMessageUtil.getMessage("Reports_ibanTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.kontoinhaberTitle, ServerMessageUtil.getMessage("Reports_kontoinhaberTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.organisationTitle, ServerMessageUtil.getMessage("Reports_organisationTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.strasseTitle, ServerMessageUtil.getMessage("Reports_strasseTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.hausnummerTitle, ServerMessageUtil.getMessage("Reports_hausnummerTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle",
-			locale).toUpperCase(locale));
-		excelMerger.addValue(MergeFieldZahlungAuftrag.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
+			locale, mandant).toUpperCase(locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale, mandant));
 	}
 
 	private ZahlungslaufTyp extractZahlungslaufTyp(@Nonnull List<ZahlungDataRow> zahlungenBerechtigt) {

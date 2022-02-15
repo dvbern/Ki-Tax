@@ -66,4 +66,12 @@ public interface FinanzielleSituationService {
 	 * Das Resultat wird direkt dem Gesuch angehängt
 	 */
 	void calculateFinanzDaten(@Nonnull Gesuch gesuch);
+
+	/**
+	 * speichert einfach die Datenstand ohne weitere Arbeit
+	 * @param convertedFinSitCont
+	 * @return
+	 */
+	@Nonnull
+	FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation);
 }

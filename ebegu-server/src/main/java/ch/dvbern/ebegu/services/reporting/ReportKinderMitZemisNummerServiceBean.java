@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -81,6 +83,9 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 	@Inject
 	private MailService mailService;
 
+	@Inject
+	private PrincipalBean principalBean;
+
 	@Nonnull
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
@@ -105,7 +110,8 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+					Objects.requireNonNull(principalBean.getMandant())) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}

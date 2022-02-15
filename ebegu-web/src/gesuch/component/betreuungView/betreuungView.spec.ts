@@ -130,7 +130,8 @@ describe('betreuungView', () => {
             einstellungRS,
             $injector.get('GlobalCacheService'),
             $timeout,
-            undefined);
+            undefined,
+            $injector.get('ApplicationPropertyRS'));
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
@@ -158,6 +159,7 @@ describe('betreuungView', () => {
                     undefined,
                     undefined,
                     $timeout,
+                    undefined,
                     undefined);
                 myBetreuungView.model = betreuung;
                 expect(myBetreuungView.getBetreuungspensen()).toBeDefined();
@@ -422,6 +424,7 @@ describe('betreuungView', () => {
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
         spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
+        spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {});
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // tslint:disable-next-line:no-unbound-method

@@ -32,11 +32,13 @@ import javax.inject.Named;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.DownloadFile;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.TokenLifespan;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.services.DownloadFileService;
 import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.slf4j.Logger;
@@ -58,6 +60,9 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	private MailService mailService;
 
 	@Inject
+	private MandantService mandantService;
+
+	@Inject
 	private JobContext jobCtx;
 
 	@Inject
@@ -70,6 +75,8 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	public String process() {
 		final String receiverEmail = getParameters().getProperty(WorkJobConstants.EMAIL_OF_USER);
 		final String receiverLanguage = getParameters().getProperty(WorkJobConstants.LANGUAGE);
+		final String mandantId = getParameters().getProperty(WorkJobConstants.REPORT_MANDANT_ID);
+		Mandant mandant = mandantService.findMandant(mandantId).orElseThrow();
 		LOG.debug("Sending mail with file for user to {}", receiverEmail);
 		Objects.requireNonNull(receiverEmail, " Email muss gesetzt sein damit der Fertige Report an den Empfaenger geschickt werden kann");
 		final Workjob workJob = readWorkjobFromDatabase();
@@ -77,7 +84,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
 		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken()); // add the actual generated doc to the workjob
 		try {
-			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage));
+			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage), mandant);
 			return BatchStatus.COMPLETED.toString();
 		} catch (Exception ignore) {
 			return BatchStatus.FAILED.toString();

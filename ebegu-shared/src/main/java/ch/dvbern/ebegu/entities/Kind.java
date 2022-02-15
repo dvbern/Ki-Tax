@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.Pattern;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +32,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -100,6 +100,11 @@ public class Kind extends AbstractPersonEntity {
 	@Column(nullable = false)
 	@NotNull
 	private Boolean zukunftigeGeburtsdatum = false;
+
+	@Column(nullable = false)
+	@NotNull
+	@Nonnull
+	private Boolean inPruefung = false;
 
 	public Kind() {
 	}
@@ -187,6 +192,15 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nonnull
+	public Boolean getInPruefung() {
+		return inPruefung;
+	}
+
+	public void setInPruefung(@Nonnull Boolean inPruefung) {
+		this.inPruefung = inPruefung;
+	}
+
+	@Nonnull
 	public Kind copyKind(
 		@Nonnull Kind target,
 		@Nonnull AntragCopyType copyType,
@@ -218,6 +232,7 @@ public class Kind extends AbstractPersonEntity {
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
+			target.inPruefung = true;
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser muss immer neu beantragt werden!
 			break;
@@ -280,7 +295,7 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	public boolean isGeprueft() {
-		return kinderabzugErstesHalbjahr != null;
+		return !inPruefung;
 	}
 
 	public Boolean getZukunftigeGeburtsdatum() {

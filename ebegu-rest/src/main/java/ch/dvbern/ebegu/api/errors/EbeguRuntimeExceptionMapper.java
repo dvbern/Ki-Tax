@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import ch.dvbern.ebegu.api.validation.EbeguExceptionReport;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -54,7 +55,8 @@ public class EbeguRuntimeExceptionMapper extends AbstractEbeguExceptionMapper<Eb
 	@Nonnull
 	@Override
 	protected Response buildViolationReportResponse(EbeguRuntimeException exception, Response.Status status) {
-		return EbeguExceptionReport.buildResponse(status, exception, getLocaleFromHeader(), configuration.getIsDevmode());
+		Mandant mandant = exception.getMandant() != null ? exception.getMandant() : mandantService.getMandantBern();
+		return EbeguExceptionReport.buildResponse(status, exception, getLocaleFromHeader(), mandant, configuration.getIsDevmode());
 	}
 
 }

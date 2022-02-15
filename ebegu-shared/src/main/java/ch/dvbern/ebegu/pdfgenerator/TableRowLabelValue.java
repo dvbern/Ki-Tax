@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class TableRowLabelValue {
@@ -49,7 +50,7 @@ public class TableRowLabelValue {
 		this.value = value;
 	}
 
-	public String getTranslatedLabel(@Nonnull Locale locale) {
-		return ServerMessageUtil.getMessage(msgKey, locale);
+	public String getTranslatedLabel(@Nonnull Locale locale, @Nonnull Mandant mandant) {
+		return ServerMessageUtil.getMessage(msgKey, locale, mandant);
 	}
 }
