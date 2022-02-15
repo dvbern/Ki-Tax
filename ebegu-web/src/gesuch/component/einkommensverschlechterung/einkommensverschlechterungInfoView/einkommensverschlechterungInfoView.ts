@@ -105,7 +105,7 @@ export class EinkommensverschlechterungInfoViewController
             berechnungsManager,
             wizardStepManager,
             $scope,
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            wizardStepManager.getEKVStepName(gesuchModelManager.getGesuch()),
             $timeout);
         this.initialEinkVersInfo =
             angular.copy(this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer);

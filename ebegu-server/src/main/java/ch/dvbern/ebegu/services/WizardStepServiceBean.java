@@ -872,7 +872,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						}
 
 					} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()
-						|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+						|| wizardStep.getWizardStepName().isEKVWizardStepName()
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& !erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
 

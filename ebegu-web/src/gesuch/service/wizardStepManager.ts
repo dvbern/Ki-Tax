@@ -554,6 +554,7 @@ export class WizardStepManager {
     private hideEKVSteps(gesuch: TSGesuch): void {
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
+        this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN ||
@@ -566,5 +567,15 @@ export class WizardStepManager {
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
+    }
+
+    public getEKVStepName(gesuch: TSGesuch): TSWizardStepName {
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
+            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN;
+        }
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
+        }
+        return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG;
     }
 }

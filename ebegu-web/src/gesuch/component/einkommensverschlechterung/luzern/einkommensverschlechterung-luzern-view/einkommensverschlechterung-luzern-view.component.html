@@ -24,7 +24,7 @@
                                       [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith()"
                                       [isEKV]="true"
                 ></dv-selbstdeklaration>
-                <dv-navigation-x (dvSave)="save()" [dvPrevious]="true" [dvNext]="true"
+                <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
                                  [dvSubStep]="3"></dv-navigation-x>
             </div>
         </form>

@@ -53,7 +53,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
 
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            parsedGesuchstelllerNum);
+            parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
@@ -63,18 +63,23 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
-    public save(): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
+            onResult(undefined);
             return undefined;
         }
 
         if (!this.form.dirty) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
+            onResult(this.model.getEkvContToWorkWith());
             return Promise.resolve(this.model.getEkvContToWorkWith());
         }
         this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveEinkommensverschlechterungContainer();
+        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(ekv => {
+            onResult(ekv);
+            return ekv;
+        });
     }
 
     private isGesuchValid(): boolean {

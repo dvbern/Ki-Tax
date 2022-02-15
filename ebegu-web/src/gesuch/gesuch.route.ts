@@ -23,6 +23,7 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -708,9 +709,9 @@ export class EbeguEinkommensverschlechterungLuzernState implements Ng1StateDecla
         basisjahrPlus: '1',
     };
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: any = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-luzern-view>',
+            component: EinkommensverschlechterungLuzernViewComponent
         },
         kommentarViewPort: {
             template: kommentarView,
