@@ -82,6 +82,13 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         });
     }
 
+    public isGemeinsam(): boolean {
+        // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
+        // or only for the single antragsteller
+        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
     private isGesuchValid(): boolean {
         if (!this.form.valid) {
             for (const control in this.form.controls) {

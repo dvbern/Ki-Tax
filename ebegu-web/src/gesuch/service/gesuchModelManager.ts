@@ -46,6 +46,7 @@ import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSErrorLevel} from '../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../models/enums/TSErrorType';
+import {TSFamilienstatus} from '../../models/enums/TSFamilienstatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
@@ -199,7 +200,7 @@ export class GesuchModelManager {
             // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
             // gewuenschte Periode ist.
             this.checkIfGesuchIsNeustes().then(response =>
-                this.neustesGesuch = response
+                this.neustesGesuch = response,
             );
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeBgTSMandantRoles())) {
                 this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
@@ -279,10 +280,29 @@ export class GesuchModelManager {
 
     // tslint:disable-next-line:naming-convention
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
+        if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
+            return gs === 2 ?
+                this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
+                this.getEkvFuerBasisJahrPlus(bj);
+        }
         return gs === 2 ?
             this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2Required() :
             this.getEkvFuerBasisJahrPlus(bj);
 
+    }
+
+    /**
+     * Bei Luzern hat GS2 eine Gemeinsame EKV wenn verheiratet
+     * @private
+     */
+    private isGesuchsteller2RequiredForLuzernEKV(): boolean {
+        if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus
+            && this.getFamiliensituation().familienstatus !== TSFamilienstatus.VERHEIRATET) {
+            return this.getFamiliensituation().hasSecondGesuchsteller(this.getGesuchsperiode().gueltigkeit.gueltigBis)
+                || !!this.gesuch.gesuchsteller2;
+        }
+
+        return false;
     }
 
     public getFamiliensituation(): TSFamiliensituation {
@@ -348,9 +368,10 @@ export class GesuchModelManager {
             this.fachstellenErweiterteBetreuungList = [];
             return;
         }
-        this.fachstelleRS.getErweiterteBetreuungFachstellen(this.getGesuchsperiode()).then((response: TSFachstelle[]) => {
-            this.fachstellenErweiterteBetreuungList = response;
-        });
+        this.fachstelleRS.getErweiterteBetreuungFachstellen(this.getGesuchsperiode())
+            .then((response: TSFachstelle[]) => {
+                this.fachstellenErweiterteBetreuungList = response;
+            });
     }
 
     /**
