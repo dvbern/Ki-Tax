@@ -169,7 +169,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			}
 			totalAbzuege = totalAbzuege.add(abzuegeGS2);
 		}
-		return totalAbzuege;
+		return MathUtil.positiveNonNullAndRound(totalAbzuege);
 	}
 
 	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
@@ -214,7 +214,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		BigDecimal total = BigDecimal.ZERO;
 		total = calcEinkommenProGS(abstractFinanzielleSituation1, total);
 		total = calcEinkommenProGS(abstractFinanzielleSituation2, total);
-		return total;
+		return MathUtil.positiveNonNullAndRound(total);
 	}
 
 	@Nonnull
