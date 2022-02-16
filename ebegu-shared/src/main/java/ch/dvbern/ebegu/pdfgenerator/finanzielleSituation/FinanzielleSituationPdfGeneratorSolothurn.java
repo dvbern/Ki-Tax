@@ -55,7 +55,6 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	private static final String FOOTER_BRUTTOLOHN = "PdfGeneration_FinSit_FooterBruttolohn";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
 	private static final String ABZUEGE = "PdfGeneration_FinSit_Abzuege";
-	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
 
 	@Nonnull
 	private Gesuchsteller gs1;

@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -80,11 +81,8 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		gs1 = gesuch.getGesuchsteller1().getGesuchstellerJA();
 
 		boolean hasSecondGS = false;
-		if (
-			gesuch.getGesuchsteller2() != null
-				&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
-				&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA() != null
-		) {
+		if (gesuchHasTwoFinSit()) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			Objects.requireNonNull(gesuch.getGesuchsteller2().getGesuchstellerJA());
 			gs2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
@@ -105,7 +103,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 			document,
 			basisJahrGS1.getFinanzielleSituationJA(),
 			basisJahrGS1.getFinanzielleSituationGS(),
-			gs1.getFullName(),
+			getNameForFinSit1(),
 			1
 		);
 
@@ -122,6 +120,21 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 			addSpacing(document);
 			createTablezusammenzug(document, gs1.getFullName(), gs2.getFullName());
 		}
+	}
+
+	private String getNameForFinSit1() {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		// im konkubinat hat das gesuch zwei separate finSit
+		if (gesuchHasTwoFinSit()) {
+			return gesuch.getGesuchsteller1().extractFullName();
+		}
+		// bei verheiratet haben wir nur eine finSit. Als Titel brauchen wir aber beide Antragstellenden
+		if (isVerheiratet()) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			return  gesuch.getGesuchsteller1().extractFullName() + " \n& " + gesuch.getGesuchsteller2().extractFullName();
+		}
+		// alleinerziehende person. nur eine finSit.
+		return gesuch.getGesuchsteller1().extractFullName();
 	}
 
 	private void createMassgebendesEinkommenTableForGesuchsteller(
@@ -289,5 +302,16 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		// TODO: implement
+	}
+
+	private boolean gesuchHasTwoFinSit() {
+		return gesuch.getGesuchsteller2() != null
+			&& !isVerheiratet();
+	}
+
+	private boolean isVerheiratet() {
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		return gesuch.getFamiliensituationContainer().getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
 	}
 }
