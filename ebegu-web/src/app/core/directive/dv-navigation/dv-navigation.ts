@@ -422,6 +422,8 @@ export class NavigatorController implements IController {
                 return this.navigateToStepFinanzielleSituation('2');
             case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 return this.navigateToFinanziellSituationResultate();
+            case TSFinanzielleSituationSubStepName.BERN_AUFTEILUNG:
+                return this.navigateToFinanziellSituationAufteilung();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
                 return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
@@ -508,6 +510,10 @@ export class NavigatorController implements IController {
 
     private navigateToFinanziellSituationResultate(): TransitionPromise {
         return this.navigateToPath('gesuch.finanzielleSituationResultate');
+    }
+
+    private navigateToFinanziellSituationAufteilung(): TransitionPromise {
+        return this.navigateToPath('gesuch.finanziellSituationAufteilung');
     }
 
     private navigateToPath(path: string): TransitionPromise {

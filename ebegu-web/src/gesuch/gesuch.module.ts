@@ -42,6 +42,7 @@ import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/er
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
+import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
@@ -78,6 +79,7 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationResultateView', new FinanzielleSituationResultateViewComponentConfig())
         .component('dvFinanzielleSituationRequire', new DvFinanzielleSituationRequire())
         .component('finanzielleSituationStartLuzern', downgradeComponent({component: FinanzielleSituationStartViewLuzernComponent}))
+        .component('finanzielleSituationAufteilung', downgradeComponent({component: FinanzielleSituationAufteilungComponent}))
         .component('finanzielleSituationStartSolothurn', downgradeComponent({component: FinanzielleSituationStartSolothurnComponent}))
         .component('finanzielleSituationAngabenGS2Luzern', downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern', downgradeComponent({component: SelbstdeklarationComponent}))

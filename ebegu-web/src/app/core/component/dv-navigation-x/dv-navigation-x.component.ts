@@ -398,6 +398,9 @@ export class DvNavigationXComponent implements OnInit {
             case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 this.navigateToFinanziellSituationResultate();
                 return;
+            case TSFinanzielleSituationSubStepName.BERN_AUFTEILUNG:
+                this.navigateToFinanziellSituationAufteilung();
+                return;
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 this.navigateToSozialhilfeZeitraeume();
@@ -510,6 +513,10 @@ export class DvNavigationXComponent implements OnInit {
 
     private navigateToFinanziellSituationResultate(): TransitionPromise {
         return this.navigateToPath('gesuch.finanzielleSituationResultate');
+    }
+
+    private navigateToFinanziellSituationAufteilung(): TransitionPromise {
+        return this.navigateToPath('gesuch.finanziellSituationAufteilung');
     }
 
     private navigateToPath(path: string): TransitionPromise {
