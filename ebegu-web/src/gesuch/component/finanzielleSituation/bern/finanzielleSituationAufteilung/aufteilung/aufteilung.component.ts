@@ -16,18 +16,21 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 
 @Component({
-  selector: 'dv-finanzielle-situation-aufteilung',
-  templateUrl: './finanzielle-situation-aufteilung.component.html',
-  styleUrls: ['./finanzielle-situation-aufteilung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-aufteilung',
+    templateUrl: './aufteilung.component.html',
+    styleUrls: ['./aufteilung.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class FinanzielleSituationAufteilungComponent implements OnInit {
+export class AufteilungComponent implements OnInit {
 
-  constructor() { }
+    public constructor() {
+    }
 
-  ngOnInit(): void {
-  }
+    public ngOnInit(): void {
+    }
 
 }

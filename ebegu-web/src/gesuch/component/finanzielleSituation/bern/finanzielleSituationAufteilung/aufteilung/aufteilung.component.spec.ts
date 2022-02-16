@@ -15,19 +15,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-@Component({
-  selector: 'dv-finanzielle-situation-aufteilung',
-  templateUrl: './finanzielle-situation-aufteilung.component.html',
-  styleUrls: ['./finanzielle-situation-aufteilung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class FinanzielleSituationAufteilungComponent implements OnInit {
+import {AufteilungComponent} from './aufteilung.component';
 
-  constructor() { }
+describe('AufteilungComponent', () => {
+  let component: AufteilungComponent;
+  let fixture: ComponentFixture<AufteilungComponent>;
 
-  ngOnInit(): void {
-  }
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ AufteilungComponent ]
+    })
+    .compileComponents();
+  });
 
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AufteilungComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
