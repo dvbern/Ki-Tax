@@ -143,7 +143,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			);
 
 			addSpacing(document);
-			createTablezusammenzug(document);
+			createTablezusammenzug(document, gs1.getFullName(), gs2.getFullName());
 		}
 
 		var translatedFooters = footers.stream()
@@ -322,42 +322,6 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		row.setSupertext(" " + supertext);
 	}
 
-	private void createTablezusammenzug(@Nonnull Document document) {
-		Objects.requireNonNull(finanzDatenDTO);
-
-		FinanzielleSituationTable zusammenzugTable =
-			new FinanzielleSituationTable(
-				getPageConfiguration(),
-				false,
-				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
-				true);
-
-		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(ZUSAMMENZUG, mandant), "");
-
-		FinanzielleSituationRow massgebendesEinkommenGS1 = new FinanzielleSituationRow(
-			translate(MASSG_EINK_TITLE, mandant) + " " + gs1.getFullName(),
-			finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1()
-		);
-
-		FinanzielleSituationRow massgebendesEinkommenGS2 = new FinanzielleSituationRow(
-			translate(MASSG_EINK_TITLE, mandant) + " " + gs2.getFullName(),
-			finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2()
-		);
-
-		FinanzielleSituationRow zusammenzug = new FinanzielleSituationRow(
-			translate(MASSG_EINK, mandant) ,
-			finanzDatenDTO.getMassgebendesEinkVorAbzFamGr()
-		);
-
-		zusammenzugTable.addRow(title);
-		zusammenzugTable.addRow(massgebendesEinkommenGS1);
-		zusammenzugTable.addRow(massgebendesEinkommenGS2);
-		zusammenzugTable.addRow(zusammenzug);
-
-		document.add(zusammenzugTable.createTable());
-
-	}
 
 	protected final FinanzielleSituationRow createRow(
 		String message,
