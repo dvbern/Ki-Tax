@@ -37,6 +37,7 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterung/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
+import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
@@ -78,13 +79,20 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationStartView', new FinanzielleSituationStartViewComponentConfig())
         .component('finanzielleSituationResultateView', new FinanzielleSituationResultateViewComponentConfig())
         .component('dvFinanzielleSituationRequire', new DvFinanzielleSituationRequire())
-        .component('finanzielleSituationStartLuzern', downgradeComponent({component: FinanzielleSituationStartViewLuzernComponent}))
-        .component('finanzielleSituationStartSolothurn', downgradeComponent({component: FinanzielleSituationStartSolothurnComponent}))
-        .component('finanzielleSituationAngabenGS2Luzern', downgradeComponent({component: AngabenGesuchsteller2Component}))
-        .component('finanzielleSituationSelbstdeklarationLuzern', downgradeComponent({component: SelbstdeklarationComponent}))
+        .component('finanzielleSituationStartLuzern',
+            downgradeComponent({component: FinanzielleSituationStartViewLuzernComponent}))
+        .component('finanzielleSituationStartSolothurn',
+            downgradeComponent({component: FinanzielleSituationStartSolothurnComponent}))
+        .component('finanzielleSituationAngabenGS2Luzern',
+            downgradeComponent({component: AngabenGesuchsteller2Component}))
+        .component('finanzielleSituationSelbstdeklarationLuzern',
+            downgradeComponent({component: SelbstdeklarationComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
-        .component('einkommensverschlechterungLuzernView,', downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
+        .component('einkommensverschlechterungLuzernView,',
+            downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
+        .component('einkommensverschlechterungLuzernResultateView',
+            downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())
@@ -118,7 +126,7 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({
                 component: FileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete'],
-                outputs: ['download', 'delete', 'uploadFile']
+                outputs: ['download', 'delete', 'uploadFile'],
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))

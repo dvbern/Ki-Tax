@@ -530,7 +530,19 @@ export class NavigatorController implements IController {
     }
 
     private navigateToStepEinkommensverschlechterungResultate(basisjahrPlus: string): TransitionPromise {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            return this.navigateToStepEinkommensverschlechterungResultateLuzern(basisjahrPlus);
+        }
         return this.state.go('gesuch.einkommensverschlechterungResultate', {
+            basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToStepEinkommensverschlechterungResultateLuzern(
+        basisjahrPlus: string
+    ): TransitionPromise {
+        return this.state.go('gesuch.einkommensverschlechterungLuzernResultate', {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
         });

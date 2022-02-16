@@ -67,10 +67,9 @@ export class SelbstdeklarationComponent implements OnInit {
 
     public onValueChangeFunction = (): void => {
         if (this.isEKV) {
-            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahr);
-        } else {
-            this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
+            return;
         }
+        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
     public antragsteller1Name(): string {

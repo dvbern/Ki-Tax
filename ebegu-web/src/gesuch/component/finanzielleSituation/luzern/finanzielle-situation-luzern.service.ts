@@ -16,6 +16,7 @@
  */
 
 import {Injectable} from '@angular/core';
+import {IPromise} from 'angular';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
@@ -58,4 +59,17 @@ export class FinanzielleSituationLuzernService {
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
+    public calculateResultateVorjahr(model: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
+        return this.berechnungsManager.calculateFinanzielleSituationTemp(model);
+    }
+
+    public calculateProzentualeDifferenz(jahr: number, jahrPlus1: number): IPromise<string> {
+        return this.berechnungsManager.calculateProzentualeDifferenz(jahr, jahrPlus1);
+    }
+
+    public getResultate(model: TSFinanzModel): TSFinanzielleSituationResultateDTO {
+        return model.getBasisJahrPlus() === 2 ?
+            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
+            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+    }
 }

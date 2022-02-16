@@ -21,6 +21,7 @@ import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWa
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
@@ -60,6 +61,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         FinanzielleSituationStartViewLuzernComponent,
         FinanzielleSituationStartSolothurnComponent,
         EinkommensverschlechterungLuzernViewComponent,
+        EinkommensverschlechterungLuzernResultateViewComponent,
         DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,

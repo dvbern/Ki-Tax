@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -133,6 +134,36 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			finanzielleSituationGS2);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(getMassgegebenesEinkommenAleine(finanzielleSituationGS1));
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(getMassgegebenesEinkommenAleine(finanzielleSituationGS2));
+	}
+
+	@Override
+	public void setEinkommensverschlechterungParameters(
+		@Nonnull Gesuch gesuch, int basisJahrPlus,
+		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {
+		Einkommensverschlechterung einkommensverschlechterungGS1Bjp1 =
+			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 1);
+		Einkommensverschlechterung einkommensverschlechterungGS1Bjp2 =
+			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 2);
+
+		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
+		Einkommensverschlechterung einkommensverschlechterungGS2Bjp1 = null;
+		Einkommensverschlechterung einkommensverschlechterungGS2Bjp2 = null;
+		if (hasSecondGesuchsteller) {
+			einkommensverschlechterungGS2Bjp1 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 1);
+			einkommensverschlechterungGS2Bjp2 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 2);
+		}
+
+		if (basisJahrPlus == 2) {
+			calculateZusammen(
+				einkVerResultDTO,
+				einkommensverschlechterungGS1Bjp2,
+				einkommensverschlechterungGS2Bjp2);
+		} else {
+			calculateZusammen(
+				einkVerResultDTO,
+				einkommensverschlechterungGS1Bjp1,
+				einkommensverschlechterungGS2Bjp1);
+		}
 	}
 
 	private BigDecimal getMassgegebenesEinkommenAleine(@Nullable FinanzielleSituation finanzielleSituation) {
@@ -274,6 +305,21 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		return !finanzielleSituation.getQuellenbesteuert()
 			&& isSameVeranlagungAsVorjahr(finanzielleSituation)
 			&& finanzielleSituation.getVeranlagt();
+	}
+
+	@Override
+	public boolean acceptEKV(
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal massgebendesEinkommenJahr,
+		BigDecimal minimumEKV) {
+
+		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
+		if (result) {
+			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			// wenn es gibt mehr als minimumEKV in einer positive oder negative Richtung ist der EKV akkzeptiert
+			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0 || differenzGerundet.compareTo(minimumEKV) >= 0;
+		}
+		return false;
 	}
 
 	// one of gemeinsameStekVorjahr or alleinigeStekVorjahr could be null
