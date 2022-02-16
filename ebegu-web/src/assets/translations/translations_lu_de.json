@@ -7,5 +7,7 @@
 	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST": "Verrechenbare Geschäftsverluste",
 	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP": "Verrechenbare Geschäftsverluste aus den Vorjahren gemäss § 38 des Steuergesetzes",
 	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE": "Einkäufe/Vorsorge",
-	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14"
+	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus."
 }

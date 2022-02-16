@@ -293,7 +293,6 @@ export class GesuchModelManager {
 
     /**
      * Bei Luzern hat GS2 eine Gemeinsame EKV wenn verheiratet
-     * @private
      */
     private isGesuchsteller2RequiredForLuzernEKV(): boolean {
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus

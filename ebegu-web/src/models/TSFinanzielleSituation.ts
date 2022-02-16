@@ -14,7 +14,6 @@
  */
 
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
-import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 

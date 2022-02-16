@@ -49,7 +49,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		finanzDatenDTOAlleine.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr());
 		finanzDatenDTOZuZweit.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr());
 
-		// TODO Einkommensverschlechterung spaeter berücksichtigen hier
 		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
 		if (ekvInfo != null && ekvInfo.getEinkommensverschlechterung()) {
 			FinanzielleSituationResultateDTO resultateEKV1Alleine =

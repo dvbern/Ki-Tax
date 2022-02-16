@@ -26,8 +26,8 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
+import {AbstractEKVLuzernView} from '../AbstractEKVLuzernView';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-view',
@@ -35,7 +35,7 @@ import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/l
     styleUrls: ['./einkommensverschlechterung-luzern-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
+export class EinkommensverschlechterungLuzernViewComponent extends AbstractEKVLuzernView {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -45,7 +45,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         protected finSitLuService: FinanzielleSituationLuzernService,
         private readonly $transition$: Transition,
     ) {
-        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
+        super(gesuchModelManager, wizardStepManager);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
         const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
@@ -80,13 +80,6 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             onResult(ekv);
             return ekv;
         });
-    }
-
-    public isGemeinsam(): boolean {
-        // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
-        // or only for the single antragsteller
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 
     private isGesuchValid(): boolean {
