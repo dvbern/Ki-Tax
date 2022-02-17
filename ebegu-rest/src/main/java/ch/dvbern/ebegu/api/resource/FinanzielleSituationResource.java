@@ -107,7 +107,7 @@ import static java.util.Objects.requireNonNull;
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FinanzielleSituationResource {
 
-	protected static final MathUtil EXACT = MathUtil.EXACT;
+	protected static final MathUtil GANZZAHL = MathUtil.GANZZAHL;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -580,37 +580,37 @@ public class FinanzielleSituationResource {
 
 		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
 		BigDecimal bruttertraegeVermogenTotal =
-			EXACT.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
+			GANZZAHL.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
 				steuerdatenResponse.getBruttoertraegeAusLiegenschaften() :
 				BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 		boolean hasResponse2Antragstellende = steuerdatenResponse.getZpvNrPartner() != null;
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setBruttoertraegeVermoegen(hasResponse2Antragstellende ?
-				EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
+				GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
 				bruttertraegeVermogenTotal);
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setAbzugSchuldzinsen(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getSchuldzinsen() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
 					steuerdatenResponse.getSchuldzinsen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getSchuldzinsen());
 		BigDecimal gewinnungskostenTotal =
-			EXACT.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
+			GANZZAHL.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
 				steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
 				BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setGewinnungskosten(hasResponse2Antragstellende ?
-				EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)) :
+				GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)) :
 				gewinnungskostenTotal);
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setGeleisteteAlimente(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setNettoVermoegen(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getNettovermoegen() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
 					steuerdatenResponse.getNettovermoegen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getNettovermoegen());
@@ -645,19 +645,19 @@ public class FinanzielleSituationResource {
 				.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
 
 			finSitGS2.getFinanzielleSituationJA()
-				.setBruttoertraegeVermoegen(EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
+				.setBruttoertraegeVermoegen(GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setAbzugSchuldzinsen(EXACT.divide(steuerdatenResponse.getSchuldzinsen() != null ?
+				.setAbzugSchuldzinsen(GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
 					steuerdatenResponse.getSchuldzinsen() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setGewinnungskosten(EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)));
+				.setGewinnungskosten(GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setGeleisteteAlimente(EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
+				.setGeleisteteAlimente(GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setNettoVermoegen(EXACT.divide(steuerdatenResponse.getNettovermoegen() != null ?
+				.setNettoVermoegen(GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
 					steuerdatenResponse.getNettovermoegen() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 		}
