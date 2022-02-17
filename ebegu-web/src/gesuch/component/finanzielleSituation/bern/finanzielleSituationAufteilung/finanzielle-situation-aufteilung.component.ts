@@ -22,6 +22,7 @@ import {
     TSFinanzielleSituationAufteilungDTO
 } from '../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 const LOG = LogFactory.createLog('FinanzielleSituationAufteilungComponent');
@@ -37,7 +38,8 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
     public aufteilungDTO: TSFinanzielleSituationAufteilungDTO = new TSFinanzielleSituationAufteilungDTO();
 
     public constructor(
-        private gesuchModelManager: GesuchModelManager
+        private gesuchModelManager: GesuchModelManager,
+        private finanzielleSituationRS: FinanzielleSituationRS
     ) {
     }
 
@@ -116,5 +118,10 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
 
     public gs2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
+
+    public save(): void {
+        this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch())
+            .then(() => console.log('saved'));
     }
 }
