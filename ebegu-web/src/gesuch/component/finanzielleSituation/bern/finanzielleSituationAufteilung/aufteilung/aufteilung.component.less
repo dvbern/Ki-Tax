@@ -15,3 +15,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import (reference) '../../../../../../style/variables.less';
+
+.aufteilungContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    > div {
+        margin-right: 2rem;
+    }
+
+    .rest {
+        // full width for mobile devices
+        display: flex;
+        width: 100%;
+
+        .fa-check {
+            color: @dgreen
+        }
+    }
+
+    @media @mq-sm {
+        .rest {
+            width: auto;
+        }
+    }
+}

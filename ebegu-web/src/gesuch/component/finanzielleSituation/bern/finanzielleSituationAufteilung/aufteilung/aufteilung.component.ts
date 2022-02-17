@@ -35,6 +35,9 @@ export class AufteilungComponent implements OnInit {
     @Input()
     public groupName: string;
 
+    @Input()
+    public label: string;
+
     public readonly = false;
 
     public gs1Name: string;

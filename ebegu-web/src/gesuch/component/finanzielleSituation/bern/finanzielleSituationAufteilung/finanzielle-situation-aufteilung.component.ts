@@ -101,4 +101,12 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         nettovermoegen.calculateInitiaSum();
         this.aufteilungDTO.nettovermoegen = nettovermoegen;
     }
+
+    public gs1Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
+    }
+
+    public gs2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
 }

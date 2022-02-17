@@ -118,4 +118,8 @@ export class TSAufteilungDTO {
     public calculateInitiaSum(): void {
         this._initialSum = this.gs1 + this.gs2;
     }
+
+    public getRest(): number {
+        return this._initialSum - this.gs1 - this.gs2;
+    }
 }

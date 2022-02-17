@@ -20,7 +20,7 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span translate>FINANZIELLE_SITUATION_AUFTEILUNG</span>
+                <span translate [translateParams]="{gs1: gs1Name(), gs2: gs2Name()}">FINANZIELLE_SITUATION_AUFTEILUNG</span>
             </h2>
             <hr class="header"/>
         </div>
@@ -29,7 +29,11 @@
           #form="ngForm"
           novalidate>
         <ng-container *ngIf="aufteilungDTO">
-            <dv-aufteilung [aufteilung]="aufteilungDTO.abzugSchuldzinsen" [groupName]="'abzugSchuldzinsen'"></dv-aufteilung>
+            <dv-aufteilung
+                [aufteilung]="aufteilungDTO.abzugSchuldzinsen"
+                [groupName]="'abzugSchuldzinsen'"
+                [label]="'FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN'"
+            ></dv-aufteilung>
         </ng-container>
     </form>
 </div>

@@ -17,8 +17,10 @@
 
 <div class="row" *ngIf="aufteilung">
     <div class="col-xs-12">
-        <div class="row" [ngModelGroup]="groupName" #fgName="ngModelGroup" [class.has-error]="fgName.invalid">
-            <div class="col-sm-6">
+        <p class="ebegu-h1 margin-bottom-30">{{label | translate}}</p>
+
+        <div [ngModelGroup]="groupName" #fgName="ngModelGroup" [class.has-error]="fgName.invalid" class="aufteilungContainer">
+            <div>
                 <dv-input-label-field
                     [(model)]="aufteilung.gs1"
                     [labelMessageKey]="gs1Name"
@@ -26,13 +28,17 @@
                     [inputDisabled]="readonly">
                 </dv-input-label-field>
             </div>
-            <div class="col-sm-6">
+            <div>
                 <dv-input-label-field
                     [(model)]="aufteilung.gs2"
                     [labelMessageKey]="gs2Name"
                     [inputRequired]="true"
                     [inputDisabled]="readonly">
                 </dv-input-label-field>
+            </div>
+            <div class="rest">
+                <p *ngIf="aufteilung.getRest() !== 0">{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{aufteilung.getRest()}}</p>
+                <i  *ngIf="aufteilung.getRest() === 0" class="fa fa-lg fa-check"></i>
             </div>
         </div>
     </div>
