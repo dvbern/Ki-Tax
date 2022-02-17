@@ -392,6 +392,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
@@ -416,6 +417,7 @@
                                         <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
                                                        name="nettoertraegeErbengemeinschaft"
                                                        ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element"
                                                        required>
                                         </dv-valueinput>
@@ -490,6 +492,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
@@ -513,6 +516,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
@@ -536,6 +540,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
                                                        ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
