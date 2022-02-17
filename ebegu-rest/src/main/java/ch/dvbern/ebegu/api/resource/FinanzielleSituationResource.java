@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzModel;
-import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
@@ -57,6 +56,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
+import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -70,7 +70,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
@@ -672,7 +671,8 @@ public class FinanzielleSituationResource {
 	@Path("/updateFromAufteilung/{gesuchId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public Response updateFinSitFromAufteilung(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
@@ -696,7 +696,7 @@ public class FinanzielleSituationResource {
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 
-		setAufteilungValues(
+		this.finanzielleSituationService.setValuesFromAufteilungDTO(
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 			jaxFinanzielleSituationAufteilungDTO
@@ -707,87 +707,4 @@ public class FinanzielleSituationResource {
 
 		return Response.ok().build();
 	}
-
-	private void setAufteilungValues(@Nonnull FinanzielleSituation finSitGs1, @Nonnull FinanzielleSituation finSitGs2, @Nonnull JaxFinanzielleSituationAufteilungDTO dto) {
-
-		assertSumIsEqual(
-			dto.getBruttoertraegeVermoegenGS1(),
-			dto.getBruttoertraegeVermoegenGS2(),
-			finSitGs1.getBruttoertraegeVermoegen(),
-			finSitGs2.getBruttoertraegeVermoegen(),
-			"bruttoertraegeVermoegen"
-		);
-		finSitGs1.setBruttoertraegeVermoegen(dto.getBruttoertraegeVermoegenGS1());
-		finSitGs2.setBruttoertraegeVermoegen(dto.getBruttoertraegeVermoegenGS2());
-
-		assertSumIsEqual(
-			dto.getAbzugSchuldzinsenGS1(),
-			dto.getAbzugSchuldzinsenGS2(),
-			finSitGs1.getAbzugSchuldzinsen(),
-			finSitGs2.getAbzugSchuldzinsen(),
-			"abzugSchuldzinsen"
-		);
-		finSitGs1.setAbzugSchuldzinsen(dto.getAbzugSchuldzinsenGS1());
-		finSitGs2.setAbzugSchuldzinsen(dto.getAbzugSchuldzinsenGS2());
-
-		assertSumIsEqual(
-			dto.getGewinnungskostenGS1(),
-			dto.getGewinnungskostenGS2(),
-			finSitGs1.getGewinnungskosten(),
-			finSitGs2.getGewinnungskosten(),
-			"gewinnungskosten"
-		);
-		finSitGs1.setGewinnungskosten(dto.getGewinnungskostenGS1());
-		finSitGs2.setGewinnungskosten(dto.getGewinnungskostenGS2());
-
-		assertSumIsEqual(
-			dto.getGeleisteteAlimenteGS1(),
-			dto.getGeleisteteAlimenteGS2(),
-			finSitGs1.getGeleisteteAlimente(),
-			finSitGs2.getGeleisteteAlimente(),
-			"geleisteteAlimente"
-		);
-		finSitGs1.setGeleisteteAlimente(dto.getGeleisteteAlimenteGS1());
-		finSitGs2.setGeleisteteAlimente(dto.getGeleisteteAlimenteGS2());
-
-		assertSumIsEqual(
-			dto.getNettovermoegenGS1(),
-			dto.getNettovermoegenGS2(),
-			finSitGs1.getNettoVermoegen(),
-			finSitGs2.getNettoVermoegen(),
-			"nettovermoegen"
-		);
-		finSitGs1.setNettoVermoegen(dto.getNettovermoegenGS1());
-		finSitGs2.setNettoVermoegen(dto.getNettovermoegenGS2());
-		assertSumIsEqual(
-			dto.getNettoertraegeErbengemeinschaftGS1(),
-			dto.getNettoertraegeErbengemeinschaftGS2(),
-			finSitGs1.getNettoertraegeErbengemeinschaft(),
-			finSitGs2.getNettoertraegeErbengemeinschaft(),
-			"NettoertraegeErbengemeinschaft"
-		);
-		finSitGs1.setNettoertraegeErbengemeinschaft(dto.getNettoertraegeErbengemeinschaftGS1());
-		finSitGs2.setNettoertraegeErbengemeinschaft(dto.getNettoertraegeErbengemeinschaftGS2());
-	}
-
-	private void assertSumIsEqual(
-		@Nullable BigDecimal gs1ValueNew,
-		@Nullable BigDecimal gs2ValueNew,
-		@Nullable BigDecimal gs1ValueOld,
-		@Nullable BigDecimal gs2ValueOld,
-		@Nonnull String valueName
-	) {
-		Objects.requireNonNull(gs1ValueNew);
-		Objects.requireNonNull(gs2ValueNew);
-		Objects.requireNonNull(gs1ValueOld);
-		Objects.requireNonNull(gs2ValueOld);
-
-		var sumNew = MathUtil.DEFAULT.addNullSafe(gs1ValueNew, gs2ValueNew);
-		var sumOld = MathUtil.DEFAULT.addNullSafe(gs1ValueNew, gs2ValueOld);
-		if (sumNew.compareTo(sumOld) == 0) {
-			return;
-		}
-		throw new EbeguRuntimeException("assertSumIsEqual", "Sum is not the same for " + valueName);
-	}
-
 }
