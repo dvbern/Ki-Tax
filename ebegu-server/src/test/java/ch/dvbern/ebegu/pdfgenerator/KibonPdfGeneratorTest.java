@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
@@ -229,7 +230,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGenerator generator = new FinanzielleSituationPdfGenerator(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
+		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
 			new FinanzielleSituationBernRechner());
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}

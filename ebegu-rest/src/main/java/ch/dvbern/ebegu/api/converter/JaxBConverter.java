@@ -2346,6 +2346,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
+		jaxKind.setInPruefung(persistedKind.getInPruefung());
 		return jaxKind;
 	}
 
@@ -2497,6 +2498,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 		kind.setZukunftigeGeburtsdatum(kindJAXP.getZukunftigeGeburtsdatum());
+		kind.setInPruefung(kindJAXP.getInPruefung());
 		return kind;
 	}
 

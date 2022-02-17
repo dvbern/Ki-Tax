@@ -196,7 +196,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		return total;
 	}
 
-	boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		// for Einkommensverschlechterung we always use Selbstdeklaration
 		if (!(abstractFinanzielleSituation instanceof FinanzielleSituation)) {
 			return false;

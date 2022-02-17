@@ -512,4 +512,6 @@ public abstract class AbstractFinanzielleSituationRechner {
 		}
 		return null;
 	}
+
+	public abstract boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
 }
