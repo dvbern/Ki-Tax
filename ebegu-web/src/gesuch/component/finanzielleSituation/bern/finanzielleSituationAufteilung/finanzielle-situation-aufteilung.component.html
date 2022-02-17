@@ -25,5 +25,11 @@
             <hr class="header"/>
         </div>
     </div>
-    <dv-aufteilung></dv-aufteilung>
+    <form role="form"
+          #form="ngForm"
+          novalidate>
+        <ng-container *ngIf="aufteilungDTO">
+            <dv-aufteilung [aufteilung]="aufteilungDTO.abzugSchuldzinsen" [groupName]="'abzugSchuldzinsen'"></dv-aufteilung>
+        </ng-container>
+    </form>
 </div>

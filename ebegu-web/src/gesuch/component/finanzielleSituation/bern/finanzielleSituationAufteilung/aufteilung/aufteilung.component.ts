@@ -15,8 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {TSAufteilungDTO} from '../../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
+import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 
 @Component({
     selector: 'dv-aufteilung',
@@ -27,10 +29,25 @@ import {ControlContainer, NgForm} from '@angular/forms';
 })
 export class AufteilungComponent implements OnInit {
 
-    public constructor() {
+    @Input()
+    public aufteilung: TSAufteilungDTO;
+
+    @Input()
+    public groupName: string;
+
+    public readonly = false;
+
+    public gs1Name: string;
+    public gs2Name: string;
+
+    public constructor(
+        private gesuchModelManger: GesuchModelManager
+    ) {
     }
 
     public ngOnInit(): void {
+        this.gs1Name = this.gesuchModelManger.getGesuch().gesuchsteller1?.extractFullName();
+        this.gs2Name = this.gesuchModelManger.getGesuch().gesuchsteller2?.extractFullName();
     }
 
 }

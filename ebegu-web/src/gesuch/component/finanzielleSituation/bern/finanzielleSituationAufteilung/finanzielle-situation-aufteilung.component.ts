@@ -16,18 +16,89 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {
+    TSAufteilungDTO,
+    TSFinanzielleSituationAufteilungDTO
+} from '../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+
+const LOG = LogFactory.createLog('FinanzielleSituationAufteilungComponent');
 
 @Component({
-  selector: 'dv-finanzielle-situation-aufteilung',
-  templateUrl: './finanzielle-situation-aufteilung.component.html',
-  styleUrls: ['./finanzielle-situation-aufteilung.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-finanzielle-situation-aufteilung',
+    templateUrl: './finanzielle-situation-aufteilung.component.html',
+    styleUrls: ['./finanzielle-situation-aufteilung.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationAufteilungComponent implements OnInit {
 
-  constructor() { }
+    public aufteilungDTO: TSFinanzielleSituationAufteilungDTO = new TSFinanzielleSituationAufteilungDTO();
 
-  ngOnInit(): void {
-  }
+    public constructor(
+        private gesuchModelManager: GesuchModelManager
+    ) {
+    }
 
+    public ngOnInit(): void {
+        this.assertContainersNotNull();
+        const finSitGS1 = this.gesuchModelManager.getGesuch().gesuchsteller1.finanzielleSituationContainer;
+        const finSitGS2 = this.gesuchModelManager.getGesuch().gesuchsteller2.finanzielleSituationContainer;
+        this.initAufteilngDTO(finSitGS1, finSitGS2);
+    }
+
+    private assertContainersNotNull(): void {
+        if (this.gesuchModelManager.getGesuch().gesuchsteller1?.finanzielleSituationContainer === null) {
+            LOG.error('Finanzielle Situation Antragsteller 1 nicht gesetzt');
+        }
+        if (this.gesuchModelManager.getGesuch().gesuchsteller2?.finanzielleSituationContainer === null) {
+            LOG.error('Finanzielle Situation Antragsteller 2 nicht gesetzt');
+        }
+    }
+
+    private initAufteilngDTO (
+        finSitGS1: TSFinanzielleSituationContainer,
+        finSitGS2: TSFinanzielleSituationContainer
+    ): void {
+        const bruttoertraegeVermoegen = new TSAufteilungDTO();
+        bruttoertraegeVermoegen.gs1 = finSitGS1.finanzielleSituationJA.bruttoertraegeVermoegen;
+        bruttoertraegeVermoegen.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.bruttoertraegeVermoegen;
+        bruttoertraegeVermoegen.gs2 = finSitGS2.finanzielleSituationJA.bruttoertraegeVermoegen;
+        bruttoertraegeVermoegen.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.bruttoertraegeVermoegen;
+        bruttoertraegeVermoegen.calculateInitiaSum();
+        this.aufteilungDTO.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
+
+        const abzugSchuldzinsen = new TSAufteilungDTO();
+        abzugSchuldzinsen.gs1 = finSitGS1.finanzielleSituationJA.abzugSchuldzinsen;
+        abzugSchuldzinsen.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.abzugSchuldzinsen;
+        abzugSchuldzinsen.gs2 = finSitGS2.finanzielleSituationJA.abzugSchuldzinsen;
+        abzugSchuldzinsen.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.abzugSchuldzinsen;
+        abzugSchuldzinsen.calculateInitiaSum();
+        this.aufteilungDTO.abzugSchuldzinsen = abzugSchuldzinsen;
+
+        const gewinnungskosten = new TSAufteilungDTO();
+        gewinnungskosten.gs1 = finSitGS1.finanzielleSituationJA.gewinnungskosten;
+        gewinnungskosten.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.gewinnungskosten;
+        gewinnungskosten.gs2 = finSitGS2.finanzielleSituationJA.gewinnungskosten;
+        gewinnungskosten.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.gewinnungskosten;
+        gewinnungskosten.calculateInitiaSum();
+        this.aufteilungDTO.gewinnungskosten = gewinnungskosten;
+
+        const geleisteteAlimente = new TSAufteilungDTO();
+        geleisteteAlimente.gs1 = finSitGS1.finanzielleSituationJA.geleisteteAlimente;
+        geleisteteAlimente.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.geleisteteAlimente;
+        geleisteteAlimente.gs2 = finSitGS2.finanzielleSituationJA.geleisteteAlimente;
+        geleisteteAlimente.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.geleisteteAlimente;
+        geleisteteAlimente.calculateInitiaSum();
+        this.aufteilungDTO.geleisteteAlimente = geleisteteAlimente;
+
+        const nettovermoegen = new TSAufteilungDTO();
+        nettovermoegen.gs1 = finSitGS1.finanzielleSituationJA.nettoVermoegen;
+        nettovermoegen.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.nettoVermoegen;
+        nettovermoegen.gs2 = finSitGS2.finanzielleSituationJA.nettoVermoegen;
+        nettovermoegen.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.nettoVermoegen;
+        nettovermoegen.calculateInitiaSum();
+        this.aufteilungDTO.nettovermoegen = nettovermoegen;
+    }
 }
