@@ -17,15 +17,13 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
-import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEKVLuzernView} from '../AbstractEKVLuzernView';
-
-const LOG = LogFactory.createLog('EinkommensverschlechterungLuzernResultateViewComponent');
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
@@ -44,6 +42,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
+        protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         private readonly $transition$: Transition,
     ) {
@@ -56,12 +55,6 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
-        this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
-                this.resultate = resultate;
-                this.resultatProzent = this.calculateVeraenderung();
-                this.ref.markForCheck();
-            }, error => LOG.error(error),
-        );
         this.calculate();
         this.resultatBasisjahr = null;
         this.calculateResultateVorjahr();
@@ -72,14 +65,18 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             console.log('No gesuch and Basisjahr to calculate');
             return;
         }
-        this.finSitLuService.calculateEinkommensverschlechterung(this.model, this.model.getBasisJahrPlus());
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus())
+            .then(resultat => {
+                this.resultate = resultat;
+                this.resultatProzent = this.calculateVeraenderung();
+            });
     }
 
     public calculateVeraenderung(): string {
         if (this.resultatBasisjahr) {
-            const resultatJahrPlus1 = this.finSitLuService.getResultate(this.model);
+            const resultatJahrPlus1 = this.getResultate();
             if (resultatJahrPlus1) {
-                this.finSitLuService.calculateProzentualeDifferenz(
+                this.berechnungsManager.calculateProzentualeDifferenz(
                     this.resultatBasisjahr.massgebendesEinkVorAbzFamGr, resultatJahrPlus1.massgebendesEinkVorAbzFamGr)
                     .then(abweichungInProzentZumVorjahr => {
                         this.resultatProzent = abweichungInProzentZumVorjahr;
@@ -92,10 +89,16 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
     }
 
     public calculateResultateVorjahr(): void {
-        this.finSitLuService.calculateResultateVorjahr(this.model).then(resultatVorjahr => {
+        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultatVorjahr => {
             this.resultatBasisjahr = resultatVorjahr;
             this.resultatProzent = this.calculateVeraenderung();
             this.ref.markForCheck();
         });
+    }
+
+    public getResultate(): TSFinanzielleSituationResultateDTO {
+        return this.model.getBasisJahrPlus() === 2 ?
+            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
+            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
     }
 }

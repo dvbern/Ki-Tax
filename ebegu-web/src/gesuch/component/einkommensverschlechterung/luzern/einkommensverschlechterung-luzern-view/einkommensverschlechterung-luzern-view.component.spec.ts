@@ -49,7 +49,8 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getGemeinde',
         'setGesuchstellerNumber',
         'setBasisJahrPlusNumber',
-        'getBasisjahrToWorkWith'
+        'getBasisjahrToWorkWith',
+        'getStammdatenToWorkWith'
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, [

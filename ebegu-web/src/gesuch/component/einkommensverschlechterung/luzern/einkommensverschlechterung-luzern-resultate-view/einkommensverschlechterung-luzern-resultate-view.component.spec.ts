@@ -17,7 +17,6 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService, Transition} from '@uirouter/angular';
-import {of} from 'rxjs';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
@@ -27,6 +26,7 @@ import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
@@ -34,7 +34,6 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './einkommensverschlechterung-luzern-resultate-view.component';
 
@@ -50,7 +49,8 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getGesuchsperiode',
         'getGemeinde',
         'setGesuchstellerNumber',
-        'setBasisJahrPlusNumber'
+        'setBasisJahrPlusNumber',
+        'getBasisjahrToWorkWith'
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, [
@@ -63,10 +63,8 @@ const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params
 const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
     ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp', 'calculateEinkommensverschlechterungTemp']);
 berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-const finSitLuServiceSpy =  jasmine.createSpyObj<FinanzielleSituationLuzernService>(
-    FinanzielleSituationLuzernService.name, ['calculateResultateVorjahr', 'calculateProzentualeDifferenz', 'calculateEinkommensverschlechterung']);
-finSitLuServiceSpy.calculateResultateVorjahr.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-finSitLuServiceSpy.calculateProzentualeDifferenz.and.returnValue(Promise.resolve(''));
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
@@ -84,7 +82,6 @@ describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
-                {provide: FinanzielleSituationLuzernService, useValue: finSitLuServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
             ],
@@ -101,6 +98,7 @@ describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
         fixture = TestBed.createComponent(EinkommensverschlechterungLuzernResultateViewComponent);
         component = fixture.componentInstance;
+        component.model = new TSFinanzModel(1,null,1,2);
         fixture.detectChanges();
     });
 

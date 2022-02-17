@@ -53,23 +53,4 @@ export class FinanzielleSituationLuzernService {
         this.berechnungsManager.calculateFinanzielleSituationTemp(model)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
-
-    public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahr: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahr)
-            .then(result => this._massgebendesEinkommenStore.next(result));
-    }
-
-    public calculateResultateVorjahr(model: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
-        return this.berechnungsManager.calculateFinanzielleSituationTemp(model);
-    }
-
-    public calculateProzentualeDifferenz(jahr: number, jahrPlus1: number): IPromise<string> {
-        return this.berechnungsManager.calculateProzentualeDifferenz(jahr, jahrPlus1);
-    }
-
-    public getResultate(model: TSFinanzModel): TSFinanzielleSituationResultateDTO {
-        return model.getBasisJahrPlus() === 2 ?
-            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
-            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
-    }
 }
