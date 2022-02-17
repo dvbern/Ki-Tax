@@ -15,6 +15,7 @@
 
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
@@ -30,6 +31,7 @@ import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -40,6 +42,8 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -61,6 +65,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         '$translate',
         '$timeout',
         'EinstellungRS',
+        'DvDialog'
     ];
 
     public showSelbstaendig: boolean;
@@ -80,6 +85,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
         private readonly settings: EinstellungRS,
+        private readonly dvDialog: DvDialog,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -255,5 +261,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public showWarningPartnerNichtGemeinsam(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
+    }
+
+    public openDialog(): void {
+        this.dvDialog.showDialog(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController);
     }
 }

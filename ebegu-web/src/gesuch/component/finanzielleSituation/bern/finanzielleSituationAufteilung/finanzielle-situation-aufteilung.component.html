@@ -15,7 +15,8 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="gesuch-modul">
+<mat-dialog-content>
+    <div class="gesuch-modul">
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
     <div class="row view-title">
         <div class="col-md-12">
@@ -64,3 +65,11 @@
         <button (click)="save()">speichern</button>
     </form>
 </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="save()" translate>SAVE</button>
+        <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+    </div>
+</mat-dialog-actions>

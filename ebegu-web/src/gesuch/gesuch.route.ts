@@ -23,7 +23,6 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -498,28 +497,6 @@ export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclarat
     };
 }
 
-export class EbeguFinanzielleSituationAufteilungState implements Ng1StateDeclaration {
-    public name = 'gesuch.finanzielleSituationAufteilung';
-    public url = '/finanzielleSituationAufteilung/:gesuchId';
-
-    public views: any = {
-        gesuchViewPort: {
-            component: FinanzielleSituationAufteilungComponent,
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
-    };
-}
-
 export class EbeguFinanzielleSituationStartLuzernState implements Ng1StateDeclaration {
     public name = 'gesuch.finanzielleSituationStartLuzern';
     public url = '/lu/finanzielleSituationStart/:gesuchId';
@@ -898,7 +875,6 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationStartState(),
     new EbeguFinanzielleSituationState(),
     new EbeguFinanzielleSituationResultateState(),
-    new EbeguFinanzielleSituationAufteilungState(),
     new EbeguFinanzielleSituationStartLuzernState(),
     new EbeguFinanzielleSituationStartSolothurnState(),
     new EbeguFinanzielleSituationGS2LuzernState(),

@@ -79,7 +79,6 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationResultateView', new FinanzielleSituationResultateViewComponentConfig())
         .component('dvFinanzielleSituationRequire', new DvFinanzielleSituationRequire())
         .component('finanzielleSituationStartLuzern', downgradeComponent({component: FinanzielleSituationStartViewLuzernComponent}))
-        .component('finanzielleSituationAufteilung', downgradeComponent({component: FinanzielleSituationAufteilungComponent}))
         .component('finanzielleSituationStartSolothurn', downgradeComponent({component: FinanzielleSituationStartSolothurnComponent}))
         .component('finanzielleSituationAngabenGS2Luzern', downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern', downgradeComponent({component: SelbstdeklarationComponent}))
@@ -123,4 +122,5 @@ export const GESUCH_JS_MODULE =
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
+        .directive('dvFinanzielleSituationAufteilung', downgradeComponent({component: FinanzielleSituationAufteilungComponent}))
 ;
