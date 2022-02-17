@@ -13,11 +13,9 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<md-dialog md-theme="default" aria-label="bestätigen"
-           class="md-default-theme md-transition-in md-dialog"
-           style="min-width: 700px"
-           role="dialog" tabindex="-1">
+<md-dialog md-theme="default" aria-label="Erweiterte Informationen"
+           class="md-default-theme md-transition-in dv-tooltip-dialog" tabindex="-1">
 
-    <dv-finanzielle-situation-aufteilung (close)="vm.close()"></dv-finanzielle-situation-aufteilung>
+    <dv-finanzielle-situation-aufteilung (close-event)="vm.hide()"></dv-finanzielle-situation-aufteilung>
 
 </md-dialog>

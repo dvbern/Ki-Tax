@@ -122,5 +122,8 @@ export const GESUCH_JS_MODULE =
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
-        .directive('dvFinanzielleSituationAufteilung', downgradeComponent({component: FinanzielleSituationAufteilungComponent}))
+        .directive('dvFinanzielleSituationAufteilung', downgradeComponent({
+            component: FinanzielleSituationAufteilungComponent,
+            outputs: ['closeEvent']
+        }))
 ;

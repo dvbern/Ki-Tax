@@ -264,6 +264,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public openDialog(): void {
-        this.dvDialog.showDialog(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController);
+        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController);
     }
 }

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {
     TSAufteilungDTO,
@@ -34,6 +34,9 @@ const LOG = LogFactory.createLog('FinanzielleSituationAufteilungComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationAufteilungComponent implements OnInit {
+
+    @Output()
+    public readonly closeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     public aufteilungDTO: TSFinanzielleSituationAufteilungDTO = new TSFinanzielleSituationAufteilungDTO();
 
@@ -124,4 +127,9 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch())
             .then(() => console.log('saved'));
     }
+
+    public close(): void {
+        this.closeEvent.emit();
+    }
+
 }

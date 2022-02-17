@@ -31,8 +31,4 @@ export class FinanzielleSituationAufteilungDialogController {
     public hide(): IPromise<any> {
         return this.$mdDialog.hide();
     }
-
-    public cancel(): void {
-        this.$mdDialog.cancel();
-    }
 }
