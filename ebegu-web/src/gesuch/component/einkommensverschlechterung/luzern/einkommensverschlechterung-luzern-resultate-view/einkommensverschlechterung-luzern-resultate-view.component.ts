@@ -36,8 +36,6 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
 
-    public resultate?: TSFinanzielleSituationResultateDTO;
-
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
@@ -66,8 +64,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             return;
         }
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus())
-            .then(resultat => {
-                this.resultate = resultat;
+            .then(() => {
                 this.resultatProzent = this.calculateVeraenderung();
             });
     }

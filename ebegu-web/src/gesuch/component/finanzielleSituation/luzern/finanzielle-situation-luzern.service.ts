@@ -16,7 +16,6 @@
  */
 
 import {Injectable} from '@angular/core';
-import {IPromise} from 'angular';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
