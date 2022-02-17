@@ -50,7 +50,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
-                            [model]="getResultate().massgebendesEinkVorAbzFamGr"
+                            [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
                             [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
                             [labelMessageKeyArgs]="{basisjahr: gesuchModelManager.getBasisjahrToWorkWith()}"
                             [inputDisabled]="true">

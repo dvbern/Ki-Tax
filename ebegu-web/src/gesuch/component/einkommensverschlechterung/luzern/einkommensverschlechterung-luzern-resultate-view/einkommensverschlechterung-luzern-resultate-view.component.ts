@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/co
 import {Transition} from '@uirouter/core';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -70,9 +71,9 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
     }
 
     public calculateVeraenderung(): string {
-        if (this.resultatBasisjahr) {
+        if (EbeguUtil.isNotNullOrUndefined(this.resultatBasisjahr)) {
             const resultatJahrPlus1 = this.getResultate();
-            if (resultatJahrPlus1) {
+            if (EbeguUtil.isNotNullOrUndefined(resultatJahrPlus1)) {
                 this.berechnungsManager.calculateProzentualeDifferenz(
                     this.resultatBasisjahr.massgebendesEinkVorAbzFamGr, resultatJahrPlus1.massgebendesEinkVorAbzFamGr)
                     .then(abweichungInProzentZumVorjahr => {

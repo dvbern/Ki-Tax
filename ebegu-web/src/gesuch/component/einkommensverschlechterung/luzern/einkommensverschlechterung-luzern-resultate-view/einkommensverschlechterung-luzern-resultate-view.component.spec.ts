@@ -26,6 +26,7 @@ import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
@@ -49,7 +50,7 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getGemeinde',
         'setGesuchstellerNumber',
         'setBasisJahrPlusNumber',
-        'getBasisjahrToWorkWith'
+        'getBasisjahrToWorkWith',
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, [
@@ -82,7 +83,7 @@ describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy}
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
             imports: [
                 SharedModule,
@@ -97,6 +98,7 @@ describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
         fixture = TestBed.createComponent(EinkommensverschlechterungLuzernResultateViewComponent);
         component = fixture.componentInstance;
+        component.model = new TSFinanzModel(1, false, 1, 2);
         fixture.detectChanges();
     });
 
