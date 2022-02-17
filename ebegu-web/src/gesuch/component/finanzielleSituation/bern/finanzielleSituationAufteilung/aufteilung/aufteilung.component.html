@@ -25,6 +25,7 @@
                     [(model)]="aufteilung.gs1"
                     [labelMessageKey]="gs1Name"
                     [inputRequired]="true"
+                    (keyup)="updateRest()"
                     [inputDisabled]="readonly">
                 </dv-input-label-field>
             </div>
@@ -33,11 +34,12 @@
                     [(model)]="aufteilung.gs2"
                     [labelMessageKey]="gs2Name"
                     [inputRequired]="true"
+                    (keyup)="updateRest()"
                     [inputDisabled]="readonly">
                 </dv-input-label-field>
             </div>
             <div class="rest">
-                <p *ngIf="aufteilung.getRest() !== 0">{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{aufteilung.getRest() | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
+                <p *ngIf="aufteilung.getRest() !== 0">{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{rest | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
                 <i  *ngIf="aufteilung.getRest() === 0" class="fa fa-lg fa-check"></i>
             </div>
         </div>

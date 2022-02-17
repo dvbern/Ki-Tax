@@ -15,8 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 import {TSAufteilungDTO} from '../../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 
@@ -27,7 +29,7 @@ import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class AufteilungComponent implements OnInit {
+export class AufteilungComponent implements OnInit, OnDestroy {
 
     @Input()
     public aufteilung: TSAufteilungDTO;
@@ -43,14 +45,36 @@ export class AufteilungComponent implements OnInit {
     public gs1Name: string;
     public gs2Name: string;
 
+    private restDebounce: BehaviorSubject<number>;
+    private subscription: Subscription;
+    public rest: number;
+
     public constructor(
-        private gesuchModelManger: GesuchModelManager
+        private gesuchModelManger: GesuchModelManager,
+        private cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
         this.gs1Name = this.gesuchModelManger.getGesuch().gesuchsteller1?.extractFullName();
         this.gs2Name = this.gesuchModelManger.getGesuch().gesuchsteller2?.extractFullName();
+        this.restDebounce = new BehaviorSubject<number>(this.aufteilung.getRest());
+
+        this.subscription = this.restDebounce
+            .asObservable()
+            // tslint:disable-next-line:no-magic-numbers
+            .pipe(debounceTime(500))
+            .subscribe(res => {
+                this.rest = res;
+                this.cd.markForCheck();
+            });
     }
 
+    public updateRest(): void {
+        this.restDebounce.next(this.aufteilung.getRest());
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
 }
