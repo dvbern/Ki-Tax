@@ -14,4 +14,18 @@
 			</div>
 		</div>
 	</div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <dv-input-label-field
+                    [name]="'steuerbaresVermoegen'"
+                    [(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
+                    [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+                    [inputRequired]="true"></dv-input-label-field>
+                <dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
+                             [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
+                             [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+            </div>
+        </div>
+    </div>
 </fieldset>

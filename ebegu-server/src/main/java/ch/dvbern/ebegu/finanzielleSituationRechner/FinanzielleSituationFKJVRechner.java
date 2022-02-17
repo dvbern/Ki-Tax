@@ -19,9 +19,11 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import org.apache.commons.lang.NotImplementedException;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
@@ -69,6 +71,12 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getAbzugSchuldzinsen());
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGewinnungskosten());
 		return totalAbzuege;
+	}
+
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		// bei Bern rechnen wir nie nach Veranlagung.
+		throw new NotImplementedException();
 	}
 
 }
