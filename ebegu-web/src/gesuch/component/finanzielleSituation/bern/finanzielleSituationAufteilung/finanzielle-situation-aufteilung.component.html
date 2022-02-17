@@ -23,6 +23,7 @@
                 <span translate [translateParams]="{gs1: gs1Name(), gs2: gs2Name()}">FINANZIELLE_SITUATION_AUFTEILUNG</span>
             </h2>
             <hr class="header"/>
+            <p class="inline-hint" translate [translateParams]="{gs1: gs1Name(), gs2: gs2Name()}">FINANZIELLE_SITUATION_AUFTEILUNG_HINT</p>
         </div>
     </div>
     <form role="form"
@@ -30,9 +31,34 @@
           novalidate>
         <ng-container *ngIf="aufteilungDTO">
             <dv-aufteilung
+                [aufteilung]="aufteilungDTO.bruttoertraegeVermoegen"
+                [groupName]="'bruttoertraegeVermoegen'"
+                [label]="'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN'"
+            ></dv-aufteilung>
+            <dv-aufteilung
+                [aufteilung]="aufteilungDTO.nettoertraegeErbengemeinschaft"
+                [groupName]="'nettoertraegeErbengemeinschaft'"
+                [label]="'FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN'"
+            ></dv-aufteilung>
+            <dv-aufteilung
                 [aufteilung]="aufteilungDTO.abzugSchuldzinsen"
                 [groupName]="'abzugSchuldzinsen'"
                 [label]="'FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN'"
+            ></dv-aufteilung>
+            <dv-aufteilung
+                [aufteilung]="aufteilungDTO.gewinnungskosten"
+                [groupName]="'gewinnungskosten'"
+                [label]="'FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN'"
+            ></dv-aufteilung>
+            <dv-aufteilung
+                [aufteilung]="aufteilungDTO.geleisteteAlimente"
+                [groupName]="'geleisteteAlimente'"
+                [label]="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE'"
+            ></dv-aufteilung>
+            <dv-aufteilung
+                [aufteilung]="aufteilungDTO.nettovermoegen"
+                [groupName]="'nettovermoegen'"
+                [label]="'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE'"
             ></dv-aufteilung>
         </ng-container>
     </form>

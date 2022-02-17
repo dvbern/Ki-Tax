@@ -119,6 +119,7 @@
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1": "Nettovermögen {{namegs1}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2": "Nettovermögen {{namegs2}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN": "Nettovermögen, davon 5%",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE": "Nettovermögen",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN": "Anrechenbares Einkommen",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP": "Das anrechenbare Einkommen ist die Summe aus Nettolohn (bei Selbständigerwerbenden der durchschnittliche Geschäftsgewinn der letzten 3 Jahre), Familienzulagen, Ersatzeinkommen, erhaltenen Alimenten und 5 Prozent des Nettovermögens (Nettovermögen = gesamtes Vermögen minus Schulden).",
     "FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE": "Abzüge aufgrund geleisteter Unterhaltsbeiträge",
@@ -2793,5 +2794,6 @@
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Aufteilung finanzielle Situation zwischen {{gs1}} und {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Rest:",
+    "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Bestimmte Einkommens- und Vermögenswerte müssen in kiBon pro Antragsteller*in separat angegeben werden, die in der Steuererklärung gemeinsam deklariert wurden. Auf diesem Bildschirm können Sie, falls gewünscht, diese Werte zwischen {{gs1}} und {{gs2}} anders aufteilen. Die Summe beider Werte muss dabei identisch bleiben",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

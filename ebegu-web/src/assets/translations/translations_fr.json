@@ -119,6 +119,7 @@
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1": "Fortune nette de {{namegs1}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2": "Fortune nette de {{namegs2}}",
     "FINANZIELLE_SITUATION_NETTOVERMOEGEN": "Fortune nette, dont 5%",
+    "FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE": "Nettovermögen",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN": "Revenu imputable",
     "FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP": "Le revenu déterminant comprend le salaire net (bénéfice commercial moyen des trois dernières années pour les personnes exerçant une activité lucrative indépendante), les allocations familiales, le revenu de remplacement, les contributions d'entretien perçues et 5 pour cent de la fortune nette (fortune brute moins les dettes).",
     "FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE": "Déductions pour les contributions d'entretien versées",
@@ -2786,5 +2787,6 @@
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
+    "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Bestimmte Einkommens- und Vermögenswerte müssen in kiBon pro Antragsteller*in separat angegeben werden, die in der Steuererklärung gemeinsam deklariert wurden. Auf diesem Bildschirm können Sie, falls gewünscht, diese Werte zwischen {{gs1}} und {{gs2}} anders aufteilen. Die Summe beider Werte muss dabei identisch bleiben",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

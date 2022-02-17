@@ -21,6 +21,7 @@ export class TSFinanzielleSituationAufteilungDTO {
     private _gewinnungskosten: TSAufteilungDTO;
     private _geleisteteAlimente: TSAufteilungDTO;
     private _nettovermoegen: TSAufteilungDTO;
+    private _nettoertraegeErbengemeinschaft: TSAufteilungDTO;
 
     public get bruttoertraegeVermoegen(): TSAufteilungDTO {
         return this._bruttoertraegeVermoegen;
@@ -60,6 +61,14 @@ export class TSFinanzielleSituationAufteilungDTO {
 
     public set nettovermoegen(value: TSAufteilungDTO) {
         this._nettovermoegen = value;
+    }
+
+    public get nettoertraegeErbengemeinschaft(): TSAufteilungDTO {
+        return this._nettoertraegeErbengemeinschaft;
+    }
+
+    public set nettoertraegeErbengemeinschaft(value: TSAufteilungDTO) {
+        this._nettoertraegeErbengemeinschaft = value;
     }
 }
 

@@ -69,6 +69,14 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         bruttoertraegeVermoegen.calculateInitiaSum();
         this.aufteilungDTO.bruttoertraegeVermoegen = bruttoertraegeVermoegen;
 
+        const nettoertraegeErbengemeinschaft = new TSAufteilungDTO();
+        nettoertraegeErbengemeinschaft.gs1 = finSitGS1.finanzielleSituationJA.nettoertraegeErbengemeinschaft;
+        nettoertraegeErbengemeinschaft.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.nettoertraegeErbengemeinschaft;
+        nettoertraegeErbengemeinschaft.gs2 = finSitGS2.finanzielleSituationJA.nettoertraegeErbengemeinschaft;
+        nettoertraegeErbengemeinschaft.gs2Urspruenglich = finSitGS2.finanzielleSituationGS?.nettoertraegeErbengemeinschaft;
+        nettoertraegeErbengemeinschaft.calculateInitiaSum();
+        this.aufteilungDTO.nettoertraegeErbengemeinschaft = nettoertraegeErbengemeinschaft;
+
         const abzugSchuldzinsen = new TSAufteilungDTO();
         abzugSchuldzinsen.gs1 = finSitGS1.finanzielleSituationJA.abzugSchuldzinsen;
         abzugSchuldzinsen.gs1Urspruenglich = finSitGS1.finanzielleSituationGS?.abzugSchuldzinsen;
