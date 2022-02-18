@@ -1,7 +1,8 @@
 <div *ngIf="showZugriffFailed()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
+       translate
+       [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
 </div>
 
 <div *ngIf="showWarningKeinPartnerGemeinsam()"
@@ -20,6 +21,13 @@
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG</p>
+</div>
+
+<div *ngIf="showZugriffKeineZpvNummer()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate
+       [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
 </div>
 
 <div *ngIf="showZugriffErfolgreich()"

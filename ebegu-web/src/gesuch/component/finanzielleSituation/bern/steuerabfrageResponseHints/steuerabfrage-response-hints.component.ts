@@ -4,6 +4,7 @@ import {
     TSSteuerdatenAnfrageStatus
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
     selector: 'dv-steuerabfrage-response-hints',
@@ -16,7 +17,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit {
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
 
-    public constructor() {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager
+    ) {
     }
 
     public ngOnInit(): void {
@@ -43,4 +46,11 @@ export class SteuerabfrageResponseHintsComponent implements OnInit {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM;
     }
 
+    public showZugriffKeineZpvNummer(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
+    }
+
+    public getGS1Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+    }
 }

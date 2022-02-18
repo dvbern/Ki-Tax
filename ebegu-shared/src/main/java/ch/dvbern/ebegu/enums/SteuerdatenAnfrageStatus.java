@@ -26,7 +26,8 @@ public enum SteuerdatenAnfrageStatus {
 	FAILED_KEIN_PARTNER_GEMEINSAM,
 	FAILED_PARTNER_NICHT_GEMEINSAM,
 	FAILED_GEBURTSDATUM,
-	FAILED_UNTERJAEHRIGER_FALL;
+	FAILED_UNTERJAEHRIGER_FALL,
+	FAILED_KEINE_ZPV_NUMMER;
 
 	public boolean isSteuerdatenAbfrageErfolgreich() {
 		return this == OFFEN

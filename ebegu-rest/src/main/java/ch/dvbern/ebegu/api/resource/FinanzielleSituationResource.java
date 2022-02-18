@@ -460,7 +460,7 @@ public class FinanzielleSituationResource {
 		Benutzer benutzer = principalBean.getBenutzer();
 		if (gesuch.getEingangsart().isPapierGesuch() || Strings.isNullOrEmpty(benutzer.getZpvNummer())) {
 			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED);
+				SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 		} else {
 			try {
 				SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
