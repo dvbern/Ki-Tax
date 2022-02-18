@@ -416,26 +416,4 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
 					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 	}
-
-	@Nonnull
-	public final BigDecimal getZwischentotalEinkommen() {
-		return MathUtil.DEFAULT.addNullSafe(
-			BigDecimal.ZERO,
-			getNettolohn(),
-			getFamilienzulage(),
-			getErsatzeinkommen(),
-			getErhalteneAlimente(),
-			getDurchschnittlicherGeschaeftsgewinn());
-	}
-
-	@Nonnull
-	public final BigDecimal getZwischentotalVermoegen() {
-		BigDecimal vermoegenPlus = MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getBruttovermoegen());
-		return MathUtil.DEFAULT.subtractNullSafe(vermoegenPlus, getSchulden());
-	}
-
-	@Nonnull
-	public final BigDecimal getZwischetotalAbzuege() {
-		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getGeleisteteAlimente());
-	}
 }

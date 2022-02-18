@@ -383,39 +383,28 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nonnull
-	public static BigDecimal calcTotalEinkommen(
+	public BigDecimal calcTotalEinkommen(
 		@Nullable AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2) {
 
 		return MathUtil.DEFAULT.addNullSafe(
 			BigDecimal.ZERO,
-			gs1 != null ? gs1.getZwischentotalEinkommen() : BigDecimal.ZERO,
-			gs2 != null ? gs2.getZwischentotalEinkommen() : BigDecimal.ZERO);
+			gs1 != null ? getZwischentotalEinkommen(gs1) : BigDecimal.ZERO,
+			gs2 != null ? getZwischentotalEinkommen(gs2) : BigDecimal.ZERO);
 	}
 
 	@Nonnull
-	public static BigDecimal calcTotalVermoegen(
+	public BigDecimal calcTotalVermoegen(
 		@Nullable AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2) {
 
 		return MathUtil.DEFAULT.addNullSafe(
 			BigDecimal.ZERO,
-			gs1 != null ? gs1.getZwischentotalVermoegen() : BigDecimal.ZERO,
-			gs2 != null ? gs2.getZwischentotalVermoegen() : BigDecimal.ZERO);
+			gs1 != null ? getZwischentotalVermoegen(gs1) : BigDecimal.ZERO,
+			gs2 != null ? getZwischentotalVermoegen(gs2) : BigDecimal.ZERO);
 	}
 
-	@Nonnull
-	public static BigDecimal calcTotalAbzuege(
-		@Nullable AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2) {
-
-		return MathUtil.DEFAULT.addNullSafe(
-			BigDecimal.ZERO,
-			gs1 != null ? gs1.getZwischetotalAbzuege() : BigDecimal.ZERO,
-			gs2 != null ? gs2.getZwischetotalAbzuege() : BigDecimal.ZERO);
-	}
-
-	public static BigDecimal calcMassgebendesEinkommenVorAbzugFamiliengroesse(
+	public BigDecimal calcMassgebendesEinkommenVorAbzugFamiliengroesse(
 		@Nullable AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2) {
 
@@ -426,7 +415,28 @@ public abstract class AbstractFinanzielleSituationRechner {
 
 		return MathUtil.DEFAULT.subtract(
 			totalEinkommen,
-			calcTotalAbzuege(gs1, gs2));
+			calcAbzuege(gs1, gs2));
+	}
+
+	@Nonnull
+	public final BigDecimal getZwischentotalEinkommen(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		BigDecimal einkommenZwischentotal = calcEinkommenProGS(
+			abstractFinanzielleSituation,
+			abstractFinanzielleSituation.getDurchschnittlicherGeschaeftsgewinn(),
+			BigDecimal.ZERO);
+
+		return einkommenZwischentotal != null ? einkommenZwischentotal : BigDecimal.ZERO;
+	}
+
+	@Nonnull
+	public BigDecimal getZwischentotalVermoegen(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		BigDecimal vermoegenPlus = MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, abstractFinanzielleSituation.getBruttovermoegen());
+		return MathUtil.DEFAULT.subtractNullSafe(vermoegenPlus, abstractFinanzielleSituation.getSchulden());
+	}
+
+	@Nonnull
+	public BigDecimal getZwischetotalAbzuege(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, abstractFinanzielleSituation.getGeleisteteAlimente());
 	}
 
 	protected static BigDecimal add(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
@@ -477,7 +487,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 		return total;
 	}
 
-	protected BigDecimal calcAbzuege(
+	public BigDecimal calcAbzuege(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {
