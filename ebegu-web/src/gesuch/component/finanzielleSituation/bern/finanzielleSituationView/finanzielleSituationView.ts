@@ -163,9 +163,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return (this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt) &&
-            this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
