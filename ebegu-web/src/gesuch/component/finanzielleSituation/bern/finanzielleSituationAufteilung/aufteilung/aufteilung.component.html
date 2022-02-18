@@ -39,7 +39,10 @@
                 </dv-input-label-field>
             </div>
             <div class="rest">
-                <p *ngIf="aufteilung.getRest() !== 0">{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{rest | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
+                <ng-container  *ngIf="aufteilung.getRest() !== 0">
+                    <i class="fa fa-lg fa-times-circle"></i>
+                    <p>{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{rest | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
+                </ng-container>
                 <i  *ngIf="aufteilung.getRest() === 0" class="fa fa-lg fa-check"></i>
             </div>
         </div>

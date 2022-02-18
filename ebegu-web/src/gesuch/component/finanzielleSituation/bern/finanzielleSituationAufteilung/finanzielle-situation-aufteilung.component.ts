@@ -15,7 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {
     TSAufteilungDTO,
@@ -34,6 +35,8 @@ const LOG = LogFactory.createLog('FinanzielleSituationAufteilungComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationAufteilungComponent implements OnInit {
+
+    @ViewChild(NgForm) public form: NgForm;
 
     @Output()
     public readonly closeEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -124,9 +127,24 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
     }
 
     public async save(): Promise<void> {
+        if (!this.isValid()) {
+            return;
+        }
         await this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch());
         await this.gesuchModelManager.reloadGesuch();
         return this.close();
+    }
+
+    public isValid(): boolean {
+        if (!this.form?.valid) {
+            return false;
+        }
+        for (const val of Object.values(this.aufteilungDTO)) {
+            if (val.getRest() !== 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public close(): void {

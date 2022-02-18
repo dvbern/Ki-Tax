@@ -68,7 +68,7 @@
 
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="save()" translate>SAVE</button>
+        <button [disabled]="!isValid()" class="dv-btn" (click)="save()" translate>SAVE</button>
         <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
     </div>
 </mat-dialog-actions>
