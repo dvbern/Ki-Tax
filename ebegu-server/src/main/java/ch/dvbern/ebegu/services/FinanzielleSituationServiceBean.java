@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -347,10 +346,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	}
 
 	private void assertSumIsEqual(
-		@Nullable BigDecimal gs1ValueNew,
-		@Nullable BigDecimal gs2ValueNew,
-		@Nullable BigDecimal gs1ValueOld,
-		@Nullable BigDecimal gs2ValueOld,
+		BigDecimal gs1ValueNew,
+		BigDecimal gs2ValueNew,
+		BigDecimal gs1ValueOld,
+		BigDecimal gs2ValueOld,
 		@Nonnull String valueName
 	) {
 		Objects.requireNonNull(gs1ValueNew);
