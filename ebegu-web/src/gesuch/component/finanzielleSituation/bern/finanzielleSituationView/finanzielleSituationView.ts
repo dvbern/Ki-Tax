@@ -260,6 +260,11 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
+    public showAufteilung(): boolean {
+        return this.isSteueranfrageErfolgreich()
+        && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
+    }
+
     public isFKJV(): boolean {
         return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }

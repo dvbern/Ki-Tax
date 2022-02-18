@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
@@ -21,12 +22,15 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+
+const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -47,6 +51,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         'WizardStepManager',
         '$scope',
         '$timeout',
+        'DvDialog'
     ];
 
     public constructor(
@@ -56,6 +61,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private readonly dvDialog: DvDialog,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -64,6 +70,10 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
 
+        this.initModelAndCalculate();
+    }
+
+    private initModelAndCalculate(): void {
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             null);
@@ -152,5 +162,12 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
         return this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff &&
             !this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+    }
+
+    public startAufteilung(): void {
+        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+            .then(() => {
+                this.initModelAndCalculate();
+            });
     }
 }

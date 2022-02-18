@@ -555,7 +555,17 @@
                         </div>
                     </div>
                 </fieldset>
-                <button ng-click="vm.startAufteilung()">open dialog</button>
+                <div class="inline-hint margin-bottom-30" ng-if="vm.showAufteilung()">
+                    {{'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE' | translate}}
+                    <ul>
+                        <li>{{'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_GELEISTETEALIMENTE' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN' | translate}}</li>
+                    </ul>
+                    <a class="pointer-cursor" ng-click="vm.startAufteilung()">{{'AUFTEILUNG_AENDERN' | translate}}</a>
+                </div>
 
                 <!--Buttons-->
                 <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()"

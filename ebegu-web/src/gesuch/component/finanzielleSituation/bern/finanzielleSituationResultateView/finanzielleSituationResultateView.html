@@ -292,6 +292,14 @@
                         </div>
                     </div>
 
+                    <div class="inline-hint margin-bottom-30" ng-if="vm.showAufteilung()">
+                        {{'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE' | translate}}
+                        <ul>
+                            <li>{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE' | translate}}</li>
+                        </ul>
+                        <a class="pointer-cursor" ng-click="vm.startAufteilung()">{{'AUFTEILUNG_AENDERN' | translate}}</a>
+                    </div>
+
                 </fieldset>
 
                 <!--Buttons-->
