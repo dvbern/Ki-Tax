@@ -73,7 +73,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
     public showForm: boolean;
-    private $stateParams: IStammdatenStateParams;
+    private readonly $stateParams: IStammdatenStateParams;
 
     public constructor(
         $stateParams: IStammdatenStateParams,

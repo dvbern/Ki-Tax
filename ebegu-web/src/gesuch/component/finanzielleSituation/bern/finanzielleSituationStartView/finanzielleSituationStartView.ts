@@ -337,6 +337,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     private getAbfrageStatus(): string {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
 }

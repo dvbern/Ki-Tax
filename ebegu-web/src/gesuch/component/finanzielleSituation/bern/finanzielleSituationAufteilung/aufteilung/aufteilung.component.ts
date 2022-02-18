@@ -19,8 +19,11 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy,
 import {ControlContainer, NgForm} from '@angular/forms';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import {LogFactory} from '../../../../../../app/core/logging/LogFactory';
 import {TSAufteilungDTO} from '../../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
+
+const LOG = LogFactory.createLog('AufteilungComponent');
 
 @Component({
     selector: 'dv-aufteilung',
@@ -50,8 +53,8 @@ export class AufteilungComponent implements OnInit, OnDestroy {
     public rest: number;
 
     public constructor(
-        private gesuchModelManger: GesuchModelManager,
-        private cd: ChangeDetectorRef
+        private readonly gesuchModelManger: GesuchModelManager,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -67,6 +70,8 @@ export class AufteilungComponent implements OnInit, OnDestroy {
             .subscribe(res => {
                 this.rest = res;
                 this.cd.markForCheck();
+            }, err => {
+                LOG.error(err);
             });
     }
 

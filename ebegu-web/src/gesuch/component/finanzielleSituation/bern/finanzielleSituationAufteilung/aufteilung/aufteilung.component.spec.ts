@@ -16,27 +16,62 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
+import {SharedModule} from '../../../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedComponent';
+import {TSAufteilungDTO} from '../../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
+import {TSFinanzielleSituation} from '../../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../../../models/TSGesuchstellerContainer';
+import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 
 import {AufteilungComponent} from './aufteilung.component';
 
 describe('AufteilungComponent', () => {
-  let component: AufteilungComponent;
-  let fixture: ComponentFixture<AufteilungComponent>;
+    let component: AufteilungComponent;
+    let fixture: ComponentFixture<AufteilungComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AufteilungComponent ]
-    })
-    .compileComponents();
-  });
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AufteilungComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [
+                SharedModule
+            ],
+            declarations: [AufteilungComponent],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: NgForm, useValue: new NgForm([], [])},
+            ]
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+
+        fixture = TestBed.createComponent(AufteilungComponent);
+        component = fixture.componentInstance;
+        component.aufteilung = new TSAufteilungDTO();
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        const finSitContainer1 = new TSFinanzielleSituationContainer();
+        const finSitContainer2 = new TSFinanzielleSituationContainer();
+        finSitContainer1.finanzielleSituationJA = new TSFinanzielleSituation();
+        finSitContainer2.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer = finSitContainer1;
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer = finSitContainer2;
+        return gesuch;
+    }
 });

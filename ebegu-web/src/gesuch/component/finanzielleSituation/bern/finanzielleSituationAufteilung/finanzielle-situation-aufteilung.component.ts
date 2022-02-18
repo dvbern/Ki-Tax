@@ -44,8 +44,8 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
     public aufteilungDTO: TSFinanzielleSituationAufteilungDTO = new TSFinanzielleSituationAufteilungDTO();
 
     public constructor(
-        private gesuchModelManager: GesuchModelManager,
-        private finanzielleSituationRS: FinanzielleSituationRS
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly finanzielleSituationRS: FinanzielleSituationRS
     ) {
     }
 
@@ -132,7 +132,8 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         }
         await this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch());
         await this.gesuchModelManager.reloadGesuch();
-        return this.close();
+        this.close();
+        return;
     }
 
     public isValid(): boolean {
