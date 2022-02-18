@@ -1,10 +1,16 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
     TSSteuerdatenAnfrageStatus
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
+import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+
+const LOG = LogFactory.createLog("SteuerabfrageResponseHintsComponent");
 
 @Component({
     selector: 'dv-steuerabfrage-response-hints',
@@ -12,20 +18,32 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     styleUrls: ['./steuerabfrage-response-hints.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SteuerabfrageResponseHintsComponent implements OnInit {
+export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
 
     @Output()
     private readonly tryAgainEvent: EventEmitter<void> = new EventEmitter<void>();
+    private principal: TSBenutzer;
+    private subscription: Subscription;
 
     public constructor(
-        private readonly gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
     public ngOnInit(): void {
+        this.subscription = this.authServiceRS.principal$
+            .subscribe(
+                principal => this.principal = principal,
+                err => LOG.error(err)
+            );
+    }
+
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public showZugriffErfolgreich(): boolean {
@@ -57,7 +75,15 @@ export class SteuerabfrageResponseHintsComponent implements OnInit {
         return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
     }
 
+    public getGS2Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+    }
+
     public tryAgain(): void {
         this.tryAgainEvent.emit();
+    }
+
+    public getEmailLoggedIn(): string {
+        return this.principal.email;
     }
 }

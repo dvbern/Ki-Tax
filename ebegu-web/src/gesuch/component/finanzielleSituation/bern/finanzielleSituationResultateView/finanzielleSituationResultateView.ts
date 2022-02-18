@@ -18,10 +18,12 @@ import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
+import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -169,5 +171,20 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             .then(() => {
                 this.initModelAndCalculate();
             });
+    }
+
+    public isSteueranfrageErfolgreichForGS1(): boolean {
+        const finSit = this.gesuchModelManager.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        return EbeguUtil.isNotNullAndTrue(finSit.steuerdatenZugriff)
+            && isSteuerdatenAnfrageStatusErfolgreich(finSit.steuerdatenAbfrageStatus);
+    }
+
+    /*
+    Falls gemeinsameSteuererklärung = true ist, wird die Abfrage immer nur für GS1 gemacht. Deshalb reicht es hier
+    wenn wir prüfen, ob die Steuerabfrage für gs1 erfolgrech war
+     */
+    public showAufteilung(): boolean {
+        return this.isSteueranfrageErfolgreichForGS1()
+            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
     }
 }

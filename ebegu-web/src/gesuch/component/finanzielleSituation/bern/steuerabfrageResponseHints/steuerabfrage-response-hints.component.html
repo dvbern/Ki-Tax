@@ -16,7 +16,9 @@
 <div *ngIf="showWarningGeburtsdatum()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
+       translate
+       [translateParams]="{namegs2: getGS2Name()}"
+    >FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
     <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
@@ -30,7 +32,7 @@
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        translate
-       [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
+       [translateParams]="{email: getEmailLoggedIn()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
     <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
