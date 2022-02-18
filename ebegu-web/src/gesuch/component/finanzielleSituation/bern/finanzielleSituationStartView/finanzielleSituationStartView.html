@@ -39,6 +39,7 @@
 
                 <dv-steuerabfrage-response-hints
                     ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                    (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
                     [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
 
                 <div ng-if="!vm.areThereOnlyFerieninsel">

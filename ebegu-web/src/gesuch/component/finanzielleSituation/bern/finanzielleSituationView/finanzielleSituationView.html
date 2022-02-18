@@ -36,6 +36,7 @@
 
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
                         [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
 
                     <!--Steuerveranlagung -->

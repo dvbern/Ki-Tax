@@ -128,5 +128,9 @@ export const GESUCH_JS_MODULE =
             outputs: ['closeEvent']
         }))
         .directive('dvSteuerabfrageResponseHints',
-            downgradeComponent({component: SteuerabfrageResponseHintsComponent}))
+            downgradeComponent({
+                component: SteuerabfrageResponseHintsComponent,
+                inputs: ['status'],
+                outputs: ['tryAgainEvent']
+            }))
 ;

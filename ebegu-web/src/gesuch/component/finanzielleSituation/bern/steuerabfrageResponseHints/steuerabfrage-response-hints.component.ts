@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
     TSSteuerdatenAnfrageStatus
@@ -16,6 +16,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit {
 
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
+
+    @Output()
+    private readonly tryAgainEvent: EventEmitter<void> = new EventEmitter<void>();
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager
@@ -52,5 +55,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit {
 
     public getGS1Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+    }
+
+    public tryAgain(): void {
+        this.tryAgainEvent.emit();
     }
 }

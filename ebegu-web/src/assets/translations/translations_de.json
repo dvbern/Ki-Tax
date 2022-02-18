@@ -2798,5 +2798,6 @@
     "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Bestimmte Einkommens- und Vermögenswerte müssen in kiBon pro Antragsteller*in separat angegeben werden, die in der Steuererklärung gemeinsam deklariert wurden. Auf diesem Bildschirm können Sie, falls gewünscht, diese Werte zwischen {{gs1}} und {{gs2}} anders aufteilen. Die Summe beider Werte muss dabei identisch bleiben",
     "FINANZIELLE_SITUATION_AUFGETEILTE_WERTE": "Einige Werte, die in der Steuererklärung gemeinsam angegeben wurden, wurden 50:50 zwischen beiden Antragstellenden aufgeteilt. Dies betrifft folgende Werte:",
     "AUFTEILUNG_AENDERN": "Aufteilung ändern",
+    "ERNEUT_VERSUCHEN": "Erneut versuchen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -3,18 +3,21 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningKeinPartnerGemeinsam()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningGeburtsdatum()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showZugriffUnterjaehrigeFall()"
@@ -28,6 +31,7 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showZugriffErfolgreich()"
