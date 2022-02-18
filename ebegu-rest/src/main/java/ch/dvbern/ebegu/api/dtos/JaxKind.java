@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -60,6 +61,9 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	@NotNull
 	private Boolean zukunftigeGeburtsdatum = false;
+
+	@Nonnull
+	private Boolean inPruefung = false;
 
 	@Nullable
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
@@ -148,5 +152,14 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setZukunftigeGeburtsdatum(Boolean zukunftigeGeburtsdatum) {
 		this.zukunftigeGeburtsdatum = zukunftigeGeburtsdatum;
+	}
+
+	@Nonnull
+	public Boolean getInPruefung() {
+		return inPruefung;
+	}
+
+	public void setInPruefung(@Nonnull Boolean inPruefung) {
+		this.inPruefung = inPruefung;
 	}
 }

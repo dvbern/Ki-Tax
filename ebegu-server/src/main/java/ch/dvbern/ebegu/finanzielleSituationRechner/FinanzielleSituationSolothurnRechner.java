@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -78,7 +79,7 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 			return BigDecimal.ZERO;
 		}
 
-		if(finanzielleSituation.getSteuerveranlagungErhalten()) {
+		if(calculateByVeranlagung(finanzielleSituation)) {
 			return calcuateMassgebendesEinkommenBasedOnNettoeinkommen(finanzielleSituation);
 		}
 
@@ -90,7 +91,11 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 			return BigDecimal.ZERO;
 		}
 
-		return MathUtil.EXACT.multiply(finanzielleSituation.getBruttoLohn(), BigDecimal.valueOf(0.75));
+		var bruttovermoegenMultiplicated =
+			MathUtil.EXACT.multiply(finanzielleSituation.getBruttoLohn(), BigDecimal.valueOf(0.75));
+		BigDecimal steuerbaresVermoegen5Prozent =
+			calcualteStuerbaresVermoegen5Prozent(finanzielleSituation.getSteuerbaresVermoegen());
+		return MathUtil.EXACT.addNullSafe(bruttovermoegenMultiplicated, steuerbaresVermoegen5Prozent);
 	}
 
 	private BigDecimal calcuateMassgebendesEinkommenBasedOnNettoeinkommen(FinanzielleSituation finanzielleSituation) {
@@ -113,7 +118,7 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 	}
 
 	private BigDecimal calcualteStuerbaresVermoegen5Prozent(BigDecimal steuerbaresVermoegen) {
-		if(isNullOrZero(steuerbaresVermoegen)) {
+		if (isNullOrZero(steuerbaresVermoegen)) {
 			return BigDecimal.ZERO;
 		}
 
@@ -122,5 +127,10 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 
 	private boolean isNullOrZero(BigDecimal number) {
 		return number == null || number.compareTo(BigDecimal.ZERO) == 0;
+	}
+
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return finanzielleSituation.getSteuerveranlagungErhalten();
 	}
 }
