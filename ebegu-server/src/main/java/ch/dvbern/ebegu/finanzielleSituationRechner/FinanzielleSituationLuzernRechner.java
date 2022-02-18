@@ -109,7 +109,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	 * Die Geschäftverlust habe ich bei der Einkommen genommen
 	 */
 	@Override
-	protected BigDecimal calcAbzuege(
+	public BigDecimal calcAbzuege(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {
