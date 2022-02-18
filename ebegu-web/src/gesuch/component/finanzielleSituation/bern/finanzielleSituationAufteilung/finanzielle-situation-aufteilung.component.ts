@@ -123,9 +123,10 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
     }
 
-    public save(): void {
-        this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch())
-            .then(() => console.log('saved'));
+    public async save(): Promise<void> {
+        await this.finanzielleSituationRS.updateFromAufteilung(this.aufteilungDTO, this.gesuchModelManager.getGesuch());
+        await this.gesuchModelManager.reloadGesuch();
+        return this.close();
     }
 
     public close(): void {

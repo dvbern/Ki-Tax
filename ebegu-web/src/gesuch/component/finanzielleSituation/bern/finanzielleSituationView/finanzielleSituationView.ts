@@ -73,6 +73,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
     public showForm: boolean;
+    private $stateParams: IStammdatenStateParams;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -92,7 +93,12 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             wizardStepManager,
             $scope,
             $timeout);
-        let parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
+        this.$stateParams = $stateParams;
+        this.copyDataAndInit();
+    }
+
+    private copyDataAndInit(): void {
+        let parsedNum = parseInt(this.$stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
             parsedNum = 1;
         }
@@ -263,7 +269,20 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
-    public openDialog(): void {
-        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController);
+    public startAufteilung(): void {
+        // zwischenspeichern dieser werte. Das sind die einzigen, die nicht readonly und dementsprechend schon
+        // durch den User verändert sein könnten. Beim erneuten laden würden diese überschrieben
+        const einkommenAusVereinfachtemVerfahren =
+            this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        const einkommenAusVereinfachtemVerfahrenAmount
+            = this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+            .then(() => {
+                this.copyDataAndInit();
+                this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet =
+                    einkommenAusVereinfachtemVerfahren;
+                this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+                    einkommenAusVereinfachtemVerfahrenAmount;
+            });
     }
 }
