@@ -24,6 +24,7 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
+import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/infoma-fields/infoma-fields.component';
@@ -75,7 +76,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
         FinanzielleSituationAufteilungComponent,
-        AufteilungComponent
+        AufteilungComponent,
+        SteuerabfrageResponseHintsComponent
     ],
     exports: [
         DvSwitchComponent,

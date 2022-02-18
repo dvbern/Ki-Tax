@@ -48,6 +48,7 @@ import {FinanzielleSituationStartViewComponentConfig} from './component/finanzie
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
 import {SozialhilfeZeitraumListViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
 import {SozialhilfeZeitraumViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
+import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
@@ -126,4 +127,6 @@ export const GESUCH_JS_MODULE =
             component: FinanzielleSituationAufteilungComponent,
             outputs: ['closeEvent']
         }))
+        .directive('dvSteuerabfrageResponseHints',
+            downgradeComponent({component: SteuerabfrageResponseHintsComponent}))
 ;

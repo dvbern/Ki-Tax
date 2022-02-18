@@ -20,7 +20,6 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
-import {TSSteuerdatenAnfrageStatus} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
@@ -331,21 +330,15 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
     }
 
-    public showWarningKeinPartnerGemeinsam(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
-    public showWarningGeburtsdatum(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
     private callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(true).then(() => {
                 this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
             },
         );
+    }
+
+    private getAbfrageStatus(): string {
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus
     }
 }

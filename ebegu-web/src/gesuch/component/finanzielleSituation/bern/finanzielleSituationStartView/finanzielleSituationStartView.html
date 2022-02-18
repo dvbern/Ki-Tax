@@ -37,35 +37,9 @@
                     </div>
                 </div>
 
-                <div ng-if="vm.showZugriffFailed()"
-                     class="well well-status-warten minus-margin">
-                    <p class="ebegu-h3"
-                       data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
-                </div>
-
-                <div ng-if="vm.showWarningKeinPartnerGemeinsam()"
-                     class="well well-status-warten minus-margin">
-                    <p class="ebegu-h3"
-                       data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM"></p>
-                </div>
-
-                <div ng-if="vm.showWarningGeburtsdatum()"
-                     class="well well-status-warten minus-margin">
-                    <p class="ebegu-h3"
-                       data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM"></p>
-                </div>
-
-                <div ng-if="vm.showZugriffUnterjaehrigeFall()"
-                     class="well well-status-warten minus-margin">
-                    <p class="ebegu-h3"
-                       data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG"></p>
-                </div>
-
-                <div ng-if="vm.showZugriffErfolgreich()"
-                     class="well well-status-bestaetigt minus-margin">
-                    <p class="ebegu-h3"
-                       data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH"></p>
-                </div>
+                <dv-steuerabfrage-response-hints
+                    ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                    [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
 
                 <div ng-if="!vm.areThereOnlyFerieninsel">
                     <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
