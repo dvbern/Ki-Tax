@@ -432,7 +432,8 @@ dv-accordion.ewksubsub {
         }
     }
 
-    &.static-position div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon) {
+    // positions of radio buttons should not be overwritten
+    &.static-position div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon):not(.mat-radio-group):not(.mat-radio-button):not(.mat-radio-label):not(.mat-radio-container):not(.mat-radio-label-content):not(.mat-radio-outer-circle):not(.mat-radio-inner-circle):not(.mat-ripple):not(.mat-ripple-element) {
         position: static;
     }
 }

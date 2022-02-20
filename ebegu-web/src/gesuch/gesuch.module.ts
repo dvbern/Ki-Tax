@@ -122,5 +122,8 @@ export const GESUCH_JS_MODULE =
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
-        .directive('dvFkjvKinderabzug', downgradeComponent({component: FkjvKinderabzugComponent}))
+        .directive('dvFkjvKinderabzug', downgradeComponent({
+            component: FkjvKinderabzugComponent,
+            inputs: ['kindContainer']
+        }))
 ;

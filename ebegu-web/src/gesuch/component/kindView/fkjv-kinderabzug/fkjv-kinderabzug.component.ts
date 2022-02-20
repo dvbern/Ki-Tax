@@ -15,19 +15,39 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {MatRadioChange} from '@angular/material/radio';
+import {TSKind} from '../../../../models/TSKind';
+import {TSKindContainer} from '../../../../models/TSKindContainer';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Component({
-  selector: 'dv-fkjv-kinderabzug',
-  templateUrl: './fkjv-kinderabzug.component.html',
-  styleUrls: ['./fkjv-kinderabzug.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-fkjv-kinderabzug',
+    templateUrl: './fkjv-kinderabzug.component.html',
+    styleUrls: ['./fkjv-kinderabzug.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FkjvKinderabzugComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    public kindContainer: TSKindContainer;
 
-  ngOnInit(): void {
-  }
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager
+    ) {
+    }
 
+    public ngOnInit(): void {
+    }
+
+    public getModel(): TSKind | undefined {
+        if (this.kindContainer?.kindJA) {
+            return this.kindContainer.kindJA;
+        }
+        return undefined;
+    }
+
+    public change($event: MatRadioChange): void {
+        console.log($event);
+    }
 }

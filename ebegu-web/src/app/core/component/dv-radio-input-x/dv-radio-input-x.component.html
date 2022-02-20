@@ -15,16 +15,21 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form>
-    <div class="row">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'TEST'"
-                    [model]="getModel()?.inErstausbildung"
-                    (changeEvent)="change($event)"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
-        </div>
-    </div>
-</form>
+<label [for]="uniqueName + '_id'" class="required ebegu-h1">
+    {{label | translate}}
+</label>
+<mat-radio-group
+    (change)="change($event)"
+    [(ngModel)]="test"
+    [name]="uniqueName"
+    [id]="uniqueName + '_id'"
+    #radio="ngModel"
+    [disabled]="readonly"
+    required>
+    <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
+    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+</mat-radio-group>
+<dv-error-messages *ngIf="form?.submitted"
+                   [errorObject]="radio.errors"
+                   [inputId]="uniqueName + '_id'">
+</dv-error-messages>

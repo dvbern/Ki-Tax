@@ -178,7 +178,10 @@
                         </div>
                     </ng-container>
 
-                    <dv-fkjv-kinderabzug ng-if="vm.showFkjvKinderabzug()"></dv-fkjv-kinderabzug>
+                    <dv-fkjv-kinderabzug
+                        ng-if="vm.showFkjvKinderabzug()"
+                        [kind-container]="vm.getModel()"
+                    ></dv-fkjv-kinderabzug>
 
                     <!--familienErgaenzendeBetreuung-->
                     <div class="row">
