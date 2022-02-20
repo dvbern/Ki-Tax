@@ -15,14 +15,91 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form>
-    <div class="row">
+<form *ngIf="getModel()">
+    <div class="row" *ngIf="isPflegekindVisible()">
         <div class="col-xs-12">
             <dv-radio-container-x>
                 <dv-radio-input-x
-                    [label]="'TEST'"
-                    [model]="getModel()?.inErstausbildung"
-                    (changeEvent)="change($event)"
+                    [label]="'KINDERABZUG_IS_PFLEGEKIND'"
+                    [(model)]="getModel().isPflegekind"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="pflegeEntschaedigungErhaltenVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
+                    [(model)]="getModel().pflegeEntschaedigungErhalten"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="obhutAlternierendAusuebenVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
+                    [(model)]="getModel().obhutAlternierendAusueben"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="gemeinsamesGesuchVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
+                    [(model)]="getModel().gemeinsamesGesuch"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="inErstausbildungVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
+                    [(model)]="getModel().inErstausbildung"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="lebtKindAlternierendVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
+                    [(model)]="getModel().lebtKindAlternierend"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="alimenteErhaltenVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_ALIMENTE_ERHALTEN'"
+                    [(model)]="getModel().alimenteErhalten"
+                    (modelChange)="change()"
+                ></dv-radio-input-x>
+            </dv-radio-container-x>
+        </div>
+    </div>
+    <div class="row" *ngIf="alimenteBezahlenVisible()">
+        <div class="col-xs-12">
+            <dv-radio-container-x>
+                <dv-radio-input-x
+                    [label]="'KINDERABZUG_ALIMENTE_BEZAHLEN'"
+                    [(model)]="getModel().alimenteBezahlen"
+                    (modelChange)="change()"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>

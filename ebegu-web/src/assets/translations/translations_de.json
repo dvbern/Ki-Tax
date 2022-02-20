@@ -2791,5 +2791,13 @@
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
+    "KINDERABZUG_IS_PFLEGEKIND": "Handelt es sich beim Kind um ein Pflegekind?",
+    "KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN": "Erhalten die Gesuchsteller für das Kind eine Pflegeentschädigung?",
+    "KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN": "Erhalten die Gesuchsteller für das Kind eine Pflegeentschädigung?",
+    "KINDERABZUG_GEMEINSAMES_GESUCH": "Stellen die Erziehungsberechtigten für dieses Kind gemeinsam ein Gesuch?",
+    "KINDERABZUG_IN_ERSTAUSBILDUNG": "Befindet sich das Kind nach 18ten Geburtstag in einer beruflichen oder schulischen Erstausbildung und ist unterstützungsbedürftig?",
+    "KINDERABZUG_LEBT_KIND_ALTERNIEREND": "Lebt das Kind mind. alternierend bei Ihnen?",
+    "KINDERABZUG_ALIMENTE_ERHALTEN": "Erhalten Sie Alimente für das Kind?",
+    "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Alimente für das Kind",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -18,9 +18,9 @@
 <label [for]="uniqueName + '_id'" class="required ebegu-h1">
     {{label | translate}}
 </label>
-<mat-radio-group
+<mat-radio-group class="margin-bottom-30"
     (change)="change($event)"
-    [(ngModel)]="test"
+    [(ngModel)]="model"
     [name]="uniqueName"
     [id]="uniqueName + '_id'"
     #radio="ngModel"

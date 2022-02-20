@@ -28,19 +28,17 @@ import {MatRadioChange} from '@angular/material/radio';
 })
 export class DvRadioInputXComponent implements OnInit {
 
-    public test = true;
-
     @Input()
     public label: string;
 
     @Input()
-    public model: boolean;
-
-    @Input()
     public readonly: boolean = false;
 
+    @Input()
+    public model: boolean;
+
     @Output()
-    public readonly changeEvent: EventEmitter<MatRadioChange> = new EventEmitter<MatRadioChange>();
+    public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @ViewChild(NgForm)
     public readonly form: NgForm;
@@ -58,6 +56,6 @@ export class DvRadioInputXComponent implements OnInit {
     }
 
     public change($event: MatRadioChange): void {
-        this.changeEvent.emit($event);
+        this.modelChange.emit($event.value);
     }
 }

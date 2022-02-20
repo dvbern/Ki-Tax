@@ -15,8 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {MatRadioChange} from '@angular/material/radio';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -33,7 +32,8 @@ export class FkjvKinderabzugComponent implements OnInit {
     public kindContainer: TSKindContainer;
 
     public constructor(
-        private readonly gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -47,7 +47,72 @@ export class FkjvKinderabzugComponent implements OnInit {
         return undefined;
     }
 
-    public change($event: MatRadioChange): void {
-        console.log($event);
+    public change(): void {
+        this.deleteValuesOfHiddenQuestions();
+        this.cd.markForCheck();
     }
+
+    public isPflegekindVisible(): boolean {
+        return true;
+    }
+
+    public pflegeEntschaedigungErhaltenVisible(): boolean {
+        return this.getModel().isPflegekind;
+    }
+
+    public obhutAlternierendAusuebenVisible(): boolean {
+        return !this.kindIsOrGetsVolljaehrig() && !this.getModel().isPflegekind;
+    }
+
+    public gemeinsamesGesuchVisible(): boolean {
+        return this.getModel().obhutAlternierendAusueben;
+    }
+
+    public inErstausbildungVisible(): boolean {
+        return this.kindIsOrGetsVolljaehrig() && !this.getModel().isPflegekind;
+    }
+
+    public lebtKindAlternierendVisible(): boolean {
+        return this.getModel().inErstausbildung;
+    }
+
+    public alimenteErhaltenVisible(): boolean {
+        return this.getModel().lebtKindAlternierend;
+    }
+
+    public alimenteBezahlenVisible(): boolean {
+        return this.getModel().lebtKindAlternierend === false;
+    }
+
+    private kindIsOrGetsVolljaehrig(): boolean {
+        return true;
+    }
+
+    private deleteValuesOfHiddenQuestions(): void {
+        if (!this.isPflegekindVisible()) {
+            this.getModel().isPflegekind = undefined;
+        }
+        if (!this.pflegeEntschaedigungErhaltenVisible()) {
+            this.getModel().pflegeEntschaedigungErhalten = undefined;
+        }
+        if (!this.obhutAlternierendAusuebenVisible()) {
+            this.getModel().obhutAlternierendAusueben = undefined;
+        }
+        if (!this.gemeinsamesGesuchVisible()) {
+            this.getModel().gemeinsamesGesuch = undefined;
+        }
+        if (!this.inErstausbildungVisible()) {
+            this.getModel().inErstausbildung = undefined;
+        }
+        if (!this.lebtKindAlternierendVisible()) {
+            this.getModel().lebtKindAlternierend = undefined;
+        }
+        if (!this.alimenteErhaltenVisible()) {
+            this.getModel().alimenteErhalten = undefined;
+        }
+        if (!this.alimenteBezahlenVisible()) {
+            this.getModel().alimenteBezahlen = undefined;
+        }
+    }
+
 }
