@@ -28,17 +28,18 @@ import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/inf
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
-import {MassgebendesEinkommenComponent} from './component/finanzielleSituation/solothurn/resultat/massgebendes-einkommen.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
 import {BruttolohnComponent} from './component/finanzielleSituation/solothurn/bruttolohn/bruttolohn.component';
 import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
+import {MassgebendesEinkommenComponent} from './component/finanzielleSituation/solothurn/resultat/massgebendes-einkommen.component';
 import {SteuerveranlagungErhaltenComponent} from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
 import {SteuerveranlagungGemeinsamComponent} from './component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
 import {VeranlagungSolothurnComponent} from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
+import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 
 @NgModule({
     imports: [
@@ -71,7 +72,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
-        MassgebendesEinkommenComponent
+        MassgebendesEinkommenComponent,
+        FkjvKinderabzugComponent
     ],
     exports: [
         DvSwitchComponent,

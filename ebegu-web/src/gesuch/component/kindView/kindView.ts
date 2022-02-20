@@ -363,8 +363,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
     }
 
-    public showKinderabzugFrage(): boolean {
-        return this.kinderabzugTyp !== TSKinderabzugTyp.KEINE;
+    public showAsivKinderabzug(): boolean {
+        return this.kinderabzugTyp === TSKinderabzugTyp.ASIV;
+    }
+
+    public showFkjvKinderabzug(): boolean {
+        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV;
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {
