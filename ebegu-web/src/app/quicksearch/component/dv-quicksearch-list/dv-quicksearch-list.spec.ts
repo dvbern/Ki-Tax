@@ -21,6 +21,7 @@ import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {SearchRS} from '../../../../gesuch/service/searchRS.rest';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
@@ -51,6 +52,8 @@ describe('DVQuicksearchList', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         searchRS = $injector.get('SearchRS');

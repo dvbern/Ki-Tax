@@ -18,6 +18,7 @@ import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../hybridTools/translationsMock';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSBerechtigung} from '../../models/TSBerechtigung';
@@ -39,6 +40,8 @@ describe('AuthServiceRS', () => {
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
     beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
