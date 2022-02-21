@@ -2786,5 +2786,11 @@
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
+    "ZUSATZLEISTUNG_INTEGRATION": "Das Kind verfügt über eine Fachstellenbestätigung für Zusatzleistungen",
+    "GRUENDE_ZUSATZLESITUNG": "Gründe Zusatzleistung",
+    "VERHINDERUNG_WIRTSCHAFTLICHEN_NOTLAGE": "Verhindern einer wirtschaftlichen Notlage, wenn dies der langfristigen Stabilisierung des Familiensystems dient",
+    "ENTLASTUNG_SCHUTZ_UNTERSTUETZUNG_KIND": "Entlastung, Schutz und dringliche Unterstützung eines Kindes; wenn beispielsweise die Entwicklung des Kindes gefährdet ist.",
+    "SPRACHLICHE_INTEGRATION_DEUTSCHKENTNISSE": "Sprachliche Integration eines Kindes mit keinen oder geringen Deutschkenntnissen.",
+    "UEBERBELASTUNG_ELTERNTEIL": "Physische oder psychische Überbelastung der Eltern oder des betreuenden Elternteils.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

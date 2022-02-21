@@ -15,13 +15,17 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
 import {TSKinderabzugTyp} from '../../../models/enums/TSKinderabzugTyp';
@@ -72,11 +76,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EinstellungRS',
         'GlobalCacheService',
         'AuthServiceRS',
-        'EbeguRestUtil'
+        'EbeguRestUtil',
+        'MandantService'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
     public integrationTypes: Array<string>;
+    public gruendeZusatzleistung: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -93,6 +99,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private kinderabzugTyp: TSKinderabzugTyp;
     public maxPensumAusserordentlicherAnspruch: string;
+    // When migrating to ng, use observable in template
+    private isLuzern: boolean;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -108,6 +116,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly mandantService: MandantService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -125,12 +134,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 0;
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
-        this.initViewModel();
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+            this.initViewModel();
+        });
     }
 
     private initViewModel(): void {
-        this.integrationTypes = EnumEx.getNames(TSIntegrationTyp);
+        this.integrationTypes = this.isLuzern ?
+            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
+            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
+        this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = getTSEinschulungTypValues();
@@ -206,12 +221,21 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
                 TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
             );
+            this.resetGruendeZusatzleistung();
         } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
                 TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
             );
+            this.resetGruendeZusatzleistung();
+            // tslint:disable-next-line:max-line-length
+        } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
+            this.model.extractPensumFachstelle().pensum = 100;
         }
+    }
+
+    private resetGruendeZusatzleistung(): void {
+        this.model.extractPensumFachstelle().gruendeZusatzleistung = undefined;
     }
 
     private loadEinstellungAnspruchUnabhaengig(): void {
@@ -477,5 +501,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                     .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
                 this.maxPensumAusserordentlicherAnspruch = einstellung.value;
             });
+    }
+
+    public gruendeZusatzleistungRequired(): boolean {
+        return this.getModel().pensumFachstelle.integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
     }
 }

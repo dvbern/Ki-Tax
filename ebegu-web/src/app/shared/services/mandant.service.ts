@@ -15,15 +15,15 @@ const LOG = LogFactory.createLog('MandantService');
 })
 export class MandantService {
 
-    public get mandant$(): Observable<KiBonMandant> {
-        return this._mandant$.asObservable();
-    }
-
     private readonly _mandant$: ReplaySubject<KiBonMandant> = new ReplaySubject<KiBonMandant>(1);
 
     private readonly _multimandantActive$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     private readonly restUtil = new EbeguRestUtil();
+
+    public get mandant$(): Observable<KiBonMandant> {
+        return this._mandant$.asObservable();
+    }
 
     public constructor(
         private readonly windowRef: WindowRef,
