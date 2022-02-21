@@ -2677,6 +2677,12 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
 		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
 
+		if(abstractFinanzielleSituationJAXP.getSelbstdeklaration() != null) {
+			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
+				Optional.ofNullable(abstractFinanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
+			abstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(abstractFinanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
+		}
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2711,6 +2717,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
 		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
 		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
+
+		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
+
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2735,11 +2744,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
-		if(finanzielleSituationJAXP.getSelbstdeklaration() != null) {
-			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
-				Optional.ofNullable(finanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
-			finanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(finanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
-		}
+
 		return finanzielleSituation;
 	}
 
@@ -2797,7 +2802,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 
-		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());

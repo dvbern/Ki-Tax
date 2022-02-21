@@ -14,7 +14,6 @@
  */
 
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
-import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
@@ -30,7 +29,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _abzuegeKinderAusbildung: number;
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
-    private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
 
     public constructor() {
         super();
@@ -106,14 +104,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set quellenbesteuert(value: boolean) {
         this._quellenbesteuert = value;
-    }
-
-    public get selbstdeklaration(): TSFinanzielleSituationSelbstdeklaration {
-        return this._selbstdeklaration;
-    }
-
-    public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
-        this._selbstdeklaration = value;
     }
 
     public get unterhaltsBeitraege(): number {
