@@ -15,6 +15,7 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -34,6 +35,8 @@ describe('VerfuegungRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         verfuegungRS = $injector.get('VerfuegungRS');

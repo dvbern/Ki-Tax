@@ -23,6 +23,7 @@ import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/servi
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSFinanzielleSituationSubStepName} from '../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -56,6 +57,8 @@ describe('dvNavigation', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         $q = $injector.get('$q');

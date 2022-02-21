@@ -16,6 +16,7 @@
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
+import {KiBonMandant} from '../app/core/constants/MANDANTS';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {VersionService} from '../app/core/service/version/version.service';
@@ -102,7 +103,9 @@ class ErrorServiceXMock extends ErrorServiceX {
 }
 
 class MandantServiceMock extends MandantService {
-
+    public get mandant$(): Observable<KiBonMandant> {
+        return of(KiBonMandant.BE);
+    }
 }
 
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
