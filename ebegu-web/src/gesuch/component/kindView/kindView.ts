@@ -20,6 +20,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
@@ -53,6 +54,8 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('KindViewController');
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -138,7 +141,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
             this.initViewModel();
-        });
+        }, err => LOG.error(err));
     }
 
     private initViewModel(): void {
