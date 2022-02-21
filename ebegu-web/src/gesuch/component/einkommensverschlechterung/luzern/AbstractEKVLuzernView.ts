@@ -43,4 +43,8 @@ export abstract class AbstractEKVLuzernView extends AbstractGesuchViewX<TSFinanz
         return `${this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName()}
          + ${this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName()}`;
     }
+
+    public getAntragsteller1Name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+    }
 }

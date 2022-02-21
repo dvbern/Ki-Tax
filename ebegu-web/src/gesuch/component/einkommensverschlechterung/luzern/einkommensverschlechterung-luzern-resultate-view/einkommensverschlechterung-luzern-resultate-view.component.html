@@ -21,11 +21,11 @@
         <div class="col-md-12">
             <h2>
                            </h2>
-            <h2 *ngIf="!isGemeinsam()">
+            <h2 *ngIf="!hasSecondAntragstellende()">
                 <span translate
-                      [translateParams]="{antragsteller: this.gesuchModelManager.getStammdatenToWorkWith().extractFullName(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
+                      [translateParams]="{antragsteller: this.getAntragsteller1Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
             </h2>
-            <h2 *ngIf="isGemeinsam()">
+            <h2 *ngIf="hasSecondAntragstellende()">
                  <span translate
                        [translateParams]="{antragsteller: this.getGemeinsameFullname(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
             </h2>

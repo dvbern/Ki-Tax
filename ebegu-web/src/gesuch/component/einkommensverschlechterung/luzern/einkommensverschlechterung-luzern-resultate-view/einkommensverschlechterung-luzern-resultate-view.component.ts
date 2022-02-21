@@ -99,4 +99,8 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
             this.berechnungsManager.einkommensverschlechterungResultateBjP1;
     }
+
+    public hasSecondAntragstellende(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
 }
