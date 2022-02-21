@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.GruendeZusatzleistung;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
@@ -50,6 +51,10 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 	@Column(nullable = false)
 	private IntegrationTyp integrationTyp;
 
+	@Nullable
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private GruendeZusatzleistung gruendeZusatzleistung;
 
 	public PensumFachstelle() {
 	}
@@ -99,5 +104,14 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 
 	public void setIntegrationTyp(IntegrationTyp integrationTyp) {
 		this.integrationTyp = integrationTyp;
+	}
+
+	@Nullable
+	public GruendeZusatzleistung getGruendeZusatzleistung() {
+		return gruendeZusatzleistung;
+	}
+
+	public void setGruendeZusatzleistung(@Nullable GruendeZusatzleistung gruendeZusatzleistung) {
+		this.gruendeZusatzleistung = gruendeZusatzleistung;
 	}
 }

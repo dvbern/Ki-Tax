@@ -15,8 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSIntegrationTyp {
-    SOZIALE_INTEGRATION = 'SOZIALE_INTEGRATION',
-    SPRACHLICHE_INTEGRATION = 'SPRACHLICHE_INTEGRATION',
-    ZUSATZLEISTUNG_INTEGRATION = 'ZUSATZLEISTUNG_INTEGRATION'
+package ch.dvbern.ebegu.enums;
+
+/**
+ * Integrationstyp for Fachstellen
+ */
+public enum GruendeZusatzleistung {
+	VERHINDERUNG_WIRTSCHAFTLICHEN_NOTLAGE,
+	ENTLASTUNG_SCHUTZ_UNTERSTUETZUNG_KIND,
+	SPRACHLICHE_INTEGRATION_DEUTSCHKENTNISSE,
+	UEBERBELASTUNG_ELTERNTEIL,
 }

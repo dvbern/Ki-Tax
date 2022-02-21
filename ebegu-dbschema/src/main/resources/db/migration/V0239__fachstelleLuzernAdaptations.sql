@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,8 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSIntegrationTyp {
-    SOZIALE_INTEGRATION = 'SOZIALE_INTEGRATION',
-    SPRACHLICHE_INTEGRATION = 'SPRACHLICHE_INTEGRATION',
-    ZUSATZLEISTUNG_INTEGRATION = 'ZUSATZLEISTUNG_INTEGRATION'
-}
+ALTER TABLE pensum_fachstelle ADD COLUMN IF NOT EXISTS `gruende_zusatzleistung` VARCHAR(255);
+ALTER TABLE pensum_fachstelle_aud ADD COLUMN IF NOT EXISTS `gruende_zusatzleistung` VARCHAR(255);
