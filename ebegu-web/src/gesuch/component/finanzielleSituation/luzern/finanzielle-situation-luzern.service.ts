@@ -52,5 +52,4 @@ export class FinanzielleSituationLuzernService {
         this.berechnungsManager.calculateFinanzielleSituationTemp(model)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
-
 }

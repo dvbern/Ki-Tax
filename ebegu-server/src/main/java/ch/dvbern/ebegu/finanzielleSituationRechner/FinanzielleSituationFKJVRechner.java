@@ -19,29 +19,27 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import org.apache.commons.lang.NotImplementedException;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
 	@Override
 	@Nullable
 	protected BigDecimal calcEinkommenProGS(
-			@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
-			@Nullable BigDecimal geschaeftsgewinnDurchschnitt,
-			@Nullable BigDecimal total
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt,
+		@Nullable BigDecimal total
 	) {
 		if (abstractFinanzielleSituation != null) {
-			// Art. 12 a
 			total = add(total, abstractFinanzielleSituation.getNettolohn());
-			// Art. 12 b
 			total = add(total, abstractFinanzielleSituation.getErsatzeinkommen());
-			// Art. 12 c
 			total = add(total, abstractFinanzielleSituation.getErhalteneAlimente());
-			// Art. 12 e
+			total = add(total, abstractFinanzielleSituation.getFamilienzulage());
 			total = add(total, geschaeftsgewinnDurchschnitt);
-			// Art. 12 f
 			total = add(total, abstractFinanzielleSituation.getBruttoertraegeVermoegen());
 			total = add(total, abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
 			total = add(total, abstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
@@ -50,9 +48,9 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	}
 
 	@Override
-	protected BigDecimal calcAbzuege(
-			@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-			@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
+	public BigDecimal calcAbzuege(
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
@@ -64,11 +62,23 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 		return totalAbzuege;
 	}
 
-	private BigDecimal calcAbzuegeGesuchstelledne(BigDecimal totalAbzuege, AbstractFinanzielleSituation finanzielleSituationGS) {
+	private BigDecimal calcAbzuegeGesuchstelledne(
+		BigDecimal totalAbzuege,
+		AbstractFinanzielleSituation finanzielleSituationGS) {
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGeleisteteAlimente());
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getAbzugSchuldzinsen());
 		totalAbzuege = add(totalAbzuege, finanzielleSituationGS.getGewinnungskosten());
 		return totalAbzuege;
 	}
 
+	@Nonnull
+	public BigDecimal getZwischetotalAbzuege(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		return calcAbzuegeGesuchstelledne(BigDecimal.ZERO, abstractFinanzielleSituation);
+	}
+
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		// bei Bern rechnen wir nie nach Veranlagung.
+		throw new NotImplementedException();
+	}
 }

@@ -25,6 +25,8 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -47,8 +49,69 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		finanzDatenDTOAlleine.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr());
 		finanzDatenDTOZuZweit.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr());
 
-		// TODO Einkommensverschlechterung spaeter berücksichtigen hier
+		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
+		if (ekvInfo != null && ekvInfo.getEinkommensverschlechterung()) {
+			FinanzielleSituationResultateDTO resultateEKV1Alleine =
+				calculateResultateEinkommensverschlechterung(gesuch, 1, false);
+			FinanzielleSituationResultateDTO resultateEKV1ZuZweit =
+				calculateResultateEinkommensverschlechterung(gesuch, 1, true);
+			BigDecimal massgebendesEinkommenBasisjahrAlleine =
+				finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr();
+			BigDecimal massgebendesEinkommenBasisjahrZuZweit =
+				finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr();
 
+			if (ekvInfo.getEkvFuerBasisJahrPlus1() != null && ekvInfo.getEkvFuerBasisJahrPlus1()) {
+				finanzDatenDTOAlleine.setEkv1Erfasst(true);
+				finanzDatenDTOZuZweit.setEkv1Erfasst(true);
+				if (ekvInfo.getEkvBasisJahrPlus1Annulliert()) {
+					finanzDatenDTOAlleine.setEkv1Annulliert(Boolean.TRUE);
+					finanzDatenDTOZuZweit.setEkv1Annulliert(Boolean.TRUE);
+				}
+				// In der EKV 1 vergleichen wir immer mit dem Basisjahr
+				handleEKV1(finanzDatenDTOAlleine, resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr(),
+					massgebendesEinkommenBasisjahrAlleine, minimumEKV);
+				handleEKV1(finanzDatenDTOZuZweit, resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr(),
+					massgebendesEinkommenBasisjahrZuZweit, minimumEKV);
+			}
+
+			BigDecimal massgebendesEinkommenVorjahrAlleine;
+			if (finanzDatenDTOAlleine.isEkv1AcceptedAndNotAnnuliert()) {
+				massgebendesEinkommenVorjahrAlleine = resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr();
+			} else {
+				massgebendesEinkommenVorjahrAlleine = massgebendesEinkommenBasisjahrAlleine;
+			}
+			BigDecimal massgebendesEinkommenVorjahrZuZweit;
+			if (finanzDatenDTOZuZweit.isEkv1AcceptedAndNotAnnuliert()) {
+				massgebendesEinkommenVorjahrZuZweit = resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr();
+			} else {
+				massgebendesEinkommenVorjahrZuZweit = massgebendesEinkommenBasisjahrZuZweit;
+			}
+
+			if (ekvInfo.getEkvFuerBasisJahrPlus2() != null && ekvInfo.getEkvFuerBasisJahrPlus2()) {
+				finanzDatenDTOAlleine.setEkv2Erfasst(true);
+				finanzDatenDTOZuZweit.setEkv2Erfasst(true);
+				if (ekvInfo.getEkvBasisJahrPlus2Annulliert()) {
+					finanzDatenDTOAlleine.setEkv2Annulliert(Boolean.TRUE);
+					finanzDatenDTOZuZweit.setEkv2Annulliert(Boolean.TRUE);
+				}
+				FinanzielleSituationResultateDTO resultateEKV2Alleine =
+					calculateResultateEinkommensverschlechterung(gesuch, 2, false);
+				FinanzielleSituationResultateDTO resultateEKV2ZuZweit =
+					calculateResultateEinkommensverschlechterung(gesuch, 2, true);
+				// In der EKV 2 vergleichen wir immer mit dem Basisjahr
+				handleEKV2(finanzDatenDTOAlleine,
+					resultateEKV2Alleine.getMassgebendesEinkVorAbzFamGr(),
+					massgebendesEinkommenBasisjahrAlleine,
+					minimumEKV);
+				handleEKV2(finanzDatenDTOZuZweit,
+					resultateEKV2ZuZweit.getMassgebendesEinkVorAbzFamGr(),
+					massgebendesEinkommenBasisjahrZuZweit,
+					minimumEKV);
+			} else {
+				finanzDatenDTOAlleine.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahrAlleine);
+				finanzDatenDTOZuZweit.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahrZuZweit);
+			}
+		}
 		gesuch.setFinanzDatenDTO_alleine(finanzDatenDTOAlleine);
 		gesuch.setFinanzDatenDTO_zuZweit(finanzDatenDTOZuZweit);
 	}
@@ -70,6 +133,36 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			finanzielleSituationGS2);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(getMassgegebenesEinkommenAleine(finanzielleSituationGS1));
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(getMassgegebenesEinkommenAleine(finanzielleSituationGS2));
+	}
+
+	@Override
+	public void setEinkommensverschlechterungParameters(
+		@Nonnull Gesuch gesuch, int basisJahrPlus,
+		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {
+		Einkommensverschlechterung einkommensverschlechterungGS1Bjp1 =
+			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 1);
+		Einkommensverschlechterung einkommensverschlechterungGS1Bjp2 =
+			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 2);
+
+		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
+		Einkommensverschlechterung einkommensverschlechterungGS2Bjp1 = null;
+		Einkommensverschlechterung einkommensverschlechterungGS2Bjp2 = null;
+		if (hasSecondGesuchsteller) {
+			einkommensverschlechterungGS2Bjp1 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 1);
+			einkommensverschlechterungGS2Bjp2 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 2);
+		}
+
+		if (basisJahrPlus == 2) {
+			calculateZusammen(
+				einkVerResultDTO,
+				einkommensverschlechterungGS1Bjp2,
+				einkommensverschlechterungGS2Bjp2);
+		} else {
+			calculateZusammen(
+				einkVerResultDTO,
+				einkommensverschlechterungGS1Bjp1,
+				einkommensverschlechterungGS2Bjp1);
+		}
 	}
 
 	private BigDecimal getMassgegebenesEinkommenAleine(@Nullable FinanzielleSituation finanzielleSituation) {
@@ -109,7 +202,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	 * Die Geschäftverlust habe ich bei der Einkommen genommen
 	 */
 	@Override
-	protected BigDecimal calcAbzuege(
+	public BigDecimal calcAbzuege(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
 	) {
@@ -196,7 +289,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		return total;
 	}
 
-	boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		// for Einkommensverschlechterung we always use Selbstdeklaration
 		if (!(abstractFinanzielleSituation instanceof FinanzielleSituation)) {
 			return false;
@@ -211,6 +305,21 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		return !finanzielleSituation.getQuellenbesteuert()
 			&& isSameVeranlagungAsVorjahr(finanzielleSituation)
 			&& finanzielleSituation.getVeranlagt();
+	}
+
+	@Override
+	public boolean acceptEKV(
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal massgebendesEinkommenJahr,
+		BigDecimal minimumEKV) {
+
+		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
+		if (result) {
+			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			// wenn es gibt mehr als minimumEKV in einer positive oder negative Richtung ist der EKV akkzeptiert
+			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0 || differenzGerundet.compareTo(minimumEKV) >= 0;
+		}
+		return false;
 	}
 
 	// one of gemeinsameStekVorjahr or alleinigeStekVorjahr could be null

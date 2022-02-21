@@ -228,7 +228,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+				this.getEKVWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.OK,
 				true)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -305,7 +305,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
-				WizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+				this.getEKVWizardStepNameForGesuch(gesuch),
 				WizardStepStatus.UNBESUCHT,
 				false)));
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -356,13 +356,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			updateAllStatusForKinder(wizardSteps);
 		} else if (WizardStepName.ERWERBSPENSUM == stepName) {
 			updateAllStatusForErwerbspensum(wizardSteps);
-		} else if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == stepName
+		} else if (stepName.isEKVWizardStepName()
 			&& newEntity instanceof EinkommensverschlechterungInfoContainer) {
 			updateAllStatusForEinkommensverschlechterungInfo(
 				wizardSteps,
 				(EinkommensverschlechterungInfoContainer) oldEntity,
 				(EinkommensverschlechterungInfoContainer) newEntity);
-		} else if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == stepName
+		} else if (stepName.isEKVWizardStepName()
 			&& newEntity instanceof EinkommensverschlechterungContainer) {
 			updateAllStatusForEinkommensverschlechterung(wizardSteps);
 		} else if (WizardStepName.DOKUMENTE == stepName) {
@@ -387,7 +387,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	) {
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
-				&& WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()) {
+				&& wizardStep.getWizardStepName().isEKVWizardStepName()) {
 
 				if (!newEntity.getEinkommensverschlechterungInfoJA().getEinkommensverschlechterung()) {
 					setWizardStepOkOrMutiert(wizardStep);
@@ -415,7 +415,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
 				&& WizardStepStatus.NOK != wizardStep.getWizardStepStatus()
-				&& WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+				&& wizardStep.getWizardStepName().isEKVWizardStepName()
 				&& wizardStep.getGesuch().isMutation()) {
 
 				setWizardStepOkOrMutiert(wizardStep);
@@ -540,7 +540,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 				setWizardStepOkOrMutiert(wizardStep);
 			} else if ((wizardStep.getWizardStepName().isFinSitWizardStepName()
-				|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+				|| wizardStep.getWizardStepName().isEKVWizardStepName()
 				|| WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName())
 				&& !wizardStep.getVerfuegbar()
 				&& WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()) {
@@ -583,7 +583,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						setStatusDueToFinSitRequired(wizardStep, gesuch);
 					}
 				}
-				if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+				if (wizardStep.getWizardStepName().isEKVWizardStepName()
 					&& Objects.equals(1, substep)) {
 					setStatusDueToFinSitRequired(wizardStep, gesuch);
 				}
@@ -683,7 +683,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (gesuch.getGesuchsteller2() != null) {
 				relatedObjects.add(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			}
-		} else if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStepName) {
+		} else if (wizardStepName.isEKVWizardStepName()) {
 			if (gesuch != null) {
 				final EinkommensverschlechterungInfoContainer ekvInfo =
 					gesuch.getEinkommensverschlechterungInfoContainer();
@@ -793,7 +793,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()) {
 					checkFinSitStatusForBetreuungen(wizardStep);
 
-				} else if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()) {
+				} else if (wizardStep.getWizardStepName().isEKVWizardStepName()) {
 					checkFinSitStatusForBetreuungen(wizardStep);
 				}
 			}
@@ -851,7 +851,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						wizardStep.setVerfuegbar(true);
 
 					} else if (((wizardStep.getWizardStepName().isFinSitWizardStepName()
-						|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName())
+						|| wizardStep.getWizardStepName().isEKVWizardStepName())
 						&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch()))
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
@@ -872,7 +872,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						}
 
 					} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()
-						|| WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+						|| wizardStep.getWizardStepName().isEKVWizardStepName()
 						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
 						&& !erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
 
@@ -943,7 +943,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * This should be called after removing or adding a Betreuung.
 	 */
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
-		if ((wizardStep.getWizardStepName() == WizardStepName.EINKOMMENSVERSCHLECHTERUNG
+		if ((wizardStep.getWizardStepName().isEKVWizardStepName()
 			|| wizardStep.getWizardStepName().isFinSitWizardStepName()) &&
 			(!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
 				wizardStep.getGesuch(),	wizardStep.getWizardStepName())
@@ -1046,6 +1046,22 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		default:
 			throw new EbeguRuntimeException("getFinSitWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
+		}
+	}
+
+	@Override
+	@Nonnull
+	public WizardStepName getEKVWizardStepNameForGesuch(@Nonnull Gesuch gesuch) {
+		switch (gesuch.getFinSitTyp()) {
+		case BERN:
+		case BERN_FKJV:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG;
+		case LUZERN:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN;
+		case SOLOTHURN:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
+		default:
+			throw new EbeguRuntimeException("getEKVWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}
 	}
 }

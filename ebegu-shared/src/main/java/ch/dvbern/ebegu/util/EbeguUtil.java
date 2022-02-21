@@ -270,7 +270,7 @@ public final class EbeguUtil {
 				return false;
 			}
 		}
-		if ((wizardStepName == null || wizardStepName == WizardStepName.EINKOMMENSVERSCHLECHTERUNG)
+		if ((wizardStepName == null || wizardStepName.isEKVWizardStepName())
 			&& gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
 			.getEinkommensverschlechterung()) {
@@ -334,10 +334,11 @@ public final class EbeguUtil {
 
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
 		@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
-		return finanzielleSituation.getSchulden() != null && finanzielleSituation.getBruttovermoegen() != null
+		return (finanzielleSituation.getSchulden() != null && finanzielleSituation.getBruttovermoegen() != null
 			&& finanzielleSituation.getNettolohn() != null && finanzielleSituation.getFamilienzulage() != null
 			&& finanzielleSituation.getErsatzeinkommen() != null && finanzielleSituation.getErhalteneAlimente() != null
-			&& finanzielleSituation.getGeleisteteAlimente() != null;
+			&& finanzielleSituation.getGeleisteteAlimente() != null) || (finanzielleSituation.getSelbstdeklaration() != null &&
+			finanzielleSituation.getSelbstdeklaration().isVollstaendig());
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {

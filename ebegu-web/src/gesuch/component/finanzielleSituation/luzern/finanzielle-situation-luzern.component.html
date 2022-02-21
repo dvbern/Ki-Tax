@@ -151,10 +151,10 @@
                 <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
                                       [antragstellerNummer]="getAntragstellerNummer()"
                                       [isGemeinsam]="isGemeinsam()"
-                                      [year]="getYearForDeklaration()"
+                                      [basisJahr]="getYearForDeklaration()"
                                       [readOnly]="readonly"
                                       [finanzModel]="model"
-                                      [model]="getModel()"
+                                      [model]="getModel().finanzielleSituationJA"
                 ></dv-selbstdeklaration>
                 <dv-veranlagung *ngIf="showVeranlagung()"
                                 [antragstellerNummer]="getAntragstellerNummer()"

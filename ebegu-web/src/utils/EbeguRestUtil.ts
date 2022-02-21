@@ -1857,9 +1857,6 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
-        if (EbeguUtil.isNotNullOrUndefined(finanzielleSituation.selbstdeklaration)) {
-            restFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, finanzielleSituation.selbstdeklaration);
-        }
         return restFinanzielleSituation;
     }
 
@@ -1890,7 +1887,9 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.nettoertraegeErbengemeinschaft = abstractFinanzielleSituation.nettoertraegeErbengemeinschaft;
         restAbstractFinanzielleSituation.abzugSchuldzinsen = abstractFinanzielleSituation.abzugSchuldzinsen;
         restAbstractFinanzielleSituation.bruttoertraegeVermoegen = abstractFinanzielleSituation.bruttoertraegeVermoegen;
-
+        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.selbstdeklaration)) {
+            restAbstractFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, abstractFinanzielleSituation.selbstdeklaration);
+        }
         return restAbstractFinanzielleSituation;
     }
 
@@ -1967,6 +1966,8 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
             abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
             abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
+            abstractFinanzielleSituationTS.selbstdeklaration = this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
+                abstractFinanzielleSituationFromServer.selbstdeklaration);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -1995,8 +1996,6 @@ export class EbeguRestUtil {
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
-            finanzielleSituationTS.selbstdeklaration = this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
-                finanzielleSituationFromServer.selbstdeklaration);
 
             return finanzielleSituationTS;
         }
@@ -2185,6 +2184,7 @@ export class EbeguRestUtil {
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
+        restKind.inPruefung = kind.inPruefung;
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
         }
@@ -2250,6 +2250,7 @@ export class EbeguRestUtil {
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
+            kindTS.inPruefung = kindFromServer.inPruefung;
             if (kindFromServer.pensumFachstelle) {
                 kindTS.pensumFachstelle =
                     this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);

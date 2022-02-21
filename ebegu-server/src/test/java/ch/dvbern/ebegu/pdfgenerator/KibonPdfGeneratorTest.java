@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +41,13 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
@@ -201,17 +204,33 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
+		// FinSit Typ Bern basic
 		createFinanzielleSituation(gesuch_alleinstehend, Sprache.DEUTSCH, "FinanzielleSituation_alleinstehend_de.pdf");
 		createFinanzielleSituation(gesuch_alleinstehend, Sprache.FRANZOESISCH, "FinanzielleSituation_alleinstehend_fr.pdf");
 		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_de.pdf");
 		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fr.pdf");
+		gesuch_verheiratet.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
+		// FinSit Typ Bern FKJV, FKJV Feldern sind null
+		assert gesuch_verheiratet.getGesuchsteller1() != null;
+		assert gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_de.pdf");
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_fr.pdf");
+		assert gesuch_verheiratet.getGesuchsteller2() != null;
+		assert gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer() != null;
+		gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_de.pdf");
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_fr.pdf");
+		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(null);
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_de.pdf");
+		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_fr.pdf");
 	}
 
 	private void createFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGenerator generator = new FinanzielleSituationPdfGenerator(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
+		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
 			new FinanzielleSituationBernRechner());
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}

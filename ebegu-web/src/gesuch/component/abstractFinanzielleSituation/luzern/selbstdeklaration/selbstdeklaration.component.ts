@@ -16,17 +16,17 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
+import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 
 @Component({
     selector: 'dv-selbstdeklaration',
     templateUrl: './selbstdeklaration.component.html',
     styleUrls: ['./selbstdeklaration.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelbstdeklarationComponent implements OnInit {
 
@@ -37,32 +37,38 @@ export class SelbstdeklarationComponent implements OnInit {
     public isGemeinsam: boolean;
 
     @Input()
-    public year: number | string;
+    public basisJahr: number;
 
     @Input()
-    public model: TSFinanzielleSituationContainer;
+    public model: TSAbstractFinanzielleSituation;
 
     @Input()
     public readOnly: boolean = false;
+
+    @Input()
+    public isEKV: boolean = false;
 
     @Input()
     public finanzModel: TSFinanzModel;
 
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
-        private readonly gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager,
     ) {
     }
 
     public ngOnInit(): void {
-        if (!this.model.finanzielleSituationJA.selbstdeklaration) {
-            this.model.finanzielleSituationJA.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+        if (!this.model.selbstdeklaration) {
+            this.model.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
         }
         // load initial results
         this.onValueChangeFunction();
     }
 
     public onValueChangeFunction = (): void => {
+        if (this.isEKV) {
+            return;
+        }
         this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
