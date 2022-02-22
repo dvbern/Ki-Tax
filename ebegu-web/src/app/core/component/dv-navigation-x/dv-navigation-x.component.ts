@@ -517,14 +517,6 @@ export class DvNavigationXComponent implements OnInit {
         });
     }
 
-    private navigateToStepEinkommensverschlechterungLuzern(gsNumber: string, basisjahrPlus: string): TransitionPromise {
-        return this.$state.go('gesuch.einkommensverschlechterungLuzern', {
-            gesuchstellerNumber: gsNumber ? gsNumber : '1',
-            basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
-            gesuchId: this.getGesuchId(),
-        });
-    }
-
     private navigateToSozialhilfeZeitraeume(): TransitionPromise {
         return this.navigateToPath('gesuch.SozialhilfeZeitraeume');
     }

@@ -15,19 +15,91 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {Transition} from '@uirouter/core';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 
 @Component({
-  selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
-  templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
-  styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
+    templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
+    styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungSolothurnResultateViewComponent implements OnInit {
+export class EinkommensverschlechterungSolothurnResultateViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
-  public constructor() { }
+    public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
+    public resultatProzent: string;
 
-  public ngOnInit(): void {
-  }
+    public constructor(
+        public gesuchModelManager: GesuchModelManager,
+        protected wizardStepManager: WizardStepManager,
+        protected berechnungsManager: BerechnungsManager,
+        protected ref: ChangeDetectorRef,
+        private readonly $transition$: Transition,
+    ) {
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            null,
+            parsedBasisJahrPlusNum);
+        this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
+        this.calculate();
+        this.resultatBasisjahr = null;
+        this.calculateResultateVorjahr();    }
 
+    public calculate(): void {
+        if (!this.model || !this.model.getBasisJahrPlus()) {
+            console.log('No gesuch and Basisjahr to calculate');
+            return;
+        }
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus())
+            .then(() => {
+                this.resultatProzent = this.calculateVeraenderung();
+            });
+    }
+
+    public calculateVeraenderung(): string {
+        if (EbeguUtil.isNotNullOrUndefined(this.resultatBasisjahr)) {
+            const resultatJahrPlus1 = this.getResultate();
+            if (EbeguUtil.isNotNullOrUndefined(resultatJahrPlus1)) {
+                this.berechnungsManager.calculateProzentualeDifferenz(
+                    this.resultatBasisjahr.massgebendesEinkVorAbzFamGr, resultatJahrPlus1.massgebendesEinkVorAbzFamGr)
+                    .then(abweichungInProzentZumVorjahr => {
+                        this.resultatProzent = abweichungInProzentZumVorjahr;
+                        this.ref.markForCheck();
+                        return abweichungInProzentZumVorjahr;
+                    });
+            }
+        }
+        return '';
+    }
+
+    public calculateResultateVorjahr(): void {
+        this.berechnungsManager.calculateFinanzielleSituationTemp(this.model).then(resultatVorjahr => {
+            this.resultatBasisjahr = resultatVorjahr;
+            this.resultatProzent = this.calculateVeraenderung();
+            this.ref.markForCheck();
+        });
+    }
+
+    public getResultate(): TSFinanzielleSituationResultateDTO {
+        return this.model.getBasisJahrPlus() === 2 ?
+            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
+            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+    }
+
+    public hasSecondAntragstellende(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
 }

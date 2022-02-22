@@ -15,7 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
+import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
 @Component({
   selector: 'dv-einkommensverschlechterung-solothurn-view',
@@ -23,11 +34,68 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./einkommensverschlechterung-solothurn-view.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EinkommensverschlechterungSolothurnViewComponent implements OnInit {
+export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
-  public constructor() { }
+    @ViewChild(NgForm) private readonly form: NgForm;
 
-  public ngOnInit(): void {
-  }
+    public readOnly: boolean = false;
+
+    public constructor(
+        public gesuchModelManager: GesuchModelManager,
+        protected wizardStepManager: WizardStepManager,
+        private readonly $transition$: Transition,
+    ) {
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
+        const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
+        this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
+        this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
+        this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
+            this.gesuchModelManager.isGesuchsteller2Required(),
+            parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
+        this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
+        this.readOnly = this.gesuchModelManager.isGesuchReadonly();
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+            TSWizardStepStatus.IN_BEARBEITUNG);
+    }
+
+    public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
+        if (!this.isGesuchValid()) {
+            onResult(undefined);
+            return undefined;
+        }
+
+        if (!this.form.dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            onResult(this.model.getEkvContToWorkWith());
+            return Promise.resolve(this.model.getEkvContToWorkWith());
+        }
+        this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(ekv => {
+            onResult(ekv);
+            return ekv;
+        });
+    }
+
+    public onValueChangeFunction = (): void => {
+        // TODO this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
+    }
+
+    private isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            for (const control in this.form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
+                    this.form.controls[control].markAsTouched({onlySelf: true});
+                }
+            }
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
+    }
 
 }
