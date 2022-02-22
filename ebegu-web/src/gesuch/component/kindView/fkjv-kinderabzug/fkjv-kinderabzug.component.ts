@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import * as moment from 'moment';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -27,6 +28,8 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FkjvKinderabzugComponent implements OnInit {
+
+    public static readonly VOLLJAEHRIG_NUMBER_YEARS = 18;
 
     @Input()
     public kindContainer: TSKindContainer;
@@ -85,7 +88,7 @@ export class FkjvKinderabzugComponent implements OnInit {
     }
 
     private kindIsOrGetsVolljaehrig(): boolean {
-        return true;
+        return this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
     }
 
     private deleteValuesOfHiddenQuestions(): void {
@@ -113,6 +116,13 @@ export class FkjvKinderabzugComponent implements OnInit {
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
+    }
+
+    private calculateKindIsOrGetsVolljaehrig(age: moment.Moment): boolean {
+        const gp = this.gesuchModelManager.getGesuchsperiode();
+        const ageClone = age.clone();
+        const dateWith18 = ageClone.add(FkjvKinderabzugComponent.VOLLJAEHRIG_NUMBER_YEARS, 'years');
+        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigAb);
     }
 
 }
