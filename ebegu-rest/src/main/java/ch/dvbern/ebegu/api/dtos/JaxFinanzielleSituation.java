@@ -60,9 +60,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	@Nullable
-	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
-
-	@Nullable
 	private BigDecimal unterhaltsBeitraege;
 
 	@Nullable
@@ -151,15 +148,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setVeranlagt(@Nullable Boolean veranlagt) {
 		this.veranlagt = veranlagt;
-	}
-
-	@Nullable
-	public JaxFinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
-		return selbstdeklaration;
-	}
-
-	public void setSelbstdeklaration(@Nullable JaxFinanzielleSituationSelbstdeklaration selbstdeklaration) {
-		this.selbstdeklaration = selbstdeklaration;
 	}
 
 	@Nullable

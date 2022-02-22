@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -132,7 +133,7 @@ public class EinkommensverschlechterungResource {
 		EinkommensverschlechterungContainer convertedEKVCont = converter.einkommensverschlechterungContainerToStorableEntity(ekvContainerJAXP);
 		convertedEKVCont.setGesuchsteller(gesuchsteller);
 		EinkommensverschlechterungContainer persistedEkvContainer =
-			einkVerschlService.saveEinkommensverschlechterungContainer(convertedEKVCont, gesuch.getId());
+			einkVerschlService.saveEinkommensverschlechterungContainer(convertedEKVCont, gesuch);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(EinkommensverschlechterungResource.class)
@@ -234,6 +235,11 @@ public class EinkommensverschlechterungResource {
 		Objects.requireNonNull(basisJahrPlus);
 		Gesuch gesuch = new Gesuch();
 		gesuch.initFamiliensituationContainer();
+		if (jaxFinSitModel.getFinanzielleSituationTyp() != null) {
+			gesuch.setFinSitTyp(jaxFinSitModel.getFinanzielleSituationTyp());
+		} else {
+			gesuch.setFinSitTyp(FinanzielleSituationTyp.BERN);
+		}
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
