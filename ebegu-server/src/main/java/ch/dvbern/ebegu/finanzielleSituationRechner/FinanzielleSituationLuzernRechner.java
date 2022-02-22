@@ -207,7 +207,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		@Nonnull BigDecimal vermoegen10Percent
 	) {
 		BigDecimal anrechenbaresEinkommen = add(einkommen, vermoegen10Percent);
-		BigDecimal anrechenbaresEinkommen = add(einkommenAleine, nettoVermoegenXProzent);
 		return MathUtil.positiveNonNullAndRound(
 			subtract(anrechenbaresEinkommen, abzuege));
 	}
