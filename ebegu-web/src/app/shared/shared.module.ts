@@ -28,6 +28,7 @@ import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dial
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
+import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
@@ -173,7 +174,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvInputLabelFieldComponent,
         EbeguNumberPipe,
         DvValueinputXComponent,
-        DvRadioInputXComponent
+        DvRadioInputXComponent,
+        DvCheckboxXComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -241,7 +243,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EnableElementDirective,
         DvInputLabelFieldComponent,
         DvValueinputXComponent,
-        DvRadioInputXComponent
+        DvRadioInputXComponent,
+        DvCheckboxXComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

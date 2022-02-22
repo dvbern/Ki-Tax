@@ -15,18 +15,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
-import {MatRadioChange} from '@angular/material/radio';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
-    selector: 'dv-radio-input-x',
-    templateUrl: './dv-radio-input-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
-    styleUrls: ['./dv-radio-input-x.component.less']
+    selector: 'dv-checkbox-x',
+    templateUrl: './dv-checkbox-x.component.html',
+    styleUrls: ['./dv-checkbox-x.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DvRadioInputXComponent implements OnInit {
+export class DvCheckboxXComponent implements OnInit {
 
     @Input()
     public label: string;
@@ -40,10 +37,6 @@ export class DvRadioInputXComponent implements OnInit {
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    @ViewChild(NgForm)
-    public readonly form: NgForm;
-
-    // unique name for this radio
     public uniqueName: string;
 
     public constructor() {
@@ -51,10 +44,10 @@ export class DvRadioInputXComponent implements OnInit {
 
     public ngOnInit(): void {
         // tslint:disable-next-line:no-magic-numbers
-        this.uniqueName = `radio_${Math.round(Math.random() * 10000)}`;
+        this.uniqueName = `checkbox_${Math.round(Math.random() * 10000)}`;
     }
 
-    public change($event: MatRadioChange): void {
-        this.modelChange.emit($event.value);
+    public change(): void {
+        this.modelChange.emit(this.model);
     }
 }

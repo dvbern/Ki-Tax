@@ -432,8 +432,29 @@ dv-accordion.ewksubsub {
         }
     }
 
-    // positions of radio buttons should not be overwritten
-    &.static-position div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon):not(.mat-radio-group):not(.mat-radio-button):not(.mat-radio-label):not(.mat-radio-container):not(.mat-radio-label-content):not(.mat-radio-outer-circle):not(.mat-radio-inner-circle):not(.mat-ripple):not(.mat-ripple-element) {
+    // exclude angular-material radio button and checkbox from static position
+    &.static-position div:not(
+    .md-container,
+    .md-off,
+    .md-on,
+    .md-icon,
+    .mat-radio-group,
+    .mat-radio-button,
+    .mat-radio-label,
+    .mat-radio-container,
+    .mat-radio-label-content,
+    .mat-radio-outer-circle,
+    .mat-radio-inner-circle,
+    .mat-ripple,
+    .mat-ripple-element,
+    .mat-checkbox,
+    .mat-checkbox-layout,
+    .mat-checkbox-inner-container,
+    .mat-checkbox-input,
+    .mat-checkbox-background,
+    .mat-checkbox-frame,
+    .mat-ripple
+    ) {
         position: static;
     }
 }

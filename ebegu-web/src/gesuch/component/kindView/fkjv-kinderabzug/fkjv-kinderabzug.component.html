@@ -16,15 +16,13 @@
   -->
 
 <form *ngIf="getModel()">
-    <div class="row" *ngIf="isPflegekindVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_IS_PFLEGEKIND'"
-                    [(model)]="getModel().isPflegekind"
-                    (modelChange)="change()"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+    <div class="row">
+        <div class="col-sm-12 dv-input-container-medium">
+            <dv-checkbox-x
+                [label]="'KINDERABZUG_IS_PFLEGEKIND'"
+                [(model)]="getModel().isPflegekind"
+                (modelChange)="change()"
+            ></dv-checkbox-x>
         </div>
     </div>
     <div class="row" *ngIf="pflegeEntschaedigungErhaltenVisible()">

@@ -55,10 +55,6 @@ export class FkjvKinderabzugComponent implements OnInit {
         this.cd.markForCheck();
     }
 
-    public isPflegekindVisible(): boolean {
-        return true;
-    }
-
     public pflegeEntschaedigungErhaltenVisible(): boolean {
         return this.getModel().isPflegekind;
     }
@@ -92,9 +88,6 @@ export class FkjvKinderabzugComponent implements OnInit {
     }
 
     private deleteValuesOfHiddenQuestions(): void {
-        if (!this.isPflegekindVisible()) {
-            this.getModel().isPflegekind = undefined;
-        }
         if (!this.pflegeEntschaedigungErhaltenVisible()) {
             this.getModel().pflegeEntschaedigungErhalten = undefined;
         }
