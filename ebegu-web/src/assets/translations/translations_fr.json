@@ -1214,6 +1214,7 @@
     "MITTEILUNG_MESSAGE": "Message",
     "MITTEILUNG_SENDEN": "Envoyer",
     "MITTEILUNG_WEITERLEITEN": "Transférer",
+    "MITTEILUNG_UNGELESEN": "Mitteilung auf ungelesen setzen",
     "MITTEILUNG_DELEGATION_AN_JA": "Déléguer le message au(x) responsable(s) du bon de garde",
     "MITTEILUNG_DELEGATION_AN_SCH": "Déléguer le message au(x) responsable(s) de l'école à journée continue",
     "MITTEILUNGEN_ERLEDIGT": "Réglé",

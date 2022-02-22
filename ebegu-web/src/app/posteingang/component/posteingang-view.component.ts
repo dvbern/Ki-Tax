@@ -362,9 +362,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     private initMatSort(): void {
-            this.matSort.active = this.sort.predicate;
-            this.matSort.direction = this.sort.reverse ? 'asc' : 'desc';
-            (this.matSort.sortables.get(this.sort.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
+        this.matSort.active = this.sort.predicate;
+        this.matSort.direction = this.sort.reverse ? 'asc' : 'desc';
+        (this.matSort.sortables.get(this.sort.predicate) as MatSortHeader)?._setAnimationTransitionState({toState: 'active'});
     }
 
     private initDisplayedColumns(): void {
@@ -381,4 +381,14 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.applyFilter();
         this.initEmpfaenger();
     }
+
+    public setUngelesen(mitteilung: TSMitteilung): void {
+        this.mitteilungRS.setMitteilungUngelesen(mitteilung.id).then(
+            () => this.passFilterToServer(),
+        );
+    }
+
+    public isStatusGelesen(mitteilung: TSMitteilung): boolean {
+        return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
+        }
 }
