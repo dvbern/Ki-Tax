@@ -40,7 +40,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractEKVLu
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
-        protected gesuchModelManager: GesuchModelManager,
+        public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
         private readonly $transition$: Transition,

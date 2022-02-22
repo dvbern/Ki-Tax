@@ -42,7 +42,7 @@
                         <dv-input-label-field
                             [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
                             [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: gesuchModelManager.getBasisjahr()}"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahr()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
@@ -52,7 +52,7 @@
                         <dv-input-label-field
                             [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
                             [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
