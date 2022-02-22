@@ -39,6 +39,8 @@ import {EinkommensverschlechterungResultateViewComponentConfig} from './componen
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
@@ -91,8 +93,12 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
         .component('einkommensverschlechterungLuzernView,',
             downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
+        .component('einkommensverschlechterungSolothurnView,',
+            downgradeComponent({component: EinkommensverschlechterungSolothurnViewComponent}))
         .component('einkommensverschlechterungLuzernResultateView',
             downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
+        .component('einkommensverschlechterungSolothurnResultateView',
+            downgradeComponent({component: EinkommensverschlechterungSolothurnResultateViewComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())

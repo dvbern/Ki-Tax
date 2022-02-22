@@ -25,6 +25,8 @@ import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -778,6 +780,57 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
     };
 }
 
+export class EbeguEinkommensverschlechterungSolothurnState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungSolothurn';
+    public url = '/so/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
+    public params = {
+        gesuchstellerNumber: '1',
+        basisjahrPlus: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungSolothurnViewComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguEinkommensverschlechterungSolothurnResultateState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungSolothurnResultate';
+    public url = '/so/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
+    public params = {
+        basisjahrPlus: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungSolothurnResultateViewComponent
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguDokumenteState implements Ng1StateDeclaration {
     public name = 'gesuch.dokumente';
     public url = '/dokumente/:gesuchId/:gesuchstellerNumber';
@@ -949,8 +1002,10 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguEinkommensverschlechterungInfoState(),
     new EbeguEinkommensverschlechterungState(),
     new EbeguEinkommensverschlechterungLuzernState(),
+    new EbeguEinkommensverschlechterungSolothurnState(),
     new EbeguEinkommensverschlechterungResultateState(),
     new EbeguEinkommensverschlechterungLuzernResultateState(),
+    new EbeguEinkommensverschlechterungSolothurnResultateState(),
     new EbeguDokumenteState(),
     new EbeguFreigabeState(),
     new EbeguBetreuungMitteilungState(),

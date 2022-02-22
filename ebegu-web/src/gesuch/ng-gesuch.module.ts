@@ -23,6 +23,8 @@ import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situati
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
@@ -61,7 +63,9 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         FinanzielleSituationStartViewLuzernComponent,
         FinanzielleSituationStartSolothurnComponent,
         EinkommensverschlechterungLuzernViewComponent,
+        EinkommensverschlechterungSolothurnViewComponent,
         EinkommensverschlechterungLuzernResultateViewComponent,
+        EinkommensverschlechterungSolothurnResultateViewComponent,
         DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
