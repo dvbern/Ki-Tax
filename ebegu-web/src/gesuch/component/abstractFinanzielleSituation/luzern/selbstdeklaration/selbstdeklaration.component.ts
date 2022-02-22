@@ -18,7 +18,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -61,7 +60,7 @@ export class SelbstdeklarationComponent implements OnInit {
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly ref: ChangeDetectorRef
+        private readonly ref: ChangeDetectorRef,
     ) {
     }
 
@@ -80,9 +79,10 @@ export class SelbstdeklarationComponent implements OnInit {
 
     public onValueChangeFunction = (): void => {
         if (this.isEKV) {
-            return;
+            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahr);
+        } else {
+            this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
         }
-        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
     public antragsteller1Name(): string {
@@ -93,7 +93,7 @@ export class SelbstdeklarationComponent implements OnInit {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
     }
 
-    public getEinkommenForCurrentAntragsteller(): number  {
+    public getEinkommenForCurrentAntragsteller(): number {
         if (!this.resultate) {
             return null;
         }
@@ -106,7 +106,7 @@ export class SelbstdeklarationComponent implements OnInit {
         return null;
     }
 
-    public getAbzuegeForCurrentAntragsteller(): number  {
+    public getAbzuegeForCurrentAntragsteller(): number {
         if (!this.resultate) {
             return null;
         }
@@ -119,7 +119,7 @@ export class SelbstdeklarationComponent implements OnInit {
         return null;
     }
 
-    public getVermoegenForCurrentAntragsteller(): number  {
+    public getVermoegenForCurrentAntragsteller(): number {
         if (!this.resultate) {
             return null;
         }
