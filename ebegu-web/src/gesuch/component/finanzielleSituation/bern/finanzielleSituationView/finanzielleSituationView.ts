@@ -19,7 +19,6 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
-import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
@@ -246,10 +245,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         return this.steuerSchnittstelleAktiv
             && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
-    }
-
-    public isFKJV(): boolean {
-        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 
     public showWarningPartnerNichtGemeinsam(): boolean {
