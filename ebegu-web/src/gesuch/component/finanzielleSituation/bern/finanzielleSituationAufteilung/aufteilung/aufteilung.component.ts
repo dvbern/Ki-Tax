@@ -15,15 +15,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {BehaviorSubject, Subscription} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
-import {LogFactory} from '../../../../../../app/core/logging/LogFactory';
 import {TSAufteilungDTO} from '../../../../../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
-
-const LOG = LogFactory.createLog('AufteilungComponent');
 
 @Component({
     selector: 'dv-aufteilung',
@@ -32,7 +29,7 @@ const LOG = LogFactory.createLog('AufteilungComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class AufteilungComponent implements OnInit, OnDestroy {
+export class AufteilungComponent implements OnInit {
 
     @Input()
     public aufteilung: TSAufteilungDTO;
@@ -48,38 +45,25 @@ export class AufteilungComponent implements OnInit, OnDestroy {
     public gs1Name: string;
     public gs2Name: string;
 
-    private restDebounce: BehaviorSubject<number>;
-    private subscription: Subscription;
+    public restDebounce: BehaviorSubject<number>;
     public rest: number;
+
+    private readonly _dueTime = 500;
 
     public constructor(
         private readonly gesuchModelManger: GesuchModelManager,
-        private readonly cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
         this.gs1Name = this.gesuchModelManger.getGesuch().gesuchsteller1?.extractFullName();
         this.gs2Name = this.gesuchModelManger.getGesuch().gesuchsteller2?.extractFullName();
-        this.restDebounce = new BehaviorSubject<number>(this.aufteilung.getRest());
-
-        this.subscription = this.restDebounce
-            .asObservable()
-            // tslint:disable-next-line:no-magic-numbers
-            .pipe(debounceTime(500))
-            .subscribe(res => {
-                this.rest = res;
-                this.cd.markForCheck();
-            }, err => {
-                LOG.error(err);
-            });
+        this.restDebounce = new BehaviorSubject<number>(this.aufteilung.getRest())
+            .pipe(debounceTime(this._dueTime)) as BehaviorSubject<number>;
     }
 
     public updateRest(): void {
         this.restDebounce.next(this.aufteilung.getRest());
     }
 
-    public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
-    }
 }
