@@ -30,4 +30,8 @@ export class EKVViewUtil {
     public static getAntragsteller1Name(gesuchModelManager: GesuchModelManager): string {
         return gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
     }
+
+    public static getAntragsteller2Name(gesuchModelManager: GesuchModelManager): string {
+        return gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+    }
 }

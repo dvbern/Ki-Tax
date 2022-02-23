@@ -104,4 +104,8 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
     public getAntragsteller1Name(): string {
         return EKVViewUtil.getAntragsteller1Name(this.gesuchModelManager);
     }
+
+    public getAntragsteller2Name(): string {
+        return EKVViewUtil.getAntragsteller2Name(this.gesuchModelManager);
+    }
 }

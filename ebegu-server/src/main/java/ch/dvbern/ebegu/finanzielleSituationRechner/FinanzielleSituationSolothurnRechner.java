@@ -78,6 +78,26 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 		}
 	}
 
+	@Override
+	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return finanzielleSituation.getSteuerveranlagungErhalten();
+	}
+
+	@Override
+	public boolean acceptEKV(
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal massgebendesEinkommenJahr,
+		BigDecimal minimumEKV) {
+
+		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
+		if (result) {
+			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			// wenn es gibt mehr als minimumEKV in einer positive oder negative Richtung ist der EKV akkzeptiert
+			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0 || differenzGerundet.compareTo(minimumEKV) >= 0;
+		}
+		return false;
+	}
+
 	private void calculateZusammen(FinanzielleSituationResultateDTO einkVerResultDTO, Einkommensverschlechterung einkommensverschlechterungGS1, Einkommensverschlechterung einkommensverschlechterungGS2) {
 		// Jaehrlicher BruttoLohn Berechnen
 		einkVerResultDTO.setBruttolohnJahrGS1(calculateJaehrlicherBruttolohn(einkommensverschlechterungGS1));
@@ -166,10 +186,5 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 
 	private boolean isNullOrZero(BigDecimal number) {
 		return number == null || number.compareTo(BigDecimal.ZERO) == 0;
-	}
-
-	@Override
-	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
-		return finanzielleSituation.getSteuerveranlagungErhalten();
 	}
 }

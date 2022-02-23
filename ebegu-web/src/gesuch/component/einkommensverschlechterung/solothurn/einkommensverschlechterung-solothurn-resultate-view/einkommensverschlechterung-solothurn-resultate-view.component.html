@@ -51,8 +51,8 @@
                     <div class="col-sm-6">
                         <dv-input-label-field
                             [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS1"
-                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'"
+                            [labelMessageKeyArgs]="{antragsteller: this.getAntragsteller1Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
@@ -61,8 +61,8 @@
                     <div class="col-sm-6">
                         <dv-input-label-field
                             [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS2"
-                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
-                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR_ANTRAGSTELLENDE'"
+                            [labelMessageKeyArgs]="{antragsteller: this.getAntragsteller2Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
                     </div>
