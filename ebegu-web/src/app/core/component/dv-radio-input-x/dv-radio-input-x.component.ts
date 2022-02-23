@@ -18,6 +18,8 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 
 @Component({
     selector: 'dv-radio-input-x',
@@ -37,6 +39,9 @@ export class DvRadioInputXComponent implements OnInit {
     @Input()
     public model: boolean;
 
+    @Input()
+    public dvBisherValue: boolean;
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -46,7 +51,9 @@ export class DvRadioInputXComponent implements OnInit {
     // unique name for this radio
     public uniqueName: string;
 
-    public constructor() {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager
+    ) {
     }
 
     public ngOnInit(): void {
@@ -56,5 +63,9 @@ export class DvRadioInputXComponent implements OnInit {
 
     public change($event: MatRadioChange): void {
         this.modelChange.emit($event.value);
+    }
+
+    public showBisher(): boolean {
+        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
     }
 }

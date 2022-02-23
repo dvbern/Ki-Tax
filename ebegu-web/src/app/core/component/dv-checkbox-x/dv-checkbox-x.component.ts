@@ -16,6 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 
 @Component({
     selector: 'dv-checkbox-x',
@@ -34,12 +36,17 @@ export class DvCheckboxXComponent implements OnInit {
     @Input()
     public model: boolean;
 
+    @Input()
+    public dvBisherValue: boolean;
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public uniqueName: string;
 
-    public constructor() {
+    public constructor(
+        private readonly gesuchModelManager: GesuchModelManager
+    ) {
     }
 
     public ngOnInit(): void {
@@ -49,5 +56,9 @@ export class DvCheckboxXComponent implements OnInit {
 
     public change(): void {
         this.modelChange.emit(this.model);
+    }
+
+    public showBisher(): boolean {
+        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
     }
 }

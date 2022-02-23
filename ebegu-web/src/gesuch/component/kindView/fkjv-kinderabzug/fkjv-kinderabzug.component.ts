@@ -50,6 +50,13 @@ export class FkjvKinderabzugComponent implements OnInit {
         return undefined;
     }
 
+    public getModelGS(): TSKind | undefined {
+        if (this.kindContainer?.kindGS) {
+            return this.kindContainer.kindGS;
+        }
+        return undefined;
+    }
+
     public change(): void {
         this.deleteValuesOfHiddenQuestions();
         this.cd.markForCheck();

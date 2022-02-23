@@ -22,6 +22,7 @@
                 [label]="'KINDERABZUG_IS_PFLEGEKIND'"
                 [(model)]="getModel().isPflegekind"
                 (modelChange)="change()"
+                [dvBisherValue]="getModelGS()?.isPflegekind"
             ></dv-checkbox-x>
         </div>
     </div>
@@ -32,6 +33,7 @@
                     [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
                     [(model)]="getModel().pflegeEntschaedigungErhalten"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.pflegeEntschaedigungErhalten"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -43,6 +45,7 @@
                     [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
                     [(model)]="getModel().obhutAlternierendAusueben"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.obhutAlternierendAusueben"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -54,6 +57,7 @@
                     [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
                     [(model)]="getModel().gemeinsamesGesuch"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -65,6 +69,7 @@
                     [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
                     [(model)]="getModel().inErstausbildung"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.inErstausbildung"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -76,6 +81,7 @@
                     [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
                     [(model)]="getModel().lebtKindAlternierend"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -87,6 +93,7 @@
                     [label]="'KINDERABZUG_ALIMENTE_ERHALTEN'"
                     [(model)]="getModel().alimenteErhalten"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.alimenteErhalten"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>
@@ -98,6 +105,7 @@
                     [label]="'KINDERABZUG_ALIMENTE_BEZAHLEN'"
                     [(model)]="getModel().alimenteBezahlen"
                     (modelChange)="change()"
+                    [dvBisherValue]="getModelGS()?.alimenteBezahlen"
                 ></dv-radio-input-x>
             </dv-radio-container-x>
         </div>

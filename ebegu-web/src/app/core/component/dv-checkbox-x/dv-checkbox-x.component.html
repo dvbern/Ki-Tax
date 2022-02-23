@@ -22,4 +22,9 @@
                   (ngModelChange)="change()">
         <span>{{label | translate}}</span>
     </mat-checkbox>
+    <dv-bisher-x
+        [korrektur]="model"
+        [deklaration]="dvBisherValue"
+        [showBisher]="showBisher()"
+    ></dv-bisher-x>
 </div>
