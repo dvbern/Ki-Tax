@@ -40,6 +40,9 @@ public class FinanzielleSituationResultateDTO {
 	private BigDecimal massgebendesEinkVorAbzFamGrGS1 = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkVorAbzFamGrGS2 = BigDecimal.ZERO;
 
+	private BigDecimal bruttolohnJahrGS1 = BigDecimal.ZERO;
+	private BigDecimal bruttolohnJahrGS2 = BigDecimal.ZERO;
+
 	public FinanzielleSituationResultateDTO() {
 		initToZero();
 	}
@@ -129,5 +132,21 @@ public class FinanzielleSituationResultateDTO {
 
 	public void setMassgebendesEinkVorAbzFamGrGS2(BigDecimal massgebendesEinkVorAbzFamGrGS2) {
 		this.massgebendesEinkVorAbzFamGrGS2 = massgebendesEinkVorAbzFamGrGS2;
+	}
+
+	public BigDecimal getBruttolohnJahrGS1() {
+		return bruttolohnJahrGS1;
+	}
+
+	public void setBruttolohnJahrGS1(BigDecimal bruttolohnJahrGS1) {
+		this.bruttolohnJahrGS1 = bruttolohnJahrGS1;
+	}
+
+	public BigDecimal getBruttolohnJahrGS2() {
+		return bruttolohnJahrGS2;
+	}
+
+	public void setBruttolohnJahrGS2(BigDecimal bruttolohnJahrGS2) {
+		this.bruttolohnJahrGS2 = bruttolohnJahrGS2;
 	}
 }
