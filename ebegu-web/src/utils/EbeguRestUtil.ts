@@ -2067,9 +2067,9 @@ export class EbeguRestUtil {
             finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGrGS2 =
                 finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGrGS2;
             finanzielleSituationResultateDTO.bruttolohnJahrGS1 =
-                finanzielleSituationResultateFromServer.bruttoLohnJahrGS1;
+                finanzielleSituationResultateFromServer.bruttolohnJahrGS1;
             finanzielleSituationResultateDTO.bruttolohnJahrGS2 =
-                finanzielleSituationResultateFromServer.bruttoLohnJahrGS2;
+                finanzielleSituationResultateFromServer.bruttolohnJahrGS2;
             return finanzielleSituationResultateDTO;
         }
         return undefined;

@@ -2800,5 +2800,6 @@
     "LABEL_13": "13",
     "LABEL_12": "12",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
+    "EVK_BRUTTOLOHN_JAHR": "Jährlicher Bruttolohn",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

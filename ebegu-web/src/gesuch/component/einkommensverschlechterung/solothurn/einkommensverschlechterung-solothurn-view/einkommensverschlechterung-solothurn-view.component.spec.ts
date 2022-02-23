@@ -15,28 +15,110 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService, Transition} from '@uirouter/angular';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {SharedModule} from '../../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../../service/wizardStepManager';
 
-import { EinkommensverschlechterungSolothurnViewComponent } from './einkommensverschlechterung-solothurn-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './einkommensverschlechterung-solothurn-view.component';
+
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name,
+    [
+        'getBasisjahr',
+        'getBasisjahrPlus',
+        'getGesuch',
+        'isGesuchsteller2Required',
+        'isGesuchReadonly',
+        'getGesuchsperiode',
+        'getGemeinde',
+        'setGesuchstellerNumber',
+        'setBasisJahrPlusNumber',
+        'getBasisjahrToWorkWith',
+        'getStammdatenToWorkWith',
+        'getGesuchstellerNumber'
+    ]);
+gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(new TSGesuchstellerContainer());
+
+const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
+    WizardStepManager.name, [
+        'getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
+        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe',
+    ]);
+const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
+    ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
+const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
+    ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+    ['go']);
+const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 
 describe('EinkommensverschlechterungSolothurnViewComponent', () => {
-  let component: EinkommensverschlechterungSolothurnViewComponent;
-  let fixture: ComponentFixture<EinkommensverschlechterungSolothurnViewComponent>;
+    let component: EinkommensverschlechterungSolothurnViewComponent;
+    let fixture: ComponentFixture<EinkommensverschlechterungSolothurnViewComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ EinkommensverschlechterungSolothurnViewComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [EinkommensverschlechterungSolothurnViewComponent],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: WizardStepManager, useValue: wizardStepMangerSpy},
+                {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: Transition, useValue: transitionSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+            ],
+            imports: [
+                SharedModule,
+            ],
+        })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EinkommensverschlechterungSolothurnViewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        transitionSpy.params.and.returnValue({gesuchstellerNumber: 1, basisjahrPlus: 1});
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+        fixture = TestBed.createComponent(EinkommensverschlechterungSolothurnViewComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.finSitTyp = TSFinanzielleSituationTyp.LUZERN;
+        gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
+        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
+        gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
+        gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
+        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
+        gesuch.familiensituationContainer = new TSFamiliensituationContainer();
+        gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        return gesuch;
+    }
 });

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -47,6 +47,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         private readonly $transition$: Transition,
+        protected ref: ChangeDetectorRef,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -85,7 +86,9 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
     }
 
     public onValueChangeFunction = (): void => {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus());
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
+            () => this.ref.markForCheck()
+        );
     }
 
     private isGesuchValid(): boolean {
