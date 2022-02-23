@@ -19,20 +19,22 @@ import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
 @Component({
-  selector: 'dv-einkommensverschlechterung-solothurn-view',
-  templateUrl: './einkommensverschlechterung-solothurn-view.component.html',
-  styleUrls: ['./einkommensverschlechterung-solothurn-view.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-einkommensverschlechterung-solothurn-view',
+    templateUrl: './einkommensverschlechterung-solothurn-view.component.html',
+    styleUrls: ['./einkommensverschlechterung-solothurn-view.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -43,6 +45,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
+        protected berechnungsManager: BerechnungsManager,
         private readonly $transition$: Transition,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
@@ -82,7 +85,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
     }
 
     public onValueChangeFunction = (): void => {
-        // TODO this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus());
     }
 
     private isGesuchValid(): boolean {
@@ -98,4 +101,21 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         return this.form.valid;
     }
 
+    private getResultate(): TSFinanzielleSituationResultateDTO {
+        return this.model.getBasisJahrPlus() === 2 ?
+            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
+            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+    }
+
+    public getBruttolohnJahr(): number {
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.getResultate()?.bruttolohnJahrGS1 :
+            this.getResultate()?.bruttolohnJahrGS2;
+    }
+
+    public getMassgebendesEinkVorAbzFamGrGSX(): number {
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.getResultate()?.massgebendesEinkVorAbzFamGrGS1 :
+            this.getResultate()?.massgebendesEinkVorAbzFamGrGS2;
+    }
 }

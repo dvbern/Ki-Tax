@@ -104,6 +104,17 @@
                 </div>
 
                 <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="getBruttolohnJahr()"
+                            [labelMessageKey]="'EVK_BRUTTOLOHN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+                <div class="row">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
                             <dv-input-label-field
@@ -119,6 +130,16 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="getMassgebendesEinkVorAbzFamGrGSX()"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
 
                 <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
                                  [dvSubStep]="3"></dv-navigation-x>

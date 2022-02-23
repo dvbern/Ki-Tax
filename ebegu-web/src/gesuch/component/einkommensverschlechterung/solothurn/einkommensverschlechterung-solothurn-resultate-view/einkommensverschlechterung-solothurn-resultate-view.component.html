@@ -15,4 +15,85 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>einkommensverschlechterung-solothurn-resultate-view works!</p>
+<div class="gesuch-modul">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+            </h2>
+            <h2 *ngIf="!hasSecondAntragstellende()">
+                <span translate
+                      [translateParams]="{antragsteller: this.getAntragsteller1Name(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
+            </h2>
+            <h2 *ngIf="hasSecondAntragstellende()">
+                 <span translate
+                       [translateParams]="{antragsteller: this.getGemeinsameFullname(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_ANTRAGSTELLENDE</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form"
+                  #form="ngForm"
+                  novalidate>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahr()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row" *ngIf="hasSecondAntragstellende()">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS1"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row" *ngIf="hasSecondAntragstellende()">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="getResultate()?.massgebendesEinkVorAbzFamGrGS2"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                            [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dv-input-label-field
+                            [model]="resultatProzent"
+                            [labelMessageKey]="'EVK_IN_PROZENT'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+
+                    <dv-navigation-x [dvPrevious]="true" [dvNext]="true"
+                                     [dvSubStep]="4"></dv-navigation-x>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
