@@ -1,0 +1,50 @@
+<!--
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row" *ngIf="aufteilung">
+    <div class="col-xs-12">
+        <p class="ebegu-h1 margin-bottom-30">{{label | translate}}</p>
+
+        <div [ngModelGroup]="groupName" #fgName="ngModelGroup" [class.has-error]="fgName.invalid" class="aufteilung-container">
+            <div>
+                <dv-input-label-field
+                    [(model)]="aufteilung.gs1"
+                    [labelMessageKey]="gs1Name"
+                    [inputRequired]="true"
+                    (keyup)="updateRest()"
+                    [inputDisabled]="readonly">
+                </dv-input-label-field>
+            </div>
+            <div>
+                <dv-input-label-field
+                    [(model)]="aufteilung.gs2"
+                    [labelMessageKey]="gs2Name"
+                    [inputRequired]="true"
+                    (keyup)="updateRest()"
+                    [inputDisabled]="readonly">
+                </dv-input-label-field>
+            </div>
+            <div class="rest">
+                <ng-container *ngIf="restDebounce | async as rest; else check ">
+                    <i class="fa fa-lg fa-times-circle"></i>
+                    <p>{{'FINANZIELLE_SITUATION_REST' | translate}}&nbsp;{{rest | ebeguNumber}}&nbsp;{{'CHF' | translate}}</p>
+                </ng-container>
+                <ng-template #check><i class="fa fa-lg fa-check"></i></ng-template>
+            </div>
+        </div>
+    </div>
+</div>
