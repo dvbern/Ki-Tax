@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.validators.CheckKinderabzug;
 import org.hibernate.envers.Audited;
 
 /**
@@ -49,6 +50,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
 )
+@CheckKinderabzug
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
