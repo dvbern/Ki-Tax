@@ -28,6 +28,7 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
@@ -330,8 +331,10 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     private callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(true).then(() => {
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+            .then(() => {
                 this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                this.form.$setDirty();
             },
         );
     }
