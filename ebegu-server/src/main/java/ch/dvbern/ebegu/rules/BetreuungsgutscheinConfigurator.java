@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -59,6 +60,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
@@ -129,7 +131,8 @@ public class BetreuungsgutscheinConfigurator {
 			AUSSERORDENTLICHER_ANSPRUCH_RULE,
 			FKJV_ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
-			GESCHWISTERNBONUS_AKTIVIERT
+			GESCHWISTERNBONUS_AKTIVIERT,
+			KINDERABZUG_TYP
 		);
 	}
 
@@ -190,6 +193,8 @@ public class BetreuungsgutscheinConfigurator {
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
 		Einstellung param_minimaldauer_konkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
+		Einstellung param_kinderabzug_typ = einstellungMap.get(KINDERABZUG_TYP);
+		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter KINDERABZUG_TYP muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
 			param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
@@ -197,6 +202,7 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
 			param_minimaldauer_konkubinat.getValueAsInteger(),
+			KinderabzugTyp.valueOf(param_kinderabzug_typ.getValue()),
 			locale);
 		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, einstellungMap);
 
