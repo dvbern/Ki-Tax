@@ -48,9 +48,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 
 	private boolean validatePflegekind(@Nonnull Kind kind) {
 		if (kind.getPflegekind()) {
-			if (!validateNoAsivKinderabzug(kind)) {
-				return false;
-			}
 			if (kind.getPflegeEntschaedigungErhalten() == null) {
 				return false;
 			}
@@ -66,9 +63,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 
 	private boolean validateObhutAlternierend(@Nonnull Kind kind) {
 		if (kind.getObhutAlternierendAusueben() != null) {
-			if (!validateNoAsivKinderabzug(kind)) {
-				return false;
-			}
 			if (kind.getPflegekind()) {
 				return false;
 			}
@@ -90,9 +84,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 
 	private boolean validateKindErstausbildung(@Nonnull Kind kind) {
 		if (kind.getInErstausbildung() != null) {
-			if (!validateNoAsivKinderabzug(kind)) {
-				return false;
-			}
 			if (kind.getObhutAlternierendAusueben() != null) {
 				return false;
 			}
@@ -113,9 +104,5 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 			}
 		}
 		return true;
-	}
-
-	private boolean validateNoAsivKinderabzug(@Nonnull Kind kind) {
-		return kind.getKinderabzugErstesHalbjahr() == null && kind.getKinderabzugZweitesHalbjahr() == null;
 	}
 }

@@ -24,7 +24,7 @@ alter table kind add lebt_kind_alternierend bit;
 alter table kind add alimente_erhalten bit;
 alter table kind add alimente_bezahlen bit;
 
-alter table kind_aud add is_pflegekind bit not null default 0;
+alter table kind_aud add is_pflegekind bit;
 alter table kind_aud add pflege_entschaedigung_erhalten bit;
 alter table kind_aud add obhut_alternierend_ausueben bit;
 alter table kind_aud add gemeinsames_gesuch bit;

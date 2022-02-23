@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.tests.validations;
 
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.validators.CheckKinderabzugValidator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -110,24 +109,6 @@ public class CheckKinderabzugValidatorTest {
 		kind.setLebtKindAlternierend(true);
 		kind.setAlimenteErhalten(true);
 		kind.setAlimenteBezahlen(true);
-		Assert.assertFalse(validator.isValid(kind, null));
-	}
-
-	@Test
-	public void checkAsivPropertiesNotSet() {
-		var kind = new Kind();
-		kind.setPflegekind(true);
-		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
-		Assert.assertFalse(validator.isValid(kind, null));
-
-		kind = new Kind();
-		kind.setObhutAlternierendAusueben(true);
-		kind.setKinderabzugErstesHalbjahr(Kinderabzug.HALBER_ABZUG);
-		Assert.assertFalse(validator.isValid(kind, null));
-
-		kind = new Kind();
-		kind.setInErstausbildung(true);
-		kind.setKinderabzugErstesHalbjahr(Kinderabzug.HALBER_ABZUG);
 		Assert.assertFalse(validator.isValid(kind, null));
 	}
 

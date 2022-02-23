@@ -232,12 +232,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return undefined;
         }
 
-        if (!this.form.$dirty) {
-            // If there are no changes in form we don't need anything to update on Server and we could return the
-            // promise immediately
-            return this.$q.when(this.model);
-        }
-
         this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
         this.getModel().inPruefung = false;
 

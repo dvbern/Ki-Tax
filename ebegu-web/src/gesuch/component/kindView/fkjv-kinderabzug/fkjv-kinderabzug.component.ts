@@ -115,7 +115,7 @@ export class FkjvKinderabzugComponent implements OnInit {
         const gp = this.gesuchModelManager.getGesuchsperiode();
         const ageClone = age.clone();
         const dateWith18 = ageClone.add(FkjvKinderabzugComponent.VOLLJAEHRIG_NUMBER_YEARS, 'years');
-        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigAb);
+        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
 }
