@@ -64,6 +64,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             TSWizardStepStatus.IN_BEARBEITUNG);
+        this.onValueChangeFunction();
     }
 
     public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
