@@ -1,0 +1,254 @@
+<!--
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="einkommensverschlechterungResultate gesuch-modul static-position">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+
+            <h2>
+            <span translate
+                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form role="form" #form="ngForm" novalidate>
+
+                <!-- Total Einkuenfte -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-label-field
+                            [model]="getResultate()?.einkommenBeiderGesuchsteller"
+                            [labelMessageKey]="this.model.isGesuchsteller2Required() ? 'FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS' : 'FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+                <!-- Vermoegen GS 1  -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <dv-input-container class="form-group">
+                            <dv-input-label-field
+                                [name]="'bruttovermoegen1'"
+                                [(model)]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
+                                [labelMessageKey]="'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'"
+                                [labelMessageKeyArgs]="{namegs1: this.extractFullNameGS1()}"
+                                [inputDisabled]="readOnly"
+                                [dvOnBlur]="onValueChangeFunction"
+                                [inputRequired]="true"
+                                [tooltipMessageKey]="'FINANZIELLE_SITUATION_VERMOEGEN_HELP'"
+                                [neuerWert]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
+                                [wertBasisjahr]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.bruttovermoegen"
+                                [basisjahr]="model.getBasisjahr()"
+                                [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
+                                [deklaration]="getEinkommensverschlechterungGS1_GS()?.bruttovermoegen"
+                                [korrektur]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
+                            >
+                            </dv-input-label-field>
+                        </dv-input-container>
+                        <div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Vermoegen GS 2 -->
+                <div class="row input-row">
+                    <div class="col-sm-12 dv-input-container-medium" *ngIf="showGS2()">
+                        <div class="form-group">
+                            <dv-input-label-field
+                                [name]="'bruttovermoegen2'"
+                                [(model)]="getEinkommensverschlechterungGS2_JA().bruttovermoegen"
+                                [labelMessageKey]="'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'"
+                                [labelMessageKeyArgs]="{namegs1: this.extractFullNameGS2()}"
+                                [inputDisabled]="readOnly"
+                                [dvOnBlur]="onValueChangeFunction"
+                                [inputRequired]="true"
+                                [tooltipMessageKey]="'FINANZIELLE_SITUATION_VERMOEGEN_HELP'"
+                                [neuerWert]="getEinkommensverschlechterungGS2_JA().bruttovermoegen"
+                                [wertBasisjahr]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.bruttovermoegen"
+                                [basisjahr]="model.getBasisjahr()"
+                                [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
+                                [deklaration]="getEinkommensverschlechterungGS2_GS()?.bruttovermoegen"
+                                [korrektur]="getEinkommensverschlechterungGS2_JA().bruttovermoegen">
+                                >
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schulden GS 1 -->
+                <div class="row input-row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <dv-input-label-field
+                                [name]="'schulden1'"
+                                [(model)]="getEinkommensverschlechterungGS1_JA().schulden"
+                                [labelMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_GS_1'"
+                                [labelMessageKeyArgs]="{namegs1: this.extractFullNameGS1()}"
+                                [inputDisabled]="readOnly"
+                                [dvOnBlur]="onValueChangeFunction"
+                                [inputRequired]="true"
+                                [tooltipMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_HELP'"
+                                [neuerWert]="getEinkommensverschlechterungGS1_JA().schulden"
+                                [wertBasisjahr]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.schulden"
+                                [basisjahr]="model.getBasisjahr()"
+                                [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
+                                [deklaration]="getEinkommensverschlechterungGS1_GS()?.schulden"
+                                [korrektur]="getEinkommensverschlechterungGS1_JA().schulden">
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Schulden GS 2 -->
+                <div class="row input-row">
+                    <div class="col-sm-12 dv-input-container-medium" *ngIf="showGS2()">
+                        <div class="form-group">
+                            <dv-input-label-field
+                                [name]="'schulden2'"
+                                [(model)]="getEinkommensverschlechterungGS2_JA().schulden"
+                                [labelMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_GS_2'"
+                                [labelMessageKeyArgs]="{namegs1: this.extractFullNameGS2()}"
+                                [inputDisabled]="readOnly"
+                                [dvOnBlur]="onValueChangeFunction"
+                                [inputRequired]="true"
+                                [tooltipMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_HELP'"
+                                [neuerWert]="getEinkommensverschlechterungGS2_JA().schulden"
+                                [wertBasisjahr]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.schulden"
+                                [basisjahr]="model.getBasisjahr()"
+                                [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
+                                [deklaration]="getEinkommensverschlechterungGS2_GS().schulden"
+                                [korrektur]="getEinkommensverschlechterungGS2_JA().schulden"
+                            >
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nettovermoegen -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-label-field
+                            [model]="getResultate()?.nettovermoegenFuenfProzent"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_NETTOVERMOEGEN'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+
+                <!-- Anrechenbares Einkommen -->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-label-field
+                            [model]="getResultate()?.anrechenbaresEinkommen"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP'">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+                <!-- Abzuege beider Gesuchsteller aufgrund Alimente-->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <dv-input-label-field
+                            [model]="getResultate()?.abzuegeBeiderGesuchsteller"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+
+                <!-- Massgebendes Einkommen vor Abzug Fam Grösse-->
+                <div class="row margin-bottom-20">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <dv-input-label-field
+                            [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN_VOR_ABZUG_FAM'"
+                            [labelMessageKeyArgs]=""
+                            [inputDisabled]="true">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+
+                <!-- -------------------------------------------Result Part--------------------------------------------  -->
+
+                <div *ngIf="showResult()">
+
+                    <h2 class="main-title">
+                        <span translate
+                              [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKV_RESULTATE_PRUEFUNG</span>
+                    </h2>
+                    <hr class="header"/>
+
+                    <!-- Einkommen Vorjahr -->
+                    <div class="row margin-top-20">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-label-field
+                                [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
+                                [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                                [labelMessageKeyArgs]="{basisjahr: this.getBasisjahr()}"
+                                [inputDisabled]="true">
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-label-field
+                                [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
+                                [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
+                                [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
+                                [inputDisabled]="true">
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-label-field
+                                [model]="resultatProzent"
+                                [labelMessageKey]="'EVK_IN_PROZENT'"
+                                [labelMessageKeyArgs]=""
+                                [inputDisabled]="true">
+                            </dv-input-label-field>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- -------------------------------------------Navigation--------------------------------------------  -->
+                <dv-navigation-x [dvPrevious]="true" [dvNext]="true" (dvSave)="save($event.onResult)"
+                                 [dvSubStep]="4"></dv-navigation-x>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+

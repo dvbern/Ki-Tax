@@ -34,8 +34,8 @@ import {
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterung/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
-import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
@@ -115,7 +115,7 @@ export const GESUCH_JS_MODULE =
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())
         .component('einkommensverschlechterungResultateView',
-            new EinkommensverschlechterungResultateViewComponentConfig())
+            downgradeComponent({component: EinkommensverschlechterungResultateViewComponent}))
         .component('freigabeView', new FreigabeViewComponentConfig())
         .component('dokumenteView', new DokumenteViewComponentConfig())
         .component('kommentarView', new KommentarViewComponentConfig())

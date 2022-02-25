@@ -23,6 +23,7 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
@@ -507,7 +508,7 @@ export class EbeguFinanzielleSituationStartLuzernState implements Ng1StateDeclar
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationStartViewLuzernComponent
+            component: FinanzielleSituationStartViewLuzernComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -529,7 +530,7 @@ export class EbeguFinanzielleSituationStartSolothurnState implements Ng1StateDec
 
     public views: any = {
         gesuchViewPort: {
-            component: FinanzielleSituationStartSolothurnComponent
+            component: FinanzielleSituationStartSolothurnComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -573,7 +574,7 @@ export class EbeguFinanzielleSituationGS2SolothurnState implements Ng1StateDecla
 
     public views: any = {
         gesuchViewPort: {
-            component: AngabenGs2Component
+            component: AngabenGs2Component,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -595,7 +596,7 @@ export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclarat
 
     public views: any = {
         gesuchViewPort: {
-            component: AngabenGesuchsteller2Component
+            component: AngabenGesuchsteller2Component,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -714,7 +715,7 @@ export class EbeguEinkommensverschlechterungLuzernState implements Ng1StateDecla
 
     public views: any = {
         gesuchViewPort: {
-            component: EinkommensverschlechterungLuzernViewComponent
+            component: EinkommensverschlechterungLuzernViewComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -739,7 +740,7 @@ export class EbeguEinkommensverschlechterungLuzernResultateState implements Ng1S
 
     public views: any = {
         gesuchViewPort: {
-            component: EinkommensverschlechterungLuzernResultateViewComponent
+            component: EinkommensverschlechterungLuzernResultateViewComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -762,9 +763,9 @@ export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDe
         basisjahrPlus: '1',
     };
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: any = {
         gesuchViewPort: {
-            template: '<einkommensverschlechterung-resultate-view>',
+            component: EinkommensverschlechterungResultateViewComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -790,7 +791,7 @@ export class EbeguEinkommensverschlechterungSolothurnState implements Ng1StateDe
 
     public views: any = {
         gesuchViewPort: {
-            component: EinkommensverschlechterungSolothurnViewComponent
+            component: EinkommensverschlechterungSolothurnViewComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -815,7 +816,7 @@ export class EbeguEinkommensverschlechterungSolothurnResultateState implements N
 
     public views: any = {
         gesuchViewPort: {
-            component: EinkommensverschlechterungSolothurnResultateViewComponent
+            component: EinkommensverschlechterungSolothurnResultateViewComponent,
         },
         kommentarViewPort: {
             template: kommentarView,

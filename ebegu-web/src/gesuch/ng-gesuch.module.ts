@@ -21,6 +21,7 @@ import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWa
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
@@ -56,7 +57,6 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
     declarations: [
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
-        DvEingabeBasisjahrComponent,
         InternePendenzenComponent,
         InternePendenzDialogComponent,
         InternePendenzenTableComponent,
@@ -66,6 +66,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         EinkommensverschlechterungSolothurnViewComponent,
         EinkommensverschlechterungLuzernResultateViewComponent,
         EinkommensverschlechterungSolothurnResultateViewComponent,
+        EinkommensverschlechterungResultateViewComponent,
         DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
