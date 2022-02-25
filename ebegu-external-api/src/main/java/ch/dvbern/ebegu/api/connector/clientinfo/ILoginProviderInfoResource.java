@@ -45,15 +45,17 @@ public interface ILoginProviderInfoResource {
 	@Path("/singleSingOnURL")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	String getSSOLoginInitURL(@Nullable @QueryParam("relayPath") String relayPath);
+	String getSSOLoginInitURL(@Nullable @QueryParam("relayPath") String relayPath,
+		@Nullable @QueryParam("tenant") String tenant);
 
 	/**
 	 * Service to send browsers to when starting a single log out
+	 * @param tenant
 	 */
 	@GET
 	@Path("/singleLogoutURL")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	String getSingleLogoutURL();
+	String getSingleLogoutURL(@Nullable @QueryParam("tenant") String tenant);
 
 }

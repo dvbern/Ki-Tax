@@ -25,6 +25,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
@@ -89,13 +90,14 @@ public interface ILoginConnectorResource {
 
 	/**
 	 * @return the first and only Mandant that currently exists
+	 * @param mandantIdentifier
 	 */
 	@Nonnull
 	@GET
 	@Path("/mandant")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	String getMandant();
+	String getMandant(@QueryParam("mandantIdentifier") String mandantIdentifier);
 
 	/**
 	 * This service exists to allow external login modules to create logins in Ki-Tax
