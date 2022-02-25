@@ -23,6 +23,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
+import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
@@ -169,7 +170,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvInputLabelFieldComponent,
+        DvEingabeBasisjahrComponent,
         EbeguNumberPipe,
         DvValueinputXComponent
     ],
@@ -237,7 +238,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvInputLabelFieldComponent,
+        DvEingabeBasisjahrComponent,
         DvValueinputXComponent
     ],
     providers: [

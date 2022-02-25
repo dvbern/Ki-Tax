@@ -111,6 +111,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
                 });
             });
         }
+        // tslint:disable-next-line:no-identical-functions
         return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
             return this.updateStatus(true).then(
                 onResult(true),
