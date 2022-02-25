@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {ngServicesMock} from '../hybridTools/ngServicesMocks';
+import {translationsMock} from '../hybridTools/translationsMock';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSGesuch} from '../models/TSGesuch';
 import {TestDataUtil} from '../utils/TestDataUtil.spec';
@@ -31,6 +32,8 @@ describe('gesuch', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
