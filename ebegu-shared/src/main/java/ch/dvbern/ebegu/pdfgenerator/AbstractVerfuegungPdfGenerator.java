@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
-public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
+public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
@@ -109,7 +109,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
-	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractVerfuegungPdfGenerator.class);
 
 	private final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
 	private final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
@@ -128,7 +128,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	private final Art art;
 
-	public VerfuegungPdfGenerator(
+	public AbstractVerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
