@@ -17,12 +17,14 @@ import * as angular from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSFall} from '../../../../models/TSFall';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
@@ -55,6 +57,8 @@ describe('mitteilungenView', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
+    beforeEach(angular.mock.module(translationsMock));
+
     beforeEach(angular.mock.inject($injector => {
         mitteilungRS = $injector.get('MitteilungRS');
         authServiceRS = $injector.get('AuthServiceRS');
@@ -78,6 +82,7 @@ describe('mitteilungenView', () => {
         besitzer.nachname = 'Romualdo Besitzer';
         fall.besitzer = besitzer;
         dossier.fall.besitzer = besitzer;
+        dossier.gemeinde = new TSGemeinde();
         verantwortlicher = new TSBenutzerNoDetails();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         dossier.verantwortlicherBG = verantwortlicher;

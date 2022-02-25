@@ -15,6 +15,7 @@
 
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
@@ -38,6 +39,8 @@ describe('ApplicationPropertyRS', () => {
     beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');

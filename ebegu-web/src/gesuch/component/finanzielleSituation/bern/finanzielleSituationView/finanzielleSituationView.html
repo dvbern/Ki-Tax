@@ -34,28 +34,38 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
-                    <div ng-if="vm.showZugriffFailed()"
-                         class="well well-status-warten minus-margin">
-                        <p class="ebegu-h3"
-                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED"></p>
-                    </div>
+                    <dv-steuerabfrage-response-hints
+                        ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
 
-                    <div ng-if="vm.showWarningPartnerNichtGemeinsam()"
-                         class="well well-status-warten minus-margin">
-                        <p class="ebegu-h3"
-                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM"></p>
-                    </div>
-
-                    <div ng-if="vm.showZugriffUnterjaehrigeFall()"
-                         class="well well-status-warten minus-margin">
-                        <p class="ebegu-h3"
-                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG"></p>
-                    </div>
-
-                    <div ng-if="vm.showZugriffErfolgreich()"
-                         class="well well-status-bestaetigt minus-margin">
-                        <p class="ebegu-h3"
-                           data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH"></p>
+                    <!-- Zugriff auf Steuerdaten -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question"
+                             ng-if="vm.showZugriffAufSteuerdaten()">
+                            <div class="form-group">
+                            <span class="ebegu-h1 required">
+                                <span data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF"></span>
+                               <dv-tooltip text="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP' | translate"></dv-tooltip>
+                            </span>
+                                <dv-radio-container name="steuerdatenzugriff"
+                                                    class="input-element radio"
+                                                    ng-model="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
+                                                    false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
+                                                    dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
+                                                    aria-described-by="steuerdatenzugriff-error"
+                                                    ng-change="vm.steuerdatenzugriffClicked()">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="steuerdatenzugriff"
+                                                   for="vm.form.steuerdatenzugriff.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
                     </div>
 
                     <!--Steuerveranlagung -->
@@ -103,35 +113,6 @@
                                                     aria-described-by="steuererklaerung-error">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="steuererklaerung" for="vm.form.steuererklaerung.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Zugriff auf Steuerdaten -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question"
-                             ng-if="vm.showZugriffAufSteuerdaten()">
-                            <div class="form-group">
-                            <span class="ebegu-h1 required">
-                                <span data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF"></span>
-                               <dv-tooltip text="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP' | translate"></dv-tooltip>
-                            </span>
-                                <dv-radio-container name="steuerdatenzugriff"
-                                                    class="input-element radio"
-                                                    ng-model="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                                                    ng-required="true"
-                                                    dv-enable-element
-                                                    true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
-                                                    false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
-                                                    dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
-                                                    aria-described-by="steuerdatenzugriff-error"
-                                                    ng-change="vm.steuerdatenzugriffClicked()">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="steuerdatenzugriff"
-                                                   for="vm.form.steuerdatenzugriff.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -392,6 +373,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
@@ -416,6 +398,7 @@
                                         <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
                                                        name="nettoertraegeErbengemeinschaft"
                                                        ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element"
                                                        required>
                                         </dv-valueinput>
@@ -490,6 +473,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
@@ -513,6 +497,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
@@ -536,6 +521,7 @@
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
                                                        ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                                       ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
@@ -550,6 +536,17 @@
                         </div>
                     </div>
                 </fieldset>
+                <div class="inline-hint margin-bottom-30" ng-if="vm.showAufteilung()">
+                    {{'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE' | translate}}
+                    <ul>
+                        <li>{{'FINANZIELLE_SITUATION_BRUTTOERTRAEGE_VERMOEGEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_GELEISTETEALIMENTE' | translate}}</li>
+                        <li>{{'FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN' | translate}}</li>
+                    </ul>
+                    <a class="pointer-cursor" ng-click="vm.startAufteilung()">{{'AUFTEILUNG_AENDERN' | translate}}</a>
+                </div>
 
                 <!--Buttons-->
                 <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()"

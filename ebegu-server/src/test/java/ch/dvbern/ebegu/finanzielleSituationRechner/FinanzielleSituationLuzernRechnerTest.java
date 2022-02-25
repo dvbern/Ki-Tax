@@ -21,6 +21,11 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
@@ -131,9 +136,92 @@ public class FinanzielleSituationLuzernRechnerTest {
 			FinanzielleSituation finSit = new FinanzielleSituation();
 			finSit.setSelbstdeklaration(createSelbstdeklaration());
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
-			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(210573)));
+			var resultDTO = new FinanzielleSituationResultateDTO();
+
+			finSitRechner.setFinanzielleSituationParameters(gesuch, resultDTO, false);
+			assertThat(resultDTO.getEinkommenGS1(), is(BigDecimal.valueOf(241511)));
+			assertThat(resultDTO.getAbzuegeGS1(), is(BigDecimal.valueOf(40195)));
+			assertThat(resultDTO.getVermoegenXPercentAnrechenbarGS1(), is(BigDecimal.valueOf(9257)));
+			assertThat(resultDTO.getMassgebendesEinkVorAbzFamGrGS1(), is(BigDecimal.valueOf(210573)));
 		}
+	}
+
+	@Nested
+	class EinkommensverschlechterungTest {
+
+		@Test
+		public void testCalculateEKVNichtGenugen() {
+			Gesuch gesuch = prepareGesuch(false);
+			assert gesuch.getGesuchsteller1() != null;
+			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+			FinanzielleSituation finSit = new FinanzielleSituation();
+			finSit.setSelbstdeklaration(createSelbstdeklaration());
+			createEKVBasisJahrPlus1(gesuch.getGesuchsteller1());
+			gesuch.setEinkommensverschlechterungInfoContainer(createEKVInfoContainer(false));
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
+			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(25));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(210573)));
+		}
+
+		@Test
+		public void testCalculateEKVKleiner() {
+			Gesuch gesuch = prepareGesuch(false);
+			assert gesuch.getGesuchsteller1() != null;
+			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+			FinanzielleSituation finSit = new FinanzielleSituation();
+			finSit.setSelbstdeklaration(createSelbstdeklaration());
+			createEKVBasisJahrPlus1(gesuch.getGesuchsteller1());
+			gesuch.setEinkommensverschlechterungInfoContainer(createEKVInfoContainer(false));
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
+			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(2));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(190573)));
+		}
+
+		@Test
+		public void testCalculateEKVGroesser() {
+			Gesuch gesuch = prepareGesuch(false);
+			assert gesuch.getGesuchsteller1() != null;
+			assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+			FinanzielleSituation finSit = new FinanzielleSituation();
+			finSit.setSelbstdeklaration(createSelbstdeklaration());
+			createEKVBasisJahrPlus1(gesuch.getGesuchsteller1());
+			gesuch.setEinkommensverschlechterungInfoContainer(createEKVInfoContainer(false));
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
+			assert gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null;
+			assert gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null;
+			assert gesuch.getGesuchsteller1()
+				.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus1()
+				.getSelbstdeklaration() != null;
+			gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().getSelbstdeklaration().setEinkunftErwerb(new BigDecimal("55678.00"));
+			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(5));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(230573)));
+		}
+	}
+
+	private EinkommensverschlechterungInfoContainer createEKVInfoContainer(boolean plus2) {
+		EinkommensverschlechterungInfoContainer ekvInfoContainer = new EinkommensverschlechterungInfoContainer();
+		EinkommensverschlechterungInfo ekvInfo = new EinkommensverschlechterungInfo();
+		ekvInfo.setEinkommensverschlechterung(true);
+		ekvInfo.setEkvFuerBasisJahrPlus1(true);
+		ekvInfo.setEkvFuerBasisJahrPlus2(plus2);
+		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfo);
+		return ekvInfoContainer;
+	}
+
+	private void createEKVBasisJahrPlus1(GesuchstellerContainer gesuchsteller) {
+		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
+		ekvContainer.setEkvJABasisJahrPlus1(createEKV());
+		ekvContainer.setGesuchsteller(gesuchsteller);
+		gesuchsteller.setEinkommensverschlechterungContainer(ekvContainer);
+	}
+
+	private Einkommensverschlechterung createEKV() {
+		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
+		einkommensverschlechterung.setSelbstdeklaration(createSelbstdeklaration());
+		assert einkommensverschlechterung.getSelbstdeklaration() != null;
+		einkommensverschlechterung.getSelbstdeklaration().setEinkunftErwerb(new BigDecimal("15678.00"));
+		return einkommensverschlechterung;
 	}
 
 	private void setPropertiesToCalculateByVeranlagung(@Nonnull FinanzielleSituation finanzielleSituation) {

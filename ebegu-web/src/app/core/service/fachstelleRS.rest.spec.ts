@@ -15,6 +15,7 @@
 
 import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSFachstelleName} from '../../../models/enums/TSFachstelleName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -35,6 +36,8 @@ describe('fachstelleRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         fachstelleRS = $injector.get('FachstelleRS');

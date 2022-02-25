@@ -16,6 +16,7 @@
 import {IHttpBackendService, IQService} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
@@ -37,6 +38,8 @@ describe('ErwerbspensumRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         erwerbspensumRS = $injector.get('ErwerbspensumRS');

@@ -18,6 +18,7 @@
 import {IHttpBackendService} from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../hybridTools/translationsMock';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSGemeinde} from '../../models/TSGemeinde';
@@ -33,6 +34,8 @@ describe('GemeindeRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         gemeindeRS = $injector.get('GemeindeRS');

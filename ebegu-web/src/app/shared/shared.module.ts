@@ -238,7 +238,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvInputLabelFieldComponent,
         EnableElementDirective,
         DvInputLabelFieldComponent,
-        DvValueinputXComponent
+        DvValueinputXComponent,
+        EbeguNumberPipe
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

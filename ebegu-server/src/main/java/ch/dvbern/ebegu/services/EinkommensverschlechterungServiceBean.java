@@ -70,11 +70,11 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@Nonnull
 	public EinkommensverschlechterungContainer saveEinkommensverschlechterungContainer(
-		@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, String gesuchId) {
+		@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, Gesuch gesuch) {
 		Objects.requireNonNull(einkommensverschlechterungContainer);
 		final EinkommensverschlechterungContainer persistedEKV = persistence.merge(einkommensverschlechterungContainer);
-		if (gesuchId != null) {
-			wizardStepService.updateSteps(gesuchId, null, einkommensverschlechterungContainer, WizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+		if (gesuch != null) {
+			wizardStepService.updateSteps(gesuch.getId(), null, einkommensverschlechterungContainer, wizardStepService.getEKVWizardStepNameForGesuch(gesuch));
 		}
 		return persistedEKV;
 	}
