@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import com.lowagie.text.Font;
 
 public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 
@@ -29,5 +30,10 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf, boolean stadtBernAsivConfigured) {
 		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured);
+	}
+
+	@Override
+	protected Font getBgColorForUeberwiesenerBetragCell() {
+		return fontTabelle;
 	}
 }

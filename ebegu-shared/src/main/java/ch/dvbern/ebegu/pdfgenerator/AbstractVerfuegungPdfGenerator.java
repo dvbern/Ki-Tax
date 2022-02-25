@@ -111,8 +111,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractVerfuegungPdfGenerator.class);
 
-	private final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
-	private final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
+	protected final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
+	protected final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
 	private final Font fontRed = PdfUtil.createFontWithColor(getPageConfiguration().getFonts().getFont(), Color.RED);
 
 	public enum Art {
@@ -461,7 +461,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				Element.ALIGN_RIGHT,
 				PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()),
 				Color.LIGHT_GRAY,
-				fontTabelle,
+				getBgColorForUeberwiesenerBetragCell(),
 				1,
 				1));
 		}
@@ -651,4 +651,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.setSpacingAfter(15);
 		return table;
 	}
+
+	protected abstract Font getBgColorForUeberwiesenerBetragCell();
 }
