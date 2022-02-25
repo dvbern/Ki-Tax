@@ -2361,6 +2361,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
 		}
 		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
@@ -2385,6 +2386,7 @@ public class JaxBConverter extends AbstractConverter {
 			}
 		}
 		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
+		pensumFachstelle.setGruendeZusatzleistung(pensumFachstelleJAXP.getGruendeZusatzleistung());
 
 		return pensumFachstelle;
 	}

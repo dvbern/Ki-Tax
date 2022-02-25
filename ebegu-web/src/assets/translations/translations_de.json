@@ -2806,5 +2806,11 @@
     "ERNEUT_VERSUCHEN": "Erneut versuchen",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION": "Anrechenbares Vermögen gemäss Selbstdeklaration",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION_HINT": "10% des deklarierten Vermögens gemäss Selbstdeklaration",
+    "ZUSATZLEISTUNG_INTEGRATION": "Das Kind verfügt über eine Fachstellenbestätigung für Zusatzleistungen",
+    "GRUENDE_ZUSATZLESITUNG": "Gründe Zusatzleistung",
+    "VERHINDERUNG_WIRTSCHAFTLICHEN_NOTLAGE": "Verhindern einer wirtschaftlichen Notlage, wenn dies der langfristigen Stabilisierung des Familiensystems dient",
+    "ENTLASTUNG_SCHUTZ_UNTERSTUETZUNG_KIND": "Entlastung, Schutz und dringliche Unterstützung eines Kindes; wenn beispielsweise die Entwicklung des Kindes gefährdet ist.",
+    "SPRACHLICHE_INTEGRATION_DEUTSCHKENTNISSE": "Sprachliche Integration eines Kindes mit keinen oder geringen Deutschkenntnissen.",
+    "UEBERBELASTUNG_ELTERNTEIL": "Physische oder psychische Überbelastung der Eltern oder des betreuenden Elternteils.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -48,6 +48,7 @@ import org.apache.commons.lang3.Range;
  */
 public class CheckPensumFachstelleValidator implements ConstraintValidator<CheckPensumFachstelle, KindContainer> {
 
+	public static final int PENSUM_ZUSATZLEISTUNG = 100;
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
 	private EinstellungService einstellungService;
@@ -95,6 +96,9 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
 		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
 
+		if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
+			return pensumFachstelle.getPensum() == PENSUM_ZUSATZLEISTUNG;
+		}
 		@SuppressWarnings("ConstantConditions") // Im DummyService kann es null sein und ist auch null in den Tests!
 		Integer minValueAllowed = getValueAsInteger(
 			getMinValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),

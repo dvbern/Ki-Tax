@@ -301,7 +301,7 @@
                         <div ng-if="vm.isFachstelleRequired()">
                             <!--integration-->
                             <div class="row">
-                                <div class="col-xs-12 dv-input-container-small">
+                                <div class="col-xs-12 dv-input-container-question">
                                     <div class="form-group">
                                         <label class="md-no-float required" id="integration"
                                                data-translate="INTEGRATION"></label>
@@ -322,6 +322,34 @@
                                                    block-existed="vm.showFachstelleGS === true"></dv-bisher>
                                         <dv-error-messages input-id="integration"
                                                            for="vm.form.integration.$error"
+                                                           class="error"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Gruende Zusatzleistung-->
+                            <div class="row" ng-if="vm.gruendeZusatzleistungRequired()">
+                                <div class="col-xs-12 dv-input-container-question">
+                                    <div class="form-group">
+                                        <label class="md-no-float required" id="gruendeZusatzleistung"
+                                               data-translate="GRUENDE_ZUSATZLESITUNG"></label>
+                                        <dv-radio-container name="gruendeZusatzleistung" class="input-element"
+                                                            ng-required="vm.isFachstelleRequired()"
+                                                            items="vm.gruendeZusatzleistung"
+                                                            ng-model="vm.getPensumFachstelle().gruendeZusatzleistung"
+                                                            required
+                                                            dv-enable-element
+                                                            dv-enable-allowed-roles="vm.allowedRoles"
+                                                            dv-enable-expression="!vm.isGesuchReadonly()"
+                                                            aria-label="{{ 'GRUENDE_ZUSATZLESITUNG' | translate }}"
+                                                            aria-described-by="integration-error">
+                                        </dv-radio-container>
+                                        <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.gruendeZusatzleistung"
+                                                   ja="vm.getContainer().kindJA.pensumFachstelle.gruendeZusatzleistung"
+                                                   show-if-bisher-none="false"
+                                                   block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                        <dv-error-messages input-id="gruendeZusatzleistung"
+                                                           for="vm.form.gruendeZusatzleistung.$error"
                                                            class="error"></dv-error-messages>
                                     </div>
                                 </div>
@@ -357,7 +385,7 @@
                             </div>
 
                             <!--betreuungspensumFachstelle-->
-                            <div class="row">
+                            <div class="row" ng-if="!vm.isLuzern">
                                 <div class="col-sm-12 dv-input-container-small">
                                     <dv-input-container class="form-group">
                                         <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"
