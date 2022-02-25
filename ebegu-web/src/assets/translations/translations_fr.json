@@ -2796,5 +2796,7 @@
     "FINANZIELLE_SITUATION_AUFGETEILTE_WERTE": "Einige Werte, die in der Steuererklärung gemeinsam angegeben wurden, wurden 50:50 zwischen beiden Antragstellenden aufgeteilt. Dies betrifft folgende Werte:",
     "AUFTEILUNG_AENDERN": "Aufteilung ändern",
     "ERNEUT_VERSUCHEN": "Erneut versuchen",
+    "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION": "Anrechenbares Vermögen gemäss Selbstdeklaration",
+    "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION_HINT": "10% des deklarierten Vermögens gemäss Selbstdeklaration",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

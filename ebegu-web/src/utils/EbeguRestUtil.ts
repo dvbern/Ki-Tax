@@ -2068,6 +2068,12 @@ export class EbeguRestUtil {
                 finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGrGS1;
             finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGrGS2 =
                 finanzielleSituationResultateFromServer.massgebendesEinkVorAbzFamGrGS2;
+            finanzielleSituationResultateDTO.einkommenGS1 = finanzielleSituationResultateFromServer.einkommenGS1;
+            finanzielleSituationResultateDTO.einkommenGS2 = finanzielleSituationResultateFromServer.einkommenGS2;
+            finanzielleSituationResultateDTO.abzuegeGS1 = finanzielleSituationResultateFromServer.abzuegeGS1;
+            finanzielleSituationResultateDTO.abzuegeGS2 = finanzielleSituationResultateFromServer.abzuegeGS2;
+            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS1 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS1;
+            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS2 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS2;
             return finanzielleSituationResultateDTO;
         }
         return undefined;

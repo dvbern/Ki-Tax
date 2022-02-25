@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
@@ -135,8 +136,13 @@ public class FinanzielleSituationLuzernRechnerTest {
 			FinanzielleSituation finSit = new FinanzielleSituation();
 			finSit.setSelbstdeklaration(createSelbstdeklaration());
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
-			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(210573)));
+			var resultDTO = new FinanzielleSituationResultateDTO();
+
+			finSitRechner.setFinanzielleSituationParameters(gesuch, resultDTO, false);
+			assertThat(resultDTO.getEinkommenGS1(), is(BigDecimal.valueOf(241511)));
+			assertThat(resultDTO.getAbzuegeGS1(), is(BigDecimal.valueOf(40195)));
+			assertThat(resultDTO.getVermoegenXPercentAnrechenbarGS1(), is(BigDecimal.valueOf(9257)));
+			assertThat(resultDTO.getMassgebendesEinkVorAbzFamGrGS1(), is(BigDecimal.valueOf(210573)));
 		}
 	}
 
