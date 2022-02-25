@@ -13,17 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.no-margin {
-    margin: 0 !important;
-}
+import {IPromise} from 'angular';
+import IDialogService = angular.material.IDialogService;
 
-.finanzielle-situation {
-    .minus-margin {
-        margin-left: -5rem;
-        margin-right: -2.5rem;
+export class FinanzielleSituationAufteilungDialogController {
+
+    public static $inject = ['$mdDialog'];
+
+    public title: string;
+    public bemerkungen: string;
+
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+    ) {
     }
-}
 
-.pointer-cursor {
-    cursor: pointer;
+    public hide(): IPromise<any> {
+        return this.$mdDialog.hide();
+    }
 }

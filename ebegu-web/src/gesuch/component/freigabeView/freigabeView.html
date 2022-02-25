@@ -37,9 +37,14 @@
                               ng-click="vm.freigabeZurueckziehen()"></span>
                     </p>
                 </div>
-                <div class="col-md-12" ng-if="vm.isFreigabequittungAusstehend()">
+                <div class="col-md-12" ng-if="vm.isFreigabequittungAusstehend() && !vm.isVolksschule">
                     <p>
                         <span data-translate="FREIGABEQUITTUNG_AUSSTEHEND_TEXT"></span>
+                    </p>
+                </div>
+                <div class="col-md-12" ng-if="vm.isFreigabequittungAusstehend() && vm.isVolksschule">
+                    <p>
+                        <span data-translate="FREIGABEQUITTUNG_AUSSTEHEND_TEXT_VOLKSSCHULE"></span>
                     </p>
                 </div>
             </div>
@@ -105,7 +110,8 @@
                             <span data-translate="FREIGABEQUITTUNG_DRUCKEN_TITLE"></span>
                         </h2>
                         <hr class="header"/>
-                        <p ng-if="!vm.isMutation()" data-translate="FREIGABEQUITTUNG_DRUCKEN_TEXT"></p>
+                        <p ng-if="!vm.isMutation() && !vm.isVolksschule" data-translate="FREIGABEQUITTUNG_DRUCKEN_TEXT"></p>
+                        <p ng-if="!vm.isMutation() && vm.isVolksschule" data-translate="FREIGABEQUITTUNG_DRUCKEN_TEXT_VOLKSSCHULE"></p>
                         <p ng-if="vm.isMutation()" ng-bind-html="'FREIGABEQUITTUNG_MUTATION_TEXT' | translate"></p>
                     </div>
 

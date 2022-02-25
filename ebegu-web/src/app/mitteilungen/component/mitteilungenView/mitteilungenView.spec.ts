@@ -23,6 +23,7 @@ import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSFall} from '../../../../models/TSFall';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
@@ -78,6 +79,7 @@ describe('mitteilungenView', () => {
         besitzer.nachname = 'Romualdo Besitzer';
         fall.besitzer = besitzer;
         dossier.fall.besitzer = besitzer;
+        dossier.gemeinde = new TSGemeinde();
         verantwortlicher = new TSBenutzerNoDetails();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         dossier.verantwortlicherBG = verantwortlicher;

@@ -52,4 +52,9 @@ export class FinanzielleSituationLuzernService {
         this.berechnungsManager.calculateFinanzielleSituationTemp(model)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
+
+    public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahr: number): void {
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahr)
+            .then(result => this._massgebendesEinkommenStore.next(result));
+    }
 }

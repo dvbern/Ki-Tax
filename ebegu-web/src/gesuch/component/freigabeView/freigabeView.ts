@@ -63,6 +63,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public isFreigebenClicked: boolean = false;
     public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
+    public isVolksschule: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -78,6 +79,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
+        this.isVolksschule = this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
         this.initViewModel();
     }
 

@@ -25,6 +25,12 @@ export class TSFinanzielleSituationResultateDTO {
     private _massgebendesEinkVorAbzFamGrGS2: number;
     private _bruttolohnJahrGS1: number;
     private _bruttolohnJahrGS2: number;
+    private _einkommenGS1: number;
+    private _einkommenGS2: number;
+    private _abzuegeGS1: number;
+    private _abzuegeGS2: number;
+    private _vermoegenXPercentAnrechenbarGS1: number;
+    private _vermoegenXPercentAnrechenbarGS2: number;
 
     public constructor(
         geschaeftsgewinnDurchschnittGesuchsteller1?: number,
@@ -129,5 +135,53 @@ export class TSFinanzielleSituationResultateDTO {
 
     public set bruttolohnJahrGS2(value: number) {
         this._bruttolohnJahrGS2 = value;
+    }
+
+    public get einkommenGS1(): number {
+        return this._einkommenGS1;
+    }
+
+    public set einkommenGS1(value: number) {
+        this._einkommenGS1 = value;
+    }
+
+    public get einkommenGS2(): number {
+        return this._einkommenGS2;
+    }
+
+    public set einkommenGS2(value: number) {
+        this._einkommenGS2 = value;
+    }
+
+    public get abzuegeGS1(): number {
+        return this._abzuegeGS1;
+    }
+
+    public set abzuegeGS1(value: number) {
+        this._abzuegeGS1 = value;
+    }
+
+    public get abzuegeGS2(): number {
+        return this._abzuegeGS2;
+    }
+
+    public set abzuegeGS2(value: number) {
+        this._abzuegeGS2 = value;
+    }
+
+    public get vermoegenXPercentAnrechenbarGS1(): number {
+        return this._vermoegenXPercentAnrechenbarGS1;
+    }
+
+    public set vermoegenXPercentAnrechenbarGS1(value: number) {
+        this._vermoegenXPercentAnrechenbarGS1 = value;
+    }
+
+    public get vermoegenXPercentAnrechenbarGS2(): number {
+        return this._vermoegenXPercentAnrechenbarGS2;
+    }
+
+    public set vermoegenXPercentAnrechenbarGS2(value: number) {
+        this._vermoegenXPercentAnrechenbarGS2 = value;
     }
 }
