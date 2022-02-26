@@ -102,6 +102,7 @@
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
                                                ng-model="vm.getModel().geburtsdatum" ng-required="true"
                                                class="input-element"
+                                               ng-change="vm.geburtsdatumChanged()"
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                                 </dv-datepicker>
 

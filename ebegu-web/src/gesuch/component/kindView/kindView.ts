@@ -44,6 +44,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {FjkvKinderabzugExchangeService} from './fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -72,7 +73,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EinstellungRS',
         'GlobalCacheService',
         'AuthServiceRS',
-        'EbeguRestUtil'
+        'EbeguRestUtil',
+        'FjkvKinderabzugExchangeService'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -93,6 +95,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private kinderabzugTyp: TSKinderabzugTyp;
     public maxPensumAusserordentlicherAnspruch: string;
+    public submitted: boolean = false;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -108,6 +111,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -229,6 +233,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public save(): IPromise<TSKindContainer> {
         if (!this.isGesuchValid()) {
+            return undefined;
+        }
+        if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
+            this.fjkvKinderabzugExchangeService.form.onSubmit(null);
+            this.fjkvKinderabzugExchangeService.triggerFormValidation();
             return undefined;
         }
 
@@ -475,5 +484,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                     .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
                 this.maxPensumAusserordentlicherAnspruch = einstellung.value;
             });
+    }
+
+    public geburtsdatumChanged(): void {
+        this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
     }
 }

@@ -15,11 +15,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import * as moment from 'moment';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
 
 @Component({
     selector: 'dv-fkjv-kinderabzug',
@@ -27,20 +40,48 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
     styleUrls: ['./fkjv-kinderabzug.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FkjvKinderabzugComponent implements OnInit {
+export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public static readonly VOLLJAEHRIG_NUMBER_YEARS = 18;
+
+    @ViewChild(NgForm)
+    public readonly form: NgForm;
 
     @Input()
     public kindContainer: TSKindContainer;
 
+    private unsubscribe$: Subject<void> = new Subject<void>();
+    private kindIsOrGetsVolljaehrig: boolean = false;
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
     ) {
     }
 
     public ngOnInit(): void {
+        this.fkjvExchangeService.formValidationTriggered$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(() => {
+                this.cd.markForCheck();
+            });
+        this.fkjvExchangeService.geburtsdatumChanged$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(date => {
+                this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(date);
+                this.change();
+            });
+        this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
+        this.change();
+    }
+
+    public ngAfterViewInit(): void {
+        this.fkjvExchangeService.form = this.form;
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
     }
 
     public getModel(): TSKind | undefined {
@@ -67,7 +108,7 @@ export class FkjvKinderabzugComponent implements OnInit {
     }
 
     public obhutAlternierendAusuebenVisible(): boolean {
-        return !this.kindIsOrGetsVolljaehrig() && !this.getModel().isPflegekind;
+        return !this.kindIsOrGetsVolljaehrig && !this.getModel().isPflegekind;
     }
 
     public gemeinsamesGesuchVisible(): boolean {
@@ -75,7 +116,7 @@ export class FkjvKinderabzugComponent implements OnInit {
     }
 
     public inErstausbildungVisible(): boolean {
-        return this.kindIsOrGetsVolljaehrig() && !this.getModel().isPflegekind;
+        return this.kindIsOrGetsVolljaehrig && !this.getModel().isPflegekind;
     }
 
     public lebtKindAlternierendVisible(): boolean {
@@ -88,10 +129,6 @@ export class FkjvKinderabzugComponent implements OnInit {
 
     public alimenteBezahlenVisible(): boolean {
         return this.getModel().lebtKindAlternierend === false;
-    }
-
-    private kindIsOrGetsVolljaehrig(): boolean {
-        return this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
     }
 
     private deleteValuesOfHiddenQuestions(): void {
@@ -119,6 +156,9 @@ export class FkjvKinderabzugComponent implements OnInit {
     }
 
     private calculateKindIsOrGetsVolljaehrig(age: moment.Moment): boolean {
+        if (!age) {
+            return false;
+        }
         const gp = this.gesuchModelManager.getGesuchsperiode();
         const ageClone = age.clone();
         const dateWith18 = ageClone.add(FkjvKinderabzugComponent.VOLLJAEHRIG_NUMBER_YEARS, 'years');
