@@ -323,6 +323,14 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setPflegekind(this.getPflegekind());
+			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+			target.setInErstausbildung(this.getInErstausbildung());
+			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+			target.setAlimenteErhalten(this.getAlimenteErhalten());
+			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
@@ -331,6 +339,14 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setPflegekind(this.getPflegekind());
+			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+			target.setInErstausbildung(this.getInErstausbildung());
+			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+			target.setAlimenteErhalten(this.getAlimenteErhalten());
+			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
