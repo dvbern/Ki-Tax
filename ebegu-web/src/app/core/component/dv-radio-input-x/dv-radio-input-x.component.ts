@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
@@ -24,7 +24,7 @@ import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 @Component({
     selector: 'dv-radio-input-x',
     templateUrl: './dv-radio-input-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
     styleUrls: ['./dv-radio-input-x.component.less']
 })
@@ -42,16 +42,17 @@ export class DvRadioInputXComponent implements OnInit {
     @Input()
     public dvBisherValue: boolean;
 
+    @Input()
+    public required: boolean = false;
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-    @ViewChild(NgForm)
-    public readonly form: NgForm;
 
     // unique name for this radio
     public uniqueName: string;
 
     public constructor(
+        public readonly form: NgForm,
         private readonly gesuchModelManager: GesuchModelManager
     ) {
     }

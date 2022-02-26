@@ -15,99 +15,109 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form *ngIf="getModel()">
-    <div class="row">
-        <div class="col-sm-12 dv-input-container-medium">
-            <dv-checkbox-x
-                [label]="'KINDERABZUG_IS_PFLEGEKIND'"
-                [(model)]="getModel().isPflegekind"
-                (modelChange)="change()"
-                [dvBisherValue]="getModelGS()?.isPflegekind"
-            ></dv-checkbox-x>
-        </div>
-    </div>
-    <div class="row" *ngIf="pflegeEntschaedigungErhaltenVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
-                    [(model)]="getModel().pflegeEntschaedigungErhalten"
+<form role="form">
+    <ng-container *ngIf="getModel()">
+        <div class="row">
+            <div class="col-sm-12 dv-input-container-medium">
+                <dv-checkbox-x
+                    [label]="'KINDERABZUG_IS_PFLEGEKIND'"
+                    [(model)]="getModel().isPflegekind"
                     (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.pflegeEntschaedigungErhalten"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+                    [dvBisherValue]="getModelGS()?.isPflegekind"
+                ></dv-checkbox-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="obhutAlternierendAusuebenVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
-                    [(model)]="getModel().obhutAlternierendAusueben"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.obhutAlternierendAusueben"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="pflegeEntschaedigungErhaltenVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
+                        [(model)]="getModel().pflegeEntschaedigungErhalten"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.pflegeEntschaedigungErhalten"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="gemeinsamesGesuchVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
-                    [(model)]="getModel().gemeinsamesGesuch"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="obhutAlternierendAusuebenVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
+                        [(model)]="getModel().obhutAlternierendAusueben"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.obhutAlternierendAusueben"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="inErstausbildungVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
-                    [(model)]="getModel().inErstausbildung"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.inErstausbildung"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="gemeinsamesGesuchVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
+                        [(model)]="getModel().gemeinsamesGesuch"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="lebtKindAlternierendVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
-                    [(model)]="getModel().lebtKindAlternierend"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="inErstausbildungVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
+                        [(model)]="getModel().inErstausbildung"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.inErstausbildung"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="alimenteErhaltenVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_ALIMENTE_ERHALTEN'"
-                    [(model)]="getModel().alimenteErhalten"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.alimenteErhalten"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="lebtKindAlternierendVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
+                        [(model)]="getModel().lebtKindAlternierend"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
-    <div class="row" *ngIf="alimenteBezahlenVisible()">
-        <div class="col-xs-12">
-            <dv-radio-container-x>
-                <dv-radio-input-x
-                    [label]="'KINDERABZUG_ALIMENTE_BEZAHLEN'"
-                    [(model)]="getModel().alimenteBezahlen"
-                    (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.alimenteBezahlen"
-                ></dv-radio-input-x>
-            </dv-radio-container-x>
+        <div class="row" *ngIf="alimenteErhaltenVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_ALIMENTE_ERHALTEN'"
+                        [(model)]="getModel().alimenteErhalten"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.alimenteErhalten"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
         </div>
-    </div>
+        <div class="row" *ngIf="alimenteBezahlenVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'KINDERABZUG_ALIMENTE_BEZAHLEN'"
+                        [(model)]="getModel().alimenteBezahlen"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.alimenteBezahlen"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+    </ng-container>
+    <button type="submit">submit</button>
 </form>

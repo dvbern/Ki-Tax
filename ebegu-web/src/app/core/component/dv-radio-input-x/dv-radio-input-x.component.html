@@ -16,7 +16,7 @@
   -->
 
 <div class="margin-bottom-30">
-    <label [for]="uniqueName + '_id'" class="required ebegu-h1">
+    <label [for]="uniqueName + '_id'" class="ebegu-h1" [class.required]="required">
         {{label | translate}}
     </label>
     <mat-radio-group
@@ -26,7 +26,7 @@
         [id]="uniqueName + '_id'"
         #radio="ngModel"
         [disabled]="readonly"
-        required>
+        [required]="required">
         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
     </mat-radio-group>
