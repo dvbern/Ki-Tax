@@ -18,15 +18,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import * as moment from 'moment';
 import {of} from 'rxjs';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
+import {TSDateRange} from '../../../../models/types/TSDateRange';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
 
 import {FkjvKinderabzugComponent} from './fkjv-kinderabzug.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
-    GesuchModelManager.name, ['getGesuch']
+    GesuchModelManager.name, ['getGesuch', 'getGesuchsperiode']
 );
 const fkjvExchangeServiceSpy = jasmine.createSpyObj<FjkvKinderabzugExchangeService>(
     FjkvKinderabzugExchangeService.name,
@@ -51,6 +53,9 @@ describe('FkjvKinderabzugComponent', () => {
     beforeEach(() => {
         fkjvExchangeServiceSpy.getGeburtsdatumChanged$.and.returnValue(of(moment()));
         fkjvExchangeServiceSpy.getFormValidationTriggered$.and.returnValue(of(null));
+        const gp = new TSGesuchsperiode();
+        gp.gueltigkeit = new TSDateRange();
+        gesuchModelManagerSpy.getGesuchsperiode.and.returnValue(gp);
         fixture = TestBed.createComponent(FkjvKinderabzugComponent);
         component = fixture.componentInstance;
         component.kindContainer = new TSKindContainer();
