@@ -29,10 +29,14 @@ import {NgForm} from '@angular/forms';
 import * as moment from 'moment';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
+
+const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 
 @Component({
     selector: 'dv-fkjv-kinderabzug',
@@ -50,7 +54,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     @Input()
     public kindContainer: TSKindContainer;
 
-    private unsubscribe$: Subject<void> = new Subject<void>();
+    private readonly unsubscribe$: Subject<void> = new Subject<void>();
     private kindIsOrGetsVolljaehrig: boolean = false;
 
     public constructor(
@@ -61,17 +65,17 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public ngOnInit(): void {
-        this.fkjvExchangeService.formValidationTriggered$
+        this.fkjvExchangeService.getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => {
                 this.cd.markForCheck();
-            });
-        this.fkjvExchangeService.geburtsdatumChanged$
+            }, err => LOG.error(err));
+        this.fkjvExchangeService.getGeburtsdatumChanged$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(date => {
                 this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(date);
                 this.change();
-            });
+            }, err => LOG.error(err));
         this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
         this.change();
     }
@@ -128,7 +132,8 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public alimenteBezahlenVisible(): boolean {
-        return this.getModel().lebtKindAlternierend === false;
+        return EbeguUtil.isNotNullOrUndefined(this.getModel().lebtKindAlternierend)
+            && !this.getModel().lebtKindAlternierend;
     }
 
     private deleteValuesOfHiddenQuestions(): void {

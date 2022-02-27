@@ -24,8 +24,8 @@ import {Observable, Subject} from 'rxjs';
 export class FjkvKinderabzugExchangeService {
 
     private _form: NgForm;
-    private _geburtsdatumChanged: Subject<moment.Moment> = new Subject();
-    private _formValidationTriggered: Subject<void> = new Subject();
+    private readonly _geburtsdatumChanged: Subject<moment.Moment> = new Subject();
+    private readonly _formValidationTriggered: Subject<void> = new Subject();
 
     public get form(): NgForm {
         return this._form;
@@ -35,11 +35,11 @@ export class FjkvKinderabzugExchangeService {
         this._form = value;
     }
 
-    public get geburtsdatumChanged$(): Observable<moment.Moment> {
+    public getGeburtsdatumChanged$(): Observable<moment.Moment> {
         return this._geburtsdatumChanged.asObservable();
     }
 
-    public get formValidationTriggered$(): Observable<void> {
+    public getFormValidationTriggered$(): Observable<void> {
         return this._formValidationTriggered.asObservable();
     }
 

@@ -16,27 +16,49 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import * as moment from 'moment';
+import {of} from 'rxjs';
+import {TSKind} from '../../../../models/TSKind';
+import {TSKindContainer} from '../../../../models/TSKindContainer';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
 
 import {FkjvKinderabzugComponent} from './fkjv-kinderabzug.component';
 
+const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
+    GesuchModelManager.name, ['getGesuch']
+);
+const fkjvExchangeServiceSpy = jasmine.createSpyObj<FjkvKinderabzugExchangeService>(
+    FjkvKinderabzugExchangeService.name,
+    ['getFormValidationTriggered$', 'getGeburtsdatumChanged$']
+);
+
 describe('FkjvKinderabzugComponent', () => {
-  let component: FkjvKinderabzugComponent;
-  let fixture: ComponentFixture<FkjvKinderabzugComponent>;
+    let component: FkjvKinderabzugComponent;
+    let fixture: ComponentFixture<FkjvKinderabzugComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FkjvKinderabzugComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [FkjvKinderabzugComponent],
+            providers: [
+                {provide: FjkvKinderabzugExchangeService, useValue: fkjvExchangeServiceSpy},
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
+            ]
+        })
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FkjvKinderabzugComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fkjvExchangeServiceSpy.getGeburtsdatumChanged$.and.returnValue(of(moment()));
+        fkjvExchangeServiceSpy.getFormValidationTriggered$.and.returnValue(of(null));
+        fixture = TestBed.createComponent(FkjvKinderabzugComponent);
+        component = fixture.componentInstance;
+        component.kindContainer = new TSKindContainer();
+        component.kindContainer.kindJA = new TSKind();
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
