@@ -803,12 +803,8 @@ public class BGCalculationInput {
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		BigDecimal newAnspruchpnsumProzent = BigDecimal.ZERO;
-		if (this.anspruchspensumProzent != null) {
-			newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(this.anspruchspensumProzent);
-		}
-		if (other.anspruchspensumProzent != null) {
-			newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(other.anspruchspensumProzent);
-		}
+		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(this.anspruchspensumProzent);
+		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(other.anspruchspensumProzent);
 		this.anspruchspensumProzent = newAnspruchpnsumProzent;
 		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
 		this.einkommensjahr = other.einkommensjahr;
@@ -932,7 +928,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlNebenmahlzeiten, other.anzahlNebenmahlzeiten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == other.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(other.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(abzugFamGroesse, other.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, other.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, other.massgebendesEinkommenVorAbzugFamgr) &&
@@ -962,7 +958,7 @@ public class BGCalculationInput {
 			verguenstigungMahlzeitenBeantragt == that.verguenstigungMahlzeitenBeantragt &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == that.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(that.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(this.abzugFamGroesse, that.abzugFamGroesse) &&
 			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
