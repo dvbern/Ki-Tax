@@ -2804,5 +2804,6 @@
     "ENTLASTUNG_SCHUTZ_UNTERSTUETZUNG_KIND": "Entlastung, Schutz und dringliche Unterstützung eines Kindes; wenn beispielsweise die Entwicklung des Kindes gefährdet ist.",
     "SPRACHLICHE_INTEGRATION_DEUTSCHKENTNISSE": "Sprachliche Integration eines Kindes mit keinen oder geringen Deutschkenntnissen.",
     "UEBERBELASTUNG_ELTERNTEIL": "Physische oder psychische Überbelastung der Eltern oder des betreuenden Elternteils.",
+    "WARNING_SUPERADMIN_INSTITUTION_SCHLIESSEN_RUECKWIRKEND": "Das rückwirkende Schliessen einer Institution ist nur möglich, da Sie Superadmin sind.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
