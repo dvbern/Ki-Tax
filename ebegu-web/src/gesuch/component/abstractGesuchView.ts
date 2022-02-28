@@ -17,6 +17,7 @@ import {IController} from 'angular';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
+import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
@@ -183,7 +184,7 @@ export class AbstractGesuchViewController<T> implements IController {
                 || (
                     !this.isMutation()
                     && (isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
-                    || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde)
+                        || this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde)
                     && betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT
                 )
             )
@@ -220,6 +221,10 @@ export class AbstractGesuchViewController<T> implements IController {
 
     public getBasisjahrPlus2(): number | undefined {
         return this.getBasisjahrPlus(2);
+    }
+
+    public isFKJV(): boolean {
+        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 
     private getBasisjahrPlus(nbr: number): number | undefined {

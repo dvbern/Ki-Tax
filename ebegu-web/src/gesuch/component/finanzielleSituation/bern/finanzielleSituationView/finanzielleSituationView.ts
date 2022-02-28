@@ -20,7 +20,6 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
-import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
@@ -258,18 +257,14 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
-    public showAufteilung(): boolean {
-        return this.isSteueranfrageErfolgreich()
-        && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
-    }
-
-    public isFKJV(): boolean {
-        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
-    }
-
     public showWarningPartnerNichtGemeinsam(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
+    }
+
+    public showAufteilung(): boolean {
+        return this.isSteueranfrageErfolgreich()
+            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
     }
 
     public startAufteilung(): void {
