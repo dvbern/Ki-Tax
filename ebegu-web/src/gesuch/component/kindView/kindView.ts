@@ -82,7 +82,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'AuthServiceRS',
         'EbeguRestUtil',
         'MandantService',
-        'EbeguRestUtil',
         'FjkvKinderabzugExchangeService'
     ];
 
