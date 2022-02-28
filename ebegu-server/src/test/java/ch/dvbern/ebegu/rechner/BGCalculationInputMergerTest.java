@@ -306,6 +306,86 @@ public class BGCalculationInputMergerTest {
 
 	}
 
+	@Test
+	public void test_minimalErforderlichesPensumNichtUnterschritenInOneZeitabschnitt()  {
+		bgCalculationInput1.setAnspruchspensumProzent(80);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(40, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertFalse(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumNichtUnterschritenInBothZeitabschnitt()  {
+		bgCalculationInput1.setAnspruchspensumProzent(80);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(60);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(70, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertFalse(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumUnterschriten()  {
+		bgCalculationInput1.setAnspruchspensumProzent(10);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(5, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertTrue(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumUnterschritenOnlyInTotal()  {
+		bgCalculationInput1.setAnspruchspensumProzent(20);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(10, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertTrue(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
 	@Before
 	public void init() {
 		bgCalculationInput1 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
