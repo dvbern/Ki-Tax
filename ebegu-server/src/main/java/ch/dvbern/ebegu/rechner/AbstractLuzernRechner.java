@@ -44,7 +44,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal z;
 
-	private BigDecimal vollkosten;
 	private BigDecimal selbstBehaltElternProzent;
 	private BigDecimal geschwisternBonus2Kind;
 	private BigDecimal geschwisternBonus3Kind;
@@ -68,7 +67,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 			this.inputZuschlagErhoeterBeterungsbedarf = input.getBesondereBeduerfnisseZuschlag();
 		}
 
-		this.vollkosten = calculateVollkosten();
+		BigDecimal vollkostenGekuerzt = calculateVollkosten();
 		this.selbstBehaltElternProzent = calculateSelbstbehaltElternProzent();
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
 		this.geschwisternBonus3Kind = calculateGeschwisternBonus3Kind();
@@ -82,7 +81,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinProMonatVorZuschlagUndSelbstbehalt = EXACT.multiply(gutscheinProTagVorZuschlagUndSelbstbehalt,
 			verfuegteZeiteinheit);
 
-		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkosten,gutscheinProMonatVorZuschlagUndSelbstbehalt);
+		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkostenGekuerzt,gutscheinProMonatVorZuschlagUndSelbstbehalt);
 		BigDecimal minimalerSelbstbehalt = EXACT.multiply(getMinimalTarif(), verfuegteZeiteinheit);
 		BigDecimal selbstbehaltDerEltern = calculateEffektiverSelbstbehaltEltern(differenzVollkostenUndGutschein, minimalerSelbstbehalt);
 
@@ -96,7 +95,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 
-		result.setVollkosten(this.vollkosten);
+		result.setVollkosten(vollkostenGekuerzt);
 		result.setMinimalerElternbeitrag(minimalerSelbstbehalt);
 		result.setElternbeitrag(selbstbehaltDerEltern);
 		result.setMinimalerElternbeitragGekuerzt(minimalerSelbstbehalt);
