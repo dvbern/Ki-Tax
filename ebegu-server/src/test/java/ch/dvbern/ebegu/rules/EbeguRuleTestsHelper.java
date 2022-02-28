@@ -273,7 +273,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(MIN_ERWERBSPENSUM_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
 		einstellungenMap.addEinstellung(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM, "10", gesuchsperiode);
-		einstellungenMap.addEinstellung(DAUER_BABYTARIF, "12	", gesuchsperiode);
+		einstellungenMap.addEinstellung(DAUER_BABYTARIF, "12", gesuchsperiode);
 		// Gemaess ASIV: Wir nehmen eben den ASIV Wert!
 		einstellungenMap.addEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
 		// Gemaess ASIV: Wir nehmen eben den ASIV Wert!
