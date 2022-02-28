@@ -44,6 +44,7 @@ import {VeranlagungSolothurnComponent} from './component/finanzielleSituation/so
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenTableComponent} from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
+import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 
 @NgModule({
     imports: [
@@ -78,6 +79,8 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
         SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
+        MassgebendesEinkommenComponent,
+        FkjvKinderabzugComponent,
         MassgebendesEinkommenComponent,
         FinanzielleSituationAufteilungComponent,
         AufteilungComponent,

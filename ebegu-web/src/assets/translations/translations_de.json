@@ -2813,5 +2813,13 @@
     "SPRACHLICHE_INTEGRATION_DEUTSCHKENTNISSE": "Sprachliche Integration eines Kindes mit keinen oder geringen Deutschkenntnissen.",
     "UEBERBELASTUNG_ELTERNTEIL": "Physische oder psychische Überbelastung der Eltern oder des betreuenden Elternteils.",
     "WARNING_SUPERADMIN_INSTITUTION_SCHLIESSEN_RUECKWIRKEND": "Das rückwirkende Schliessen einer Institution ist nur möglich, da Sie Superadmin sind.",
+    "KINDERABZUG_IS_PFLEGEKIND": "Das Kind ist ein Pflegekind",
+    "KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN": "Erhalten die Gesuchsteller für das Kind eine Pflegeentschädigung?",
+    "KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN": "Wird die Obhut über das Kind alternierend ausgeübt?",
+    "KINDERABZUG_GEMEINSAMES_GESUCH": "Stellen die Erziehungsberechtigten für dieses Kind gemeinsam ein Gesuch?",
+    "KINDERABZUG_IN_ERSTAUSBILDUNG": "Befindet sich das Kind nach 18ten Geburtstag in einer beruflichen oder schulischen Erstausbildung und ist unterstützungsbedürftig?",
+    "KINDERABZUG_LEBT_KIND_ALTERNIEREND": "Lebt das Kind mind. alternierend bei Ihnen?",
+    "KINDERABZUG_ALIMENTE_ERHALTEN": "Erhalten Sie Alimente für das Kind?",
+    "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Alimente für das Kind",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

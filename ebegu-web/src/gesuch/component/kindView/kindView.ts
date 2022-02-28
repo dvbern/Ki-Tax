@@ -49,6 +49,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {FjkvKinderabzugExchangeService} from './fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -80,7 +81,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'GlobalCacheService',
         'AuthServiceRS',
         'EbeguRestUtil',
-        'MandantService'
+        'MandantService',
+        'FjkvKinderabzugExchangeService'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -104,6 +106,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public maxPensumAusserordentlicherAnspruch: string;
     // When migrating to ng, use observable in template
     private isLuzern: boolean;
+    public submitted: boolean = false;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -119,7 +122,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -258,11 +262,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.isGesuchValid()) {
             return undefined;
         }
-
-        if (!this.form.$dirty) {
-            // If there are no changes in form we don't need anything to update on Server and we could return the
-            // promise immediately
-            return this.$q.when(this.model);
+        if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
+            this.fjkvKinderabzugExchangeService.form.onSubmit(null);
+            this.fjkvKinderabzugExchangeService.triggerFormValidation();
+            return undefined;
         }
 
         this.getModel().zukunftigeGeburtsdatum = this.isGeburtsdatumInZunkunft();
@@ -390,8 +393,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.showAusAsylwesen() && this.getModel().ausAsylwesen;
     }
 
-    public showKinderabzugFrage(): boolean {
-        return this.kinderabzugTyp !== TSKinderabzugTyp.KEINE;
+    public showAsivKinderabzug(): boolean {
+        return this.kinderabzugTyp === TSKinderabzugTyp.ASIV;
+    }
+
+    public showFkjvKinderabzug(): boolean {
+        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV && this.getModel()?.geburtsdatum?.isValid();
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {
@@ -509,5 +516,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public gruendeZusatzleistungRequired(): boolean {
         return this.getModel().pensumFachstelle.integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
+    }
+
+    public geburtsdatumChanged(): void {
+        this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
     }
 }

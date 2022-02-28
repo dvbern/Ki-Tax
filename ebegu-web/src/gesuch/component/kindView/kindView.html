@@ -102,6 +102,7 @@
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
                                                ng-model="vm.getModel().geburtsdatum" ng-required="true"
                                                class="input-element"
+                                               ng-change="vm.geburtsdatumChanged()"
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                                 </dv-datepicker>
 
@@ -121,60 +122,67 @@
                         </div>
                     </div>
 
-                    <!-- Kinderabzug: Erstes Halbjahr -->
-                    <div class="row" ng-show="vm.showKinderabzugFrage()">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <dv-input-container class="form-group">
+                    <ng-container ng-if="vm.showAsivKinderabzug()">
+                        <!-- Kinderabzug: Erstes Halbjahr -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <dv-input-container class="form-group">
                                 <span class="ebegu-h1 required">
                                     <span data-translate="KINDERABZUG"
                                           data-translate-value-jahr="{{vm.getBasisjahrPlus1()}}"></span>
                                     <dv-tooltip input-id="kinderabzugErstesHalbjahr"
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
-                                <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
-                                                    ng-required="vm.showKinderabzugFrage()"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly()"
-                                                    class="input-element" items="vm.kinderabzugValues"
-                                                    aria-label="{{ 'KINDERABZUG' |translate}}"
-                                                    aria-described-by="kinderabzugErstesHalbjahr-error">
-                                </dv-radio-container>
-                                <dv-bisher gs="vm.getContainer().kindGS.kinderabzugErstesHalbjahr"
-                                           ja="vm.getContainer().kindJA.kinderabzugErstesHalbjahr"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
-                                <dv-error-messages input-id="kinderabzugErstesHalbjahr" for="vm.form.kinderabzugErstesHalbjahr.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
+                                    <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
+                                                        ng-required="vm.showKinderabzugFrage()"
+                                                        dv-enable-element
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly()"
+                                                        class="input-element" items="vm.kinderabzugValues"
+                                                        aria-label="{{ 'KINDERABZUG' |translate}}"
+                                                        aria-described-by="kinderabzugErstesHalbjahr-error">
+                                    </dv-radio-container>
+                                    <dv-bisher gs="vm.getContainer().kindGS.kinderabzugErstesHalbjahr"
+                                               ja="vm.getContainer().kindJA.kinderabzugErstesHalbjahr"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
+                                    <dv-error-messages input-id="kinderabzugErstesHalbjahr" for="vm.form.kinderabzugErstesHalbjahr.$error"
+                                                       class="error"></dv-error-messages>
+                                </dv-input-container>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Kinderabzug: Zweites Halbjahr -->
-                    <div class="row" ng-show="vm.showKinderabzugFrage()">
-                        <div class="col-xs-12 dv-input-container-question">
-                            <dv-input-container class="form-group">
+                        <!-- Kinderabzug: Zweites Halbjahr -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <dv-input-container class="form-group">
                                 <span class="ebegu-h1 required">
                                     <span data-translate="KINDERABZUG"
                                           data-translate-value-jahr="{{vm.getBasisjahrPlus2()}}"></span>
                                     <dv-tooltip input-id="kinderabzugZweitesHalbjahr"
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
-                                <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
-                                                    ng-required="vm.showKinderabzugFrage()"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly()"
-                                                    class="input-element" items="vm.kinderabzugValues"
-                                                    aria-label="{{ 'KINDERABZUG' |translate}}"
-                                                    aria-described-by="kinderabzugZweitesHalbjahr-error">
-                                </dv-radio-container>
-                                <dv-bisher gs="vm.getContainer().kindGS.kinderabzugZweitesHalbjahr"
-                                           ja="vm.getContainer().kindJA.kinderabzugZweitesHalbjahr"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
-                                <dv-error-messages input-id="kinderabzugZweitesHalbjahr" for="vm.form.kinderabzugZweitesHalbjahr.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
+                                    <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
+                                                        ng-required="vm.showKinderabzugFrage()"
+                                                        dv-enable-element
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly()"
+                                                        class="input-element" items="vm.kinderabzugValues"
+                                                        aria-label="{{ 'KINDERABZUG' |translate}}"
+                                                        aria-described-by="kinderabzugZweitesHalbjahr-error">
+                                    </dv-radio-container>
+                                    <dv-bisher gs="vm.getContainer().kindGS.kinderabzugZweitesHalbjahr"
+                                               ja="vm.getContainer().kindJA.kinderabzugZweitesHalbjahr"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
+                                    <dv-error-messages input-id="kinderabzugZweitesHalbjahr" for="vm.form.kinderabzugZweitesHalbjahr.$error"
+                                                       class="error"></dv-error-messages>
+                                </dv-input-container>
+                            </div>
                         </div>
-                    </div>
+                    </ng-container>
+
+                    <dv-fkjv-kinderabzug
+                        ng-if="vm.showFkjvKinderabzug()"
+                        [kind-container]="vm.getContainer()"
+                    ></dv-fkjv-kinderabzug>
 
                     <!--familienErgaenzendeBetreuung-->
                     <div class="row">

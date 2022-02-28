@@ -24,6 +24,14 @@ export class TSKind extends TSAbstractPersonEntity {
 
     private _kinderabzugErstesHalbjahr: TSKinderabzug;
     private _kinderabzugZweitesHalbjahr: TSKinderabzug;
+    private _isPflegekind: boolean;
+    private _pflegeEntschaedigungErhalten: boolean;
+    private _obhutAlternierendAusueben: boolean;
+    private _gemeinsamesGesuch: boolean;
+    private _inErstausbildung: boolean;
+    private _lebtKindAlternierend: boolean;
+    private _alimenteErhalten: boolean;
+    private _alimenteBezahlen: boolean;
     private _familienErgaenzendeBetreuung: boolean;
     private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
@@ -53,6 +61,70 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set kinderabzugZweitesHalbjahr(value: TSKinderabzug) {
         this._kinderabzugZweitesHalbjahr = value;
+    }
+
+    public get isPflegekind(): boolean {
+        return this._isPflegekind;
+    }
+
+    public set isPflegekind(value: boolean) {
+        this._isPflegekind = value;
+    }
+
+    public get pflegeEntschaedigungErhalten(): boolean {
+        return this._pflegeEntschaedigungErhalten;
+    }
+
+    public set pflegeEntschaedigungErhalten(value: boolean) {
+        this._pflegeEntschaedigungErhalten = value;
+    }
+
+    public get obhutAlternierendAusueben(): boolean {
+        return this._obhutAlternierendAusueben;
+    }
+
+    public set obhutAlternierendAusueben(value: boolean) {
+        this._obhutAlternierendAusueben = value;
+    }
+
+    public get gemeinsamesGesuch(): boolean {
+        return this._gemeinsamesGesuch;
+    }
+
+    public set gemeinsamesGesuch(value: boolean) {
+        this._gemeinsamesGesuch = value;
+    }
+
+    public get inErstausbildung(): boolean {
+        return this._inErstausbildung;
+    }
+
+    public set inErstausbildung(value: boolean) {
+        this._inErstausbildung = value;
+    }
+
+    public get lebtKindAlternierend(): boolean {
+        return this._lebtKindAlternierend;
+    }
+
+    public set lebtKindAlternierend(value: boolean) {
+        this._lebtKindAlternierend = value;
+    }
+
+    public get alimenteErhalten(): boolean {
+        return this._alimenteErhalten;
+    }
+
+    public set alimenteErhalten(value: boolean) {
+        this._alimenteErhalten = value;
+    }
+
+    public get alimenteBezahlen(): boolean {
+        return this._alimenteBezahlen;
+    }
+
+    public set alimenteBezahlen(value: boolean) {
+        this._alimenteBezahlen = value;
     }
 
     public get familienErgaenzendeBetreuung(): boolean {
