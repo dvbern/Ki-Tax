@@ -314,7 +314,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
-	public JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
+	public JaxExternalAuthAccessElement createLogin(
+		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser, @QueryParam("tenant") @Nullable String mandantId) {
 		requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
 		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
@@ -323,8 +324,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
-		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser,
-				mandantService.getMandantBern());
+
+		Mandant mandant;
+		if (mandantId != null) {
+			mandant = mandantService.findMandant(mandantId).orElse(mandantService.getMandantBern());
+		} else {
+			mandant = mandantService.getMandantBern();
+		}
+
+		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser, mandant);
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
 	}
 

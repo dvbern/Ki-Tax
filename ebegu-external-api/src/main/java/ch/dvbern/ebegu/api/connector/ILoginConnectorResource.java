@@ -16,8 +16,10 @@
 package ch.dvbern.ebegu.api.connector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -103,11 +105,13 @@ public interface ILoginConnectorResource {
 	 * This service exists to allow external login modules to create logins in Ki-Tax
 	 *
 	 * @param jaxExtAuthUser the login entry to create
+	 * @param mandantId
 	 * @return Object containing the information that is relevant for the Cookie
 	 */
 	@POST
 	@Path("/extauth")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser);
+	JaxExternalAuthAccessElement createLogin(
+		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser, @QueryParam("tenant") @Nullable String mandantId);
 }
