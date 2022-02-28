@@ -2040,7 +2040,7 @@
     "ZUSAETZLICHE_VERGUENSTIGUNG_GEMEINDE_TFO_VALUE_READONLY": "Zusätzlicher Gutschein pro Stunde bei TFOs: {{value}} CHF",
     "ZUSAETZLICHER_GUTSCHEIN_KITA_BIS_UND_MIT": "Zusätzlicher Gutschein bei Kitas anbieten bis und mit",
     "ZUSAETZLICHER_GUTSCHEIN_TFO_BIS_UND_MIT": "Zusätzlicher Gutschein bei TFOs anbieten bis und mit",
-    "ZUSAETZLICHER_BABYBEITRAG_GEMEINDE": "Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monaten",
+    "ZUSAETZLICHER_BABYBEITRAG_GEMEINDE": "Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis {{monate}} Monaten",
     "ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA": "Zusätzlicher maximaler Gutschein in CHF pro Tag bei Kitas",
     "ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA_READONLY": "Zusätzlicher maximaler Gutschein pro Tag bei Kitas: {{value}} CHF",
     "ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO": "Zusätzlicher maximaler Gutschein in CHF pro Stunde bei TFOs",

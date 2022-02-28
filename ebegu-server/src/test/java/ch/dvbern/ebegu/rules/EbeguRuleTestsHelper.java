@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
@@ -272,6 +273,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(MIN_ERWERBSPENSUM_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
 		einstellungenMap.addEinstellung(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM, "10", gesuchsperiode);
+		einstellungenMap.addEinstellung(DAUER_BABYTARIF, "12	", gesuchsperiode);
 		// Gemaess ASIV: Wir nehmen eben den ASIV Wert!
 		einstellungenMap.addEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
 		// Gemaess ASIV: Wir nehmen eben den ASIV Wert!
