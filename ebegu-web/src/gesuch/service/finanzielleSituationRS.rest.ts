@@ -18,6 +18,7 @@ import {IHttpService} from 'angular';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
+import {TSFinanzielleSituationAufteilungDTO} from '../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
@@ -144,4 +145,10 @@ export class FinanzielleSituationRS {
                         response.data);
             });
         }
+
+    public updateFromAufteilung(aufteilungDTO: TSFinanzielleSituationAufteilungDTO, gesuch: TSGesuch): IPromise<any> {
+        const url = `${this.serviceURL}/updateFromAufteilung/${encodeURIComponent(gesuch.id)}`;
+        const restObj = this.ebeguRestUtil.aufteilungDTOToRestObject(aufteilungDTO);
+        return this.$http.put(url, restObj);
+    }
 }

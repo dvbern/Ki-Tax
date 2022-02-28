@@ -98,7 +98,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten.
 	 */
-	private void setEinkommensverschlechterungParameters(
+	public void setEinkommensverschlechterungParameters(
 		@Nonnull Gesuch gesuch, int basisJahrPlus,
 		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {
 		Einkommensverschlechterung einkommensverschlechterungGS1Bjp1 =
@@ -187,7 +187,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * @return Berechnet ob die Einkommensverschlechterung mehr als 20 % gegenueber dem vorjahr betraegt, gibt true
 	 * zurueckk wen ja; false sonst
 	 */
-	private boolean acceptEKV(
+	public boolean acceptEKV(
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
 		BigDecimal minimumEKV) {
@@ -502,7 +502,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
-	private Einkommensverschlechterung getEinkommensverschlechterungGS(
+	protected Einkommensverschlechterung getEinkommensverschlechterungGS(
 		@Nullable GesuchstellerContainer gesuchsteller,
 		int basisJahrPlus) {
 		if (gesuchsteller != null && gesuchsteller.getEinkommensverschlechterungContainer() != null) {

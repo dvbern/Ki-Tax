@@ -17,6 +17,7 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../hybridTools/translationsMock';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
@@ -52,6 +53,8 @@ describe('wizardStepManager', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
+    beforeEach(angular.mock.module(translationsMock));
+
     beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');
         wizardStepRS = $injector.get('WizardStepRS');
@@ -84,7 +87,7 @@ describe('wizardStepManager', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            const expectedSteps = 16;
+            const expectedSteps = 18;
             expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -98,11 +101,15 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
             expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.DOKUMENTE);
+            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
             // tslint:disable-next-line:no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
             // tslint:disable-next-line:no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.DOKUMENTE);
+            // tslint:disable-next-line:no-magic-numbers
+            expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.FREIGABE);
+            // tslint:disable-next-line:no-magic-numbers
+            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {

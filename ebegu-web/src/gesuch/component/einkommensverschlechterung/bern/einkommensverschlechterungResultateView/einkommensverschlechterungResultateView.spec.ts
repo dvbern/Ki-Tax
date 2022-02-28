@@ -14,34 +14,40 @@
  */
 
 import {waitForAsync} from '@angular/core/testing';
-import {IComponentControllerService, IScope} from 'angular';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import {TSEinkommensverschlechterung} from '../../../models/TSEinkommensverschlechterung';
-import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
-import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
-import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
-import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
+import {TSCreationAction} from '../../../../../models/enums/TSCreationAction';
+import {TSEingangsart} from '../../../../../models/enums/TSEingangsart';
+import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
-describe('einkommensverschlechterungView', () => {
+// tslint:disable:no-magic-numbers
+describe('einkommensverschlechterungResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
+    let berechnungsManager: BerechnungsManager;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: IScope;
-    let $componentController: IComponentControllerService;
+    let scope: angular.IScope;
+    let $componentController: any;
+    let $rootScope: angular.IScope;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
-        const $rootScope = $injector.get('$rootScope');
+        berechnungsManager = $injector.get('BerechnungsManager');
+        $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
+        const $q = $injector.get('$q');
+
+        spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue($q.when({}));
+
     }));
 
     beforeEach(waitForAsync(() => {
@@ -49,21 +55,13 @@ describe('einkommensverschlechterungView', () => {
             gesuchModelManager.initFamiliensituation();
             gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
             gesuchModelManager.getGesuch().gesuchsteller2 = new TSGesuchstellerContainer(new TSGesuchsteller());
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer =
-                new TSEinkommensverschlechterungContainer();
-            gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
-                new TSEinkommensverschlechterung();
         });
 
     }));
 
     it('should be defined', () => {
-        /*
-         To initialise your component controller you have to setup your (mock) bindings and
-         pass them to $componentController.
-         */
         const bindings = {};
-        component = $componentController('einkommensverschlechterungView', {$scope: scope}, bindings);
+        component = $componentController('einkommensverschlechterungResultateView', {$scope: scope}, bindings);
         expect(component).toBeDefined();
     });
 

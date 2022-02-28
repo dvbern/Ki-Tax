@@ -13,22 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- Workaround um den Async angular-translate loader in Unit Tests durch einen
- loader zu ersetzten, der keine REST requests macht
- https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
- */
+import {IPromise} from 'angular';
+import IDialogService = angular.material.IDialogService;
 
-// tslint:disable:no-commented-code
-/*
-beforeEach(angular.mock.module('ebeguWeb.core',
-function ($provide: IProvideService, $translateProvider: ITranslateProvider) {
+export class FinanzielleSituationAufteilungDialogController {
 
-    $provide.factory('customLoader', function ($q: IQService) {
-        return function () {
-            return $q.resolve({});
-        };
-    });
-    $translateProvider.useLoader('customLoader');
-}));
-*/
+    public static $inject = ['$mdDialog'];
+
+    public title: string;
+    public bemerkungen: string;
+
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+    ) {
+    }
+
+    public hide(): IPromise<any> {
+        return this.$mdDialog.hide();
+    }
+}

@@ -16,6 +16,7 @@
 import * as angular from 'angular';
 import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
@@ -36,6 +37,8 @@ describe('erwerbspensumListView', () => {
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     let component: ErwerbspensumListViewController;
     let scope: IScope;

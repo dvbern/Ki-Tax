@@ -243,6 +243,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EnableElementDirective,
         DvInputLabelFieldComponent,
         DvValueinputXComponent,
+        EbeguNumberPipe,
+        DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent
     ],

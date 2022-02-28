@@ -403,8 +403,8 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	}
 
 	public FinanzielleSituationSelbstdeklaration copySelbsteklaration(
-			FinanzielleSituationSelbstdeklaration target,
-			AntragCopyType copyType) {
+		FinanzielleSituationSelbstdeklaration target,
+		AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
@@ -492,4 +492,31 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		);
 	}
 
+	public boolean isVollstaendig() {
+		return einkunftErwerb != null
+			&& einkunftVersicherung != null
+			&& einkunftAusgleichskassen != null
+			&& einkunftWertschriften != null
+			&& einkunftUnterhaltsbeitragSteuerpflichtige != null
+			&& einkunftUnterhaltsbeitragKinder != null
+			&& einkunftUeberige != null
+			&& einkunftLiegenschaften != null
+			&& abzugBerufsauslagen != null
+			&& abzugUnterhaltsbeitragEhepartner != null
+			&& abzugUnterhaltsbeitragKinder != null
+			&& abzugRentenleistungen != null
+			&& abzugSaeule3A != null
+			&& abzugVersicherungspraemien != null
+			&& abzugKrankheitsUnfallKosten != null
+			&& abzugFreiweiligeZuwendungPartien != null
+			&& abzugKinderVorschule != null
+			&& abzugKinderSchule != null
+			&& abzugKinderAuswaertigerAufenthalt != null
+			&& abzugEigenbetreuung != null
+			&& abzugFremdbetreuung != null
+			&& abzugErwerbsunfaehigePersonen != null
+			&& vermoegen != null
+			&& abzugSteuerfreierBetragErwachsene != null
+			&& abzugSteuerfreierBetragKinder != null;
+	}
 }

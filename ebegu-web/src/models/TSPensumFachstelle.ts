@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSGruendeZusatzleistung} from './enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from './enums/TSIntegrationTyp';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
@@ -21,6 +22,7 @@ export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     private _fachstelle: TSFachstelle;
     private _integrationTyp: TSIntegrationTyp;
+    private _gruendeZusatzleistung: TSGruendeZusatzleistung;
 
     public constructor() {
         super();
@@ -40,5 +42,13 @@ export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     public set integrationTyp(value: TSIntegrationTyp) {
         this._integrationTyp = value;
+    }
+
+    public get gruendeZusatzleistung(): TSGruendeZusatzleistung {
+        return this._gruendeZusatzleistung;
+    }
+
+    public set gruendeZusatzleistung(value: TSGruendeZusatzleistung) {
+        this._gruendeZusatzleistung = value;
     }
 }

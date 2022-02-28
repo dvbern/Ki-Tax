@@ -708,7 +708,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.GESUCHSTELLER).getId());
 		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(),
 				getFinSitWizardStepName(mutation)).getId());
-		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.EINKOMMENSVERSCHLECHTERUNG).getId());
+		setWizardStepOkayAndVerfuegbar(wizardStepService.findWizardStepFromGesuch(mutation.getId(), wizardStepService.getEKVWizardStepNameForGesuch(mutation)).getId());
 		return mutation;
 	}
 
@@ -813,18 +813,19 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	private void saveEinkommensverschlechterung(@Nonnull Gesuch gesuch,
 		@Nonnull List<WizardStep> wizardStepsFromGesuch) {
+		var ekvStepName = wizardStepService.getEKVWizardStepNameForGesuch(gesuch);
 		if (gesuch.getEinkommensverschlechterungInfoContainer() != null) {
-			setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.EINKOMMENSVERSCHLECHTERUNG, WizardStepStatus.IN_BEARBEITUNG);
+			setWizardStepInStatus(wizardStepsFromGesuch, ekvStepName, WizardStepStatus.IN_BEARBEITUNG);
 			einkommensverschlechterungInfoService.createEinkommensverschlechterungInfo(gesuch.getEinkommensverschlechterungInfoContainer());
 		}
 		if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
-			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer(), gesuch.getId());
+			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer(), gesuch);
 		}
 		if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer(), gesuch.getId());
+			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer(), gesuch);
 		}
-		setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.EINKOMMENSVERSCHLECHTERUNG, WizardStepStatus.OK);
-		setWizardStepVerfuegbar(wizardStepsFromGesuch, WizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+		setWizardStepInStatus(wizardStepsFromGesuch, ekvStepName, WizardStepStatus.OK);
+		setWizardStepVerfuegbar(wizardStepsFromGesuch, ekvStepName);
 	}
 
 	private void saveFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {

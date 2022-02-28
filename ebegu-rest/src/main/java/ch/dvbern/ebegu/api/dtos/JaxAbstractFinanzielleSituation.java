@@ -79,6 +79,9 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 	private BigDecimal abzugSchuldzinsen;
 
 	@Nullable
+	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
+
+	@Nullable
 	public BigDecimal getNettolohn() {
 		return nettolohn;
 	}
@@ -246,5 +249,14 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
 		this.abzugSchuldzinsen = abzugSchuldzinsen;
+	}
+
+	@Nullable
+	public JaxFinanzielleSituationSelbstdeklaration getSelbstdeklaration() {
+		return selbstdeklaration;
+	}
+
+	public void setSelbstdeklaration(@Nullable JaxFinanzielleSituationSelbstdeklaration selbstdeklaration) {
+		this.selbstdeklaration = selbstdeklaration;
 	}
 }

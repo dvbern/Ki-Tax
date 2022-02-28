@@ -23,4 +23,5 @@ package ch.dvbern.ebegu.enums;
 public enum IntegrationTyp {
 	SOZIALE_INTEGRATION,
 	SPRACHLICHE_INTEGRATION,
+	ZUSATZLEISTUNG_INTEGRATION,
 }

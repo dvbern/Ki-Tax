@@ -17,8 +17,11 @@
     <div class="row view-title" ng-if="vm.getCurrentMitteilung()">
         <div class="col-xs-12 col-md-10 col-md-offset-1">
             <h1>
-                <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt()"
+                <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt() && !vm.isVolksschuleGemeinde"
                       data-translate="NEUE_MITTEILUNG_GEMEINDE"
+                      data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
+                <span ng-if="!vm.betreuung && !vm.isCurrentUserAmt() && vm.isVolksschuleGemeinde"
+                      data-translate="NEUE_MITTEILUNG_VOLKSSCHULE"
                       data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
                 <span ng-if="!vm.betreuung && vm.isCurrentUserAmt() && !vm.isCurrentMitteilungSozialdienst()"
                       data-translate="NEUE_MITTEILUNG"></span>

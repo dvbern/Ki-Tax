@@ -21,12 +21,17 @@ import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWa
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
+import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
+import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
+import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
+import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/infoma-fields/infoma-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
-import {SelbstdeklarationComponent} from './component/finanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
+import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
@@ -59,6 +64,8 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         InternePendenzenTableComponent,
         FinanzielleSituationStartViewLuzernComponent,
         FinanzielleSituationStartSolothurnComponent,
+        EinkommensverschlechterungLuzernViewComponent,
+        EinkommensverschlechterungLuzernResultateViewComponent,
         DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
@@ -73,7 +80,11 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         AngabenGs1Component,
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
-        FkjvKinderabzugComponent
+        FkjvKinderabzugComponent,
+        MassgebendesEinkommenComponent,
+        FinanzielleSituationAufteilungComponent,
+        AufteilungComponent,
+        SteuerabfrageResponseHintsComponent
     ],
     exports: [
         DvSwitchComponent,

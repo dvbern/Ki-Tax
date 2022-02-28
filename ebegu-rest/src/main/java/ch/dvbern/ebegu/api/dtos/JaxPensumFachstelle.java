@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.GruendeZusatzleistung;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 
 /**
@@ -38,6 +39,9 @@ public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 	private IntegrationTyp integrationTyp;
 
 	@Nullable
+	private GruendeZusatzleistung gruendeZusatzleistung;
+
+	@Nullable
 	public JaxFachstelle getFachstelle() {
 		return fachstelle;
 	}
@@ -52,5 +56,14 @@ public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 
 	public void setIntegrationTyp(IntegrationTyp integrationTyp) {
 		this.integrationTyp = integrationTyp;
+	}
+
+	@Nullable
+	public GruendeZusatzleistung getGruendeZusatzleistung() {
+		return gruendeZusatzleistung;
+	}
+
+	public void setGruendeZusatzleistung(@Nullable GruendeZusatzleistung gruendeZusatzleistung) {
+		this.gruendeZusatzleistung = gruendeZusatzleistung;
 	}
 }
