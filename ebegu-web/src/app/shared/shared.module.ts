@@ -67,7 +67,6 @@ import {ExternalClientAssignmentComponent} from './component/external-client-ass
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
-import {IeDeprecationWarningComponent} from './component/ie-deprecation-warning/ie-deprecation-warning.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
@@ -165,7 +164,6 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSozialdienstDialogComponent,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        IeDeprecationWarningComponent,
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
