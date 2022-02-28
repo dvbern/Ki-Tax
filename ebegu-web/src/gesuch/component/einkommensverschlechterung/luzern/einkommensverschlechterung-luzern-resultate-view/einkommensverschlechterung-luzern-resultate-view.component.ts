@@ -38,7 +38,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
     public resultatProzent: string;
 
     public constructor(
-        protected gesuchModelManager: GesuchModelManager,
+        public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
         protected berechnungsManager: BerechnungsManager,

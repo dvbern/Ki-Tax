@@ -15,6 +15,7 @@
 
 import {IHttpBackendService, IQService, IRootScopeService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSDossier} from '../../../models/TSDossier';
@@ -37,6 +38,8 @@ describe('MitteilungRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         mitteilungRS = $injector.get('MitteilungRS');

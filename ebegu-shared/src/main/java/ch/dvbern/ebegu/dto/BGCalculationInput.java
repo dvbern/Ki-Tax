@@ -119,7 +119,7 @@ public class BGCalculationInput {
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
-	private int anspruchspensumProzent;
+	private BigDecimal anspruchspensumProzent = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
@@ -485,11 +485,11 @@ public class BGCalculationInput {
 	}
 
 	public int getAnspruchspensumProzent() {
-		return anspruchspensumProzent;
+		return MathUtil.GANZZAHL.from(anspruchspensumProzent).intValue();
 	}
 
 	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
-		this.anspruchspensumProzent = anspruchspensumProzent;
+		this.anspruchspensumProzent = BigDecimal.valueOf(anspruchspensumProzent);
 	}
 
 	@Nonnull
@@ -800,14 +800,22 @@ public class BGCalculationInput {
 		if (this.besondereBeduerfnisseZuschlag != null) {
 			this.besondereBeduerfnisseZuschlag = this.besondereBeduerfnisseZuschlag.add(other.besondereBeduerfnisseZuschlag);
 		}
+		//minimalErfoderlichesPensum ist für die ganze Periode gleich und kann einfach kopiert werden
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
-		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		BigDecimal newAnspruchpnsumProzent = BigDecimal.ZERO;
+		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(this.anspruchspensumProzent);
+		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(other.anspruchspensumProzent);
+		this.anspruchspensumProzent = newAnspruchpnsumProzent;
+		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+		//nach add der anspruchspensumprotzen muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
+		this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
-		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
 		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
@@ -832,7 +840,6 @@ public class BGCalculationInput {
 		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
-		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
 	public void calculateInputValuesProportionaly(double percentage) {
@@ -845,7 +852,7 @@ public class BGCalculationInput {
 		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
 		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
 		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
-		this.anspruchspensumProzent = calculatePercentageInt(this.anspruchspensumProzent, percentage);
+		this.anspruchspensumProzent = calculatePercentage(this.anspruchspensumProzent, percentage);
 		this.anspruchspensumRest = calculatePercentageInt(this.anspruchspensumRest, percentage);
 		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
 		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
@@ -924,7 +931,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlNebenmahlzeiten, other.anzahlNebenmahlzeiten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == other.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(other.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(abzugFamGroesse, other.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, other.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, other.massgebendesEinkommenVorAbzugFamgr) &&
@@ -954,7 +961,7 @@ public class BGCalculationInput {
 			verguenstigungMahlzeitenBeantragt == that.verguenstigungMahlzeitenBeantragt &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == that.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(that.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(this.abzugFamGroesse, that.abzugFamGroesse) &&
 			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&

@@ -22,6 +22,7 @@ import {KindRS} from '../../app/core/service/kindRS.rest';
 import {VerfuegungRS} from '../../app/core/service/verfuegungRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../hybridTools/translationsMock';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
@@ -72,6 +73,8 @@ describe('gesuchModelManager', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');

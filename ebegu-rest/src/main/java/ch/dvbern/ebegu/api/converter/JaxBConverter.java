@@ -2337,6 +2337,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
 		jaxKind.setKinderabzugErstesHalbjahr(persistedKind.getKinderabzugErstesHalbjahr());
 		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
+		jaxKind.setPflegekind(persistedKind.getPflegekind());
+		jaxKind.setPflegeEntschaedigungErhalten(persistedKind.getPflegeEntschaedigungErhalten());
+		jaxKind.setObhutAlternierendAusueben(persistedKind.getObhutAlternierendAusueben());
+		jaxKind.setGemeinsamesGesuch(persistedKind.getGemeinsamesGesuch());
+		jaxKind.setInErstausbildung(persistedKind.getInErstausbildung());
+		jaxKind.setLebtKindAlternierend(persistedKind.getLebtKindAlternierend());
+		jaxKind.setAlimenteErhalten(persistedKind.getAlimenteErhalten());
+		jaxKind.setAlimenteBezahlen(persistedKind.getAlimenteBezahlen());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
 		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
@@ -2361,6 +2369,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
 		}
 		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
@@ -2385,6 +2394,7 @@ public class JaxBConverter extends AbstractConverter {
 			}
 		}
 		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
+		pensumFachstelle.setGruendeZusatzleistung(pensumFachstelleJAXP.getGruendeZusatzleistung());
 
 		return pensumFachstelle;
 	}
@@ -2479,6 +2489,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
 		kind.setKinderabzugErstesHalbjahr(kindJAXP.getKinderabzugErstesHalbjahr());
 		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
+		kind.setPflegekind(kindJAXP.getPflegekind() == null ? false : kindJAXP.getPflegekind());
+		kind.setPflegeEntschaedigungErhalten(kindJAXP.getPflegeEntschaedigungErhalten());
+		kind.setObhutAlternierendAusueben(kindJAXP.getObhutAlternierendAusueben());
+		kind.setGemeinsamesGesuch(kindJAXP.getGemeinsamesGesuch());
+		kind.setInErstausbildung(kindJAXP.getInErstausbildung());
+		kind.setLebtKindAlternierend(kindJAXP.getLebtKindAlternierend());
+		kind.setAlimenteErhalten(kindJAXP.getAlimenteErhalten());
+		kind.setAlimenteBezahlen(kindJAXP.getAlimenteBezahlen());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
 		kind.setAusAsylwesen(kindJAXP.getAusAsylwesen());
@@ -2728,6 +2746,16 @@ public class JaxBConverter extends AbstractConverter {
 
 		requireNonNull(finanzielleSituation);
 		requireNonNull(finanzielleSituationJAXP);
+
+		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
+		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
+		// Verfahren
+		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
+			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			return finanzielleSituation;
+		}
 
 		abstractFinanzielleSituationToEntity(finanzielleSituationJAXP, finanzielleSituation);
 		finanzielleSituation.setSteuerveranlagungErhalten(finanzielleSituationJAXP.getSteuerveranlagungErhalten());

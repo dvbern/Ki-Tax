@@ -44,11 +44,13 @@ import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/er
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
+import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
 import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
 import {SozialhilfeZeitraumListViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
 import {SozialhilfeZeitraumViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
+import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
@@ -59,6 +61,7 @@ import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
+import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
 import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
@@ -131,4 +134,18 @@ export const GESUCH_JS_MODULE =
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
+        .directive('dvFkjvKinderabzug', downgradeComponent({
+            component: FkjvKinderabzugComponent,
+            inputs: ['kindContainer']
+        }))
+        .directive('dvFinanzielleSituationAufteilung', downgradeComponent({
+            component: FinanzielleSituationAufteilungComponent,
+            outputs: ['closeEvent']
+        }))
+        .directive('dvSteuerabfrageResponseHints',
+            downgradeComponent({
+                component: SteuerabfrageResponseHintsComponent,
+                inputs: ['status'],
+                outputs: ['tryAgainEvent']
+            }))
 ;

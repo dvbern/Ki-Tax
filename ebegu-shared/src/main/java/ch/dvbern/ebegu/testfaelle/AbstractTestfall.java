@@ -81,8 +81,8 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -356,6 +356,11 @@ public abstract class AbstractTestfall {
 		kind.setGeburtsdatum(geburtsdatum);
 		kind.setKinderabzugErstesHalbjahr(kinderabzug);
 		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
+		if (is18GeburtstagBeforeGPEnds(geburtsdatum)) {
+			kind.setInErstausbildung(false);
+		} else {
+			kind.setObhutAlternierendAusueben(false);
+		}
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setSprichtAmtssprache(Boolean.TRUE);
@@ -364,6 +369,11 @@ public abstract class AbstractTestfall {
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		return kindContainer;
+	}
+
+	private boolean is18GeburtstagBeforeGPEnds(@Nonnull LocalDate geburtsdatum) {
+		LocalDate dateWith18 = geburtsdatum.plusYears(18);
+		return dateWith18.isBefore(gesuchsperiode.getGueltigkeit().getGueltigBis());
 	}
 
 	protected Betreuung createBetreuung(String institutionStammdatenId, boolean bestaetigt) {

@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
+import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -106,7 +107,7 @@ import static java.util.Objects.requireNonNull;
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FinanzielleSituationResource {
 
-	protected static final MathUtil EXACT = MathUtil.EXACT;
+	protected static final MathUtil GANZZAHL = MathUtil.GANZZAHL;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -459,7 +460,7 @@ public class FinanzielleSituationResource {
 		Benutzer benutzer = principalBean.getBenutzer();
 		if (gesuch.getEingangsart().isPapierGesuch() || Strings.isNullOrEmpty(benutzer.getZpvNummer())) {
 			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED);
+				SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 		} else {
 			try {
 				SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
@@ -579,37 +580,37 @@ public class FinanzielleSituationResource {
 
 		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
 		BigDecimal bruttertraegeVermogenTotal =
-			EXACT.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
+			GANZZAHL.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
 				steuerdatenResponse.getBruttoertraegeAusLiegenschaften() :
 				BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 		boolean hasResponse2Antragstellende = steuerdatenResponse.getZpvNrPartner() != null;
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setBruttoertraegeVermoegen(hasResponse2Antragstellende ?
-				EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
+				GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
 				bruttertraegeVermogenTotal);
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setAbzugSchuldzinsen(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getSchuldzinsen() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
 					steuerdatenResponse.getSchuldzinsen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getSchuldzinsen());
 		BigDecimal gewinnungskostenTotal =
-			EXACT.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
+			GANZZAHL.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
 				steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
 				BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setGewinnungskosten(hasResponse2Antragstellende ?
-				EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)) :
+				GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)) :
 				gewinnungskostenTotal);
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setGeleisteteAlimente(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
 		convertedFinSitCont.getFinanzielleSituationJA()
 			.setNettoVermoegen(hasResponse2Antragstellende ?
-				EXACT.divide(steuerdatenResponse.getNettovermoegen() != null ?
+				GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
 					steuerdatenResponse.getNettovermoegen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getNettovermoegen());
@@ -644,21 +645,66 @@ public class FinanzielleSituationResource {
 				.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
 
 			finSitGS2.getFinanzielleSituationJA()
-				.setBruttoertraegeVermoegen(EXACT.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
+				.setBruttoertraegeVermoegen(GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setAbzugSchuldzinsen(EXACT.divide(steuerdatenResponse.getSchuldzinsen() != null ?
+				.setAbzugSchuldzinsen(GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
 					steuerdatenResponse.getSchuldzinsen() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setGewinnungskosten(EXACT.divide(gewinnungskostenTotal, new BigDecimal(2)));
+				.setGewinnungskosten(GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setGeleisteteAlimente(EXACT.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
+				.setGeleisteteAlimente(GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 			finSitGS2.getFinanzielleSituationJA()
-				.setNettoVermoegen(EXACT.divide(steuerdatenResponse.getNettovermoegen() != null ?
+				.setNettoVermoegen(GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
 					steuerdatenResponse.getNettovermoegen() :
 					BigDecimal.ZERO, new BigDecimal(2)));
 		}
+	}
+
+
+	@ApiOperation(value = "",
+		response = JaxFinanzielleSituationContainer.class)
+	@Nullable
+	@PUT
+	@Path("/updateFromAufteilung/{gesuchId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public Response updateFinSitFromAufteilung(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
+		@Nonnull @NotNull @Valid JaxFinanzielleSituationAufteilungDTO jaxFinanzielleSituationAufteilungDTO,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(jaxFinanzielleSituationAufteilungDTO);
+		Objects.requireNonNull(gesuchId.getId());
+
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId(), true)
+			.orElseThrow(()
+				-> new EbeguEntityNotFoundException(
+				"updateFinSitFromAufteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"GesuchId invalid: " + gesuchId)
+			);
+
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller2());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+		this.finanzielleSituationService.setValuesFromAufteilungDTO(
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+			jaxFinanzielleSituationAufteilungDTO
+		);
+
+		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), gesuchId.getId());
+		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuchId.getId());
+
+		return Response.ok().build();
 	}
 }

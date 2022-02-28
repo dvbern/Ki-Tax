@@ -22,6 +22,7 @@ import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -48,6 +49,8 @@ describe('faelleListView', () => {
     beforeEach(angular.mock.module(FAELLE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');

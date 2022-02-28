@@ -16,6 +16,7 @@
 import {IHttpBackendService, IQService} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -37,6 +38,8 @@ describe('betreuungRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         betreuungRS = $injector.get('BetreuungRS');

@@ -15,6 +15,7 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPendenzBetreuung} from '../../../../models/TSPendenzBetreuung';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
@@ -33,6 +34,8 @@ describe('pendenzBetreuungenRS', () => {
     beforeEach(angular.mock.module(PENDENZEN_BETREUUNGEN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');

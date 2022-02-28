@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.validators.CheckKinderabzug;
 import org.hibernate.envers.Audited;
 
 /**
@@ -49,6 +50,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
 )
+@CheckKinderabzug
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
@@ -62,6 +64,38 @@ public class Kind extends AbstractPersonEntity {
 	@Nullable
 	@Enumerated(EnumType.STRING)
 	private Kinderabzug kinderabzugZweitesHalbjahr;
+
+	@Column(nullable = false)
+	@Nonnull
+	private Boolean isPflegekind = false;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean pflegeEntschaedigungErhalten;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean obhutAlternierendAusueben;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean gemeinsamesGesuch;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean inErstausbildung;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean lebtKindAlternierend;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean alimenteErhalten;
+
+	@Column(nullable = true)
+	@Nullable
+	private Boolean alimenteBezahlen;
 
 	@Column(nullable = false)
 	@NotNull
@@ -125,6 +159,78 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setKinderabzugZweitesHalbjahr(@Nullable Kinderabzug kinderabzugZweitesHalbjahr) {
 		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
+	}
+
+	@Nonnull
+	public Boolean getPflegekind() {
+		return isPflegekind;
+	}
+
+	public void setPflegekind(@Nonnull Boolean pflegekind) {
+		isPflegekind = pflegekind;
+	}
+
+	@Nullable
+	public Boolean getPflegeEntschaedigungErhalten() {
+		return pflegeEntschaedigungErhalten;
+	}
+
+	public void setPflegeEntschaedigungErhalten(@Nullable Boolean pflegeEntschaedigungErhalten) {
+		this.pflegeEntschaedigungErhalten = pflegeEntschaedigungErhalten;
+	}
+
+	@Nullable
+	public Boolean getObhutAlternierendAusueben() {
+		return obhutAlternierendAusueben;
+	}
+
+	public void setObhutAlternierendAusueben(@Nullable Boolean obhutAlternierendAusueben) {
+		this.obhutAlternierendAusueben = obhutAlternierendAusueben;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamesGesuch() {
+		return gemeinsamesGesuch;
+	}
+
+	public void setGemeinsamesGesuch(@Nullable Boolean gemeinsamesGesuch) {
+		this.gemeinsamesGesuch = gemeinsamesGesuch;
+	}
+
+	@Nullable
+	public Boolean getInErstausbildung() {
+		return inErstausbildung;
+	}
+
+	public void setInErstausbildung(@Nullable Boolean inErstausbildung) {
+		this.inErstausbildung = inErstausbildung;
+	}
+
+	@Nullable
+	public Boolean getLebtKindAlternierend() {
+		return lebtKindAlternierend;
+	}
+
+	public void setLebtKindAlternierend(@Nullable Boolean lebtKindAlternierend) {
+		this.lebtKindAlternierend = lebtKindAlternierend;
+	}
+
+	@Nullable
+	public Boolean getAlimenteErhalten() {
+		return alimenteErhalten;
+	}
+
+	public void setAlimenteErhalten(@Nullable Boolean alimenteErhalten) {
+		this.alimenteErhalten = alimenteErhalten;
+	}
+
+	@Nullable
+	public Boolean getAlimenteBezahlen() {
+		return alimenteBezahlen;
+	}
+
+	public void setAlimenteBezahlen(@Nullable Boolean alimenteBezahlen) {
+		this.alimenteBezahlen = alimenteBezahlen;
 	}
 
 	public Boolean getFamilienErgaenzendeBetreuung() {
@@ -217,6 +323,14 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setPflegekind(this.getPflegekind());
+			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+			target.setInErstausbildung(this.getInErstausbildung());
+			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+			target.setAlimenteErhalten(this.getAlimenteErhalten());
+			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
@@ -225,6 +339,14 @@ public class Kind extends AbstractPersonEntity {
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
 			target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
+			target.setPflegekind(this.getPflegekind());
+			target.setPflegeEntschaedigungErhalten(this.getPflegeEntschaedigungErhalten());
+			target.setObhutAlternierendAusueben(this.getObhutAlternierendAusueben());
+			target.setGemeinsamesGesuch(this.getGemeinsamesGesuch());
+			target.setInErstausbildung(this.getInErstausbildung());
+			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
+			target.setAlimenteErhalten(this.getAlimenteErhalten());
+			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
