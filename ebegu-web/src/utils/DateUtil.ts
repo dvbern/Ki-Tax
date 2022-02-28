@@ -143,4 +143,8 @@ export class DateUtil {
     public static endOfTime(): Moment {
         return moment(CONSTANTS.END_OF_TIME_STRING, 'DD.MM.YYYY');
     }
+
+    public static startOfTime(): Moment {
+        return moment(CONSTANTS.START_OF_TIME_STRING, 'DD.MM.YYYY');
+    }
 }
