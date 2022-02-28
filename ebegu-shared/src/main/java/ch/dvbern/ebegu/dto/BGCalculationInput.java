@@ -119,7 +119,7 @@ public class BGCalculationInput {
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
-	private int anspruchspensumProzent;
+	private BigDecimal anspruchspensumProzent = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
@@ -485,11 +485,11 @@ public class BGCalculationInput {
 	}
 
 	public int getAnspruchspensumProzent() {
-		return anspruchspensumProzent;
+		return MathUtil.GANZZAHL.from(anspruchspensumProzent).intValue();
 	}
 
 	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
-		this.anspruchspensumProzent = anspruchspensumProzent;
+		this.anspruchspensumProzent = BigDecimal.valueOf(anspruchspensumProzent);
 	}
 
 	@Nonnull
@@ -802,7 +802,15 @@ public class BGCalculationInput {
 		}
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
-		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		BigDecimal newAnspruchpnsumProzent = BigDecimal.ZERO;
+		if (this.anspruchspensumProzent != null) {
+			newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(this.anspruchspensumProzent);
+		}
+		if (other.anspruchspensumProzent != null) {
+			newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(other.anspruchspensumProzent);
+		}
+		this.anspruchspensumProzent = newAnspruchpnsumProzent;
+		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
@@ -845,7 +853,7 @@ public class BGCalculationInput {
 		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
 		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
 		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
-		this.anspruchspensumProzent = calculatePercentageInt(this.anspruchspensumProzent, percentage);
+		this.anspruchspensumProzent = calculatePercentage(this.anspruchspensumProzent, percentage);
 		this.anspruchspensumRest = calculatePercentageInt(this.anspruchspensumRest, percentage);
 		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
 		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
