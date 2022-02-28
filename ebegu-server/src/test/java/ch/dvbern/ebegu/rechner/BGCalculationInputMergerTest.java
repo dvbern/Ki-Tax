@@ -306,6 +306,28 @@ public class BGCalculationInputMergerTest {
 
 	}
 
+	@Test
+	public void test_shouldNotRoundAnspruchpensum() {
+		BGCalculationInput bgCalculationInput3 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+		BGCalculationInput bgCalculationInput4 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+
+		bgCalculationInput1.setAnspruchspensumProzent(40);
+		bgCalculationInput2.setAnspruchspensumProzent(50);
+		bgCalculationInput3.setAnspruchspensumProzent(60);
+		bgCalculationInput4.setAnspruchspensumProzent(70);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(100.0 / 31.0 * 5.0);
+		bgCalculationInput2.calculateInputValuesProportionaly(100.0 / 31.0 * 2.0);
+		bgCalculationInput3.calculateInputValuesProportionaly(100.0 / 31.0 * 8.0);
+		bgCalculationInput4.calculateInputValuesProportionaly(100.0 / 31.0 * 16.0);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+		bgCalculationInput1.add(bgCalculationInput3);
+		bgCalculationInput1.add(bgCalculationInput4);
+
+		Assert.assertEquals(61, bgCalculationInput1.getAnspruchspensumProzent());
+	}
+
 	@Before
 	public void init() {
 		bgCalculationInput1 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
