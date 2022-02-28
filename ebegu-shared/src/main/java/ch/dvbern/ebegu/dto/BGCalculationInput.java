@@ -800,14 +800,18 @@ public class BGCalculationInput {
 		if (this.besondereBeduerfnisseZuschlag != null) {
 			this.besondereBeduerfnisseZuschlag = this.besondereBeduerfnisseZuschlag.add(other.besondereBeduerfnisseZuschlag);
 		}
+		//minimalErfoderlichesPensum ist für die ganze Periode gleich und kann einfach kopiert werden
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		//nach add der anspruchspensumprotzen muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
+		this.minimalesEwpUnterschritten = this.anspruchspensumProzent < this.minimalErforderlichesPensum;
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
-		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
 		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
@@ -832,7 +836,6 @@ public class BGCalculationInput {
 		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
-		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
 	public void calculateInputValuesProportionaly(double percentage) {
