@@ -20,6 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 
 @Component({
     selector: 'dv-radio-input-x',
@@ -67,6 +68,8 @@ export class DvRadioInputXComponent implements OnInit {
     }
 
     public showBisher(): boolean {
-        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
+        return this.gesuchModelManager.getGesuch()
+            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }
 }

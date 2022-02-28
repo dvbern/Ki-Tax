@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 
 @Component({
     selector: 'dv-checkbox-x',
@@ -59,6 +60,8 @@ export class DvCheckboxXComponent implements OnInit {
     }
 
     public showBisher(): boolean {
-        return isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status);
+        return this.gesuchModelManager.getGesuch()
+            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }
 }
