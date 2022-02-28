@@ -86,7 +86,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungVollkosten";
 	private static final String GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG =
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungMinimalbeitrag";
-	private static final String GUTSCHEIN = "PdfGeneration_Verfuegung_Gutschein";
+	protected static final String GUTSCHEIN_AN_INSTITUTION = "PdfGeneration_Verfuegung_Gutschein_Institution";
+	protected static final String GUTSCHEIN_AN_ELTERN = "PdfGeneration_Verfuegung_Gutschein_Eltern";
 	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_MinimalerElternbeitrag";
 	private static final String KEIN_ANSPRUCH_CONTENT_1 = "PdfGeneration_KeinAnspruch_Content_1";
 	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
@@ -121,7 +122,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		NICHT_EINTRETTEN
 	}
 
-	private final Betreuung betreuung;
+	protected final Betreuung betreuung;
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
 
@@ -374,7 +375,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			fontTabelle,
 			2,
 			1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN), Color.LIGHT_GRAY, fontTabelle, 2,
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, getTextGutschein(), Color.LIGHT_GRAY, fontTabelle, 2,
 			1));
 
 		// Spaltentitel, Row 2
@@ -653,4 +654,6 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected abstract Font getBgColorForUeberwiesenerBetragCell();
+
+	protected abstract String getTextGutschein();
 }

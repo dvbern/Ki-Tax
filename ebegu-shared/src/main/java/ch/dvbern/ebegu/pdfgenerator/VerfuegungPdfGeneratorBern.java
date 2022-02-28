@@ -36,4 +36,9 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
 	}
+
+	@Override
+	protected String getTextGutschein() {
+		return translate(GUTSCHEIN_AN_INSTITUTION);
+	}
 }

@@ -36,4 +36,10 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelleBold;
 	}
+
+	@Override
+	protected String getTextGutschein() {
+		String messageKey =  betreuung.isAuszahlungAnEltern() ? GUTSCHEIN_AN_ELTERN : GUTSCHEIN_AN_INSTITUTION;
+		return translate(messageKey);
+	}
 }
