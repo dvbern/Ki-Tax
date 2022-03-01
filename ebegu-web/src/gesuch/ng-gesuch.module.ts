@@ -18,11 +18,13 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
-import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
@@ -58,14 +60,16 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
     declarations: [
         DvSwitchComponent,
         BetreuungOverrideWarningComponent,
-        DvEingabeBasisjahrComponent,
         InternePendenzenComponent,
         InternePendenzDialogComponent,
         InternePendenzenTableComponent,
         FinanzielleSituationStartViewLuzernComponent,
         FinanzielleSituationStartSolothurnComponent,
         EinkommensverschlechterungLuzernViewComponent,
+        EinkommensverschlechterungSolothurnViewComponent,
         EinkommensverschlechterungLuzernResultateViewComponent,
+        EinkommensverschlechterungSolothurnResultateViewComponent,
+        EinkommensverschlechterungResultateViewComponent,
         DvFinanzielleSituationRequireX,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,

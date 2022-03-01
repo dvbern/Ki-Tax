@@ -2005,8 +2005,7 @@ export class EbeguRestUtil {
 
     private parseFinanzielleSituationSelbstdeklaration(
         tsSelbstdeklaration: TSFinanzielleSituationSelbstdeklaration,
-        selbstdeklarationFromServer: any)
-    : TSFinanzielleSituationSelbstdeklaration {
+        selbstdeklarationFromServer: any): TSFinanzielleSituationSelbstdeklaration {
 
         if (selbstdeklarationFromServer) {
             this.parseAbstractMutableEntity(tsSelbstdeklaration, selbstdeklarationFromServer);
@@ -2074,6 +2073,10 @@ export class EbeguRestUtil {
             finanzielleSituationResultateDTO.abzuegeGS2 = finanzielleSituationResultateFromServer.abzuegeGS2;
             finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS1 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS1;
             finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS2 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS2;
+            finanzielleSituationResultateDTO.bruttolohnJahrGS1 =
+                finanzielleSituationResultateFromServer.bruttolohnJahrGS1;
+            finanzielleSituationResultateDTO.bruttolohnJahrGS2 =
+                finanzielleSituationResultateFromServer.bruttolohnJahrGS2;
             return finanzielleSituationResultateDTO;
         }
         return undefined;
@@ -2117,6 +2120,10 @@ export class EbeguRestUtil {
         this.abstractfinanzielleSituationToRestObject(restEinkommensverschlechterung, einkommensverschlechterung);
         restEinkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1 =
             einkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1;
+        restEinkommensverschlechterung.bruttolohnAbrechnung1 = einkommensverschlechterung.bruttolohnAbrechnung1;
+        restEinkommensverschlechterung.bruttolohnAbrechnung2 = einkommensverschlechterung.bruttolohnAbrechnung2;
+        restEinkommensverschlechterung.bruttolohnAbrechnung3 = einkommensverschlechterung.bruttolohnAbrechnung3;
+        restEinkommensverschlechterung.extraLohn = einkommensverschlechterung.extraLohn;
         return restEinkommensverschlechterung;
     }
 
@@ -2164,6 +2171,10 @@ export class EbeguRestUtil {
         this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
         einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
             einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
+        einkommensverschlechterungTS.bruttolohnAbrechnung1 = einkommensverschlechterungFromServer.bruttolohnAbrechnung1;
+        einkommensverschlechterungTS.bruttolohnAbrechnung2 = einkommensverschlechterungFromServer.bruttolohnAbrechnung2;
+        einkommensverschlechterungTS.bruttolohnAbrechnung3 = einkommensverschlechterungFromServer.bruttolohnAbrechnung3;
+        einkommensverschlechterungTS.extraLohn = einkommensverschlechterungFromServer.extraLohn;
         return einkommensverschlechterungTS;
     }
 

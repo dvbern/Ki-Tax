@@ -2884,6 +2884,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
 		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
+		einkommensverschlechterung.setBruttolohnAbrechnung1(einkommensverschlechterungJAXP.getBruttolohnAbrechnung1());
+		einkommensverschlechterung.setBruttolohnAbrechnung2(einkommensverschlechterungJAXP.getBruttolohnAbrechnung2());
+		einkommensverschlechterung.setBruttolohnAbrechnung3(einkommensverschlechterungJAXP.getBruttolohnAbrechnung3());
+		einkommensverschlechterung.setExtraLohn(einkommensverschlechterungJAXP.getExtraLohn());
 
 		return einkommensverschlechterung;
 	}
@@ -2900,6 +2904,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
 		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
+		eikvs.setBruttolohnAbrechnung1(persistedEinkommensverschlechterung.getBruttolohnAbrechnung1());
+		eikvs.setBruttolohnAbrechnung2(persistedEinkommensverschlechterung.getBruttolohnAbrechnung2());
+		eikvs.setBruttolohnAbrechnung3(persistedEinkommensverschlechterung.getBruttolohnAbrechnung3());
+		eikvs.setExtraLohn(persistedEinkommensverschlechterung.getExtraLohn());
 
 		return eikvs;
 	}

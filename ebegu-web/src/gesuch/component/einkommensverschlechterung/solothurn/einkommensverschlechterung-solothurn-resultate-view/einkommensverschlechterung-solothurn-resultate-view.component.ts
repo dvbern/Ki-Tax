@@ -15,27 +15,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
 
 @Component({
-    selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
-    templateUrl: './einkommensverschlechterung-luzern-resultate-view.component.html',
-    styleUrls: ['./einkommensverschlechterung-luzern-resultate-view.component.less'],
+    selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
+    templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
+    styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
+export class EinkommensverschlechterungSolothurnResultateViewComponent
+    extends AbstractEinkommensverschlechterungResultat {
+
+    public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
+    public resultatProzent: string;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        protected finSitLuService: FinanzielleSituationLuzernService,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         protected readonly $transition$: Transition,
@@ -44,7 +47,8 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             wizardStepManager,
             berechnungsManager,
             ref,
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             $transition$);
     }
+
 }
