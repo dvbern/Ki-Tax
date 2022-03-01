@@ -86,7 +86,19 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         });
     }
 
+    public onBruttoLohnChange(): void {
+        if (!this.form?.controls.bruttolohn.valid) {
+            return;
+        }
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
+            () => this.ref.markForCheck()
+        );
+    }
+
     public onValueChangeFunction = (): void => {
+        if (!this.form?.controls.nettoVermoegen) {
+            return;
+        }
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
             () => this.ref.markForCheck()
         );

@@ -33,75 +33,77 @@
               #form="ngForm"
               novalidate>
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <dv-input-label-field
-                                [name]="'bruttolohnAbrechnung1'"
-                                [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung1"
-                                [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_1'"
-                                [inputDisabled]="readOnly"
-                                [dvOnBlur]="onValueChangeFunction"
-                                [inputRequired]="true">
-                            </dv-input-label-field>
+                <fieldset ngModelGroup="bruttolohn">
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <dv-input-label-field
+                                        [name]="'bruttolohnAbrechnung1'"
+                                        [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung1"
+                                        [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_1'"
+                                        [inputDisabled]="readOnly"
+                                        [dvOnBlur]="onBruttoLohnChange"
+                                        [inputRequired]="true">
+                                </dv-input-label-field>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <dv-input-label-field
-                                [name]="'bruttolohnAbrechnung2'"
-                                [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung2"
-                                [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_2'"
-                                [inputDisabled]="readOnly"
-                                [dvOnBlur]="onValueChangeFunction"
-                                [inputRequired]="true">
-                            </dv-input-label-field>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <dv-input-label-field
+                                        [name]="'bruttolohnAbrechnung2'"
+                                        [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung2"
+                                        [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_2'"
+                                        [inputDisabled]="readOnly"
+                                        [dvOnBlur]="onBruttoLohnChange"
+                                        [inputRequired]="true">
+                                </dv-input-label-field>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <dv-input-label-field
-                                [name]="'bruttolohnAbrechnung3'"
-                                [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung3"
-                                [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_3'"
-                                [inputDisabled]="readOnly"
-                                [dvOnBlur]="onValueChangeFunction"
-                                [inputRequired]="true">
-                            </dv-input-label-field>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <dv-input-label-field
+                                        [name]="'bruttolohnAbrechnung3'"
+                                        [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung3"
+                                        [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_3'"
+                                        [inputDisabled]="readOnly"
+                                        [dvOnBlur]="onBruttoLohnChange"
+                                        [inputRequired]="true">
+                                </dv-input-label-field>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <dv-radio-container-x>
-                                <label for="extraLohn_id" class="required ebegu-h1">
-                                    {{'ANZAHL_LOHNE_FRAGE' | translate}}
-                                </label>
-                                <mat-radio-group
-                                    (change)="onValueChangeFunction()"
-                                    [(ngModel)]="model.getEkvToWorkWith().extraLohn"
-                                    name="extraLohn"
-                                    id="extraLohn_id"
-                                    #extraLohn="ngModel"
-                                    [disabled]="readOnly"
-                                    required>
-                                    <mat-radio-button [value]="false">{{'LABEL_12' | translate }}</mat-radio-button>
-                                    <mat-radio-button [value]="true">{{'LABEL_13' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                                <dv-error-messages *ngIf="form.submitted"
-                                                   [errorObject]="extraLohn.errors"
-                                                   inputId="extraLohn_id">
-                                </dv-error-messages>
-                            </dv-radio-container-x>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <dv-radio-container-x>
+                                    <label for="extraLohn_id" class="required ebegu-h1">
+                                        {{'ANZAHL_LOHNE_FRAGE' | translate}}
+                                    </label>
+                                    <mat-radio-group
+                                            (change)="onBruttoLohnChange()"
+                                            [(ngModel)]="model.getEkvToWorkWith().extraLohn"
+                                            name="extraLohn"
+                                            id="extraLohn_id"
+                                            #extraLohn="ngModel"
+                                            [disabled]="readOnly"
+                                            required>
+                                        <mat-radio-button [value]="false">{{'LABEL_12' | translate }}</mat-radio-button>
+                                        <mat-radio-button [value]="true">{{'LABEL_13' | translate }}</mat-radio-button>
+                                    </mat-radio-group>
+                                    <dv-error-messages *ngIf="form.submitted"
+                                                       [errorObject]="extraLohn.errors"
+                                                       inputId="extraLohn_id">
+                                    </dv-error-messages>
+                                </dv-radio-container-x>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
                 <div class="row">
                     <div class="col-sm-6">
