@@ -175,7 +175,7 @@
                     <div class="col-sm-12 dv-input-container-medium">
                         <dv-input-label-field
                             [model]="getResultate()?.abzuegeBeiderGesuchsteller"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'"
+                            [labelMessageKey]="isFKJV() ? 'FINANZIELLE_SITUATION_ABZUEGE' : 'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'"
                             [labelMessageKeyArgs]=""
                             [inputDisabled]="true">
                         </dv-input-label-field>
