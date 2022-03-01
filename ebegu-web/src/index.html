@@ -20,6 +20,12 @@
     <title>kiBon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8">
+    <script type="text/javascript">
+        var isIE = /msie\s|trident/i.test(window.navigator.userAgent);
+        if (isIE && window.location.href.indexOf('unsupported.html') == -1) {
+            window.location.href = "assets/unsupported/unsupported.html";
+        }
+    </script>
     <!--font-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600,400italic' rel='stylesheet'
           type='text/css'>
@@ -44,7 +50,6 @@
     <meta name="msapplication-square150x150logo" content="assets/images/favicon/mstile-150x150.png" />
     <meta name="msapplication-wide310x150logo" content="assets/images/favicon/mstile-310x150.png" />
     <meta name="msapplication-square310x310logo" content="assets/images/favicon/mstile-310x310.png" />
-
 </head>
 <body class="ebegu loaded" dv-barcode-listener>
 <ui-view></ui-view>
