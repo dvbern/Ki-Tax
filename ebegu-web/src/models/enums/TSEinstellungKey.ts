@@ -100,6 +100,7 @@ export enum TSEinstellungKey {
     BESONDERE_BEDUERFNISSE_LUZERN = 'BESONDERE_BEDUERFNISSE_LUZERN' as any,
     FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH = 'FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH' as any,
     AUSSERORDENTLICHER_ANSPRUCH_RULE = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' as any,
+    FKJV_TEXTE = 'FKJV_TEXTE' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -178,7 +179,8 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN,
         TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN,
         TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
-        TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE
+        TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE,
+        TSEinstellungKey.FKJV_TEXTE
     ];
 }
 
