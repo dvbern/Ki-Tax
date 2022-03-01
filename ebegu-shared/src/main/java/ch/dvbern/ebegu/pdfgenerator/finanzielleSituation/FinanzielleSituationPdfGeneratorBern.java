@@ -462,7 +462,10 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 
 		FinanzielleSituationRow amountEinkommenInVereinfachtemVerfahrenAbgerechnet = createRow(
 			translate(AMOUNT_EINKOMMEN_IN_VEREINFACHTEM_VERFAHREN_ABGERECHNET),
-			AbstractFinanzielleSituation::getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet,
+				(finanzielleSituation) ->
+						Boolean.TRUE.equals(finanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet()) ?
+								finanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet() :
+								BigDecimal.ZERO,
 			gs1,
 			gs2,
 			gs1Urspruenglich,

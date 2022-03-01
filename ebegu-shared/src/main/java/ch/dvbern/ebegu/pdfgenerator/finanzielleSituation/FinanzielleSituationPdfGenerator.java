@@ -20,9 +20,12 @@ package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -34,6 +37,7 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
@@ -50,11 +54,13 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected static final String JAHR = "PdfGeneration_MassgEinkommen_Jahr";
 	protected static final String MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEink";
 	protected static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
+	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
 
 	protected final Verfuegung verfuegungFuerMassgEinkommen;
 	protected final LocalDate erstesEinreichungsdatum;
 	protected final boolean hasSecondGesuchsteller;
-
+	@Nullable
+	protected FinanzielleSituationResultateDTO finanzDatenDTO;
 	@Nonnull
 	protected AbstractFinanzielleSituationRechner finanzielleSituationRechner;
 
@@ -173,5 +179,45 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 
 	protected final boolean isAbschnittZuSpaetEingereicht(VerfuegungZeitabschnitt abschnitt) {
 		return !abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum);
+	}
+
+	protected void createTablezusammenzug(
+		@Nonnull Document document,
+		@Nonnull String gs1Name,
+		@Nonnull String gs2Name
+	) {
+		Objects.requireNonNull(finanzDatenDTO);
+
+		FinanzielleSituationTable zusammenzugTable =
+			new FinanzielleSituationTable(
+				getPageConfiguration(),
+				false,
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+				true);
+
+		FinanzielleSituationRow title = new FinanzielleSituationRow(
+			translate(ZUSAMMENZUG, mandant), "");
+
+		FinanzielleSituationRow massgebendesEinkommenGS1 = new FinanzielleSituationRow(
+			translate(MASSG_EINK_TITLE, mandant) + " " + gs1Name,
+			finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1()
+		);
+
+		FinanzielleSituationRow massgebendesEinkommenGS2 = new FinanzielleSituationRow(
+			translate(MASSG_EINK_TITLE, mandant) + " " + gs2Name,
+			finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2()
+		);
+
+		FinanzielleSituationRow zusammenzug = new FinanzielleSituationRow(
+			translate(MASSG_EINK, mandant),
+			finanzDatenDTO.getMassgebendesEinkVorAbzFamGr()
+		);
+
+		zusammenzugTable.addRow(title);
+		zusammenzugTable.addRow(massgebendesEinkommenGS1);
+		zusammenzugTable.addRow(massgebendesEinkommenGS2);
+		zusammenzugTable.addRow(zusammenzug);
+
+		document.add(zusammenzugTable.createTable());
 	}
 }

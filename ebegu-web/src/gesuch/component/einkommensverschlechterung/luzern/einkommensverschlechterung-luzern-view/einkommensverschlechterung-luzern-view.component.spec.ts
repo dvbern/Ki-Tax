@@ -95,6 +95,7 @@ describe('EinkommensverschlechterungLuzernViewComponent', () => {
 
     beforeEach(() => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+        gesuchModelManagerSpy.getStammdatenToWorkWith.and.returnValue(new TSGesuchstellerContainer());
         fixture = TestBed.createComponent(EinkommensverschlechterungLuzernViewComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -109,12 +110,8 @@ describe('EinkommensverschlechterungLuzernViewComponent', () => {
         gesuch.finSitTyp = TSFinanzielleSituationTyp.LUZERN;
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         gesuch.gesuchsteller1.gesuchstellerJA = new TSGesuchsteller();
-        gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
-        gesuch.gesuchsteller2.gesuchstellerJA = new TSGesuchsteller();
         gesuch.gesuchsteller1.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
         gesuch.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
-        gesuch.gesuchsteller2.finanzielleSituationContainer = new TSFinanzielleSituationContainer();
-        gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
         gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
         return gesuch;

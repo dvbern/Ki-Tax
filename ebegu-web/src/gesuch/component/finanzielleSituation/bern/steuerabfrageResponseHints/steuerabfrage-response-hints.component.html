@@ -1,0 +1,60 @@
+<!--
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div *ngIf="showZugriffFailed()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate
+       [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showWarningKeinPartnerGemeinsam()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showWarningGeburtsdatum()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate
+       [translateParams]="{namegs2: getGS2Name()}"
+    >FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showZugriffUnterjaehrigeFall()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG</p>
+</div>
+
+<div *ngIf="showZugriffKeineZpvNummer()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate
+       [translateParams]="{email: getEmailLoggedIn()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
+    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showZugriffErfolgreich()"
+     class="well well-status-bestaetigt minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH</p>
+</div>

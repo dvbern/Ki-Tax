@@ -14,19 +14,24 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
+import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+
+const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
 export class FinanzielleSituationResultateViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -47,6 +52,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         'WizardStepManager',
         '$scope',
         '$timeout',
+        'DvDialog'
     ];
 
     public constructor(
@@ -56,6 +62,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private readonly dvDialog: DvDialog,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -64,6 +71,10 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
 
+        this.initModelAndCalculate();
+    }
+
+    private initModelAndCalculate(): void {
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             null);
@@ -141,10 +152,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         return this.berechnungsManager.finanzielleSituationResultate;
     }
 
-    public isFKJV(): boolean {
-        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
-    }
-
     public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
         return this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff &&
             !this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
@@ -152,5 +159,27 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
         return this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff &&
             !this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+    }
+
+    public startAufteilung(): void {
+        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+            .then(() => {
+                this.initModelAndCalculate();
+            });
+    }
+
+    public isSteueranfrageErfolgreichForGS1(): boolean {
+        const finSit = this.gesuchModelManager.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        return EbeguUtil.isNotNullAndTrue(finSit.steuerdatenZugriff)
+            && isSteuerdatenAnfrageStatusErfolgreich(finSit.steuerdatenAbfrageStatus);
+    }
+
+    /*
+    Falls gemeinsameSteuererklärung = true ist, wird die Abfrage immer nur für GS1 gemacht. Deshalb reicht es hier
+    wenn wir prüfen, ob die Steuerabfrage für gs1 erfolgrech war
+     */
+    public showAufteilung(): boolean {
+        return this.isSteueranfrageErfolgreichForGS1()
+            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
     }
 }

@@ -16,14 +16,9 @@
  */
 
 import {IScope, ITimeoutService} from 'angular';
-import {
-    isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus
-} from '../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
-import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
@@ -48,22 +43,6 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
 
     public getModel(): TSFinanzielleSituationContainer {
         return this.model.getFiSiConToWorkWith();
-    }
-
-    public showZugriffErfolgreich(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus) &&
-            isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
-    public showZugriffFailed(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
-    public showZugriffUnterjaehrigeFall(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
     public steuerveranlagungClicked(): void {

@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 /**
  * Dokumente für Einkommensverschlechterung:
@@ -100,7 +101,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					1,
 					basisJahrPlus1,
 					stichtag,
-					familiensituation);
+					familiensituation,
+					gesuch.getFinSitTyp());
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -110,7 +112,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 						1,
 						basisJahrPlus1,
 						stichtag,
-						familiensituation);
+						familiensituation,
+						gesuch.getFinSitTyp());
 				}
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
@@ -122,7 +125,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					2,
 					basisJahrPlus2,
 					stichtag,
-					familiensituation);
+					familiensituation,
+					gesuch.getFinSitTyp());
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -132,7 +136,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 						2,
 						basisJahrPlus2,
 						stichtag,
-						familiensituation);
+						familiensituation,
+						gesuch.getFinSitTyp());
 				}
 			}
 		}
@@ -143,7 +148,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 		Set<DokumentGrund> anlageVerzeichnis,
 		@Nullable GesuchstellerContainer gesuchsteller,
 		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr,
-		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation
+		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation,
+		@Nonnull FinanzielleSituationTyp finanzielleSituationTyp
 	) {
 
 		if (gesuchsteller == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
@@ -179,6 +185,19 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			),
 			anlageVerzeichnis
 		);
+
+		if (finanzielleSituationTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
+			final String basisJahrString = String.valueOf(basisJahr);
+			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1, einkommensverschlechterung, null, basisJahrString,
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_2, einkommensverschlechterung, null, basisJahrString,
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
+			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_3, einkommensverschlechterung, null, basisJahrString,
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
+		}
 	}
 
 	@Override

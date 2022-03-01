@@ -15,6 +15,7 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragStatusHistory} from '../../../models/TSAntragStatusHistory';
 import {TSGesuch} from '../../../models/TSGesuch';
@@ -33,6 +34,8 @@ describe('antragStatusHistoryRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');

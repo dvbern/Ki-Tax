@@ -61,6 +61,7 @@ export class DvNgGemeindeDialogComponent {
     private filterGemeindeList(): void {
         this.gemeindeList =
             this.allGemeinden.filter(gemeinde => gemeinde.besondereVolksschule === this.besondereVolksschulen);
+        this.selectedGemeinde = this.gemeindeList[0];
     }
 
     public save(): void {

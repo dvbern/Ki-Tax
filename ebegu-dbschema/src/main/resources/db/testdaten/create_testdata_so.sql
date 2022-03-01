@@ -257,63 +257,6 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  null as erlaeuterung
 	  from gesuchsperiode as gp) as tmp;
 
-# Tagis fuer Paris aktivieren
-# INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-# 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-# SELECT *
-# FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-# 			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-# 			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-# 			 'flyway'                           as user_erstellt,
-# 			 'flyway'                           as user_mutiert,
-# 			 0                                  as version,
-# 			 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' as einstellung_key,
-# 			 'false' 								as value,
-# 			 @testgemeinde_solothurn_id as gemeinde_id,
-# 			 gp.id                              as gesuchsperiode_id,
-# 			 @mandant_id_solothurn as mandant_id
-# 	  from gesuchsperiode as gp) as tmp
-# where (select count(*) from einstellung where gemeinde_id =  @testgemeinde_solothurn_id
-# 		and einstellung_key = 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED') = 0;
-#
-#
-# # Minimale Erwerbspensen fuer Paris ueberschreiben: 15%/30% anstatt 20%/40% fuer Vorschulkinder/EingeschulteKinder
-# INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-# 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-# SELECT *
-# FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-# 			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-# 			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-# 			 'flyway'                           as user_erstellt,
-# 			 'flyway'                           as user_mutiert,
-# 			 0                                  as version,
-# 			 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' as einstellung_key,
-# 			 'null' 								as value,
-# 			 @testgemeinde_solothurn_id as gemeinde_id,
-# 			 gp.id                              as gesuchsperiode_id,
-# 			 @mandant_id_solothurn as mandant_id
-# 	  from gesuchsperiode as gp) as tmp
-# where (select count(*) from einstellung where gemeinde_id =  @testgemeinde_solothurn_id
-# 		and einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT') = 0;
-#
-# INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-# 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-# SELECT *
-# FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-# 			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-# 			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-# 			 'flyway'                           as user_erstellt,
-# 			 'flyway'                           as user_mutiert,
-# 			 0                                  as version,
-# 			 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' as einstellung_key,
-# 			 'null' 								as value,
-# 			 @testgemeinde_solothurn_id as gemeinde_id,
-# 			 gp.id                              as gesuchsperiode_id,
-# 			 @mandant_id_solothurn as mandant_id
-# 	  from gesuchsperiode as gp) as tmp
-# where (select count(*) from einstellung where gemeinde_id =  @testgemeinde_solothurn_id
-# 		and einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT') = 0;
-
 INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															 user_mutiert, version, gemeinde_id, gesuchsperiode_id,
 															 merkblatt_anmeldung_tagesschule_de,

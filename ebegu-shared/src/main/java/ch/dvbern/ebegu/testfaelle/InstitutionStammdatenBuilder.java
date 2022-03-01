@@ -87,14 +87,14 @@ public abstract class InstitutionStammdatenBuilder {
 		return institutionStammdatenService.findInstitutionStammdaten(idInstitutionStammdatenTagesfamilie)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"findInstitutionTagesfamilien",
-						idInstitutionStammdatenWeissenstein));
+					idInstitutionStammdatenTagesfamilie));
 	}
 
 	protected InstitutionStammdaten findInstitutionTagesschule() {
 		return institutionStammdatenService.findInstitutionStammdaten(idInstitutionStammdatenTagesschule)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"findInstitutionTagesschule",
-						idInstitutionStammdatenWeissenstein));
+					idInstitutionStammdatenTagesschule));
 	}
 
 	protected InstitutionStammdaten findInstitutionFerieninsel() {
@@ -102,7 +102,7 @@ public abstract class InstitutionStammdatenBuilder {
 		return institutionStammdatenService.findInstitutionStammdaten(idInstitutionStammdatenFerieninsel)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"findInstitutionFerieninsel",
-						idInstitutionStammdatenWeissenstein));
+					idInstitutionStammdatenFerieninsel));
 	}
 
 	public InstitutionStammdatenService getInstitutionStammdatenService() {

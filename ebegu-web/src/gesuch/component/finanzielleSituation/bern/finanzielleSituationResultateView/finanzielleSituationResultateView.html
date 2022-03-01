@@ -62,6 +62,7 @@
                                     <dv-valueinput input-id="nettovermoegenGS1" name="nettovermoegenGS1"
                                                    aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
+                                                   ng-disabled="true"
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
@@ -197,6 +198,7 @@
                                     <dv-valueinput input-id="nettovermoegenGS2" name="nettovermoegenGS2"
                                                    aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
+                                                   ng-disabled="true"
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher
@@ -288,6 +290,14 @@
                                 </div>
                             </dv-input-container>
                         </div>
+                    </div>
+
+                    <div class="inline-hint margin-bottom-30" ng-if="vm.showAufteilung()">
+                        {{'FINANZIELLE_SITUATION_AUFGETEILTE_WERTE' | translate}}
+                        <ul>
+                            <li>{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE' | translate}}</li>
+                        </ul>
+                        <a class="pointer-cursor" ng-click="vm.startAufteilung()">{{'AUFTEILUNG_AENDERN' | translate}}</a>
                     </div>
 
                 </fieldset>

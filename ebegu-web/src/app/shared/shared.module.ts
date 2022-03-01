@@ -23,11 +23,13 @@ import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
+import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
+import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
@@ -47,6 +49,7 @@ import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdie
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
+import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
@@ -67,7 +70,6 @@ import {ExternalClientAssignmentComponent} from './component/external-client-ass
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {FileUploadComponent} from './component/file-upload/file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
-import {IeDeprecationWarningComponent} from './component/ie-deprecation-warning/ie-deprecation-warning.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
@@ -165,13 +167,14 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSozialdienstDialogComponent,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
-        IeDeprecationWarningComponent,
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvInputLabelFieldComponent,
+        DvEingabeBasisjahrComponent,
         EbeguNumberPipe,
-        DvValueinputXComponent
+        DvValueinputXComponent,
+        DvRadioInputXComponent,
+        DvCheckboxXComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -237,8 +240,12 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvInputLabelFieldComponent,
-        DvValueinputXComponent
+        DvEingabeBasisjahrComponent,
+        DvValueinputXComponent,
+        EbeguNumberPipe,
+        DvValueinputXComponent,
+        DvRadioInputXComponent,
+        DvCheckboxXComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
