@@ -102,12 +102,12 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 		// Jaehrlicher BruttoLohn Berechnen
 		einkVerResultDTO.setBruttolohnJahrGS1(calculateJaehrlicherBruttolohn(einkommensverschlechterungGS1));
 		einkVerResultDTO.setBruttolohnJahrGS2(calculateJaehrlicherBruttolohn(einkommensverschlechterungGS2));
-		// Massgegebeneseinkommens bevor abzug Vermoegen
+		// Massgegebeneseinkommens bevor Einbeziehen Vermoegen
 		final BigDecimal abzugNettoLohnGS1 =  MathUtil.GANZZAHL.from(percent(einkVerResultDTO.getBruttolohnJahrGS1(), 25));
 		final BigDecimal abzugNettoLohnGS2 =  MathUtil.GANZZAHL.from(percent(einkVerResultDTO.getBruttolohnJahrGS2(), 25));
 		final BigDecimal nettoLohnGS1 =  subtract(einkVerResultDTO.getBruttolohnJahrGS1(), abzugNettoLohnGS1);
 		final BigDecimal nettoLohnGS2 =  subtract(einkVerResultDTO.getBruttolohnJahrGS2(), abzugNettoLohnGS2);
-		// Massgegebeneseinkommens mit abzug Vermoegen
+		// Massgegebeneseinkommens mit Einbeziehen Vermoegen
 		final BigDecimal massgebendesEinkVorAbzFamGrGS1 = calculateMassgegebendesEinkVorAbzFamGrEKV(nettoLohnGS1, einkommensverschlechterungGS1);
 		final BigDecimal massgebendesEinkVorAbzFamGrGS2 = calculateMassgegebendesEinkVorAbzFamGrEKV(nettoLohnGS2, einkommensverschlechterungGS2);
 		einkVerResultDTO.setMassgebendesEinkVorAbzFamGrGS1(massgebendesEinkVorAbzFamGrGS1);
@@ -126,7 +126,7 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 
 	private BigDecimal calculateMassgegebendesEinkVorAbzFamGrEKV(@Nonnull BigDecimal nettoLohn, @Nullable Einkommensverschlechterung einkommensverschlechterung) {
 		final BigDecimal nettoVermoegenGS1 = einkommensverschlechterung != null ? MathUtil.GANZZAHL.from(percent(einkommensverschlechterung.getNettoVermoegen(), 5)) : BigDecimal.ZERO;
-		return subtract(nettoLohn, nettoVermoegenGS1);
+		return add(nettoLohn, nettoVermoegenGS1);
 	}
 
 	private BigDecimal calculateMassgebendesEinkommenZusammen(FinanzielleSituationResultateDTO finSitResultDTO) {
