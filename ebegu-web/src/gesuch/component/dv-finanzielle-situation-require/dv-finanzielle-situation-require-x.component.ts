@@ -51,7 +51,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
 
     @Input()
-    public areThereOnlyBgBetreuungen: boolean;
+    public areThereAnyBgBetreuungen: boolean;
 
     private maxMassgebendesEinkommen: string;
     private isFinSitTypFkjv: boolean = false;
@@ -110,7 +110,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             && !this.sozialhilfeBezueger;
 
         if (this.isFinSitTypFkjv) {
-            if (isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen) {
+            if (isNotSozialhilfeBezueger && !this.areThereAnyBgBetreuungen) {
                 return true;
             }
             this.verguenstigungGewuenscht = true;

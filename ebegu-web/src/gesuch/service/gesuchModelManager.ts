@@ -341,7 +341,7 @@ export class GesuchModelManager {
     }
 
     public updateVerguenstigungGewuenschtFlag(): void {
-        if (!this.gesuch.areThereOnlyBgBetreuungen()) {
+        if (this.gesuch.areThereOnlySchulamtAngebote()) {
             return;
         }
 

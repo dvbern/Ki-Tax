@@ -894,6 +894,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					}
 				}
 			}
+			// Es gibt ein Spezialfall: Falls eine BG Betreuung hinzugefügt wurde, wird die Frage
+			// verguenstigungGewuenscht auf der FamSit true gesetzt und die FamSit wird neu gespeichert.
+			// in diesem Fall müssen wir den FinSitStatus hier noch einmal für die Betreuungen prüfen.
+			checkFinSitStatusForBetreuungen(wizardStep);
 		}
 	}
 
@@ -943,13 +947,24 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * This should be called after removing or adding a Betreuung.
 	 */
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
-		if ((wizardStep.getWizardStepName().isEKVWizardStepName()
-			|| wizardStep.getWizardStepName().isFinSitWizardStepName()) &&
-			(!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
-				wizardStep.getGesuch(),	wizardStep.getWizardStepName())
-				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
-				|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
-				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG)) {
+		boolean isEkvOrFinSitStep = (wizardStep.getWizardStepName().isEKVWizardStepName()
+			|| wizardStep.getWizardStepName().isFinSitWizardStepName());
+		if (!isEkvOrFinSitStep) {
+			return;
+		}
+		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG) {
+			return;
+		}
+		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
+			wizardStep.getGesuch(),	wizardStep.getWizardStepName());
+		if (finSitIntroducedAndComplete) {
+			return;
+		}
+		boolean finSitRequired = EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch());
+		boolean familienSituationVollstaendig = EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch());
+
+		// falls FamSit nicht vollständig ist, wird wizardStep immer invalidiert
+		if (finSitRequired || !familienSituationVollstaendig) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
