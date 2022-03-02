@@ -578,4 +578,12 @@ export class EditInstitutionComponent implements OnInit {
             return 0;
         });
     }
+
+    public getMinByRole(): moment.Moment {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN) ? DateUtil.startOfTime() : this.tomorrow;
+    }
+
+    public showWarningInstitutionRueckwirkendSchliessen(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN) && this.stammdaten.gueltigkeit.gueltigBis?.isBefore(this.tomorrow);
+    }
 }

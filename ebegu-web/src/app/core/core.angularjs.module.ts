@@ -44,6 +44,7 @@ import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.s
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
 import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
+import {FjkvKinderabzugExchangeService} from '../../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -70,7 +71,6 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
-import {IeDeprecationWarningComponent} from '../shared/component/ie-deprecation-warning/ie-deprecation-warning.component';
 import {ColorService} from '../shared/services/color.service';
 import {MandantService} from '../shared/services/mandant.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
@@ -105,6 +105,7 @@ import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
 import {appRun} from './core.route';
+import {customTranslateLoader} from './custom-translate-provider';
 import {DVBarcodeListener} from './directive/dv-barcode-listener';
 import {DVDatepicker} from './directive/dv-datepicker/dv-datepicker';
 import {DvDialog} from './directive/dv-dialog/dv-dialog';
@@ -251,6 +252,8 @@ export const CORE_JS_MODULE = angular
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
+    .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('CustomTranslationLoader', ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
@@ -311,7 +314,6 @@ export const CORE_JS_MODULE = angular
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
-    .directive('dvIeDeprecationWarning', downgradeComponent({component: IeDeprecationWarningComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)

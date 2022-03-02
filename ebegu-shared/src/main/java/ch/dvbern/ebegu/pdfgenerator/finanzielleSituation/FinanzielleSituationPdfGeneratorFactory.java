@@ -54,6 +54,14 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 				erstesEinreichungsdatum,
 				finanzielleSituationRechner
 			);
+		case LUZERN:
+			return new FinanzielleSituationPdfGeneratorLuzern(
+				gesuch,
+				verfuegungFuerMassgEinkommen,
+				stammdaten,
+				erstesEinreichungsdatum,
+				finanzielleSituationRechner
+			);
 		default:
 			throw new EbeguRuntimeException("getGenerator", "No PDF Generator found for finSitTyp: " + gesuch.getFinSitTyp());
 		}

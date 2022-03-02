@@ -38,6 +38,30 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private Kinderabzug kinderabzugZweitesHalbjahr;
 
+	@Nullable
+	private Boolean isPflegekind;
+
+	@Nullable
+	private Boolean pflegeEntschaedigungErhalten;
+
+	@Nullable
+	private Boolean obhutAlternierendAusueben;
+
+	@Nullable
+	private Boolean gemeinsamesGesuch;
+
+	@Nullable
+	private Boolean inErstausbildung;
+
+	@Nullable
+	private Boolean lebtKindAlternierend;
+
+	@Nullable
+	private Boolean alimenteErhalten;
+
+	@Nullable
+	private Boolean alimenteBezahlen;
+
 	@NotNull
 	private Boolean familienErgaenzendeBetreuung;
 
@@ -81,6 +105,78 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setKinderabzugZweitesHalbjahr(@Nullable Kinderabzug kinderabzugZweitesHalbjahr) {
 		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
+	}
+
+	@Nullable
+	public Boolean getPflegekind() {
+		return isPflegekind;
+	}
+
+	public void setPflegekind(@Nullable Boolean pflegekind) {
+		isPflegekind = pflegekind;
+	}
+
+	@Nullable
+	public Boolean getPflegeEntschaedigungErhalten() {
+		return pflegeEntschaedigungErhalten;
+	}
+
+	public void setPflegeEntschaedigungErhalten(@Nullable Boolean pflegeEntschaedigungErhalten) {
+		this.pflegeEntschaedigungErhalten = pflegeEntschaedigungErhalten;
+	}
+
+	@Nullable
+	public Boolean getObhutAlternierendAusueben() {
+		return obhutAlternierendAusueben;
+	}
+
+	public void setObhutAlternierendAusueben(@Nullable Boolean obhutAlternierendAusueben) {
+		this.obhutAlternierendAusueben = obhutAlternierendAusueben;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamesGesuch() {
+		return gemeinsamesGesuch;
+	}
+
+	public void setGemeinsamesGesuch(@Nullable Boolean gemeinsamesGesuch) {
+		this.gemeinsamesGesuch = gemeinsamesGesuch;
+	}
+
+	@Nullable
+	public Boolean getInErstausbildung() {
+		return inErstausbildung;
+	}
+
+	public void setInErstausbildung(@Nullable Boolean inErstausbildung) {
+		this.inErstausbildung = inErstausbildung;
+	}
+
+	@Nullable
+	public Boolean getLebtKindAlternierend() {
+		return lebtKindAlternierend;
+	}
+
+	public void setLebtKindAlternierend(@Nullable Boolean lebtKindAlternierend) {
+		this.lebtKindAlternierend = lebtKindAlternierend;
+	}
+
+	@Nullable
+	public Boolean getAlimenteErhalten() {
+		return alimenteErhalten;
+	}
+
+	public void setAlimenteErhalten(@Nullable Boolean alimenteErhalten) {
+		this.alimenteErhalten = alimenteErhalten;
+	}
+
+	@Nullable
+	public Boolean getAlimenteBezahlen() {
+		return alimenteBezahlen;
+	}
+
+	public void setAlimenteBezahlen(@Nullable Boolean alimenteBezahlen) {
+		this.alimenteBezahlen = alimenteBezahlen;
 	}
 
 	public Boolean getFamilienErgaenzendeBetreuung() {

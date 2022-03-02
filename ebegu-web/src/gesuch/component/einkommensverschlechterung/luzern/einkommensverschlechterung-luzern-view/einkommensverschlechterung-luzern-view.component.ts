@@ -26,8 +26,9 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
+import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
-import {AbstractEKVLuzernView} from '../AbstractEKVLuzernView';
+import {EKVViewUtil} from '../../EKVViewUtil';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-view',
@@ -35,9 +36,11 @@ import {AbstractEKVLuzernView} from '../AbstractEKVLuzernView';
     styleUrls: ['./einkommensverschlechterung-luzern-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungLuzernViewComponent extends AbstractEKVLuzernView {
+export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
     @ViewChild(NgForm) private readonly form: NgForm;
+
+    public ekvViewUtil = EKVViewUtil;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -45,7 +48,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractEKVLu
         protected finSitLuService: FinanzielleSituationLuzernService,
         private readonly $transition$: Transition,
     ) {
-        super(gesuchModelManager, wizardStepManager);
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
         const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
@@ -80,6 +83,13 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractEKVLu
             onResult(ekv);
             return ekv;
         });
+    }
+
+    public isGemeinsam(): boolean {
+        // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
+        // or only for the single antragsteller
+        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 
     private isGesuchValid(): boolean {

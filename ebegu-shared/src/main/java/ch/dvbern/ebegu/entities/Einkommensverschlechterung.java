@@ -42,6 +42,22 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
+	@Nullable
+	@Column(name = "bruttolohn_abrechnung_1", nullable = true)
+	private BigDecimal bruttolohnAbrechnung1;
+
+	@Nullable
+	@Column(name = "bruttolohn_abrechnung_2", nullable = true)
+	private BigDecimal bruttolohnAbrechnung2;
+
+	@Nullable
+	@Column(name = "bruttolohn_abrechnung_3", nullable = true)
+	private BigDecimal bruttolohnAbrechnung3;
+
+	@Nullable
+	@Column
+	private Boolean extraLohn;
+
 	public Einkommensverschlechterung() {
 	}
 
@@ -67,6 +83,42 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung1() {
+		return bruttolohnAbrechnung1;
+	}
+
+	public void setBruttolohnAbrechnung1(@Nullable BigDecimal bruttolohnAbrechnung1) {
+		this.bruttolohnAbrechnung1 = bruttolohnAbrechnung1;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung2() {
+		return bruttolohnAbrechnung2;
+	}
+
+	public void setBruttolohnAbrechnung2(@Nullable BigDecimal bruttolohnAbrechnung2) {
+		this.bruttolohnAbrechnung2 = bruttolohnAbrechnung2;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung3() {
+		return bruttolohnAbrechnung3;
+	}
+
+	public void setBruttolohnAbrechnung3(@Nullable BigDecimal bruttolohnAbrechnung3) {
+		this.bruttolohnAbrechnung3 = bruttolohnAbrechnung3;
+	}
+
+	@Nullable
+	public Boolean getExtraLohn() {
+		return extraLohn;
+	}
+
+	public void setExtraLohn(@Nullable Boolean extraLohn) {
+		this.extraLohn = extraLohn;
 	}
 
 	@Nonnull

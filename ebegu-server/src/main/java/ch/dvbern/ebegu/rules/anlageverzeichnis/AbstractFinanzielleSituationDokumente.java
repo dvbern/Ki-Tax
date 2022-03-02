@@ -30,9 +30,11 @@ import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
 /**
- * Gemeinsame Basisklasse zum berechnen der benötigten Dokumente für die Finanzielle Situation und die Einkommensverschlechterung
+ * Gemeinsame Basisklasse zum berechnen der benötigten Dokumente für die Finanzielle Situation und die
+ * Einkommensverschlechterung
  */
-abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
+abstract class AbstractFinanzielleSituationDokumente
+	extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
 
 	void getAllDokumenteGesuchsteller(
 		Set<DokumentGrund> anlageVerzeichnis,
@@ -42,7 +44,7 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		AbstractFinanzielleSituation abstractFinanzielleSituation,
 		DokumentGrundTyp dokumentGrundTyp,
 		@Nonnull LocalDate stichtag
-	) {
+		) {
 
 		final String basisJahrString = String.valueOf(basisJahr);
 
@@ -94,14 +96,16 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 	}
 
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp,
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation != null) {
 			switch (dokumentTyp) {
 			case STEUERVERANLAGUNG:
 				return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
 			case STEUERERKLAERUNG:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() && abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten()
+					&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 			case JAHRESLOHNAUSWEISE:
 				return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
 			case NACHWEIS_FAMILIENZULAGEN:
@@ -135,6 +139,10 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 				return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 1);
 			case ERFOLGSRECHNUNGEN_JAHR_MINUS2:
 				return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 2);
+			case NACHWEIS_LOHNAUSWEIS_1:
+			case NACHWEIS_LOHNAUSWEIS_2:
+			case NACHWEIS_LOHNAUSWEIS_3:
+				return true;
 			default:
 				return false;
 			}
@@ -142,7 +150,9 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		return false;
 	}
 
-	protected abstract boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
+	protected abstract boolean isJahresLohnausweisNeeded(
+		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
 
-	protected abstract boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
+	protected abstract boolean isErfolgsrechnungNeeded(
+		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
 }

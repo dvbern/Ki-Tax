@@ -13,22 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- Workaround um den Async angular-translate loader in Unit Tests durch einen
- loader zu ersetzten, der keine REST requests macht
- https://angular-translate.github.io/docs/#/guide/22_unit-testing-with-angular-translate
+package ch.dvbern.ebegu.enums;
+
+/**
+ * Enum fuer Typ des Kinderabzuges
  */
-
-// tslint:disable:no-commented-code
-/*
-beforeEach(angular.mock.module('ebeguWeb.core',
-function ($provide: IProvideService, $translateProvider: ITranslateProvider) {
-
-    $provide.factory('customLoader', function ($q: IQService) {
-        return function () {
-            return $q.resolve({});
-        };
-    });
-    $translateProvider.useLoader('customLoader');
-}));
-*/
+public enum KinderabzugTyp {
+	ASIV,
+	FKJV,
+	KEINE,
+}

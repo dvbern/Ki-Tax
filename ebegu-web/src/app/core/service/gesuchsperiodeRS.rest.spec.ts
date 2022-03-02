@@ -16,6 +16,7 @@
 import {IHttpBackendService, IHttpService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -38,6 +39,8 @@ describe('gesuchsperiodeRS', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         gesuchsperiodeRS = $injector.get('GesuchsperiodeRS');

@@ -209,7 +209,7 @@
                                            id="begu_ende_id"
                                            aria-describedby="begu_start_end_id"
                                            [matDatepicker]="begu_ende_id"
-                                           [min]="tomorrow"
+                                           [min]="getMinByRole()"
                                            [disabled]="isDateStartEndDisabled()"
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                            [(ngModel)]="stammdaten.gueltigkeit.gueltigBis">
@@ -218,6 +218,12 @@
                                     <dv-error-messages inputId="begu_ende_id"
                                                        [errorObject]="form.controls.begu_ende_id?.errors">
                                     </dv-error-messages>
+                                    <div class="custom-errors">
+                                        <div *ngIf="showWarningInstitutionRueckwirkendSchliessen()">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                            <span translate>WARNING_SUPERADMIN_INSTITUTION_SCHLIESSEN_RUECKWIRKEND</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

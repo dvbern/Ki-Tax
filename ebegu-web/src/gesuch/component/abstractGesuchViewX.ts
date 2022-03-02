@@ -16,6 +16,9 @@
  */
 
 import {AfterViewInit, Directive} from '@angular/core';
+import {isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
+import {TSEingangsart} from '../../models/enums/TSEingangsart';
+import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSGesuch} from '../../models/TSGesuch';
 import {GesuchModelManager} from '../service/gesuchModelManager';
@@ -98,5 +101,15 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
 
     public set model(value: T) {
         this._model = value;
+    }
+
+    public isKorrekturModusJugendamtOrFreigegeben(): boolean {
+        return this.gesuchModelManager.getGesuch()
+            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+    }
+
+    public isFKJV(): boolean {
+        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 }

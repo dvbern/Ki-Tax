@@ -34,11 +34,13 @@ import {
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterung/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
-import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
@@ -61,6 +63,7 @@ import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView
 import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
+import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
 import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
@@ -93,8 +96,12 @@ export const GESUCH_JS_MODULE =
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
         .component('einkommensverschlechterungLuzernView,',
             downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
+        .component('einkommensverschlechterungSolothurnView,',
+            downgradeComponent({component: EinkommensverschlechterungSolothurnViewComponent}))
         .component('einkommensverschlechterungLuzernResultateView',
             downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
+        .component('einkommensverschlechterungSolothurnResultateView',
+            downgradeComponent({component: EinkommensverschlechterungSolothurnResultateViewComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())
@@ -111,7 +118,7 @@ export const GESUCH_JS_MODULE =
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())
         .component('einkommensverschlechterungResultateView',
-            new EinkommensverschlechterungResultateViewComponentConfig())
+            downgradeComponent({component: EinkommensverschlechterungResultateViewComponent}))
         .component('freigabeView', new FreigabeViewComponentConfig())
         .component('dokumenteView', new DokumenteViewComponentConfig())
         .component('kommentarView', new KommentarViewComponentConfig())
@@ -133,6 +140,10 @@ export const GESUCH_JS_MODULE =
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
+        .directive('dvFkjvKinderabzug', downgradeComponent({
+            component: FkjvKinderabzugComponent,
+            inputs: ['kindContainer']
+        }))
         .directive('dvFinanzielleSituationAufteilung', downgradeComponent({
             component: FinanzielleSituationAufteilungComponent,
             outputs: ['closeEvent']
