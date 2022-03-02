@@ -186,7 +186,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		// Besondere Beduerfnisse Betrag konfigurierbar?
-		if (betreuung.hasErweiterteBeduerfnisseBetrag()) {
+		if (besondereBeduerfnisseBestaetigt && betreuung.hasErweiterteBeduerfnisseBetrag()) {
 			BigDecimal erweitereteBeduerfnisseBetrag = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweitereteBeduerfnisseBetrag();
 			zeitabschnitt.setBesondereBeduerfnisseBetragForAsivAndGemeinde(erweitereteBeduerfnisseBetrag);
 		}

@@ -263,7 +263,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public isDisabled(index: number): boolean {
-        return this.getAbweichung(index).status === TSBetreuungspensumAbweichungStatus.VERRECHNET;
+        return this.getAbweichung(index).status === TSBetreuungspensumAbweichungStatus.VERRECHNET
+            || EbeguUtil.isNullOrUndefined(this.getAbweichung(index).vertraglicheKosten);
     }
 
     public isAbweichungAllowed(): boolean {
@@ -299,7 +300,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             {
                 vorname: this.kindModel.kindJA.vorname,
                 name: this.kindModel.kindJA.nachname,
-                institution: this.institution
+                institution: this.institution,
             });
     }
 

@@ -724,50 +724,11 @@ public class BGCalculationInput {
 			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
 		}
 
-		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
-		if (this.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
-		}
-		if (other.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
-		}
-		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
-
-		BigDecimal newMonatlicheHauptmahlzeiten = BigDecimal.ZERO;
-		if (this.getAnzahlHauptmahlzeiten() != null) {
-			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(this.getAnzahlHauptmahlzeiten());
-		}
-		if (other.getAnzahlHauptmahlzeiten() != null) {
-			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(other.getAnzahlHauptmahlzeiten());
-		}
-		this.setAnzahlHauptmahlzeiten(newMonatlicheHauptmahlzeiten);
-
-		BigDecimal newMonatlicheNebenmahlzeiten = BigDecimal.ZERO;
-		if (this.getAnzahlNebenmahlzeiten() != null) {
-			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(this.getAnzahlNebenmahlzeiten());
-		}
-		if (other.getAnzahlNebenmahlzeiten() != null) {
-			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(other.getAnzahlNebenmahlzeiten());
-		}
-		this.setAnzahlNebenmahlzeiten(newMonatlicheNebenmahlzeiten);
-
-		BigDecimal newTarifHauptmhalzeit = BigDecimal.ZERO;
-		if (this.getTarifHauptmahlzeit() != null) {
-			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(this.getTarifHauptmahlzeit());
-		}
-		if (other.getTarifHauptmahlzeit() != null) {
-			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(other.getTarifHauptmahlzeit());
-		}
-		this.setTarifHauptmahlzeit(newTarifHauptmhalzeit);
-
-		BigDecimal newTarifNebenmahlzeit = BigDecimal.ZERO;
-		if (this.getTarifNebenmahlzeit() != null) {
-			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(this.getTarifNebenmahlzeit());
-		}
-		if (other.getTarifNebenmahlzeit() != null) {
-			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(other.getTarifNebenmahlzeit());
-		}
-		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+		this.monatlicheBetreuungskosten = add(this.getMonatlicheBetreuungskosten(), other.getMonatlicheBetreuungskosten());
+		this.anzahlHauptmahlzeiten =  add(this.getAnzahlHauptmahlzeiten(), other.getAnzahlHauptmahlzeiten());
+		this.anzahlNebenmahlzeiten = add(this.getAnzahlNebenmahlzeiten(), other.getAnzahlNebenmahlzeiten());
+		this.tarifHauptmahlzeit = add(this.getTarifHauptmahlzeit(), other.getTarifHauptmahlzeit());
+		this.tarifNebenmahlzeit =  add(this.getTarifNebenmahlzeit(), other.getTarifNebenmahlzeit());
 
 		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt || other.verguenstigungMahlzeitenBeantragt);
 
@@ -797,19 +758,9 @@ public class BGCalculationInput {
 
 		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
-		if (this.besondereBeduerfnisseZuschlag != null) {
-			this.besondereBeduerfnisseZuschlag = this.besondereBeduerfnisseZuschlag.add(other.besondereBeduerfnisseZuschlag);
-		}
-		//minimalErfoderlichesPensum ist für die ganze Periode gleich und kann einfach kopiert werden
-		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
-
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
-		BigDecimal newAnspruchpnsumProzent = BigDecimal.ZERO;
-		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(this.anspruchspensumProzent);
-		newAnspruchpnsumProzent = newAnspruchpnsumProzent.add(other.anspruchspensumProzent);
-		this.anspruchspensumProzent = newAnspruchpnsumProzent;
-		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+		this.anspruchspensumProzent = add(this.anspruchspensumProzent, other.anspruchspensumProzent);
 		//nach add der anspruchspensumprotzen muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
 		this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
 		this.einkommensjahr = other.einkommensjahr;
@@ -840,6 +791,23 @@ public class BGCalculationInput {
 		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
+		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
+
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+	}
+
+	private BigDecimal add(@Nullable BigDecimal b1, @Nullable BigDecimal b2) {
+		BigDecimal result = BigDecimal.ZERO;
+
+		if(b1 != null) {
+			result = result.add(b1);
+		}
+
+		if(b2 != null) {
+			result = result.add(b2);
+		}
+
+		return result;
 	}
 
 	public void calculateInputValuesProportionaly(double percentage) {
