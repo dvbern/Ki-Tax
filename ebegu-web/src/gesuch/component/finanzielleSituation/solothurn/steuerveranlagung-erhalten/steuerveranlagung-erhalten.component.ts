@@ -7,11 +7,13 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     selector: 'dv-steuerveranlagung-erhalten',
     templateUrl: './steuerveranlagung-erhalten.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class SteuerveranlagungErhaltenComponent implements OnInit {
 
     @Input() public model: TSFinanzielleSituationContainer;
+
+    @Input() public isSelbstaendig: boolean = false;
 
     @Output() public readonly steuerveranlagungErhaltenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
