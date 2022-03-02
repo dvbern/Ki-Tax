@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableMandantFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -35,7 +34,6 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Service fuer die Verwaltung von Benutzern
@@ -113,7 +111,7 @@ public interface BenutzerService {
 	String findFallIdIfBenutzerIsGesuchstellerWithoutFreigegebenemGesuch(@Nonnull Benutzer benutzer);
 
 	@Nonnull
-	Optional<Benutzer> findBenutzer(@Nonnull String username, @Nullable Mandant mandant);
+	Optional<Benutzer> findBenutzer(@Nonnull String username, @Nonnull Mandant mandant);
 
 	@Nonnull
 	Optional<Benutzer> findAndLockBenutzer(@Nonnull String username, @Nonnull Mandant mandant);
@@ -300,7 +298,9 @@ public interface BenutzerService {
 	/**
 	 * Gibt zurück, ob der Benutzer eine offene Einladung hat
 	 */
-	Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer);
+	Optional<Benutzer> findUserWithInvitation(
+			@Nonnull Benutzer benutzer,
+			Mandant mandant);
 
 	/**
 	 * Erzeugt einen Einladungslink für einen Benutzer

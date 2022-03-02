@@ -23,8 +23,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -36,6 +34,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
@@ -44,7 +43,6 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
@@ -92,7 +90,9 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 
 		Sozialdienst persistedSozialdienst = saveSozialdienst(sozialdienst);
 
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+		final Mandant mandant = persistedSozialdienst.getMandant();
+
+		final Benutzer benutzer = benutzerService.findBenutzer(adminMail, mandant)
 			.map(b -> {
 				if (b.getRole() != UserRole.GESUCHSTELLER) {
 					// an existing user cannot be used to create a new Sozial / Unterstuetzung Dienst
@@ -106,8 +106,7 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 			})
 			.orElseGet(() -> benutzerService.createAdminSozialdienstByEmail(adminMail, persistedSozialdienst));
 
-		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst),
-				persistedSozialdienst.getMandant());
+		benutzerService.einladen(Einladung.forSozialdienst(benutzer, persistedSozialdienst), mandant);
 
 		return persistedSozialdienst;
 	}

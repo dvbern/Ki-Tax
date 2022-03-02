@@ -74,6 +74,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -178,8 +179,10 @@ public class InstitutionResource {
 
 		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail, gemeindeId);
 
+		Mandant mandant = requireNonNull(persistedInstitution.getMandant());
+
 		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
-			Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			Benutzer benutzer = benutzerService.findBenutzer(adminMail, mandant)
 				.map(b -> {
 					if ((b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT && b.getRole() != UserRole.GESUCHSTELLER) ||
 						!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
@@ -195,8 +198,7 @@ public class InstitutionResource {
 				})
 				.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
-			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution),
-					requireNonNull(persistedInstitution.getMandant()));
+			benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution), mandant);
 		}
 
 		URI uri = uriInfo.getBaseUriBuilder()

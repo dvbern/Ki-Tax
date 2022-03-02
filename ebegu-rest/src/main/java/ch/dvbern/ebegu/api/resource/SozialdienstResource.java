@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -40,9 +41,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.sozialdienst.JaxSozialdienst;
@@ -52,6 +55,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.SozialdienstStatus;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.SozialdienstService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -75,6 +79,9 @@ public class SozialdienstResource {
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private MandantService mandantService;
 
 	@ApiOperation(value = "Erstellt eine neue Sozialdienst in der Datenbank", response = JaxSozialdienst.class)
 	@Nullable
@@ -104,9 +111,11 @@ public class SozialdienstResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll // Oeffentliche Daten
-	public List<JaxSozialdienst> getAllSozialdienst() {
+	public List<JaxSozialdienst> getAllSozialdienst(@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
-		return sozialdienstService.getAllSozialdienste().stream()
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return sozialdienstService.getAllSozialdienste(mandant).stream()
 			.map(sozialdienst -> jaxSozialdienstConverter.sozialdienstToJAX(sozialdienst))
 			.collect(Collectors.toList());
 	}

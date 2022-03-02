@@ -169,7 +169,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer storedUser;
 
 
-		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitationByEmail(benutzer);
+		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitation(benutzer, mandant);
 		// wenn der Benutzer eingeladen ist, muss er die Einladung akzeptieren
 		if(invitedUserOpt.isPresent()) {
 			final Benutzer presentUser = invitedUserOpt.get();

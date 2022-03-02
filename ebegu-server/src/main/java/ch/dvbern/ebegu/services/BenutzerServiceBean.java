@@ -859,8 +859,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	public Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer) {
-		return findBenutzerByEmail(benutzer.getEmail())
+	public Optional<Benutzer> findUserWithInvitation(
+			@Nonnull Benutzer benutzer,
+			Mandant mandant) {
+		return findBenutzer(benutzer.getEmail(), mandant)
 			.filter(benutzerByEmail ->
 				benutzerByEmail.getStatus() == BenutzerStatus.EINGELADEN
 					&& benutzerByEmail.getExternalUUID() == null
