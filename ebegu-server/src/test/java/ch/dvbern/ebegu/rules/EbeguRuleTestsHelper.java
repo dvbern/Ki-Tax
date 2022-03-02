@@ -63,6 +63,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERU
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
@@ -298,6 +299,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 		einstellungenMap.addEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode);
+		einstellungenMap.addEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
 		// LU
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
