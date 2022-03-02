@@ -121,8 +121,14 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 
 	@Nonnull
 	@Override
-	public Collection<Sozialdienst> getAllSozialdienste() {
-		return criteriaQueryHelper.getAllOrdered(Sozialdienst.class, Sozialdienst_.name);
+	public Collection<Sozialdienst> getAllSozialdienste(Mandant mandant) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Sozialdienst> query = cb.createQuery(Sozialdienst.class);
+		Root<Sozialdienst> root = query.from(Sozialdienst.class);
+		Predicate sameMandant = cb.equal(root.get(Sozialdienst_.mandant), mandant);
+		query.orderBy(cb.asc(root.get(Sozialdienst_.name)));
+		query.where(sameMandant);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
