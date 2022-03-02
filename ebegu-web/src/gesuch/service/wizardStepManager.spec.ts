@@ -17,6 +17,7 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../hybridTools/translationsMock';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
@@ -51,6 +52,8 @@ describe('wizardStepManager', () => {
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         authServiceRS = $injector.get('AuthServiceRS');

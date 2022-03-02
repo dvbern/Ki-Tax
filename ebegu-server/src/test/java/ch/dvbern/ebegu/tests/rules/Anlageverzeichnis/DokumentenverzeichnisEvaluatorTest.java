@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
@@ -604,6 +605,32 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 		assertType(dokumentGrundGS2, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller2().extractFullName(), "2017",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+
+		testgesuch.setFinSitTyp(FinanzielleSituationTyp.SOLOTHURN);
+
+		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assert.assertEquals(20, dokumentGrunds.size()); // 8 wie bevor + 12 wegen 2 EKV x 2 GS x 3 Lohnabrechnungen
+		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
+		Assert.assertEquals(10, dokumentGrundGS1.size());
+
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2016", 1);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2017", 1);
+
+		dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
+		Assert.assertEquals(10, dokumentGrundGS2.size());
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2016", 2);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2017", 2);
+	}
+
+	private void assertTypeForNachweisLohnausweis(Set<DokumentGrund> dokumentGrunds, String year, int gsNumber) {
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
+		assertType(dokumentGrunds, DokumentTyp.NACHWEIS_LOHNAUSWEIS_1, gsNumber == 1 ? testgesuch.getGesuchsteller1().extractFullName() : testgesuch.getGesuchsteller2().extractFullName(), year,
+			DokumentGrundPersonType.GESUCHSTELLER, gsNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+		assertType(dokumentGrunds, DokumentTyp.NACHWEIS_LOHNAUSWEIS_2, gsNumber == 1 ? testgesuch.getGesuchsteller1().extractFullName() : testgesuch.getGesuchsteller2().extractFullName(), year,
+			DokumentGrundPersonType.GESUCHSTELLER, gsNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+		assertType(dokumentGrunds, DokumentTyp.NACHWEIS_LOHNAUSWEIS_3, gsNumber == 1 ? testgesuch.getGesuchsteller1().extractFullName() : testgesuch.getGesuchsteller2().extractFullName(), year,
+			DokumentGrundPersonType.GESUCHSTELLER, gsNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 	}
 

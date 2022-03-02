@@ -15,12 +15,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
+
+const LOG = LogFactory.createLog('SelbstdeklarationComponent');
 
 @Component({
     selector: 'dv-selbstdeklaration',
@@ -51,9 +55,12 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public finanzModel: TSFinanzModel;
 
+    public resultate: TSFinanzielleSituationResultateDTO;
+
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager,
+        private readonly ref: ChangeDetectorRef,
     ) {
     }
 
@@ -63,13 +70,19 @@ export class SelbstdeklarationComponent implements OnInit {
         }
         // load initial results
         this.onValueChangeFunction();
+        this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
+                this.resultate = resultate;
+                this.ref.markForCheck();
+            }, error => LOG.error(error),
+        );
     }
 
     public onValueChangeFunction = (): void => {
         if (this.isEKV) {
-            return;
+            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahr);
+        } else {
+            this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
         }
-        this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
     public antragsteller1Name(): string {
@@ -78,5 +91,44 @@ export class SelbstdeklarationComponent implements OnInit {
 
     public antragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
+
+    public getEinkommenForCurrentAntragsteller(): number {
+        if (!this.resultate) {
+            return null;
+        }
+        if (this.antragstellerNummer === 1) {
+            return this.resultate.einkommenGS1;
+        }
+        if (this.antragstellerNummer === 2) {
+            return this.resultate.einkommenGS2;
+        }
+        return null;
+    }
+
+    public getAbzuegeForCurrentAntragsteller(): number {
+        if (!this.resultate) {
+            return null;
+        }
+        if (this.antragstellerNummer === 1) {
+            return this.resultate.abzuegeGS1;
+        }
+        if (this.antragstellerNummer === 2) {
+            return this.resultate.abzuegeGS2;
+        }
+        return null;
+    }
+
+    public getVermoegenForCurrentAntragsteller(): number {
+        if (!this.resultate) {
+            return null;
+        }
+        if (this.antragstellerNummer === 1) {
+            return this.resultate.vermoegenXPercentAnrechenbarGS1;
+        }
+        if (this.antragstellerNummer === 2) {
+            return this.resultate.vermoegenXPercentAnrechenbarGS2;
+        }
+        return null;
     }
 }

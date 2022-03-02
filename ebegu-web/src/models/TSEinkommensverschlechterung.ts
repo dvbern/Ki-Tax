@@ -19,6 +19,11 @@ export class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation
 
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
+    private _bruttolohnAbrechnung1: number;
+    private _bruttolohnAbrechnung2: number;
+    private _bruttolohnAbrechnung3: number;
+    private _extraLohn: boolean;
+
     public constructor() {
         super();
     }
@@ -29,5 +34,37 @@ export class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation
 
     public set geschaeftsgewinnBasisjahrMinus1(value: number) {
         this._geschaeftsgewinnBasisjahrMinus1 = value;
+    }
+
+    public get bruttolohnAbrechnung1(): number {
+        return this._bruttolohnAbrechnung1;
+    }
+
+    public set bruttolohnAbrechnung1(value: number) {
+        this._bruttolohnAbrechnung1 = value;
+    }
+
+    public get bruttolohnAbrechnung2(): number {
+        return this._bruttolohnAbrechnung2;
+    }
+
+    public set bruttolohnAbrechnung2(value: number) {
+        this._bruttolohnAbrechnung2 = value;
+    }
+
+    public get bruttolohnAbrechnung3(): number {
+        return this._bruttolohnAbrechnung3;
+    }
+
+    public set bruttolohnAbrechnung3(value: number) {
+        this._bruttolohnAbrechnung3 = value;
+    }
+
+    public get extraLohn(): boolean {
+        return this._extraLohn;
+    }
+
+    public set extraLohn(value: boolean) {
+        this._extraLohn = value;
     }
 }

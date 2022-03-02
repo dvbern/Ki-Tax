@@ -40,6 +40,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
@@ -69,6 +71,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse5;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
 	private final Integer paramMinDauerKonkubinat;
+	private final KinderabzugTyp kinderabzugTyp;
 
 	public FamilienabzugAbschnittRule(DateRange validityPeriod,
 		BigDecimal pauschalabzugProPersonFamiliengroesse3,
@@ -76,6 +79,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse5,
 		BigDecimal pauschalabzugProPersonFamiliengroesse6,
 		Integer paramMinDauerKonkubinat,
+		KinderabzugTyp kinderabzugTyp,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
@@ -84,6 +88,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
 		this.pauschalabzugProPersonFamiliengroesse6 = pauschalabzugProPersonFamiliengroesse6;
 		this.paramMinDauerKonkubinat = paramMinDauerKonkubinat;
+		this.kinderabzugTyp = kinderabzugTyp;
 	}
 
 	@Override
@@ -113,6 +118,11 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			if (gesuch.getGesuchsperiode().getGueltigkeit().contains(geburtsdatum)) {
 				final LocalDate beginMonatNachGeb = getStichtagForEreignis(geburtsdatum);
 				famGrMap.put(beginMonatNachGeb, calculateFamiliengroesse(gesuch, beginMonatNachGeb));
+			}
+			final LocalDate dateWith18 = geburtsdatum.plusYears(18);
+			if (gesuch.getGesuchsperiode().getGueltigkeit().contains(dateWith18)) {
+				final LocalDate beginMonatNach18Geb = getStichtagForEreignis(dateWith18);
+				famGrMap.put(beginMonatNach18Geb, calculateFamiliengroesse(gesuch, beginMonatNach18Geb));
 			}
 		}
 
@@ -203,6 +213,18 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 	private Map.Entry<Double, Integer> addAbzugFromKinder(
 		@Nonnull Gesuch gesuch,
+		@Nonnull LocalDate stichtag,
+		@Nonnull Double famGrBeruecksichtigungAbzug,
+		int famGrAnzahlPersonen
+	) {
+		if (this.kinderabzugTyp == KinderabzugTyp.FKJV) {
+			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		}
+		return addAbzugFromKinderAsiv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+	}
+
+	private Map.Entry<Double, Integer> addAbzugFromKinderAsiv(
+		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDate konkubinatBeginningNextMonth,
 		@Nonnull Double famGrBeruecksichtigungAbzug,
 		int famGrAnzahlPersonen
@@ -226,6 +248,68 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+	}
+
+	private Map.Entry<Double, Integer> addAbzugFromKinderFkjv(
+		@Nonnull Gesuch gesuch,
+		@Nonnull LocalDate stichtag,
+		@Nonnull Double famGrBeruecksichtigungAbzug,
+		int famGrAnzahlPersonen
+	) {
+		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), stichtag);
+
+		for (KindContainer kindContainer : gesuch.getKindContainers()) {
+			Kind kind = kindContainer.getKindJA();
+			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
+				famGrAnzahlPersonen++;
+				famGrBeruecksichtigungAbzug+= calculateFKJVKinderabzugForKind(kind, dateToCompare);
+			}
+		}
+
+		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+	}
+
+	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, LocalDate dateToCompare) {
+		if (kind.getPflegekind()) {
+			Objects.requireNonNull(kind.getPflegeEntschaedigungErhalten());
+			if (kind.getPflegeEntschaedigungErhalten()) {
+				return 0;
+			}
+			return 1;
+		}
+		if (kind.getObhutAlternierendAusueben() != null) {
+			if (!kind.getObhutAlternierendAusueben()) {
+				return 1;
+			}
+			Objects.requireNonNull(kind.getGemeinsamesGesuch());
+			if (kind.getGemeinsamesGesuch()) {
+				return 1;
+			}
+			return 0.5;
+		}
+		if (kind.getInErstausbildung() != null) {
+			if (!kind.getInErstausbildung()) {
+				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
+			}
+			if (kind.getAlimenteBezahlen() != null) {
+				if (!kind.getAlimenteBezahlen()) {
+					return 0;
+				}
+				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 1 : 0;
+			}
+			if (kind.getAlimenteErhalten() != null) {
+				if (kind.getAlimenteErhalten()) {
+					return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
+				}
+				return 1;
+			}
+		}
+		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
+	}
+
+	private boolean is18GeburtstagBeforeDate(@Nonnull Kind kind, @Nonnull LocalDate date) {
+		LocalDate dateWith18 = kind.getGeburtsdatum().plusYears(18);
+		return dateWith18.isBefore(date);
 	}
 
 	public List<VerfuegungZeitabschnitt> createInitialenFamilienAbzug(Gesuch gesuch) {

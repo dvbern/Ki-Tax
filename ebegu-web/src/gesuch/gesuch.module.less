@@ -432,7 +432,29 @@ dv-accordion.ewksubsub {
         }
     }
 
-    &.static-position div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon) {
+    // exclude angular-material radio button and checkbox from static position
+    &.static-position div:not(
+    .md-container,
+    .md-off,
+    .md-on,
+    .md-icon,
+    .mat-radio-group,
+    .mat-radio-button,
+    .mat-radio-label,
+    .mat-radio-container,
+    .mat-radio-label-content,
+    .mat-radio-outer-circle,
+    .mat-radio-inner-circle,
+    .mat-ripple,
+    .mat-ripple-element,
+    .mat-checkbox,
+    .mat-checkbox-layout,
+    .mat-checkbox-inner-container,
+    .mat-checkbox-input,
+    .mat-checkbox-background,
+    .mat-checkbox-frame,
+    .mat-ripple
+    ) {
         position: static;
     }
 }

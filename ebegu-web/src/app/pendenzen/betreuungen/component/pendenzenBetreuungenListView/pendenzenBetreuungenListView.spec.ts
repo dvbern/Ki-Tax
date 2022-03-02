@@ -20,6 +20,7 @@ import {BerechnungsManager} from '../../../../../gesuch/service/berechnungsManag
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
+import {translationsMock} from '../../../../../hybridTools/translationsMock';
 import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPendenzBetreuung} from '../../../../../models/TSPendenzBetreuung';
 import {TestDataUtil} from '../../../../../utils/TestDataUtil.spec';
@@ -49,6 +50,8 @@ describe('pendenzenBetreuungenListView', () => {
     beforeEach(angular.mock.module(PENDENZEN_BETREUUNGEN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
+
+    beforeEach(angular.mock.module(translationsMock));
 
     beforeEach(angular.mock.inject($injector => {
         pendenzBetreuungenRS = $injector.get('PendenzBetreuungenRS');
