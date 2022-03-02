@@ -26,7 +26,16 @@
        [disabled]="disabled"
        [pattern]="getInputValidationPattern()"
        class="form-control">
-
+<dv-eingaben-basisjahr
+    [neuerWert]="neuerWert"
+    [wertBasisjahr]="wertBasisjahr"
+    [basisjahr]="basisjahr"
+>
+</dv-eingaben-basisjahr>
+<dv-bisher-x [showBisher]="showBisher"
+             [deklaration]="deklaration"
+             [korrektur]="korrektur">
+</dv-bisher-x>
 <dv-error-messages
     inputId="{{inputId}}"
     [errorObject]="inputField.errors">

@@ -23,6 +23,8 @@ export class TSFinanzielleSituationResultateDTO {
     private _massgebendesEinkVorAbzFamGr: number;
     private _massgebendesEinkVorAbzFamGrGS1: number;
     private _massgebendesEinkVorAbzFamGrGS2: number;
+    private _bruttolohnJahrGS1: number;
+    private _bruttolohnJahrGS2: number;
     private _einkommenGS1: number;
     private _einkommenGS2: number;
     private _abzuegeGS1: number;
@@ -117,6 +119,22 @@ export class TSFinanzielleSituationResultateDTO {
 
     public set massgebendesEinkVorAbzFamGrGS2(value: number) {
         this._massgebendesEinkVorAbzFamGrGS2 = value;
+    }
+
+    public get bruttolohnJahrGS1(): number {
+        return this._bruttolohnJahrGS1;
+    }
+
+    public set bruttolohnJahrGS1(value: number) {
+        this._bruttolohnJahrGS1 = value;
+    }
+
+    public get bruttolohnJahrGS2(): number {
+        return this._bruttolohnJahrGS2;
+    }
+
+    public set bruttolohnJahrGS2(value: number) {
+        this._bruttolohnJahrGS2 = value;
     }
 
     public get einkommenGS1(): number {

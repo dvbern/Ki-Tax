@@ -15,55 +15,56 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
+import {Component, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
-import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
-import {EKVViewUtil} from '../../EKVViewUtil';
 
 @Component({
-    selector: 'dv-einkommensverschlechterung-luzern-view',
-    templateUrl: './einkommensverschlechterung-luzern-view.component.html',
-    styleUrls: ['./einkommensverschlechterung-luzern-view.component.less'],
+    selector: 'dv-einkommensverschlechterung-solothurn-view',
+    templateUrl: './einkommensverschlechterung-solothurn-view.component.html',
+    styleUrls: ['./einkommensverschlechterung-solothurn-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
+export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
-    public ekvViewUtil = EKVViewUtil;
+    public readOnly: boolean = false;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        protected finSitLuService: FinanzielleSituationLuzernService,
+        protected berechnungsManager: BerechnungsManager,
         private readonly $transition$: Transition,
+        protected ref: ChangeDetectorRef,
     ) {
-        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
+        super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
         const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);
         this.gesuchModelManager.setGesuchstellerNumber(parsedGesuchstelllerNum);
         this.gesuchModelManager.setBasisJahrPlusNumber(parsedBasisJahrPlusNum);
-
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
             parsedGesuchstelllerNum, parsedBasisJahrPlusNum);
         this.model.copyEkvDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
-
+        this.readOnly = this.gesuchModelManager.isGesuchReadonly();
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             TSWizardStepStatus.IN_BEARBEITUNG);
+        this.onValueChangeFunction();
     }
 
     public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
@@ -85,11 +86,22 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         });
     }
 
-    public isGemeinsam(): boolean {
-        // if we don't need two separate antragsteller for gesuch, this is the component for both antragsteller together
-        // or only for the single antragsteller
-        return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
-            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    public onBruttoLohnChange(): void {
+        if (!this.form?.controls.bruttolohn.valid) {
+            return;
+        }
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
+            () => this.ref.markForCheck()
+        );
+    }
+
+    public onValueChangeFunction = (): void => {
+        if (!this.form?.controls.nettoVermoegen) {
+            return;
+        }
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
+            () => this.ref.markForCheck()
+        );
     }
 
     private isGesuchValid(): boolean {
@@ -103,5 +115,23 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         }
 
         return this.form.valid;
+    }
+
+    private getResultate(): TSFinanzielleSituationResultateDTO {
+        return this.model.getBasisJahrPlus() === 2 ?
+            this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
+            this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+    }
+
+    public getBruttolohnJahr(): number {
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.getResultate()?.bruttolohnJahrGS1 :
+            this.getResultate()?.bruttolohnJahrGS2;
+    }
+
+    public getMassgebendesEinkVorAbzFamGrGSX(): number {
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.getResultate()?.massgebendesEinkVorAbzFamGrGS1 :
+            this.getResultate()?.massgebendesEinkVorAbzFamGrGS2;
     }
 }

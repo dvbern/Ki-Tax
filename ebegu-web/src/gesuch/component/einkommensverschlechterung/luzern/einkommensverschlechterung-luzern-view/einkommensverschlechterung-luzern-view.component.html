@@ -25,7 +25,7 @@
             </h2>
             <h2 *ngIf="isGemeinsam()">
                 <span translate
-                      [translateParams]="{gesuchsteller: this.getGemeinsameFullname(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
+                      [translateParams]="{gesuchsteller: this.ekvViewUtil.getGemeinsameFullname(this.gesuchModelManager), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
             </h2>
             <hr class="header"/>
             <!-- Infotext -->
