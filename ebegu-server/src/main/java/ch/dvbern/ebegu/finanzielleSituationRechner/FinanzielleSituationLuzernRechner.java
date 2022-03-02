@@ -22,11 +22,9 @@ import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -55,8 +53,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 	 * calculate massgebendes einkommen for each antragsteller separately and stores variables in finSitResultDTO
 	 */
 	private void calculateAlleine(
-		@Nullable FinanzielleSituation finanzielleSituationGS1,
-		@Nullable FinanzielleSituation finanzielleSituationGS2,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
 	) {
 		var einkommenGS1 = calcEinkommen(finanzielleSituationGS1, null);
@@ -110,11 +108,19 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 				einkVerResultDTO,
 				einkommensverschlechterungGS1Bjp2,
 				einkommensverschlechterungGS2Bjp2);
+			calculateAlleine(
+				einkommensverschlechterungGS1Bjp2,
+				einkommensverschlechterungGS2Bjp2,
+				einkVerResultDTO);
 		} else {
 			calculateZusammen(
 				einkVerResultDTO,
 				einkommensverschlechterungGS1Bjp1,
 				einkommensverschlechterungGS2Bjp1);
+			calculateAlleine(
+				einkommensverschlechterungGS1Bjp1,
+				einkommensverschlechterungGS2Bjp1,
+				einkVerResultDTO);
 		}
 	}
 
