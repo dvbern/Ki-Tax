@@ -439,6 +439,12 @@ export class EditGemeindeComponentBG implements OnInit {
     private initProperties(): void {
         this.konfigurationsListe.forEach(config => {
             config.initProperties();
+            this.einstellungRS.getAllEinstellungenBySystemCached(config.gesuchsperiode.id)
+                .then(einstellungen => {
+                    const einstellung = einstellungen
+                        .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
+                    config.isTextForFKJV = einstellung.getValueAsBoolean();
+                });
         });
     }
 

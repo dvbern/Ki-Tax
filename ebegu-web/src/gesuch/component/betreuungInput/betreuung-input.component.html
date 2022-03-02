@@ -21,8 +21,12 @@
                    for="betreuungspensum-{{$index}}"
                    data-translate-value-betreuungspensumnumber="{{$index + 1}}">
                 <span data-translate="BETREUUNGSPENSUM"></span>
-                <dv-tooltip input-id="betreuungspensum-{{$index}}"
+                <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte"
+                            input-id="betreuungspensum-{{$index}}"
                             text="'BETREUUNGSPENSUM_HELP' | translate"></dv-tooltip>
+                <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte"
+                            input-id="betreuungspensum-{{$index}}"
+                            text="'BETREUUNGSPENSUM_HELP_FKJV' | translate"></dv-tooltip>
             </label>
             <div class="dv-input-container-medium-label">
                 <input type="number"
