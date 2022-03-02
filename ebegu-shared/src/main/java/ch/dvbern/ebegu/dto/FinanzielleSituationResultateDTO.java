@@ -56,7 +56,7 @@ public class FinanzielleSituationResultateDTO {
 	@Nullable
 	private BigDecimal vermoegenXPercentAnrechenbarGS1 = BigDecimal.ZERO;
 	@Nullable
-	private BigDecimal vermoegenXPercentAnrrechenbarGS2 = BigDecimal.ZERO;
+	private BigDecimal vermoegenXPercentAnrechenbarGS2 = BigDecimal.ZERO;
 
 	public FinanzielleSituationResultateDTO() {
 		initToZero();
@@ -211,11 +211,11 @@ public class FinanzielleSituationResultateDTO {
 	}
 
 	@Nullable
-	public BigDecimal getVermoegenXPercentAnrrechenbarGS2() {
-		return vermoegenXPercentAnrrechenbarGS2;
+	public BigDecimal getVermoegenXPercentAnrechenbarGS2() {
+		return vermoegenXPercentAnrechenbarGS2;
 	}
 
-	public void setVermoegenXPercentAnrrechenbarGS2(@Nullable BigDecimal vermoegenXPercentAnrrechenbarGS2) {
-		this.vermoegenXPercentAnrrechenbarGS2 = vermoegenXPercentAnrrechenbarGS2;
+	public void setVermoegenXPercentAnrechenbarGS2(@Nullable BigDecimal vermoegenXPercentAnrechenbarGS2) {
+		this.vermoegenXPercentAnrechenbarGS2 = vermoegenXPercentAnrechenbarGS2;
 	}
 }

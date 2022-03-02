@@ -82,7 +82,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 
 		finSitResultDTO.setEinkommenGS2(einkommenGS2);
 		finSitResultDTO.setAbzuegeGS2(abzuegeGS2);
-		finSitResultDTO.setVermoegenXPercentAnrrechenbarGS2(vermoegen10PercenGS2);
+		finSitResultDTO.setVermoegenXPercentAnrechenbarGS2(vermoegen10PercenGS2);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(massgebendesEinkommenGS2);
 	}
 

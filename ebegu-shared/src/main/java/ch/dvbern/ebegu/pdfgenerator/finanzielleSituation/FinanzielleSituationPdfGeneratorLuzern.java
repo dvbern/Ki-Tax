@@ -253,7 +253,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 
 		var vermoegen =  gesuchstellerNumber == 1
 			? finanzDatenDTO.getVermoegenXPercentAnrechenbarGS1()
-			: finanzDatenDTO.getVermoegenXPercentAnrrechenbarGS2();
+			: finanzDatenDTO.getVermoegenXPercentAnrechenbarGS2();
 		FinanzielleSituationRow vermoegenRow = new FinanzielleSituationRow(
 			translate(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, mandant), vermoegen);
 
