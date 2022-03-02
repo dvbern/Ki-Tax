@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
@@ -128,10 +129,10 @@ public class BetreuungsgutscheinConfigurator {
 			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
 			FKJV_ANSPRUCH_MONATSWEISE,
-			AUSSERORDENTLICHER_ANSPRUCH_RULE,
-			FKJV_ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
 			GESCHWISTERNBONUS_AKTIVIERT,
+			AUSSERORDENTLICHER_ANSPRUCH_RULE,
+			DAUER_BABYTARIF,
 			KINDERABZUG_TYP
 		);
 	}
@@ -211,7 +212,9 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(gutscheineStartdatumAbschnittRule, einstellungMap);
 
 		// - KindTarif
-		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
+		Einstellung param_dauerBabyTarif = einstellungMap.get(DAUER_BABYTARIF);
+		Objects.requireNonNull(param_dauerBabyTarif, "Parameter DAUER_BABYTARIF muss gesetzt sein");
+		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale, param_dauerBabyTarif.getValueAsInteger());
 		addToRuleSetIfRelevantForGemeinde(kindTarifAbschnittRule, einstellungMap);
 
 		// Betreuungsangebot

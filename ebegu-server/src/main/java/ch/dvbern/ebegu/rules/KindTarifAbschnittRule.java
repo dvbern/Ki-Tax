@@ -42,8 +42,11 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
-	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+	private final long dauerBabyTarif;
+
+	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale, long dauerBabyTarif) {
 		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
+		this.dauerBabyTarif = dauerBabyTarif;
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 		// Relevant sind der Geburtstag des Kindes sowie der Einschulungstyp
 		Kind kind = platz.getKind().getKindJA();
 		final LocalDate geburtsdatum = kind.getGeburtsdatum();
-		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth());
+		LocalDate stichtagBabyTarifEnde = geburtsdatum.plusMonths(dauerBabyTarif).with(TemporalAdjusters.lastDayOfMonth());
 		DateRange gesuchsperiode = platz.extractGesuchsperiode().getGueltigkeit();
 
 		EinschulungTyp einschulungTyp = kind.getEinschulungTyp() != null ? kind.getEinschulungTyp() : EinschulungTyp.VORSCHULALTER;

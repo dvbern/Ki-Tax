@@ -251,7 +251,10 @@ public enum EinstellungKey {
 	AUSSERORDENTLICHER_ANSPRUCH_RULE,
 
 	// Luzern: definiert, ob ein Geschwisternbonus ausbezahlt wird für Kind 2 oder 3
-	GESCHWISTERNBONUS_AKTIVIERT;
+	GESCHWISTERNBONUS_AKTIVIERT,
+
+	// Wie lange soll der Babytarif angewendet werden
+	DAUER_BABYTARIF;
 
 
 	private EinstellungTyp typ;
