@@ -10,5 +10,12 @@
 	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
-	"SPRACHLICHE_INTEGRATION": "Das Kind hat einen Sprachförderbedarf aufgrund der Sprachstandserhebung"
+	"SPRACHLICHE_INTEGRATION": "Das Kind hat einen Sprachförderbedarf aufgrund der Sprachstandserhebung",
+    "EINKOMMENSVERSCHLECHTERUNG": "Erhebliche Änderung des massgebenden Einkommens",
+    "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
+    "EKV_RESULTATE": "Resultate Einkommensänderung {{basisjahr}}",
+    "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
+    "EKV_RESULTATE_PRUEFUNG": "Prüfung Einkommensänderung {{basisjahr}}",
+    "EVK_IN_PROZENT": "Einkommensänderung in %"
 }
