@@ -68,12 +68,13 @@ public final class BemerkungsMerger {
 	@Nullable
 	public static String evaluateBemerkungenForVerfuegung(
 			List<VerfuegungZeitabschnitt> zeitabschnitte,
-			Mandant mandant) {
+			Mandant mandant,
+			boolean isTexteForFKJV) {
 		if (zeitabschnitte == null || zeitabschnitte.isEmpty()) {
 			return null;
 		}
 		// Die Bemerkungen aus der transienten BemerkungenMap ins Feld schreiben
-		prepareGeneratedBemerkungen(zeitabschnitte, mandant);
+		prepareGeneratedBemerkungen(zeitabschnitte, mandant, isTexteForFKJV);
 		StringJoiner joiner = new StringJoiner("\n");
 		Map<String, Collection<DateRange>> rangesByBemerkungKey = evaluateRangesByBemerkungKey(zeitabschnitte);
 
@@ -93,17 +94,31 @@ public final class BemerkungsMerger {
 	}
 
 	public static void prepareGeneratedBemerkungen(
+		List<VerfuegungZeitabschnitt> zeitabschnitte,
+		Mandant mandant) {
+		prepareGeneratedBemerkungen(zeitabschnitte, mandant, false);
+	}
+
+	public static void prepareGeneratedBemerkungen(
 			List<VerfuegungZeitabschnitt> zeitabschnitte,
-			Mandant mandant) {
+			Mandant mandant,
+			boolean isTexteForFKJV) {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			prepareGeneratedBemerkungen(verfuegungZeitabschnitt, mandant);
+			prepareGeneratedBemerkungen(verfuegungZeitabschnitt, mandant, isTexteForFKJV);
 		}
 	}
 
 	public static void prepareGeneratedBemerkungen(
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		Mandant mandant) {
+		prepareGeneratedBemerkungen(verfuegungZeitabschnitt, mandant, false);
+	}
+
+	private static void prepareGeneratedBemerkungen(
 			VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-			Mandant mandant) {
-		List<VerfuegungsBemerkungDTO> bemerkungen = verfuegungZeitabschnitt.getBemerkungenDTOList().getRequiredBemerkungen();
+			Mandant mandant,
+			boolean isTexteForFKJV) {
+		List<VerfuegungsBemerkungDTO> bemerkungen = verfuegungZeitabschnitt.getBemerkungenDTOList().getRequiredBemerkungen(isTexteForFKJV);
 		List<VerfuegungZeitabschnittBemerkung> zeitabschnittBemerkungList = bemerkungen.stream()
 				.map(bemerkung -> new VerfuegungZeitabschnittBemerkung(bemerkung ,verfuegungZeitabschnitt, mandant))
 				.collect(Collectors.toList());
