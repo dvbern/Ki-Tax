@@ -46,7 +46,7 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
-import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
@@ -162,8 +162,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
-			getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, stadtBernAsivConfiguered);
+		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
+			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
@@ -179,7 +179,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
+		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
 			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
@@ -197,7 +197,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(
+		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
 			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, stadtBernAsivConfiguered);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
