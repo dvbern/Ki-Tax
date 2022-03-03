@@ -952,7 +952,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!isEkvOrFinSitStep) {
 			return;
 		}
-		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG) {
+		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG || wizardStep.getWizardStepStatus() == WizardStepStatus.UNBESUCHT) {
 			return;
 		}
 		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
@@ -961,10 +961,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return;
 		}
 		boolean finSitRequired = EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch());
-		boolean familienSituationVollstaendig = EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch());
 
-		// falls FamSit nicht vollständig ist, wird wizardStep immer invalidiert
-		if (finSitRequired || !familienSituationVollstaendig) {
+		// da FinSit nicht vollständig ist, wird wizardStep immer invalidiert, wenn benötigt
+		if (finSitRequired) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
