@@ -134,7 +134,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     public getLabel(): string {
-        return this.translate.instant('FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT',
+        const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        return this.translate.instant(key,
             {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 

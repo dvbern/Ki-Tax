@@ -71,6 +71,7 @@
     "FINANZIELLE_SITUATION_RESULTATE": "Situation financière {{basisjahr}}",
     "FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Bénéficiez-vous ou avez-vous bénéficié de l'aide sociale matérielle pendant toute l'année {{basisjahr}} ? Si oui, vous ne devez pas déclarer votre situation financière.  La subvention maximale est automatiquement accordée. ",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT": "Voulez-vous demander un tarif réduit pour les écoles à journée continue ou pour un bon de garde ?",
+    "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV": "Voulez-vous demander un tarif réduit pour les écoles à journée continue ?",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP": "Subvention possible jusqu'à un revenu de CHF {{maxEinkommen}}.-<br>Si vous désirez demander seulement le forfait en cas de besoins particuliers, vous n'avez pas besoin de déclarer votre revenu. Cliquez sur \"non\".",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA": "Oui, je déclare mon revenu",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN": "Non",
