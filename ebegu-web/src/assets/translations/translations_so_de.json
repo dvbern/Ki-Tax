@@ -1,9 +1,13 @@
 {
-    "FAELLE_LIST": "Alle Fälle in Solothurn",
+    "FAELLE_LIST": "Alle Fälle",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie im Jahr {{basisjahrPlus}} oder {{basisjahr}} eine Steuerveranlagung erhalten?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} abweichen?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
-    "EINKOMMENSVERSCHLECHTERUNG": "Erhebliche Ändergung des massgebenden Einkommens",
+    "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
-    "EVK_EINKOMMEN_JAHR": "Massgegebendes Einkommen {{basisjahr}}"
+    "EVK_EINKOMMEN_JAHR": "Massgebendes Einkommen {{basisjahr}}",
+    "EKV_RESULTATE": "Resultate Einkommensänderung {{basisjahr}}",
+    "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
+    "EVK_IN_PROZENT": "Einkommensänderung in %",
+    "EKVI_ABLEHNEN": "Einkommensänderung annulliert"
 }
