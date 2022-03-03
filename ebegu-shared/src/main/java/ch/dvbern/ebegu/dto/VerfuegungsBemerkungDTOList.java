@@ -152,6 +152,7 @@ public class VerfuegungsBemerkungDTOList {
 
 	private void overwriteASIVBemerkungenWithFKJVBemerkungen() {
 		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV);
 	}
 
 	private void overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey bemerkungToReplace, MsgKey replaceWithBemerkung) {
