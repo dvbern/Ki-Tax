@@ -103,6 +103,7 @@ export class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/gemeinde/active').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/gesuchsperiode/123').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {

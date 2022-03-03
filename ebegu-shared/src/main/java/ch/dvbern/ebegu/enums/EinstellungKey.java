@@ -201,6 +201,10 @@ public enum EinstellungKey {
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
 	FKJV_ANSPRUCH_MONATSWEISE,
 
+	// "FKJV: Textanpassungen"
+	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
+	FKJV_TEXTE,
+
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
 	SCHNITTSTELLE_STEUERN_AKTIV,
 
