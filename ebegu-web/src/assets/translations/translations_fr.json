@@ -2819,5 +2819,6 @@
     "KINDERABZUG_LEBT_KIND_ALTERNIEREND": "Lebt das Kind mind. alternierend bei Ihnen?",
     "KINDERABZUG_ALIMENTE_ERHALTEN": "Erhalten Sie Alimente für das Kind?",
     "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Alimente für das Kind",
+    "KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT": "Ohne Bestätigung für die Verrechnung des KitaPlus Zuschlags entfällt diese Pauschale",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

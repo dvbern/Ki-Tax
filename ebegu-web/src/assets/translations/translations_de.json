@@ -2835,5 +2835,6 @@
     "LABEL_12": "12",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
     "EVK_BRUTTOLOHN_JAHR": "Jährlicher Bruttolohn",
+    "KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT": "Ohne Bestätigung für die Verrechnung des KitaPlus Zuschlags entfällt diese Pauschale",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
