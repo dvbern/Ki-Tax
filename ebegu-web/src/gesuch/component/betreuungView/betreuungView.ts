@@ -832,26 +832,37 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             });
     }
 
-    public platzBestaetigen(): void {
+    public async platzBestaetigen(): Promise<void> {
         this.isBestaetigenClicked = true;
         if (!this.isGesuchValid() || !this.korrekteKostenBestaetigung) {
             return;
         }
 
-        // tslint:disable-next-line:early-exit
         if (this.isBetreuungInGemeindeRequired() && !this.getErweiterteBetreuungJA().betreuungInGemeinde) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
-                deleteText: 'WOLLEN_SIE_FORTFAHREN',
-                cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
-            })
-                .then(() => {
-                    this.checkErweiterteBetreuungAndSaveBestaetigung();
+            try {
+                await this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                    title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
+                    deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN',
                 });
-        } else {
-            this.checkErweiterteBetreuungAndSaveBestaetigung();
+            } catch {
+                return;
+            }
         }
+        if (this.getErweiterteBetreuungJA().kitaPlusZuschlag && !this.getErweiterteBetreuungJA().kitaPlusZuschlagBestaetigt) {
+            try {
+                await this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                    title: 'KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT',
+                    deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN',
+                });
+            } catch {
+                return;
+            }
+        }
+        this.checkErweiterteBetreuungAndSaveBestaetigung();
     }
 
     public checkErweiterteBetreuungAndSaveBestaetigung(): void {
@@ -956,6 +967,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isBetreuungsstatusBestaetigt(): boolean {
         return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT);
+    }
+
+    public isBetreuungsstatusAusstehend(): boolean {
+        return this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
     }
 
     public isBetreuungsstatusNichtEingetreten(): boolean {
@@ -1284,6 +1299,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)
             && EbeguUtil.isNotNullAndTrue(this.getBetreuungModel().isAngebotBetreuungsgutschein());
+    }
+
+    public isKitaPlus(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA())
+            && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().kitaPlusZuschlag);
     }
 
     public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
