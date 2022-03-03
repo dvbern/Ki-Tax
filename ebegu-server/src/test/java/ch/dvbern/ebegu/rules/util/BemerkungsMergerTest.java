@@ -74,7 +74,7 @@ public class BemerkungsMergerTest {
 		Collections.addAll(verfZeitabschn, jan, feb, mar, apr, mai);
 
 		//test output
-		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern(), false);
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(5, strings.length);
@@ -96,7 +96,7 @@ public class BemerkungsMergerTest {
 		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
 		Collections.addAll(verfZeitabschn, jan, overlappWithJan);
 		try {
-			BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
+			BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern(), false);
 			Assert.fail("Should throw exception because of overlap");
 		} catch (IllegalArgumentException ignore) {
 			//noop
@@ -119,11 +119,26 @@ public class BemerkungsMergerTest {
 		Collections.addAll(verfZeitabschn, jan, feb);
 
 		//test output
-		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern());
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern(), false);
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(2, strings.length);
 		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 31.01.2016: Für diesen Zeitraum ist das erforderliche Beschäftigungspensum für den Erhalt eines Betreuungsgutscheins nicht erreicht"));
 		Assert.assertTrue(strings[1].startsWith("01.02.2016 - 29.02.2016: Für diesen Zeitraum ist der Bedarf für die familienergänzende Betreuung"));
+	}
+
+	@Test
+	public void bemerkungenVonFKJVUeberschriebenenRegeln() {
+		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
+		jan.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, Constants.DEFAULT_LOCALE);
+
+		List<VerfuegungZeitabschnitt> verfZeitabschn = Collections.singletonList(jan);
+
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn, TestDataUtil.getMandantKantonBern(), true);
+		Assert.assertNotNull(resultingBem);
+		String[] strings = NEW_LINE.split(resultingBem);
+		Assert.assertEquals(1, strings.length);
+		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 31.01.2016: Das massgebende Einkommen des Jahres"));
+		Assert.assertTrue(strings[0].contains("(Art. 57 Abs. 2 FKJV)"));
 	}
 }

@@ -187,8 +187,10 @@
                         <span data-translate="NICHT_IN_GEMEINDE_WOHNHAFT"
                               data-translate-value-gemeinde="{{vm.gemeinde.name}}"></span>
                     </md-checkbox>
-                    <dv-tooltip input-id="{{vm.prefix}}-nichtInGemeinde"
+                    <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte" input-id="{{vm.prefix}}-nichtInGemeinde"
                                 text="'NICHT_IN_GEMEINDE_WOHNHAFT_HELP' | translate"></dv-tooltip>
+                    <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte" input-id="{{vm.prefix}}-nichtInGemeinde"
+                                text="'NICHT_IN_GEMEINDE_WOHNHAFT_HELP_FKJV' | translate"></dv-tooltip>
                 </div>
             </div>
         </div>
