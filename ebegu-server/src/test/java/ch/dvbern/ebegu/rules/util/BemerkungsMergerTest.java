@@ -138,7 +138,7 @@ public class BemerkungsMergerTest {
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(1, strings.length);
-		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 31.01.2016: Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt."));
+		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 31.01.2016: Das massgebende Einkommen des Jahres"));
 		Assert.assertTrue(strings[0].contains("(Art. 57 Abs. 2 FKJV)"));
 	}
 }
