@@ -20,6 +20,7 @@ import {
     Component,
     Input,
 } from '@angular/core';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 /**
  * Zeigt einen Hinweis, wie hoch die Eingabe im Basisjahr war.
@@ -36,7 +37,7 @@ export class DvEingabeBasisjahrComponent {
     @Input() public basisjahr: number;
 
     public isVisible(): boolean {
-        return this.wertBasisjahr > 0 ||
-            (this.wertBasisjahr !== this.neuerWert && this.neuerWert > 0);
+        return EbeguUtil.isNotNullOrUndefined(this.wertBasisjahr) && (this.wertBasisjahr > 0 ||
+            (this.wertBasisjahr !== this.neuerWert && this.neuerWert > 0));
     }
 }

@@ -2830,7 +2830,7 @@
     "BRUTTOLOHNE_ABRECHNUNG_1": "Bruttolohn Lohnabrechnung 1",
     "BRUTTOLOHNE_ABRECHNUNG_2": "Bruttolohn Lohnabrechnung 2",
     "BRUTTOLOHNE_ABRECHNUNG_3": "Bruttolohn Lohnabrechnung 3",
-    "ANZAHL_LOHNE_FRAGE": "Wie viele Löhne werden pro Jahr ausbezahlt",
+    "ANZAHL_LOHNE_FRAGE": "Wie viele Löhne werden pro Jahr ausbezahlt?",
     "LABEL_13": "13",
     "LABEL_12": "12",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
