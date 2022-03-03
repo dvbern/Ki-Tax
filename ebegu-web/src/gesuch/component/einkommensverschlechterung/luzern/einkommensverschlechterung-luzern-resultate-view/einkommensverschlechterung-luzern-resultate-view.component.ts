@@ -33,7 +33,7 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
 })
 export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
 
-    private grenze: number = 25;
+    private readonly grenze: number = 25;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
