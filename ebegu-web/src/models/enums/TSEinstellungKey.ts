@@ -181,7 +181,7 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN,
         TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
         TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE,
-        TSEinstellungKey.DAUER_BABYTARIF
+        TSEinstellungKey.DAUER_BABYTARIF,
         TSEinstellungKey.FKJV_TEXTE
     ];
 }
