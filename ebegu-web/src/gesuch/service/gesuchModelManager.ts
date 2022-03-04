@@ -226,12 +226,15 @@ export class GesuchModelManager {
 
         this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
-        this.einstellungenRS.getAllEinstellungenBySystemCached(this.getGesuchsperiode()?.id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
-                this.isFKJVTexte = einstellung.getValueAsBoolean();
-            });
+        if (this.getGesuchsperiode()) {
+            this.einstellungenRS.getAllEinstellungenBySystemCached(this.getGesuchsperiode().id)
+                .then(einstellungen => {
+                    const einstellung = einstellungen
+                        .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
+                    this.isFKJVTexte = einstellung.getValueAsBoolean();
+                });
+        }
+
         return gesuch;
     }
 
