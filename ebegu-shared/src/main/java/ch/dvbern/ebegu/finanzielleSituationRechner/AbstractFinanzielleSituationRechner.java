@@ -278,7 +278,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 		finSitResultDTO.setNettovermoegenXProzent(calcVermoegen5Prozent(
 			finanzielleSituationGS1,
 			finanzielleSituationGS2));
-		finSitResultDTO.setAbzuegeBeiderGesuchsteller(calcAbzuege(finanzielleSituationGS1, finanzielleSituationGS2));
+			finSitResultDTO.setAbzuegeBeiderGesuchsteller(calcAbzuege(finanzielleSituationGS1, finanzielleSituationGS2));
 
 		finSitResultDTO.setAnrechenbaresEinkommen(add(
 			finSitResultDTO.getEinkommenBeiderGesuchsteller(),

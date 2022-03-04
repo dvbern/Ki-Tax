@@ -44,6 +44,9 @@ export class SelbstdeklarationComponent implements OnInit {
     public basisJahr: number;
 
     @Input()
+    public basisJahrPlus: number; // number years added to basisjahr. for EKV. can be 1 oder 2
+
+    @Input()
     public model: TSAbstractFinanzielleSituation;
 
     @Input()
@@ -79,7 +82,7 @@ export class SelbstdeklarationComponent implements OnInit {
 
     public onValueChangeFunction = (): void => {
         if (this.isEKV) {
-            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahr);
+            this.finSitLuService.calculateEinkommensverschlechterung(this.finanzModel, this.basisJahrPlus);
         } else {
             this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
         }
