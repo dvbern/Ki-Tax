@@ -201,6 +201,10 @@ public enum EinstellungKey {
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
 	FKJV_ANSPRUCH_MONATSWEISE,
 
+	// "FKJV: Textanpassungen"
+	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
+	FKJV_TEXTE,
+
 	// Definiert ob die Schnittstelle zu den Steuersystemen aktiv ist
 	SCHNITTSTELLE_STEUERN_AKTIV,
 
@@ -251,7 +255,10 @@ public enum EinstellungKey {
 	AUSSERORDENTLICHER_ANSPRUCH_RULE,
 
 	// Luzern: definiert, ob ein Geschwisternbonus ausbezahlt wird für Kind 2 oder 3
-	GESCHWISTERNBONUS_AKTIVIERT;
+	GESCHWISTERNBONUS_AKTIVIERT,
+
+	// Wie lange soll der Babytarif angewendet werden
+	DAUER_BABYTARIF;
 
 
 	private EinstellungTyp typ;

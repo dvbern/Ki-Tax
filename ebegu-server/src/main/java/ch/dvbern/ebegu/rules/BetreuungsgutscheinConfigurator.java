@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
@@ -46,6 +47,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERU
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -128,11 +130,12 @@ public class BetreuungsgutscheinConfigurator {
 			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
 			FKJV_ANSPRUCH_MONATSWEISE,
-			AUSSERORDENTLICHER_ANSPRUCH_RULE,
-			FKJV_ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
 			GESCHWISTERNBONUS_AKTIVIERT,
-			KINDERABZUG_TYP
+			AUSSERORDENTLICHER_ANSPRUCH_RULE,
+			DAUER_BABYTARIF,
+			KINDERABZUG_TYP,
+			FKJV_TEXTE
 		);
 	}
 
@@ -211,7 +214,9 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(gutscheineStartdatumAbschnittRule, einstellungMap);
 
 		// - KindTarif
-		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
+		Einstellung param_dauerBabyTarif = einstellungMap.get(DAUER_BABYTARIF);
+		Objects.requireNonNull(param_dauerBabyTarif, "Parameter DAUER_BABYTARIF muss gesetzt sein");
+		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale, param_dauerBabyTarif.getValueAsInteger());
 		addToRuleSetIfRelevantForGemeinde(kindTarifAbschnittRule, einstellungMap);
 
 		// Betreuungsangebot

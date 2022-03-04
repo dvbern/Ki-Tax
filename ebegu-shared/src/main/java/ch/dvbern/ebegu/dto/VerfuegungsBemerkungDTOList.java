@@ -135,10 +135,31 @@ public class VerfuegungsBemerkungDTOList {
 	 */
 	@Nonnull
 	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
+		return getRequiredBemerkungen(false);
+	}
+
+
+	@Nonnull
+	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen(boolean isTexteForFKJV) {
+		if(isTexteForFKJV) {
+			overwriteASIVBemerkungenWithFKJVBemerkungen();
+		}
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
 		BemerkungenRemover bemerkungenRemover = new BemerkungenRemover(toUniqueMap());
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
 		return bemerkungenRemover.getRequiredBemerkungen();
+	}
+
+	private void overwriteASIVBemerkungenWithFKJVBemerkungen() {
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV);
+	}
+
+	private void overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey bemerkungToReplace, MsgKey replaceWithBemerkung) {
+		this.bemerkungenList.stream()
+			.filter(verfuegungsBemerkungDTO -> bemerkungToReplace
+				== verfuegungsBemerkungDTO.getMsgKey())
+			.forEach(verfuegungsBemerkungDTO -> verfuegungsBemerkungDTO.setMsgKey(replaceWithBemerkung));
 	}
 
 	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> toUniqueMap() {

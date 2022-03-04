@@ -63,8 +63,9 @@ import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGe
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.VollmachtPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorFactory;
@@ -115,14 +116,19 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
+		Mandant mandant = stammdaten.getGemeinde().getMandant();
+		assert mandant != null;
+
 		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
 		// was wir mitgeben
-		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+		VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
 			false, false);
-		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
+		AbstractVerfuegungPdfGenerator pdfGenerator =
+			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
+		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
 	}
 
 	@Nonnull
@@ -252,13 +258,20 @@ public class PDFServiceBean implements PDFService {
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 
 		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
-		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+
+		Mandant mandant = stammdaten.getGemeinde().getMandant();
+		assert mandant != null;
+
+		VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			betreuung,
 			stammdaten,
 			art,
 			showInfoKontingentierung,
 			stadtBernAsivConfigured);
-		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
+		AbstractVerfuegungPdfGenerator pdfGenerator =
+			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
+
+		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
 	}
 
 	@Nonnull

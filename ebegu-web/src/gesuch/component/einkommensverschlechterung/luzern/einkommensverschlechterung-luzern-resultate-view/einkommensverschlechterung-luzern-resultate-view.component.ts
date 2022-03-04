@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -31,6 +32,8 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
+
+    private readonly grenze: number = 25;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -46,5 +49,13 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
             $transition$);
+    }
+
+    public ekvAkzeptiert(): boolean {
+        if (EbeguUtil.isNotNullOrUndefined(this.resultatProzent) && (Number(this.resultatProzent) >= this.grenze ||
+            Number(this.resultatProzent) <= -this.grenze)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -21,6 +21,7 @@ import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class BetreuungInputComponentConfig implements IComponentOptions {
@@ -37,7 +38,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate'];
+    public static $inject = ['$translate', 'GesuchModelManager'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
@@ -53,7 +54,8 @@ export class BetreuungInputComponent implements IController {
 
     private pensumValue: number;
 
-    public constructor(private readonly translate: ITranslateService) {
+    public constructor(private readonly translate: ITranslateService,
+                       public readonly gesuchModelManager: GesuchModelManager) {
     }
 
     public $onInit(): void {

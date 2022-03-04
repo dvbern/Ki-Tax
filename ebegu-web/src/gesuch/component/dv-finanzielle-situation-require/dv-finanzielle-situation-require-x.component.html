@@ -46,7 +46,8 @@
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebegu-h1 required">
-                <span translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT</span>
+                <span *ngIf="!gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT</span>
+                <span *ngIf="gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV</span>
                 <dv-tooltip [inputId]="'verguenstigungGewuenscht'" [text]="'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_HELP' | translate:{maxEinkommen: getMaxMassgebendesEinkommen()}"></dv-tooltip>
             </span>
             <dv-input-container-x [verticalAlign]="true">
