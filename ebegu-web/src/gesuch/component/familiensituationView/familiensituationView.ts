@@ -306,4 +306,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         }
         return false;
     }
+
+    public getTextForFamSitFrage2Tooltip(): string {
+        return this.$translate.instant('FAMILIENSITUATION_HELP',
+            {jahr: this.getFamiliensituation().minDauerKonkubinat});
+    }
 }

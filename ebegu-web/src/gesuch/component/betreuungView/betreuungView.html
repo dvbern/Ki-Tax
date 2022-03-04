@@ -470,10 +470,13 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
+                                             id="eingewoehnung"
                                              name="eingewoehnung"
                                              aria-label="{{'EINGEWOEHNUNG'| translate}}">
                                     <span data-translate="EINGEWOEHNUNG"></span>
                                 </md-checkbox>
+                                <dv-tooltip input-id="eingewoehnung"
+                                            text="'EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
                             </div>
                         </div>
                     </div>
@@ -790,7 +793,8 @@
                                     </div>
                                     <div class="col-xs-12">
                                         <ul>
-                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
+                                            <li ng-if="!vm.gesuchModelManager.isFKJVTexte">{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
+                                            <li ng-if="vm.gesuchModelManager.isFKJVTexte">{{'KORREKTE_KOSTEN_BESTAETIGUNG_2_FKJV' | translate}}</li>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
                                             <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate}}</li>
                                         </ul>
