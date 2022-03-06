@@ -521,18 +521,6 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
             });
-            it('should be false if PFLEGEFAMILIE with FKJV ALLEINE', () => {
-                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
-                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
-            });
-            it('should be true if PFLEGEFAMILIE with FKJV ZUR_ZWEIT', () => {
-                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
-                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
-            });
             it('should be true if VERHEIRATET with FKJV', () => {
                 createFamsit(true, TSFamilienstatus.VERHEIRATET);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
