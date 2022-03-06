@@ -374,6 +374,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setNettoVermoegen(this.getNettoVermoegen());
 			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
