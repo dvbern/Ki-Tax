@@ -301,8 +301,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public showGesuchstellerKardinalitaet(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
-                || this.getFamiliensituation().familienstatus === TSFamilienstatus.PFLEGEFAMILIE;
+            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
         }
         return false;
     }

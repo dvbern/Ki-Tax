@@ -17,6 +17,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {EbeguNumberPipe} from '../../../app/shared/pipe/ebegu-number.pipe';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -53,7 +54,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     @Input()
     public areThereAnyBgBetreuungen: boolean;
 
-    private maxMassgebendesEinkommen: string;
+    private maxMassgebendesEinkommen: number;
     private isFinSitTypFkjv: boolean = false;
 
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -75,7 +76,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id)
             .then(response => {
-                this.maxMassgebendesEinkommen = response.value;
+                this.maxMassgebendesEinkommen = parseInt(response.value, 10);
             });
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
 
@@ -122,7 +123,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     public getMaxMassgebendesEinkommen(): string {
-        return this.maxMassgebendesEinkommen;
+        const pipe = new EbeguNumberPipe();
+        return pipe.transform(this.maxMassgebendesEinkommen);
     }
 
     public isGesuchReadonly(): boolean {
@@ -135,8 +137,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
 
     public getLabel(): string {
         const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        const pipe = new EbeguNumberPipe();
         return this.translate.instant(key,
-            {maxEinkommen: this.maxMassgebendesEinkommen});
+            {maxEinkommen: pipe.transform(this.maxMassgebendesEinkommen)});
     }
 
     public updateVerguenstigungGewuenscht(value: any): void {
