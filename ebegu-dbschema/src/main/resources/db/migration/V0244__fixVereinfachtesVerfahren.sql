@@ -16,13 +16,13 @@
  */
 
 ALTER TABLE finanzielle_situation DROP COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet;
-ALTER TABLE finanzielle_situation ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT NOT NULL DEFAULT FALSE;
+ALTER TABLE finanzielle_situation ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT;
 
 ALTER TABLE finanzielle_situation_aud DROP COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet;
 ALTER TABLE finanzielle_situation_aud ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT;
 
 ALTER TABLE einkommensverschlechterung DROP COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet;
-ALTER TABLE einkommensverschlechterung ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT NOT NULL DEFAULT FALSE;
+ALTER TABLE einkommensverschlechterung ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT;
 
 ALTER TABLE einkommensverschlechterung_aud DROP COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet;
 ALTER TABLE einkommensverschlechterung_aud ADD COLUMN einkommen_in_vereinfachtem_verfahren_abgerechnet BIT;
