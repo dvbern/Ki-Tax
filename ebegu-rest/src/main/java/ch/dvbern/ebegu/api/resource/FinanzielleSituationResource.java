@@ -423,7 +423,6 @@ public class FinanzielleSituationResource {
 
 		Objects.requireNonNull(kibonAnfrageId.getId());
 		Objects.requireNonNull(jaxGesuchstellerId.getId());
-		Objects.requireNonNull(jaxFinanzielleSituationContainer.getId());
 
 		//Antrag suchen
 		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
@@ -451,6 +450,9 @@ public class FinanzielleSituationResource {
 			finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null ?
 				gesuch.getGesuchsteller2().getFinanzielleSituationContainer() :
 				new FinanzielleSituationContainer();
+			if (finSitGS2.getFinanzielleSituationJA() == null) {
+				finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
+			}
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
 			finSitGS2.setGesuchsteller(gesuch.getGesuchsteller2());
 		}
