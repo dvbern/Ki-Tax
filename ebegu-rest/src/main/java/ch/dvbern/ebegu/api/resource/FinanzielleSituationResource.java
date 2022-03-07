@@ -256,11 +256,12 @@ public class FinanzielleSituationResource {
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
+		requireNonNull(sozialhilfeBezueger);
+		requireNonNull(gemeinsameSteuererklaerung);
+
 		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)
 			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)
 			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
-			requireNonNull(sozialhilfeBezueger);
-			requireNonNull(gemeinsameSteuererklaerung);
 
 			if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
 				// Sozialhilfebezueger bekommen immer eine Verguenstigung
@@ -269,7 +270,6 @@ public class FinanzielleSituationResource {
 				requireNonNull(verguenstigungGewuenscht);
 			}
 		} else {
-			sozialhilfeBezueger = false;
 			verguenstigungGewuenscht = Boolean.TRUE;
 		}
 

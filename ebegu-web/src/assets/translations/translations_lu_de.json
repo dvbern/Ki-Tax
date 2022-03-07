@@ -30,5 +30,6 @@
 	"KINDERGARTEN1": "Freiwilliger Kindergarten",
 	"KINDERGARTEN2": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
 	"KLASSE1": "1. Klasse (kein Anspruch auf Betreuungsgutscheine)",
-	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)"
+	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)",
+	"FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Beziehen Sie aktuell wirtschaftliche Sozialhilfe?"
 }

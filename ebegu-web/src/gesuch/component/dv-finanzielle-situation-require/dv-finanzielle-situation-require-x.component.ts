@@ -21,6 +21,7 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
@@ -34,6 +35,9 @@ const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class DvFinanzielleSituationRequireX implements OnInit {
+
+    @Input()
+    public hideVerguenstigungGewunscht: boolean = false;
 
     @Input()
     public sozialhilfeBezueger: boolean;
@@ -106,6 +110,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
      * wenn es sich um keinen reinen BG-Antrag in der FKJV FinSit handelt
      */
     public showFinanzielleSituationDeklarieren(): boolean {
+        if (this.hideVerguenstigungGewunscht) {
+            return false;
+        }
         const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
             && !this.sozialhilfeBezueger;
 

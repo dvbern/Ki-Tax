@@ -50,7 +50,7 @@ export class VeranlagungComponent implements OnInit {
 
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
-        private readonly gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager,
     ) {
     }
 
@@ -68,6 +68,12 @@ export class VeranlagungComponent implements OnInit {
 
     public antragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
+    }
+
+    public antragstellerName(): string {
+        return this.antragstellerNummer === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName() :
+            this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
     }
 
 }
