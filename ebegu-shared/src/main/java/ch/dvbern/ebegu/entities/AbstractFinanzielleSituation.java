@@ -112,9 +112,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Column(nullable = true)
 	private BigDecimal nettoVermoegen;
 
-	@NotNull
-	@Column(nullable = false)
-	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet = false;
+	@Nullable
+	@Column(nullable = true)
+	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
 
 	@Nullable
 	@Column(nullable = true)
