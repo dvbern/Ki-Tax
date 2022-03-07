@@ -51,7 +51,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public readonly finanzielleSituationRequiredChange = new EventEmitter<boolean>();
 
     @Input()
-    public areThereOnlyBgBetreuungen: boolean;
+    public areThereAnyBgBetreuungen: boolean;
 
     private maxMassgebendesEinkommen: string;
     private isFinSitTypFkjv: boolean = false;
@@ -110,7 +110,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             && !this.sozialhilfeBezueger;
 
         if (this.isFinSitTypFkjv) {
-            if (isNotSozialhilfeBezueger && !this.areThereOnlyBgBetreuungen) {
+            if (isNotSozialhilfeBezueger && !this.areThereAnyBgBetreuungen) {
                 return true;
             }
             this.verguenstigungGewuenscht = true;
@@ -134,7 +134,8 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     public getLabel(): string {
-        return this.translate.instant('FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT',
+        const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        return this.translate.instant(key,
             {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 

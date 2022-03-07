@@ -41,7 +41,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(2200);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(2110.7);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(2105.3);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(2110.7);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(2105.3);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(5.4);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.7);
@@ -67,8 +67,8 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1200);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1439.1);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1105.3);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1200);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1439.1);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1105.3);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(333.8);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.70);

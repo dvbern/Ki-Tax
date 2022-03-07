@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
-public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
+public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
@@ -86,7 +86,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungVollkosten";
 	private static final String GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG =
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungMinimalbeitrag";
-	private static final String GUTSCHEIN = "PdfGeneration_Verfuegung_Gutschein";
+	protected static final String GUTSCHEIN_AN_INSTITUTION = "PdfGeneration_Verfuegung_Gutschein_Institution";
+	protected static final String GUTSCHEIN_AN_ELTERN = "PdfGeneration_Verfuegung_Gutschein_Eltern";
 	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_MinimalerElternbeitrag";
 	private static final String KEIN_ANSPRUCH_CONTENT_1 = "PdfGeneration_KeinAnspruch_Content_1";
 	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
@@ -109,10 +110,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
-	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractVerfuegungPdfGenerator.class);
 
-	private final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
-	private final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
+	protected final Font fontTabelle = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFont(), 8.0f);
+	protected final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
 	private final Font fontRed = PdfUtil.createFontWithColor(getPageConfiguration().getFonts().getFont(), Color.RED);
 
 	public enum Art {
@@ -121,14 +122,14 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		NICHT_EINTRETTEN
 	}
 
-	private final Betreuung betreuung;
+	protected final Betreuung betreuung;
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
 
 	@Nonnull
 	private final Art art;
 
-	public VerfuegungPdfGenerator(
+	public AbstractVerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
@@ -374,7 +375,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			fontTabelle,
 			2,
 			1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN), Color.LIGHT_GRAY, fontTabelle, 2,
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, getTextGutschein(), Color.LIGHT_GRAY, fontTabelle, 2,
 			1));
 
 		// Spaltentitel, Row 2
@@ -461,7 +462,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				Element.ALIGN_RIGHT,
 				PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()),
 				Color.LIGHT_GRAY,
-				fontTabelle,
+				getBgColorForUeberwiesenerBetragCell(),
 				1,
 				1));
 		}
@@ -651,4 +652,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		table.setSpacingAfter(15);
 		return table;
 	}
+
+	protected abstract Font getBgColorForUeberwiesenerBetragCell();
+
+	protected abstract String getTextGutschein();
 }

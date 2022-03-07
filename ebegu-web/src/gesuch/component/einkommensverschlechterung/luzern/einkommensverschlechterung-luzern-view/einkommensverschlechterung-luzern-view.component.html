@@ -43,6 +43,7 @@
                                       [finanzModel]="model"
                                       [model]="this.model.getEkvToWorkWith()"
                                       [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith()"
+                                      [basisJahrPlus]="this.gesuchModelManager.getBasisJahrPlusNumber()"
                                       [isEKV]="true"
                 ></dv-selbstdeklaration>
                 <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"

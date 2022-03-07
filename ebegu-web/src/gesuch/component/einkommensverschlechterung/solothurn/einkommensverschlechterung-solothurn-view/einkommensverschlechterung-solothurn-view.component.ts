@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -86,7 +86,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         });
     }
 
-    public onBruttoLohnChange(): void {
+    public onBruttoLohnChange = (): void => {
         if (!this.form?.controls.bruttolohn.valid) {
             return;
         }
@@ -96,7 +96,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
     }
 
     public onValueChangeFunction = (): void => {
-        if (!this.form?.controls.nettoVermoegen) {
+        if (!this.model.getEkvToWorkWith().nettoVermoegen) {
             return;
         }
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(

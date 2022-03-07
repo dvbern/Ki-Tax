@@ -396,7 +396,8 @@
                                 <th class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="result" data-translate="MIN_ELTERNBEITRAG"></th>
-                                <th class="result" data-translate="VERGUENSTIGUNG"></th>
+                                <th ng-if="!vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
                             </tr>
                             </thead>

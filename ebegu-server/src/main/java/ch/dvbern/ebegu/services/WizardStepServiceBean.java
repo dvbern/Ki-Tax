@@ -894,6 +894,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					}
 				}
 			}
+			// Es gibt ein Spezialfall: Falls eine BG Betreuung hinzugefügt wurde, wird die Frage
+			// verguenstigungGewuenscht auf der FamSit true gesetzt und die FamSit wird neu gespeichert.
+			// in diesem Fall müssen wir den FinSitStatus hier noch einmal für die Betreuungen prüfen.
+			checkFinSitStatusForBetreuungen(wizardStep);
 		}
 	}
 
@@ -943,13 +947,23 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * This should be called after removing or adding a Betreuung.
 	 */
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
-		if ((wizardStep.getWizardStepName().isEKVWizardStepName()
-			|| wizardStep.getWizardStepName().isFinSitWizardStepName()) &&
-			(!EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
-				wizardStep.getGesuch(),	wizardStep.getWizardStepName())
-				&& (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
-				|| !EbeguUtil.isFamilienSituationVollstaendig(wizardStep.getGesuch()))
-				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG)) {
+		boolean isEkvOrFinSitStep = (wizardStep.getWizardStepName().isEKVWizardStepName()
+			|| wizardStep.getWizardStepName().isFinSitWizardStepName());
+		if (!isEkvOrFinSitStep) {
+			return;
+		}
+		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG || wizardStep.getWizardStepStatus() == WizardStepStatus.UNBESUCHT) {
+			return;
+		}
+		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
+			wizardStep.getGesuch(),	wizardStep.getWizardStepName());
+		if (finSitIntroducedAndComplete) {
+			return;
+		}
+		boolean finSitRequired = EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch());
+
+		// da FinSit nicht vollständig ist, wird wizardStep immer invalidiert, wenn benötigt
+		if (finSitRequired) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}

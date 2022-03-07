@@ -17,11 +17,33 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.Locale;
+
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+
 /**
  * Integrationstyp for Fachstellen
  */
 public enum IntegrationTyp {
-	SOZIALE_INTEGRATION,
-	SPRACHLICHE_INTEGRATION,
-	ZUSATZLEISTUNG_INTEGRATION,
+	SOZIALE_INTEGRATION {
+		@Override
+		public String getIndikationMessage(Locale locale, Mandant mandant) {
+			return ServerMessageUtil.getMessage("Sozialen_Indikation", locale, mandant);
+		}
+	},
+	SPRACHLICHE_INTEGRATION {
+		@Override
+		public String getIndikationMessage(Locale locale, Mandant mandant) {
+			return ServerMessageUtil.getMessage("Sprachlichen_Indikation", locale, mandant);
+		}
+	},
+	ZUSATZLEISTUNG_INTEGRATION {
+		@Override
+		public String getIndikationMessage(Locale locale, Mandant mandant) {
+			return ServerMessageUtil.getMessage("Zusatzleistung_Indikation", locale, mandant);
+		}
+	};
+
+	public abstract String getIndikationMessage(Locale locale, Mandant mandant);
 }

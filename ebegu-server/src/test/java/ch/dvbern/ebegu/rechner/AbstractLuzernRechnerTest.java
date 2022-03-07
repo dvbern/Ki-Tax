@@ -60,27 +60,28 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 	}
 
 	protected void assertCalculationResultResult(BGCalculationResult result, TestValues testValues) {
-		Assert.assertEquals(testValues.expectedVollkosten.stripTrailingZeros(), result.getVollkosten().stripTrailingZeros());
-		Assert.assertEquals(testValues.betreuungsPensum.stripTrailingZeros(), result.getBetreuungspensumProzent().stripTrailingZeros());
-		Assert.assertEquals(testValues.anspruchsPensum, result.getAnspruchspensumProzent());
-		Assert.assertEquals(testValues.expectedElternbeitrag.stripTrailingZeros(), result.getElternbeitrag().stripTrailingZeros());
-		Assert.assertEquals(testValues.expectedMinimalerElternbeitrag.stripTrailingZeros(), result.getMinimalerElternbeitrag().stripTrailingZeros());
+		Assert.assertEquals("Vollkosten not equal", testValues.expectedVollkosten.stripTrailingZeros(), result.getVollkosten().stripTrailingZeros());
+		Assert.assertEquals("Betreuungspensum not equal", testValues.betreuungsPensum.stripTrailingZeros(), result.getBetreuungspensumProzent().stripTrailingZeros());
+		Assert.assertEquals("Anspruchspensum not equal", testValues.anspruchsPensum, result.getAnspruchspensumProzent());
+		Assert.assertEquals("Elternebeitrag not equal", testValues.expectedElternbeitrag.stripTrailingZeros(), result.getElternbeitrag().stripTrailingZeros());
+		Assert.assertEquals("Minimaler Elternbeitrag not equal", testValues.expectedMinimalerElternbeitrag.stripTrailingZeros(), result.getMinimalerElternbeitrag().stripTrailingZeros());
 		Assert.assertEquals(
+			"VerguenstigungOhneBeruckesichtigungMinimalbetrag not equal",
 			testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag.stripTrailingZeros(),
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag().stripTrailingZeros());
 		Assert.assertEquals(
+			"VerguenstigungOhneBeruecksichtigungVollkosten not equal",
 			testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten.stripTrailingZeros(),
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten().stripTrailingZeros());
 		Assert.assertEquals(
+			"Verguenstigung not equal",
 			testValues.expectedVerguenstigung.stripTrailingZeros(),
 			result.getVerguenstigung().stripTrailingZeros());
-		Assert.assertEquals(testValues.expectedBetreuungsTage.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
-		Assert.assertEquals(testValues.betreuungsPensum.stripTrailingZeros(), result.getBetreuungspensumProzent().stripTrailingZeros());
-		Assert.assertEquals(testValues.expectedAnspruchsTage.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
-		Assert.assertEquals(testValues.anspruchsPensum, result.getAnspruchspensumProzent());
-		Assert.assertEquals(testValues.expectedBgTage.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("Betreuungstage not equal", testValues.expectedBetreuungsTage.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("Anspruchstage not equal", testValues.expectedAnspruchsTage.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("BGTage not equal", testValues.expectedBgTage.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
 		BigDecimal bgPensum =  testValues.betreuungsPensum.min(BigDecimal.valueOf(testValues.anspruchsPensum));
-		Assert.assertEquals(bgPensum.stripTrailingZeros(), result.getBgPensumProzent().stripTrailingZeros());
+		Assert.assertEquals("BGPensum not equal", bgPensum.stripTrailingZeros(), result.getBgPensumProzent().stripTrailingZeros());
 	}
 
 	protected static class TestValues {
