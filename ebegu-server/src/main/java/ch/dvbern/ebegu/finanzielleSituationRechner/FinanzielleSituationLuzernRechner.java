@@ -152,13 +152,30 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
 			MathUtil.positiveNonNullAndRound(
-				subtract(
+					add(getAdditionalEinkommenLiegenschaftenBothGS(finanzielleSituationGS1, finanzielleSituationGS2), subtract(
 					finSitResultDTO.getAnrechenbaresEinkommen(),
-					finSitResultDTO.getAbzuegeBeiderGesuchsteller())));
+					finSitResultDTO.getAbzuegeBeiderGesuchsteller()))));
+	}
+
+	private BigDecimal getAdditionalEinkommenLiegenschaftenBothGS(
+			@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+			@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
+		return add(
+				getAdditionEinkommenLiegenschaftenGS(finanzielleSituationGS1),
+				getAdditionEinkommenLiegenschaftenGS(finanzielleSituationGS2));
+	}
+
+	private BigDecimal getAdditionEinkommenLiegenschaftenGS(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
+		if (finanzielleSituation == null || finanzielleSituation.getAbzuegeLiegenschaft() == null) {
+			return BigDecimal.ZERO;
+		}
+		return MathUtil.isPositive(finanzielleSituation.getAbzuegeLiegenschaft()) ?
+				BigDecimal.ZERO :
+				finanzielleSituation.getAbzuegeLiegenschaft().abs();
 	}
 
 	/**
-	 * Als Abzuege habe ich die AbzuegeLiegenschaft und EinkaeufeVorsorge genommen
+	 * Als Abzuege habe ich EinkaeufeVorsorge genommen
 	 * Die Geschäftverlust habe ich bei der Einkommen genommen
 	 */
 	@Override
@@ -190,8 +207,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 
 	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		BigDecimal total = BigDecimal.ZERO;
-		// abzuege liegenschaften should be ignored if negative
-		total = add(total, MathUtil.positiveNonNull(finanzielleSituation.getAbzuegeLiegenschaft()));
 		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
 		return total;
 	}

@@ -59,23 +59,47 @@ public class FinanzielleSituationLuzernRechnerTest {
 		/**
 		 * Steuerbares Einkommen								60'000
 		 * Steuerbares Vermögen	10'000, 10% =			       + 1'000
-		 * Abzüge für den effektiven Liegenschaftsunterhalt... - 1'000
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... - 0 (Eingabe +1'000)
 		 * Verrechenbare Geschäftsverluste aus den Vorjahren.. - 1'000
 		 * Einkäufe in die berufliche Vorsorge Subtrahieren    - 1'000
 		 *                                                     -------
-		 *                                                      58'000
+		 *                                                      59'000
 		 *                                                     */
 		@Test
-		public void testAlleWertVorhanden() {
+		public void testAlleWertVorhandenPositiverNettoeinkommenLiegenschaften() {
 			Gesuch gesuch = prepareGesuch(false);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(58000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(59000)));
 
 			//zwei Antragstellende, beides ueberpruefen
 			gesuch = prepareGesuch(true);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(58000)));
-			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(116000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(59000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(118000)));
+		}
+
+		/**
+		 * Steuerbares Einkommen								60'000
+		 * Steuerbares Vermögen	10'000, 10% =			       + 1'000
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000 (Eingabe -1'000)
+		 * Verrechenbare Geschäftsverluste aus den Vorjahren.. - 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    - 1'000
+		 *                                                     -------
+		 *                                                      60'000
+		 *                                                     */
+		@Test
+		public void testAlleWertVorhandenNegativerNettoeinkommenLiegenschaften() {
+			Gesuch gesuch = prepareGesuch(false);
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.valueOf(-1000));
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.valueOf(-1000));
+			finSitRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(60000)));
+
+			//zwei Antragstellende, beides ueberpruefen
+			gesuch = prepareGesuch(true);
+			finSitRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(60000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(120000)));
 		}
 
 		/**
