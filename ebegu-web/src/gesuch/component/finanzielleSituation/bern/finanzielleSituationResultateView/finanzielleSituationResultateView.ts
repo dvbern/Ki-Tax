@@ -182,4 +182,11 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         return this.isSteueranfrageErfolgreichForGS1()
             && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
     }
+
+    public getBruttovermoegenTooltipLabel(): string {
+        if (this.isFKJV()) {
+            return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP_FKJV';
+        }
+        return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP';
+    }
 }

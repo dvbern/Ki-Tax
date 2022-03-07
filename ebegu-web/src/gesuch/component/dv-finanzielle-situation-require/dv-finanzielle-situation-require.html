@@ -57,7 +57,7 @@
                                 aria-label="{{vm.getLabel()}}"
                                 aria-described-by="verguenstigungGewuenscht-error"
                                 true-option-label="{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate}}"
-                                false-option-label="{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate}}">
+                                false-option-label="{{vm.getLabelNo() | translate}}">
             </dv-radio-container>
             <dv-error-messages input-id="verguenstigungGewuenscht"
                                for="vm.form.verguenstigungGewuenscht.$error"

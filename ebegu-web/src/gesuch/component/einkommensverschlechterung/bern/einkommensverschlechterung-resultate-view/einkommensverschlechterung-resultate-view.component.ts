@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -206,5 +206,12 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
 
         return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
             || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
+    }
+
+    public getBruttovermoegenTooltipLabel(): string {
+        if (this.isFKJV()) {
+            return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP_FKJV';
+        }
+        return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP';
     }
 }

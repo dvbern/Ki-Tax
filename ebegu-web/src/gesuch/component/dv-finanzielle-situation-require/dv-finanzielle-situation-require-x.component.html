@@ -61,7 +61,10 @@
                             [(ngModel)]="verguenstigungGewuenscht"
                             (ngModelChange)="updateVerguenstigungGewuenscht($event)">
                         <mat-radio-button [value]="true">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">
+                            <ng-container *ngIf="!gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN</ng-container>
+                            <ng-container *ngIf="gesuchModelManager.isFKJVTexte" translate>FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV</ng-container>
+                        </mat-radio-button>
                     </mat-radio-group>
                 </dv-radio-container-x>
             </dv-input-container-x>
