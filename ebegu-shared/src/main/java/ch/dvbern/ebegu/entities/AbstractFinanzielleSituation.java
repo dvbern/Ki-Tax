@@ -30,6 +30,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
@@ -415,5 +416,26 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(
 					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
 					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+	}
+
+	public boolean isVollstaendig(FinanzielleSituationTyp finSitTyp) {
+		switch (finSitTyp) {
+		case LUZERN:
+			return (this.getSteuerbaresEinkommen() != null
+					&& this.getSteuerbaresVermoegen() != null
+					&& this.getAbzuegeLiegenschaft() != null
+					&& this.getGeschaeftsverlust() != null
+					&& this.getEinkaeufeVorsorge() != null) ||
+			 this.getSelbstdeklaration() != null && this.getSelbstdeklaration().isVollstaendig();
+		case SOLOTHURN:
+		case BERN_FKJV:
+		case BERN:
+		default:
+			return this.getSchulden() != null && this.getBruttovermoegen() != null
+					&& this.getNettolohn() != null && this.getFamilienzulage() != null
+					&& this.getErsatzeinkommen() != null && this.getErhalteneAlimente() != null
+					&& this.getGeleisteteAlimente() != null;
+		}
+
 	}
 }
