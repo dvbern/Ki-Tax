@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -111,9 +112,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Column(nullable = true)
 	private BigDecimal nettoVermoegen;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet;
+	@NotNull
+	@Column(nullable = false)
+	private Boolean einkommenInVereinfachtemVerfahrenAbgerechnet = false;
 
 	@Nullable
 	@Column(nullable = true)
