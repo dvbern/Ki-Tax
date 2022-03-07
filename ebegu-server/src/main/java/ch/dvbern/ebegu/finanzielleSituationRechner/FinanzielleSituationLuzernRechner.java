@@ -151,18 +151,9 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			finSitResultDTO.getEinkommenBeiderGesuchsteller(), finSitResultDTO.getNettovermoegenXProzent())
 		);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
-			MathUtil.positiveNonNullAndRound(
-					add(getAdditionalEinkommenLiegenschaftenBothGS(finanzielleSituationGS1, finanzielleSituationGS2), subtract(
+			MathUtil.positiveNonNullAndRound(subtract(
 					finSitResultDTO.getAnrechenbaresEinkommen(),
-					finSitResultDTO.getAbzuegeBeiderGesuchsteller()))));
-	}
-
-	private BigDecimal getAdditionalEinkommenLiegenschaftenBothGS(
-			@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-			@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
-		return add(
-				getAdditionEinkommenLiegenschaftenGS(finanzielleSituationGS1),
-				getAdditionEinkommenLiegenschaftenGS(finanzielleSituationGS2));
+					finSitResultDTO.getAbzuegeBeiderGesuchsteller())));
 	}
 
 	private BigDecimal getAdditionEinkommenLiegenschaftenGS(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
@@ -258,7 +249,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 				total = total.add(abstractFinanzielleSituation.getSelbstdeklaration() != null ? abstractFinanzielleSituation.getSelbstdeklaration().calculateEinkuenfte() : BigDecimal.ZERO);
 			} else {
 				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
-				total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+				total = add(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+				total = add(total, getAdditionEinkommenLiegenschaftenGS(abstractFinanzielleSituation));
 			}
 		}
 		return total;
