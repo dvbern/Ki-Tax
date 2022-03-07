@@ -1,7 +1,7 @@
 {
 	"FAELLE_LIST": "Alle Fälle",
     "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
-	"FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN": "Steuerbares Einkommen",
+	"FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN": "Satzbestimmendes Einkommen",
 	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT": "Nettoeinkünfte aus Liegenschaften",
 	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP": "Abzüge für den effektiven Liegenschaftsunterhalt selbstgenutzter Wohnliegenschaften, welche den Eigenmietwert übersteigen",
 	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST": "Verrechenbare Geschäftsverluste",
@@ -26,5 +26,9 @@
 	"KORREKTE_KOSTEN_BESTAETIGUNG_1": "Wir bestätigen, dass wir das Betreuungspensum bei Änderungen online unmittelbar anpassen",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_2": "",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_3": "",
-	"KORREKTE_KOSTEN_BESTAETIGUNG_4": ""
+	"KORREKTE_KOSTEN_BESTAETIGUNG_4": "",
+	"KINDERGARTEN1": "Freiwilliger Kindergarten",
+	"KINDERGARTEN2": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
+	"KLASSE1": "1. Klasse (kein Anspruch auf Betreuungsgutscheine)",
+	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)"
 }
