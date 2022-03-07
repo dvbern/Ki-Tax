@@ -88,7 +88,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then((gesuch: TSGesuch) => {
-                if (this.isGemeinsam()) {
+                if (this.isGemeinsam() || this.gesuchModelManager.isLastGesuchsteller()) {
                     this.updateWizardStepStatus();
                 }
                 onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
