@@ -107,10 +107,13 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	public boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
 		// if anspruch ist unabhaengig von die Beschaeftigungspensum darf man keine Erwerbspensum erfassen
-		Einstellung anspruchUnabhaengigEinstellung = einstellungService.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
-			gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
-		if (Boolean.TRUE.equals(anspruchUnabhaengigEinstellung.getValueAsBoolean())) return true;
-		
+		Einstellung anspruchUnabhaengigEinstellung =
+			einstellungService.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+				gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		if (Boolean.TRUE.equals(anspruchUnabhaengigEinstellung.getValueAsBoolean())) {
+			return true;
+		}
+
 		return gesuch.extractAllBetreuungen().stream()
 			.anyMatch(this::isErwerbspensumRequired);
 	}
