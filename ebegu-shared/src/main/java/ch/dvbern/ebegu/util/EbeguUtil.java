@@ -261,12 +261,11 @@ public final class EbeguUtil {
 				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())) {
 				return false;
 			}
-			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+							== EnumFamilienstatus.VERHEIRATET) {
 				// finsit is gemeinsam for verheiratet in Luzern
-				if (requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-						== EnumFamilienstatus.VERHEIRATET) {
-					return true;
-				}
+				return true;
 			}
 			if (gesuch.getGesuchsteller2() != null &&
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
@@ -298,12 +297,11 @@ public final class EbeguUtil {
 							.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
 						return false;
 					}
-					if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+					if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+							requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+									== EnumFamilienstatus.VERHEIRATET) {
 						// finsit is gemeinsam for verheiratet in Luzern
-						if (requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-								== EnumFamilienstatus.VERHEIRATET) {
-							return true;
-						}
+						return true;
 					}
 					if (gesuch.getGesuchsteller2() != null
 							&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
