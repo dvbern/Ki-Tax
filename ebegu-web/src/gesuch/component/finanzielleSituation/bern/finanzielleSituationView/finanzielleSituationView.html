@@ -34,11 +34,6 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
-                    <dv-steuerabfrage-response-hints
-                        ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
-
                     <!-- Zugriff auf Steuerdaten -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question"
@@ -67,6 +62,10 @@
                             </div>
                         </div>
                     </div>
+                    <dv-steuerabfrage-response-hints
+                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
 
                     <!--Steuerveranlagung -->
                     <div class="row">
