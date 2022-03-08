@@ -43,6 +43,12 @@ export class DvInputLabelFieldComponent {
     @Input() public inputDisabled: boolean = false;
     @Input() public dvOnBlur: (event: any) => void;
     @Input() public name: string = EbeguUtil.generateRandomName(12);
+    @Input() public neuerWert: number;
+    @Input() public wertBasisjahr: number;
+    @Input() public basisjahr: number;
+    @Input() public deklaration: any;
+    @Input() public korrektur: any;
+    @Input() public showBisher: boolean = false;
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 

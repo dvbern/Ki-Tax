@@ -47,9 +47,6 @@ export function configure(
     $locationProvider: ILocationProvider,
     $qProvider: IQProvider,
 ): void {
-    // Translation Provider configuration
-    const translPropDE = require('../../assets/translations/translations_de.json');
-    const translPropFR = require('../../assets/translations/translations_fr.json');
 
     // In case you have issues with double-escaped parameters, check out this issue:
     // https://github.com/angular-translate/angular-translate/issues/1101
@@ -58,10 +55,10 @@ export function configure(
     const preferredLanguage = extractPreferredLanguage(getWindowObject());
 
     $translateProvider
-        .translations(TSBrowserLanguage.DE, translPropDE)
-        .translations(TSBrowserLanguage.FR, translPropFR)
         .fallbackLanguage(TSBrowserLanguage.DE)
         .preferredLanguage(preferredLanguage);
+
+    $translateProvider.useLoader('CustomTranslationLoader');
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {

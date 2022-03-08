@@ -236,6 +236,14 @@ public final class FreigabeCopyUtil {
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
 		kindGS.setKinderabzugErstesHalbjahr(kindJA.getKinderabzugErstesHalbjahr());
 		kindGS.setKinderabzugZweitesHalbjahr(kindJA.getKinderabzugZweitesHalbjahr());
+		kindGS.setPflegekind(kindJA.getPflegekind());
+		kindGS.setPflegeEntschaedigungErhalten(kindJA.getPflegeEntschaedigungErhalten());
+		kindGS.setObhutAlternierendAusueben(kindJA.getObhutAlternierendAusueben());
+		kindGS.setGemeinsamesGesuch(kindJA.getGemeinsamesGesuch());
+		kindGS.setInErstausbildung(kindJA.getInErstausbildung());
+		kindGS.setLebtKindAlternierend(kindJA.getLebtKindAlternierend());
+		kindGS.setAlimenteErhalten(kindJA.getAlimenteErhalten());
+		kindGS.setAlimenteBezahlen(kindJA.getAlimenteBezahlen());
 		kindGS.setGeburtsdatum(kindJA.getGeburtsdatum());
 		kindGS.setNachname(kindJA.getNachname());
 		kindGS.setGeschlecht(kindJA.getGeschlecht());

@@ -231,7 +231,7 @@
                 <div *ngIf="showGesuchstellerStatistik()">
                     <dv-accordion-tab [tabid]="'gesuchsteller'">
                         <tab-title>
-                            <span class="uppercase" translate>GESUCHSTELLER</span>
+                            <span class="uppercase" translate>STATISTIK_GESUCHSTELLER</span>
                             <dv-tooltip inputId="gesuchsteller_info"
                                         (click)="$event.stopPropagation()"
                                         [text]="'STATISTIKEN_GESUCHSTELLER_HINT' | translate">
@@ -899,10 +899,6 @@
                 <dv-accordion-tab [tabid]="'gemeinden'" *ngIf="showMandantStatistik()">
                     <tab-title>
                         <span class="uppercase" translate>GEMEINDEN_STATISTIK</span>
-                        <dv-tooltip inputId="notrecht_info"
-                                    (click)="$event.stopPropagation()"
-                                    [text]="'STATISTIK_GEMEINDEN_HINT' | translate">
-                        </dv-tooltip>
                     </tab-title>
                     <tab-body>
                         <form name="gemeinden"

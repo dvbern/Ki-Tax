@@ -15,11 +15,11 @@
 
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
-import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
@@ -30,6 +30,7 @@ import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -40,6 +41,8 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -61,6 +64,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         '$translate',
         '$timeout',
         'EinstellungRS',
+        'DvDialog'
     ];
 
     public showSelbstaendig: boolean;
@@ -68,6 +72,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
     public showForm: boolean;
+    private readonly $stateParams: IStammdatenStateParams;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -80,13 +85,19 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
         private readonly settings: EinstellungRS,
+        private readonly dvDialog: DvDialog,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
             $timeout);
-        let parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
+        this.$stateParams = $stateParams;
+        this.copyDataAndInit();
+    }
+
+    private copyDataAndInit(): void {
+        let parsedNum = parseInt(this.$stateParams.gesuchstellerNumber, 10);
         if (!parsedNum) {
             parsedNum = 1;
         }
@@ -151,9 +162,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return (this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt) &&
-            this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
@@ -248,12 +257,30 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
-    public isFKJV(): boolean {
-        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
-    }
-
     public showWarningPartnerNichtGemeinsam(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
+    }
+
+    public showAufteilung(): boolean {
+        return this.isSteueranfrageErfolgreich()
+            && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
+    }
+
+    public startAufteilung(): void {
+        // zwischenspeichern dieser werte. Das sind die einzigen, die nicht readonly und dementsprechend schon
+        // durch den User verändert sein könnten. Beim erneuten laden würden diese überschrieben
+        const einkommenAusVereinfachtemVerfahren =
+            this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        const einkommenAusVereinfachtemVerfahrenAmount
+            = this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        this.dvDialog.showDialogFullscreen(aufteilungDialogTemplate, FinanzielleSituationAufteilungDialogController)
+            .then(() => {
+                this.copyDataAndInit();
+                this.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet =
+                    einkommenAusVereinfachtemVerfahren;
+                this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+                    einkommenAusVereinfachtemVerfahrenAmount;
+            });
     }
 }

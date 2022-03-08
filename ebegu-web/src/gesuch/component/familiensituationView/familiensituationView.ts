@@ -301,9 +301,13 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public showGesuchstellerKardinalitaet(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
-                || this.getFamiliensituation().familienstatus === TSFamilienstatus.PFLEGEFAMILIE;
+            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
         }
         return false;
+    }
+
+    public getTextForFamSitFrage2Tooltip(): string {
+        return this.$translate.instant('FAMILIENSITUATION_HELP',
+            {jahr: this.getFamiliensituation().minDauerKonkubinat});
     }
 }

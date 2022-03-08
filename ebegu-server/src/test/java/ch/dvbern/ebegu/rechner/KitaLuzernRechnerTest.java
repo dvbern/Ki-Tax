@@ -41,8 +41,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = true;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(2080);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(2316.25);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1834);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(2080);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(2316.25);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1834);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(482.25);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(246);
@@ -68,8 +68,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = true;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1366.65);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(868.6);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(868.6);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1196.6);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1196.6);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1196.6);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(153.75);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
@@ -110,7 +110,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testKind2() { //Test Kind1 gemäss Excel
+	public void testKind2() { //Test Kind2 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(60);
@@ -132,7 +132,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testKind() {
+	public void testKind3() { //Test Kind3 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(70);
@@ -141,8 +141,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1371.45);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1414.50);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1186.95);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1371.45);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1414.5);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1186.95);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(184.50);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(227.55);
@@ -158,7 +158,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testKindKitaPlus() { //Test Kind1 gemäss Excel
+	public void testKind4KitaPlus() { //Test Kind4 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(60);
@@ -167,8 +167,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1066.65);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(943);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(943);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1205.40);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1205.40);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(1205.40);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(123);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(12.3);
@@ -184,7 +184,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testSaeuglingEWPgreaterThenMaxBaby() {
+	public void testSaeuglingEWPgreaterThenMaxBaby() {  //Test Baby 3 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(2080);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(80);
@@ -237,7 +237,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testKindBesondereBeduerfnisseZuschlag() {
+	public void testKindBesondereBeduerfnisseZuschlag() { //Test Kind 5 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(50);
@@ -247,8 +247,8 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1280);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(894);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(894);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(976);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(976);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(976);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(123);
 		testValues.expectedBetreuungsTage = BigDecimal.valueOf(10.25);

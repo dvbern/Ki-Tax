@@ -270,7 +270,9 @@ export class DvNavigationXComponent implements OnInit {
                 nextMainStep);
             return;
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -353,12 +355,14 @@ export class DvNavigationXComponent implements OnInit {
             return;
         }
 
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-                this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             if (this.dvSubStep === 3) {
                 this.navigatePreviousEVSubStep3();
@@ -466,6 +470,8 @@ export class DvNavigationXComponent implements OnInit {
                 this.$state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
                 return;
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
                 this.$state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
                 return;
             case TSWizardStepName.DOKUMENTE:
@@ -497,7 +503,14 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {
-        return this.$state.go('gesuch.einkommensverschlechterung', {
+        let stateName = 'gesuch.einkommensverschlechterung';
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungLuzern';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSolothurn';
+        }
+        return this.$state.go(stateName, {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
@@ -519,7 +532,14 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     private navigateToStepEinkommensverschlechterungResultate(basisjahrPlus: string): TransitionPromise {
-        return this.$state.go('gesuch.einkommensverschlechterungResultate', {
+        let stateName = 'gesuch.einkommensverschlechterungResultate';
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungLuzernResultate';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSolothurnResultate';
+        }
+        return this.$state.go(stateName, {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
         });
@@ -556,7 +576,7 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToSolothurnGS1(): any {
         return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 1
+            gsNummer: 1,
         });
     }
 
@@ -564,7 +584,7 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToSolothurnGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 2
+            gsNummer: 2,
         });
     }
 
@@ -692,7 +712,7 @@ export class DvNavigationXComponent implements OnInit {
         if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                this.navigateToStep(this.wizardStepManager.getCurrentStepName());
                 return;
             }
             // ist Zustand 2/1
@@ -700,7 +720,7 @@ export class DvNavigationXComponent implements OnInit {
                 this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
                 return;
             }
-            this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             return;
         }
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) { // ist Zustand 1/2
@@ -712,7 +732,7 @@ export class DvNavigationXComponent implements OnInit {
                 this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
                 return;
             }
-            this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             return;
         }
         // ist Zustand 2/2

@@ -2337,6 +2337,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
 		jaxKind.setKinderabzugErstesHalbjahr(persistedKind.getKinderabzugErstesHalbjahr());
 		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
+		jaxKind.setPflegekind(persistedKind.getPflegekind());
+		jaxKind.setPflegeEntschaedigungErhalten(persistedKind.getPflegeEntschaedigungErhalten());
+		jaxKind.setObhutAlternierendAusueben(persistedKind.getObhutAlternierendAusueben());
+		jaxKind.setGemeinsamesGesuch(persistedKind.getGemeinsamesGesuch());
+		jaxKind.setInErstausbildung(persistedKind.getInErstausbildung());
+		jaxKind.setLebtKindAlternierend(persistedKind.getLebtKindAlternierend());
+		jaxKind.setAlimenteErhalten(persistedKind.getAlimenteErhalten());
+		jaxKind.setAlimenteBezahlen(persistedKind.getAlimenteBezahlen());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
 		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
@@ -2361,6 +2369,7 @@ public class JaxBConverter extends AbstractConverter {
 			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
 		}
 		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
@@ -2385,6 +2394,7 @@ public class JaxBConverter extends AbstractConverter {
 			}
 		}
 		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
+		pensumFachstelle.setGruendeZusatzleistung(pensumFachstelleJAXP.getGruendeZusatzleistung());
 
 		return pensumFachstelle;
 	}
@@ -2479,6 +2489,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
 		kind.setKinderabzugErstesHalbjahr(kindJAXP.getKinderabzugErstesHalbjahr());
 		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
+		kind.setPflegekind(kindJAXP.getPflegekind() == null ? false : kindJAXP.getPflegekind());
+		kind.setPflegeEntschaedigungErhalten(kindJAXP.getPflegeEntschaedigungErhalten());
+		kind.setObhutAlternierendAusueben(kindJAXP.getObhutAlternierendAusueben());
+		kind.setGemeinsamesGesuch(kindJAXP.getGemeinsamesGesuch());
+		kind.setInErstausbildung(kindJAXP.getInErstausbildung());
+		kind.setLebtKindAlternierend(kindJAXP.getLebtKindAlternierend());
+		kind.setAlimenteErhalten(kindJAXP.getAlimenteErhalten());
+		kind.setAlimenteBezahlen(kindJAXP.getAlimenteBezahlen());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
 		kind.setAusAsylwesen(kindJAXP.getAusAsylwesen());
@@ -2677,6 +2695,12 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
 		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
 
+		if(abstractFinanzielleSituationJAXP.getSelbstdeklaration() != null) {
+			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
+				Optional.ofNullable(abstractFinanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
+			abstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(abstractFinanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
+		}
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2711,6 +2735,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setEinkaeufeVorsorge(persistedAbstractFinanzielleSituation.getEinkaeufeVorsorge());
 		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
 		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
+
+		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
+
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2719,6 +2746,16 @@ public class JaxBConverter extends AbstractConverter {
 
 		requireNonNull(finanzielleSituation);
 		requireNonNull(finanzielleSituationJAXP);
+
+		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
+		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
+		// Verfahren
+		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
+			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			return finanzielleSituation;
+		}
 
 		abstractFinanzielleSituationToEntity(finanzielleSituationJAXP, finanzielleSituation);
 		finanzielleSituation.setSteuerveranlagungErhalten(finanzielleSituationJAXP.getSteuerveranlagungErhalten());
@@ -2735,11 +2772,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
-		if(finanzielleSituationJAXP.getSelbstdeklaration() != null) {
-			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
-				Optional.ofNullable(finanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
-			finanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(finanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
-		}
+
 		return finanzielleSituation;
 	}
 
@@ -2797,7 +2830,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
 
-		jaxFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedFinanzielleSituation.getSelbstdeklaration()));
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
@@ -2852,6 +2884,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
 		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
+		einkommensverschlechterung.setBruttolohnAbrechnung1(einkommensverschlechterungJAXP.getBruttolohnAbrechnung1());
+		einkommensverschlechterung.setBruttolohnAbrechnung2(einkommensverschlechterungJAXP.getBruttolohnAbrechnung2());
+		einkommensverschlechterung.setBruttolohnAbrechnung3(einkommensverschlechterungJAXP.getBruttolohnAbrechnung3());
+		einkommensverschlechterung.setExtraLohn(einkommensverschlechterungJAXP.getExtraLohn());
 
 		return einkommensverschlechterung;
 	}
@@ -2868,6 +2904,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
 		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
+		eikvs.setBruttolohnAbrechnung1(persistedEinkommensverschlechterung.getBruttolohnAbrechnung1());
+		eikvs.setBruttolohnAbrechnung2(persistedEinkommensverschlechterung.getBruttolohnAbrechnung2());
+		eikvs.setBruttolohnAbrechnung3(persistedEinkommensverschlechterung.getBruttolohnAbrechnung3());
+		eikvs.setExtraLohn(persistedEinkommensverschlechterung.getExtraLohn());
 
 		return eikvs;
 	}

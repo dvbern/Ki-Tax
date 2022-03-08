@@ -309,7 +309,9 @@ export class NavigatorController implements IController {
                 nextSubStep,
                 nextMainStep);
         }
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -383,12 +385,14 @@ export class NavigatorController implements IController {
             return this.navigateToSubStepFinanzielleSituation(previousSubStep, previousMainStep);
         }
 
-        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName()) {
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 2) {
-                return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             if (this.dvSubStep === 3) {
                 return this.navigatePreviousEVSubStep3();
@@ -423,7 +427,6 @@ export class NavigatorController implements IController {
             case TSFinanzielleSituationSubStepName.BERN_RESULTATE:
                 return this.navigateToFinanziellSituationResultate();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE:
-                return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE_DETAIL:
                 return this.navigateToSozialhilfeZeitraeume();
             case TSFinanzielleSituationSubStepName.LUZERN_START:
@@ -468,6 +471,8 @@ export class NavigatorController implements IController {
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
                 return this.state.go('gesuch.dokumente', gesuchIdParam);
@@ -495,7 +500,22 @@ export class NavigatorController implements IController {
     }
 
     private navigateToStepEinkommensverschlechterung(gsNumber: string, basisjahrPlus: string): TransitionPromise {
-        return this.state.go('gesuch.einkommensverschlechterung', {
+        let stateName = 'gesuch.einkommensverschlechterung';
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungLuzern';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSolothurn';
+        }
+        return this.state.go(stateName, {
+            gesuchstellerNumber: gsNumber ? gsNumber : '1',
+            basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
+            gesuchId: this.getGesuchId(),
+        });
+    }
+
+    private navigateToStepEinkommensverschlechterungLuzern(gsNumber: string, basisjahrPlus: string): TransitionPromise {
+        return this.state.go('gesuch.einkommensverschlechterungLuzern', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
@@ -517,7 +537,14 @@ export class NavigatorController implements IController {
     }
 
     private navigateToStepEinkommensverschlechterungResultate(basisjahrPlus: string): TransitionPromise {
-        return this.state.go('gesuch.einkommensverschlechterungResultate', {
+        let stateName = 'gesuch.einkommensverschlechterungResultate';
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName()) {
+            stateName =  'gesuch.einkommensverschlechterungLuzernResultate';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSolothurnResultate';
+        }
+        return this.state.go(stateName, {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId(),
         });
@@ -656,13 +683,13 @@ export class NavigatorController implements IController {
         if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                 // ist Zustand 1/1
-                return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+                return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
             }
             // ist Zustand 2/1
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
         }
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) { // ist Zustand 1/2
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(2, 1)) { // gehe ekv 2/2
@@ -671,7 +698,7 @@ export class NavigatorController implements IController {
             if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
                 return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
             }
-            return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
         }
         // ist Zustand 2/2
         if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 2)) { // gehe ekv 1/2
@@ -683,7 +710,7 @@ export class NavigatorController implements IController {
         if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) {
             return this.navigateToStepEinkommensverschlechterung('1', '1'); // gehe ekv 1/1
         }
-        return this.navigateToStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+        return this.navigateToStep(this.wizardStepManager.getCurrentStepName());
     }
 
     private navigatePreviousEVSubStep4(): TransitionPromise {

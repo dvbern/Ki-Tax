@@ -20,7 +20,6 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
-import {TSSteuerdatenAnfrageStatus} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
@@ -29,6 +28,7 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
@@ -69,7 +69,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public finanzielleSituationRequired: boolean;
     public areThereOnlySchulamtangebote: boolean;
     public areThereOnlyFerieninsel: boolean;
-    public areThereOnlyBgBetreuungen: boolean;
     public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
@@ -108,7 +107,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
-        this.areThereOnlyBgBetreuungen = this.gesuchModelManager.areThereOnlyBgBetreuungen();
         this.areThereOnlySchulamtangebote = this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
                                                                                                     // just once
         this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once
@@ -320,9 +318,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
 
-        return (this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuerveranlagungErhalten ||
-            this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt) &&
-            this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
     }
 
     public steuerdatenzugriffClicked(): void {
@@ -331,21 +327,17 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
     }
 
-    public showWarningKeinPartnerGemeinsam(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
-    public showWarningGeburtsdatum(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
-    }
-
     private callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(true).then(() => {
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+            .then(() => {
                 this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                this.form.$setDirty();
             },
         );
+    }
+
+    private getAbfrageStatus(): string {
+        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
 }

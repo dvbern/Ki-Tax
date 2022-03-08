@@ -119,7 +119,7 @@ public class BGCalculationInput {
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
-	private int anspruchspensumProzent;
+	private BigDecimal anspruchspensumProzent = BigDecimal.ZERO;
 
 	@NotNull @Nonnull
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
@@ -485,11 +485,11 @@ public class BGCalculationInput {
 	}
 
 	public int getAnspruchspensumProzent() {
-		return anspruchspensumProzent;
+		return MathUtil.GANZZAHL.from(anspruchspensumProzent).intValue();
 	}
 
 	public void setAnspruchspensumProzent(int anspruchspensumProzent) {
-		this.anspruchspensumProzent = anspruchspensumProzent;
+		this.anspruchspensumProzent = BigDecimal.valueOf(anspruchspensumProzent);
 	}
 
 	@Nonnull
@@ -724,50 +724,11 @@ public class BGCalculationInput {
 			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
 		}
 
-		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
-		if (this.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
-		}
-		if (other.getMonatlicheBetreuungskosten() != null) {
-			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
-		}
-		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
-
-		BigDecimal newMonatlicheHauptmahlzeiten = BigDecimal.ZERO;
-		if (this.getAnzahlHauptmahlzeiten() != null) {
-			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(this.getAnzahlHauptmahlzeiten());
-		}
-		if (other.getAnzahlHauptmahlzeiten() != null) {
-			newMonatlicheHauptmahlzeiten = newMonatlicheHauptmahlzeiten.add(other.getAnzahlHauptmahlzeiten());
-		}
-		this.setAnzahlHauptmahlzeiten(newMonatlicheHauptmahlzeiten);
-
-		BigDecimal newMonatlicheNebenmahlzeiten = BigDecimal.ZERO;
-		if (this.getAnzahlNebenmahlzeiten() != null) {
-			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(this.getAnzahlNebenmahlzeiten());
-		}
-		if (other.getAnzahlNebenmahlzeiten() != null) {
-			newMonatlicheNebenmahlzeiten = newMonatlicheNebenmahlzeiten.add(other.getAnzahlNebenmahlzeiten());
-		}
-		this.setAnzahlNebenmahlzeiten(newMonatlicheNebenmahlzeiten);
-
-		BigDecimal newTarifHauptmhalzeit = BigDecimal.ZERO;
-		if (this.getTarifHauptmahlzeit() != null) {
-			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(this.getTarifHauptmahlzeit());
-		}
-		if (other.getTarifHauptmahlzeit() != null) {
-			newTarifHauptmhalzeit = newTarifHauptmhalzeit.add(other.getTarifHauptmahlzeit());
-		}
-		this.setTarifHauptmahlzeit(newTarifHauptmhalzeit);
-
-		BigDecimal newTarifNebenmahlzeit = BigDecimal.ZERO;
-		if (this.getTarifNebenmahlzeit() != null) {
-			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(this.getTarifNebenmahlzeit());
-		}
-		if (other.getTarifNebenmahlzeit() != null) {
-			newTarifNebenmahlzeit = newTarifNebenmahlzeit.add(other.getTarifNebenmahlzeit());
-		}
-		this.setTarifNebenmahlzeit(newTarifNebenmahlzeit);
+		this.monatlicheBetreuungskosten = add(this.getMonatlicheBetreuungskosten(), other.getMonatlicheBetreuungskosten());
+		this.anzahlHauptmahlzeiten =  add(this.getAnzahlHauptmahlzeiten(), other.getAnzahlHauptmahlzeiten());
+		this.anzahlNebenmahlzeiten = add(this.getAnzahlNebenmahlzeiten(), other.getAnzahlNebenmahlzeiten());
+		this.tarifHauptmahlzeit = add(this.getTarifHauptmahlzeit(), other.getTarifHauptmahlzeit());
+		this.tarifNebenmahlzeit =  add(this.getTarifNebenmahlzeit(), other.getTarifNebenmahlzeit());
 
 		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt || other.verguenstigungMahlzeitenBeantragt);
 
@@ -797,17 +758,18 @@ public class BGCalculationInput {
 
 		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
-		if (this.besondereBeduerfnisseZuschlag != null) {
-			this.besondereBeduerfnisseZuschlag = this.besondereBeduerfnisseZuschlag.add(other.besondereBeduerfnisseZuschlag);
-		}
+		//Minimal erforderliches Pensum ist immer nur auf dem Vorgänger gesetzt und muss einfach übernommen werden.
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
-		this.anspruchspensumProzent = this.anspruchspensumProzent + other.anspruchspensumProzent;
+		this.anspruchspensumProzent = add(this.anspruchspensumProzent, other.anspruchspensumProzent);
+		//nach add der anspruchspensumprozente muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
+		this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
 		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
-		this.minimalesEwpUnterschritten = this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten;
 		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
@@ -832,7 +794,21 @@ public class BGCalculationInput {
 		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
-		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
+	}
+
+	private BigDecimal add(@Nullable BigDecimal b1, @Nullable BigDecimal b2) {
+		BigDecimal result = BigDecimal.ZERO;
+
+		if(b1 != null) {
+			result = result.add(b1);
+		}
+
+		if(b2 != null) {
+			result = result.add(b2);
+		}
+
+		return result;
 	}
 
 	public void calculateInputValuesProportionaly(double percentage) {
@@ -845,7 +821,7 @@ public class BGCalculationInput {
 		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
 		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
 		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
-		this.anspruchspensumProzent = calculatePercentageInt(this.anspruchspensumProzent, percentage);
+		this.anspruchspensumProzent = calculatePercentage(this.anspruchspensumProzent, percentage);
 		this.anspruchspensumRest = calculatePercentageInt(this.anspruchspensumRest, percentage);
 		this.fachstellenpensum = calculatePercentageInt(this.fachstellenpensum, percentage);
 		this.ausserordentlicherAnspruch = calculatePercentageInt(this.ausserordentlicherAnspruch, percentage);
@@ -924,7 +900,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(anzahlNebenmahlzeiten, other.anzahlNebenmahlzeiten) &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(betreuungspensumProzent, other.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == other.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(other.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(abzugFamGroesse, other.abzugFamGroesse) &&
 			MathUtil.isSame(famGroesse, other.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, other.massgebendesEinkommenVorAbzugFamgr) &&
@@ -954,7 +930,7 @@ public class BGCalculationInput {
 			verguenstigungMahlzeitenBeantragt == that.verguenstigungMahlzeitenBeantragt &&
 			// Zusätzliche Felder aus Result
 			MathUtil.isSame(this.betreuungspensumProzent, that.betreuungspensumProzent) &&
-			this.anspruchspensumProzent == that.anspruchspensumProzent &&
+			this.anspruchspensumProzent.compareTo(that.anspruchspensumProzent) == 0 &&
 			MathUtil.isSame(this.abzugFamGroesse, that.abzugFamGroesse) &&
 			MathUtil.isSame(this.famGroesse, that.famGroesse) &&
 			MathUtil.isSame(this.massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&

@@ -35,11 +35,59 @@ public class JaxEinkommensverschlechterung extends JaxAbstractFinanzielleSituati
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	@Nullable
+	private BigDecimal bruttolohnAbrechnung1;
+
+	@Nullable
+	private BigDecimal bruttolohnAbrechnung2;
+
+	@Nullable
+	private BigDecimal bruttolohnAbrechnung3;
+
+	@Nullable
+	private Boolean extraLohn;
+
+	@Nullable
 	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
 		return geschaeftsgewinnBasisjahrMinus1;
 	}
 
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung1() {
+		return bruttolohnAbrechnung1;
+	}
+
+	public void setBruttolohnAbrechnung1(@Nullable BigDecimal bruttolohnAbrechnung1) {
+		this.bruttolohnAbrechnung1 = bruttolohnAbrechnung1;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung2() {
+		return bruttolohnAbrechnung2;
+	}
+
+	public void setBruttolohnAbrechnung2(@Nullable BigDecimal bruttolohnAbrechnung2) {
+		this.bruttolohnAbrechnung2 = bruttolohnAbrechnung2;
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnAbrechnung3() {
+		return bruttolohnAbrechnung3;
+	}
+
+	public void setBruttolohnAbrechnung3(@Nullable BigDecimal bruttolohnAbrechnung3) {
+		this.bruttolohnAbrechnung3 = bruttolohnAbrechnung3;
+	}
+
+	@Nullable
+	public Boolean getExtraLohn() {
+		return extraLohn;
+	}
+
+	public void setExtraLohn(@Nullable Boolean extraLohn) {
+		this.extraLohn = extraLohn;
 	}
 }

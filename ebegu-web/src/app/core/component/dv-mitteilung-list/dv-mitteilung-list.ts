@@ -91,6 +91,7 @@ export class DVMitteilungListController implements IOnInit {
     public isLoaded: boolean = true;
     public empfaenger: any;
     public empfaengerValues: Array<any>;
+    public isVolksschuleGemeinde: boolean = false;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -120,6 +121,7 @@ export class DVMitteilungListController implements IOnInit {
         if (this.$stateParams.dossierId) {
             this.dossierRS.findDossier(this.$stateParams.dossierId).then(response => {
                 this.dossier = response;
+                this.isVolksschuleGemeinde = this.dossier.gemeinde.besondereVolksschule;
                 if (this.$stateParams.betreuungId) {
                     this.betreuungRS.findBetreuung(this.$stateParams.betreuungId).then(r => {
                         this.betreuung = r;

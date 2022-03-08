@@ -103,10 +103,8 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 		}
 		// we cannot translate the Enum directly because we need another translation specific for this Bemerkung
 		final Mandant mandant = Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant());
-		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION ?
-			ServerMessageUtil.getMessage("Sozialen_Indikation", getLocale(),
-					mandant) :
-			ServerMessageUtil.getMessage("Sprachlichen_Indikation", getLocale(), mandant);
+
+		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp().getIndikationMessage(getLocale(), mandant);
 	}
 
 	private String getFachstelle(@Nonnull Betreuung betreuung) {

@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -38,6 +39,7 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
@@ -45,6 +47,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERU
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -59,6 +62,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
@@ -126,10 +130,12 @@ public class BetreuungsgutscheinConfigurator {
 			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
 			FKJV_ANSPRUCH_MONATSWEISE,
-			AUSSERORDENTLICHER_ANSPRUCH_RULE,
-			FKJV_ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
-			GESCHWISTERNBONUS_AKTIVIERT
+			GESCHWISTERNBONUS_AKTIVIERT,
+			AUSSERORDENTLICHER_ANSPRUCH_RULE,
+			DAUER_BABYTARIF,
+			KINDERABZUG_TYP,
+			FKJV_TEXTE
 		);
 	}
 
@@ -190,6 +196,8 @@ public class BetreuungsgutscheinConfigurator {
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_6, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 muss gesetzt sein");
 		Einstellung param_minimaldauer_konkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
+		Einstellung param_kinderabzug_typ = einstellungMap.get(KINDERABZUG_TYP);
+		Objects.requireNonNull(param_minimaldauer_konkubinat, "Parameter KINDERABZUG_TYP muss gesetzt sein");
 
 		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(defaultGueltigkeit,
 			param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
@@ -197,6 +205,7 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
 			param_minimaldauer_konkubinat.getValueAsInteger(),
+			KinderabzugTyp.valueOf(param_kinderabzug_typ.getValue()),
 			locale);
 		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, einstellungMap);
 
@@ -205,7 +214,9 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(gutscheineStartdatumAbschnittRule, einstellungMap);
 
 		// - KindTarif
-		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
+		Einstellung param_dauerBabyTarif = einstellungMap.get(DAUER_BABYTARIF);
+		Objects.requireNonNull(param_dauerBabyTarif, "Parameter DAUER_BABYTARIF muss gesetzt sein");
+		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale, param_dauerBabyTarif.getValueAsInteger());
 		addToRuleSetIfRelevantForGemeinde(kindTarifAbschnittRule, einstellungMap);
 
 		// Betreuungsangebot

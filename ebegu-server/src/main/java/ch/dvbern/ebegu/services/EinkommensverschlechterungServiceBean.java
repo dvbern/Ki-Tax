@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -70,11 +71,11 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@Nonnull
 	public EinkommensverschlechterungContainer saveEinkommensverschlechterungContainer(
-		@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, String gesuchId) {
+		@Nonnull EinkommensverschlechterungContainer einkommensverschlechterungContainer, Gesuch gesuch) {
 		Objects.requireNonNull(einkommensverschlechterungContainer);
 		final EinkommensverschlechterungContainer persistedEKV = persistence.merge(einkommensverschlechterungContainer);
-		if (gesuchId != null) {
-			wizardStepService.updateSteps(gesuchId, null, einkommensverschlechterungContainer, WizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+		if (gesuch != null) {
+			wizardStepService.updateSteps(gesuch.getId(), null, einkommensverschlechterungContainer, wizardStepService.getEKVWizardStepNameForGesuch(gesuch));
 		}
 		return persistedEKV;
 	}
@@ -141,12 +142,15 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	public BigDecimal getMinimalesMassgebendesEinkommenForGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorizationFinSit(gesuch);
 		// we disable EKV for calculation, since we want to simulate calculation as it would be without EKV
+		EinkommensverschlechterungInfoContainer container = gesuch.getEinkommensverschlechterungInfoContainer();
 		gesuch.setEinkommensverschlechterungInfoContainer(null);
 		final Verfuegung famGroessenVerfuegung = verfuegungService.calculateFamGroessenVerfuegung(gesuch, Sprache.DEUTSCH);
-		return famGroessenVerfuegung.getZeitabschnitte().stream()
+		BigDecimal temp = famGroessenVerfuegung.getZeitabschnitte().stream()
 			.map(VerfuegungZeitabschnitt::getMassgebendesEinkommen)
 			.min(Comparator.naturalOrder())
 			.orElse(BigDecimal.ZERO);
+		gesuch.setEinkommensverschlechterungInfoContainer(container);
+		return temp;
 	}
 
 	private void removeAllEKVForGSAndYear(GesuchstellerContainer gesuchsteller, int yearPlus) {

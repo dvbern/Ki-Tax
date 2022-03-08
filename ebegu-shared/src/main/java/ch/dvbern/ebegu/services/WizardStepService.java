@@ -118,4 +118,7 @@ public interface WizardStepService {
 
 	@Nonnull
 	WizardStepName getFinSitWizardStepNameForGesuch(@Nonnull Gesuch gesuch);
+
+	@Nonnull
+	WizardStepName getEKVWizardStepNameForGesuch(@Nonnull Gesuch gesuch);
 }

@@ -41,10 +41,12 @@
 
 .ewk-title {
     display: flex;
+
     .ewk-icons {
         display: block;
         width: 5rem;
     }
+
     .red {
         color: @danger;
     }
@@ -54,11 +56,13 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
     &.is-chosen {
         & > .dv-accordion-tab-title {
             color: @success;
+
             &:after {
                 content: '\f00c';
                 float: right;
                 font-family: FontAwesome, sans-serif;
             }
+
             &.tab-open, &:hover {
                 background: @success-light;
                 color: @success-dark;
@@ -78,6 +82,7 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
 
         }
     }
+
     & > .dv-accordion-tab-content {
         background: @contrast-light;
         display: block;
@@ -87,8 +92,10 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
         overflow: hidden;
         padding: 0 2rem 0;
         width: 100%;
+
         & > tab-body > * {
             margin: 0;
+
             .ewk-label {
                 .ebeguBold();
                 -webkit-touch-callout: none; /* iOS Safari */
@@ -97,23 +104,28 @@ dv-accordion.ewk > ng-transclude > dv-accordion-tab {
                 -moz-user-select: none; /* Firefox */
                 -ms-user-select: none; /* Internet Explorer/Edge */
                 user-select: none;
+
                 &:after {
                     content: ' : '
                 }
             }
 
         }
+
         &.ng-hide-add {
             max-height: 500rem;
             transition: all 1s ease;
         }
+
         &.ng-hide-add.ng-hide-add-active {
             max-height: 0;
         }
+
         &.ng-hide-remove {
             max-height: 0;
             transition: all 1s ease;
         }
+
         &.ng-hide-remove.ng-hide-remove-active {
             max-height: 500rem;
         }
@@ -137,19 +149,23 @@ dv-accordion.ewksub {
         -ms-user-select: none; /* Internet Explorer/Edge */
         user-select: none;
         width: auto;
+
         &:before {
             content: '\f0fe';
             font-family: FontAwesome, sans-serif;
         }
+
         &.tab-open {
             background: @contrast-light;
             color: @contrast-darkest;
+
             &:before {
                 content: '\f146';
                 font-family: FontAwesome, sans-serif;
             }
         }
     }
+
     .dv-accordion-tab-content {
         background: @contrast-light;
         display: block;
@@ -161,27 +177,34 @@ dv-accordion.ewksub {
         overflow: hidden;
         padding-left: 4rem;
         width: auto;
+
         & > tab-body > * {
             margin: 0;
+
             .ewk-label {
                 .ebeguBold();
+
                 &:after {
                     content: ' : '
                 }
             }
 
         }
+
         &.ng-hide-add {
             max-height: 50rem;
             transition: all 1s ease;
         }
+
         &.ng-hide-add.ng-hide-add-active {
             max-height: 0;
         }
+
         &.ng-hide-remove {
             max-height: 0;
             transition: all 1s ease;
         }
+
         &.ng-hide-remove.ng-hide-remove-active {
             max-height: 50rem;
         }
@@ -195,6 +218,7 @@ dv-accordion.ewksubsub {
         margin-right: 0;
         padding-left: 6rem;
     }
+
     .dv-accordion-tab-title {
         background: transparent;
         color: @contrast-darkest;
@@ -230,21 +254,27 @@ dv-accordion.ewksubsub {
     flex: 0 0 auto;
     height: @navbar-height;
     position: relative;
+
     &.mobile-open {
         border-left: 0.7rem @primary solid;
     }
+
     &.mobile-close {
         border-right: 0.7rem @primary solid;
     }
+
     .mobile-active {
         padding: 0 1.5rem 0 2.5rem;
+
         &:focus {
             outline: none;
         }
+
         span {
             display: none;
             font-size: 1.6rem;
             letter-spacing: 0.15rem;
+
             &.gesuch-name, &.active-element, &.fa-angle-down {
                 display: block;
                 max-width: 40%;
@@ -252,6 +282,7 @@ dv-accordion.ewksubsub {
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+
             &.active-element {
                 color: @primary;
                 margin-left: auto;
@@ -259,6 +290,7 @@ dv-accordion.ewksubsub {
                 max-width: 55%;
 
             }
+
             &.fa-angle-down {
                 display: block;
                 font-size: 2rem;
@@ -268,6 +300,7 @@ dv-accordion.ewksubsub {
 
         }
     }
+
     button {
         background: transparent;
         bottom: 0;
@@ -290,9 +323,11 @@ dv-accordion.ewksubsub {
             color: @contrast-darkest;
             outline: 0;
         }
+
         &.mobile-sidenav-close {
             padding: 0 1.5rem 0;
         }
+
         span {
             font-size: 2rem;
             height: @navbar-height;
@@ -336,6 +371,7 @@ dv-accordion.ewksubsub {
         justify-content: space-between;
 
     }
+
     .dv-navigation-flex:first-child {
         flex: 0;
     }
@@ -371,23 +407,30 @@ dv-accordion.ewksubsub {
 
     .dv-navigation--verfuegen {
         flex-direction: row;
+
         dv-navigation, .dv-navigation-flex, .dv-navigation {
             flex: 0;
         }
+
         .dv-navigation-flex {
             flex-direction: row-reverse;
         }
     }
+
     & > div {
         min-height: 100%;
+
         & > * {
             max-height: none;
             min-height: 100%;
+
             .gesuch-modul {
                 min-height: 100%;
             }
+
             & > * {
                 max-height: none;
+
                 & > * {
                     max-height: none;
                 }
@@ -396,8 +439,8 @@ dv-accordion.ewksubsub {
     }
 
     @media only screen
-        and (min-device-width: 320px)
-        and (max-device-width: 700px) {
+    and (min-device-width: 320px)
+    and (max-device-width: 700px) {
         .dv-navigation-flex {
             flex-wrap: wrap-reverse;
         }
@@ -424,15 +467,39 @@ dv-accordion.ewksubsub {
 .gesuch-modul {
     padding: 5rem 3rem 10rem;
     position: relative;
+
     &.betreuung-view {
         padding: 5rem 3rem 14rem;
+
         .well {
             margin-left: -3rem;
             margin-right: -3rem;
         }
     }
 
-    &.static-position div:not(.md-container):not(.md-off):not(.md-on):not(.md-icon) {
+    // exclude angular-material radio button and checkbox from static position
+    &.static-position div:not(
+    .md-container,
+    .md-off,
+    .md-on,
+    .md-icon,
+    .mat-radio-group,
+    .mat-radio-button,
+    .mat-radio-label,
+    .mat-radio-container,
+    .mat-radio-label-content,
+    .mat-radio-outer-circle,
+    .mat-radio-inner-circle,
+    .mat-ripple,
+    .mat-ripple-element,
+    .mat-checkbox,
+    .mat-checkbox-layout,
+    .mat-checkbox-inner-container,
+    .mat-checkbox-input,
+    .mat-checkbox-background,
+    .mat-checkbox-frame,
+    .mat-ripple
+    ) {
         position: static;
     }
 }
@@ -443,6 +510,7 @@ dv-accordion.ewksubsub {
 
 .betreuung-status {
     position: relative !important;
+
     div {
         .ebeguH3();
         display: block;
@@ -464,10 +532,13 @@ dv-accordion.ewksubsub {
         width: 3rem;
 
     }
+
     &.verfuegen-view .betreuung-bar {
         left: 0;
     }
+
     /*stylelint-disable*/
+
     &.verfuegen-view.NICHT_EINGETRETEN {
         border-bottom: 1px solid @contrast-darkest;
     }
@@ -475,13 +546,16 @@ dv-accordion.ewksubsub {
     &.BESTAETIGT .betreuung-bar, &.SCHULAMT_ANMELDUNG_UEBERNOMMEN .betreuung-bar {
         border-color: @success;
     }
+
     &.WARTEN .betreuung-bar, &.SCHULAMT_FALSCHE_INSTITUTION .betreuung-bar, &.SCHULAMT_ANMELDUNG_ABGELEHNT .betreuung-bar {
         border-color: @warning;
     }
+
     &.ABGEWIESEN .betreuung-bar,
     &.SCHULAMT_ANMELDUNG_STORNIERT .betreuung-bar {
         border-color: @danger;
     }
+
     &.VERFUEGT .betreuung-bar {
         border-color: @purple;
     }
@@ -516,16 +590,19 @@ dv-accordion.ewksubsub {
         font-size: 1.4rem;
         letter-spacing: 0.1rem;
     }
+
     .gesuch-zusatz-info {
         .ebeguItalic();
         font-size: 1.2rem;
         letter-spacing: 0.1rem;
     }
+
     .gesperrt {
         color: red;
         font-size: 1.2rem;
         letter-spacing: 0.1rem;
     }
+
     .uploaded-document {
         margin-left: 0.5rem;
     }

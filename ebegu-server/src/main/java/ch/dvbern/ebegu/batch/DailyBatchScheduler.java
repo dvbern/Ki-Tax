@@ -99,7 +99,7 @@ public class DailyBatchScheduler {
 		dailyBatch.runBatchInfoOffenePendenzenNeueMitteilungInstitution();
 	}
 
-	@Schedule(second = "59", minute = "30", hour = "02", persistent = true)
+	@Schedule(second = "59", minute = "30", hour = "02", dayOfMonth = "15", month = "9", persistent = true)
 	public void runBatchInstitutionCheckRequired() {
 		dailyBatch.runBatchInstitutionCheckRequired();
 	}

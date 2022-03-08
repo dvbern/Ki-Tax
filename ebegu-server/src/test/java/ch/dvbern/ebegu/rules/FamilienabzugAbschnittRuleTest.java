@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -61,7 +62,7 @@ public class FamilienabzugAbschnittRuleTest {
 	private final FamilienabzugAbschnittRule famabAbschnittRule =
 		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
 			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
-			pauschalabzugProPersonFamiliengroesse6, 5, Constants.DEFAULT_LOCALE);
+			pauschalabzugProPersonFamiliengroesse6, 5, KinderabzugTyp.ASIV, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void test2PKeinAbzug() {

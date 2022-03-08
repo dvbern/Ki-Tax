@@ -306,6 +306,108 @@ public class BGCalculationInputMergerTest {
 
 	}
 
+	@Test
+	public void test_minimalErforderlichesPensumNichtUnterschritenInOneZeitabschnitt()  {
+		bgCalculationInput1.setAnspruchspensumProzent(80);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(40, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertFalse(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumNichtUnterschritenInBothZeitabschnitt()  {
+		bgCalculationInput1.setAnspruchspensumProzent(80);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(60);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(70, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertFalse(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumUnterschriten()  {
+		bgCalculationInput1.setAnspruchspensumProzent(10);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(5, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertTrue(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_minimalErforderlichesPensumUnterschritenOnlyInTotal()  {
+		bgCalculationInput1.setAnspruchspensumProzent(20);
+		bgCalculationInput1.setMinimalErforderlichesPensum(20);
+		bgCalculationInput1.setMinimalesEwpUnterschritten(false);
+
+		bgCalculationInput2.setAnspruchspensumProzent(0);
+		bgCalculationInput2.setMinimalErforderlichesPensum(20);
+		bgCalculationInput2.setMinimalesEwpUnterschritten(true);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(50);
+		bgCalculationInput2.calculateInputValuesProportionaly(50);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+
+		Assert.assertEquals(10, bgCalculationInput1.getAnspruchspensumProzent());
+		Assert.assertEquals(20, bgCalculationInput1.getMinimalErforderlichesPensum());
+		Assert.assertTrue(bgCalculationInput1.isMinimalesEwpUnterschritten());
+	}
+
+	@Test
+	public void test_shouldNotRoundAnspruchpensum() {
+		BGCalculationInput bgCalculationInput3 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+		BGCalculationInput bgCalculationInput4 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
+
+		bgCalculationInput1.setAnspruchspensumProzent(40);
+		bgCalculationInput2.setAnspruchspensumProzent(50);
+		bgCalculationInput3.setAnspruchspensumProzent(60);
+		bgCalculationInput4.setAnspruchspensumProzent(70);
+
+		bgCalculationInput1.calculateInputValuesProportionaly(100.0 / 31.0 * 5.0);
+		bgCalculationInput2.calculateInputValuesProportionaly(100.0 / 31.0 * 2.0);
+		bgCalculationInput3.calculateInputValuesProportionaly(100.0 / 31.0 * 8.0);
+		bgCalculationInput4.calculateInputValuesProportionaly(100.0 / 31.0 * 16.0);
+
+		bgCalculationInput1.add(bgCalculationInput2);
+		bgCalculationInput1.add(bgCalculationInput3);
+		bgCalculationInput1.add(bgCalculationInput4);
+
+		Assert.assertEquals(61, bgCalculationInput1.getAnspruchspensumProzent());
+	}
+
 	@Before
 	public void init() {
 		bgCalculationInput1 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);

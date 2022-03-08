@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
+import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 
@@ -69,9 +71,12 @@ public interface FinanzielleSituationService {
 
 	/**
 	 * speichert einfach die Datenstand ohne weitere Arbeit
+	 *
 	 * @param convertedFinSitCont
 	 * @return
 	 */
 	@Nonnull
 	FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation);
+
+	void setValuesFromAufteilungDTO(@Nonnull FinanzielleSituation finSitGs1, @Nonnull FinanzielleSituation finSitGs2, @Nonnull JaxFinanzielleSituationAufteilungDTO dto);
 }

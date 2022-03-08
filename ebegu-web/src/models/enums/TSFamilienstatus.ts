@@ -18,7 +18,6 @@ export enum TSFamilienstatus {
     KONKUBINAT = 'KONKUBINAT',
     KONKUBINAT_KEIN_KIND = 'KONKUBINAT_KEIN_KIND',
     ALLEINERZIEHEND = 'ALLEINERZIEHEND',
-    PFLEGEFAMILIE = 'PFLEGEFAMILIE',
 }
 
 export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
@@ -36,6 +35,5 @@ export function getTSFamilienstatusFKJVValues(): Array<TSFamilienstatus> {
         TSFamilienstatus.VERHEIRATET,
         TSFamilienstatus.KONKUBINAT,
         TSFamilienstatus.KONKUBINAT_KEIN_KIND,
-        TSFamilienstatus.PFLEGEFAMILIE,
     ];
 }

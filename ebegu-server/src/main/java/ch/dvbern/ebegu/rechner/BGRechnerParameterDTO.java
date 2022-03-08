@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.rules.util.MahlzeitenverguenstigungParameter;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
@@ -84,6 +85,8 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal maxTarifTagesschuleOhnePaedagogischerBetreuung;
 	private BigDecimal minTarifTagesschule;
 
+	private boolean texteForFKJV = false;
+
 
 	private MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter();
 
@@ -119,6 +122,7 @@ public final class BGRechnerParameterDTO {
 			asBigDecimal(paramMap, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT, gesuchsperiode, gemeinde)
 		);
 		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
+		this.texteForFKJV = asBoolean(paramMap, FKJV_TEXTE, gesuchsperiode, gemeinde);
 	}
 
 	public BGRechnerParameterDTO() {
@@ -317,5 +321,9 @@ public final class BGRechnerParameterDTO {
 
 	public void setGemeindeParameter(BGRechnerParameterGemeindeDTO gemeindeParameter) {
 		this.gemeindeParameter = gemeindeParameter;
+	}
+
+	public boolean isTexteForFKJV() {
+		return texteForFKJV;
 	}
 }

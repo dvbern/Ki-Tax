@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -374,6 +375,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setNettoVermoegen(this.getNettoVermoegen());
 			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -415,27 +417,5 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(
 					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
 					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
-	}
-
-	@Nonnull
-	public final BigDecimal getZwischentotalEinkommen() {
-		return MathUtil.DEFAULT.addNullSafe(
-			BigDecimal.ZERO,
-			getNettolohn(),
-			getFamilienzulage(),
-			getErsatzeinkommen(),
-			getErhalteneAlimente(),
-			getDurchschnittlicherGeschaeftsgewinn());
-	}
-
-	@Nonnull
-	public final BigDecimal getZwischentotalVermoegen() {
-		BigDecimal vermoegenPlus = MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getBruttovermoegen());
-		return MathUtil.DEFAULT.subtractNullSafe(vermoegenPlus, getSchulden());
-	}
-
-	@Nonnull
-	public final BigDecimal getZwischetotalAbzuege() {
-		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getGeleisteteAlimente());
 	}
 }

@@ -614,9 +614,15 @@
                                                                   name="ewp_zuschlag_override_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
                                                                   (change)="changeKonfigErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
-                                                <span translate
+                                                <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
+                                                      translate
                                                       [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
                                                     EWP_ZUSCHLAG_OVERRIDE
+                                                </span>
+                                                <span *ngIf="konfigurationsListe[i].isTextForFKJV"
+                                                      translate
+                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
+                                                    EWP_ZUSCHLAG_OVERRIDE_FKJV
                                                 </span>
                                                     </mat-checkbox>
                                                 </div>
@@ -793,8 +799,7 @@
                                                                       name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
                                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
                                                                       (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
-                                                            <span translate>
-                                                                ZUSAETZLICHER_BABYBEITRAG_GEMEINDE
+                                                            <span>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{monate: getDauerBabytarif(konf.gesuchsperiode)} }}
                                                             </span>
                                                         </mat-checkbox>
                                                     </div>
@@ -1314,11 +1319,19 @@
                                                 <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
                                                 <!-- Erwerbspensum Zuschlag -->
                                                 <p *ngIf="konfigurationsListe[i].erwerbspensumZuschlagOverriden">
-                                                    <span translate
+                                                    <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
+                                                        translate
                                                           [translateParams]="{valueMandant:
                                                       konfigurationsListe[i].erwerbspensumZuschlagMax, value:
                                                       konfigurationsListe[i].erwerbspensumZuschlag}">
                                                         EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE
+                                                    </span>
+                                                    <span *ngIf="konfigurationsListe[i].isTextForFKJV"
+                                                          translate
+                                                          [translateParams]="{valueMandant:
+                                                      konfigurationsListe[i].erwerbspensumZuschlagMax, value:
+                                                      konfigurationsListe[i].erwerbspensumZuschlag}">
+                                                        EWP_ZUSCHLAG_OVERRIDE_WITH_VALUE_FKJV
                                                     </span>
                                                 </p>
                                                 <!-- Minimale Erwerbspensen -->
@@ -1360,7 +1373,7 @@
                                                 <div
                                                     *ngIf="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
                                                     class="mt-2">
-                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate}}
+                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{monate: getDauerBabytarif(konf.gesuchsperiode)} }}
                                                         :</strong>
                                                     <p translate
                                                        [translateParams]="{value: konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita}">

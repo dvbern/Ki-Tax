@@ -242,7 +242,7 @@ public class DailyBatchBean implements DailyBatch {
 	public void runBatchInstitutionCheckRequired() {
 		try {
 			LOGGER.info("Starting Job InstitutionCheckRequired...");
-			institutionService.calculateStammdatenCheckRequired();
+			institutionService.updateAllStammdatenCheckRequired();
 			LOGGER.info("... Job InstitutionCheckRequired finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job InstitutionCheckRequired konnte nicht durchgefuehrt werden!", e);
