@@ -40,9 +40,10 @@ public class DokumentenverzeichnisEvaluator {
 	private final AbstractDokumente familiensituationDokumente = new FamiliensituationDokumente();
 	private final AbstractDokumente kindAnlagen = new KindDokumente();
 	private final AbstractDokumente erwerbspensumDokumente = new ErwerbspensumDokumente();
-	private final AbstractDokumente finanzielleSituationDokumente = new FinanzielleSituationDokumente();
 	private final AbstractDokumente einkommensverschlechterungDokumente = new EinkommensverschlechterungDokumente();
 	private final AbstractDokumente betreuungDokumente = new BetreuungDokumente();
+
+	private final FinanzielleSituationVisitor finanzielleSituationVisitor = new FinanzielleSituationVisitor();
 
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
@@ -60,7 +61,9 @@ public class DokumentenverzeichnisEvaluator {
 			if (isErwerbpensumDokumenteRequired(gesuch)) {
 				erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			}
-			finanzielleSituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			finanzielleSituationVisitor
+				.getFinanzielleSituationDokumenteForMandant(gesuch.extractMandant())
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}

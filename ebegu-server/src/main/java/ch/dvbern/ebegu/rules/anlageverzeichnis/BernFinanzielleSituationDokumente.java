@@ -73,7 +73,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  * Notwendig, wenn keine Steuerveranlagung vorhanden und Summe der Erfolgsrechnungen > 0
  * <p>
  **/
-public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
+public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
 	@Override
 	public void getAllDokumente(
