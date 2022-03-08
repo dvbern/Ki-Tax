@@ -324,6 +324,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             this.callKiBonAnfrageAndUpdateFinSit();
+        } else {
+            this.resetKiBonAnfrageFinSit();
         }
     }
 
@@ -331,13 +333,23 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                this.form.$setDirty();
-            },
-        );
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
+    }
+
+    private resetKiBonAnfrageFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+            .then(() => {
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 }
