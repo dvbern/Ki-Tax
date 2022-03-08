@@ -111,7 +111,7 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 			einstellungService.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
 				gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		if (Boolean.TRUE.equals(anspruchUnabhaengigEinstellung.getValueAsBoolean())) {
-			return true;
+			return false;
 		}
 
 		return gesuch.extractAllBetreuungen().stream()
