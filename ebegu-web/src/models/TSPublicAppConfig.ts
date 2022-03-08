@@ -40,4 +40,5 @@ export class TSPublicAppConfig {
     public mulitmandantAktiv: any;
     public angebotTSActivated: boolean;
     public infomaZahlungen: boolean;
+    public frenchEnabled: boolean;
 }

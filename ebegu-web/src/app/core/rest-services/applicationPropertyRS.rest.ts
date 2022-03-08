@@ -130,4 +130,10 @@ export class ApplicationPropertyRS {
             return response.notverordnungDefaultEinreichefristPrivat;
         });
     }
+
+    public getFrenchEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.frenchEnabled;
+        });
+    }
 }

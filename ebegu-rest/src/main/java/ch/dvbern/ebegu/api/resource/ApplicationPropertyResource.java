@@ -353,6 +353,9 @@ public class ApplicationPropertyResource {
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 							mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty frenchEnabled =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FRENCH_ENABLED, mandant)
+						.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -398,7 +401,8 @@ public class ApplicationPropertyResource {
 			logoFileNameWhite.getValue(),
 			multimandantEnabled,
 			angebotTSEnabled,
-			stringToBool(infomaZahlungen.getValue())
+			stringToBool(infomaZahlungen.getValue()),
+			stringToBool(frenchEnabled.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

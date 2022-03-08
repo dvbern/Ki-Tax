@@ -161,6 +161,11 @@ public enum ApplicationPropertyKey {
 	/**
 	 * Falls das Luzerner Zahlungssystem verwendet wird (Auszahlungen an Eltern, Infoma) ist dieses Flag true
 	 */
-	INFOMA_ZAHLUNGEN
+	INFOMA_ZAHLUNGEN,
+
+	/**
+	 * Sind die französischen Übersetzungen verfügbar
+	 */
+	FRENCH_ENABLED
 
 }
