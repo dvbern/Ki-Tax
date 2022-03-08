@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -260,6 +261,13 @@ public final class EbeguUtil {
 				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())) {
 				return false;
 			}
+			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+				// finsit is gemeinsam for verheiratet in Luzern
+				if (requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+						== EnumFamilienstatus.VERHEIRATET) {
+					return true;
+				}
+			}
 			if (gesuch.getGesuchsteller2() != null &&
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
@@ -289,6 +297,13 @@ public final class EbeguUtil {
 							.getEinkommensverschlechterungContainer()
 							.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
 						return false;
+					}
+					if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+						// finsit is gemeinsam for verheiratet in Luzern
+						if (requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+								== EnumFamilienstatus.VERHEIRATET) {
+							return true;
+						}
 					}
 					if (gesuch.getGesuchsteller2() != null
 							&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
@@ -343,7 +358,7 @@ public final class EbeguUtil {
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
 			@Nonnull AbstractFinanzielleSituation finanzielleSituation,
 			FinanzielleSituationTyp finSitTyp) {
-		return finanzielleSituation.isVollstaendig	(finSitTyp);
+		return finanzielleSituation.isVollstaendig(finSitTyp);
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
