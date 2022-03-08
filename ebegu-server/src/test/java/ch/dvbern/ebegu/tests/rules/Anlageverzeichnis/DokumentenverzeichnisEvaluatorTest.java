@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.ErwerbspensumDokumente;
@@ -77,6 +78,8 @@ import static org.easymock.EasyMock.expect;
  */
 @ExtendWith(EasyMockExtension.class)
 public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
+
+	private final BigDecimal ZEHN_TAUSEND = BigDecimal.valueOf(100000);
 
 	@TestSubject
 	private final DokumentenverzeichnisEvaluator evaluator = new DokumentenverzeichnisEvaluator();
@@ -497,15 +500,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		final FinanzielleSituation finanzielleSituationJA = testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
-		finanzielleSituationJA.setFamilienzulage(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setErsatzeinkommen(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setErhalteneAlimente(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setGeleisteteAlimente(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setBruttovermoegen(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setSchulden(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(100000));
-		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(100000));
+		setAllFinSitJaValue(finanzielleSituationJA);
 
 		//Test wenn Steuererklärung ausgefüllt ist
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
@@ -564,6 +559,33 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
+	public void finSiDokumentSteuerabfrageTest() {
+		setUpEinstellungMock(testgesuch, "false");
+
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
+		createFamilienSituation(testgesuch, false, false);
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		final FinanzielleSituation finanzielleSituationJA =
+			testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		setAllFinSitJaValue(finanzielleSituationJA);
+		//Normal Fall
+		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assert.assertEquals(9, dokumentGrunds.size());
+
+		finanzielleSituationJA.setSteuerdatenZugriff(true);
+		finanzielleSituationJA.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
+		//Steuerabfrage Erfolgreich
+		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assert.assertEquals(0, dokumentGrunds.size());
+
+		finanzielleSituationJA.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+		//Steuerabfrage nicht Erfolgreich
+		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assert.assertEquals(9, dokumentGrunds.size());
+	}
+
+	@Test
 	public void ekvDokumenteTest() {
 
 		createEinkommensverschlechterungGS(1, testgesuch, "Sämi", false);
@@ -579,7 +601,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		Assert.assertNotNull(testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-		ekvJABasisJahrPlus1.setNettolohn(BigDecimal.valueOf(100000));
+		ekvJABasisJahrPlus1.setNettolohn(ZEHN_TAUSEND);
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
 		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(200000));
@@ -671,4 +693,15 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		einkommensverschlechterungsInfo.getEinkommensverschlechterungInfoJA().setEkvFuerBasisJahrPlus2(true);
 	}
 
+	private void setAllFinSitJaValue(FinanzielleSituation finanzielleSituationJA) {
+		finanzielleSituationJA.setFamilienzulage(ZEHN_TAUSEND);
+		finanzielleSituationJA.setErsatzeinkommen(ZEHN_TAUSEND);
+		finanzielleSituationJA.setErhalteneAlimente(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeleisteteAlimente(ZEHN_TAUSEND);
+		finanzielleSituationJA.setBruttovermoegen(ZEHN_TAUSEND);
+		finanzielleSituationJA.setSchulden(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahr(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus1(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(ZEHN_TAUSEND);
+	}
 }
