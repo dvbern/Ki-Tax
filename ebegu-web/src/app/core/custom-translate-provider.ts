@@ -21,26 +21,34 @@ import {EbeguUtil} from '../../utils/EbeguUtil';
 import {MandantService} from '../shared/services/mandant.service';
 import {KiBonMandant} from './constants/MANDANTS';
 import {LogFactory} from './logging/LogFactory';
+import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 
 const LOG = LogFactory.createLog('customTranslateLoader');
 
 export function customTranslateLoader(
     $http: IHttpService,
     mandantService: MandantService,
+    applicationPropertyRS: ApplicationPropertyRS,
     $q: IQService,
 ): (options: any) => Promise<object> {
     return options => {
         const defered = $q.defer();
         mandantService.mandant$.pipe(filter(mandant => EbeguUtil.isNotNullOrUndefined(mandant)),
         ).subscribe(mandant => {
+            applicationPropertyRS.getFrenchEnabled().then(frenchEnabled => {
             let translationFiles: IPromise<IHttpResponse<object>[]>;
+            let lang = options.key;
+            if (lang === 'fr' && !frenchEnabled) {
+                lang = 'de';
+            }
             if (mandant === KiBonMandant.NONE || mandant === KiBonMandant.BE) {
-                translationFiles = Promise.all([$http.get(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)]);
+                translationFiles =
+                    Promise.all([$http.get(`./assets/translations/translations_${lang}.json?t=${Date.now()}`)]);
             } else {
                 translationFiles = Promise.all(
                     [
-                        $http.get(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`),
-                        $http.get(`./assets/translations/translations_${mandant}_${options.key}.json?t=${Date.now()}`),
+                        $http.get(`./assets/translations/translations_${lang}.json?t=${Date.now()}`),
+                        $http.get(`./assets/translations/translations_${mandant}_${lang}.json?t=${Date.now()}`),
                     ],
                 );
             }
@@ -52,7 +60,7 @@ export function customTranslateLoader(
                     });
                 }).then(merged => defered.resolve(merged));
         }, err => LOG.error(err));
-
+        });
         return defered.promise as Promise<object>;
     };
 }

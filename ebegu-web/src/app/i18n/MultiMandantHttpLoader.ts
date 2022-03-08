@@ -19,6 +19,8 @@ import {HttpClient} from '@angular/common/http';
 import {TranslateLoader} from '@ngx-translate/core';
 import {forkJoin, iif, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
+import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../core/constants/CONSTANTS';
 import {KiBonMandant} from '../core/constants/MANDANTS';
 import {LogFactory} from '../core/logging/LogFactory';
 import {MandantService} from '../shared/services/mandant.service';
@@ -37,6 +39,8 @@ export class MultiMandantHttpLoader implements TranslateLoader {
         suffix: `.json?t=${Date.now()}`,
     };
 
+    private ebeguRestUtil = new EbeguRestUtil();
+
     public constructor(
         private readonly http: HttpClient,
         private readonly mandantService: MandantService,
@@ -44,13 +48,22 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     }
 
     public getTranslation(lang: string): Observable<any> {
-        return this.mandantService.mandant$.pipe(
-            mergeMap(mandant => iif(() =>
-                mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
-                this.createMultimandantRequests(lang, mandant),
-                this.createBaseTranslationRequest(lang)),
-            ),
-        );
+        return this.isFrenchEnabled()
+            .pipe(mergeMap(einstellung => iif(() => lang === 'fr' && !einstellung,
+                this.mandantService.mandant$.pipe(
+                    mergeMap(mandant => iif(() =>
+                            mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
+                        this.createMultimandantRequests('de', mandant),
+                        this.createBaseTranslationRequest('de')),
+                    ),
+                ),
+                this.mandantService.mandant$.pipe(
+                    mergeMap(mandant => iif(() =>
+                            mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
+                        this.createMultimandantRequests(lang, mandant),
+                        this.createBaseTranslationRequest(lang)),
+                    ),
+                ))));
     }
 
     private createMultimandantRequests(lang: string, mandant: KiBonMandant): Observable<any> {
@@ -73,5 +86,11 @@ export class MultiMandantHttpLoader implements TranslateLoader {
 
     private createBaseTranslationRequest(lang: string): Observable<any> {
         return this.http.get(`${this.RESOURCE.prefix}${lang}${this.RESOURCE.suffix}`);
+    }
+
+    private isFrenchEnabled(): Observable<boolean> {
+        return this.http.get(`${CONSTANTS.REST_API}application-properties/public/all`).pipe(map(
+            (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response).frenchEnabled,
+        ));
     }
 }

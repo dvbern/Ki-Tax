@@ -4292,6 +4292,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
+        publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         return publicAppConfigTS;
 
     }

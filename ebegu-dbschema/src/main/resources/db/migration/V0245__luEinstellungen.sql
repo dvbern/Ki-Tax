@@ -22,7 +22,7 @@ SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0,
 # set false for LU
 UPDATE application_property INNER JOIN mandant ON application_property.mandant_id = mandant.id
 SET value = 'false'
-WHERE name = 'FRENCH_ENABLED' AND mandant_identifier = 'LUZERN';
+WHERE application_property.name = 'FRENCH_ENABLED' AND mandant_identifier = 'LUZERN';
 
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gesuchsperiode_id)
