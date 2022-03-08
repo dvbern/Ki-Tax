@@ -19,9 +19,10 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnIn
 import {Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus
+    TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -33,7 +34,7 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
     selector: 'dv-steuerabfrage-response-hints',
     templateUrl: './steuerabfrage-response-hints.component.html',
     styleUrls: ['./steuerabfrage-response-hints.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
@@ -47,7 +48,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -55,7 +56,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         this.subscription = this.authServiceRS.principal$
             .subscribe(
                 principal => this.principal = principal,
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -102,5 +103,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
     public getEmailLoggedIn(): string {
         return this.principal.email;
+    }
+
+    public isGesuchsteller(): boolean {
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 }
