@@ -39,7 +39,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 		FROM gesuchsperiode
 	);
 
-UPDATE einstellung INNER JOIN mandant m ON einstellung.mandant_id = m.id
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'true'
 WHERE einstellung_key = 'DIPLOMATENSTATUS_DEAKTIVIERT' AND mandant_identifier = 'LUZERN';
 
@@ -58,7 +58,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 		FROM gesuchsperiode
 	);
 
-UPDATE einstellung INNER JOIN mandant m ON einstellung.mandant_id = m.id
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'true'
 WHERE einstellung_key = 'ZEMIS_DISABLED' AND mandant_identifier = 'LUZERN';
 
@@ -77,6 +77,6 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 		FROM gesuchsperiode
 	);
 
-UPDATE einstellung INNER JOIN mandant m ON einstellung.mandant_id = m.id
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'true'
 WHERE einstellung_key = 'SPRACHE_AMTSPRACHE_DISABLED' AND mandant_identifier = 'LUZERN';
