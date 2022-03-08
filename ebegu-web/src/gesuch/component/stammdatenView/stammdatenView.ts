@@ -14,12 +14,14 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
@@ -68,6 +70,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         '$rootScope',
         'EwkRS',
         '$timeout',
+        'EinstellungRS'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -79,6 +82,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public allowedRoles: ReadonlyArray<TSRole>;
     public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
+    private diplomatenStatusDisabled: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -94,6 +98,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly $rootScope: IRootScopeService,
         private readonly ewkRS: EwkRS,
         $timeout: ITimeoutService,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -124,6 +129,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.getModel().showUmzug = this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
         this.setLastVerfuegtesGesuch();
+        this.einstellungRS.findEinstellung(TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id).then(diplomatenStatusDisabled => {
+            this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
+        });
     }
 
     public korrespondenzAdrClicked(): void {
