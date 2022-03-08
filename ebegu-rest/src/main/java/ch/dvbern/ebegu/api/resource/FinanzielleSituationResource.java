@@ -161,11 +161,8 @@ public class FinanzielleSituationResource {
 		requireNonNull(gesuchId);
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller =  findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituation");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -210,11 +207,8 @@ public class FinanzielleSituationResource {
 
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituationStart");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -432,12 +426,8 @@ public class FinanzielleSituationResource {
 			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
 
 		//FinSit Suchen, Feldern updaten
-		GesuchstellerContainer gesuchsteller =
-			gesuchstellerService.findGesuchsteller(jaxGesuchstellerId.getId()).orElseThrow(()
-				-> new EbeguEntityNotFoundException(
-				"getSteuerdatenBeiAntragId",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchstellerId invalid: " + jaxGesuchstellerId.getId()));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(jaxGesuchstellerId.getId(), "updateFinSitMitSteuerdaten");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -500,7 +490,7 @@ public class FinanzielleSituationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({GESUCHSTELLER })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
-	public JaxFinanzielleSituationContainer updateFinSitSteuerdatenAbgesagt(
+	public JaxFinanzielleSituationContainer resetFinSitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
 		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
@@ -518,12 +508,7 @@ public class FinanzielleSituationResource {
 			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
 
 		//FinSit Suchen, Feldern updaten
-		GesuchstellerContainer gesuchsteller =
-			gesuchstellerService.findGesuchsteller(jaxGesuchstellerId.getId()).orElseThrow(()
-				-> new EbeguEntityNotFoundException(
-				"getSteuerdatenBeiAntragId",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchstellerId invalid: " + jaxGesuchstellerId.getId()));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(jaxGesuchstellerId.getId(), "resetFinSitSteuerdaten");
 
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
@@ -771,5 +756,13 @@ public class FinanzielleSituationResource {
 		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuchId.getId());
 
 		return Response.ok().build();
+	}
+
+	private GesuchstellerContainer findGesuchstellerById(@Nonnull String gesuchstellerId, @Nonnull String methodeName) {
+		return gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			methodeName,
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + gesuchstellerId));
 	}
 }
