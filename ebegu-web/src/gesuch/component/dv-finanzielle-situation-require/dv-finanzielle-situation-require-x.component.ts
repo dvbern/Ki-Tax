@@ -21,7 +21,6 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
