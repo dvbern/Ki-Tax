@@ -102,6 +102,9 @@ export enum TSEinstellungKey {
     AUSSERORDENTLICHER_ANSPRUCH_RULE = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' as any,
     DAUER_BABYTARIF = 'DAUER_BABYTARIF' as any,
     FKJV_TEXTE = 'FKJV_TEXTE' as any,
+    DIPLOMATENSTATUS_DEAKTIVIERT = 'DIPLOMATENSTATUS_DEAKTIVIERTV' as any,
+    SPRACHE_AMTSPRACHE_DISABLED = 'SPRACHE_AMTSPRACHE_DISABLED' as any,
+    ZEMIS_DISABLED = 'ZEMIS_DISABLED' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -182,7 +185,10 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
         TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE,
         TSEinstellungKey.DAUER_BABYTARIF,
-        TSEinstellungKey.FKJV_TEXTE
+        TSEinstellungKey.FKJV_TEXTE,
+        TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
+        TSEinstellungKey.ZEMIS_DISABLED,
+        TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED
     ];
 }
 
