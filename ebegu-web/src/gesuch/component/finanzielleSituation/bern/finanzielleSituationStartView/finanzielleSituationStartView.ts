@@ -30,6 +30,7 @@ import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -122,7 +123,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showSteuerveranlagung(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        return this.model.gemeinsameSteuererklaerung && (!this.getModel().finanzielleSituationJA.steuerdatenZugriff
+        || !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public showSteuererklaerung(): boolean {

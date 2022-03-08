@@ -150,7 +150,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showSteuerveranlagung(): boolean {
-        return !this.model.gemeinsameSteuererklaerung;
+        return !this.model.gemeinsameSteuererklaerung && (!this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            || !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public showSteuererklaerung(): boolean {
