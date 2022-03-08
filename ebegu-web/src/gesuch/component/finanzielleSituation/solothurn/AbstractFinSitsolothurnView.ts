@@ -267,21 +267,16 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
 
-    public isSelbstraendig(): boolean {
+    public isSelbststaendig(): boolean {
         if (this.getAntragstellerNummer() === 1) {
             return this.gesuchModelManager.getGesuch().gesuchsteller1.erwerbspensenContainer.filter(
                 erwerbspensum => erwerbspensum.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG,
             ).length > 0;
         }
         if (this.getAntragstellerNummer() === 2) {
-            try {
-                return this.gesuchModelManager.getGesuch().gesuchsteller2.erwerbspensenContainer.filter(
-                    erwerbspensum => erwerbspensum.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG,
-                ).length > 0;
-            } catch (error) {
-                // Gesuchsteller has not yet filled in Form for Antragsteller 2
-                return false;
-            }
+            return this.gesuchModelManager.getGesuch().gesuchsteller2?.erwerbspensenContainer?.filter(
+                erwerbspensum => erwerbspensum.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG,
+            ).length > 0;
         }
         return false;
     }

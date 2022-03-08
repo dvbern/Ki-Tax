@@ -33,7 +33,7 @@
 											[finanzielleSituationRequired]="finanzielleSituationRequired"
 											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
-			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)" [isSelbstaendig]="false"></dv-steuerveranlagung-erhalten>
+			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)" [isSelbstaendig]="isSelbststaendig()"></dv-steuerveranlagung-erhalten>
 			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
 									  [model]="getModel()"
                                       [dvValueChange]="onValueChangeFunction"
