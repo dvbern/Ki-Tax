@@ -24,7 +24,7 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
     private _keineKesbPlatzierung: boolean;
     private _betreuungInGemeinde: boolean = false;
     private _kitaPlusZuschlag: boolean;
-    private _kitaPlusZuschlagBestaetigt: boolean;
+    private _kitaPlusZuschlagBestaetigt: boolean = false;
     private _erweitereteBeduerfnisseBetrag: number;
 
     public constructor() {
