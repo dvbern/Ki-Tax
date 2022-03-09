@@ -254,7 +254,7 @@ export const CORE_JS_MODULE = angular
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
     .factory('CustomTranslationLoader',
-        ['$http', 'MandantService', 'ApplicationPropertyRS', '$q', customTranslateLoader])
+        ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
