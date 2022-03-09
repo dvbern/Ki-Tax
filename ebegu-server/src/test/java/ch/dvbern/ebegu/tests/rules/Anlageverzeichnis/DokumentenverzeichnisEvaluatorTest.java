@@ -609,15 +609,15 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		testgesuch.setFinSitTyp(FinanzielleSituationTyp.SOLOTHURN);
 
 		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(20, dokumentGrunds.size()); // 8 wie bevor + 12 wegen 2 EKV x 2 GS x 3 Lohnabrechnungen
+		Assert.assertEquals(16, dokumentGrunds.size()); //16 wegen 2 EKV x 2 GS x (3 Lohnabrechnungen + 1 Vermögen)
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assert.assertEquals(10, dokumentGrundGS1.size());
+		Assert.assertEquals(8, dokumentGrundGS1.size());
 
 		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2016", 1);
 		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2017", 1);
 
 		dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
-		Assert.assertEquals(10, dokumentGrundGS2.size());
+		Assert.assertEquals(8, dokumentGrundGS2.size());
 		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2016", 2);
 		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2017", 2);
 	}
