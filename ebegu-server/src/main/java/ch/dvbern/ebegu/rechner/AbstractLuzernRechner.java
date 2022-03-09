@@ -67,6 +67,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 			this.inputZuschlagErhoeterBeterungsbedarf = input.getBesondereBeduerfnisseZuschlag();
 		}
 
+		this.z = calculateZ();
+
 		BigDecimal vollkostenGekuerzt = calculateVollkosten();
 		this.selbstBehaltElternProzent = calculateSelbstbehaltElternProzent();
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
@@ -229,10 +231,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	}
 
 	protected BigDecimal getZ() {
-		if(z == null) {
-			z = calculateZ();
-		}
-
 		return z;
 	}
 
