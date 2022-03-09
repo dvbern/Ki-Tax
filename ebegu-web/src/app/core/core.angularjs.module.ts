@@ -41,6 +41,7 @@ import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest'
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
+import {languageEnabledHookRunBlock} from '../../authentication/state-hooks/onBefore/languageEnabledHookRunBlock';
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
 import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
@@ -199,6 +200,7 @@ const calculatedDeps = dependencies.concat(dynamicDependencies());
 export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', calculatedDeps)
     .run(appRun)
+    .run(languageEnabledHookRunBlock)
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
     .constant('CONSTANTS', CONSTANTS)
