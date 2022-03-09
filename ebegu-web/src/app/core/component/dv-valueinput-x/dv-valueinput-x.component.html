@@ -27,6 +27,7 @@
        [pattern]="getInputValidationPattern()"
        class="form-control">
 <dv-eingaben-basisjahr
+    *ngIf="wertBasisjahr"
     [neuerWert]="neuerWert"
     [wertBasisjahr]="wertBasisjahr"
     [basisjahr]="basisjahr"
