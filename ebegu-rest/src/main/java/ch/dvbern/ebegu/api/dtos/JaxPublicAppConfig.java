@@ -42,6 +42,7 @@ public class JaxPublicAppConfig {
 	private boolean angebotTSActivated;
 	private final boolean infomaZahlungen;
 	private boolean frenchEnabled;
+	private boolean geresEnabledForMandant;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -72,7 +73,8 @@ public class JaxPublicAppConfig {
 			boolean multimandantAktiviert,
 			boolean angebotTSActivated,
 			boolean infomaZahlungen,
-			boolean frenchEnabled) {
+			boolean frenchEnabled,
+			boolean geresEnabled) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -102,6 +104,7 @@ public class JaxPublicAppConfig {
 		this.angebotTSActivated = angebotTSActivated;
 		this.infomaZahlungen = infomaZahlungen;
 		this.frenchEnabled = frenchEnabled;
+		this.geresEnabledForMandant = geresEnabled;
 	}
 
 	public String getCurrentNode() {
@@ -330,5 +333,13 @@ public class JaxPublicAppConfig {
 
 	public void setFrenchEnabled(boolean frenchEnabled) {
 		this.frenchEnabled = frenchEnabled;
+	}
+
+	public boolean isGeresEnabledForMandant() {
+		return geresEnabledForMandant;
+	}
+
+	public void setGeresEnabledForMandant(boolean geresEnabledForMandant) {
+		this.geresEnabledForMandant = geresEnabledForMandant;
 	}
 }

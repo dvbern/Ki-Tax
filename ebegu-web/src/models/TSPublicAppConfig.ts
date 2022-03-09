@@ -41,4 +41,5 @@ export class TSPublicAppConfig {
     public angebotTSActivated: boolean;
     public infomaZahlungen: boolean;
     public frenchEnabled: boolean;
+    public geresEnabledForMandant: boolean;
 }

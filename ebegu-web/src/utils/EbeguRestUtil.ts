@@ -4293,6 +4293,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
+        publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         return publicAppConfigTS;
 
     }

@@ -19,10 +19,13 @@
 INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
 SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'FRENCH_ENABLED', 'true' FROM mandant;
 
+INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'GERES_ENABLED_FOR_MANDANT', 'true' FROM mandant;
+
 # set false for LU
 UPDATE application_property INNER JOIN mandant ON application_property.mandant_id = mandant.id
 SET value = 'false'
-WHERE application_property.name = 'FRENCH_ENABLED' AND mandant_identifier = 'LUZERN';
+WHERE (application_property.name = 'FRENCH_ENABLED' OR application_property.name = 'GERES_ENABLED_FOR_MANDANT') AND mandant_identifier = 'LUZERN';
 
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gesuchsperiode_id)

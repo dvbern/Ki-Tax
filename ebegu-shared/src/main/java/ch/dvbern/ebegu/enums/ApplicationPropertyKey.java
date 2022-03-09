@@ -166,6 +166,11 @@ public enum ApplicationPropertyKey {
 	/**
 	 * Sind die französischen Übersetzungen verfügbar
 	 */
-	FRENCH_ENABLED
+	FRENCH_ENABLED,
+
+	/**
+	 * Ist Geres verfügbar
+	 */
+	GERES_ENABLED_FOR_MANDANT,
 
 }
