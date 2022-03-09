@@ -19,29 +19,34 @@ package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.util.mandant.MandantVisitor;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.util.FinanzielleSituationTypVisitor;
 import com.sun.istack.NotNull;
 
-public class EinkommenVerschlechterungDokumenteVisitor implements MandantVisitor<AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>> {
+public class EinkommenVerschlechterungDokumenteVisitor implements FinanzielleSituationTypVisitor<AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>> {
 
-	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> getEinkommenVerschlechterungDokumenteForMandant(@NotNull
-		Mandant mandant) {
-		return mandant.getMandantIdentifier().accept(this);
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> getEinkommenVerschlechterungDokumenteForFinSitTyp(@NotNull
+		FinanzielleSituationTyp finanzielleSituationTyp) {
+		return finanzielleSituationTyp.accept(this);
 	}
 
 	@Override
-	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitBern() {
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitBern() {
 		return new BernEinkommensverschlechterungDokumente();
 	}
 
 	@Override
-	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitLuzern() {
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitBernFKJV() {
+		return new BernEinkommensverschlechterungDokumente();
+	}
+
+	@Override
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitLuzern() {
 		return new LuzernEinkommensverschlechterungDokumente();
 	}
 
 	@Override
-	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitSolothurn() {
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitSolothurn() {
 		return new SolothurnEinkommensverschlechterungDokumente();
 	}
 }

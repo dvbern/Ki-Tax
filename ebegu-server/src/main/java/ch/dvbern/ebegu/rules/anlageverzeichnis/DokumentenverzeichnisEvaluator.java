@@ -69,10 +69,10 @@ public class DokumentenverzeichnisEvaluator {
 				erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			}
 			finanzielleSituationVisitor
-				.getFinanzielleSituationDokumenteForMandant(gesuch.extractMandant())
+				.getFinanzielleSituationDokumenteForFinSitTyp(gesuch.getFinSitTyp())
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			einkommenVerschlechterungDokumenteVisitor
-				.getEinkommenVerschlechterungDokumenteForMandant(gesuch.extractMandant())
+				.getEinkommenVerschlechterungDokumenteForFinSitTyp(gesuch.getFinSitTyp())
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
