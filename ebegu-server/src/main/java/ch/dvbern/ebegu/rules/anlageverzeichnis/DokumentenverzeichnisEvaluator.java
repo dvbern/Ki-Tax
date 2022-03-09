@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
@@ -46,11 +45,12 @@ public class DokumentenverzeichnisEvaluator {
 	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
 	private final AbstractDokumente<Kind, Object> kindAnlagen = new KindDokumente();
 	private final AbstractDokumente<Erwerbspensum, LocalDate> erwerbspensumDokumente = new ErwerbspensumDokumente();
-	private final AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> einkommensverschlechterungDokumente = new EinkommensverschlechterungDokumente();
 	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
 
 	private final FinanzielleSituationDokumenteVisitor
 		finanzielleSituationVisitor = new FinanzielleSituationDokumenteVisitor();
+	private final EinkommenVerschlechterungDokumenteVisitor
+		einkommenVerschlechterungDokumenteVisitor = new EinkommenVerschlechterungDokumenteVisitor();
 
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
@@ -71,7 +71,9 @@ public class DokumentenverzeichnisEvaluator {
 			finanzielleSituationVisitor
 				.getFinanzielleSituationDokumenteForMandant(gesuch.extractMandant())
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			einkommenVerschlechterungDokumenteVisitor
+				.getEinkommenVerschlechterungDokumenteForMandant(gesuch.extractMandant())
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
 

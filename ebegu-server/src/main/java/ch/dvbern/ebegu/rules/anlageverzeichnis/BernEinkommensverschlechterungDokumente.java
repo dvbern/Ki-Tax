@@ -63,7 +63,7 @@ import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
  * Erfolgsrechnungen der letzten drei Jahre (Jahr der Einkommensverschlechterung: x, x-1, x-2)
  * Notwendig, wenn Erfolgsrechnungen des Jahres nicht null
  **/
-public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSituationDokumente {
+public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielleSituationDokumente {
 
 	@Override
 	public void getAllDokumente(
