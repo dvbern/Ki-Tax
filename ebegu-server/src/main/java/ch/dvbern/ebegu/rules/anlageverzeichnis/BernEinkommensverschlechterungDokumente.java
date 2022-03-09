@@ -185,19 +185,6 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 			),
 			anlageVerzeichnis
 		);
-
-		if (finanzielleSituationTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
-			final String basisJahrString = String.valueOf(basisJahr);
-			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1, einkommensverschlechterung, null, basisJahrString,
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_2, einkommensverschlechterung, null, basisJahrString,
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
-			add(getDokument(DokumentTyp.NACHWEIS_LOHNAUSWEIS_3, einkommensverschlechterung, null, basisJahrString,
-				DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag), anlageVerzeichnis);
-		}
 	}
 
 	@Override
