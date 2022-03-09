@@ -61,6 +61,15 @@
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
+                        <div class="col-xs-12" ng-if="vm.showSteuerdatenAbholenButton()">
+                            <dv-loading-button
+                                dv-enable-element
+                                dv-enable-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                                type="button"
+                                button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                {{'STEUERDATEN_ABHOLEN' | translate}}
+                            </dv-loading-button>
+                        </div>
                     </div>
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
@@ -117,7 +126,7 @@
                         </div>
                     </div>
 
-                    <div ng-if="vm.showForm">
+                    <div ng-if="vm.showFormular()">
 
                         <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
                              class="well well-status-warten minus-margin">

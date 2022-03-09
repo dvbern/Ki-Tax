@@ -217,29 +217,33 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             TSFinanzielleSituationSubStepName.BERN_GS1;
     }
 
-    public steuererklaerungClicked(): void {
-        this.showFormular();
-    }
-
     public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
-            this.callKiBonAnfrageAndUpdateFinSit();
-        } else {
-            this.resetKiBonAnfrageFinSit();
-        }
-    }
-
-    public showFormular(): void {
-        if (this.steuerSchnittstelleAktiv
-            && this.gesuchModelManager.getGesuch().isOnlineGesuch()
-            && this.model.getFiSiConToWorkWith().finanzielleSituationJA.steuererklaerungAusgefuellt
-            && (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff))
-            && !this.model.gemeinsameSteuererklaerung
-        ) {
-            this.showForm = false;
             return;
         }
-        this.showForm = true;
+        this.resetKiBonAnfrageFinSit();
+    }
+
+    public showFormular(): boolean {
+        // falls Schnittstelle deaktiviert, erfolgt das Ausfüllen immer manuell
+        if (!this.steuerSchnittstelleAktiv) {
+            return true;
+        }
+        // bei einem Papiergesuch ebenfalls
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+            return true;
+        }
+        // falls die Frage noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
+        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+            return false;
+        }
+        // falls die Frage mit ja beantwortet wurde, die Abfrage aber noch nicht gemacht wurde,
+        // zeigen wir das Formular noch nicht
+        if (this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+            return false;
+        }
+        return true;
     }
 
     public isSteueranfrageErfolgreich(): boolean {
@@ -275,7 +279,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             });
     }
 
-    private callKiBonAnfrageAndUpdateFinSit(): void {
+    public callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
@@ -283,7 +287,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         );
     }
 
-    private resetKiBonAnfrageFinSit(): void {
+    public resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
@@ -294,6 +298,11 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     private initAfterKiBonAnfrageUpdate(): void {
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.initSelbstaendigkeit();
-        this.showFormular();
+    }
+
+    public showSteuerdatenAbholenButton(): boolean {
+        return this.steuerSchnittstelleAktiv
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 }

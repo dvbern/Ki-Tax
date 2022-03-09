@@ -88,6 +88,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Le formulaire a été rempli automatiquement avec vos données fiscales.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "La requête nous a retourné une déclaration d'impôt en cours d'année. Le formulaire n'a donc pas pu être rempli automatiquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für die E-Mail Adresse \"{{email}}\" keine ZPV Nummer im BG-Login hinterlegt wurde",
+    "STEUERDATEN_ABHOLEN": "Steuerdaten abholen",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Avez-vous reçu votre avis de taxation fiscale pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Avez-vous rempli votre déclaration d'impôt pour l'année {{basisjahr}} ?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Non, pas encore ou je suis imposé-e à la source",
