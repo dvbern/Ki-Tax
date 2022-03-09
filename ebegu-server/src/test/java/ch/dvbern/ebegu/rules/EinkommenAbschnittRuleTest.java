@@ -149,10 +149,15 @@ public class EinkommenAbschnittRuleTest {
 		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
 		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
+		final String formatedYear = NumberFormat.getInstance(Constants.DEFAULT_LOCALE).format(2016);
 		final String EXPECTED_MESSAGE =
-			"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Die Anwendung der Einkommensverschlechterung ist nur bei einem Einkommen von weniger als "
+			"Ihr Antrag wegen Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ ". Das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ " ist höher als CHF "
 				+ NumberFormat.getInstance(Constants.DEFAULT_LOCALE).format(ekvLimit)
-				+ " CHF möglich.";
+				+ ".";
 
 		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE);

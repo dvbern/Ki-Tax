@@ -758,10 +758,13 @@ public class BGCalculationInput {
 
 		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
+		//Minimal erforderliches Pensum ist immer nur auf dem Vorgänger gesetzt und muss einfach übernommen werden.
+		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
+
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		this.anspruchspensumProzent = add(this.anspruchspensumProzent, other.anspruchspensumProzent);
-		//nach add der anspruchspensumprotzen muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
+		//nach add der anspruchspensumprozente muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
 		this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
@@ -792,8 +795,6 @@ public class BGCalculationInput {
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
-
-		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 	}
 
 	private BigDecimal add(@Nullable BigDecimal b1, @Nullable BigDecimal b2) {

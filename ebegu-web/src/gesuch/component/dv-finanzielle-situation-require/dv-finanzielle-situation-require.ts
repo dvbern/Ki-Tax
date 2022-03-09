@@ -16,6 +16,7 @@
 import {IComponentOptions, IController, IFormController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {EbeguNumberPipe} from '../../../app/shared/pipe/ebegu-number.pipe';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -50,7 +51,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     public areThereAnyBgBetreuungen: boolean;
     public isFinSitTypFkjv: boolean = false;
 
-    public maxMassgebendesEinkommen: string;
+    public maxMassgebendesEinkommen: number;
 
     public form: IFormController;
 
@@ -69,7 +70,7 @@ export class DVFinanzielleSituationRequireController implements IController {
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id)
             .then(response => {
-                this.maxMassgebendesEinkommen = response.value;
+                this.maxMassgebendesEinkommen = parseInt(response.value, 10);
             });
 
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
@@ -113,7 +114,8 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public getMaxMassgebendesEinkommen(): string {
-        return this.maxMassgebendesEinkommen;
+        const pipe = new EbeguNumberPipe();
+        return pipe.transform(this.maxMassgebendesEinkommen);
     }
 
     public isGesuchReadonly(): boolean {
@@ -125,7 +127,15 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public getLabel(): string {
-        return this.$translate.instant('FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT',
+        const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        return this.$translate.instant(key,
             {maxEinkommen: this.maxMassgebendesEinkommen});
+    }
+
+    public getLabelNo(): string {
+        if (this.gesuchModelManager.isFKJVTexte) {
+            return 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV';
+        }
+        return 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN';
     }
 }

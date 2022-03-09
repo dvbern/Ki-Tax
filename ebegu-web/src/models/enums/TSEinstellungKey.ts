@@ -101,6 +101,7 @@ export enum TSEinstellungKey {
     FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH = 'FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH' as any,
     AUSSERORDENTLICHER_ANSPRUCH_RULE = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' as any,
     DAUER_BABYTARIF = 'DAUER_BABYTARIF' as any,
+    FKJV_TEXTE = 'FKJV_TEXTE' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -180,7 +181,8 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN,
         TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH,
         TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE,
-        TSEinstellungKey.DAUER_BABYTARIF
+        TSEinstellungKey.DAUER_BABYTARIF,
+        TSEinstellungKey.FKJV_TEXTE
     ];
 }
 

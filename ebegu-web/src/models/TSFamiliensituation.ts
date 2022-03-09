@@ -193,7 +193,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
-            case TSFamilienstatus.PFLEGEFAMILIE:
                 if (!this.fkjvFamSit) {
                     return false;
                 }

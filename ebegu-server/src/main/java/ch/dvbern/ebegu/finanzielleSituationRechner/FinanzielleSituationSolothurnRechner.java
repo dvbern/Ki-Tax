@@ -100,8 +100,10 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 
 	private void calculateZusammen(FinanzielleSituationResultateDTO einkVerResultDTO, Einkommensverschlechterung einkommensverschlechterungGS1, Einkommensverschlechterung einkommensverschlechterungGS2) {
 		// Jaehrlicher BruttoLohn Berechnen
-		einkVerResultDTO.setBruttolohnJahrGS1(calculateJaehrlicherBruttolohn(einkommensverschlechterungGS1));
-		einkVerResultDTO.setBruttolohnJahrGS2(calculateJaehrlicherBruttolohn(einkommensverschlechterungGS2));
+		var resGS1Exact = calculateJaehrlicherBruttolohn(einkommensverschlechterungGS1);
+		einkVerResultDTO.setBruttolohnJahrGS1(MathUtil.GANZZAHL.from(resGS1Exact));
+		var resGS2Exact = calculateJaehrlicherBruttolohn(einkommensverschlechterungGS2);
+		einkVerResultDTO.setBruttolohnJahrGS2(MathUtil.GANZZAHL.from(resGS2Exact));
 		// Massgegebeneseinkommens bevor Einbeziehen Vermoegen
 		final BigDecimal abzugNettoLohnGS1 =  MathUtil.GANZZAHL.from(percent(einkVerResultDTO.getBruttolohnJahrGS1(), 25));
 		final BigDecimal abzugNettoLohnGS2 =  MathUtil.GANZZAHL.from(percent(einkVerResultDTO.getBruttolohnJahrGS2(), 25));

@@ -122,8 +122,8 @@
 
                         <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
                              class="well well-status-warten minus-margin">
-                            <p class="ebegu-h3"
-                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                            <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
+                            <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                         </div>
 
                         <!-- Infotext -->
@@ -393,6 +393,8 @@
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float required" for="nettoertraege_erbengemeinschaften">
                                         <span data-translate="FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN"></span>
+                                        <dv-tooltip input-id="nettoertraege_erbengemeinschaften"
+                                                    text="'FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN_TOOLTIP' | translate"></dv-tooltip>
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
@@ -420,6 +422,8 @@
                                 <div class="form-group">
                             <span class="ebegu-h1 required">
                                 <span data-translate="FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN"></span>
+                                 <dv-tooltip input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                             text="'FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP' | translate"></dv-tooltip>
                             </span>
                                     <dv-radio-container name="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                         class="input-element radio"
@@ -493,6 +497,8 @@
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float required" for="abzug_schuldzinsen">
                                         <span data-translate="FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN"></span>
+                                        <dv-tooltip input-id="abzug_schuldzinsen"
+                                                    text="'FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN_TOOLTIP' | translate"></dv-tooltip>
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
@@ -517,6 +523,8 @@
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float required" for="abzug_gewinnungskosten">
                                         <span data-translate="FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN"></span>
+                                        <dv-tooltip input-id="abzug_gewinnungskosten"
+                                                    text="'FINANZIELLE_SITUATION_ABZUG_GEWINNUNGSKOSTEN_TOOLTIP' | translate"></dv-tooltip>
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"

@@ -434,7 +434,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.model.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
-            this.gesuchModelManager.updateVerguenstigungGewuenschtFlag();
+            if (!this.model.isAngebotSchulamt()) {
+                this.gesuchModelManager.updateVerguenstigungGewuenschtFlag();
+            }
             this.isSavingData = false;
             this.form.$setPristine();
             if (nextStep) {

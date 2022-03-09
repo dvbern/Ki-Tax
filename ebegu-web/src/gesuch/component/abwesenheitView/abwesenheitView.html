@@ -22,8 +22,8 @@
             </h2>
             <hr class="header"/>
             <p>
-                <span data-translate="ABWESENHEIT_HINT">
-                </span>
+                <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT"></span>
+                <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT_FKJV"></span>
             </p>
         </div>
     </div>

@@ -1,5 +1,5 @@
 {
-	"FAELLE_LIST": "Alle Fälle in Luzern",
+	"FAELLE_LIST": "Alle Fälle",
     "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
 	"FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN": "Steuerbares Einkommen",
 	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT": "Nettoeinkünfte aus Liegenschaften",
@@ -8,7 +8,19 @@
 	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP": "Verrechenbare Geschäftsverluste aus den Vorjahren gemäss § 38 des Steuergesetzes",
 	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE": "Einkäufe/Vorsorge",
 	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14",
+    "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
-	"SPRACHLICHE_INTEGRATION": "Das Kind hat einen Sprachförderbedarf aufgrund der Sprachstandserhebung"
+	"SPRACHLICHE_INTEGRATION": "Das Kind hat einen Sprachförderbedarf aufgrund der Sprachstandserhebung",
+    "EINKOMMENSVERSCHLECHTERUNG": "Erhebliche Änderung des massgebenden Einkommens",
+    "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
+    "EKV_RESULTATE": "Resultate Einkommensänderung {{basisjahr}}",
+    "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
+    "EKV_RESULTATE_PRUEFUNG": "Prüfung Einkommensänderung {{basisjahr}}",
+    "EVK_IN_PROZENT": "Einkommensänderung in %",
+    "INVOLVIERTE_FACHSTELLE": "Das Kind verfügt über eine Fachstellenbestätigung zur sprachlichen oder sozialen Integration",
+    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
+    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet."
 }

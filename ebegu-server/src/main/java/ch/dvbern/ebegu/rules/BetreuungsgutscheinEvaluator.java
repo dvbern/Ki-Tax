@@ -226,7 +226,7 @@ public class BetreuungsgutscheinEvaluator {
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
-				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte, gesuch.extractMandant());
+				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte, gesuch.extractMandant(), bgRechnerParameterDTO.isTexteForFKJV());
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
 					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);

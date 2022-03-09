@@ -376,6 +376,9 @@ describe('gesuchModelManager', () => {
                 expect(promiseExecuted).toBe(true);
             });
             it('should return a Promise with the Betreuung that was updated', () => {
+                const gesuchPeriode = new TSGesuchsperiode();
+                gesuchPeriode.id = '123';
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
                 const myGesuch = new TSGesuch();
                 myGesuch.id = 'gesuchID';
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch);
@@ -419,6 +422,9 @@ describe('gesuchModelManager', () => {
                 spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue();
+                const gesuchPeriode = new TSGesuchsperiode();
+                gesuchPeriode.id = '123';
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
@@ -437,6 +443,9 @@ describe('gesuchModelManager', () => {
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(gesuch));
                 spyOn(wizardStepManager, 'findStepsFromGesuch').and.returnValue($q.resolve());
                 spyOn(wizardStepManager, 'unhideStep').and.returnValue();
+                const gesuchPeriode = new TSGesuchsperiode();
+                gesuchPeriode.id = '123';
+                spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchPeriode);
 
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
@@ -508,18 +517,6 @@ describe('gesuchModelManager', () => {
             });
             it('should be true if ALLEINERZIEHEND with FKJV ZUR_ZWEIT', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
-                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
-            });
-            it('should be false if PFLEGEFAMILIE with FKJV ALLEINE', () => {
-                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
-                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
-            });
-            it('should be true if PFLEGEFAMILIE with FKJV ZUR_ZWEIT', () => {
-                createFamsit(true, TSFamilienstatus.PFLEGEFAMILIE);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);

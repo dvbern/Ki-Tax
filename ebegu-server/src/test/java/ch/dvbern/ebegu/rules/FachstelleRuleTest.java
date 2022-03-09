@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -98,6 +99,7 @@ public class FachstelleRuleTest {
 		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
 		pensumFachstelle.setFachstelle(new Fachstelle());
 		pensumFachstelle.setPensum(80);
+		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
 		betreuung.getKind().getKindJA().setPensumFachstelle(pensumFachstelle);
 
