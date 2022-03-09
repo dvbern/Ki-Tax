@@ -41,12 +41,7 @@ public class LuzernFinanzielleSituationDokumente extends AbstractDokumente<Abstr
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale) {
 
-		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		final boolean gemeinsam = familiensituation != null &&
-			familiensituation.getGemeinsameSteuererklaerung() != null &&
-			familiensituation.getGemeinsameSteuererklaerung();
-
-		if(gemeinsam) {
+		if(isGemeinsameSteuererklaerung(gesuch)) {
 			getAllDokumenteGemeinsam(gesuch, anlageVerzeichnis);
 		} else {
 			getAllDokumenteGS1(gesuch, anlageVerzeichnis);

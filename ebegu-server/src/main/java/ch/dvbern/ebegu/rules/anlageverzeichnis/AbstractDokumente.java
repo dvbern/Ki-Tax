@@ -89,6 +89,14 @@ abstract class AbstractDokumente<T1, T2> {
 		return null;
 	}
 
+	protected boolean isGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+
+		return familiensituation != null &&
+			familiensituation.getGemeinsameSteuererklaerung() != null &&
+			familiensituation.getGemeinsameSteuererklaerung();
+	}
+
 	protected boolean isVerguenstigungGewuenscht(@Nullable Familiensituation familiensituation) {
 		if (familiensituation != null &&
 			familiensituation.getVerguenstigungGewuenscht() != null &&
