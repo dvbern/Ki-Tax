@@ -33,7 +33,7 @@
 											[finanzielleSituationRequired]="finanzielleSituationRequired"
 											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
-			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
+			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)" [isSelbstaendig]="isSelbststaendig()"></dv-steuerveranlagung-erhalten>
 			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
 									  [model]="getModel()"
                                       [dvValueChange]="onValueChangeFunction"
@@ -42,14 +42,18 @@
                            [model]="getModel()"
 						   [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
             <dv-massgebendes-einkommen
-                [hasZweiGesuchsteller]="isGemeinsam()"></dv-massgebendes-einkommen>
+                [isGemeinsam]="isGemeinsam()"
+                [antragstellerNummer]="getAntragstellerNummer()"
+            >
+            </dv-massgebendes-einkommen>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
 			<dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>
 			<dv-steuerveranlagung-erhalten *ngIf="isSteuerveranlagungGemeinsam()"
 										   (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"
-										   [model]="getModel()"></dv-steuerveranlagung-erhalten>
-		</div>
+										   [model]="getModel()"
+                                           [isSelbstaendig]="false"></dv-steuerveranlagung-erhalten>
+        </div>
 		<dv-navigation-x (dvSave)="prepareSave($event.onResult)"
 						 [dvNext]="true"
 						 [dvPrevious]="true"

@@ -37,13 +37,16 @@ const LOG = LogFactory.createLog('ResultatComponent');
 export class MassgebendesEinkommenComponent implements OnInit {
 
     @Input()
-    public hasZweiGesuchsteller: boolean;
+    public isGemeinsam: boolean;
 
     @Input()
     public nameGS1: string;
 
     @Input()
     public nameGS2: string;
+
+    @Input()
+    public antragstellerNummer: number;
 
     public resultate?: TSFinanzielleSituationResultateDTO;
 

@@ -830,6 +830,18 @@ export class GesuchModelManager {
         return undefined;
     }
 
+    /**
+     * Gibt das Jahr des Anfangs der Gesuchsperiode minus 1 zurueck. undefined wenn die Gesuchsperiode nicht richtig
+     * gesetzt wurde
+     */
+    public getBasisjahrMinus(minus: number): number | undefined {
+        if (this.getGesuchsperiodeBegin()) {
+            return this.getGesuchsperiodeBegin().year() - 1 - minus;
+        }
+
+        return undefined;
+    }
+
     public getBasisjahrToWorkWith(): number {
         return this.getBasisjahrPlus(this.basisJahrPlusNumber);
     }

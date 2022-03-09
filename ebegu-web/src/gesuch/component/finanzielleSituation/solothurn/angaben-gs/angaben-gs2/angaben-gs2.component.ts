@@ -51,7 +51,7 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     }
 
     public isGemeinsam(): boolean {
-        return true;
+        return false;
     }
 
     public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
