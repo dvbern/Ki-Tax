@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 /**
  * Dokumente für Einkommensverschlechterung:
@@ -101,8 +100,7 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 					1,
 					basisJahrPlus1,
 					stichtag,
-					familiensituation,
-					gesuch.getFinSitTyp());
+					familiensituation);
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -112,8 +110,7 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 						1,
 						basisJahrPlus1,
 						stichtag,
-						familiensituation,
-						gesuch.getFinSitTyp());
+						familiensituation);
 				}
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
@@ -125,8 +122,7 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 					2,
 					basisJahrPlus2,
 					stichtag,
-					familiensituation,
-					gesuch.getFinSitTyp());
+					familiensituation);
 				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 					getAllDokumenteGesuchsteller(
 						anlageVerzeichnis,
@@ -136,8 +132,7 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 						2,
 						basisJahrPlus2,
 						stichtag,
-						familiensituation,
-						gesuch.getFinSitTyp());
+						familiensituation);
 				}
 			}
 		}
@@ -148,9 +143,7 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 		Set<DokumentGrund> anlageVerzeichnis,
 		@Nullable GesuchstellerContainer gesuchsteller,
 		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr,
-		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation,
-		@Nonnull FinanzielleSituationTyp finanzielleSituationTyp
-	) {
+		@Nonnull LocalDate stichtag, @Nullable Familiensituation familiensituation) {
 
 		if (gesuchsteller == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
 			return;
