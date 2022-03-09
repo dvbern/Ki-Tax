@@ -84,6 +84,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 	public void testKitaPlusSet() {
 		assert betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null;
 		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlag(true);
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlagBestaetigt(true);
 
 		ruleToTest.executeRule(betreuung, inputData);
 		Assert.assertTrue(inputData.isKitaPlusZuschlag());
@@ -115,7 +116,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 	public void testRuleCalcKitaPlusSet() {
 		assert betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null;
 		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlag(true);
-
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlagBestaetigt(true);
 
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
@@ -137,5 +138,15 @@ public class KitaPlusZuschlagCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
 		// 1916 + 32 * 12 = 2300
 		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1916.00"));
+	}
+
+	@Test
+	public void testRuleCalcKitaPlusSetNotBestaetigt() {
+		assert betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null;
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setKitaPlusZuschlag(true);
+
+
+		ruleToTest.executeRule(betreuung, inputData);
+		Assert.assertFalse(inputData.isKitaPlusZuschlag());
 	}
 }
