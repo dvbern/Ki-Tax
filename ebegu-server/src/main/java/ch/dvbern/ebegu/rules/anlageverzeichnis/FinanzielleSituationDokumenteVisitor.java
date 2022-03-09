@@ -23,7 +23,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 import com.sun.istack.NotNull;
 
-public class FinanzielleSituationVisitor implements MandantVisitor<AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>> {
+public class FinanzielleSituationDokumenteVisitor implements MandantVisitor<AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>> {
 
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> getFinanzielleSituationDokumenteForMandant(@NotNull Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);

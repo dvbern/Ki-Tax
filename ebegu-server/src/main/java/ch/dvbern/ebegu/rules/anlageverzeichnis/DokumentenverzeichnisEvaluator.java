@@ -49,7 +49,8 @@ public class DokumentenverzeichnisEvaluator {
 	private final AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> einkommensverschlechterungDokumente = new EinkommensverschlechterungDokumente();
 	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
 
-	private final FinanzielleSituationVisitor finanzielleSituationVisitor = new FinanzielleSituationVisitor();
+	private final FinanzielleSituationDokumenteVisitor
+		finanzielleSituationVisitor = new FinanzielleSituationDokumenteVisitor();
 
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
