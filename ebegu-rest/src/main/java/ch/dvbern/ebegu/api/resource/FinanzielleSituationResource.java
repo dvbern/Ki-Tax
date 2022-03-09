@@ -585,8 +585,9 @@ public class FinanzielleSituationResource {
 		@Nonnull FinanzielleSituationContainer convertedFinSitCont,
 		@Nullable FinanzielleSituationContainer finSitGS2,
 		@Nonnull SteuerdatenResponse steuerdatenResponse) {
+		var finSitJA = convertedFinSitCont.getFinanzielleSituationJA();
 		if (steuerdatenResponse.getVeranlagungsstand() != null) {
-			convertedFinSitCont.getFinanzielleSituationJA()
+			finSitJA
 				.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand()
 					.name()));
 			if (finSitGS2 != null) {
@@ -599,71 +600,96 @@ public class FinanzielleSituationResource {
 			}
 		}
 		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null ?
 				steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() :
 				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setFamilienzulage(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() != null ?
 				steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() :
 				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null ?
 				steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() :
 				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null ?
 				steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() :
 				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() != null ?
 				steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() :
 				BigDecimal.ZERO);
 
 		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
 
-		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
+		// Berechnete Felder - auch diese dürfen nicht null sein
+
+		// Bruttoerträge Vermögen
 		BigDecimal bruttertraegeVermogenTotal =
 			GANZZAHL.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
 				steuerdatenResponse.getBruttoertraegeAusLiegenschaften() :
 				BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 		boolean hasResponse2Antragstellende = steuerdatenResponse.getZpvNrPartner() != null;
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setBruttoertraegeVermoegen(hasResponse2Antragstellende ?
 				GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
 				bruttertraegeVermogenTotal);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		if (finSitJA.getBruttoertraegeVermoegen() == null) {
+			finSitJA.setBruttoertraegeVermoegen(BigDecimal.ZERO);
+		}
+
+		// Abzug Schuldzinsen
+		finSitJA
 			.setAbzugSchuldzinsen(hasResponse2Antragstellende ?
 				GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
 					steuerdatenResponse.getSchuldzinsen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getSchuldzinsen());
+		if (finSitJA.getAbzugSchuldzinsen() == null) {
+			finSitJA.setAbzugSchuldzinsen(BigDecimal.ZERO);
+		}
+
+		// gewinnungskosten
 		BigDecimal gewinnungskostenTotal =
 			GANZZAHL.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
 				steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
 				BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
-		convertedFinSitCont.getFinanzielleSituationJA()
+		finSitJA
 			.setGewinnungskosten(hasResponse2Antragstellende ?
 				GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)) :
 				gewinnungskostenTotal);
-		convertedFinSitCont.getFinanzielleSituationJA()
+		if (finSitJA.getGewinnungskosten() == null) {
+			finSitJA.setGewinnungskosten(BigDecimal.ZERO);
+		}
+
+		// geleistete alimente
+		finSitJA
 			.setGeleisteteAlimente(hasResponse2Antragstellende ?
 				GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
-		convertedFinSitCont.getFinanzielleSituationJA()
+		if (finSitJA.getGeleisteteAlimente() == null) {
+			finSitJA.setGeleisteteAlimente(BigDecimal.ZERO);
+		}
+
+		// nettovermögen
+		finSitJA
 			.setNettoVermoegen(hasResponse2Antragstellende ?
 				GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
 					steuerdatenResponse.getNettovermoegen() :
 					BigDecimal.ZERO, new BigDecimal(2)) :
 				steuerdatenResponse.getNettovermoegen());
+		if (finSitJA.getNettoVermoegen() == null) {
+			finSitJA.setNettoVermoegen(BigDecimal.ZERO);
+		}
 
 		if (finSitGS2 != null && hasResponse2Antragstellende) {
 			finSitGS2.getFinanzielleSituationJA()
@@ -687,6 +713,7 @@ public class FinanzielleSituationResource {
 					steuerdatenResponse.getNettoertraegeAusEgmePartner() :
 					BigDecimal.ZERO);
 
+			// Felder zu Geschäftsgewinn. Müssen null bleiben
 			finSitGS2.getFinanzielleSituationJA()
 				.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
 			finSitGS2.getFinanzielleSituationJA()
