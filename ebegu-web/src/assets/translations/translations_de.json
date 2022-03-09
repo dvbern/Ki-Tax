@@ -991,6 +991,7 @@
     "DOK_PAPIERGESUCH": "Papierantrag",
     "DOK_FREIGABEQUITTUNG": "Freigabequittung",
     "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
+    "DOK_GS1_AND_GS2": "{{gs1}} und {{gs2}}",
     "ERROR_FILE_TOO_LARGE": "File ist zu gross (Maximal 10MB)",
     "FAMILIENSITUATION_NACHWEIS_TRENNUNG": "Trennungsvereinbarung / Scheidungsurteil / Sonstiger Nachweis über Trennung / Eheschutzverfahren",
     "KINDER_FACHSTELLENBESTAETIGUNG": "Fachstellenbestätigung",

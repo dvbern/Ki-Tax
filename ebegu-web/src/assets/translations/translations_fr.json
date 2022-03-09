@@ -991,6 +991,7 @@
     "DOK_PAPIERGESUCH": "Demande au format papier",
     "DOK_FREIGABEQUITTUNG": "Confirmation des données",
     "DOK_ERWEITERTE_BETREUUNG": "Prise en charge étendue",
+    "DOK_GS1_AND_GS2": "{{gs1}} et {{gs2}}",
     "ERROR_FILE_TOO_LARGE": "Le fichier est trop volumineux (10MB max).",
     "FAMILIENSITUATION_NACHWEIS_TRENNUNG": "Convention de séparation / jugement de divorce / autre justificatif concernant la séparation / procédure de protection de l'union conjugale",
     "KINDER_FACHSTELLENBESTAETIGUNG": "Confirmation du service spécialisé",
