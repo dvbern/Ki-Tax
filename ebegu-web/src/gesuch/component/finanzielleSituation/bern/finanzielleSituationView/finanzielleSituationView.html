@@ -50,7 +50,7 @@
                                                     dv-enable-element
                                                     true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
                                                     false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
-                                                    dv-enable-allowed-roles="['GESUCHSTELLER']"
+                                                    dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
                                                     dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                     aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
                                                     aria-described-by="steuerdatenzugriff-error"
@@ -63,12 +63,14 @@
                         </div>
                         <div class="col-xs-12" ng-if="vm.showSteuerdatenAbholenButton()">
                             <dv-loading-button
-                                dv-enable-element
-                                dv-enable-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()"
+                                button-disabled="!vm.isGesuchsteller()"
                                 type="button"
                                 button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
                                 {{'STEUERDATEN_ABHOLEN' | translate}}
                             </dv-loading-button>
+                            <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
+                                <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                            </div>
                         </div>
                     </div>
                     <dv-steuerabfrage-response-hints

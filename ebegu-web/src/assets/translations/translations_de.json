@@ -89,6 +89,8 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Die Abfrage liefert eine unterjährige Steuererklärung als Antwort. Das Formular konnte nicht automatisch ausgefüllt werden",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für die E-Mail Adresse \"{{email}}\" keine ZPV Nummer im BG-Login hinterlegt wurde",
     "STEUERDATEN_ABHOLEN": "Steuerdaten abholen",
+    "RESET_KIBON_ABFRAGE_WARNING": "Falls Angaben bereits durch die Schnittstelle hinzugefügt wurden, werden diese gelöscht",
+    "NOT_ALLOWED_FOR_SUPER_ADMIN": "Als Superadmin nicht erlaubt",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",

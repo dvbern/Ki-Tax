@@ -65,6 +65,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         '$timeout',
         'EinstellungRS',
         'DvDialog',
+        'AuthServiceRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -86,6 +87,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         $timeout: ITimeoutService,
         private readonly settings: EinstellungRS,
         private readonly dvDialog: DvDialog,
+        private readonly authServiceRS: AuthServiceRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -324,5 +326,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         return this.steuerSchnittstelleAktiv
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff
             && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+    }
+
+    public isGesuchsteller(): boolean {
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 }
