@@ -72,6 +72,9 @@
                                 <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
                             </div>
                         </div>
+                        <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
+                            <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
+                        </div>
                     </div>
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"

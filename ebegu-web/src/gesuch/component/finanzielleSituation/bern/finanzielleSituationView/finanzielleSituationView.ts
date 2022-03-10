@@ -76,6 +76,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public allowedRoles: ReadonlyArray<TSRole>;
     private steuerSchnittstelleAktiv: boolean;
     private readonly $stateParams: IStammdatenStateParams;
+    private triedSavingWithoutForm: boolean = false;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -193,6 +194,13 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!this.isGesuchValid()) {
             return undefined;
         }
+        // speichern darf nicht möglich sein, wenn das Formular nicht sichtbar ist
+        if (!this.showFormular()) {
+            this.triedSavingWithoutForm = true;
+            return undefined;
+        }
+        this.triedSavingWithoutForm = false;
+
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         const finanzielleSituationContainer =
             this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer;
