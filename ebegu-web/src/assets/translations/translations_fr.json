@@ -85,7 +85,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM": "La requête nous a délivré une déclaration d'impôt pour une personne seule. Vous avez indiqué que vous avez une déclaration d'impôt commune. Le formulaire n'a donc pas pu être rempli automatiquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM": "La dat de naissance de {{namegs2}} dans la déclaration d'impôt ne correspond pas avec celle que vous avez indiqué dans kiBon. Le formulaire n'a donc pas pu être rempli automatiquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM": "La requête nous a délivré une déclaration d'impôt commune. Vous avez indiqué que vous avez soumis une déclaration d'impôt seul. Le formulaire n'a donc pas pu être rempli automatiquement.",
-    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Le formulaire a été rempli automatiquement avec vos données fiscales.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Le formulaire a été rempli automatiquement avec vos données fiscales. Bitte kontrollieren Sie die Angaben und beantworten Sie die Frage zum Einkommen aus vereinfachtem Verfahren",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "La requête nous a retourné une déclaration d'impôt en cours d'année. Le formulaire n'a donc pas pu être rempli automatiquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für die E-Mail Adresse \"{{email}}\" keine ZPV Nummer im BG-Login hinterlegt wurde",
     "STEUERDATEN_ABHOLEN": "Steuerdaten abholen",

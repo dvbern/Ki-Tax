@@ -19,7 +19,6 @@ import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
@@ -32,7 +31,6 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
-import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -45,7 +43,6 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
-const removeDialogTemplate = require('../../../../dialog/removeDialogTemplate.html');
 
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -74,7 +71,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
     public allowedRoles: ReadonlyArray<TSRole>;
-    private steuerSchnittstelleAktiv: boolean;
     private readonly $stateParams: IStammdatenStateParams;
     private triedSavingWithoutForm: boolean = false;
 
@@ -88,15 +84,18 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         $scope: IScope,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
-        private readonly settings: EinstellungRS,
-        private readonly dvDialog: DvDialog,
-        private readonly authServiceRS: AuthServiceRS
+        einstellungRS: EinstellungRS,
+        dvDialog: DvDialog,
+        protected readonly authServiceRS: AuthServiceRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
-            $timeout);
+            $timeout,
+            authServiceRS,
+            einstellungRS,
+            dvDialog);
         this.$stateParams = $stateParams;
         this.copyDataAndInit();
     }
@@ -121,13 +120,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.initSelbstaendigkeit();
-
-        this.settings.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
-            this.gesuchModelManager.getGemeinde()?.id,
-            this.gesuchModelManager.getGesuchsperiode()?.id)
-            .then(setting => {
-                this.steuerSchnittstelleAktiv = (setting.value === 'true');
-            });
     }
 
     public showSelbstaendigClicked(): void {
@@ -195,7 +187,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return undefined;
         }
         // speichern darf nicht möglich sein, wenn das Formular nicht sichtbar ist
-        if (!this.showFormular()) {
+        if (this.showSteuerdatenAbholenButton()) {
             this.triedSavingWithoutForm = true;
             return undefined;
         }
@@ -252,7 +244,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             return;
         }
-        this.resetKiBonAnfrageFinSit();
+        this.resetKiBonAnfrageFinSitIfRequired();
     }
 
     public showFormular(): boolean {
@@ -323,41 +315,15 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public resetKiBonAnfrageFinSit(): void {
-        if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, null, RemoveDialogController, {
-                title: 'WOLLEN_SIE_FORTFAHREN',
-                deleteText: 'RESET_KIBON_ABFRAGE_WARNING',
-            })
-                .then(() => {
-                    this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-                    this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
-                            this.initAfterKiBonAnfrageUpdate();
-                        },
-                    );
-                }, () => {
-                    this.getModel().finanzielleSituationJA.steuerdatenZugriff = true;
-                });
-        } else {
-            this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
-                    this.initAfterKiBonAnfrageUpdate();
-                },
-            );
-        }
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
+                this.initAfterKiBonAnfrageUpdate();
+            },
+        );
     }
 
     private initAfterKiBonAnfrageUpdate(): void {
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.initSelbstaendigkeit();
-    }
-
-    public showSteuerdatenAbholenButton(): boolean {
-        return this.steuerSchnittstelleAktiv
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff
-            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
-    }
-
-    public isGesuchsteller(): boolean {
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 }
