@@ -44,7 +44,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.SozialdienstService;
@@ -64,9 +63,6 @@ public class SozialdienstServiceBean extends AbstractBaseService implements Sozi
 
 	@Inject
 	private PrincipalBean principalBean;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Inject
 	private BenutzerService benutzerService;
