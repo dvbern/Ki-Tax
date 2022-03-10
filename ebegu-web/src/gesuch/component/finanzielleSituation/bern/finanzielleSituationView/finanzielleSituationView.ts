@@ -150,8 +150,28 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showSteuerveranlagung(): boolean {
-        return !this.model.gemeinsameSteuererklaerung && (!this.getModel().finanzielleSituationJA.steuerdatenZugriff
-            || !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus));
+        // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+            return false;
+        }
+        // bei gemeinsamer Steuererklärung wird die Frage immer auf der StartView gezeigt
+        if (this.model.gemeinsameSteuererklaerung) {
+            return false;
+        }
+        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
+        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+            return false;
+        }
+        // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
+        if (!this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
+            return true;
+        }
+        // falls Abfrage noch nicht erfolgt ist, zeigen wir die Frage nicht
+        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+            return false;
+        }
+        // falls Steuerabfrage nicht erfolgreich, zeigen wir die Frage ebenfalls
+        return !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
     public showSteuererklaerung(): boolean {

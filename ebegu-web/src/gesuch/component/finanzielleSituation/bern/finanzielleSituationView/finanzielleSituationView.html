@@ -128,7 +128,7 @@
 
                     <div ng-if="vm.showFormular()">
 
-                        <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false"
+                        <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
                              class="well well-status-warten minus-margin">
                             <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
                             <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
