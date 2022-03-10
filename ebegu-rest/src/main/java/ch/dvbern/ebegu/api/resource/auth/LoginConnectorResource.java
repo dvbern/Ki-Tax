@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -49,6 +51,7 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,14 +296,26 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public String getMandant() {
+	public String getMandant(@QueryParam("mandantIdentifier") String mandantIdentifier) {
 		checkLocalAccessOnly();
-		final Mandant first = mandantService.getMandantBern();
+
+		MandantIdentifier identifier;
+		try {
+			identifier = MandantIdentifier.valueOf(mandantIdentifier.toUpperCase(Locale.ROOT));
+		} catch (IllegalArgumentException e) {
+			identifier = MandantIdentifier.BERN;
+		}
+
+		final Mandant first = mandantService
+			.findMandantByIdentifier(identifier)
+			.orElse(mandantService.getMandantBern());
+
 		return first.getId();
 	}
 
 	@Override
-	public JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
+	public JaxExternalAuthAccessElement createLogin(
+		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser, @QueryParam("tenant") @Nullable String mandantId) {
 		requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
 		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
@@ -309,8 +324,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
-		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser,
-				mandantService.getMandantBern());
+
+		Mandant mandant;
+		if (mandantId != null) {
+			mandant = mandantService.findMandant(mandantId).orElse(mandantService.getMandantBern());
+		} else {
+			mandant = mandantService.getMandantBern();
+		}
+
+		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser, mandant);
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
 	}
 

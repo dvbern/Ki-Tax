@@ -59,10 +59,14 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.MandantServiceBean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.api.resource.authentication.ConnectorUtil.toConnectorTenant;
 
 /**
  * This resource has functions to login or logout
@@ -98,6 +102,9 @@ public class AuthResource {
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -124,9 +131,12 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	@GET
 	@PermitAll
-	public Response initSSOLogin(@Nullable @QueryParam("relayPath") String relayPath) {
+	public Response initSSOLogin(@Nullable @QueryParam("relayPath") String relayPath,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
-		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath);
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
 		LOG.debug("Received URL to initialize singleSignOn login '{}'", url);
 		return Response.ok(url).build();
 	}
@@ -138,14 +148,17 @@ public class AuthResource {
 	@PermitAll
 	public Response initSingleLogout(
 		@Nullable @QueryParam("relayPath") String relayPath,
-		@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie
+		@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie,
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
+
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
 		if (authTokenCookie != null && authTokenCookie.getValue() != null) {
 			Optional<AuthorisierterBenutzer> currentAuthOpt = authService
 				.validateAndRefreshLoginToken(authTokenCookie.getValue(), false);
 			if (currentAuthOpt.isPresent()) {
-				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL();
+				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL(toConnectorTenant(mandant));
 				LOG.debug("Received URL to initialize Logout URL '{}'", logoutUrl);
 				return Response.ok(logoutUrl).build();
 			}

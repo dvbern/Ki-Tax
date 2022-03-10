@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Service fuer Mandant
@@ -38,6 +39,9 @@ public interface MandantService {
 
 	@Nonnull
 	Optional<Mandant> findMandantByName(@Nonnull String name);
+
+	@Nonnull
+	Optional<Mandant> findMandantByIdentifier(@Nonnull MandantIdentifier mandantIdentifier);
 
 	@Nonnull
 	Mandant findMandantByCookie(@Nullable Cookie mandantCookie);
