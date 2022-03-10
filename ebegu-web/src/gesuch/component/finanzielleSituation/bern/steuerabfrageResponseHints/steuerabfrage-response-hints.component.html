@@ -53,6 +53,13 @@
     <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
+<div *ngIf="showWarningPartnerNichtGemeinsam()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM</p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"

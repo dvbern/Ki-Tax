@@ -21,10 +21,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSRole} from '../../../../../models/enums/TSRole';
-import {
-    isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus,
-} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
+import {isSteuerdatenAnfrageStatusErfolgreich,} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -277,11 +274,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         return this.steuerSchnittstelleAktiv
             && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
-    }
-
-    public showWarningPartnerNichtGemeinsam(): boolean {
-        return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM
-            && this.getModel().finanzielleSituationJA.steuerdatenZugriff;
     }
 
     public showAufteilung(): boolean {
