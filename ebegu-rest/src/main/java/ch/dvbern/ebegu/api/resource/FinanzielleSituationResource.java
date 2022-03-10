@@ -517,6 +517,7 @@ public class FinanzielleSituationResource {
 
 		// reset SteuerdatenAbfrageStatus und NettoVermoegen
 		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenZugriff(false);
 		convertedFinSitCont.getFinanzielleSituationJA().setNettoVermoegen(null);
 
 		// auch fuer GS2 wenn gemeinsam
