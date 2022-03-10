@@ -106,7 +106,8 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
 
     public resetKiBonAnfrageFinSitIfRequired(): void {
         if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
-            return this.resetKiBonAnfrageFinSit();
+            this.resetKiBonAnfrageFinSit();
+            return;
         }
         this.showResetDialog().then(() => {
             this.resetKiBonAnfrageFinSit();
