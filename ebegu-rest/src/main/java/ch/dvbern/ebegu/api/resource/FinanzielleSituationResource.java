@@ -161,11 +161,8 @@ public class FinanzielleSituationResource {
 		requireNonNull(gesuchId);
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller =  findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituation");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -210,11 +207,8 @@ public class FinanzielleSituationResource {
 
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituationStart");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -410,7 +404,7 @@ public class FinanzielleSituationResource {
 	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	@RolesAllowed({GESUCHSTELLER })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
@@ -423,7 +417,6 @@ public class FinanzielleSituationResource {
 
 		Objects.requireNonNull(kibonAnfrageId.getId());
 		Objects.requireNonNull(jaxGesuchstellerId.getId());
-		Objects.requireNonNull(jaxFinanzielleSituationContainer.getId());
 
 		//Antrag suchen
 		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
@@ -433,12 +426,8 @@ public class FinanzielleSituationResource {
 			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
 
 		//FinSit Suchen, Feldern updaten
-		GesuchstellerContainer gesuchsteller =
-			gesuchstellerService.findGesuchsteller(jaxGesuchstellerId.getId()).orElseThrow(()
-				-> new EbeguEntityNotFoundException(
-				"getSteuerdatenBeiAntragId",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchstellerId invalid: " + jaxGesuchstellerId.getId()));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(jaxGesuchstellerId.getId(), "updateFinSitMitSteuerdaten");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -451,7 +440,13 @@ public class FinanzielleSituationResource {
 			finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null ?
 				gesuch.getGesuchsteller2().getFinanzielleSituationContainer() :
 				new FinanzielleSituationContainer();
+			if (finSitGS2.getFinanzielleSituationJA() == null) {
+				finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
+			}
+			finSitGS2.setJahr(convertedFinSitCont.getJahr());
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+			finSitGS2.getFinanzielleSituationJA().setSteuererklaerungAusgefuellt(convertedFinSitCont.getFinanzielleSituationJA().getSteuererklaerungAusgefuellt());
+			finSitGS2.getFinanzielleSituationJA().setSteuerveranlagungErhalten(convertedFinSitCont.getFinanzielleSituationJA().getSteuerveranlagungErhalten());
 			finSitGS2.setGesuchsteller(gesuch.getGesuchsteller2());
 		}
 
@@ -482,6 +477,61 @@ public class FinanzielleSituationResource {
 		if (finSitGS2 != null) {
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
+		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+	}
+
+	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"
+		+ "Ergebniss",
+		response = SteuerdatenResponse.class)
+	@Nullable
+	@PUT
+	@Path("/kibonanfrage/reset/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({GESUCHSTELLER })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public JaxFinanzielleSituationContainer resetFinSitSteuerdaten(
+		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
+		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
+		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(kibonAnfrageId.getId());
+		Objects.requireNonNull(jaxGesuchstellerId.getId());
+		//Antrag suchen
+		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			"getSteuerdatenBeiAntragId",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
+
+		//FinSit Suchen, Feldern updaten
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(jaxGesuchstellerId.getId(), "resetFinSitSteuerdaten");
+
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
+			jaxFinanzielleSituationContainer,
+			gesuchsteller.getFinanzielleSituationContainer());
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
+		// reset SteuerdatenAbfrageStatus und NettoVermoegen
+		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+		convertedFinSitCont.getFinanzielleSituationJA().setNettoVermoegen(null);
+
+		// auch fuer GS2 wenn gemeinsam
+		if (isGemeinsam && gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
+			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(false);
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
+		}
+
+		//und zusendlich speichern und zuruckgeben
+		FinanzielleSituationContainer persistedFinSit =
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
@@ -706,5 +756,13 @@ public class FinanzielleSituationResource {
 		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuchId.getId());
 
 		return Response.ok().build();
+	}
+
+	private GesuchstellerContainer findGesuchstellerById(@Nonnull String gesuchstellerId, @Nonnull String methodeName) {
+		return gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			methodeName,
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + gesuchstellerId));
 	}
 }

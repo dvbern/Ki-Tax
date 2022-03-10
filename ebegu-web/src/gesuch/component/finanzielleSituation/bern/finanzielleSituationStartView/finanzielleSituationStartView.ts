@@ -30,6 +30,7 @@ import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
+import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {RemoveDialogController} from '../../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -122,7 +123,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showSteuerveranlagung(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        return this.model.gemeinsameSteuererklaerung && (!this.getModel().finanzielleSituationJA.steuerdatenZugriff
+        || !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public showSteuererklaerung(): boolean {
@@ -324,6 +326,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             this.callKiBonAnfrageAndUpdateFinSit();
+        } else {
+            this.resetKiBonAnfrageFinSit();
         }
     }
 
@@ -331,13 +335,23 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                this.form.$setDirty();
-            },
-        );
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
+    }
+
+    private resetKiBonAnfrageFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+            .then(() => {
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 }

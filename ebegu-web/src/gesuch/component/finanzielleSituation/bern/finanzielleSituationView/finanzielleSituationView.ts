@@ -23,7 +23,7 @@ import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSF
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus
+    TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -64,7 +64,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         '$translate',
         '$timeout',
         'EinstellungRS',
-        'DvDialog'
+        'DvDialog',
     ];
 
     public showSelbstaendig: boolean;
@@ -150,7 +150,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showSteuerveranlagung(): boolean {
-        return !this.model.gemeinsameSteuererklaerung;
+        return !this.model.gemeinsameSteuererklaerung && (!this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            || !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public showSteuererklaerung(): boolean {
@@ -224,18 +225,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             this.callKiBonAnfrageAndUpdateFinSit();
         } else {
-            this.showFormular();
+            this.resetKiBonAnfrageFinSit();
         }
-    }
-
-    private callKiBonAnfrageAndUpdateFinSit(): void {
-        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
-                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                this.initSelbstaendigkeit();
-                this.showFormular();
-            },
-        );
     }
 
     public showFormular(): void {
@@ -282,5 +273,27 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
                 this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
                     einkommenAusVereinfachtemVerfahrenAmount;
             });
+    }
+
+    private callKiBonAnfrageAndUpdateFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
+                this.initAfterKiBonAnfrageUpdate();
+            },
+        );
+    }
+
+    private resetKiBonAnfrageFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
+                this.initAfterKiBonAnfrageUpdate();
+            },
+        );
+    }
+
+    private initAfterKiBonAnfrageUpdate(): void {
+        this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.initSelbstaendigkeit();
+        this.showFormular();
     }
 }

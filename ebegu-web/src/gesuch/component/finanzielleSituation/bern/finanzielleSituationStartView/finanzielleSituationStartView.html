@@ -37,11 +37,6 @@
                     </div>
                 </div>
 
-                <dv-steuerabfrage-response-hints
-                    ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                    (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                    [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
-
                 <div ng-if="!vm.areThereOnlyFerieninsel">
                     <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
                                                       verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
@@ -94,7 +89,7 @@
                                                         dv-enable-element
                                                         true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
                                                         false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
-                                                        dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
+                                                        dv-enable-allowed-roles="['GESUCHSTELLER']"
                                                         dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                         aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
                                                         aria-described-by="steuerdatenzugriff-error"
@@ -106,6 +101,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <dv-steuerabfrage-response-hints
+                            ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                            (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                            [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
 
                         <!-- Steuerveranlagung -->
                         <div class="row">
