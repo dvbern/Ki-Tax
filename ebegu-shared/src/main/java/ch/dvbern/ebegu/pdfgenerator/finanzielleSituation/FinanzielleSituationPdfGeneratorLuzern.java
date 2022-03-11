@@ -17,16 +17,13 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -35,12 +32,8 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
-import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
-import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -65,10 +58,6 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	private FinanzielleSituationContainer basisJahrGS1;
 	@Nullable
 	private FinanzielleSituationContainer basisJahrGS2;
-	@Nullable
-	private FinanzielleSituationResultateDTO ekvBasisJahrPlus1;
-	@Nullable
-	private FinanzielleSituationResultateDTO ekvBasisJahrPlus2;
 
 	public FinanzielleSituationPdfGeneratorLuzern(
 		@Nonnull Gesuch gesuch,
@@ -100,21 +89,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		}
 
 		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGesuchsteller);
-		initialzeEKV();
-	}
-
-	private void initialzeEKV() {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-
-		if (ekvInfo != null) {
-			if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
-				ekvBasisJahrPlus1 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch,1, hasSecondGesuchsteller);
-			}
-			if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
-				ekvBasisJahrPlus2 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch, 2, hasSecondGesuchsteller);
-			}
-		}
+		initialzeEkv();
 	}
 
 	@Override
@@ -277,29 +252,6 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		document.add(createTableSelbstdeklaration(hasSecondGesuchsteller, 1, finSitDTO, title));
 	}
 
-		private FinanzielleSituationRow createTableTitleForEkv(int basisJahr) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		String gs1Name = gesuch.getGesuchsteller1().extractFullName();
-
-		FinanzielleSituationRow row =  new FinanzielleSituationRow(
-			translate(EKV_TITLE, String.valueOf(basisJahr)),
-			gs1Name);
-
-		if (hasSecondGesuchsteller) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			String gs2Name = gesuch.getGesuchsteller2().extractFullName();
-			row.setGs2(gs2Name);
-		}
-
-		return row;
-	}
-
-	private Element createTitleEkv(int basisJahr) {
-		return PdfUtil.createBoldParagraph(
-			translate(EKV_TITLE, String.valueOf(basisJahr)),
-			2);
-	}
-
 	private PdfPTable createTableSelbstdeklaration(
 		boolean hasSecondGS,
 		int gesuchstellerNumberValue1,
@@ -312,52 +264,12 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 			table.addRow(titleRow);
 		}
 
-		createAndAddRow(table, TOTAL_EINKUENFTE, finSitDTO.getEinkommen(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getEinkommenGS2());
-		createAndAddRow(table, TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2());
-		createAndAddRow(table, ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2());
-		createAndAddRow(table, MASSG_EINK, finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getMassgebendesEinkVorAbzFamGrGS2());
+		table.addRow(createRow(TOTAL_EINKUENFTE, finSitDTO.getEinkommen(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getEinkommenGS2()));
+		table.addRow(createRow(TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2()));
+		table.addRow(createRow(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2()));
+		table.addRow(createRow(MASSG_EINK, finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getMassgebendesEinkVorAbzFamGrGS2()));
 
 		return table.createTable();
-	}
-
-	private FinanzielleSituationTable createFinSitTable(boolean hasSecondGS) {
-		return new FinanzielleSituationTable(
-			getPageConfiguration(),
-			hasSecondGS,
-			EbeguUtil.isKorrekturmodusGemeinde(gesuch),
-			true);
-	}
-
-	private void createAndAddRow(
-		FinanzielleSituationTable table,
-		String message,
-		@Nullable BigDecimal value1,
-		boolean hasSecondGS,
-		@Nullable BigDecimal value2) {
-
-		FinanzielleSituationRow row = new FinanzielleSituationRow(
-			translate(message, mandant), value1);
-
-		if(hasSecondGS) {
-			row.setGs2(value2);
-		}
-
-		table.addRow(row);
-	}
-
-	protected final FinanzielleSituationRow createRow(
-		String message,
-		Function<FinanzielleSituation, BigDecimal> getter,
-		@Nullable FinanzielleSituation gs1,
-		@Nullable FinanzielleSituation gs1Urspruenglich
-	) {
-		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
-		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
-		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
-		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
-		}
-		return row;
 	}
 
 	private void addSpacing(@Nonnull Document document) {

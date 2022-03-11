@@ -17,16 +17,19 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -38,6 +41,7 @@ import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
@@ -56,12 +60,17 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
 	protected static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
+	protected static final String NETTOVERMOEGEN = "PdfGeneration_FinSit_Nettovermoegen";
 
 	protected final Verfuegung verfuegungFuerMassgEinkommen;
 	protected final LocalDate erstesEinreichungsdatum;
 	protected boolean hasSecondGesuchsteller;
 	@Nullable
 	protected FinanzielleSituationResultateDTO finanzDatenDTO;
+	@Nullable
+	protected FinanzielleSituationResultateDTO ekvBasisJahrPlus1;
+	@Nullable
+	protected FinanzielleSituationResultateDTO ekvBasisJahrPlus2;
 	@Nonnull
 	protected AbstractFinanzielleSituationRechner finanzielleSituationRechner;
 
@@ -106,6 +115,20 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected abstract void createPageBasisJahr(@Nonnull PdfGenerator generator, @Nonnull Document document);
 	protected abstract void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document);
 	protected abstract void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document);
+
+	protected void initialzeEkv() {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
+
+		if (ekvInfo != null) {
+			if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
+				ekvBasisJahrPlus1 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch,1, hasSecondGesuchsteller);
+			}
+			if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
+				ekvBasisJahrPlus2 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch, 2, hasSecondGesuchsteller);
+			}
+		}
+	}
 
 	protected void createPageMassgebendesEinkommen(@Nonnull Document document) {
 		List<String[]> values = new ArrayList<>();
@@ -231,5 +254,67 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 				createPageEkv2(generator, document);
 			}
 		}
+	}
+
+	protected FinanzielleSituationRow createTableTitleForEkv(int basisJahr) {
+	Objects.requireNonNull(gesuch.getGesuchsteller1());
+	String gs1Name = gesuch.getGesuchsteller1().extractFullName();
+
+	FinanzielleSituationRow row =  new FinanzielleSituationRow(
+		translate(EKV_TITLE, String.valueOf(basisJahr)),
+		gs1Name);
+
+	if (hasSecondGesuchsteller) {
+		Objects.requireNonNull(gesuch.getGesuchsteller2());
+		String gs2Name = gesuch.getGesuchsteller2().extractFullName();
+		row.setGs2(gs2Name);
+	}
+
+	return row;
+}
+
+	protected Element createTitleEkv(int basisJahr) {
+	return PdfUtil.createBoldParagraph(
+		translate(EKV_TITLE, String.valueOf(basisJahr)),
+		2);
+}
+
+	protected FinanzielleSituationTable createFinSitTable(boolean hasSecondGS) {
+		return new FinanzielleSituationTable(
+			getPageConfiguration(),
+			hasSecondGS,
+			EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+			true);
+	}
+
+	protected FinanzielleSituationRow createRow(
+		String message,
+		@Nullable BigDecimal value1,
+		boolean hasSecondGS,
+		@Nullable BigDecimal value2) {
+
+		FinanzielleSituationRow row = new FinanzielleSituationRow(
+			translate(message, mandant), value1);
+
+		if(hasSecondGS) {
+			row.setGs2(value2);
+		}
+
+		return row;
+	}
+
+	protected final FinanzielleSituationRow createRow(
+		String message,
+		Function<FinanzielleSituation, BigDecimal> getter,
+		@Nullable FinanzielleSituation gs1,
+		@Nullable FinanzielleSituation gs1Urspruenglich
+	) {
+		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
+		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
+		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
+		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
+		}
+		return row;
 	}
 }
