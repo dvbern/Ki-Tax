@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
-import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -93,7 +92,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 	private static final String FUSSZEILE_EINKOMMEN = "PdfGeneration_FinSit_Fusszeile_Einkuenfte";
 	private static final String FUSSZEILE_VERMOEGEN = "PdfGeneration_FinSit_Fusszeile_Vermoegen";
 	private static final String FUSSZEILE_ABZUEGE = "PdfGeneration_FinSit_Fusszeile_Abzuege";
-	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	private final FinanzielleSituationTyp finSitTyp;
@@ -359,13 +357,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
 		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
-	}
-
-	@Nonnull
-	private PdfPTable createIntroEkv() {
-		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
-		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		return PdfUtil.createIntroTable(introEkv1, sprache, mandant);
 	}
 
 	@Nonnull

@@ -55,10 +55,11 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected static final String MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEink";
 	protected static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
+	protected static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 
 	protected final Verfuegung verfuegungFuerMassgEinkommen;
 	protected final LocalDate erstesEinreichungsdatum;
-	protected final boolean hasSecondGesuchsteller;
+	protected boolean hasSecondGesuchsteller;
 	@Nullable
 	protected FinanzielleSituationResultateDTO finanzDatenDTO;
 	@Nonnull
@@ -95,15 +96,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 			// Basisjahr
 			createPageBasisJahr(generator, document);
 			// Eventuelle Einkommenverschlechterung
-			EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-			if (ekvInfo != null) {
-				if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
-					createPageEkv1(generator, document);
-				}
-				if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
-					createPageEkv2(generator, document);
-				}
-			}
+			createPagesEkv(generator, document);
 			// Massgebendes Einkommen
 			createPageMassgebendesEinkommen(document);
 		};
@@ -219,5 +212,24 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 		zusammenzugTable.addRow(zusammenzug);
 
 		document.add(zusammenzugTable.createTable());
+	}
+
+	@Nonnull
+	protected PdfPTable createIntroEkv() {
+		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
+		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		return PdfUtil.createIntroTable(introEkv1, sprache, mandant);
+	}
+
+	private void createPagesEkv(PdfGenerator generator, Document document) {
+		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
+		if (ekvInfo != null) {
+			if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
+				createPageEkv1(generator, document);
+			}
+			if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
+				createPageEkv2(generator, document);
+			}
+		}
 	}
 }

@@ -25,6 +25,8 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -33,11 +35,14 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfPTable;
 
 public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituationPdfGenerator {
 
@@ -60,6 +65,10 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	private FinanzielleSituationContainer basisJahrGS1;
 	@Nullable
 	private FinanzielleSituationContainer basisJahrGS2;
+	@Nullable
+	private FinanzielleSituationResultateDTO ekvBasisJahrPlus1;
+	@Nullable
+	private FinanzielleSituationResultateDTO ekvBasisJahrPlus2;
 
 	public FinanzielleSituationPdfGeneratorLuzern(
 		@Nonnull Gesuch gesuch,
@@ -71,6 +80,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
 	}
 
+	@Override
 	protected void initializeValues() {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
@@ -80,18 +90,34 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getGesuchstellerJA());
 		gs1 = gesuch.getGesuchsteller1().getGesuchstellerJA();
 
-		boolean hasSecondGS = false;
+		hasSecondGesuchsteller = false;
 		if (gesuchHasTwoFinSit()) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			Objects.requireNonNull(gesuch.getGesuchsteller2().getGesuchstellerJA());
 			gs2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
-			hasSecondGS = true;
+			hasSecondGesuchsteller = true;
 		}
 
-		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGS);
+		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGesuchsteller);
+		initialzeEKV();
 	}
 
+	private void initialzeEKV() {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
+
+		if (ekvInfo != null) {
+			if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
+				ekvBasisJahrPlus1 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch,1, hasSecondGesuchsteller);
+			}
+			if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
+				ekvBasisJahrPlus2 = finanzielleSituationRechner.calculateResultateEinkommensverschlechterung(gesuch, 2, hasSecondGesuchsteller);
+			}
+		}
+	}
+
+	@Override
 	protected void createPageBasisJahr(
 		@Nonnull PdfGenerator generator,
 		@Nonnull Document document
@@ -158,12 +184,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		@Nonnull String gesuchstellerName,
 		@Nonnull Integer gesuchstellerNumber
 	) {
-		FinanzielleSituationTable table =
-			new FinanzielleSituationTable(
-				getPageConfiguration(),
-				false,
-				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
-				true);
+		FinanzielleSituationTable table = createFinSitTable(false);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
 			translate(BERECHNUNG_GEMAESS_VERANLAGUNG, mandant), gesuchstellerName);
@@ -204,9 +225,7 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		);
 
 		Objects.requireNonNull(finanzDatenDTO);
-		var massgebendesEinkommen =  gesuchstellerNumber == 1
-			? finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1()
-			: finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2();
+		var massgebendesEinkommen =  finanzDatenDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumber);
 		FinanzielleSituationRow massgebendesEinkommenRow = new FinanzielleSituationRow(
 			translate(MASSG_EINK, mandant), massgebendesEinkommen);
 
@@ -229,48 +248,101 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 
 		Objects.requireNonNull(finanzDatenDTO);
 
-		FinanzielleSituationTable table =
-			new FinanzielleSituationTable(
-				getPageConfiguration(),
-				false,
-				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
-				true);
-
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(BERECHNUNG_GEMAESS_SELBSTDEKLARATION, mandant), gesuchstellerName);
+			translate(BERECHNUNG_GEMAESS_SELBSTDEKLARATION), gesuchstellerName);
 
-		var einkuenfte =  gesuchstellerNumber == 1
-			? finanzDatenDTO.getEinkommenGS1()
-			: finanzDatenDTO.getEinkommenGS2();
-		FinanzielleSituationRow einkuenfteRow = new FinanzielleSituationRow(
-			translate(TOTAL_EINKUENFTE, mandant), einkuenfte);
+		document.add(createTableSelbstdeklaration(false, gesuchstellerNumber, finanzDatenDTO, title));
+	}
 
-		var abzuege =  gesuchstellerNumber == 1
-			? finanzDatenDTO.getAbzuegeGS1()
-			: finanzDatenDTO.getAbzuegeGS2();
-		FinanzielleSituationRow abzuegeRow = new FinanzielleSituationRow(
-			translate(TOTAL_ABZUEGE, mandant), abzuege);
+	@Override
+	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+		Objects.requireNonNull(ekvBasisJahrPlus1);
+		createPageEkv(ekvBasisJahrPlus1, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document);
+	}
 
-		var vermoegen =  gesuchstellerNumber == 1
-			? finanzDatenDTO.getVermoegenXPercentAnrechenbarGS1()
-			: finanzDatenDTO.getVermoegenXPercentAnrechenbarGS2();
-		FinanzielleSituationRow vermoegenRow = new FinanzielleSituationRow(
-			translate(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, mandant), vermoegen);
 
-		var massgebendesEinkommen =  gesuchstellerNumber == 1
-			? finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1()
-			: finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2();
-		FinanzielleSituationRow massgebendesEinkommenRow = new FinanzielleSituationRow(
-			translate(MASSG_EINK, mandant), massgebendesEinkommen);
+	@Override
+	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+		Objects.requireNonNull(ekvBasisJahrPlus2);
+		createPageEkv(ekvBasisJahrPlus2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document);
+	}
 
-		table.addRow(title);
-		table.addRow(einkuenfteRow);
-		table.addRow(abzuegeRow);
-		table.addRow(vermoegenRow);
-		table.addRow(massgebendesEinkommenRow);
+	private void createPageEkv(@Nonnull FinanzielleSituationResultateDTO finSitDTO, int basisJahr, @Nonnull Document document) {
+		document.newPage();
+		document.add(createTitleEkv(basisJahr));
+		document.add(createIntroEkv());
 
-		document.add(table.createTable());
+		FinanzielleSituationRow title = createTableTitleForEkv(basisJahr);
+		//EKV Tabelle ist dieselbe wie die Selbstdeklarations-Tabelle
+		document.add(createTableSelbstdeklaration(hasSecondGesuchsteller, 1, finSitDTO, title));
+	}
 
+		private FinanzielleSituationRow createTableTitleForEkv(int basisJahr) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		String gs1Name = gesuch.getGesuchsteller1().extractFullName();
+
+		FinanzielleSituationRow row =  new FinanzielleSituationRow(
+			translate(EKV_TITLE, String.valueOf(basisJahr)),
+			gs1Name);
+
+		if (hasSecondGesuchsteller) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			String gs2Name = gesuch.getGesuchsteller2().extractFullName();
+			row.setGs2(gs2Name);
+		}
+
+		return row;
+	}
+
+	private Element createTitleEkv(int basisJahr) {
+		return PdfUtil.createBoldParagraph(
+			translate(EKV_TITLE, String.valueOf(basisJahr)),
+			2);
+	}
+
+	private PdfPTable createTableSelbstdeklaration(
+		boolean hasSecondGS,
+		int gesuchstellerNumberValue1,
+		@Nonnull FinanzielleSituationResultateDTO finSitDTO,
+		@Nullable FinanzielleSituationRow titleRow) {
+
+		FinanzielleSituationTable table = createFinSitTable(hasSecondGS);
+
+		if (titleRow != null) {
+			table.addRow(titleRow);
+		}
+
+		createAndAddRow(table, TOTAL_EINKUENFTE, finSitDTO.getEinkommen(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getEinkommenGS2());
+		createAndAddRow(table, TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2());
+		createAndAddRow(table, ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2());
+		createAndAddRow(table, MASSG_EINK, finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getMassgebendesEinkVorAbzFamGrGS2());
+
+		return table.createTable();
+	}
+
+	private FinanzielleSituationTable createFinSitTable(boolean hasSecondGS) {
+		return new FinanzielleSituationTable(
+			getPageConfiguration(),
+			hasSecondGS,
+			EbeguUtil.isKorrekturmodusGemeinde(gesuch),
+			true);
+	}
+
+	private void createAndAddRow(
+		FinanzielleSituationTable table,
+		String message,
+		@Nullable BigDecimal value1,
+		boolean hasSecondGS,
+		@Nullable BigDecimal value2) {
+
+		FinanzielleSituationRow row = new FinanzielleSituationRow(
+			translate(message, mandant), value1);
+
+		if(hasSecondGS) {
+			row.setGs2(value2);
+		}
+
+		table.addRow(row);
 	}
 
 	protected final FinanzielleSituationRow createRow(
@@ -292,16 +364,6 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		Paragraph p = new Paragraph();
 		p.setSpacingAfter(15);
 		document.add(p);
-	}
-
-	@Override
-	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		// TODO: implement
-	}
-
-	@Override
-	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		// TODO: implement
 	}
 
 	private boolean gesuchHasTwoFinSit() {
