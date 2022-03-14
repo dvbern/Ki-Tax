@@ -88,6 +88,8 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Das Formular wurde automatisch anhand der Steuerdaten ausgefüllt",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Die Abfrage liefert eine unterjährige Steuererklärung als Antwort. Das Formular konnte nicht automatisch ausgefüllt werden",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für die E-Mail Adresse \"{{email}}\" keine ZPV Nummer im BG-Login hinterlegt wurde",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für \"{{gs2}}\" keine ZPV Nummer in kiBon hinterlegt ist.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZPV_GS2_AUSLOESEN": "Klicken sie hier, um eine Einladungsmail zu erhalten.",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",

@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -27,6 +28,7 @@ import {
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 
@@ -49,6 +51,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -89,6 +92,10 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
     }
 
+    public showZugriffKeineZpvNummerGS2(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
+    }
+
     public getGS1Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
     }
@@ -105,7 +112,20 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.principal.email;
     }
 
+    public getGS2name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA.getFullName();
+    }
+
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+    }
+
+    public openDialogGS2ZPVVerknuepfen(): void {
+        const dialogOptions: MatDialogConfig = {
+            data: {
+                gs2: this.gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA
+            }
+        };
+        this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
     }
 }

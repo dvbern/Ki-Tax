@@ -25,6 +25,7 @@ export enum TSSteuerdatenAnfrageStatus {
     FAILED_GEBURTSDATUM = 'FAILED_GEBURTSDATUM',
     FAILED_UNTERJAEHRIGER_FALL = 'FAILED_UNTERJAEHRIGER_FALL',
     FAILED_KEINE_ZPV_NUMMER = 'FAILED_KEINE_ZPV_NUMMER',
+    FAILED_KEINE_ZPV_NUMMER_GS2 = 'FAILED_KEINE_ZPV_NUMMER_GS2',
 }
 
 export function isSteuerdatenAnfrageStatusErfolgreich(status: TSSteuerdatenAnfrageStatus): boolean {

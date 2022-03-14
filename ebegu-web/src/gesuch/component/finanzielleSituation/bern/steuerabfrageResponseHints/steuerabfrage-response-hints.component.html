@@ -53,6 +53,14 @@
     <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
+<div *ngIf="showZugriffKeineZpvNummerGS2()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate
+       [translateParams]="{gs2: getGS2name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2</p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGS2ZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_GS2_AUSLOESEN</a>
+</div>
+
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"

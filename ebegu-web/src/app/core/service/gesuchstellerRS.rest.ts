@@ -15,6 +15,7 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
+import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -59,4 +60,7 @@ export class GesuchstellerRS {
         return 'GesuchstellerRS';
     }
 
+    public initGS2ZPVNr(email: string, gs2: TSGesuchsteller): IPromise<any> {
+        return this.http.get(`${this.serviceURL}/initZPVNr/${encodeURIComponent(gs2.id)}?email=${encodeURIComponent(email)}`);
+    }
 }
