@@ -19,7 +19,6 @@ import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSTaetigkeit} from '../../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituation} from '../../../../models/TSFinanzielleSituation';
