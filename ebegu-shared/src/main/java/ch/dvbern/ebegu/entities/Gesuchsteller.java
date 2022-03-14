@@ -41,11 +41,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-@Table(
-		uniqueConstraints = {
-				@UniqueConstraint(columnNames = "zpv_nummer", name = "UK_gesuchsteller_zpvnummer")
-		}
-)
 public class Gesuchsteller extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
