@@ -487,17 +487,26 @@ public class FinanzielleSituationResource {
 
 		} else {
 			// anfrage single GS
-			try {
-				SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
-						Integer.valueOf(benutzer.getZpvNummer()),
-						gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
-						kibonAnfrageId.getId(),
-						gesuch.getGesuchsperiode().getBasisJahr());
-				handleSteuerdatenResponse(convertedFinSitCont.getFinanzielleSituationJA(), steuerdatenResponseGS1);
-			} catch (KiBonAnfrageServiceException e) {
-				updateFinSitSteuerdatenAbfrageStatusFailed(
-						convertedFinSitCont.getFinanzielleSituationJA(),
-						SteuerdatenAnfrageStatus.FAILED);
+			final boolean isGS2 = gesuchsteller.equals(gesuch.getGesuchsteller2());
+			String zpvNummer = isGS2 ? gesuchsteller.getGesuchstellerJA().getZpvNummer() : benutzer.getZpvNummer();
+			if (zpvNummer != null) {
+				try {
+					SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
+							Integer.valueOf(zpvNummer),
+							gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
+							kibonAnfrageId.getId(),
+							gesuch.getGesuchsperiode().getBasisJahr());
+					handleSteuerdatenResponse(convertedFinSitCont.getFinanzielleSituationJA(), steuerdatenResponseGS1);
+				} catch (KiBonAnfrageServiceException e) {
+					updateFinSitSteuerdatenAbfrageStatusFailed(
+							convertedFinSitCont.getFinanzielleSituationJA(),
+							SteuerdatenAnfrageStatus.FAILED);
+				}
+			} else {
+				updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont.getFinanzielleSituationJA(),
+						isGS2 ?
+								SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2 :
+								SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
 		}
 		//und zusendlich speichern und zuruckgeben, GS2 speichern wir wo nötig
@@ -550,6 +559,10 @@ public class FinanzielleSituationResource {
 		finSit.setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() != null ?
 						steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() :
 						BigDecimal.ZERO);
+		finSit.setGeleisteteAlimente(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
+						steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
+						BigDecimal.ZERO);
+
 
 		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
 		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
@@ -569,7 +582,6 @@ public class FinanzielleSituationResource {
 						steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
 						BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
 		finSit.setGewinnungskosten(gewinnungskostenTotal);
-		finSit.setGeleisteteAlimente(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
 		finSit.setNettoVermoegen(steuerdatenResponse.getNettovermoegen());
 	}
 
