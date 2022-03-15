@@ -99,8 +99,12 @@ export class KommentarViewController implements IController {
         if (!this.isGesuchUnsaved()) {
             this.getPapiergesuchFromServer();
         }
-        this.applicationPropertyRS.isPersonensucheDisabled().then((response: any) => {
-            this.isPersonensucheDisabled = response;
+        Promise.all([
+            this.applicationPropertyRS.isPersonensucheDisabledForSystem(),
+            this.applicationPropertyRS.getGeresEnabledForMandant()
+        ])
+        .then(([geresSytemWideDisabled, geresEnabledForMandant]) => {
+            this.isPersonensucheDisabled = geresSytemWideDisabled || !geresEnabledForMandant;
         });
     }
 

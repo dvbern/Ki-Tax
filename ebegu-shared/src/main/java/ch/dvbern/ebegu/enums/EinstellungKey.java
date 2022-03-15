@@ -258,7 +258,16 @@ public enum EinstellungKey {
 	GESCHWISTERNBONUS_AKTIVIERT,
 
 	// Wie lange soll der Babytarif angewendet werden
-	DAUER_BABYTARIF;
+	DAUER_BABYTARIF,
+
+	// Soll die Diplomatenstatusfrage angezeigt werden
+	DIPLOMATENSTATUS_DEAKTIVIERT,
+
+	// Soll die Zemis-Nr. verwendet werden
+	ZEMIS_DISABLED,
+
+	// Soll die Frage, ob die Sprache die Amtsprache ist, gestellt werden
+	SPRACHE_AMTSPRACHE_DISABLED;
 
 
 	private EinstellungTyp typ;

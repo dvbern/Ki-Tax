@@ -155,7 +155,7 @@
                     </fieldset>
 
                     <!-- Diplomatenstatus -->
-                    <div class="row">
+                    <div class="row" ng-if="!vm.diplomatenStatusDisabled">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.getModelJA().diplomatenstatus" name="diplomatenstatus"

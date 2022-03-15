@@ -48,6 +48,7 @@ export class DvPulldownUserMenuController implements IController {
 
     public readonly VERSION = VERSION;
     public readonly BUILDTSTAMP = BUILDTSTAMP;
+    private frenchEnabled: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -66,6 +67,7 @@ export class DvPulldownUserMenuController implements IController {
             );
         this.setNotrechtVisible();
         this.setMandantSwitchVisible();
+        this.setFrenchEnabled();
     }
 
     private setNotrechtVisible(): void {
@@ -101,6 +103,14 @@ export class DvPulldownUserMenuController implements IController {
             .then(properties => properties.mulitmandantAktiv)
             .then(multimandantAktiv => {
                 this.mandantSwitchVisible = multimandantAktiv;
+            });
+    }
+
+    private setFrenchEnabled(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(properties => properties.frenchEnabled)
+            .then(frenchEnabled => {
+                this.frenchEnabled = frenchEnabled;
             });
     }
 }
