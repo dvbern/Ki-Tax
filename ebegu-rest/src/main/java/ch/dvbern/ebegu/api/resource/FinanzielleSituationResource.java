@@ -562,6 +562,7 @@ public class FinanzielleSituationResource {
 		finSit.setGeleisteteAlimente(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
 						steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
 						BigDecimal.ZERO);
+		finSit.setAbzugSchuldzinsen(steuerdatenResponse.getSchuldzinsen() != null ? steuerdatenResponse.getSchuldzinsen() : BigDecimal.ZERO);
 
 
 		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
@@ -576,7 +577,6 @@ public class FinanzielleSituationResource {
 						BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 
 		finSit.setBruttoertraegeVermoegen(bruttertraegeVermogenTotal);
-		finSit.setAbzugSchuldzinsen(steuerdatenResponse.getSchuldzinsen());
 		BigDecimal gewinnungskostenTotal =
 				GANZZAHL.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
 						steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
