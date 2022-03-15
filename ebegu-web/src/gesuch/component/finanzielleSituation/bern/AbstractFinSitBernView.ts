@@ -111,7 +111,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         }
         this.showResetDialog().then(() => {
             this.resetKiBonAnfrageFinSit();
-        });
+        }, () => this.getModel().finanzielleSituationJA.steuerdatenZugriff = true);
     }
 
     protected abstract resetKiBonAnfrageFinSit(): void;
