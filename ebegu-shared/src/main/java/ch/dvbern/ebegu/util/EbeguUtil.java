@@ -278,60 +278,73 @@ public final class EbeguUtil {
 			}
 		}
 
-		//TODO: ekv should probably have its own function
 		if ((wizardStepName == null || wizardStepName.isEKVWizardStepName())) {
-			if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
-				return false;
+			return isEKVIndroducedAndComplete(gesuch);
+		}
+		return true;
+	}
+
+	private static boolean isEKVIndroducedAndComplete(@Nonnull Gesuch gesuch) {
+		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			return false;
+		}
+		if (gesuch.getEinkommensverschlechterungInfoContainer()
+			.getEinkommensverschlechterungInfoJA()
+			.getEinkommensverschlechterung()) {
+			if (gesuch.getEinkommensverschlechterungInfoContainer()
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus1()) {
+
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
+				}
+				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
+					return false;
+				}
+				if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+						== EnumFamilienstatus.VERHEIRATET) {
+					// finsit is gemeinsam for verheiratet in Luzern
+					return true;
+				}
+				if (gesuch.getGesuchsteller2() != null
+					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
+					&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())
+				) {
+					return false;
+				}
 			}
 			if (gesuch.getEinkommensverschlechterungInfoContainer()
-					.getEinkommensverschlechterungInfoJA()
-					.getEinkommensverschlechterung()) {
-				if (gesuch.getEinkommensverschlechterungInfoContainer()
-						.getEinkommensverschlechterungInfoJA()
-						.getEkvFuerBasisJahrPlus1()) {
-					if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-						return false;
-					}
-					if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
-							.getEinkommensverschlechterungContainer()
-							.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
-						return false;
-					}
-					if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-							requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-									== EnumFamilienstatus.VERHEIRATET) {
-						// finsit is gemeinsam for verheiratet in Luzern
-						return true;
-					}
-					if (gesuch.getGesuchsteller2() != null
-							&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
-							&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
-							.getEinkommensverschlechterungContainer()
-							.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())
-					) {
-						return false;
-					}
+				.getEinkommensverschlechterungInfoJA()
+				.getEkvFuerBasisJahrPlus2()) {
+
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
+					return false;
 				}
-				if (gesuch.getEinkommensverschlechterungInfoContainer()
-						.getEinkommensverschlechterungInfoJA()
-						.getEkvFuerBasisJahrPlus2()) {
-					if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-						return false;
-					}
-					if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
-							.getEinkommensverschlechterungContainer()
-							.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp())) {
-						return false;
-					}
-					if (gesuch.getGesuchsteller2() != null
-							&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-						return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
-								.getEinkommensverschlechterungContainer()
-								.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp());
-					}
+				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp())) {
+					return false;
+				}
+				if (gesuch.getGesuchsteller2() != null
+					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+						.getEinkommensverschlechterungContainer()
+						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp());
 				}
 			}
 		}
+		// EKV is not activated
 		return true;
 	}
 
