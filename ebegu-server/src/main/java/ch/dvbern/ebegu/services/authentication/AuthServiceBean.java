@@ -156,7 +156,6 @@ public class AuthServiceBean implements AuthService {
 			AuthorisierterBenutzer authorisierterBenutzer,
 			Mandant mandant) {
 		try {
-			// TODO: Mandantenfähigkeit: Haben wir Benutzer hier schon?
 			Benutzer benutzerFromDB = benutzerService.findBenutzer(authorisierterBenutzer.getUsername(),
 							mandant).orElseThrow(() -> {
 					LOG.error("Could not find Benutzer during login from IAM. Benutzer should have been created"

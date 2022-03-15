@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.Null;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.client.ClientRequestLogger;
@@ -58,16 +59,16 @@ public class LoginProviderInfoRestService {
 
 	private ILoginProviderInfoResource loginProviderInfoRESTService;
 
-	public String getSingleLogoutURL() {
-		return getLoginProviderInfoProxClient().getSingleLogoutURL();
+	public String getSingleLogoutURL(String tenant) {
+		return getLoginProviderInfoProxClient().getSingleLogoutURL(tenant);
 	}
 
-	public String getSSOLoginInitURL(@Nullable String relayPath) {
+	public String getSSOLoginInitURL(@Nullable String relayPath, @Nullable String tenant) {
 		if (!this.isConnectorEndpointSpecified()) {
 			LOG.debug("No external Login connector specified, redirecting to locallogin");
 			return AuthConstants.LOCALLOGIN_PATH;
 		}
-		return getLoginProviderInfoProxClient().getSSOLoginInitURL(relayPath);
+		return getLoginProviderInfoProxClient().getSSOLoginInitURL(relayPath, tenant);
 	}
 
 	public String pingLoginProvider() {

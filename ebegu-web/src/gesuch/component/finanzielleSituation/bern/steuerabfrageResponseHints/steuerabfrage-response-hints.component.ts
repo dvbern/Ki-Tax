@@ -92,6 +92,10 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
     }
 
+    public showWarningPartnerNichtGemeinsam(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM;
+    }
+
     public showZugriffKeineZpvNummerGS2(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
     }

@@ -46,11 +46,18 @@ public class KitaPlusZuschlagCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Betreuung betreuung = (Betreuung) platz;
-		boolean hasZuschlag = getHasKitaPlusZuschlagNullsafe(betreuung);
+		boolean hasZuschlag = getHasKitaPlusZuschlagNullsafe(betreuung) && isKitaPlusZuschlagBestaetigt(betreuung);
 		inputData.setKitaPlusZuschlag(hasZuschlag);
 		if (hasZuschlag) {
 			inputData.addBemerkung(MsgKey.KITAPLUS_ZUSCHLAG, getLocale());
 		}
+	}
+
+	private boolean isKitaPlusZuschlagBestaetigt(Betreuung betreuung) {
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
+			return false;
+		}
+		return betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isKitaPlusZuschlagBestaetigt();
 	}
 
 	private boolean getHasKitaPlusZuschlagNullsafe(Betreuung betreuung) {

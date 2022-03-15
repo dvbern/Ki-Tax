@@ -15,16 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IScope, ITimeoutService} from 'angular';
+import {IPromise, IScope, ITimeoutService} from 'angular';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {RemoveDialogController} from '../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../abstractGesuchView';
 
+const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
+
 export abstract class AbstractFinSitBernView extends AbstractGesuchViewController<TSFinanzModel> {
+
+    public steuerSchnittstelleAktiv: boolean;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -32,6 +43,9 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
+        protected readonly authServiceRS: AuthServiceRS,
+        private readonly einstellungRS: EinstellungRS,
+        protected readonly dvDialog: DvDialog
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -39,6 +53,13 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             $scope,
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
+
+        this.einstellungRS.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
+            this.gesuchModelManager.getGemeinde()?.id,
+            this.gesuchModelManager.getGesuchsperiode()?.id)
+            .then(setting => {
+                this.steuerSchnittstelleAktiv = (setting.value === 'true');
+            });
     }
 
     public getModel(): TSFinanzielleSituationContainer {
@@ -65,4 +86,33 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             }
         }
     }
+
+    public isGesuchsteller(): boolean {
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+    }
+
+    public showSteuerdatenAbholenButton(): boolean {
+        return this.steuerSchnittstelleAktiv
+            && this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
+    }
+
+    protected showResetDialog(): IPromise<void> {
+        return this.dvDialog.showRemoveDialog(removeDialogTemplate, null, RemoveDialogController, {
+            title: 'WOLLEN_SIE_FORTFAHREN',
+            deleteText: 'RESET_KIBON_ABFRAGE_WARNING',
+        });
+    }
+
+    public resetKiBonAnfrageFinSitIfRequired(): void {
+        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+            this.resetKiBonAnfrageFinSit();
+            return;
+        }
+        this.showResetDialog().then(() => {
+            this.resetKiBonAnfrageFinSit();
+        }, () => this.getModel().finanzielleSituationJA.steuerdatenZugriff = true);
+    }
+
+    protected abstract resetKiBonAnfrageFinSit(): void;
 }

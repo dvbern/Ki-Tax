@@ -593,31 +593,31 @@ export class GesuchModelManager {
     }
 
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
-        if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
-                this.gesuch.id,
-                this.getStammdatenToWorkWith(),
-                isGemeinsam)
-                .then((finSitContRespo: TSFinanzielleSituationContainer) => {
-                    this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
-                    return this.getStammdatenToWorkWith().finanzielleSituationContainer;
-                });
+        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
+            return undefined;
         }
-        return undefined;
+        return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
+            this.gesuch.id,
+            this.getStammdatenToWorkWith(),
+            isGemeinsam)
+            .then((finSitContRespo: TSFinanzielleSituationContainer) => {
+                this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
+                return this.getStammdatenToWorkWith().finanzielleSituationContainer;
+            });
     }
 
     public resetKiBonAnfrageFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
-        if (this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            return this.finanzielleSituationRS.resetKiBonAnfrageFinSit(
-                this.gesuch.id,
-                this.getStammdatenToWorkWith(),
-                isGemeinsam)
-                .then((finSitContRespo: TSFinanzielleSituationContainer) => {
-                    this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
-                    return this.getStammdatenToWorkWith().finanzielleSituationContainer;
-                });
+        if (!this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])) {
+            return undefined;
         }
-        return undefined;
+        return this.finanzielleSituationRS.resetKiBonAnfrageFinSit(
+            this.gesuch.id,
+            this.getStammdatenToWorkWith(),
+            isGemeinsam)
+            .then((finSitContRespo: TSFinanzielleSituationContainer) => {
+                this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
+                return this.getStammdatenToWorkWith().finanzielleSituationContainer;
+            });
     }
 
     public saveEinkommensverschlechterungContainer(): IPromise<TSEinkommensverschlechterungContainer> {

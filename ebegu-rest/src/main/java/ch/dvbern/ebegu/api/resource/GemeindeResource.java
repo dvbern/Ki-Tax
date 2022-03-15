@@ -168,16 +168,15 @@ public class GemeindeResource {
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
-
+		Mandant mandant = requireNonNull(persistedGemeinde.getMandant());
 		// Aufgrund der Flags entscheiden, in welcher Rolle der Admin eingeladen werden soll
 		UserRole roleOfAdmin = getUserRoleForGemeindeAdmin(persistedGemeinde);
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+		final Benutzer benutzer = benutzerService.findBenutzer(adminMail, mandant)
 			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, roleOfAdmin, persistedGemeinde));
 		//This line is weird I think its already done in the create methods
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
-		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde),
-				requireNonNull(persistedGemeinde.getMandant()));
+		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde), mandant);
 
 		// if Ferieninsel is active, we need to initialize the Ferien
 		if (persistedGemeinde.isAngebotFI()) {
