@@ -20,14 +20,14 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningKeinPartnerGemeinsam()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningGeburtsdatum()"
@@ -36,7 +36,7 @@
        translate
        [translateParams]="{namegs2: getGS2Name()}"
     >FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showZugriffUnterjaehrigeFall()"
@@ -50,7 +50,14 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{email: getEmailLoggedIn()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showWarningPartnerNichtGemeinsam()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM</p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showZugriffErfolgreich()"

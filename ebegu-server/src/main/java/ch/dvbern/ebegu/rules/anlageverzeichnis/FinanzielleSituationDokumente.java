@@ -91,11 +91,25 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 		LocalDate stichtag = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag, familiensituation);
+		getAllDokumenteGesuchsteller(
+			anlageVerzeichnis,
+			gesuchsteller1,
+			gemeinsam,
+			1,
+			basisJahr,
+			stichtag,
+			familiensituation);
 
 		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag, familiensituation);
+			getAllDokumenteGesuchsteller(
+				anlageVerzeichnis,
+				gesuchsteller2,
+				gemeinsam,
+				2,
+				basisJahr,
+				stichtag,
+				familiensituation);
 		}
 	}
 
@@ -118,6 +132,13 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			gesuchsteller.getFinanzielleSituationContainer();
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
+
+		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
+			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
+			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
+			.isSteuerdatenAbfrageErfolgreich()) {
+			return;
+		}
 
 		getAllDokumenteGesuchsteller(
 			anlageVerzeichnis,
@@ -158,16 +179,21 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	}
 
 	@Override
-	protected boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
+	protected boolean isErfolgsrechnungNeeded(
+		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation,
+		int minus) {
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
 			case 1:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
 			case 2:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
 			default:
 				return false;
 			}
