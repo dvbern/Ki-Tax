@@ -2855,6 +2855,8 @@
     "EVK_BRUTTOLOHN_JAHR": "Jährlicher Bruttolohn",
     "EINGEWOEHNUNG": "Findet eine Eingewöhnung bei der Institution statt, bevor Sie mit Ihrer Beschäftigung beginnen?",
     "EINGEWOEHNUNG_HELP": "Sie haben Bedarf nach einem Betreuungsgutschein, wenn: <ul><li>Sie erwerbstätig sind,</li><li>Sie nach Arbeit suchen und vermittlungsfähig sind,</li><li>Sie sich in einer Ausbildung der Sekundarstufe II oder einer berufsorientierten Aus- oder Weiterbildung befinden,</li><li>Sie an einem qualifizierenden Integrations- oder Beschäftigungsprogramm teilnehmen,</li><li>gesundheitliche Gründe verhindern, dass die Kinderbetreuung im eigenen Haushalt wahrgenommen wird Sie erwerbstätig sind und das minimale Beschäftigungspensum erreicht wird</li><li>oder wenn Ihr Kind eine soziale oder sprachliche Indikation aufweist</li></ul> </br> Wenn vor dem Start Ihrer Beschäftigung das Kind in die Kita oder Tagesfamilie eingewöhnt wird, wird der Bedarf in diesen Fällen <b>einen Monat früher</b> anerkannt. Das heisst Sie können für die Dauer der Eingewöhnung einen Betreuungsgutschein beantragen.",
+    "KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT": "Ohne Bestätigung für die Verrechnung des KitaPlus Zuschlags entfällt diese Pauschale",
+    "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG": "Wir bestätigen, dass wir den KitaPlus Zuschlag von Fr. 32.- pro Betreuungstag verrechnen",
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"

@@ -427,6 +427,7 @@
                                                     aria-described-by="kitaPlusZuschlag-error"
                                                     ng-required="true"
                                                     dv-enable-element
+                                                    dv-enable-expression="vm.isBetreuungsstatusAusstehend() || vm.isBetreuungsstatusWarten()"
                                                     dv-enable-allowed-roles="vm.allowedRoles">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="kitaPlusZuschlag"
@@ -438,6 +439,23 @@
                             </div>
                         </div>
                     </div>
+                    <!--Bestätigung Ausserordentlicher Betreuungsaufwand-->
+                    <div dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                         dv-show-expression="vm.isKitaPlus()">
+                        <!--ausserodentlicher Betreuungsaufwand bestätigen -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question form-group">
+                                <div class="checkbox">
+                                    <md-checkbox ng-model="vm.getErweiterteBetreuungJA().kitaPlusZuschlagBestaetigt"
+                                                 name="kitaPlusZuschlagBestaetigt"
+                                                 aria-label="{{'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG' | translate}}"
+                                                 ng-disabled="!vm.isBestaetigungBesondereBeduerfnisseEnabled() || !vm.isBetreuungsstatusWarten()">
+                                        <span>{{'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG' | translate}}</span>
+                                    </md-checkbox>
+                                </div>
+                            </div>
+                        </div>
 
                     <div class="row" ng-if="vm.showAbrechungDerGutscheineFrage">
                         <div class="col-xs-12 dv-input-container-question">
