@@ -79,10 +79,14 @@
                                        ng-model="vm.betreuung.belegungTagesschule.eintrittsdatum"
                                        ng-required="true"
                                        class="input-element "
-                                       dv-min-date="vm.minEintrittsdatum">
+                                       dv-gesuchsperiode-min-date="vm.getMinDateInCurrentPeriode()"
+                                       dv-gesuchsperiode-max-date="vm.getMaxDateInCurrentPeriode()">
                         </dv-datepicker>
-                        <dv-error-messages input-id="eintrittsdatum_ID"
-                                           for="vm.form.eintrittsdatum.$error"></dv-error-messages>
+                        <dv-error-messages class="date"
+                                           input-id="eintrittsdatum_ID"
+                                           for="vm.form.eintrittsdatum.$error"
+                                           start="vm.getStartYearCurrentPeriode()"
+                                           end="vm.getEndYearCurrentPeriode()"></dv-error-messages>
                     </div>
                 </div>
 

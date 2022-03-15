@@ -585,4 +585,20 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             // neue Anmeldungen haben Status AUSSTEHEND
         || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
     }
+
+    public getMinDateInCurrentPeriode(): moment.Moment {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
+    }
+
+    public getMaxDateInCurrentPeriode(): moment.Moment {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+    }
+
+    public getStartYearCurrentPeriode(): number {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb.year();
+    }
+
+    public getEndYearCurrentPeriode(): number {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis.year();
+    }
 }

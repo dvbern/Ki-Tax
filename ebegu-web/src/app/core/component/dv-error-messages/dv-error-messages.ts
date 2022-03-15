@@ -23,6 +23,8 @@ export class DvErrorMessagesComponentConfig implements IComponentOptions {
         minValue: '<',
         maxValue: '<',
         step: '<',
+        start: '<',
+        end: '<',
     };
     public template = require('./dv-error-messages.html');
     public controller = DvErrorMessages;

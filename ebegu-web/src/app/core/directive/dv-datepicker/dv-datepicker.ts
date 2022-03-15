@@ -37,6 +37,8 @@ export class DVDatepicker implements IDirective {
         dvOnBlur: '&?',
         dvMinDate: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDate: '<?',  // Kann als String im Format allowedFormats oder als Moment angegeben werden
+        dvGesuchsperiodeMinDate: '<?',
+        dvGesuchsperiodeMaxDate: '<?',
     };
     public template = require('./dv-datepicker.html');
 
@@ -62,6 +64,8 @@ export class DatepickerController implements IController {
     public noFuture: boolean;
     public dvMinDate: any;
     public dvMaxDate: any;
+    public dvGesuchsperiodeMinDate: any;
+    public dvGesuchsperiodeMaxDate: any;
 
     public constructor(
         private readonly $log: ILogService,
@@ -101,6 +105,9 @@ export class DatepickerController implements IController {
         // Wenn kein Minimumdatum gesetzt ist, verwenden wir 01.01.1900 als Minimum
         if (this.dvMinDate === undefined) {
             this.dvMinDate = DateUtil.localDateToMoment('1900-01-01');
+        }
+        if (this.dvGesuchsperiodeMinDate === undefined) {
+            this.dvGesuchsperiodeMinDate = DateUtil.localDateToMoment('1900-01-01');
         }
         if (this.noFuture === undefined) {
             this.noFuture = false;
@@ -147,6 +154,21 @@ export class DatepickerController implements IController {
             }
             return result;
         };
+        this.ngModelCtrl.$validators.dvGesuchsperiodeMinDate = (modelValue, viewValue) => {
+            let result = true;
+            if (this.dvGesuchsperiodeMinDate && viewValue) {
+                const minDateAsMoment = moment(this.dvGesuchsperiodeMinDate, DatepickerController.allowedFormats, true);
+                if (minDateAsMoment.isValid()) {
+                    const inputAsMoment = this.getInputAsMoment(modelValue, viewValue);
+                    if (inputAsMoment && inputAsMoment.isBefore(minDateAsMoment)) {
+                        result = false;
+                    }
+                } else {
+                    this.$log.debug('min date is invalid', this.dvGesuchsperiodeMinDate);
+                }
+            }
+            return result;
+        };
         if (this.noFuture) {
             this.ngModelCtrl.$validators.dvNoFutureDate = (modelValue, viewValue) => {
                 let result = true;
@@ -165,6 +187,21 @@ export class DatepickerController implements IController {
             let result = true;
             if (this.dvMaxDate && viewValue) {
                 const maxDateAsMoment = moment(this.dvMaxDate, DatepickerController.allowedFormats, true);
+                if (maxDateAsMoment.isValid()) {
+                    const inputAsMoment = this.getInputAsMoment(modelValue, viewValue);
+                    if (inputAsMoment && inputAsMoment.isAfter(maxDateAsMoment)) {
+                        result = false;
+                    }
+                } else {
+                    this.$log.debug('max date is invalid', this.dvMaxDate);
+                }
+            }
+            return result;
+        };
+        this.ngModelCtrl.$validators.dvGesuchsperiodeMaxDate = (modelValue, viewValue) => {
+            let result = true;
+            if (this.dvGesuchsperiodeMaxDate && viewValue) {
+                const maxDateAsMoment = moment(this.dvGesuchsperiodeMaxDate, DatepickerController.allowedFormats, true);
                 if (maxDateAsMoment.isValid()) {
                     const inputAsMoment = this.getInputAsMoment(modelValue, viewValue);
                     if (inputAsMoment && inputAsMoment.isAfter(maxDateAsMoment)) {
