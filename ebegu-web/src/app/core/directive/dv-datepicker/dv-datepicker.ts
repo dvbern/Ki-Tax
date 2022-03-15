@@ -154,21 +154,6 @@ export class DatepickerController implements IController {
             }
             return result;
         };
-        this.ngModelCtrl.$validators.dvGesuchsperiodeMinDate = (modelValue, viewValue) => {
-            let result = true;
-            if (this.dvGesuchsperiodeMinDate && viewValue) {
-                const minDateAsMoment = moment(this.dvGesuchsperiodeMinDate, DatepickerController.allowedFormats, true);
-                if (minDateAsMoment.isValid()) {
-                    const inputAsMoment = this.getInputAsMoment(modelValue, viewValue);
-                    if (inputAsMoment && inputAsMoment.isBefore(minDateAsMoment)) {
-                        result = false;
-                    }
-                } else {
-                    this.$log.debug('min date is invalid', this.dvGesuchsperiodeMinDate);
-                }
-            }
-            return result;
-        };
         if (this.noFuture) {
             this.ngModelCtrl.$validators.dvNoFutureDate = (modelValue, viewValue) => {
                 let result = true;
@@ -198,17 +183,20 @@ export class DatepickerController implements IController {
             }
             return result;
         };
-        this.ngModelCtrl.$validators.dvGesuchsperiodeMaxDate = (modelValue, viewValue) => {
+        // Validator fuer Daterange mit Min und Max Datum
+        this.ngModelCtrl.$validators.dvGesuchsperiodeIsInDateRange = (modelValue, viewValue) => {
             let result = true;
-            if (this.dvGesuchsperiodeMaxDate && viewValue) {
+            if (this.dvGesuchsperiodeMaxDate && this.dvGesuchsperiodeMinDate && viewValue) {
                 const maxDateAsMoment = moment(this.dvGesuchsperiodeMaxDate, DatepickerController.allowedFormats, true);
-                if (maxDateAsMoment.isValid()) {
+                const minDateAsMoment = moment(this.dvGesuchsperiodeMinDate, DatepickerController.allowedFormats, true);
+                if (maxDateAsMoment.isValid() && minDateAsMoment.isValid()) {
                     const inputAsMoment = this.getInputAsMoment(modelValue, viewValue);
-                    if (inputAsMoment && inputAsMoment.isAfter(maxDateAsMoment)) {
+                    if (inputAsMoment &&
+                        (inputAsMoment.isAfter(maxDateAsMoment) || inputAsMoment.isBefore(minDateAsMoment))) {
                         result = false;
                     }
                 } else {
-                    this.$log.debug('max date is invalid', this.dvMaxDate);
+                    this.$log.debug('max date and min date are invalid', this.dvMaxDate);
                 }
             }
             return result;
