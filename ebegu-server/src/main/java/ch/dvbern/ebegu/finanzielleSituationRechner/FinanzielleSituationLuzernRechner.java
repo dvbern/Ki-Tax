@@ -151,14 +151,22 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			finSitResultDTO.getEinkommenBeiderGesuchsteller(), finSitResultDTO.getNettovermoegenXProzent())
 		);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
-			MathUtil.positiveNonNullAndRound(
-				subtract(
+			MathUtil.positiveNonNullAndRound(subtract(
 					finSitResultDTO.getAnrechenbaresEinkommen(),
 					finSitResultDTO.getAbzuegeBeiderGesuchsteller())));
 	}
 
+	private BigDecimal getAdditionEinkommenLiegenschaftenGS(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
+		if (finanzielleSituation == null || finanzielleSituation.getAbzuegeLiegenschaft() == null) {
+			return BigDecimal.ZERO;
+		}
+		return MathUtil.isPositive(finanzielleSituation.getAbzuegeLiegenschaft()) ?
+				BigDecimal.ZERO :
+				finanzielleSituation.getAbzuegeLiegenschaft().abs();
+	}
+
 	/**
-	 * Als Abzuege habe ich die AbzuegeLiegenschaft und EinkaeufeVorsorge genommen
+	 * Als Abzuege habe ich EinkaeufeVorsorge genommen
 	 * Die Geschäftverlust habe ich bei der Einkommen genommen
 	 */
 	@Override
@@ -190,8 +198,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 
 	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		BigDecimal total = BigDecimal.ZERO;
-		// abzuege liegenschaften should be ignored if negative
-		total = add(total, MathUtil.positiveNonNull(finanzielleSituation.getAbzuegeLiegenschaft()));
 		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
 		return total;
 	}
@@ -243,7 +249,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 				total = total.add(abstractFinanzielleSituation.getSelbstdeklaration() != null ? abstractFinanzielleSituation.getSelbstdeklaration().calculateEinkuenfte() : BigDecimal.ZERO);
 			} else {
 				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
-				total = subtract(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+				total = add(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+				total = add(total, getAdditionEinkommenLiegenschaftenGS(abstractFinanzielleSituation));
 			}
 		}
 		return total;

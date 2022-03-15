@@ -82,4 +82,8 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
                 throw(error);
             });
     }
+
+    public isNotSozialhilfeBezueger(): boolean {
+        return true;
+    }
 }

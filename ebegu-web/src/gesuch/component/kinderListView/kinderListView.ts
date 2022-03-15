@@ -15,10 +15,13 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSKindDublette} from '../../../models/TSKindDublette';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -54,9 +57,11 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         'WizardStepManager',
         '$scope',
         '$timeout',
+        'EinstellungRS'
     ];
 
     public kinderDubletten: TSKindDublette[] = [];
+    private allFamilienPauschalAbzuegeZero: boolean = true;
 
     public constructor(
         private readonly $state: StateService,
@@ -67,9 +72,11 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         this.initViewModel();
+        this.initEinstellungen();
     }
 
     private initViewModel(): void {
@@ -85,6 +92,30 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
                 TSWizardStepName.KINDER,
                 TSWizardStepStatus.IN_BEARBEITUNG);
         }
+    }
+
+    private initEinstellungen(): void {
+        const gemeinde = this.gesuchModelManager.getGemeinde();
+        const gs = this.gesuchModelManager.getGesuchsperiode();
+        Promise.all([
+            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+                gemeinde.id,
+                gs.id),
+            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+                gemeinde.id,
+                gs.id),
+            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+                gemeinde.id,
+                gs.id),
+            this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+                gemeinde.id,
+                gs.id),
+        ]).then(einstellungen => {
+            this.allFamilienPauschalAbzuegeZero = einstellungen.reduce((
+                isZero: boolean,
+                einstellung: TSEinstellung,
+            ) => isZero && parseInt(einstellung.value, 10) === 0, true);
+        });
     }
 
     public getKinderList(): Array<TSKindContainer> {
@@ -166,5 +197,4 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     public setFocusBack(elementID: string): void {
         angular.element('#' + elementID).first().focus();
     }
-
 }
