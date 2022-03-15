@@ -17,5 +17,3 @@
 
 ALTER TABLE gesuchsteller ADD COLUMN IF NOT EXISTS `zpv_nummer` VARCHAR(34) NULL;
 ALTER TABLE gesuchsteller_aud ADD COLUMN IF NOT EXISTS `zpv_nummer` VARCHAR(34) NULL;
-
-ALTER TABLE gesuchsteller ADD CONSTRAINT UK_gesuchsteller_zpvnummer UNIQUE (`zpv_nummer`);

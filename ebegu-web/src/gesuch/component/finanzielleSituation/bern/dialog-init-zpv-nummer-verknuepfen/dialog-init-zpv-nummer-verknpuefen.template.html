@@ -17,7 +17,7 @@
 
 <mat-dialog-content class="dv-dialog-content">
     <h1>{{ 'INIT_GS2_ZPVNR' | translate }}</h1>
-    <p translate>INIT_GS2_ZPVNR_ERKLAERUNG</p>
+    <p [innerHTML]="'INIT_GS2_ZPVNR_ERKLAERUNG' | translate"></p>
 
     <form #mailForm="ngForm">
         <fieldset>
