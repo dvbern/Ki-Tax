@@ -1,8 +1,8 @@
 <div class="row">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
-			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1)} }}</span>
-			<dv-input-container-x [verticalAlign]="true">
+			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
+            <dv-input-container-x [verticalAlign]="true">
 				<dv-radio-container-x>
 					<mat-radio-group
 							aria-labelledby="steuerveranlagungErhalten_id"

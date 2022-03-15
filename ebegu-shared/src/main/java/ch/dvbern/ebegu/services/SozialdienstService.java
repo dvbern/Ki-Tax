@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
@@ -48,9 +49,10 @@ public interface SozialdienstService {
 
 	/**
 	 * Gibt alle Sozialdienst zurück
+	 * @param mandant
 	 */
 	@Nonnull
-	Collection<Sozialdienst> getAllSozialdienste();
+	Collection<Sozialdienst> getAllSozialdienste(Mandant mandant);
 
 	/**
 	 * Gibt die Stammdaten zurück

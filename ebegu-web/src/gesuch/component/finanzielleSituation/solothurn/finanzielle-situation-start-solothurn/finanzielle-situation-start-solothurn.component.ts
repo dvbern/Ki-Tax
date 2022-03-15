@@ -38,7 +38,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public getAntragstellerNummer(): number {
-        return 0;
+        return 1;
     }
 
     public getSubStepIndex(): number {

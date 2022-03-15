@@ -25,10 +25,12 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -49,6 +51,9 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -101,6 +106,14 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	@Override
 	public boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
+		// if anspruch ist unabhaengig von die Beschaeftigungspensum darf man keine Erwerbspensum erfassen
+		Einstellung anspruchUnabhaengigEinstellung =
+			einstellungService.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+				gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		if (Boolean.TRUE.equals(anspruchUnabhaengigEinstellung.getValueAsBoolean())) {
+			return false;
+		}
+
 		return gesuch.extractAllBetreuungen().stream()
 			.anyMatch(this::isErwerbspensumRequired);
 	}

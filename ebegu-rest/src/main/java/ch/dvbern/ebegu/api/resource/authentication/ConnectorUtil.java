@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.api.resource.authentication;
 
-/**
- * Enum fuer Fachstelle
- *
- * Die Fachstellendetails müssen in der DB eingefügt werden.
- */
-public enum FachstelleName {
-	MUTTER_VATER_BERATUNG_BERN,
-	SOZIALDIENST,
-	KINDES_ERWACHSENEN_SCHUTZBEHOERDE,
-	ERZIEHUNGSBERATUNG,
-	FRUEHERZIEHUNGSDIENST_KANTON_BERN,
-	FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN,
-	DIENST_ZENTRUM_HOEREN_SPRACHE,
-	KANTONALE_ERZIEHUNGSBERATUNSSTELLE,
-	GEMEINDE_FACHSTELLE,
-	BESONDERE_BEDUERFNISSE_KRANKHEIT,
+import java.util.Locale;
 
-	//SO
-	HEILPAEDOGOGISCHER_DIENST,
-	ZUSTAENDIGE_SOZIALREGION
+import ch.dvbern.ebegu.entities.Mandant;
+
+public final class ConnectorUtil {
+
+	private ConnectorUtil() {
+	}
+
+	public static String toConnectorTenant(final Mandant mandant) {
+		return mandant.getMandantIdentifier().name().toLowerCase(Locale.ROOT);
+	}
 }

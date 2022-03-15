@@ -47,6 +47,8 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private Boolean kitaPlusZuschlag;
 
+	private Boolean kitaPlusZuschlagBestaetigt;
+
 	@Nullable
 	private BigDecimal erweitereteBeduerfnisseBetrag;
 
@@ -109,5 +111,13 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setErweitereteBeduerfnisseBetrag(@Nullable BigDecimal erweitereteBeduerfnisseBetrag) {
 		this.erweitereteBeduerfnisseBetrag = erweitereteBeduerfnisseBetrag;
+	}
+
+	public Boolean getKitaPlusZuschlagBestaetigt() {
+		return kitaPlusZuschlagBestaetigt;
+	}
+
+	public void setKitaPlusZuschlagBestaetigt(Boolean kitaPlusZuschlagBestaetigt) {
+		this.kitaPlusZuschlagBestaetigt = kitaPlusZuschlagBestaetigt;
 	}
 }

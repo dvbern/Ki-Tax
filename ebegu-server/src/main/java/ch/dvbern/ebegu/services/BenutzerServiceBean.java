@@ -502,13 +502,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
-	public Optional<Benutzer> findBenutzerByEmail(@Nonnull String email) {
-		Objects.requireNonNull(email, "email muss gesetzt sein");
-		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, email, Benutzer_.email);
-	}
-
-	@Nonnull
-	@Override
 	public Optional<Benutzer> findBenutzerByExternalUUID(@Nonnull String externalUUID) {
 		requireNonNull(externalUUID, "externalUUID muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, externalUUID, Benutzer_.externalUUID);
@@ -859,8 +852,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	public Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer) {
-		return findBenutzerByEmail(benutzer.getEmail())
+	public Optional<Benutzer> findUserWithInvitation(
+			@Nonnull Benutzer benutzer,
+			Mandant mandant) {
+		return findBenutzer(benutzer.getEmail(), mandant)
 			.filter(benutzerByEmail ->
 				benutzerByEmail.getStatus() == BenutzerStatus.EINGELADEN
 					&& benutzerByEmail.getExternalUUID() == null

@@ -46,6 +46,9 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean kitaPlusZuschlag;
 
+	@Column(nullable = false)
+	private boolean kitaPlusZuschlagBestaetigt = false;
+
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal erweitereteBeduerfnisseBetrag;
@@ -174,5 +177,13 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			break;
 		}
 		return target;
+	}
+
+	public boolean isKitaPlusZuschlagBestaetigt() {
+		return kitaPlusZuschlagBestaetigt;
+	}
+
+	public void setKitaPlusZuschlagBestaetigt(boolean kitaPlusZuschlagBestaetigt) {
+		this.kitaPlusZuschlagBestaetigt = kitaPlusZuschlagBestaetigt;
 	}
 }

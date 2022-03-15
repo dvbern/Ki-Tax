@@ -427,6 +427,7 @@
                                                     aria-described-by="kitaPlusZuschlag-error"
                                                     ng-required="true"
                                                     dv-enable-element
+                                                    dv-enable-expression="vm.isBetreuungsstatusAusstehend() || vm.isBetreuungsstatusWarten()"
                                                     dv-enable-allowed-roles="vm.allowedRoles">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="kitaPlusZuschlag"
@@ -438,6 +439,23 @@
                             </div>
                         </div>
                     </div>
+                    <!--Bestätigung Ausserordentlicher Betreuungsaufwand-->
+                    <div dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()"
+                         dv-show-expression="vm.isKitaPlus()">
+                        <!--ausserodentlicher Betreuungsaufwand bestätigen -->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question form-group">
+                                <div class="checkbox">
+                                    <md-checkbox ng-model="vm.getErweiterteBetreuungJA().kitaPlusZuschlagBestaetigt"
+                                                 name="kitaPlusZuschlagBestaetigt"
+                                                 aria-label="{{'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG' | translate}}"
+                                                 ng-disabled="!vm.isBestaetigungBesondereBeduerfnisseEnabled() || !vm.isBetreuungsstatusWarten()">
+                                        <span>{{'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG' | translate}}</span>
+                                    </md-checkbox>
+                                </div>
+                            </div>
+                        </div>
 
                     <div class="row" ng-if="vm.showAbrechungDerGutscheineFrage">
                         <div class="col-xs-12 dv-input-container-question">
@@ -767,7 +785,7 @@
                                     </div>
                                 </div>
                                 <!-- Bestätigung Korrekte Kostenangabe -->
-                                <div class="row"
+                                <div class="row margin-bottom-10"
                                      dv-show-element
                                      dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                      dv-show-expression="vm.isBetreuungsstatusWarten()">
@@ -793,10 +811,10 @@
                                     </div>
                                     <div class="col-xs-12">
                                         <ul>
-                                            <li ng-if="!vm.gesuchModelManager.isFKJVTexte">{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
+                                            <li ng-if="!vm.gesuchModelManager.isFKJVTexte && ('KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate).length > 0">{{'KORREKTE_KOSTEN_BESTAETIGUNG_2' | translate}}</li>
                                             <li ng-if="vm.gesuchModelManager.isFKJVTexte">{{'KORREKTE_KOSTEN_BESTAETIGUNG_2_FKJV' | translate}}</li>
-                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
-                                            <li>{{'KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate}}</li>
+                                            <li ng-if="('KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate).length > 0">{{'KORREKTE_KOSTEN_BESTAETIGUNG_3' | translate}}</li>
+                                            <li ng-if="('KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate).length > 0">{{'KORREKTE_KOSTEN_BESTAETIGUNG_4' | translate}}</li>
                                         </ul>
                                     </div>
                                 </div>

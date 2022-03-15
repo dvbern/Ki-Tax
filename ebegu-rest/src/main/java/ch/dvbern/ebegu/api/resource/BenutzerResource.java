@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -150,7 +151,8 @@ public class BenutzerResource {
 	@Path("/erneutEinladen")
 	@RolesAllowed(SUPER_ADMIN)
 	public Response erneutEinladen(@NotNull @Valid JaxBenutzer benutzerParam) {
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(benutzerParam.getEmail()).orElseThrow(() -> new EbeguEntityNotFoundException("erneutEinladen",
+		Mandant mandant = requireNonNull(principalBean.getMandant());
+		Benutzer benutzer = benutzerService.findBenutzer(benutzerParam.getEmail(), mandant).orElseThrow(() -> new EbeguEntityNotFoundException("erneutEinladen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzerParam.getEmail()));
 		benutzerService.erneutEinladen(benutzer);
 		return Response.ok().build();

@@ -18,7 +18,8 @@
                        [model]="getModel()"
                        [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
         <dv-massgebendes-einkommen
-            [hasZweiGesuchsteller]="true"
+            [isGemeinsam]="isGemeinsam()"
+            [antragstellerNummer]="getAntragstellerNummer()"
             [nameGS1]="extractFullNameGS1()"
             [nameGS2]="extractFullNameGS2()"></dv-massgebendes-einkommen>
 

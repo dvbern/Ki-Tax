@@ -86,7 +86,9 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
 
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(adminEmail).map(b -> {
+		final Mandant mandant = requireNonNull(persistedTraegerschaft.getMandant());
+
+		Benutzer benutzer = benutzerService.findBenutzer(adminEmail, mandant).map(b -> {
 			if(b.getRole() != UserRole.GESUCHSTELLER) {
 				throw new EbeguRuntimeException(
 					KibonLogLevel.INFO,
@@ -98,7 +100,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 		}).orElseGet(() -> benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft));
 
 		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft),
-				requireNonNull(persistedTraegerschaft.getMandant()));
+				mandant);
 
 		return traegerschaft;
 	}

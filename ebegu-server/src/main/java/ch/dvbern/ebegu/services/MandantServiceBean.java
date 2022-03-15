@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -67,6 +68,16 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 				Mandant.class,
 				name,
 				Mandant_.name
+		);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Mandant> findMandantByIdentifier(@Nonnull MandantIdentifier mandantIdentifier) {
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+			Mandant.class,
+			mandantIdentifier,
+			Mandant_.mandantIdentifier
 		);
 	}
 

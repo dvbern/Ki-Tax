@@ -132,23 +132,38 @@ export class FinanzielleSituationRS {
     }
 
     public updateFinSitMitSteuerdaten(
-            gesuchId: string,
-            gesuchsteller: TSGesuchstellerContainer,
-            isGemeinsam: boolean
+        gesuchId: string,
+        gesuchsteller: TSGesuchstellerContainer,
+        isGemeinsam: boolean,
     ): IPromise<TSFinanzielleSituationContainer> {
-            const url = `${this.serviceURL}/kibonanfrage/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
-                gesuchsteller.id)}/${isGemeinsam}`;
-            const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
-                gesuchsteller.finanzielleSituationContainer);
-            return this.$http.put(url, finSitContainerToSend).then(response => {
-                    return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                        response.data);
-            });
-        }
+        const url = `${this.serviceURL}/kibonanfrage/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
+            gesuchsteller.id)}/${isGemeinsam}`;
+        const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
+            gesuchsteller.finanzielleSituationContainer);
+        return this.$http.put(url, finSitContainerToSend).then(response => {
+            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                response.data);
+        });
+    }
 
     public updateFromAufteilung(aufteilungDTO: TSFinanzielleSituationAufteilungDTO, gesuch: TSGesuch): IPromise<any> {
         const url = `${this.serviceURL}/updateFromAufteilung/${encodeURIComponent(gesuch.id)}`;
         const restObj = this.ebeguRestUtil.aufteilungDTOToRestObject(aufteilungDTO);
         return this.$http.put(url, restObj);
+    }
+
+    public resetKiBonAnfrageFinSit(
+        gesuchId: string,
+        gesuchsteller: TSGesuchstellerContainer,
+        isGemeinsam: boolean,
+    ): IPromise<TSFinanzielleSituationContainer> {
+        const url = `${this.serviceURL}/kibonanfrage/reset/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
+            gesuchsteller.id)}/${isGemeinsam}`;
+        const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
+            gesuchsteller.finanzielleSituationContainer);
+        return this.$http.put(url, finSitContainerToSend).then(response => {
+            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                response.data);
+        });
     }
 }
