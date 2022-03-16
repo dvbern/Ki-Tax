@@ -49,6 +49,7 @@ export class DvInputLabelFieldComponent {
     @Input() public deklaration: any;
     @Input() public korrektur: any;
     @Input() public showBisher: boolean = false;
+    @Input() public allowNegative: boolean = false;
 
     @Output() public readonly modelChange: EventEmitter<any> = new EventEmitter();
 

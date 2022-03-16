@@ -944,7 +944,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * Updates the Status of the Steps FINANZIELLE_SITUATION_X or EINKOMMENSVERSCHLECHTERUNG depending on the kind of the
 	 * betreuungen.
-	 * This should be called after removing or adding a Betreuung.
+	 * This should be called after removing or adding a Betreuung. It is also called after a change in the famsit
 	 */
 	private void checkFinSitStatusForBetreuungen(@Nonnull WizardStep wizardStep) {
 		boolean isEkvOrFinSitStep = (wizardStep.getWizardStepName().isEKVWizardStepName()
@@ -958,6 +958,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
 			wizardStep.getGesuch(),	wizardStep.getWizardStepName());
 		if (finSitIntroducedAndComplete) {
+			wizardStep.setWizardStepStatus(WizardStepStatus.OK);
 			return;
 		}
 		boolean finSitRequired = EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch());

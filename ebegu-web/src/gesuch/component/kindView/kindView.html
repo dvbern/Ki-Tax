@@ -223,7 +223,7 @@
                     </div>
 
                     <!--sprichtAmtssprache-->
-                    <div class="row">
+                    <div class="row" ng-if="!vm.isSpracheAmtspracheDisabled">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebegu-h1 required">

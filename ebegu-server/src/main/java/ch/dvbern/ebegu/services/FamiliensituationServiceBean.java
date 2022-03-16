@@ -30,7 +30,9 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -106,6 +108,16 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
 			gesuch.setGesuchsteller2(null);
 			newFamiliensituation.setGemeinsameSteuererklaerung(false);
+		}
+
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+				oldFamiliensituation != null &&
+				(oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT
+						|| oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND) &&
+				mergedFamiliensituationContainer.getFamiliensituationJA() != null &&
+				mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+						== EnumFamilienstatus.VERHEIRATET) {
+			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
 		}
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName

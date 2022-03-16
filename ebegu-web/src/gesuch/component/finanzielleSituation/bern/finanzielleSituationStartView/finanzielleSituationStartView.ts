@@ -19,7 +19,7 @@ import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
+import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
@@ -72,7 +72,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
-    private steuerSchnittstelleAktiv: boolean;
+    private triedSavingWithoutForm: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -82,17 +82,20 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly $q: IQService,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private readonly dvDialog: DvDialog,
-        private readonly authServiceRS: AuthServiceRS,
+        dvDialog: DvDialog,
+        protected readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
-        private readonly settings: EinstellungRS,
+        einstellungRS: EinstellungRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
             wizardStepManager,
             $scope,
-            $timeout);
+            $timeout,
+            authServiceRS,
+            einstellungRS,
+            dvDialog);
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
@@ -112,17 +115,31 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
-
-        this.settings.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
-            this.gesuchModelManager.getGemeinde()?.id,
-            this.gesuchModelManager.getGesuchsperiode()?.id)
-            .then(setting => {
-                this.steuerSchnittstelleAktiv = (setting.value === 'true');
-            });
     }
 
     public showSteuerveranlagung(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+            return false;
+        }
+        // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
+        if (!this.model.gemeinsameSteuererklaerung) {
+            return false;
+        }
+        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
+        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+            return false;
+        }
+        // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
+        if (!this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
+            return true;
+        }
+        // falls Abfrage noch nicht erfolgt ist, zeigen wir die Frage nicht
+        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)) {
+            return false;
+        }
+        // falls Steuerabfrage nicht erfolgreich, zeigen wir die Frage ebenfalls
+        return !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
     public showSteuererklaerung(): boolean {
@@ -284,6 +301,12 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         if (!this.isGesuchValid()) {
             return undefined;
         }
+        // speichern darf nicht möglich sein, wenn Steuerabfrage Button sichtbar
+        if (this.showSteuerdatenAbholenButton() && this.isFinanziellesituationRequired()) {
+            this.triedSavingWithoutForm = true;
+            return undefined;
+        }
+        this.triedSavingWithoutForm = false;
 
         if (this.areZahlungsdatenEditable() && this.isGesuchReadonly()) {
             if (!this.form.$dirty) {
@@ -323,21 +346,32 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
-            this.callKiBonAnfrageAndUpdateFinSit();
+            return;
         }
+        this.resetKiBonAnfrageFinSitIfRequired();
     }
 
-    private callKiBonAnfrageAndUpdateFinSit(): void {
+    public callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                this.form.$setDirty();
-            },
-        );
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
+    }
+
+    protected resetKiBonAnfrageFinSit(): void {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+            .then(() => {
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                },
+            );
     }
 }

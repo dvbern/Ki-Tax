@@ -87,7 +87,7 @@ export class ApplicationPropertyRS {
         });
     }
 
-    public isPersonensucheDisabled(): IPromise<boolean> {
+    public isPersonensucheDisabledForSystem(): IPromise<boolean> {
         return this.getPublicPropertiesCached().then(response => {
             return response.personenSucheDisabled;
         });
@@ -128,6 +128,18 @@ export class ApplicationPropertyRS {
     public getNotverordnungDefaultEinreichefristOeffentlich(): IPromise<string> {
         return this.getPublicPropertiesCached().then(response => {
             return response.notverordnungDefaultEinreichefristPrivat;
+        });
+    }
+
+    public getFrenchEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.frenchEnabled;
+        });
+    }
+
+    public getGeresEnabledForMandant(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.geresEnabledForMandant;
         });
     }
 }

@@ -51,7 +51,9 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -249,47 +251,72 @@ public final class EbeguUtil {
 		@Nonnull Gesuch gesuch,
 		@Nullable WizardStepName wizardStepName) {
 		if (gesuch.getGesuchsteller1() == null
-			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
-			|| gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null) {
 			return false;
 		}
 
 		if (wizardStepName == null || wizardStepName.isFinSitWizardStepName()) {
 			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
 				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA())) {
+				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())) {
 				return false;
+			}
+			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+							== EnumFamilienstatus.VERHEIRATET) {
+				// finsit is gemeinsam for verheiratet in Luzern
+				return true;
 			}
 			if (gesuch.getGesuchsteller2() != null &&
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
 				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA())))
+				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())))
 			) {
 				return false;
 			}
 		}
-		if ((wizardStepName == null || wizardStepName.isEKVWizardStepName())
-			&& gesuch.getEinkommensverschlechterungInfoContainer()
+
+		if ((wizardStepName == null || wizardStepName.isEKVWizardStepName())) {
+			return isEKVIndroducedAndComplete(gesuch);
+		}
+		return true;
+	}
+
+	private static boolean isEKVIndroducedAndComplete(@Nonnull Gesuch gesuch) {
+		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
+			return false;
+		}
+		if (gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
 			.getEinkommensverschlechterung()) {
 			if (gesuch.getEinkommensverschlechterungInfoContainer()
 				.getEinkommensverschlechterungInfoJA()
 				.getEkvFuerBasisJahrPlus1()) {
+
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
 				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1())) {
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
 					return false;
+				}
+				if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+						== EnumFamilienstatus.VERHEIRATET) {
+					// finsit is gemeinsam for verheiratet in Luzern
+					return true;
 				}
 				if (gesuch.getGesuchsteller2() != null
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
 					&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1())
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())
 				) {
 					return false;
 				}
@@ -297,27 +324,34 @@ public final class EbeguUtil {
 			if (gesuch.getEinkommensverschlechterungInfoContainer()
 				.getEinkommensverschlechterungInfoJA()
 				.getEkvFuerBasisJahrPlus2()) {
+
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
 				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus2())) {
+					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp())) {
 					return false;
 				}
 				if (gesuch.getGesuchsteller2() != null
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
 					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
 						.getEinkommensverschlechterungContainer()
-						.getEkvJABasisJahrPlus2());
+						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp());
 				}
 			}
 		}
+		// EKV is not activated
 		return true;
 	}
 
-	private static boolean isFinanzielleSituationVollstaendig(@Nonnull FinanzielleSituation finanzielleSituation) {
-		final boolean valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation);
+	private static boolean isFinanzielleSituationVollstaendig(
+			@Nonnull FinanzielleSituation finanzielleSituation,
+			FinanzielleSituationTyp finSitTyp) {
+		final boolean valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp);
 		if (!valid) {
 			return false;
 		}
@@ -333,12 +367,9 @@ public final class EbeguUtil {
 	}
 
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
-		@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
-		return (finanzielleSituation.getSchulden() != null && finanzielleSituation.getBruttovermoegen() != null
-			&& finanzielleSituation.getNettolohn() != null && finanzielleSituation.getFamilienzulage() != null
-			&& finanzielleSituation.getErsatzeinkommen() != null && finanzielleSituation.getErhalteneAlimente() != null
-			&& finanzielleSituation.getGeleisteteAlimente() != null) || (finanzielleSituation.getSelbstdeklaration() != null &&
-			finanzielleSituation.getSelbstdeklaration().isVollstaendig());
+			@Nonnull AbstractFinanzielleSituation finanzielleSituation,
+			FinanzielleSituationTyp finSitTyp) {
+		return finanzielleSituation.isVollstaendig(finSitTyp);
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {

@@ -107,6 +107,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     // When migrating to ng, use observable in template
     private isLuzern: boolean;
     public submitted: boolean = false;
+    private isSpracheAmtspracheDisabled: boolean;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -163,6 +164,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungAnspruchUnabhaengig();
         this.loadEinstellungKinderabzugTyp();
         this.loadEinstellungMaxAusserordentlicherAnspruch();
+        this.loadEinstellungSpracheAmtsprache();
     }
 
     public $postLink(): void {
@@ -520,5 +522,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public geburtsdatumChanged(): void {
         this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
+    }
+
+    private loadEinstellungSpracheAmtsprache(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
+                this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
+                if (this.isSpracheAmtspracheDisabled) {
+                   this.getModel().sprichtAmtssprache = true;
+                }
+            });
     }
 }

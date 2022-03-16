@@ -37,11 +37,6 @@
                     </div>
                 </div>
 
-                <dv-steuerabfrage-response-hints
-                    ng-if="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                    (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                    [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
-
                 <div ng-if="!vm.areThereOnlyFerieninsel">
                     <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
                                                       verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
@@ -106,6 +101,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xs-12" ng-if="vm.showSteuerdatenAbholenButton()">
+                            <dv-loading-button
+                                button-disabled="!vm.isGesuchsteller()"
+                                type="button"
+                                button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                {{'STEUERDATEN_ABHOLEN' | translate}}
+                            </dv-loading-button>
+                            <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
+                                <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                            </div>
+                        </div>
+                        <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
+                            <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
+                        </div>
+
+                        <dv-steuerabfrage-response-hints
+                            ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                            (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                            [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
 
                         <!-- Steuerveranlagung -->
                         <div class="row">
@@ -160,7 +174,7 @@
                             </div>
                         </div>
 
-                        <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false"
+                        <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
                              class="well well-status-warten minus-margin">
                             <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
                             <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
