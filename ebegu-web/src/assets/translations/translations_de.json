@@ -2868,5 +2868,7 @@
     "INIT_GS2_ZPVNR": "Steuerdaten mit kiBon verknüpfen",
     "INIT_GS2_ZPVNR_ERKLAERUNG": "Beim Absenden dieses Formulars erhalten Sie eine Einladung mit einem Link. Folgen Sie diesem Link zum BE-Login und melden Sie sich dort an, um das BE-Login mit ihrem Antrag in kiBon zu verknüpfen. <b>Achtung:</b> Bitte verwenden Sie hier die E-Mail Adresse des BE-Login, mit dem Sie die Steuerdaten ausgefüllt haben.",
     "SEND_MAIL": "E-Mail senden",
+    "ZPV_GS2_SUCCESS": "Sie haben ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
+    "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
