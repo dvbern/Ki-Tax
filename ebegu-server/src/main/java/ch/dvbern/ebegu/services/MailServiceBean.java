@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -793,6 +794,23 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gemeinde.getName());
 		}
 
+	}
+
+	@Override
+	public void sendInitGSZPVNr(@Nonnull Gesuchsteller gesuchsteller, @Nonnull String email) {
+		final Sprache sprache = gesuchsteller.getKorrespondenzSprache();
+		try {
+			LOG.info("Sende Init ZPV Nr. Mail für GS {}", gesuchsteller.getId());
+
+			String message = mailTemplateConfig.getInitGSZPVNr(gesuchsteller, Collections.singletonList(sprache), email);
+			sendMessageWithTemplate(message, email);
+			LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", email);
+		}  catch (MailException mailException) {
+			logExceptionAccordingToEnvironment(
+					mailException,
+					"Mail sendInitGSZPVNr konnte nicht verschickt werden fuer Gesuchsteller",
+					gesuchsteller.getId());
+		}
 	}
 
 	private String findGemeindeMailAddress(Gemeinde gemeinde) throws EbeguEntityNotFoundException {

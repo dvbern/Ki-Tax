@@ -60,7 +60,7 @@ export class GesuchstellerRS {
         return 'GesuchstellerRS';
     }
 
-    public initGS2ZPVNr(email: string, gs2: TSGesuchsteller): IPromise<any> {
+    public initGS2ZPVNr(email: string, gs2: TSGesuchstellerContainer): angular.IPromise<any> {
         return this.http.get(`${this.serviceURL}/initZPVNr/${encodeURIComponent(gs2.id)}?email=${encodeURIComponent(email)}`);
     }
 }

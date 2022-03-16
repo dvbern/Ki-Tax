@@ -743,4 +743,10 @@ public class MailTemplateConfiguration {
 		paramMap.put("id", container.getId());
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
 	}
+
+	public String getInitGSZPVNr(Gesuchsteller gesuchsteller, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("id", gesuchsteller.getId());
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.GesuchstellerInitZPV, sprachen), paramMap);
+	}
 }

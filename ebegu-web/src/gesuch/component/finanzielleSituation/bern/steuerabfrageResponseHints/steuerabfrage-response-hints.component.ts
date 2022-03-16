@@ -127,7 +127,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     public openDialogGS2ZPVVerknuepfen(): void {
         const dialogOptions: MatDialogConfig = {
             data: {
-                gs2: this.gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA
+                gs2: this.gesuchModelManager.getGesuch().gesuchsteller2
             }
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);

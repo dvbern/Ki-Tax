@@ -20,6 +20,7 @@ import {NgForm} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 
 @Component({
     selector: 'dv-ng-zpv-nummmer-verknuepfen-dialog',
@@ -28,7 +29,7 @@ import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 })
 export class DialogInitZPVNummerVerknuepfen implements OnInit {
 
-    private readonly gs2: TSGesuchsteller;
+    private readonly gs2: TSGesuchstellerContainer;
     public email: string;
 
     public constructor(
