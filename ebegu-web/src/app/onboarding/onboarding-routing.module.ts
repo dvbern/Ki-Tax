@@ -23,6 +23,7 @@ import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
+import {InitZpvNrComponent} from './init-zpv-nr/init-zpv-nr.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
@@ -121,6 +122,14 @@ export const STATES: NgHybridStateDeclaration[] = [
             roles: [TSRole.ANONYMOUS],
         },
     },
+    {
+        name: 'onboarding.initzpv',
+        url: '/init-zpv/:gesuchstellerId',
+        component: InitZpvNrComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
+        }
+    }
 ];
 
 redirectToLandingPage.$inject = ['$transition$'];

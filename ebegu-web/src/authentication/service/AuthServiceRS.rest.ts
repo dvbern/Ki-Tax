@@ -239,6 +239,10 @@ export class AuthServiceRS {
         return this.initSSO(CONSTANTS.REST_API + 'auth/singleSignOn', relayPath);
     }
 
+    public initConnectGSZPV(): angular.IHttpPromise<unknown> {
+        return this.$http.get(CONSTANTS.REST_API + 'auth/init-connect-gs-zpv');
+    }
+
     public initSingleLogout(relayPath: string): IPromise<string> {
         return this.initSSO(CONSTANTS.REST_API + 'auth/singleLogout', relayPath);
     }
