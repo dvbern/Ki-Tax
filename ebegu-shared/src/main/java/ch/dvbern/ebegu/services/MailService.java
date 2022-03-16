@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -209,5 +209,5 @@ public interface MailService {
 
 	void sendInfoLATSAntragZurueckAnGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet);
 
-	void sendInitGSZPVNr(@Nonnull Gesuchsteller gesuchsteller, @Nonnull String email);
+	void sendInitGSZPVNr(@Nonnull GesuchstellerContainer gesuchsteller, @Nonnull String email);
 }

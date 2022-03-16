@@ -169,7 +169,7 @@ public class GesuchstellerResource {
 		}
 		GesuchstellerContainer gesuchstellerContainer = optional.get();
 
-		mailService.sendInitGSZPVNr(gesuchstellerContainer.getGesuchstellerJA(), email);
+		mailService.sendInitGSZPVNr(gesuchstellerContainer, email);
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerContainer);
 	}

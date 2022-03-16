@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -49,6 +50,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -79,6 +81,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	private final MandantService mandantService;
 	private final LocalhostChecker localhostChecker;
 	private final EbeguConfiguration configuration;
+	private final GesuchstellerService gesuchstellerService;
 
 	@Context
 	private HttpServletRequest request;
@@ -93,7 +96,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		EbeguConfiguration configuration,
 		BenutzerService benutzerService,
 		AuthService authService,
-		MandantService mandantService
+		MandantService mandantService,
+		GesuchstellerService gesuchstellerService
 	) {
 
 		this.configuration = configuration;
@@ -102,6 +106,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		this.benutzerService = benutzerService;
 		this.authService = authService;
 		this.mandantService = mandantService;
+		this.gesuchstellerService = gesuchstellerService;
 	}
 
 	@Override
@@ -311,6 +316,14 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			.orElse(mandantService.getMandantBern());
 
 		return first.getId();
+	}
+
+	@Override
+	public void updateGesuchstellerZPVNr(@Nonnull String gesuchstellerContainerId, @Nonnull String zpvNummer) {
+		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerContainerId).orElseThrow();
+
+		container.getGesuchstellerJA().setZpvNummer(zpvNummer);
+		gesuchstellerService.updateGesuchsteller(container);
 	}
 
 	@Override

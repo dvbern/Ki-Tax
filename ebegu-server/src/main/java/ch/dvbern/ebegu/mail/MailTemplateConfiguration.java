@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -744,9 +745,9 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
 	}
 
-	public String getInitGSZPVNr(Gesuchsteller gesuchsteller, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+	public String getInitGSZPVNr(GesuchstellerContainer container, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
-		paramMap.put("id", gesuchsteller.getId());
+		paramMap.put("id", container.getId());
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.GesuchstellerInitZPV, sprachen), paramMap);
 	}
 }
