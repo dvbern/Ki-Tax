@@ -31,6 +31,7 @@ import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
+import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 
 export function nextState(): string {
     return 'onboarding.gesuchsteller.registration';
@@ -126,6 +127,14 @@ export const STATES: NgHybridStateDeclaration[] = [
         name: 'onboarding.initzpv',
         url: '/init-zpv/:gesuchstellerId',
         component: InitZpvNrComponent,
+        data: {
+            roles: [TSRole.ANONYMOUS]
+        }
+    },
+    {
+        name: 'onboarding.zpvgssuccess',
+        url: '/zpv-gs-success/?gesuchstellerId',
+        component: ZpvNrSuccessComponent,
         data: {
             roles: [TSRole.ANONYMOUS]
         }

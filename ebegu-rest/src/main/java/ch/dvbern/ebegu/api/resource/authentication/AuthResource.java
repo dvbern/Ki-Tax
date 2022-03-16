@@ -141,6 +141,22 @@ public class AuthResource {
 		return Response.ok(url).build();
 	}
 
+
+	@Path("/init-connect-gs-zpv")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@GET
+	@PermitAll
+	public Response initSSOLoginToConnectGSZPV(@Nullable @QueryParam("relayPath") String relayPath,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
+
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+		LOG.debug("Received URL to initialize singleSignOn login '{}'", url);
+		return Response.ok(url).build();
+	}
+
 	@Path("/singleLogout")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
