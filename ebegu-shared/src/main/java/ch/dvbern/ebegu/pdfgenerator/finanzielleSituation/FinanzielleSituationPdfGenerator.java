@@ -273,9 +273,10 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	return row;
 }
 
-	protected Element createTitleEkv(int basisJahr) {
+	protected Element createTitleEkv(@Nullable Integer basisJahr) {
+		String basisJahrString = basisJahr != null ? String.valueOf(basisJahr) : "";
 	return PdfUtil.createBoldParagraph(
-		translate(EKV_TITLE, String.valueOf(basisJahr)),
+		translate(EKV_TITLE, basisJahrString),
 		2);
 }
 

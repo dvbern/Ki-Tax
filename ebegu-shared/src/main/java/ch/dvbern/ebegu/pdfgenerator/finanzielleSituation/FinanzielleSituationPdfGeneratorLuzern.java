@@ -232,20 +232,26 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 	@Override
 	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		Objects.requireNonNull(ekvBasisJahrPlus1);
-		createPageEkv(ekvBasisJahrPlus1, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document);
+		createPageEkv(ekvBasisJahrPlus1, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document, true);
 	}
 
 
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		Objects.requireNonNull(ekvBasisJahrPlus2);
-		createPageEkv(ekvBasisJahrPlus2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document);
+		//EKV2 only needs to be printed on new page if there is no ekv1
+		boolean isPrintOnNewPage =  ekvBasisJahrPlus1 == null;
+		createPageEkv(ekvBasisJahrPlus2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document, isPrintOnNewPage);
 	}
 
-	private void createPageEkv(@Nonnull FinanzielleSituationResultateDTO finSitDTO, int basisJahr, @Nonnull Document document) {
-		document.newPage();
-		document.add(createTitleEkv(basisJahr));
-		document.add(createIntroEkv());
+	private void createPageEkv(@Nonnull FinanzielleSituationResultateDTO finSitDTO, int basisJahr, @Nonnull Document document, boolean isPrintOnNewPage) {
+		if(isPrintOnNewPage) {
+			document.newPage();
+			document.add(createTitleEkv(null));
+			document.add(createIntroEkv());
+		} else {
+			addSpacing(document);
+		}
 
 		FinanzielleSituationRow title = createTableTitleForEkv(basisJahr);
 		//EKV Tabelle ist dieselbe wie die Selbstdeklarations-Tabelle

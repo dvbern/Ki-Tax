@@ -362,14 +362,19 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		Objects.requireNonNull(ekvBasisJahrPlus1);
 		Objects.requireNonNull(ekv1GS1);
-		createPageEkv(ekvBasisJahrPlus1, ekv1GS1, ekv1GS2, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document);
+		createPageEkv(ekvBasisJahrPlus1, ekv1GS1, ekv1GS2, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document, true);
 	}
 
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		Objects.requireNonNull(ekvBasisJahrPlus1);
+		Objects.requireNonNull(ekvBasisJahrPlus2);
 		Objects.requireNonNull(ekv2GS1);
-		createPageEkv(ekvBasisJahrPlus1, ekv2GS1, ekv2GS2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document);
+		createPageEkv(ekvBasisJahrPlus2, ekv2GS1, ekv2GS2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document, isEkv2PrintOnNewPage());
+	}
+
+	private boolean isEkv2PrintOnNewPage() {
+		//EKV2 only needs to be printed on new page if there is no ekv1
+		return ekvBasisJahrPlus1 == null;
 	}
 
 	private void createPageEkv(
@@ -377,11 +382,17 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		Einkommensverschlechterung ekvGS1,
 		@Nullable Einkommensverschlechterung ekvGS2,
 		int basisJahr,
-		Document document) {
+		Document document,
+		boolean isPrintOnNewPage) {
 
-		document.newPage();
-		document.add(createTitleEkv(basisJahr));
-		document.add(createIntroEkv());
+		if(isPrintOnNewPage) {
+			document.newPage();
+			document.add(createTitleEkv(null));
+			document.add(createIntroEkv());
+		} else {
+			addSpacing(document);
+		}
+
 		document.add(createTableEkv(ekvBasisJahr, ekvGS1, ekvGS2, basisJahr));
 	}
 
