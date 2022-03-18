@@ -130,6 +130,14 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private Integer minDauerKonkubinat = 5;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean unterhaltsvereinbarung;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean geteilteObhut;
+
 	public Familiensituation() {
 	}
 
@@ -284,6 +292,24 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.minDauerKonkubinat = minDauerKonkubinat;
 	}
 
+	public void setUnterhaltsvereinbarung(@Nullable Boolean unterhaltsvereinbarung) {
+		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public Boolean getGeteilteObhut() {
+		return geteilteObhut;
+	}
+
+	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
+		this.geteilteObhut = geteilteObhut;
+	}
+
+	@Nullable
+	public Boolean getUnterhaltsvereinbarung() {
+		return unterhaltsvereinbarung;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
@@ -321,6 +347,8 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
 		target.setFkjvFamSit(this.fkjvFamSit);
 		target.setMinDauerKonkubinat(this.minDauerKonkubinat);
+		target.setGeteilteObhut(this.getGeteilteObhut());
+		target.setUnterhaltsvereinbarung(this.unterhaltsvereinbarung);
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());

@@ -617,6 +617,8 @@ export class EbeguRestUtil {
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
+            restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
+            restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
             return restFamiliensituation;
         }
 
@@ -697,6 +699,8 @@ export class EbeguRestUtil {
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
+            familiensituation.geteilteObhut = familiensituationFromServer.geteilteObhut;
+            familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
             return familiensituation;
         }
         return undefined;

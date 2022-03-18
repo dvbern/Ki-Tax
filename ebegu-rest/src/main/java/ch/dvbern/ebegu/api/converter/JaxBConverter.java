@@ -802,6 +802,8 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setGesuchstellerKardinalitaet(familiensituationJAXP.getGesuchstellerKardinalitaet());
 		familiensituation.setFkjvFamSit(familiensituationJAXP.isFkjvFamSit());
 		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
+		familiensituation.setGeteilteObhut(familiensituationJAXP.getGeteilteObhut());
+		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
 		return familiensituation;
 	}
 
@@ -838,6 +840,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
+		jaxFamiliensituation.setUnterhaltsvereinbarung(persistedFamiliensituation.getUnterhaltsvereinbarung());
+		jaxFamiliensituation.setGeteilteObhut(persistedFamiliensituation.getGeteilteObhut());
 		return jaxFamiliensituation;
 	}
 
