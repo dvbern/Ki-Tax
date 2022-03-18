@@ -262,9 +262,9 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		inputData.setEinkommensjahr(basisjahr);
 		inputData.addBemerkung(
 			MsgKey.EINKOMMEN_TOO_HIGH_FOR_EKV,
-			locale,
-			basisjahr,
-			NumberFormat.getInstance(locale).format(this.maxEinkommenEKV)
+			getLocale(),
+			String.valueOf(basisjahr),
+			NumberFormat.getInstance().format(this.maxEinkommenEKV)
 		);
 	}
 

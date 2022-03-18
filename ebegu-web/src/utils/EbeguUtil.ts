@@ -392,6 +392,17 @@ export class EbeguUtil {
         return list.find(user => user.getFullName() === name);
     }
 
+    // returns true if age (z.B. of a child) gets volljaehrig in this gesuchsperiode
+    public static calculateKindIsOrGetsVolljaehrig(age: moment.Moment, gp: TSGesuchsperiode): boolean {
+        const volljaehrigNumberYears = 18;
+        if (!age) {
+            return false;
+        }
+        const ageClone = age.clone();
+        const dateWith18 = ageClone.add(volljaehrigNumberYears, 'years');
+        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
