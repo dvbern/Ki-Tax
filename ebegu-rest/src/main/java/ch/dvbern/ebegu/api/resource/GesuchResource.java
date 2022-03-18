@@ -1086,6 +1086,16 @@ public class GesuchResource {
 				kibonAnfrage.getAntragId());
 		}
 
+		if(!configuration.getEbeguKibonAnfrageTestGuiEnabled()) {
+			String errorMessage = "Steuerschnittstelle Test GUI is disabled";
+			LOG.warn(errorMessage);
+			throw new EbeguRuntimeException(
+				"getSteuerdaten",
+				errorMessage,
+				errorMessage,
+				kibonAnfrage.getAntragId());
+		}
+
 		if (!configuration.getKibonAnfrageTestUuid().equals(kibonAnfrage.getAntragId().trim())) {
 			String errorMessage = "Der eingegebene UUID stimmt nicht mit der Konfiguration";
 			LOG.warn(errorMessage);
