@@ -199,7 +199,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 if (!this.fkjvFamSit) {
                     return false;
                 }
-                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                return this.hasSecondGesuchstellerFKJV();
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
@@ -256,5 +256,13 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set geteilteObhut(value: boolean) {
         this._geteilteObhut = value;
+    }
+
+    private hasSecondGesuchstellerFKJV(): boolean {
+        if (this.geteilteObhut) {
+            return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+        }
+
+        return this.unterhaltsvereinbarung;
     }
 }

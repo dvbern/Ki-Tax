@@ -318,6 +318,7 @@ public class Familiensituation extends AbstractMutableEntity {
 				if (!this.isFkjvFamSit()) {
 					return false;
 				}
+				return this.hasSecondGesuchstellerFKJV();
 			case PFLEGEFAMILIE:
 				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(
 					EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
@@ -335,6 +336,14 @@ public class Familiensituation extends AbstractMutableEntity {
 			}
 		}
 		return false;
+	}
+
+	private boolean hasSecondGesuchstellerFKJV() {
+		if (this.geteilteObhut != null && this.geteilteObhut) {
+			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
+		}
+
+		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung;
 	}
 
 	@Nonnull
@@ -413,6 +422,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&
-			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet());
+			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet()) &&
+			Objects.equals(getGeteilteObhut(), otherFamiliensituation.getGeteilteObhut()) &&
+			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung());
 	}
 }
