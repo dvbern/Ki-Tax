@@ -263,6 +263,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
             return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         }
 
-        return this.unterhaltsvereinbarung;
+        return !this.unterhaltsvereinbarung;
     }
 }
