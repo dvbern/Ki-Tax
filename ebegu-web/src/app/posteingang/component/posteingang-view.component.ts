@@ -46,6 +46,7 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
+import {PosteingangService} from '../service/posteingang.service';
 
 const LOG = LogFactory.createLog('PosteingangViewComponent');
 
@@ -134,6 +135,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly benutzerRS: BenutzerRSX,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly posteingangService: PosteingangService,
     ) {
     }
 
@@ -384,11 +386,18 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public setUngelesen(mitteilung: TSMitteilung): void {
         this.mitteilungRS.setMitteilungUngelesen(mitteilung.id).then(
-            () => this.passFilterToServer(),
+            () => {
+                this.passFilterToServer();
+                this.getMitteilungenCount();
+                },
         );
     }
 
     public isStatusGelesen(mitteilung: TSMitteilung): boolean {
         return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
         }
+
+    private getMitteilungenCount(): void {
+        this.posteingangService.posteingangChanged();
+    }
 }
