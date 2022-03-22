@@ -447,7 +447,7 @@ public class FinanzielleSituationResource {
 		}
 
 		boolean hasTwoAntragStellende = gesuch.getGesuchsteller2() != null;
-		// TODO: find out where hasTwoAntragStellende can be false and steuererklaerungGemeinsam true
+
 		final boolean steuererklaerungGemeinsam = Boolean.TRUE.equals(gesuch.getFamiliensituationContainer()
 				.getFamiliensituationJA()
 				.getGemeinsameSteuererklaerung());
