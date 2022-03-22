@@ -54,7 +54,7 @@
 
     </div>
     <!--Erwerbspensen von Gesuchsteller 2-->
-    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller2">
+    <div ng-if="vm.showErwerbspensumGS2()">
         <h3 class="ebegu-h2">
             <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName()"></span>
         </h3>
