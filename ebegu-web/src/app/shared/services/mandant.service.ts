@@ -202,9 +202,9 @@ export class MandantService {
         switch (mandant) {
             case KiBonMandant.BE:
             case KiBonMandant.NONE:
-                return 'authentication.login';
             case KiBonMandant.SO:
             case KiBonMandant.LU:
+                return 'authentication.login';
             default:
                 return 'authentication.locallogin';
         }

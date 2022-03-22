@@ -59,6 +59,12 @@ export class ApplicationPropertyRS {
         });
     }
 
+    public isEbeguKibonAnfrageTestGuiEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.ebeguKibonAnfrageTestGuiEnabled;
+        });
+    }
+
     public create(name: string, value: string): IHttpPromise<any> {
         return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {

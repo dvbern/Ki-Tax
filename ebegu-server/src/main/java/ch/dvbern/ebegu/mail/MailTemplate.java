@@ -48,5 +48,6 @@ public enum MailTemplate {
 	InfoGesuchVerfuegtVerantwortlicherTS,
 	InfoGemeindeLastenausgleichDurch,
 	InfoSchulamtAnmeldungStorniert,
-	InfoGemeindeLastenausgleichZurueckAnGemeinde
+	InfoGemeindeLastenausgleichZurueckAnGemeinde,
+	GesuchstellerInitZPV
 }

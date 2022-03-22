@@ -121,6 +121,8 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_KIBON_STEUER_ANFRAGE_ENDPOINT = "ebegu.kibonanfrage.endpoint";
 
 	private static final String EBEGU_KIBON_STEUER_ANFRAGE_TEST_UUID = "ebegu.kibonanfrage.testuuid";
+	private static final String EBEGU_KIBON_STEUER_ANFRAGE_TEST_GUI_ENABLED = "ebegu.kibonanfrage.testgui.enabled";
+
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -472,6 +474,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getKibonAnfrageTestUuid() {
 		return getString(EBEGU_KIBON_STEUER_ANFRAGE_TEST_UUID);
+	}
+
+	@Override
+	public Boolean getEbeguKibonAnfrageTestGuiEnabled() {
+		return getBoolean(EBEGU_KIBON_STEUER_ANFRAGE_TEST_GUI_ENABLED, false);
 	}
 
 	@Override

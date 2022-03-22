@@ -15,12 +15,36 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.util.FinanzielleSituationTypVisitor;
+
 /**
  * Enum fuer Status der FinanziellenSituation
  */
 public enum FinanzielleSituationTyp {
-	BERN,
-	LUZERN,
-	SOLOTHURN,
-	BERN_FKJV,
+	BERN {
+		@Override
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) {
+			return visitor.visitFinSitBern();
+		}
+	},
+	LUZERN {
+		@Override
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) {
+			return visitor.visitFinSitLuzern();
+		}
+	},
+	SOLOTHURN {
+		@Override
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) {
+			return visitor.visitFinSitSolothurn();
+		}
+	},
+	BERN_FKJV {
+		@Override
+		public <T> T accept(FinanzielleSituationTypVisitor<T> visitor) {
+			return visitor.visitFinSitBernFKJV();
+		}
+	};
+
+	public abstract <T> T accept(FinanzielleSituationTypVisitor<T> visitor);
 }

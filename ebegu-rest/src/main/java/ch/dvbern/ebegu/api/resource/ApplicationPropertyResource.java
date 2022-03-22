@@ -286,6 +286,7 @@ public class ApplicationPropertyResource {
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
 		boolean angebotTSEnabled = mandant.isAngebotTS();
+		boolean isEbeguKibonAnfrageTestGuiEnabled = ebeguConfiguration.getEbeguKibonAnfrageTestGuiEnabled();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
@@ -406,7 +407,8 @@ public class ApplicationPropertyResource {
 			angebotTSEnabled,
 			stringToBool(infomaZahlungen.getValue()),
 			stringToBool(frenchEnabled.getValue()),
-			stringToBool(geresEnabledForMandant.getValue())
+			stringToBool(geresEnabledForMandant.getValue()),
+			isEbeguKibonAnfrageTestGuiEnabled
 			);
 		return Response.ok(pubAppConf).build();
 	}

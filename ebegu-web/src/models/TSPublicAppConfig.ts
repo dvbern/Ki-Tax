@@ -42,4 +42,5 @@ export class TSPublicAppConfig {
     public infomaZahlungen: boolean;
     public frenchEnabled: boolean;
     public geresEnabledForMandant: boolean;
+    public ebeguKibonAnfrageTestGuiEnabled: boolean;
 }

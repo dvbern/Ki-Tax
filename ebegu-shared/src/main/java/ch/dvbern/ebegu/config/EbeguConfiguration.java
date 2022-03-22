@@ -362,4 +362,6 @@ public interface EbeguConfiguration {
 	String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
 
 	String getKibonAnfrageTestUuid();
+
+	Boolean getEbeguKibonAnfrageTestGuiEnabled();
 }

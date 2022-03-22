@@ -23,6 +23,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -70,6 +72,10 @@ public class Gesuchsteller extends AbstractPersonEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private Sprache korrespondenzSprache;
+
+	@Nullable
+	@Column
+	private String zpvNummer = null;
 
 
 	public Gesuchsteller() {
@@ -162,5 +168,14 @@ public class Gesuchsteller extends AbstractPersonEntity {
 			Objects.equals(getTelefonAusland(), otherGesuchsteller.getTelefonAusland()) &&
 			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus()) &&
 			getKorrespondenzSprache() == otherGesuchsteller.getKorrespondenzSprache();
+	}
+
+	@Nullable
+	public String getZpvNummer() {
+		return zpvNummer;
+	}
+
+	public void setZpvNummer(@Nullable String zpvNummer) {
+		this.zpvNummer = zpvNummer;
 	}
 }
