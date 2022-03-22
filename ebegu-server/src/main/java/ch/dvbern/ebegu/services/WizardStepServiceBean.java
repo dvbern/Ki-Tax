@@ -837,68 +837,101 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		Familiensituation oldEntity,
 		Familiensituation newEntity) {
 		for (WizardStep wizardStep : wizardSteps) {
-			if (WizardStepStatus.UNBESUCHT
-				!= wizardStep.getWizardStepStatus()) { // vermeide, dass der Status eines unbesuchten Steps geaendert
-				// wird
-				LocalDate bis = wizardStep.getGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
-				if (WizardStepName.FAMILIENSITUATION == wizardStep.getWizardStepName()) {
-					setWizardStepOkOrMutiert(wizardStep);
-				} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)
-					&& wizardStep.getGesuch().getGesuchsteller2() == null) {
-
-					if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
-						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-						wizardStep.setVerfuegbar(true);
-
-					} else if (((wizardStep.getWizardStepName().isFinSitWizardStepName()
-						|| wizardStep.getWizardStepName().isEKVWizardStepName())
-						&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch()))
-						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
-						&& erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
-						// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
-						wizardStep.setVerfuegbar(true);
-						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-
-					}
-					//kann man effektiv sagen dass bei nur einem GS niemals Rote Schritte FinanzielleSituation und EVK
-					// gibt
-				} else if (!newEntity.hasSecondGesuchsteller(bis)
-					&& wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
-					if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
-						if (wizardStep.getGesuch().isMutation()) {
-							setWizardStepOkOrMutiert(wizardStep);
-						} else if (wizardStep.getWizardStepStatus() == WizardStepStatus.NOK) {
-							wizardStep.setWizardStepStatus(WizardStepStatus.OK);
-						}
-
-					} else if (wizardStep.getWizardStepName().isFinSitWizardStepName()
-						|| wizardStep.getWizardStepName().isEKVWizardStepName()
-						|| (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
-						&& !erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()))) {
-
-						setVerfuegbarAndOK(wizardStep);
-
-					} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()
-						&& erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
-
-						if (wizardStep.getGesuch().getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
-							if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
-								// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden
-								// kann!
-								wizardStep.setVerfuegbar(true);
-								wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
-							}
-						} else {
-							setVerfuegbarAndOK(wizardStep);
-						}
-					}
-				}
+			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()) { // vermeide, dass der Status eines unbesuchten Steps geaendert wird
+				updateStatusForFamiliensituation(wizardStep, oldEntity, newEntity);
 			}
 			// Es gibt ein Spezialfall: Falls eine BG Betreuung hinzugefügt wurde, wird die Frage
 			// verguenstigungGewuenscht auf der FamSit true gesetzt und die FamSit wird neu gespeichert.
 			// in diesem Fall müssen wir den FinSitStatus hier noch einmal für die Betreuungen prüfen.
 			checkFinSitStatusForBetreuungen(wizardStep);
 		}
+	}
+
+	private void updateStatusForFamiliensituation(
+		WizardStep wizardStep,
+		Familiensituation oldEntity,
+		Familiensituation newEntity) {
+
+		LocalDate bis = wizardStep.getGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (WizardStepName.FAMILIENSITUATION == wizardStep.getWizardStepName()) {
+			setWizardStepOkOrMutiert(wizardStep);
+		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
+			updateStatusFromOneGSToTwoGS(wizardStep);
+			//kann man effektiv sagen dass bei nur einem GS niemals Rote Schritte FinanzielleSituation und EVK
+			// gibt
+		} else if (!newEntity.hasSecondGesuchsteller(bis)
+			&& wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
+			updateStatusOnlyOneGS(wizardStep);
+		}
+	}
+
+	private void updateStatusOnlyOneGS(WizardStep wizardStep) {
+		if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
+			updateStepGesuchstellerOnlyOneGS(wizardStep);
+		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName().isEKVWizardStepName()) {
+			updateStepFinSitAndEKVOnlyOneGS(wizardStep);
+		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
+			updateStepErwerbspensumFOnlyOneGS(wizardStep);
+		}
+	}
+
+	private void updateStepErwerbspensumFOnlyOneGS(WizardStep wizardStep) {
+		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
+			if (wizardStep.getGesuch().getGesuchsteller1() != null &&
+				wizardStep.getGesuch().getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
+				if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
+					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden
+					// kann!
+					setVerguegbarAndNOK(wizardStep);
+				}
+			}
+		} else {
+			setVerfuegbarAndOK(wizardStep);
+		}
+	}
+
+	private void updateStepFinSitAndEKVOnlyOneGS(WizardStep wizardStep) {
+		setVerfuegbarAndOK(wizardStep);
+	}
+
+	private void updateStepGesuchstellerOnlyOneGS(WizardStep wizardStep) {
+		if (wizardStep.getGesuch().isMutation()) {
+			setWizardStepOkOrMutiert(wizardStep);
+		} else if (wizardStep.getWizardStepStatus() == WizardStepStatus.NOK) {
+			wizardStep.setWizardStepStatus(WizardStepStatus.OK);
+		}
+	}
+
+	private void updateStatusFromOneGSToTwoGS(WizardStep wizardStep) {
+		//Falls bereits ein GS2 exisitiert müssen die Wizardsteps beim Wechsel von ein GS auf zwei GS nicht updated werden
+		if (wizardStep.getGesuch().getGesuchsteller2() != null) {
+			return;
+		}
+
+		if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
+			updateStepGesuchstellerFromOneGSTOTwoGS(wizardStep);
+		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName().isEKVWizardStepName()) {
+			updateStepFinSitAndEKVFromOneGSToTwoGS(wizardStep);
+		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()){
+			updateStepErwerbspensumFromOneGSToTwoGS(wizardStep);
+		}
+	}
+
+	private void updateStepErwerbspensumFromOneGSToTwoGS(WizardStep wizardStep) {
+		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
+			// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+			setVerguegbarAndNOK(wizardStep);
+		}
+	}
+
+	private void updateStepFinSitAndEKVFromOneGSToTwoGS(WizardStep wizardStep) {
+		if(EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())) {
+			setVerguegbarAndNOK(wizardStep);
+		}
+	}
+
+	private void updateStepGesuchstellerFromOneGSTOTwoGS(WizardStep wizardStep) {
+		setVerguegbarAndNOK(wizardStep);
 	}
 
 	private void setVerfuegbarAndOK(WizardStep wizardStep) {
@@ -909,6 +942,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			wizardStep.setVerfuegbar(true);
 			wizardStep.setWizardStepStatus(WizardStepStatus.OK);
 		}
+	}
+
+	private void setVerguegbarAndNOK(WizardStep wizardStep) {
+		wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
+		wizardStep.setVerfuegbar(true);
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
