@@ -311,7 +311,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public showFrageUnterhaltsvereinbarung(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehend()) {
-            return this.getFamiliensituation().geteilteObhut === false;
+            return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
         }
         return false;
     }
