@@ -1003,7 +1003,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
 			wizardStep.getGesuch(),	wizardStep.getWizardStepName());
 		if (finSitIntroducedAndComplete) {
-			wizardStep.setWizardStepStatus(WizardStepStatus.OK);
 			return;
 		}
 		boolean finSitRequired = EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch());
