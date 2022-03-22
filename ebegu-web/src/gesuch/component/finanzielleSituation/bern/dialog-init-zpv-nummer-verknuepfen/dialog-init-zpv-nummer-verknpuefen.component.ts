@@ -15,17 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
-import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 
 @Component({
     selector: 'dv-ng-zpv-nummmer-verknuepfen-dialog',
-    templateUrl: './dialog-init-zpv-nummer-verknpuefen.template.html',
-    styleUrls: ['./dialog-init-zpv-nummer-verknpuefen.component.less'],
+    templateUrl: './dialog-init-zpv-nummer-verknpuefen.template.html'
 })
 export class DialogInitZPVNummerVerknuepfen implements OnInit {
 
