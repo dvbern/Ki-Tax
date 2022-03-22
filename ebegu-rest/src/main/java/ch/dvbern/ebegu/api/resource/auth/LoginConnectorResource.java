@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
@@ -322,7 +323,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	public void updateGesuchstellerZPVNr(@Nonnull String gesuchstellerContainerId, @Nonnull String zpvNummer) {
 		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerContainerId).orElseThrow();
 
+		assert container.getFinanzielleSituationContainer() != null;
+
 		container.getGesuchstellerJA().setZpvNummer(zpvNummer);
+		container.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(
+				SteuerdatenAnfrageStatus.RETRY);
 		gesuchstellerService.updateGesuchsteller(container);
 	}
 

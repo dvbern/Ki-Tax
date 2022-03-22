@@ -68,6 +68,18 @@
     <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGS2ZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_GS2_AUSLOESEN</a>
 </div>
 
+<div *ngIf="showRetry()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY</p>
+    <dv-loading-button
+            [buttonDisabled]="!isGesuchsteller()"
+            type="button"
+            (buttonClick)="tryAgain()">
+        {{'STEUERDATEN_ABHOLEN' | translate}}
+    </dv-loading-button>
+</div>
+
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"

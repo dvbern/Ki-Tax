@@ -100,8 +100,14 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
     }
 
+    public showRetry(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.RETRY;
+    }
+
     public getGS1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName() :
+            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 
     public getGS2Name(): string {
