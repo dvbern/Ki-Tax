@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 
 public class LuzernFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
 
@@ -42,11 +43,62 @@ public class LuzernFinanzielleSituationDokumente extends AbstractDokumente<Abstr
 		@Nonnull Locale locale) {
 
 		if(isGemeinsameSteuererklaerung(gesuch)) {
-			getAllDokumenteGemeinsam(gesuch, anlageVerzeichnis);
+			if (isVeranlagt(gesuch)) {
+				getAllDokumenteGemeinsam(gesuch, anlageVerzeichnis);
+			} else {
+				getAllDokumenteVerheirtatetForBothGS(gesuch, anlageVerzeichnis);
+			}
 		} else {
 			getAllDokumenteGS1(gesuch, anlageVerzeichnis);
 			getAllDokumenteGS2(gesuch, anlageVerzeichnis);
 		}
+	}
+
+	private void getAllDokumenteVerheirtatetForBothGS(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
+		assert gesuch.getGesuchsteller1() != null;
+		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+		addDokument(
+				DokumentTyp.JAHRESLOHNAUSWEISE,
+				gesuch,
+				anlageVerzeichnis,
+				1,
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+		addDokument(
+				DokumentTyp.NACHWEIS_VERMOEGEN,
+				gesuch,
+				anlageVerzeichnis,
+				1,
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+		addDokument(
+				DokumentTyp.JAHRESLOHNAUSWEISE,
+				gesuch,
+				anlageVerzeichnis,
+				2,
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+		addDokument(
+				DokumentTyp.NACHWEIS_VERMOEGEN,
+				gesuch,
+				anlageVerzeichnis,
+				2,
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA());
+	}
+
+	private boolean isVeranlagt(Gesuch gesuch) {
+		assert gesuch.getGesuchsteller1() != null;
+		assert gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer() != null;
+		return Boolean.TRUE.equals(gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getVeranlagt());
+	}
+
+	@Override
+	protected boolean isGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+
+		return familiensituation != null &&
+				familiensituation.getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
 	}
 
 	private void getAllDokumenteGS1(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
