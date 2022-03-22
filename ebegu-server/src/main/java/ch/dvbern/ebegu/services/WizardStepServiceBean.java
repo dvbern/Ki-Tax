@@ -883,9 +883,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					// kann!
 					setVerguegbarAndNOK(wizardStep);
 				}
+			} else {
+				setVerfuegbarAndOK(wizardStep);
 			}
-		} else {
-			setVerfuegbarAndOK(wizardStep);
 		}
 	}
 
