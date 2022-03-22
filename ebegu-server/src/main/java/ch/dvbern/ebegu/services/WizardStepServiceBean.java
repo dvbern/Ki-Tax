@@ -871,14 +871,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName().isEKVWizardStepName()) {
 			updateStepFinSitAndEKVOnlyOneGS(wizardStep);
 		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
-			updateStepErwerbspensumFOnlyOneGS(wizardStep);
+			updateStepErwerbspensumOnlyOneGS(wizardStep);
 		}
 	}
 
-	private void updateStepErwerbspensumFOnlyOneGS(WizardStep wizardStep) {
+	private void updateStepErwerbspensumOnlyOneGS(WizardStep wizardStep) {
 		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
-			if (wizardStep.getGesuch().getGesuchsteller1() != null &&
-				wizardStep.getGesuch().getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
+			if (isErwerbespensumContainerEmpty(wizardStep.getGesuch().getGesuchsteller1())) {
 				if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
 					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden
 					// kann!
@@ -915,6 +914,14 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()){
 			updateStepErwerbspensumFromOneGSToTwoGS(wizardStep);
 		}
+	}
+
+	private boolean isErwerbespensumContainerEmpty(GesuchstellerContainer gesuchsteller) {
+		if(gesuchsteller == null)  {
+			return true;
+		}
+
+		return gesuchsteller.getErwerbspensenContainers().isEmpty();
 	}
 
 	private void updateStepErwerbspensumFromOneGSToTwoGS(WizardStep wizardStep) {
@@ -1021,8 +1028,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (erwerbspensumRequired) {
 			// Wenn das EWP required ist, muss grundsaetzlich der Step available sein
 			available = true;
-			if (gesuch.getGesuchsteller1() != null
-				&& gesuch.getGesuchsteller1().getErwerbspensenContainers().isEmpty()) {
+			if (isErwerbespensumContainerEmpty(gesuch.getGesuchsteller1())) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
