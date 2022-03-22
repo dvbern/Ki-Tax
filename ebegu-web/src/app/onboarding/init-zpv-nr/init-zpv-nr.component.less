@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,25 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
 
-public enum SteuerdatenAnfrageStatus {
 
-	OFFEN,
-	PROVISORISCH,
-	RECHTSKRAEFTIG,
-	FAILED,
-	FAILED_KEIN_PARTNER_GEMEINSAM,
-	FAILED_PARTNER_NICHT_GEMEINSAM,
-	FAILED_GEBURTSDATUM,
-	FAILED_UNTERJAEHRIGER_FALL,
-	FAILED_KEINE_ZPV_NUMMER,
-	FAILED_KEINE_ZPV_NUMMER_GS2,
-	RETRY;
+.onboarding-welcome {
+    margin-left: 11vw;
+    margin-right: 11vw;
 
-	public boolean isSteuerdatenAbfrageErfolgreich() {
-		return this == OFFEN
-			|| this == PROVISORISCH
-			|| this == RECHTSKRAEFTIG;
-	}
+    margin-top: 28%;
+    text-align: center;
+    p {
+        color: #000000;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 20px;
+        letter-spacing: 1.38px;
+        line-height: 24px;
+    }
 }

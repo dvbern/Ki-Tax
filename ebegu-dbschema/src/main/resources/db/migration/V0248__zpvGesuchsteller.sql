@@ -15,25 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
-
-public enum SteuerdatenAnfrageStatus {
-
-	OFFEN,
-	PROVISORISCH,
-	RECHTSKRAEFTIG,
-	FAILED,
-	FAILED_KEIN_PARTNER_GEMEINSAM,
-	FAILED_PARTNER_NICHT_GEMEINSAM,
-	FAILED_GEBURTSDATUM,
-	FAILED_UNTERJAEHRIGER_FALL,
-	FAILED_KEINE_ZPV_NUMMER,
-	FAILED_KEINE_ZPV_NUMMER_GS2,
-	RETRY;
-
-	public boolean isSteuerdatenAbfrageErfolgreich() {
-		return this == OFFEN
-			|| this == PROVISORISCH
-			|| this == RECHTSKRAEFTIG;
-	}
-}
+ALTER TABLE gesuchsteller ADD COLUMN IF NOT EXISTS `zpv_nummer` VARCHAR(34) NULL;
+ALTER TABLE gesuchsteller_aud ADD COLUMN IF NOT EXISTS `zpv_nummer` VARCHAR(34) NULL;

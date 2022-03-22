@@ -92,6 +92,9 @@
     "ZUERST_STEUERDATEN_ABHOLEN": "Sie müssen zuerst die Steuerdaten abholen",
     "RESET_KIBON_ABFRAGE_WARNING": "Falls Angaben bereits durch die Schnittstelle hinzugefügt wurden, werden diese gelöscht",
     "NOT_ALLOWED_FOR_SUPER_ADMIN": "Als Superadmin nicht erlaubt",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für \"{{gs2}}\" keine ZPV Nummer in kiBon hinterlegt ist.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY": "Versuchen Sie es erneut",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZPV_GS2_AUSLOESEN": "Klicken sie hier, um eine Einladungsmail zu erhalten.",
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie Ihre Steuerveranlagung {{basisjahr}} erhalten?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG": "Haben Sie die Steuererklärung für das Jahr {{basisjahr}} ausgefüllt?",
     "FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN": "Nein, noch nicht ausgefüllt oder quellenbesteuert",
@@ -2867,5 +2870,10 @@
     "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG": "Wir bestätigen, dass wir den KitaPlus Zuschlag von Fr. 32.- pro Betreuungstag verrechnen",
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
+    "INIT_GS2_ZPVNR": "Steuerdaten mit kiBon verknüpfen",
+    "INIT_GS2_ZPVNR_ERKLAERUNG": "Beim Absenden dieses Formulars erhalten Sie eine Einladung mit einem Link. Folgen Sie diesem Link zum BE-Login und melden Sie sich dort an, um das BE-Login mit ihrem Antrag in kiBon zu verknüpfen. <b>Achtung:</b> Bitte verwenden Sie hier die E-Mail Adresse des BE-Login, mit dem Sie die Steuerdaten ausgefüllt haben.",
+    "SEND_MAIL": "E-Mail senden",
+    "ZPV_GS2_SUCCESS": "Sie haben ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
+    "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

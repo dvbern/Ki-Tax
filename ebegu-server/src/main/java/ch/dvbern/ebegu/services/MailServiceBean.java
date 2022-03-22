@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -793,6 +795,23 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gemeinde.getName());
 		}
 
+	}
+
+	@Override
+	public void sendInitGSZPVNr(@Nonnull GesuchstellerContainer container, @Nonnull String email) {
+		final Sprache sprache = container.getGesuchstellerJA().getKorrespondenzSprache();
+		try {
+			LOG.info("Sende Init ZPV Nr. Mail für GS {}", container.getId());
+
+			String message = mailTemplateConfig.getInitGSZPVNr(container, Collections.singletonList(sprache), email);
+			sendMessageWithTemplate(message, email);
+			LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", email);
+		}  catch (MailException mailException) {
+			logExceptionAccordingToEnvironment(
+					mailException,
+					"Mail sendInitGSZPVNr konnte nicht verschickt werden fuer Gesuchsteller",
+					container.getId());
+		}
 	}
 
 	private String findGemeindeMailAddress(Gemeinde gemeinde) throws EbeguEntityNotFoundException {

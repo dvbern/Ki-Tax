@@ -38,6 +38,7 @@ import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest'
 import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
+import {GesuchstellerRS} from './service/gesuchstellerRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
@@ -380,6 +381,17 @@ export const listResourceRSProvider = {
     deps: ['$injector'],
 };
 
+// BerechnungsManager
+export function gesuchstellerRSFactory(i: IInjectorService): GesuchstellerRS {
+    return i.get('GesuchstellerRS');
+}
+
+export const gesuchstellerRSProvider = {
+    provide: GesuchstellerRS,
+    useFactory: gesuchstellerRSFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -410,4 +422,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     finanzielleSituationRSProvider,
     berechnungsManagerProvider,
     listResourceRSProvider,
+    gesuchstellerRSProvider,
 ];
