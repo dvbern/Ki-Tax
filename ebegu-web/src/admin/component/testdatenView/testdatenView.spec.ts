@@ -78,7 +78,8 @@ describe('testdatenView', () => {
             angebotTSActivated: true,
             infomaZahlungen: true,
             frenchEnabled: true,
-            geresEnabledForMandant: true
+            geresEnabledForMandant: true,
+            ebeguKibonAnfrageTestGuiEnabled: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

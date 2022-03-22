@@ -4296,6 +4296,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
+        publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         return publicAppConfigTS;
 
     }
