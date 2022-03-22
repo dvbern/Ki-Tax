@@ -925,7 +925,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void updateStepErwerbspensumFromOneGSToTwoGS(WizardStep wizardStep) {
-		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
+		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()) &&
+			isErwerbspensumRequiredForGS2(wizardStep.getGesuch())) {
 			// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 			setVerguegbarAndNOK(wizardStep);
 		}
@@ -1033,7 +1034,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			}
 			if (status != WizardStepStatus.NOK
 				&& gesuch.getGesuchsteller2() != null
-				&& gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
+				&& isErwerbspensumRequiredForGS2(gesuch)) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
 			}
@@ -1047,6 +1048,37 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		wizardStep.setWizardStepStatus(status);
 		wizardStep.setVerfuegbar(available);
 	}
+
+
+	/**
+	 * Prüft, ob ein Erwerbspensum für den GS2 nötig ist.
+	 * Falls ein GS2 vorhanden ist, ist ein Erwerbspesnum grundsätzlich nötig.
+	 *
+	 * Einzige Ausnahme bietet folgender Spezialfall innerhalb einer FKJV Periode:
+	 * Die elterliche Obhut findet nicht in zwei Haushalten statt (Familiensituation#geteilteObhut)
+	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
+	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
+	 */
+	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
+		if(isUnterhaltsvereinbarungAbschlossen(gesuch)) {
+			return false;
+		}
+
+		return gesuch.getGesuchsteller2() == null
+			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
+	}
+
+	private boolean isUnterhaltsvereinbarungAbschlossen(Gesuch gesuch) {
+		if(gesuch.getFamiliensituationContainer() == null ||
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
+			return false;
+		}
+
+		return !gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+	}
+
+
 
 	/**
 	 * Der Step mit dem uebergebenen StepName bekommt den Status OK. Diese Methode wird immer aufgerufen, um den
