@@ -8,9 +8,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
 }

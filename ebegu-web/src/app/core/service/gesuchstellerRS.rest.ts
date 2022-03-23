@@ -15,7 +15,6 @@
 
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
-import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 

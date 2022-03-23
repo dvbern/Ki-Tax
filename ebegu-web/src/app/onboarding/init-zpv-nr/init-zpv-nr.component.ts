@@ -40,4 +40,3 @@ export class InitZpvNrComponent implements OnInit {
         this.windowRef.nativeWindow.open(urlToGoTo, '_self');
     }
 }
-
