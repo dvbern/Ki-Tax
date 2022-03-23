@@ -189,7 +189,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		if (isEkv1) {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				if (checkMassgebendesEinkommenNachAbzugTooHighForEKV(inputData, finanzDatenDTO)) {
-					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
+					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, basisjahr);
 				} else {
 					inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
 					inputData.setEinkommensjahr(basisjahrPlus1);
@@ -220,7 +220,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		} else if (isEkv2) {
 			if (finanzDatenDTO.isEkv2AcceptedAndNotAnnuliert()) {
 				if (checkMassgebendesEinkommenNachAbzugTooHighForEKV(inputData, finanzDatenDTO)) {
-					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, locale, basisjahr);
+					ignoreEKVAndSetMessage(finanzDatenDTO, inputData, basisjahr);
 				} else {
 					inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 					inputData.setEinkommensjahr(basisjahrPlus2);
@@ -255,7 +255,6 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	private void ignoreEKVAndSetMessage(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		@Nonnull BGCalculationInput inputData,
-		@Nonnull Locale locale,
 		int basisjahr
 	) {
 		inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
