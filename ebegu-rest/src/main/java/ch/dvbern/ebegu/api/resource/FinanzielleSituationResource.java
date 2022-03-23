@@ -436,15 +436,7 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
-		// if GS1 has no ZPV-Nummer, we can abort early
 		Benutzer benutzer = principalBean.getBenutzer();
-		if (gesuch.getEingangsart().isPapierGesuch() || Strings.isNullOrEmpty(benutzer.getZpvNummer())) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont.getFinanzielleSituationJA(), SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
-
-			FinanzielleSituationContainer persistedFinSit =
-					this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
-			return converter.finanzielleSituationContainerToJAX(persistedFinSit);
-		}
 
 		boolean hasTwoAntragStellende = gesuch.getGesuchsteller2() != null;
 
@@ -467,28 +459,43 @@ public class FinanzielleSituationResource {
 				finSitGS2Cont.setGesuchsteller(gesuch.getGesuchsteller2());
 				// init finSitGS2 END
 
-				try {
-					// try gemeinsame Steuererklärung anfrage
-					SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
-							Integer.valueOf(benutzer.getZpvNummer()),
-							gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
-							kibonAnfrageId.getId(),
-							gesuch.getGesuchsperiode().getBasisJahr());
-					handleSteuerdatenGemeinsamResponse(convertedFinSitCont.getFinanzielleSituationJA(), finSitGS2Cont.getFinanzielleSituationJA(), steuerdatenResponse, gesuch);
-					this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2Cont);
-				} catch (KiBonAnfrageServiceException e) {
-					updateFinSitSteuerdatenAbfrageStatusFailed(
-							convertedFinSitCont.getFinanzielleSituationJA(),
-							SteuerdatenAnfrageStatus.FAILED);
-					updateFinSitSteuerdatenAbfrageStatusFailed(
+				String zpvNummer = benutzer.getZpvNummer() != null ?
+					benutzer.getZpvNummer() :
+					gesuchsteller.getGesuchstellerJA().getZpvNummer();
+
+				if (zpvNummer != null) {
+					try {
+						// try gemeinsame Steuererklärung anfrage
+
+						SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
+								Integer.valueOf(zpvNummer),
+								gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
+								kibonAnfrageId.getId(),
+								gesuch.getGesuchsperiode().getBasisJahr());
+						handleSteuerdatenGemeinsamResponse(
+								convertedFinSitCont.getFinanzielleSituationJA(),
+								finSitGS2Cont.getFinanzielleSituationJA(),
+								steuerdatenResponse,
+								gesuch);
+						this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2Cont);
+					} catch (KiBonAnfrageServiceException e) {
+						updateFinSitSteuerdatenAbfrageStatusFailed(
+								convertedFinSitCont.getFinanzielleSituationJA(),
+								SteuerdatenAnfrageStatus.FAILED);
+						updateFinSitSteuerdatenAbfrageStatusFailed(
+								finSitGS2Cont.getFinanzielleSituationJA(),
+								SteuerdatenAnfrageStatus.FAILED);
+					}
+				} else {
+					updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(convertedFinSitCont.getFinanzielleSituationJA(),
 							finSitGS2Cont.getFinanzielleSituationJA(),
-							SteuerdatenAnfrageStatus.FAILED);
-			}
+							SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+				}
 
 		} else {
 			// anfrage single GS
 			final boolean isGS2 = gesuchsteller.equals(gesuch.getGesuchsteller2());
-			String zpvNummer = isGS2 ? gesuchsteller.getGesuchstellerJA().getZpvNummer() : benutzer.getZpvNummer();
+			String zpvNummer = isGS2 || benutzer.getZpvNummer() == null ? gesuchsteller.getGesuchstellerJA().getZpvNummer() : benutzer.getZpvNummer();
 			if (zpvNummer != null) {
 				try {
 					SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
