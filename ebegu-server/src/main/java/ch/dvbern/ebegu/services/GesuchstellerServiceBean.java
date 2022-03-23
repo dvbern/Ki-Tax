@@ -99,6 +99,12 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		return mergedGesuchsteller;
 	}
 
+	@Override
+	public GesuchstellerContainer updateGesuchsteller(
+			@Nonnull GesuchstellerContainer gesuchsteller) {
+		return persistence.merge(gesuchsteller);
+	}
+
 	private void validateGesuchstellerEmail(@Nonnull Gesuch gesuch) {
 		// Gesamt-Validierung durchführen
 		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();

@@ -102,6 +102,16 @@ public interface ILoginConnectorResource {
 	String getMandant(@QueryParam("mandantIdentifier") String mandantIdentifier);
 
 	/**
+	 * updates the gesuchsteller from the id with the zpv nr
+	 */
+	@Nonnull
+	@PUT
+	@Path("/update-gs-zpv")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	void updateGesuchstellerZPVNr(@QueryParam("gesuchstellerContainerId") @Nonnull String gesuchstellerContainerId, @QueryParam("zpvNummer") @Nonnull String zpvNummer);
+
+	/**
 	 * This service exists to allow external login modules to create logins in Ki-Tax
 	 *
 	 * @param jaxExtAuthUser the login entry to create

@@ -971,6 +971,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT);
     }
 
+    public isBetreuungsstatusBestaetigtOrVerfuegt(): boolean {
+        return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
+            || this.isBetreuungsstatus(TSBetreuungsstatus.VERFUEGT);
+    }
+
     public isBetreuungsstatusAusstehend(): boolean {
         return this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
     }
