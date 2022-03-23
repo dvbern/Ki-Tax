@@ -588,8 +588,20 @@ public class FinanzielleSituationResource {
 			SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrPartner() != null;
 
-		setValuesFromDossiertraegerToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO);
-		setValuesFromPartnerToFinSit(finSitGS2, steuerdatenResponse);
+		if(isAntragstellerDossiertraeger(steuerdatenResponse)) {
+			//GS1 = Dossierträger GS2 = Partner
+			setValuesFromDossiertraegerToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO);
+			setValuesFromPartnerToFinSit(finSitGS2, steuerdatenResponse);
+		} else {
+			//GS2 = Dossierträger GS1 = Partner
+			setValuesFromPartnerToFinSit(finSitGS1, steuerdatenResponse);
+			setValuesFromDossiertraegerToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO);
+		}
+	}
+
+	private boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
+		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
 	}
 
 	private void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
