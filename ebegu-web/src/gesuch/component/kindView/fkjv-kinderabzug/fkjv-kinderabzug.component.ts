@@ -23,13 +23,14 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import * as moment from 'moment';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -116,7 +117,9 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public gemeinsamesGesuchVisible(): boolean {
-        return this.getModel().obhutAlternierendAusueben;
+        return this.getModel().obhutAlternierendAusueben &&
+            this.getModel().familienErgaenzendeBetreuung &&
+            this.isAlleinerziehenOrShortKonkubinat();
     }
 
     public inErstausbildungVisible(): boolean {
@@ -158,6 +161,9 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
+        if (!this.famErgaenzendeBetreuuungVisible()) {
+            this.getModel().familienErgaenzendeBetreuung = undefined;
+        }
     }
 
     private calculateKindIsOrGetsVolljaehrig(age: moment.Moment): boolean {
@@ -170,4 +176,18 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
+    public famErgaenzendeBetreuuungVisible(): boolean {
+        return this.obhutAlternierendAusuebenVisible()
+            && !this.kindIsOrGetsVolljaehrig
+            && EbeguUtil.isNotNullOrUndefined(this.getModel().obhutAlternierendAusueben);
+    }
+
+    private isAlleinerziehenOrShortKonkubinat(): boolean {
+        return this.gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
+            this.gesuchModelManager.getFamiliensituation().startKonkubinat.add(2, 'years').isAfter(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+    }
+
+    public hasKindBetreuungen(): boolean {
+        return this.kindContainer.betreuungen?.length > 0;
+    }
 }

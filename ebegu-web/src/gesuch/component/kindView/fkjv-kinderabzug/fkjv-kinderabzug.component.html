@@ -53,6 +53,22 @@
                 </dv-radio-container-x>
             </div>
         </div>
+        <div class="row" *ngIf="famErgaenzendeBetreuuungVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'FAM_ERGAENZENDE_BETREUUNG_BEIDE'"
+                        [(model)]="getModel().familienErgaenzendeBetreuung"
+                        (modelChange)="change()"
+                        [readonly]="hasKindBetreuungen()"
+                        [dvBisherValue]="getModelGS()?.familienErgaenzendeBetreuung"
+                        [inlineHint]="'FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE'"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+
+            </div>
+        </div>
         <div class="row" *ngIf="gemeinsamesGesuchVisible()">
             <div class="col-xs-12">
                 <dv-radio-container-x>
