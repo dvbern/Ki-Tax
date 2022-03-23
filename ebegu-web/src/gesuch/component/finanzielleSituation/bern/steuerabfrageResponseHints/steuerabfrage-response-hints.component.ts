@@ -51,7 +51,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -130,11 +130,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 
-    public openDialogGS2ZPVVerknuepfen(): void {
+    public openDialogGSZPVVerknuepfen(): void {
         const dialogOptions: MatDialogConfig = {
             data: {
-                gs2: this.gesuchModelManager.getGesuch().gesuchsteller2
-            }
+                gs: this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+                    this.gesuchModelManager.getGesuch().gesuchsteller1 :
+                    this.gesuchModelManager.getGesuch().gesuchsteller2,
+            },
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
     }

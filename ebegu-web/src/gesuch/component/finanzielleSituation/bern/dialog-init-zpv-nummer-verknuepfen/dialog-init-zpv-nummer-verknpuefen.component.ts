@@ -26,7 +26,7 @@ import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerCon
 })
 export class DialogInitZPVNummerVerknuepfen implements OnInit {
 
-    private readonly gs2: TSGesuchstellerContainer;
+    private readonly gs: TSGesuchstellerContainer;
     public email: string;
 
     public constructor(
@@ -34,14 +34,14 @@ export class DialogInitZPVNummerVerknuepfen implements OnInit {
         private readonly gesuchstellerRS: GesuchstellerRS,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
-        this.gs2 = data.gs2;
+        this.gs = data.gs;
     }
 
     public ngOnInit(): void {
     }
 
     public save(): void {
-        this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs2).then(() => this.dialogRef.close());
+        this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs).then(() => this.dialogRef.close());
     }
 
     public close(): void {

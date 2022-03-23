@@ -50,7 +50,7 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{email: getEmailLoggedIn()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
 <div *ngIf="showWarningPartnerNichtGemeinsam()"
@@ -65,7 +65,7 @@
     <p class="ebegu-h3"
        translate
        [translateParams]="{gs2: getGS2name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2</p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGS2ZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_GS2_AUSLOESEN</a>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
 <div *ngIf="showRetry()"
