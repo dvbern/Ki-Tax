@@ -19,6 +19,7 @@
     <label [for]="uniqueName + '_id'" class="ebegu-h1" [class.required]="required">
         <span>{{label | translate}}</span>
     </label>
+    <span *ngIf="inlineHint" class="inline-hint">{{inlineHint | translate}}</span>
     <mat-radio-group
         (change)="change($event)"
         [(ngModel)]="model"
