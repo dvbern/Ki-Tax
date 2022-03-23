@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,6 +42,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -76,8 +79,8 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -542,6 +545,8 @@ public class FinanzielleSituationResource {
 			SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrPartner() == null;
 
+		finSit.setSteuerdatenResponse(steuerdatenResponse);
+
 		if (steuerdatenResponse.getVeranlagungsstand() != null) {
 			finSit.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand()
 							.name()));
@@ -634,6 +639,8 @@ public class FinanzielleSituationResource {
 			@Nonnull FinanzielleSituation finSitGS2,
 			SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrPartner() != null;
+
+		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
 
 		if (steuerdatenResponse.getVeranlagungsstand() != null) {
 			convertedFinSitCont.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand()
