@@ -2882,5 +2882,6 @@
     "SEND_MAIL": "E-Mail senden",
     "ZPV_GS2_SUCCESS": "Sie haben ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
     "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED": "ACHTUNG! Das Geburtsdatum aus der Steuerabfrage stimmt nicht mit dem Geburtsdatum, das in kiBon angegeben wurde überein! Überprüfen Sie das angegebene Geburtsdatum",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

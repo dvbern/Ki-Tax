@@ -17,8 +17,9 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, from, Observable, of, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
@@ -26,7 +27,9 @@ import {
     TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
@@ -48,10 +51,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     private principal: TSBenutzer;
     private subscription: Subscription;
 
+    public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
+        private readonly finSitRS: FinanzielleSituationRS,
     ) {
     }
 
@@ -61,6 +67,12 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 principal => this.principal = principal,
                 err => LOG.error(err),
             );
+
+        const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1 :
+            this.gesuchModelManager.getGesuch().gesuchsteller2;
+        this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
+            gs.finanzielleSituationContainer.id).then(isMatching => this.geburtstagNotMatching$.next(!isMatching));
     }
 
     public ngOnDestroy(): void {

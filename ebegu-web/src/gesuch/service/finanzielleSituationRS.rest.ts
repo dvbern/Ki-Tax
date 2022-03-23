@@ -15,9 +15,11 @@
 
 import {HttpHeaders} from '@angular/common/http';
 import {IHttpService} from 'angular';
+import * as moment from 'moment';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {TSFinanzielleSituationAufteilungDTO} from '../../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {TSFinanzielleSituationResultateDTO} from '../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
@@ -165,5 +167,9 @@ export class FinanzielleSituationRS {
             return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
                 response.data);
         });
+    }
+
+    public geburtsdatumMatchesSteuerabfrage(geburtsdatum: moment.Moment, finSitContainerId: string): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/geburtsdatum-matches-steuerabfrage/${finSitContainerId}?geburtsdatum=${geburtsdatum.format(CONSTANTS.DATE_FORMAT)}`).then(result => result.data as boolean);
     }
 }

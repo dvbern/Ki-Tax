@@ -782,6 +782,40 @@ public class FinanzielleSituationResource {
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
+	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"
+		+ "Ergebniss",
+		response = SteuerdatenResponse.class)
+	@GET
+	@Path("/geburtsdatum-matches-steuerabfrage/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+			SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public boolean resetFinSitSteuerdaten(
+		@Nonnull @NotNull @PathParam("containerId") JaxId jaxContainerId,
+		@Nonnull @NotNull @QueryParam("geburtsdatum") String geburtsdatum,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+
+		Objects.requireNonNull(jaxContainerId.getId());
+		//Antrag suchen
+		FinanzielleSituationContainer finSitContainer = finanzielleSituationService.findFinanzielleSituation(jaxContainerId.getId()).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			"resetFinSitSteuerdaten",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"FinSit ID invalid: " + jaxContainerId.getId()));
+
+		LocalDate datumSteuerdatenAnfrage = requireNonNull(finSitContainer.getFinanzielleSituationJA().getSteuerdatenResponse()).getGeburtsdatumAntragsteller();
+
+		LocalDate formattedGeburtsdatum = LocalDate.parse(geburtsdatum, Constants.DATE_FORMATTER);
+
+		return Objects.equals(datumSteuerdatenAnfrage, formattedGeburtsdatum);
+
+
+	}
+
 
 	@ApiOperation(value = "",
 		response = JaxFinanzielleSituationContainer.class)

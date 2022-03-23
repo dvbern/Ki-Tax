@@ -85,3 +85,9 @@
     <p class="ebegu-h3"
        translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH</p>
 </div>
+
+<div *ngIf="geburtstagNotMatching$ | async"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED</p>
+</div>
