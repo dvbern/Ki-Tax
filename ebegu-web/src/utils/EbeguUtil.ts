@@ -321,7 +321,7 @@ export class EbeguUtil {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
-            return translate.instant('FRANZOESISCH');
+            return translate.instant('FRANZOESISCH_IM_TEXT');
         }
         return translate.instant('DEUTSCH');
     }
