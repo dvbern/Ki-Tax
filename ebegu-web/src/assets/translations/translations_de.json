@@ -198,7 +198,7 @@
     "FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN": "Einkommen aus Erbengemeinschaften",
     "FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN_TOOLTIP": "Formular 8, Ziffer 8.3 der Steuererklärung",
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN": "Haben Sie ein Einkommen erzielt, das im vereinfachten Verfahren abgerechnet wurde?",
-    "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP": "Einkommen, das im vereinfachten Abrechnungsverfahren erzielt und deshalb quellenbesteuert wurde, z.B. aus Tätigkeiten in der Haushaltsreinigung. Es liegt kein Lohnausweis vor. Das Einkommen ist in der Steuererklärung im Formular 2, Ziffer 2.25 erfasst (nicht steuerbare Einkünfte).",
+    "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP": "Einkommen, das im vereinfachten Abrechnungsverfahren erzielt und deshalb quellenbesteuert wurde, z.B. aus Tätigkeiten in der Haushaltsreinigung. Das Einkommen ist in der Steuererklärung im Formular 2, Ziffer 2.25 erfasst (nicht steuerbare Einkünfte).",
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_AMOUNT": "Einkommen, das im vereinfachten Verfahren abgerechnet wurde",
     "FINANZIELLE_SITUATION_ABZUEGE": "Abzüge",
     "FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN": "Abzug: Schuldzinsen",

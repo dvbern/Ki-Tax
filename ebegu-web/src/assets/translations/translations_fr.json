@@ -195,7 +195,7 @@
     "FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN": "Revenus nets provenant de communautés d’héritiers",
     "FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN_TOOLTIP": "Chiffre 8.3 du formulaire 8 de la déclaration d’impôt",
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN": "Avez-vous touché un revenu ayant été décompté dans le cadre de la procédure simplifiée ?",
-    "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP": "Il s’agit du revenu généré dans le cadre de la procédure de décompte simplifiée et imposé à la source (p. ex. travaux de nettoyage) et pour lequel il n’existe pas de certificat de salaire. <br>Le revenu est à saisir au chiffre 2.25 du formulaire 2 de la déclaration d’impôt. <br>",
+    "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP": "Il s’agit du revenu généré dans le cadre de la procédure de décompte simplifiée et imposé à la source (p. ex. travaux de nettoyage). <br>Le revenu est à saisir au chiffre 2.25 du formulaire 2 de la déclaration d’impôt. <br>",
     "FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_AMOUNT": "Revenu décompté dans le cadre de la procédure simplifiée : ",
     "FINANZIELLE_SITUATION_ABZUEGE": "Déductions ",
     "FINANZIELLE_SITUATION_ABZUG_SCHULDZINSEN": "Déduction : intérêts de la dette",
