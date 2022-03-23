@@ -50,8 +50,9 @@ describe('testdatenView', () => {
             ['getAllGesuchsperioden', 'removeGesuchsperiode']);
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['isDevMode', 'getPublicPropertiesCached']);
+            ['isDevMode', 'getPublicPropertiesCached', 'isEbeguKibonAnfrageTestGuiEnabled']);
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
+        applicationPropertyRSSpy.isEbeguKibonAnfrageTestGuiEnabled.and.resolveTo(false);
         applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({
             currentNode: '',
             devmode: false,
