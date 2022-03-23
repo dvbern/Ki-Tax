@@ -101,6 +101,12 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nonnull
 	private Integer minDauerKonkubinat;
 
+	@Nullable
+	private Boolean unterhaltsvereinbarung;
+
+	@Nullable
+	private Boolean geteilteObhut;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -287,5 +293,23 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setMinDauerKonkubinat(Integer minDauerKonkubinat) {
 		this.minDauerKonkubinat = minDauerKonkubinat;
+	}
+
+	@Nullable
+	public Boolean getUnterhaltsvereinbarung() {
+		return unterhaltsvereinbarung;
+	}
+
+	public void setUnterhaltsvereinbarung(@Nullable Boolean unterhaltsvereinbarung) {
+		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public Boolean getGeteilteObhut() {
+		return geteilteObhut;
+	}
+
+	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
+		this.geteilteObhut = geteilteObhut;
 	}
 }

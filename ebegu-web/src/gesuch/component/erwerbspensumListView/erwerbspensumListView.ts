@@ -209,8 +209,19 @@ export class ErwerbspensumListViewController
             return true;
         }
 
-        return this.gesuchModelManager.isGesuchsteller2Required()
-            && this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
+        return this.isErwerbspensumRequiredForGS2();
+    }
+
+    private isErwerbspensumRequiredForGS2(): boolean {
+        if (!this.gesuchModelManager.isGesuchsteller2Required()) {
+            return false;
+        }
+
+        if (!this.showErwerbspensumGS2()) {
+            return false;
+        }
+
+        return this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
     }
 
     public setFocusBack(elementID: string): void {
@@ -227,5 +238,15 @@ export class ErwerbspensumListViewController
         return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
             undFerieninseln: undFerieninselnTxt
         });
+    }
+
+    public showErwerbspensumGS2(): boolean {
+        // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
+        // muss das Erwerbspensum von GS2 nicht angegeben werden
+        if (EbeguUtil.isNotNullAndFalse(this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung)) {
+            return false;
+        }
+
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 }

@@ -111,6 +111,61 @@
                         </div>
                     </div>
 
+                    <!--Geteilte Obhut-->
+                    <div class="row" ng-if="vm.showFrageGeteilteObhut()">
+                        <div class="col-xs-12 dv-input-container-question" >
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT"></span>
+                                      <dv-tooltip input-id="getilteObhut"
+                                                  text="vm.getTextForFamSitGeteilteObhut()"></dv-tooltip>
+                                </span>
+                                <dv-radio-container name="geteilteObhut"
+                                                    ng-model="vm.getFamiliensituation().geteilteObhut"
+                                                    ng-change="vm.frageGeteiltObhutClicked()"
+                                                    ng-required="true"
+                                                    class="input-element sp"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="vm.isFamiliensituationEnabled()"
+                                                    aria-label="{{ 'FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT' |translate}}"
+                                                    aria-described-by="geteilteObhut-error"></dv-radio-container>
+                                <dv-error-messages input-id="geteilteObhut"
+                                                   for="vm.form.geteilteObhut.$error"
+                                                   class="error"></dv-error-messages>
+                                <dv-bisher gs="vm.getFamiliensituationGS().geteilteObhut"
+                                           ja="vm.getFamiliensituation().geteilteObhut"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Frage zu abgeschlossener Unterhaltsvereinbarung-->
+                    <div class="row" ng-if="vm.showFrageUnterhaltsvereinbarung()">
+                        <div class="col-xs-12 dv-input-container-question" >
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG"></span>
+                                      <dv-tooltip input-id="unterhaltsvereinbarung"
+                                                  text="vm.getTextForFamSitUnterhaltsvereinbarung()"></dv-tooltip>
+                                </span>
+                                <dv-radio-container name="unterhaltsvereinbarung"
+                                                    ng-model="vm.getFamiliensituation().unterhaltsvereinbarung"
+                                                    ng-required="true"
+                                                    class="input-element sp"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="vm.isFamiliensituationEnabled()"
+                                                    aria-label="{{ 'FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG' |translate}}"
+                                                    aria-described-by="unterhaltsvereinbarung-error"></dv-radio-container>
+                                <dv-error-messages input-id="unterhaltsvereinbarung"
+                                                   for="vm.form.unterhaltsvereinbarung.$error"
+                                                   class="error"></dv-error-messages>
+                                <dv-bisher gs="vm.getFamiliensituationGS().unterhaltsvereinbarung"
+                                           ja="vm.getFamiliensituation().unterhaltsvereinbarung"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--gesuchstellerKardinalitaet-->
                     <div class="row" ng-if="vm.showGesuchstellerKardinalitaet()">
                         <div class="col-xs-12 dv-input-container-question" >

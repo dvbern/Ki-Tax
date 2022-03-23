@@ -198,8 +198,11 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
-        if (!this.showGesuchstellerKardinalitaet()) {
+        // tslint:disable-next-line:early-exit
+        if (!this.isFamilienstatusAlleinerziehend()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
+            this.getFamiliensituation().unterhaltsvereinbarung = undefined;
+            this.getFamiliensituation().geteilteObhut = undefined;
         }
     }
 
@@ -300,14 +303,45 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehend()) {
+            return this.getFamiliensituation().geteilteObhut;
         }
         return false;
+    }
+
+    public showFrageUnterhaltsvereinbarung(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehend()) {
+            return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
+        }
+        return false;
+    }
+
+    public showFrageGeteilteObhut(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV) {
+            return this.isFamilienstatusAlleinerziehend();
+        }
+        return false;
+    }
+
+    private isFamilienstatusAlleinerziehend(): boolean {
+        return this.getFamiliensituation() && this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+    }
+
+    public frageGeteiltObhutClicked(): void {
+        this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
+        this.getFamiliensituation().unterhaltsvereinbarung = undefined;
     }
 
     public getTextForFamSitFrage2Tooltip(): string {
         return this.$translate.instant('FAMILIENSITUATION_HELP',
             {jahr: this.getFamiliensituation().minDauerKonkubinat});
+    }
+
+    public getTextForFamSitGeteilteObhut(): string {
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT_INFO');
+    }
+
+    public getTextForFamSitUnterhaltsvereinbarung(): string {
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG_INFO');
     }
 }
