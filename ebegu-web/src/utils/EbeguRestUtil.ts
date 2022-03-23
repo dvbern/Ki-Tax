@@ -1862,6 +1862,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
+        restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         return restFinanzielleSituation;
     }
 
@@ -2001,6 +2002,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
+            finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
 
             return finanzielleSituationTS;
         }

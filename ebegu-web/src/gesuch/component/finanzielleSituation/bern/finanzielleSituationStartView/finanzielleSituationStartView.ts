@@ -344,6 +344,18 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
     }
 
+    public showAutomatischePruefungSteuerdatenFrage(): boolean {
+        if (!this.steuerSchnittstelleAktiv) {
+            return false;
+        }
+
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            this.model.gemeinsameSteuererklaerung &&
+            (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff) ||
+                (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff) &&
+                    !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+    }
+
     public steuerdatenzugriffClicked(): void {
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             return;
