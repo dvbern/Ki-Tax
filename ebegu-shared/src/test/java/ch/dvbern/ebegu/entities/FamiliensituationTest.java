@@ -60,18 +60,11 @@ public class FamiliensituationTest {
 	public void hasSecondGesuchstellerAfterFKJV() {
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFkjvFamSit(true);
-		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
-
-		//ALLEINERZIEHEND
 		LocalDate referenzDatum = LocalDate.of(2021, 8,1);
-		Assert.assertEquals(false, familiensituation.hasSecondGesuchsteller(referenzDatum));
-
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-		Assert.assertEquals(true, familiensituation.hasSecondGesuchsteller(referenzDatum));
 
 		//PFLEGEFAMILIE
 		familiensituation.setFamilienstatus(EnumFamilienstatus.PFLEGEFAMILIE);
+		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		Assert.assertEquals(true, familiensituation.hasSecondGesuchsteller(referenzDatum));
 
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
@@ -95,5 +88,30 @@ public class FamiliensituationTest {
 		LocalDate startKonkubinat = LocalDate.of(2019, 7,1);
 		familiensituation.setStartKonkubinat(startKonkubinat);
 		Assert.assertEquals(true, familiensituation.hasSecondGesuchsteller(referenzDatum));
+	}
+
+	@Test
+	public void hasSecondGesuchstellerFKJVAlleinerziehendTest() {
+		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setFkjvFamSit(true);
+		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+		familiensituation.setGeteilteObhut(true);
+		LocalDate referenzDatum = LocalDate.of(2021, 8,1);
+
+		//GETEILTE OBHUT
+		Assert.assertFalse(familiensituation.hasSecondGesuchsteller(referenzDatum));
+		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		Assert.assertTrue(familiensituation.hasSecondGesuchsteller(referenzDatum));
+
+		//NICHT GETEILTE OBHUT ABER UNTERHALTSVEREINBARUNG
+		familiensituation.setGeteilteObhut(false);
+		familiensituation.setGesuchstellerKardinalitaet(null);
+		familiensituation.setUnterhaltsvereinbarung(true);
+		Assert.assertFalse(familiensituation.hasSecondGesuchsteller(referenzDatum));
+
+		//NICHT GETEILTE OBHUT UND KEINE UNTERHALTSVEREINBARUNG
+		familiensituation.setUnterhaltsvereinbarung(false);
+		Assert.assertTrue(familiensituation.hasSecondGesuchsteller(referenzDatum));
 	}
 }

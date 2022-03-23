@@ -20,6 +20,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
+
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
@@ -41,6 +42,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
     private _fkjvFamSit: boolean;
     private _minDauerKonkubinat: number;
+    private _unterhaltsvereinbarung: boolean;
+    private _geteilteObhut: boolean;
 
     public constructor() {
         super();
@@ -196,7 +199,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 if (!this.fkjvFamSit) {
                     return false;
                 }
-                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                return this.hasSecondGesuchstellerFKJV();
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
@@ -238,5 +241,28 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set minDauerKonkubinat(value: number) {
         this._minDauerKonkubinat = value;
+    }
+
+    public get unterhaltsvereinbarung(): boolean {
+        return this._unterhaltsvereinbarung;
+    }
+
+    public set unterhaltsvereinbarung(value: boolean) {
+        this._unterhaltsvereinbarung = value;
+    }
+    public get geteilteObhut(): boolean {
+        return this._geteilteObhut;
+    }
+
+    public set geteilteObhut(value: boolean) {
+        this._geteilteObhut = value;
+    }
+
+    private hasSecondGesuchstellerFKJV(): boolean {
+        if (this.geteilteObhut) {
+            return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+        }
+
+        return !this.unterhaltsvereinbarung;
     }
 }
