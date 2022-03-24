@@ -321,7 +321,7 @@ export class EbeguUtil {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
-            return translate.instant('FRANZOESISCH');
+            return translate.instant('FRANZOESISCH_IM_TEXT');
         }
         return translate.instant('DEUTSCH');
     }
@@ -390,6 +390,17 @@ export class EbeguUtil {
             return null;
         }
         return list.find(user => user.getFullName() === name);
+    }
+
+    // returns true if age (z.B. of a child) gets volljaehrig in this gesuchsperiode
+    public static calculateKindIsOrGetsVolljaehrig(age: moment.Moment, gp: TSGesuchsperiode): boolean {
+        const volljaehrigNumberYears = 18;
+        if (!age) {
+            return false;
+        }
+        const ageClone = age.clone();
+        const dateWith18 = ageClone.add(volljaehrigNumberYears, 'years');
+        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
     /**

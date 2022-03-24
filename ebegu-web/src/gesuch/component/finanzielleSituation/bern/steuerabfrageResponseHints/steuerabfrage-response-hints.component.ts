@@ -162,6 +162,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 korrespondenzSprache:
                     this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache,
             },
+            panelClass: 'steuerdaten-email-dialog'
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
     }

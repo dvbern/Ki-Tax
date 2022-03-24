@@ -11,5 +11,6 @@
     "EVK_IN_PROZENT": "Einkommensänderung in %",
     "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
     "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen",
-    "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse"
+    "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
 }

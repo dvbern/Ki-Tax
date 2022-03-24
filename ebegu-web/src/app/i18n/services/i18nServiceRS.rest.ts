@@ -16,6 +16,7 @@
  */
 
 import {Injectable} from '@angular/core';
+import {DateAdapter} from '@angular/material/core';
 import {TranslateService} from '@ngx-translate/core';
 import {TSBrowserLanguage, tsBrowserLanguageFromString} from '../../../models/enums/TSBrowserLanguage';
 import {CONSTANTS, LOCALSTORAGE_LANGUAGE_KEY} from '../../core/constants/CONSTANTS';
@@ -32,6 +33,7 @@ export class I18nServiceRSRest {
     public constructor(
         private readonly translate: TranslateService,
         private readonly $window: WindowRef,
+        private dateAdapter: DateAdapter<any>,
     ) {
         this.serviceURL =  `${CONSTANTS.REST_API}i18n`;
     }
@@ -46,6 +48,7 @@ export class I18nServiceRSRest {
     ): void {
         this.$window.nativeLocalStorage.setItem(LOCALSTORAGE_LANGUAGE_KEY, selectedLanguage);
         this.translate.use(selectedLanguage); // angular
+        this.dateAdapter.setLocale(selectedLanguage);
         angularJsTranslateService.use(selectedLanguage); // angularjs
     }
 
@@ -55,7 +58,9 @@ export class I18nServiceRSRest {
      * any service registered yet
      */
     public extractPreferredLanguage(): string {
-        return extractPreferredLanguage(this.$window.nativeWindow);
+        const language = extractPreferredLanguage(this.$window.nativeWindow);
+        this.dateAdapter.setLocale(language);
+        return language;
     }
 
     public currentLanguage(): TSBrowserLanguage {

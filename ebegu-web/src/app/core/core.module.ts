@@ -27,6 +27,7 @@ import {
     Optional,
     SkipSelf,
 } from '@angular/core';
+import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
@@ -105,6 +106,7 @@ export class CoreModule {
             providers: [
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
+                {provide: MAT_DATE_LOCALE, useValue: DEFAULT_LOCALE},
                 {provide: ErrorHandler, useClass: RavenErrorHandler},
                 // {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
                 {
