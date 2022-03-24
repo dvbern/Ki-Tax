@@ -203,6 +203,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         if (!this.isFamilienstatusAlleinerziehend()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
             this.getFamiliensituation().unterhaltsvereinbarung = undefined;
+            this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
             this.getFamiliensituation().geteilteObhut = undefined;
         }
     }
@@ -321,6 +322,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return false;
     }
 
+    public showBemerkungUnterhaltsvereinbarung():boolean {
+        return this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+    }
+
     public showFrageGeteilteObhut(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV) {
             return this.isFamilienstatusAlleinerziehend();
@@ -335,6 +340,11 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public frageGeteiltObhutClicked(): void {
         this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
         this.getFamiliensituation().unterhaltsvereinbarung = undefined;
+        this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
+    }
+
+    public frageUnterhaltsvereinbarungClicked(): void {
+        this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
     }
 
     public getTextForFamSitFrage2Tooltip(): string {

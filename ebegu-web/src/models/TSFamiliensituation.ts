@@ -44,6 +44,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _fkjvFamSit: boolean;
     private _minDauerKonkubinat: number;
     private _unterhaltsvereinbarung: TSUnterhaltsvereinbarungAnswer;
+    private _unterhaltsvereinbarungBemerkung: string;
     private _geteilteObhut: boolean;
 
     public constructor() {
@@ -251,6 +252,15 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     public set unterhaltsvereinbarung(value: TSUnterhaltsvereinbarungAnswer) {
         this._unterhaltsvereinbarung = value;
     }
+
+    public get unterhaltsvereinbarungBemerkung(): string {
+        return this._unterhaltsvereinbarungBemerkung;
+    }
+
+    public set unterhaltsvereinbarungBemerkung(value: string) {
+        this._unterhaltsvereinbarungBemerkung = value;
+    }
+
     public get geteilteObhut(): boolean {
         return this._geteilteObhut;
     }

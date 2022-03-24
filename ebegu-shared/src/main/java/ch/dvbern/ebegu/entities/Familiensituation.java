@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
@@ -135,6 +136,11 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_TEXTAREA_LENGTH)
+	private String unterhaltsvereinbarungBemerkung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -299,6 +305,15 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
+	public String getUnterhaltsvereinbarungBemerkung() {
+		return unterhaltsvereinbarungBemerkung;
+	}
+
+	public void setUnterhaltsvereinbarungBemerkung(@Nullable String unterhaltsvereinbarungBemerkung) {
+		this.unterhaltsvereinbarungBemerkung = unterhaltsvereinbarungBemerkung;
+	}
+
+	@Nullable
 	public Boolean getGeteilteObhut() {
 		return geteilteObhut;
 	}
@@ -360,6 +375,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setMinDauerKonkubinat(this.minDauerKonkubinat);
 		target.setGeteilteObhut(this.getGeteilteObhut());
 		target.setUnterhaltsvereinbarung(this.unterhaltsvereinbarung);
+		target.setUnterhaltsvereinbarungBemerkung(this.unterhaltsvereinbarungBemerkung);
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());

@@ -18,6 +18,9 @@
 alter table familiensituation MODIFY unterhaltsvereinbarung VARCHAR(50);
 alter table familiensituation_aud MODIFY column unterhaltsvereinbarung VARCHAR(50);
 
+alter table familiensituation add column unterhaltsvereinbarung_bemerkung TEXT;
+alter table familiensituation_aud add column unterhaltsvereinbarung_bemerkung TEXT;
+
 UPDATE familiensituation set unterhaltsvereinbarung = 'JA' where unterhaltsvereinbarung = '1';
 UPDATE familiensituation set unterhaltsvereinbarung = 'NEIN' where unterhaltsvereinbarung = '0';
 UPDATE familiensituation_aud set unterhaltsvereinbarung = 'JA' where unterhaltsvereinbarung = '1';

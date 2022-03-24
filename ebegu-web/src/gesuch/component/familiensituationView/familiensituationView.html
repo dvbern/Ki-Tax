@@ -155,6 +155,7 @@
                                                     ng-required="true"
                                                     class="input-element sp"
                                                     items="vm.getUnterhaltvereinbarungValues()"
+                                                    ng-change="vm.frageUnterhaltsvereinbarungClicked()"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="vm.isFamiliensituationEnabled()"
@@ -166,6 +167,28 @@
                                 <dv-bisher gs="vm.getFamiliensituationGS().unterhaltsvereinbarung"
                                            ja="vm.getFamiliensituation().unterhaltsvereinbarung"></dv-bisher>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="vm.showBemerkungUnterhaltsvereinbarung()">
+                        <div class="col-sm-12 dv-input-container-medium form-group">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" for="begruendung"
+                                       data-translate="BEGRUENDUNG"></label>
+                                <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
+                                          ng-maxlength="3000"
+                                          ng-minlength="5"
+                                          id="begruendung" name="begruendung"
+                                          ng-model="vm.getFamiliensituation().unterhaltsvereinbarungBemerkung"
+                                          ng-required="true"
+                                          dv-enable-element
+                                          dv-enable-allowed-roles="vm.allowedRoles"
+                                          dv-enable-expression="vm.isFamiliensituationEnabled()">
+                                    </textarea>
+                                <dv-error-messages input-id="begruendung" for="vm.form.begruendung.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+
                         </div>
                     </div>
 

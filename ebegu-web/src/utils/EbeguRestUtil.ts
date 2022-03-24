@@ -619,6 +619,7 @@ export class EbeguRestUtil {
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
             restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
             restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
+            restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
             return restFamiliensituation;
         }
 
@@ -701,6 +702,7 @@ export class EbeguRestUtil {
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
             familiensituation.geteilteObhut = familiensituationFromServer.geteilteObhut;
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
+            familiensituation.unterhaltsvereinbarungBemerkung = familiensituationFromServer.unterhaltsvereinbarungBemerkung;
             return familiensituation;
         }
         return undefined;

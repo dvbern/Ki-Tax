@@ -2887,5 +2887,6 @@
     "ZPV_GS2_SUCCESS": "Sie haben ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
     "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
     "UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH": "Ich kann keine Unterhaltsvereinbarung abschliessen",
+    "BEGRUENDUNG": "Begründung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

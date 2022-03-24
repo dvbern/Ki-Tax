@@ -106,6 +106,9 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
 
 	@Nullable
+	private String unterhaltsvereinbarungBemerkung;
+
+	@Nullable
 	private Boolean geteilteObhut;
 
 	public static long getSerialVersionUID() {
@@ -303,6 +306,15 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setUnterhaltsvereinbarung(@Nullable UnterhaltsvereinbarungAnswer unterhaltsvereinbarung) {
 		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public String getUnterhaltsvereinbarungBemerkung() {
+		return unterhaltsvereinbarungBemerkung;
+	}
+
+	public void setUnterhaltsvereinbarungBemerkung(@Nullable String unterhaltsvereinbarungBemerkung) {
+		this.unterhaltsvereinbarungBemerkung = unterhaltsvereinbarungBemerkung;
 	}
 
 	@Nullable

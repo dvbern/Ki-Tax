@@ -32,6 +32,7 @@ import {TSFamilienstatus} from '../../models/enums/TSFamilienstatus';
 import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSGesuchstellerKardinalitaet} from '../../models/enums/TSGesuchstellerKardinalitaet';
+import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAntragStatusHistory} from '../../models/TSAntragStatusHistory';
@@ -527,14 +528,22 @@ describe('gesuchModelManager', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = true;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should be false if ALLEINERZIEHEND with no geteilte Obhut and unterhaltsvereinbarung nicht moeglich', () => {
+                createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung =
+                    TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
             });
             it('should be true if ALLEINERZIEHEND with no geteilte Obhut and no unterhaltsvereinbarung', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = false;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
             });
             it('should be true if VERHEIRATET with FKJV', () => {
