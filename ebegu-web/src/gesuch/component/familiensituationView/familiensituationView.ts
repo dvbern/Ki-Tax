@@ -18,11 +18,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {
-    getTSFamilienstatusFKJVValues,
-    getTSFamilienstatusValues,
-    TSFamilienstatus,
-} from '../../../models/enums/TSFamilienstatus';
+import {getTSFamilienstatusValues, TSFamilienstatus,} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
     TSGesuchstellerKardinalitaet,
@@ -112,8 +108,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
                     this.situationFKJV = value.getValueAsBoolean();
-                    this.familienstatusValues =
-                        this.situationFKJV ? getTSFamilienstatusFKJVValues() : getTSFamilienstatusValues();
+                    this.familienstatusValues = getTSFamilienstatusValues();
                     this.getFamiliensituation().fkjvFamSit = this.situationFKJV;
                 });
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
