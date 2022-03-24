@@ -229,8 +229,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        this.getModel().finanzielleSituationJA.steuerdatenZugriff = undefined;
-        this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus = undefined;
+        this.resetKiBonAnfrageFinSit();
         if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
