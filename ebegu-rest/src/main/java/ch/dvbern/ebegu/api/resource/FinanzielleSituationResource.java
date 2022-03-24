@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -563,8 +564,7 @@ public class FinanzielleSituationResource {
 					convertedFinSitCont,
 					finSitGS2,
 					SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
-		} else if (requireNonNull(gesuch.getGesuchsteller2()).getGesuchstellerJA().getGeburtsdatum().compareTo(
-				requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) != 0) {
+		} else if (!isGebrutsdatumGS2CorrectInResponse(gesuch, steuerdatenResponse)) {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
 					convertedFinSitCont,
 					finSitGS2,
@@ -572,6 +572,22 @@ public class FinanzielleSituationResource {
 		} else {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(convertedFinSitCont, finSitGS2, steuerdatenResponse);
 		}
+	}
+
+	private boolean isGebrutsdatumGS2CorrectInResponse(
+		Gesuch gesuch,
+		SteuerdatenResponse steuerdatenResponse) {
+
+		requireNonNull(gesuch.getGesuchsteller2());
+		LocalDate geburstdatumGS2 = gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
+
+		if (isGS2Dossiertraeger(steuerdatenResponse)) {
+			return geburstdatumGS2.compareTo(
+				requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger())) == 0;
+		}
+
+		return geburstdatumGS2.compareTo(
+			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) == 0;
 	}
 
 	private void updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
@@ -602,6 +618,10 @@ public class FinanzielleSituationResource {
 	private boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
+	}
+
+	private boolean isGS2Dossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+		return !isAntragstellerDossiertraeger(steuerdatenResponse);
 	}
 
 	private void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
