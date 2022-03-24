@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -72,6 +73,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
 import ch.dvbern.ebegu.services.MassenversandService;
@@ -149,6 +151,9 @@ public class GesuchResource {
 
 	@Inject
 	private KibonAnfrageService kibonAnfrageService;
+
+	@Inject
+	private GesuchstellerService gesuchstellerService;
 
 	@Inject
 	private EbeguConfiguration configuration;
@@ -1111,5 +1116,28 @@ public class GesuchResource {
 			kibonAnfrage.getGeburtsdatum(),
 			kibonAnfrage.getAntragId(),
 			kibonAnfrage.getGesuchsperiodeBeginnJahr());
+	}
+
+	// TODO: potentially already implemented in other task?
+	@ApiOperation(value = "",
+		response = SteuerdatenResponse.class)
+	@Nullable
+	@GET
+	@Path("/gesuchsteller/{gesuchstellerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(GESUCHSTELLER)
+	public JaxGesuch getSteuerdaten(
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) throws EbeguException {
+		Objects.requireNonNull(gesuchstellerId.getId());
+
+		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerId.getId()).orElseThrow();
+
+		Gesuch gesuch = gesuchService.findGesuchOfGS(container);
+
+		return converter.gesuchToJAX(gesuch);
 	}
 }

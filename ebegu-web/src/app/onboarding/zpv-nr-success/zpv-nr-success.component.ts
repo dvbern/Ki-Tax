@@ -1,23 +1,39 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 @Component({
-  selector: 'dv-zpv-nr-success',
-  templateUrl: './zpv-nr-success.component.html',
-  styleUrls: ['./zpv-nr-success.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-zpv-nr-success',
+    templateUrl: './zpv-nr-success.component.html',
+    styleUrls: ['./zpv-nr-success.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
-  private isAuthenticated: boolean;
+    public isAuthenticated: boolean;
+    public gesuchOfGS: TSGesuch;
 
-  public constructor(
-      private readonly authService: AuthServiceRS
-  ) { }
+    public constructor(
+        private readonly authService: AuthServiceRS,
+        private readonly gesuchRS: GesuchRS,
+        private readonly uiRouterGlobals: UIRouterGlobals,
+    ) {
+    }
 
-  public ngOnInit(): void {
-    this.isAuthenticated = EbeguUtil.isNotNullOrUndefined(this.authService.getPrincipal());
-  }
+    public ngOnInit(): void {
+        this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
+            .then(gesuch => this.gesuchOfGS = gesuch);
+        this.isAuthenticated = EbeguUtil.isNotNullOrUndefined(this.authService.getPrincipal());
+    }
 
+    public getGSNumber(): number {
+        if (!this.gesuchOfGS) {
+            return 0;
+        }
+
+        return this.gesuchOfGS.gesuchsteller1.id === this.uiRouterGlobals.params.gesuchstellerId ? 1 : 2;
+    }
 }
