@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
@@ -1060,7 +1061,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
-		if(isUnterhaltsvereinbarungAbschlossen(gesuch)) {
+		if(isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
 			return false;
 		}
 
@@ -1068,14 +1069,16 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
 	}
 
-	private boolean isUnterhaltsvereinbarungAbschlossen(Gesuch gesuch) {
+	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
 		if(gesuch.getFamiliensituationContainer() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
 			return false;
 		}
 
-		return !gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		var unterhaltsvereinbarung = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA
+			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
 
 

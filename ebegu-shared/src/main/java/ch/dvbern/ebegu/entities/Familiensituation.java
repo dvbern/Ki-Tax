@@ -39,6 +39,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -132,7 +133,8 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private Boolean unterhaltsvereinbarung;
+	@Enumerated(EnumType.STRING)
+	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -292,7 +294,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.minDauerKonkubinat = minDauerKonkubinat;
 	}
 
-	public void setUnterhaltsvereinbarung(@Nullable Boolean unterhaltsvereinbarung) {
+	public void setUnterhaltsvereinbarung(@Nullable UnterhaltsvereinbarungAnswer unterhaltsvereinbarung) {
 		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
 	}
 
@@ -306,7 +308,7 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Boolean getUnterhaltsvereinbarung() {
+	public UnterhaltsvereinbarungAnswer getUnterhaltsvereinbarung() {
 		return unterhaltsvereinbarung;
 	}
 
@@ -343,7 +345,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
 		}
 
-		return this.unterhaltsvereinbarung != null && !this.unterhaltsvereinbarung;
+		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN;
 	}
 
 	@Nonnull

@@ -24,6 +24,10 @@ import {
     TSGesuchstellerKardinalitaet,
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
+import {
+    getTSUnterhaltsvereinbarungAnswerValues,
+    TSUnterhaltsvereinbarungAnswer
+} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -72,6 +76,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public savedClicked: boolean = false;
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
+    public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -97,6 +102,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.model = angular.copy(this.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
+        this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
 
     }
@@ -295,6 +301,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public getFamiliensituationValues(): Array<TSFamilienstatus> {
         return this.familienstatusValues;
+    }
+
+    public getUnterhaltvereinbarungValues(): Array<TSUnterhaltsvereinbarungAnswer> {
+        return this.unterhaltsvereinbarungAnswerValues;
     }
 
     public showGesuchstellerKardinalitaet(): boolean {

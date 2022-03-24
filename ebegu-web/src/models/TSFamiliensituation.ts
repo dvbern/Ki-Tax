@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
+import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAnswer';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 
@@ -42,7 +43,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
     private _fkjvFamSit: boolean;
     private _minDauerKonkubinat: number;
-    private _unterhaltsvereinbarung: boolean;
+    private _unterhaltsvereinbarung: TSUnterhaltsvereinbarungAnswer;
     private _geteilteObhut: boolean;
 
     public constructor() {
@@ -243,11 +244,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._minDauerKonkubinat = value;
     }
 
-    public get unterhaltsvereinbarung(): boolean {
+    public get unterhaltsvereinbarung(): TSUnterhaltsvereinbarungAnswer {
         return this._unterhaltsvereinbarung;
     }
 
-    public set unterhaltsvereinbarung(value: boolean) {
+    public set unterhaltsvereinbarung(value: TSUnterhaltsvereinbarungAnswer) {
         this._unterhaltsvereinbarung = value;
     }
     public get geteilteObhut(): boolean {

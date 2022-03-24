@@ -731,8 +731,10 @@
     "PENSUM": "Taux",
     "LABEL_FREIGEBEN": "Valider",
     "LABEL_JA": "Oui",
+    "JA": "Oui",
     "LABEL_OK": "OK",
     "LABEL_NEIN": "Non",
+    "NEIN": "Non",
     "LABEL_SPEICHERN": "Enregistrer",
     "LABEL_ABBRECHEN": "Interrompre",
     "LABEL_ABSENDEN": "Envoyer",
@@ -2863,5 +2865,6 @@
     "KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT": "Ohne Bestätigung für die Verrechnung des KitaPlus Zuschlags entfällt diese Pauschale",
     "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_BESTAETIGUNG": "Wir bestätigen, dass wir den KitaPlus Zuschlag von Fr. 32.- pro Betreuungstag verrechnen",
     "NAME_INSTITUION": "Nom de l'institution",
+    "UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH": "Ich kann keine Unterhaltsvereinbarung abschliessen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
