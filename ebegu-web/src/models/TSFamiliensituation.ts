@@ -19,6 +19,7 @@ import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet
 import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAnswer';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
 
@@ -203,17 +204,32 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 }
                 return this.hasSecondGesuchstellerFKJV();
             case TSFamilienstatus.VERHEIRATET:
-            case TSFamilienstatus.KONKUBINAT:
-                return true;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                if (this.fkjvFamSit) {
+                    return this.hasSecondGesuchstellerFKJV();
+                }
                 const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
                 const xBack = ref
                     .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
                     .subtract(1, 'month'); // 1 month for rule
                 return !this.startKonkubinat || !this.startKonkubinat.isAfter(xBack);
+            case TSFamilienstatus.KONKUBINAT:
+                return true;
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }
+    }
+
+    /**
+     * Wir schauen, ob es einen Zeitabschnitt in der Periode gibt, an dem das Konkubinat noch nicht X Jahre alt ist.
+     * Z.B. Periode 22/23 und Start Konkubinat 1.11.2020: Zwischen 1.8.2022 und 31.10.2022 ist das Konkubinat jünger
+     * als 2 Jahre und die Funktion gibt true zurück.
+     */
+    public konkubinatIsYoungerThanXYearsAtAnyTimeInPeriode(periode: TSGesuchsperiode): boolean {
+        const ref = moment(periode.gueltigkeit.gueltigAb); // must copy otherwise source is also subtracted
+        ref
+            .subtract(this.minDauerKonkubinat, 'years');  // x years for konkubinat
+        return this.startKonkubinat && this.startKonkubinat.isSameOrAfter(ref);
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
@@ -274,6 +290,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
             return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         }
 
-        return !this.unterhaltsvereinbarung;
+        return this.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN;
     }
 }

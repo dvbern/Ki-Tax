@@ -322,19 +322,28 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return false;
     }
 
-    public showBemerkungUnterhaltsvereinbarung():boolean {
+    public showBemerkungUnterhaltsvereinbarung(): boolean {
         return this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
     }
 
     public showFrageGeteilteObhut(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.isFamilienstatusAlleinerziehend();
+            return this.isFamilienstatusAlleinerziehend()
+                || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
         }
         return false;
     }
 
     private isFamilienstatusAlleinerziehend(): boolean {
         return this.getFamiliensituation() && this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+    }
+
+    private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
+        if (!this.getFamiliensituation()) {
+            return false;
+        }
+        return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
+            && this.getFamiliensituation().konkubinatIsYoungerThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
     }
 
     public frageGeteiltObhutClicked(): void {
