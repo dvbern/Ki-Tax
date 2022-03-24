@@ -1,4 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 @Component({
   selector: 'dv-zpv-nr-success',
@@ -8,9 +10,14 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
-  public constructor() { }
+  private isAuthenticated: boolean;
+
+  public constructor(
+      private readonly authService: AuthServiceRS
+  ) { }
 
   public ngOnInit(): void {
+    this.isAuthenticated = EbeguUtil.isNotNullOrUndefined(this.authService.getPrincipal());
   }
 
 }

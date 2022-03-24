@@ -17,7 +17,10 @@
 
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
+import {TSSprache} from '../../../../../models/enums/TSSprache';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 
 @Component({
@@ -27,21 +30,28 @@ import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerCon
 export class DialogInitZPVNummerVerknuepfen implements OnInit {
 
     private readonly gs: TSGesuchstellerContainer;
+    private readonly korrespondenzSprache: TSSprache;
     public email: string;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DialogInitZPVNummerVerknuepfen>,
         private readonly gesuchstellerRS: GesuchstellerRS,
+        private readonly languageService: TranslateService,
+        private readonly $state: StateService,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
         this.gs = data.gs;
+        this.korrespondenzSprache = data.korrespondenzSprache;
     }
 
     public ngOnInit(): void {
     }
 
     public save(): void {
-        this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs).then(() => this.dialogRef.close());
+        const target = this.$state.target('onboarding.zpvgssuccess');
+        const relayPath = this.$state.href(target.$state(), {gesuchstellerId: this.gs.id}, {absolute: true});
+        this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs, this.korrespondenzSprache, relayPath)
+            .then(() => this.dialogRef.close());
     }
 
     public close(): void {

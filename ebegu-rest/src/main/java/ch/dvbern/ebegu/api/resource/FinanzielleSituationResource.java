@@ -792,7 +792,7 @@ public class FinanzielleSituationResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 			SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
-	public boolean resetFinSitSteuerdaten(
+	public boolean doesGeburtsdatumMatchSteuerabfrage(
 		@Nonnull @NotNull @PathParam("containerId") JaxId jaxContainerId,
 		@Nonnull @NotNull @QueryParam("geburtsdatum") String geburtsdatum,
 		@Context UriInfo uriInfo,

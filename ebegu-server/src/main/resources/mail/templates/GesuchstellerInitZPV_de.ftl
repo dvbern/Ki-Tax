@@ -29,7 +29,7 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<ul>
 		<li>Stellen Sie sicher, dass sie weder bei kiBon noch beim BE-Login eingeloggt sind</li>
-		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}${link}">diesem Link</a></li>
+		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}${link}">diesem Link</a></li>
 	</ul>
 	<p>
 		Nachdem Sie sich beim BE-Login eingeloggt haben, werden Sie zu kiBon zurückgeleitet, wo Ihr Antrag mit dem BE-Login verknüpft wird.

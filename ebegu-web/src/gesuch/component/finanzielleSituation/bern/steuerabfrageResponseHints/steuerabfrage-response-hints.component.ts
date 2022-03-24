@@ -15,11 +15,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {BehaviorSubject, from, Observable, of, Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
-import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
@@ -27,7 +34,6 @@ import {
     TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
-import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -71,8 +77,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
             this.gesuchModelManager.getGesuch().gesuchsteller1 :
             this.gesuchModelManager.getGesuch().gesuchsteller2;
-        this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
-            gs.finanzielleSituationContainer.id).then(isMatching => this.geburtstagNotMatching$.next(!isMatching));
+        // tslint:disable-next-line:early-exit
+        if (this.showZugriffErfolgreich()) {
+            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
+                gs.finanzielleSituationContainer.id).then(isMatching => {
+                    this.geburtstagNotMatching$.next(!isMatching);
+            });
+        }
     }
 
     public ngOnDestroy(): void {
@@ -148,6 +159,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 gs: this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
                     this.gesuchModelManager.getGesuch().gesuchsteller1 :
                     this.gesuchModelManager.getGesuch().gesuchsteller2,
+                korrespondenzSprache:
+                    this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache,
             },
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
