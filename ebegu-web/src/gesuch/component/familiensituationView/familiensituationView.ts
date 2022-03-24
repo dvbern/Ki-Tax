@@ -18,7 +18,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {getTSFamilienstatusValues, TSFamilienstatus,} from '../../../models/enums/TSFamilienstatus';
+import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
     TSGesuchstellerKardinalitaet,

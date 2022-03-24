@@ -15,6 +15,7 @@
 
 import {waitForAsync} from '@angular/core/testing';
 import {IHttpBackendService, IQService, IScope} from 'angular';
+import * as moment from 'moment';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
@@ -478,8 +479,12 @@ describe('gesuchModelManager', () => {
             });
         });
         describe('isGesuchsteller2Required', () => {
-            const date = DateUtil.today();
-            const gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(date, date));
+            const dateFrom = moment('2020-08-01');
+            const dateTo = moment('2021-07-31');
+            const gesuchsperiode = new TSGesuchsperiode(
+                TSGesuchsperiodeStatus.AKTIV,
+                new TSDateRange(dateFrom, dateTo)
+            );
             beforeEach(waitForAsync(() => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, undefined);
@@ -502,11 +507,10 @@ describe('gesuchModelManager', () => {
             it('should be true if KONKUBINAT_KEIN_KIND', () => {
                 createFamsit(false, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                const startKonkubinat = DateUtil.today();
-                startKonkubinat.year(startKonkubinat.year() - 3);
+                let startKonkubinat = moment('2018-01-01');
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
-                startKonkubinat.year(startKonkubinat.year() + 1);
+                startKonkubinat = moment('2019-06-01');
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
             });
@@ -556,15 +560,23 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
             });
-            it('should be true if KONKUBINAT_KEIN_KIND with FKJV', () => {
+            it('should be true if KONKUBINAT_KEIN_KIND with FKJV and Konkubinat is old', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                const startKonkubinat = DateUtil.today();
-                startKonkubinat.year(startKonkubinat.year() - 3);
+                const startKonkubinat = moment('2015-01-01');
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
-                startKonkubinat.year(startKonkubinat.year() + 1);
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
+            });
+            it('different cases should be true if KONKUBINAT_KEIN_KIND with FKJV and Konkubinat is young', () => {
+                createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                const startKonkubinat = moment('2019-06-01');
+
+                const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+                famSit.startKonkubinat = startKonkubinat;
+
+                famSit.geteilteObhut = true;
+                famSit.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
             });
         });

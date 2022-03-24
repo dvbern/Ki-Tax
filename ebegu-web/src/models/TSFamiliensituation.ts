@@ -203,7 +203,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                     return false;
                 }
                 return this.hasSecondGesuchstellerFKJV();
-            case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 if (this.fkjvFamSit) {
                     return this.hasSecondGesuchstellerFKJV();
@@ -213,6 +212,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                     .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
                     .subtract(1, 'month'); // 1 month for rule
                 return !this.startKonkubinat || !this.startKonkubinat.isAfter(xBack);
+            case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
             default:
