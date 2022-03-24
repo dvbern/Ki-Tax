@@ -184,10 +184,19 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     private isAlleinerziehenOrShortKonkubinat(): boolean {
         return this.gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
-            this.gesuchModelManager.getFamiliensituation().startKonkubinat.add(2, 'years').isAfter(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+            this.isShortKonkubinat();
     }
 
     public hasKindBetreuungen(): boolean {
         return this.kindContainer.betreuungen?.length > 0;
+    }
+
+    private isShortKonkubinat(): boolean {
+        if (this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+
+        return this.gesuchModelManager.getFamiliensituation().startKonkubinat.clone().add(2, 'years')
+            .isAfter(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
     }
 }
