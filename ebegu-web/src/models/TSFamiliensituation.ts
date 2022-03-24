@@ -196,7 +196,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._gesuchstellerKardinalitaet = value;
     }
 
-    public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
+    public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if (!this.fkjvFamSit) {
@@ -204,14 +204,17 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 }
                 return this.hasSecondGesuchstellerFKJV();
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                // falls das Konkubinat irgendwann in der Periode länger als 2 Jahre dauert,
+                // benötigen wir sowieso einen zweiten Gesuchsteller
+                if (!this.konkubinatGetXYearsOldBeforeEndOfPeriode(endOfPeriode)) {
+                    return true;
+                }
+                // falls Konkubinat kürzer als zwei Jahre ist, wird ein Fragebaum für FKJV angezeigt. Wir
+                // schauen ob die Antworten dort einen zweiten Antragsteller verlangen
                 if (this.fkjvFamSit) {
                     return this.hasSecondGesuchstellerFKJV();
                 }
-                const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
-                const xBack = ref
-                    .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
-                    .subtract(1, 'month'); // 1 month for rule
-                return !this.startKonkubinat || !this.startKonkubinat.isAfter(xBack);
+                return false;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
@@ -230,6 +233,18 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         ref
             .subtract(this.minDauerKonkubinat, 'years');  // x years for konkubinat
         return this.startKonkubinat && this.startKonkubinat.isSameOrAfter(ref);
+    }
+
+    /**
+     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens zwei Jahre alt ist.
+     * z.B. Periode 22/23, Start Konkubinat 1.11.2020 => zwei Jahre am 1.11.2022 erreicht => true
+     */
+    public konkubinatGetXYearsOldBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
+        const ref = moment(endOfPeriode); // must copy otherwise source is also subtracted
+        const xBack = ref
+            .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
+            .subtract(1, 'month'); // 1 month for rule
+        return this.startKonkubinat.isSameOrAfter(xBack);
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {

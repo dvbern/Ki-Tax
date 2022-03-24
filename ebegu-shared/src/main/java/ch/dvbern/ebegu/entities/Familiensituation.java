@@ -346,10 +346,16 @@ public class Familiensituation extends AbstractMutableEntity {
 				// a konkubinat is considered to be "long" and therefore requires a 2nd Gesuchsteller
 				// when it started x years before the given date. Since the rule applies one month after
 				// this five years (as it is with all other rules) we need to substract one month too.
-				return this.startKonkubinat == null ||
-					!this.startKonkubinat.isAfter(referenzdatum
-						.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
-						.minus(1, ChronoUnit.MONTHS));
+				var dateMinusX = referenzdatum
+					.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
+					.minus(1, ChronoUnit.MONTHS);
+				if (this.startKonkubinat == null ||
+					!this.startKonkubinat.isAfter(dateMinusX)) {
+					return true;
+				};
+				if (isFkjvFamSit()) {
+					return this.hasSecondGesuchstellerFKJV();
+				}
 			}
 		}
 		return false;
