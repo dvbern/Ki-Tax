@@ -58,7 +58,9 @@ export class I18nServiceRSRest {
      * any service registered yet
      */
     public extractPreferredLanguage(): string {
-        return extractPreferredLanguage(this.$window.nativeWindow);
+        const language = extractPreferredLanguage(this.$window.nativeWindow);
+        this.dateAdapter.setLocale(language);
+        return language;
     }
 
     public currentLanguage(): TSBrowserLanguage {
