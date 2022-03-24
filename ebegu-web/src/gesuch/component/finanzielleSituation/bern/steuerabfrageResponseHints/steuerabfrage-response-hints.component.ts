@@ -134,7 +134,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         const dialogOptions: MatDialogConfig = {
             data: {
                 gs2: this.gesuchModelManager.getGesuch().gesuchsteller2
-            }
+            },
+            panelClass: 'steuerdaten-email-dialog'
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
     }
