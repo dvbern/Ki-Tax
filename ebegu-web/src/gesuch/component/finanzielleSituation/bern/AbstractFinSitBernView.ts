@@ -115,4 +115,6 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     }
 
     protected abstract resetKiBonAnfrageFinSit(): void;
+
+    protected abstract showAutomatischePruefungSteuerdatenFrage(): boolean;
 }

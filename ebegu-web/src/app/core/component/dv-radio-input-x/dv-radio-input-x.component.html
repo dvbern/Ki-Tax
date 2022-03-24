@@ -20,6 +20,7 @@
         <span>{{label | translate}}</span>
         <dv-tooltip *ngIf="tooltip" [text]="tooltip | translate" [inputId]="uniqueName + '_id'"></dv-tooltip>
     </label>
+    <span *ngIf="inlineHint" class="inline-hint">{{inlineHint | translate}}</span>
     <mat-radio-group
         (change)="change($event)"
         [(ngModel)]="model"

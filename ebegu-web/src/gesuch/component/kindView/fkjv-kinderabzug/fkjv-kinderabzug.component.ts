@@ -23,12 +23,15 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -53,11 +56,13 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     private readonly unsubscribe$: Subject<void> = new Subject<void>();
     private kindIsOrGetsVolljaehrig: boolean = false;
+    private minimaldauerKonkubinat: number;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
         private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
+        private readonly einstellungenRS: EinstellungRS,
     ) {
     }
 
@@ -78,6 +83,12 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
             this.getModel().geburtsdatum,
             gesuchsperiode
         );
+        this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT);
+                this.minimaldauerKonkubinat = parseInt(einstellung.value, 10);
+            });
         this.change();
     }
 
@@ -117,7 +128,9 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public gemeinsamesGesuchVisible(): boolean {
-        return this.getModel().obhutAlternierendAusueben;
+        return this.getModel().obhutAlternierendAusueben &&
+            this.getModel().familienErgaenzendeBetreuung &&
+            this.isAlleinerziehenOrShortKonkubinat();
     }
 
     public inErstausbildungVisible(): boolean {
@@ -159,6 +172,32 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
+        if (!this.famErgaenzendeBetreuuungVisible()) {
+            this.getModel().familienErgaenzendeBetreuung = undefined;
+        }
     }
 
+    public famErgaenzendeBetreuuungVisible(): boolean {
+        return this.obhutAlternierendAusuebenVisible()
+            && !this.kindIsOrGetsVolljaehrig
+            && EbeguUtil.isNotNullOrUndefined(this.getModel().obhutAlternierendAusueben);
+    }
+
+    private isAlleinerziehenOrShortKonkubinat(): boolean {
+        return this.gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
+            this.isShortKonkubinat();
+    }
+
+    public hasKindBetreuungen(): boolean {
+        return this.kindContainer.betreuungen?.length > 0;
+    }
+
+    private isShortKonkubinat(): boolean {
+        if (this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+
+        return this.gesuchModelManager.getFamiliensituation().startKonkubinat.clone().add(this.minimaldauerKonkubinat, 'years')
+            .isAfter(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+    }
 }

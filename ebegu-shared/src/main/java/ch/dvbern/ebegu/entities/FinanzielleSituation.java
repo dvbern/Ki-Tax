@@ -24,10 +24,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -55,6 +51,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean steuerdatenZugriff;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean automatischePruefungErlaubt;
 
 	@Nullable
 	@Column(nullable = true)
@@ -216,6 +216,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
 	}
 
+	@Nullable
+	public Boolean isAutomatischePruefungErlaubt() {
+		return automatischePruefungErlaubt;
+	}
+
+	public void setAutomatischePruefungErlaubt(@Nullable Boolean automatischePruefungErlaubt) {
+		this.automatischePruefungErlaubt = automatischePruefungErlaubt;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -264,6 +273,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
 			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
 			Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
+			Objects.equals(isAutomatischePruefungErlaubt(), otherFinSit.isAutomatischePruefungErlaubt()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
