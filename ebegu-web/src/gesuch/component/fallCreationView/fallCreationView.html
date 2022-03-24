@@ -46,6 +46,7 @@
 
                         <p>
                             {{"ERSTGESUCH_WILLKOMMEN_TEXT_2"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
+                            <i class="fa fa-info-circle"></i>.
                         </p>
 
                     </div>
@@ -131,16 +132,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Gesuchsperiode: Readonly. Don't show for Sozialdienst -->
-                    <div class="row" ng-if="vm.showGesuchsperiodeReadonly()">
-                        <div class="col-sm-12">
-                            <dv-input-container>
-                                <label class="md-no-float" data-translate="GESUCHSPERIODE"
-                                       data-translate-value-gesuchsperiode="{{vm.getGesuchModel().gesuchsperiode.gesuchsperiodeString}}">
-                                </label>
-                            </dv-input-container>
                         </div>
                     </div>
 

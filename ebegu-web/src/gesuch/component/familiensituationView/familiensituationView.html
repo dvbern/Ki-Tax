@@ -68,6 +68,8 @@
                                 <span class="ebegu-h1 required">
                                     <span ng-if="!vm.situationFKJV" data-translate="FAMILIENSITUATION_FRAGE_1"></span>
                                     <span ng-if="vm.situationFKJV" data-translate="FAMILIENSITUATION_FRAGE_1_NEU"></span>
+                                    <dv-tooltip ng-if="vm.situationFKJV" input-id="familienstatus"
+                                                text="'FAMILIENSITUATION_FRAGE_1_NEU_INFO' | translate"></dv-tooltip>
                                 </span>
                                 <dv-radio-container name="familienstatus"
                                                     ng-model="vm.getFamiliensituation().familienstatus"

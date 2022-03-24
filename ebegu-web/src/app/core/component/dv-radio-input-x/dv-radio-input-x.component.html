@@ -18,6 +18,7 @@
 <div>
     <label [for]="uniqueName + '_id'" class="ebegu-h1" [class.required]="required">
         <span>{{label | translate}}</span>
+        <dv-tooltip *ngIf="tooltip" [text]="tooltip | translate" [inputId]="uniqueName + '_id'"></dv-tooltip>
     </label>
     <mat-radio-group
         (change)="change($event)"

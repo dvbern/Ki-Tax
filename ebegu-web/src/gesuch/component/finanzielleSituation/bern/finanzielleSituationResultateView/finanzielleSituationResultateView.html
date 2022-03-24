@@ -111,7 +111,7 @@
                                     <span data-translate="FINANZIELLE_SITUATION_VERMOEGEN_GS_2"
                                           translate-values="{namegs2: vm.extractFullNameGS2()}"></span>
                                     <dv-tooltip input-id="bruttovermoegen2"
-                                                text="'FINANZIELLE_SITUATION_VERMOEGEN_HELP' | translate"></dv-tooltip>
+                                                text="vm.getBruttovermoegenTooltipLabel() | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="bruttovermoegen2" name="bruttovermoegen2"
@@ -235,8 +235,6 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="anrechenbaresEinkommen">
                                     <span data-translate="FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN"></span>
-                                    <dv-tooltip input-id="anrechenbaresEinkommen"
-                                                text="'FINANZIELLE_SITUATION_ANRECHENBARES_EINKOMMEN_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="anrechenbaresEinkommen" name="anrechenbaresEinkommen"

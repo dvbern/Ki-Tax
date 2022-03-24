@@ -26,7 +26,6 @@ import {
     ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import * as moment from 'moment';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
@@ -46,8 +45,6 @@ const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 })
 export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    public static readonly VOLLJAEHRIG_NUMBER_YEARS = 18;
-
     @ViewChild(NgForm)
     public readonly form: NgForm;
 
@@ -65,6 +62,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public ngOnInit(): void {
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.fkjvExchangeService.getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => {
@@ -73,10 +71,13 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         this.fkjvExchangeService.getGeburtsdatumChanged$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(date => {
-                this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(date);
+                this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(date, gesuchsperiode);
                 this.change();
             }, err => LOG.error(err));
-        this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
+        this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+            this.getModel().geburtsdatum,
+            gesuchsperiode
+        );
         this.change();
     }
 
@@ -158,16 +159,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
-    }
-
-    private calculateKindIsOrGetsVolljaehrig(age: moment.Moment): boolean {
-        if (!age) {
-            return false;
-        }
-        const gp = this.gesuchModelManager.getGesuchsperiode();
-        const ageClone = age.clone();
-        const dateWith18 = ageClone.add(FkjvKinderabzugComponent.VOLLJAEHRIG_NUMBER_YEARS, 'years');
-        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
 }

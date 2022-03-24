@@ -149,7 +149,7 @@ public class EinkommenAbschnittRuleTest {
 		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
 		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
-		final String formatedYear = NumberFormat.getInstance(Constants.DEFAULT_LOCALE).format(2016);
+		final String formatedYear = "2016";
 		final String EXPECTED_MESSAGE =
 			"Ihr Antrag wegen Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
 				+ formatedYear

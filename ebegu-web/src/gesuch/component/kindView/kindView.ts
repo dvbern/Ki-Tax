@@ -403,6 +403,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.kinderabzugTyp === TSKinderabzugTyp.FKJV && this.getModel()?.geburtsdatum?.isValid();
     }
 
+    public isUnder18Years(): boolean {
+        const gebDatum = this.getModel()?.geburtsdatum;
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gebDatum?.isValid() && !EbeguUtil.calculateKindIsOrGetsVolljaehrig(gebDatum, gesuchsperiode);
+    }
+
     public isAusserordentlicherAnspruchRequired(): boolean {
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
