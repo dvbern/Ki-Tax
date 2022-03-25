@@ -15,9 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
@@ -27,6 +35,7 @@ import {
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
@@ -48,10 +57,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     private principal: TSBenutzer;
     private subscription: Subscription;
 
+    public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly finSitRS: FinanzielleSituationRS,
     ) {
     }
 
@@ -61,6 +73,17 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 principal => this.principal = principal,
                 err => LOG.error(err),
             );
+
+        const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1 :
+            this.gesuchModelManager.getGesuch().gesuchsteller2;
+        // tslint:disable-next-line:early-exit
+        if (this.showZugriffErfolgreich()) {
+            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
+                gs.finanzielleSituationContainer.id).then(isMatching => {
+                    this.geburtstagNotMatching$.next(!isMatching);
+            });
+        }
     }
 
     public ngOnDestroy(): void {
@@ -130,10 +153,14 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 
-    public openDialogGS2ZPVVerknuepfen(): void {
+    public openDialogGSZPVVerknuepfen(): void {
         const dialogOptions: MatDialogConfig = {
             data: {
-                gs2: this.gesuchModelManager.getGesuch().gesuchsteller2
+                gs: this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+                    this.gesuchModelManager.getGesuch().gesuchsteller1 :
+                    this.gesuchModelManager.getGesuch().gesuchsteller2,
+                korrespondenzSprache:
+                    this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache,
             },
             panelClass: 'steuerdaten-email-dialog'
         };

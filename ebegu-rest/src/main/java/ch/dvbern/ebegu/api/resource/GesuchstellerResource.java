@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -36,20 +37,25 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.resource.authentication.LoginProviderInfoRestService;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -63,6 +69,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.api.resource.authentication.ConnectorUtil.toConnectorTenant;
+
 
 /**
  * REST Resource fuer Gesuchsteller
@@ -87,6 +95,12 @@ public class GesuchstellerResource {
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private LoginProviderInfoRestService loginProviderInfoRestService;
+
+	@Inject
+	private MandantService mandantService;
 
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
 		"object also has a relation to adressen (wohnadresse, umzugadresse, korrespondenzadresse, rechnungsadresse) " +
@@ -158,18 +172,31 @@ public class GesuchstellerResource {
 	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 	public JaxGesuchstellerContainer initZPVNr(
 			@Nonnull @QueryParam("email") String email,
-			@Nonnull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
+			@Nonnull @QueryParam("language") String korrespondenzSprache,
+			@Nonnull @QueryParam("relayPath") String relayPath,
+			@Nonnull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId,
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
 		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
 		Optional<GesuchstellerContainer> optional = gesuchstellerService.findGesuchsteller(gesuchstellerID);
 
+
 		if (optional.isEmpty()) {
 			throw new EbeguEntityNotFoundException("initZPVNr", gesuchstellerID);
 		}
-		GesuchstellerContainer gesuchstellerContainer = optional.get();
 
-		mailService.sendInitGSZPVNr(gesuchstellerContainer, email);
+		GesuchstellerContainer gesuchstellerContainer = optional.get();
+		Mandant mandant;
+		if (mandantCookie == null) {
+			mandant = mandantService.getMandantBern();
+		} else {
+			mandant = mandantService.findMandantByCookie(mandantCookie);
+		}
+
+		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+
+		mailService.sendInitGSZPVNr(url, gesuchstellerContainer, email, korrespondenzSprache);
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerContainer);
 	}
