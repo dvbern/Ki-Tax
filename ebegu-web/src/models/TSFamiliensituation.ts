@@ -206,7 +206,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 // falls das Konkubinat irgendwann in der Periode länger als 2 Jahre dauert,
                 // benötigen wir sowieso einen zweiten Gesuchsteller
-                if (!this.konkubinatGetXYearsOldBeforeEndOfPeriode(endOfPeriode)) {
+                if (!this.konkubinatGetXYearsLongBeforeEndOfPeriode(endOfPeriode)) {
                     return true;
                 }
                 // falls Konkubinat kürzer als zwei Jahre ist, wird ein Fragebaum für FKJV angezeigt. Wir
@@ -228,7 +228,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
      * Z.B. Periode 22/23 und Start Konkubinat 1.11.2020: Zwischen 1.8.2022 und 31.10.2022 ist das Konkubinat jünger
      * als 2 Jahre und die Funktion gibt true zurück.
      */
-    public konkubinatIsYoungerThanXYearsAtAnyTimeInPeriode(periode: TSGesuchsperiode): boolean {
+    public konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(periode: TSGesuchsperiode): boolean {
         const ref = moment(periode.gueltigkeit.gueltigAb); // must copy otherwise source is also subtracted
         ref
             .subtract(this.minDauerKonkubinat, 'years');  // x years for konkubinat
@@ -239,7 +239,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
      * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens zwei Jahre alt ist.
      * z.B. Periode 22/23, Start Konkubinat 1.11.2020 => zwei Jahre am 1.11.2022 erreicht => true
      */
-    public konkubinatGetXYearsOldBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
+    public konkubinatGetXYearsLongBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
         const ref = moment(endOfPeriode); // must copy otherwise source is also subtracted
         const xBack = ref
             .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat

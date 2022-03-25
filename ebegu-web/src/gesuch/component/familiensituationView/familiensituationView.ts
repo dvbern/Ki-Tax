@@ -200,7 +200,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
         // tslint:disable-next-line:early-exit
-        if (!this.isFamilienstatusAlleinerziehendOrYoungKonkubinat()) {
+        if (!this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
             this.getFamiliensituation().unterhaltsvereinbarung = undefined;
             this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
@@ -309,14 +309,14 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrYoungKonkubinat()) {
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return this.getFamiliensituation().geteilteObhut;
         }
         return false;
     }
 
     public showFrageUnterhaltsvereinbarung(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrYoungKonkubinat()) {
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
         }
         return false;
@@ -328,13 +328,13 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public showFrageGeteilteObhut(): boolean {
         if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.isFamilienstatusAlleinerziehendOrYoungKonkubinat()
+            return this.isFamilienstatusAlleinerziehendOrShortKonkubinat()
                 || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
         }
         return false;
     }
 
-    private isFamilienstatusAlleinerziehendOrYoungKonkubinat(): boolean {
+    private isFamilienstatusAlleinerziehendOrShortKonkubinat(): boolean {
         if (!this.getFamiliensituation()) {
             return false;
         }
@@ -342,7 +342,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return true;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsYoungerThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
     }
 
     private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
@@ -350,7 +350,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return false;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsYoungerThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
     }
 
     public frageGeteiltObhutClicked(): void {
