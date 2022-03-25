@@ -783,6 +783,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
 		familiensituation.setGeteilteObhut(familiensituationJAXP.getGeteilteObhut());
 		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
+		familiensituation.setUnterhaltsvereinbarungBemerkung(familiensituationJAXP.getUnterhaltsvereinbarungBemerkung());
 		return familiensituation;
 	}
 
@@ -847,6 +848,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
 		jaxFamiliensituation.setUnterhaltsvereinbarung(persistedFamiliensituation.getUnterhaltsvereinbarung());
+		jaxFamiliensituation.setUnterhaltsvereinbarungBemerkung(persistedFamiliensituation.getUnterhaltsvereinbarungBemerkung());
 		jaxFamiliensituation.setGeteilteObhut(persistedFamiliensituation.getGeteilteObhut());
 		return jaxFamiliensituation;
 	}
@@ -2781,6 +2783,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
+		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.isAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 
 		return finanzielleSituation;
@@ -2844,6 +2847,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
+		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.isAutomatischePruefungErlaubt());
 
 		return jaxFinanzielleSituation;
 	}

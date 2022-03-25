@@ -49,6 +49,9 @@ export class DvRadioInputXComponent implements OnInit {
     @Input()
     public tooltip: string;
 
+    @Input()
+    public inlineHint: string;
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 

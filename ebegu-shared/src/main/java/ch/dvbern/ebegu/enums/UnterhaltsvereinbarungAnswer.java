@@ -15,18 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-.mat-radio-label {
-    position: static !important;
-}
+package ch.dvbern.ebegu.enums;
 
-.mat-radio-container {
-    position: relative !important;
-}
-
-.mat-radio-ripple {
-    position: relative !important;
-}
-
-.inline-hint {
-    padding-left: 5px;
+public enum UnterhaltsvereinbarungAnswer {
+	JA,
+	NEIN,
+	UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
 }
