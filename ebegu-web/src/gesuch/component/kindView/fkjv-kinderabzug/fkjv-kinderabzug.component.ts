@@ -188,6 +188,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         }
 
         return this.gesuchModelManager.getFamiliensituation()
-            .konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(this.gesuchModelManager.getGesuchsperiode());
+            .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
     }
 }
