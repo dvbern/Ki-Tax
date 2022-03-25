@@ -93,9 +93,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 	private static final String FUSSZEILE_EINKOMMEN = "PdfGeneration_FinSit_Fusszeile_Einkuenfte";
 	private static final String FUSSZEILE_VERMOEGEN = "PdfGeneration_FinSit_Fusszeile_Vermoegen";
 	private static final String FUSSZEILE_ABZUEGE = "PdfGeneration_FinSit_Fusszeile_Abzuege";
-	private static final String FUSSZEILE_EINKOMMEN_FKJV = "PdfGeneration_FinSit_Fusszeile_Einkuenfte_FKJV";
-	private static final String FUSSZEILE_VERMOEGEN_FKJV = "PdfGeneration_FinSit_Fusszeile_Vermoegen_FKJV";
-	private static final String FUSSZEILE_ABZUEGE_FKJV = "PdfGeneration_FinSit_Fusszeile_Abzuege_FKJV";
 	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
@@ -653,10 +650,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		if (finSitTyp.equals(FinanzielleSituationTyp.BERN_FKJV)) {
-			createFusszeile(dirPdfContentByte, Lists.newArrayList(
-				translate(FUSSZEILE_EINKOMMEN_FKJV),
-				translate(FUSSZEILE_VERMOEGEN_FKJV),
-				translate(FUSSZEILE_ABZUEGE_FKJV)));
 			return;
 		}
 		createFusszeile(dirPdfContentByte, Lists.newArrayList(
