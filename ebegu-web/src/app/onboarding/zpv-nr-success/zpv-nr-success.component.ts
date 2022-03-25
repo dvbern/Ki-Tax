@@ -24,9 +24,11 @@ export class ZpvNrSuccessComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
-            .then(gesuch => this.gesuchOfGS = gesuch);
         this.isAuthenticated = EbeguUtil.isNotNullOrUndefined(this.authService.getPrincipal());
+        if (this.isAuthenticated) {
+            this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
+                .then(gesuch => this.gesuchOfGS = gesuch);
+        }
     }
 
     public getGSNumber(): number {
