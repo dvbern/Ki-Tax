@@ -33,7 +33,7 @@ export class I18nServiceRSRest {
     public constructor(
         private readonly translate: TranslateService,
         private readonly $window: WindowRef,
-        private dateAdapter: DateAdapter<any>,
+        private readonly dateAdapter: DateAdapter<any>,
     ) {
         this.serviceURL =  `${CONSTANTS.REST_API}i18n`;
     }
