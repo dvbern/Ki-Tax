@@ -47,14 +47,11 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.authentication.LoginProviderInfoRestService;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MailService;
@@ -72,7 +69,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-import static java.util.Objects.requireNonNull;import static ch.dvbern.ebegu.api.resource.authentication.ConnectorUtil.toConnectorTenant;
+import static ch.dvbern.ebegu.api.resource.authentication.ConnectorUtil.toConnectorTenant;
 
 
 /**
@@ -100,16 +97,10 @@ public class GesuchstellerResource {
 	private MailService mailService;
 
 	@Inject
-	private FallService fallService;
-
-	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
 
 	@Inject
 	private MandantService mandantService;
-
-	@Inject
-	private PrincipalBean principalBean;
 
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
 		"object also has a relation to adressen (wohnadresse, umzugadresse, korrespondenzadresse, rechnungsadresse) " +
