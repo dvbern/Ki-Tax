@@ -342,7 +342,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return true;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
@@ -350,7 +350,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return false;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeInPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     public frageGeteiltObhutClicked(): void {
