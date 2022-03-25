@@ -510,7 +510,7 @@ describe('gesuchModelManager', () => {
                 let startKonkubinat = moment('2018-01-01');
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
-                startKonkubinat = moment('2019-06-01');
+                startKonkubinat = moment('2019-12-01');
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.startKonkubinat = startKonkubinat;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
             });
@@ -570,7 +570,7 @@ describe('gesuchModelManager', () => {
             it('different cases should be true if KONKUBINAT_KEIN_KIND with FKJV and Konkubinat is young', () => {
                 createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
-                const startKonkubinat = moment('2019-06-01');
+                const startKonkubinat = moment('2019-12-01');
 
                 const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
                 famSit.startKonkubinat = startKonkubinat;
@@ -578,6 +578,42 @@ describe('gesuchModelManager', () => {
                 famSit.geteilteObhut = true;
                 famSit.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+
+                famSit.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+
+                famSit.geteilteObhut = false;
+                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+
+                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
+
+                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+                expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
+            });
+            it('should test different edge cases for konkubinat duration calculation', () => {
+                createFamsit(true, TSFamilienstatus.KONKUBINAT_KEIN_KIND);
+                gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
+                const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+
+                famSit.startKonkubinat = moment('2019-07-31');
+                expect(famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(moment('2021-07-31'))).toBe(false);
+
+                famSit.startKonkubinat = moment('2018-08-01');
+                expect(famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(moment('2021-07-31'))).toBe(true);
+
+                const gp = new TSGesuchsperiode();
+                gp.gueltigkeit = new TSDateRange(moment('2020-08-01'), moment('2021-07-31'));
+
+                famSit.startKonkubinat = moment('2018-07-31');
+                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(false);
+
+                famSit.startKonkubinat = moment('2018-08-01');
+                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(true);
+
+                famSit.startKonkubinat = moment('2019-07-31');
+                expect(famSit.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(gp)).toBe(true);
             });
         });
     });
