@@ -536,6 +536,7 @@ public abstract class AbstractTestfall {
 		if (gesuch.getEingangsart().isOnlineGesuch()) {
 			finanzielleSituation.setSteuerdatenZugriff(true);
 		}
+		finanzielleSituation.setAutomatischePruefungErlaubt(true);
 
 		setFinSitDefaultValues(finanzielleSituation);
 

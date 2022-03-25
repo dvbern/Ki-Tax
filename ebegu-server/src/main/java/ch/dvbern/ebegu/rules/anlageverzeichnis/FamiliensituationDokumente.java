@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.util.EbeguUtil;
 
 /**
@@ -86,7 +86,7 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 			return !EbeguUtil.isNullOrFalse(familiensituation.getSozialhilfeBezueger());
 		case NACHWEIS_UNTERHALTSVEREINBARUNG:
 			return EbeguUtil.isNotNullAndTrue(familiensituation.isFkjvFamSit()) &&
-					EbeguUtil.isNotNullAndTrue(familiensituation.getUnterhaltsvereinbarung());
+					familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA;
 		default:
 			return false;
 		}

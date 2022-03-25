@@ -619,6 +619,7 @@ export class EbeguRestUtil {
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
             restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
             restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
+            restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
             return restFamiliensituation;
         }
 
@@ -701,6 +702,7 @@ export class EbeguRestUtil {
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
             familiensituation.geteilteObhut = familiensituationFromServer.geteilteObhut;
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
+            familiensituation.unterhaltsvereinbarungBemerkung = familiensituationFromServer.unterhaltsvereinbarungBemerkung;
             return familiensituation;
         }
         return undefined;
@@ -1862,6 +1864,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
+        restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         return restFinanzielleSituation;
     }
 
@@ -2001,6 +2004,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
+            finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
 
             return finanzielleSituationTS;
         }

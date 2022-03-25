@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
@@ -809,19 +810,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 					checkStepStatusForErwerbspensum(wizardStep, true);
 				} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
-					final List<KindContainer> kinderFromGesuch =
-						kindService.findAllKinderFromGesuch(wizardStep.getGesuch().getId())
-							.stream()
-							.filter(kindContainer -> kindContainer.getKindJA().getFamilienErgaenzendeBetreuung())
-							.collect(Collectors.toList());
-					final List<KindContainer> nichtGepruefteKinder = kinderFromGesuch
-						.stream()
-						.filter(kindContainer -> !kindContainer.getKindJA().isGeprueft())
-						.collect(Collectors.toList());
+					final List<KindContainer> kinderFromGesuch = findAllKinderFromGesuch(wizardStep);
+
 					WizardStepStatus status;
 					if (kinderFromGesuch.isEmpty()) {
 						status = WizardStepStatus.NOK;
-					} else if (!nichtGepruefteKinder.isEmpty()) {
+					} else if (hasNichtGepruefteKinder(kinderFromGesuch)) {
 						status = WizardStepStatus.IN_BEARBEITUNG;
 					} else {
 						status = getWizardStepStatusOkOrMutiert(wizardStep);
@@ -830,6 +824,19 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				}
 			}
 		}
+	}
+
+	private List<KindContainer> findAllKinderFromGesuch(WizardStep wizardStep) {
+		return kindService.findAllKinderFromGesuch(wizardStep.getGesuch().getId())
+				.stream()
+				.filter(kindContainer -> kindContainer.getKindJA().getFamilienErgaenzendeBetreuung())
+				.collect(Collectors.toList());
+	}
+
+	private boolean hasNichtGepruefteKinder(List<KindContainer> kinderFromGesuch) {
+		return kinderFromGesuch
+			.stream()
+			.anyMatch(kindContainer -> !kindContainer.getKindJA().isGeprueft());
 	}
 
 	private void updateAllStatusForFamiliensituation(
@@ -855,6 +862,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		LocalDate bis = wizardStep.getGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		if (WizardStepName.FAMILIENSITUATION == wizardStep.getWizardStepName()) {
 			setWizardStepOkOrMutiert(wizardStep);
+		} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
+			//Nach Update der FamilienSituation kann es sein dass die Kinder View nicht mehr Valid ist
+			checkStepStatusForKinderOnChangeFamSit(wizardStep);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
 			updateStatusFromOneGSToTwoGS(wizardStep);
 			//kann man effektiv sagen dass bei nur einem GS niemals Rote Schritte FinanzielleSituation und EVK
@@ -862,6 +872,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (!newEntity.hasSecondGesuchsteller(bis)
 			&& wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
 			updateStatusOnlyOneGS(wizardStep);
+		}
+	}
+
+	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep) {
+		if(hasNichtGepruefteKinder(findAllKinderFromGesuch(wizardStep))) {
+			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
 
@@ -1060,7 +1076,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
-		if(isUnterhaltsvereinbarungAbschlossen(gesuch)) {
+		if(isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
 			return false;
 		}
 
@@ -1068,14 +1084,16 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
 	}
 
-	private boolean isUnterhaltsvereinbarungAbschlossen(Gesuch gesuch) {
+	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
 		if(gesuch.getFamiliensituationContainer() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
 			return false;
 		}
 
-		return !gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		var unterhaltsvereinbarung = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA
+			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
 
 

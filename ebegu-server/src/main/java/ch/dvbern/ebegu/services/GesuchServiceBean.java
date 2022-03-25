@@ -2512,6 +2512,36 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistence.getCriteriaResults(query);
 	}
 
+	@Override
+	public Gesuch findGesuchOfGS(GesuchstellerContainer container) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		query.where(
+				cb.or(
+						cb.equal(
+								root.get(Gesuch_.gesuchsteller1),
+								container
+						),
+						cb.equal(
+								root.get(Gesuch_.gesuchsteller2),
+								container
+						)
+				)
+		);
+
+		final List<Gesuch> results = persistence.getCriteriaResults(query);
+		if (results.size() != 1) {
+			throw new EbeguRuntimeException("findGesuchOfGS", "Not single unique Gesuch found for GS");
+		}
+		Gesuch gesuch = results.stream().findFirst().orElseThrow();
+		authorizer.checkReadAuthorization(gesuch);
+
+		return gesuch;
+	}
+
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
