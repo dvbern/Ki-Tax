@@ -151,6 +151,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (this.model.gemeinsameSteuererklaerung) {
             return false;
         }
+        // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+            return true;
+        }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
         if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
