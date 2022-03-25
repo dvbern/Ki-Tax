@@ -12,7 +12,7 @@ describe('ZpvNrSuccessComponent', () => {
     let component: ZpvNrSuccessComponent;
     let fixture: ComponentFixture<ZpvNrSuccessComponent>;
 
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
     const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['findGesuchOfGesuchsteller']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['params']);
@@ -23,12 +23,12 @@ describe('ZpvNrSuccessComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
             ],
+            declarations: [ZpvNrSuccessComponent],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GesuchRS, useValue: gesuchRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
             ],
-            declarations: [ZpvNrSuccessComponent],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
