@@ -75,6 +75,13 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  **/
 public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
+	private boolean isFKJV = false;
+
+	public BernFinanzielleSituationDokumente(boolean isFKJV) {
+		super();
+		this.isFKJV = isFKJV;
+	}
+
 	@Override
 	public void getAllDokumente(
 		@Nonnull Gesuch gesuch,
@@ -133,6 +140,23 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
 
+		if (this.isFKJV && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
+			&& finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet()) {
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_EINKOMMEN_VERFAHREN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+		}
+
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
@@ -164,6 +188,60 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			anlageVerzeichnis
 		);
 
+		if (this.isFKJV) {
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_BRUTTOVERMOEGENERTRAEGE,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_GEWINNUNGSKOSTEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_SCHULDZINSEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+		}
 	}
 
 	@Override
