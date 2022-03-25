@@ -32,12 +32,12 @@ public class FinanzielleSituationDokumenteVisitor implements FinanzielleSituatio
 
 	@Override
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitBern() {
-		return new BernFinanzielleSituationDokumente();
+		return new BernFinanzielleSituationDokumente(false);
 	}
 
 	@Override
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitBernFKJV() {
-		return new BernFinanzielleSituationDokumente();
+		return new BernFinanzielleSituationDokumente(true);
 	}
 
 	@Override
