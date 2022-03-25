@@ -257,19 +257,20 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		int famGrAnzahlPersonen
 	) {
 		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), stichtag);
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			Kind kind = kindContainer.getKindJA();
 			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
 				famGrAnzahlPersonen++;
-				famGrBeruecksichtigungAbzug+= calculateFKJVKinderabzugForKind(kind, dateToCompare);
+				famGrBeruecksichtigungAbzug+= calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
 			}
 		}
 
 		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
 
-	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, LocalDate dateToCompare) {
+	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {
 		if (kind.getPflegekind()) {
 			Objects.requireNonNull(kind.getPflegeEntschaedigungErhalten());
 			if (kind.getPflegeEntschaedigungErhalten()) {
@@ -281,11 +282,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			if (!kind.getObhutAlternierendAusueben()) {
 				return 1;
 			}
-			Objects.requireNonNull(kind.getGemeinsamesGesuch());
-			if (kind.getGemeinsamesGesuch()) {
-				return 1;
-			}
-			return 0.5;
+			return calculateKinderabzugForObhutAlternierendAusueben(kind, familiensituation, dateToCompare);
 		}
 		if (kind.getInErstausbildung() != null) {
 			if (!kind.getInErstausbildung()) {
@@ -305,6 +302,47 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			}
 		}
 		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
+	}
+
+	private double calculateKinderabzugForObhutAlternierendAusueben(Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {
+		Objects.requireNonNull(kind.getFamilienErgaenzendeBetreuung());
+		Objects.requireNonNull(familiensituation);
+
+		if (!kind.getFamilienErgaenzendeBetreuung()) {
+			return 0.5;
+		}
+
+		if (!isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(familiensituation, dateToCompare)) {
+			return 0.5;
+		}
+
+		Objects.requireNonNull(kind.getGemeinsamesGesuch());
+		if (kind.getGemeinsamesGesuch()) {
+			return 1;
+		}
+
+		return 0.5;
+	}
+
+	public boolean isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(Familiensituation familiensituation, LocalDate dateToCompare) {
+		if (EnumFamilienstatus.ALLEINERZIEHEND == familiensituation.getFamilienstatus()) {
+			return true;
+		}
+
+		if (EnumFamilienstatus.KONKUBINAT_KEIN_KIND != familiensituation.getFamilienstatus()) {
+			return false;
+		}
+
+		return !isKonkubinatMinReached(familiensituation, dateToCompare);
+	}
+
+	private boolean isKonkubinatMinReached(Familiensituation familiensituation, LocalDate dateToCompare) {
+		assert EnumFamilienstatus.KONKUBINAT_KEIN_KIND == familiensituation.getFamilienstatus();
+		assert familiensituation.getStartKonkubinat() != null;
+
+		LocalDate dateKonkubinatMinDauerReached = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat);
+		//min date is reached when datetocompare isAfter dateKonkubinatMinDauerReached
+		return dateToCompare.isAfter(dateKonkubinatMinDauerReached);
 	}
 
 	private boolean is18GeburtstagBeforeDate(@Nonnull Kind kind, @Nonnull LocalDate date) {
