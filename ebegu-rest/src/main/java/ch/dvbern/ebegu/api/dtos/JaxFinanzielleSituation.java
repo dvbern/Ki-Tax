@@ -190,7 +190,7 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public Boolean isAutomatischePruefungErlaubt() {
+	public Boolean getAutomatischePruefungErlaubt() {
 		return automatischePruefungErlaubt;
 	}
 

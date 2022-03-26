@@ -228,7 +228,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public Boolean isAutomatischePruefungErlaubt() {
+	public Boolean getAutomatischePruefungErlaubt() {
 		return automatischePruefungErlaubt;
 	}
 
@@ -282,9 +282,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		}
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
-			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
-			Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
-			Objects.equals(isAutomatischePruefungErlaubt(), otherFinSit.isAutomatischePruefungErlaubt()) &&
+				Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
+				Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
+				Objects.equals(getAutomatischePruefungErlaubt(), otherFinSit.getAutomatischePruefungErlaubt()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
