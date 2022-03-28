@@ -400,7 +400,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showFkjvKinderabzug(): boolean {
-        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV && this.getModel()?.geburtsdatum?.isValid();
+        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV;
+    }
+
+    public isGeburtsdatumValid(): boolean {
+        return this.getModel()?.geburtsdatum?.isValid();
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {

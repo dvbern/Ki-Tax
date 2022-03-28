@@ -180,7 +180,7 @@
                     </ng-container>
 
                     <dv-fkjv-kinderabzug
-                        ng-if="vm.showFkjvKinderabzug()"
+                        ng-if="vm.showFkjvKinderabzug() && vm.isGeburtsdatumValid()"
                         [kind-container]="vm.getContainer()"
                     ></dv-fkjv-kinderabzug>
 

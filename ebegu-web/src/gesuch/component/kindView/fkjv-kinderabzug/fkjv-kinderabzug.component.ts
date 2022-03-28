@@ -171,7 +171,8 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
-        if (!this.famErgaenzendeBetreuuungVisible()) {
+        // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
+        if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
             this.getModel().familienErgaenzendeBetreuung = undefined;
         }
     }
@@ -187,9 +188,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public famErgaenzendeBetreuuungVisible(): boolean {
-        return this.obhutAlternierendAusuebenVisible()
-            && !this.kindIsOrGetsVolljaehrig
-            && EbeguUtil.isNotNullOrUndefined(this.getModel().obhutAlternierendAusueben);
+        return !this.kindIsOrGetsVolljaehrig;
     }
 
     private isAlleinerziehenOrShortKonkubinat(): boolean {
