@@ -2882,7 +2882,7 @@
     "SEND_MAIL": "E-Mail senden",
     "ZPV_GS2_SUCCESS": "Sie haben ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
     "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
-    "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG":  "Sind Sie damit einverstanden, dasss Ihre Angaben automatisch anhand der Steuerdaten überprüft werden?",
+    "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG":  "Sind Sie damit einverstanden, dass Ihre Angaben automatisch anhand der Steuerdaten überprüft werden?",
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_NEIN": "Nein, nur manuelle Prüfung erlauben",
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Sie geben mit dieser Frage Ihr Einverständnis für den Abruf der Steuerdaten, um Ihre Angaben zu überprüfen. Dieser Abruf geschieht in der Regel, sobald die Steuerveranlagung vorliegt. </br></br>Wichtig: Ihre Angaben können auch ohne Ihr Einverständnis anhand der Steuerdaten überprüft werden. Diese Prüfung geschieht manuell durch einen Austausch mit den Steuerbehörden. ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
