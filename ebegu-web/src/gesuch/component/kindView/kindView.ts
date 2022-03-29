@@ -276,7 +276,26 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.getModel().inPruefung = false;
 
         this.errorService.clearAll();
+        if (this.isGeburtstagInvalidForFkjv()) {
+            this.errorService.addMesageAsError(this.$translate.instant('ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG'));
+            return undefined;
+        }
         return this.gesuchModelManager.saveKind(this.model);
+    }
+
+    /**
+     * Geburtsdatum darf nicht auf über 18 Jahre sein, wenn für das Kind bereits eine Betreuung erfasst wurde
+     */
+    public isGeburtstagInvalidForFkjv(): boolean {
+        return this.showFkjvKinderabzug()
+            && this.isOrGetsKindVolljaehrigDuringGP()
+            && this.hasKindBetreuungen();
+    }
+
+    public isOrGetsKindVolljaehrigDuringGP(): boolean {
+        return EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+            this.getModel().geburtsdatum,
+            this.gesuchModelManager.getGesuchsperiode());
     }
 
     public cancel(): void {
@@ -402,7 +421,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showFkjvKinderabzug(): boolean {
-        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV && this.getModel()?.geburtsdatum?.isValid();
+        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV;
+    }
+
+    public isGeburtsdatumValid(): boolean {
+        return this.getModel()?.geburtsdatum?.isValid();
     }
 
     public isUnder18Years(): boolean {

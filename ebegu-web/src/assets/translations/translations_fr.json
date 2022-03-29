@@ -552,6 +552,7 @@
     "FAM_ERGAENZENDE_BETREUUNG": "Voulez-vous demander un bon de garde pour l'enfant ? ",
     "FAM_ERGAENZENDE_BETREUUNG_TS": "Voulez-vous inscrire votre enfant dans une école à journée continue ?",
     "FAM_ERGAENZENDE_BETREUUNG_BEIDE": "Voulez-vous demander un bon de garde pour l'enfant ou l'inscrire dans une école à journée continue ?",
+    "ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG": "Kinder mit Betreuungungen können nicht Volljährig sein. Prüfen Sie das Gebrutsdatum oder löschen Sie die Betreuung",
     "SPRICHT_AMTSSPRACHE": "Votre famille parle-t-elle {{amtssprache}} ?",
     "EINSCHULUNG": "Quelle classe fréquentera l'enfant à partir d'août {{jahr}} ?",
     "FACHSTELLE": "Service spécialisé",
