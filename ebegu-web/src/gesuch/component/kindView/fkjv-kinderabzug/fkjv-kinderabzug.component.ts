@@ -171,8 +171,9 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
-        if (!this.famErgaenzendeBetreuuungVisible()) {
-            this.getModel().familienErgaenzendeBetreuung = undefined;
+        // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
+        if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
+            this.getModel().familienErgaenzendeBetreuung = false;
         }
     }
 
