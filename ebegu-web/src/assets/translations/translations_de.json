@@ -88,6 +88,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Das Formular wurde automatisch anhand der Steuerdaten ausgefüllt. <br>Bitte beantworten Sie die Frage zum Einkommen aus vereinfachtem Verfahren.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Der Abruf der Steuerdaten ist nicht möglich. <br>Die Abfrage liefert eine unterjährige Steuererklärung als Antwort.  ",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Der Abruf der Steuerdaten ist nicht möglich.<br>Für \"{{email}}\" ist keine ZPV-Nummer hinterlegt.",
+    "FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE": "Aus technischen Gründen funktioniert der Abruf der Steuerdaten ab dem {{date}}. Zu diesem Zeitpunkt können Sie den Antrag weiterbearbeiten.",
     "STEUERDATEN_ABHOLEN": "Steuerdaten abholen",
     "ZUERST_STEUERDATEN_ABHOLEN": "Sie müssen zuerst die Steuerdaten abholen",
     "RESET_KIBON_ABFRAGE_WARNING": "Falls Angaben bereits aus den Steuerdaten abgerufen wurden, werden diese gelöscht.",

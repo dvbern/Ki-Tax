@@ -17,6 +17,7 @@ import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -62,7 +63,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         '$timeout',
         'EinstellungRS',
         'DvDialog',
-        'AuthServiceRS'
+        'AuthServiceRS',
+        'ApplicationPropertyRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -83,7 +85,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         $timeout: ITimeoutService,
         einstellungRS: EinstellungRS,
         dvDialog: DvDialog,
-        protected readonly authServiceRS: AuthServiceRS
+        protected readonly authServiceRS: AuthServiceRS,
+        applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -92,7 +95,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             $timeout,
             authServiceRS,
             einstellungRS,
-            dvDialog);
+            dvDialog,
+            applicationPropertyRS);
         this.$stateParams = $stateParams;
         this.copyDataAndInit();
     }
@@ -144,7 +148,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public showSteuerveranlagung(): boolean {
         // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
             return false;
         }
         // bei gemeinsamer Steuererklärung wird die Frage immer auf der StartView gezeigt
@@ -156,7 +160,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
-        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -176,7 +180,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return false;
         }
 
@@ -250,11 +254,11 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public showFormular(): boolean {
         // falls die Einstellung noch nicht geladen wurde zeigen wir das Formular nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
             return false;
         }
         // falls Schnittstelle deaktiviert, erfolgt das Ausfüllen immer manuell
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return true;
         }
         // bei einem Papiergesuch ebenfalls
@@ -275,7 +279,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public isSteueranfrageErfolgreich(): boolean {
-        return this.steuerSchnittstelleAktiv
+        return this.steuerSchnittstelleAktivForPeriode
             && EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.steuerdatenZugriff)
             && isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
@@ -324,7 +328,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     protected showAutomatischePruefungSteuerdatenFrage(): boolean {
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return false;
         }
 

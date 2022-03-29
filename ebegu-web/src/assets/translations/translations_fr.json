@@ -88,6 +88,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Le formulaire a été rempli automatiquement avec vos données fiscales. Bitte kontrollieren Sie die Angaben und beantworten Sie die Frage zum Einkommen aus vereinfachtem Verfahren",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "La requête nous a retourné une déclaration d'impôt en cours d'année. Le formulaire n'a donc pas pu être rempli automatiquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Die Daten konnte nicht von den Steuersystemen übernommen werden, da für die E-Mail Adresse \"{{email}}\" keine ZPV Nummer im BG-Login hinterlegt wurde",
+    "FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE": "Pour des raisons techniques, les données fiscales pourront être récupérées à compter du {{date}}. Vous pourrez continuer à traiter la demande à partir de cette date.",
     "STEUERDATEN_ABHOLEN": "Steuerdaten abholen",
     "ZUERST_STEUERDATEN_ABHOLEN": "Sie müssen zuerst die Steuerdaten abholen",
     "RESET_KIBON_ABFRAGE_WARNING": "Falls Angaben bereits durch die Schnittstelle hinzugefügt wurden, werden diese gelöscht",

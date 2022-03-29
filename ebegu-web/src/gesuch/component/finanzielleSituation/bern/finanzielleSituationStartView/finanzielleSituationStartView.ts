@@ -17,6 +17,7 @@ import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
@@ -64,6 +65,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
+        'ApplicationPropertyRS'
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -87,6 +89,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
+        applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -95,7 +98,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             $timeout,
             authServiceRS,
             einstellungRS,
-            dvDialog);
+            dvDialog,
+            applicationPropertyRS);
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
@@ -119,7 +123,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public showSteuerveranlagung(): boolean {
         // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
             return false;
         }
         // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
@@ -131,7 +135,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return true;
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
-        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -342,7 +346,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return false;
         }
 
@@ -350,7 +354,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return false;
         }
 
