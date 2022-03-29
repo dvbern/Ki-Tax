@@ -257,8 +257,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
             return true;
         }
-        // falls die Frage noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
+        if (EbeguUtil.isNotNullAndFalse(this.model.gemeinsameSteuererklaerung) && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls die Frage mit ja beantwortet wurde, die Abfrage aber noch nicht gemacht wurde,
