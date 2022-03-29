@@ -222,7 +222,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
 	 */
 	private boolean isErwerbspensumRelevantForExistingGS2(@Nonnull Familiensituation familiensituation) {
-		return familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN;
+		return familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
 	@Nonnull

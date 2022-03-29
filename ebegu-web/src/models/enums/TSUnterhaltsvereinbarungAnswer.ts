@@ -16,15 +16,15 @@
  */
 
 export enum TSUnterhaltsvereinbarungAnswer {
-    JA = 'JA',
-    NEIN = 'NEIN',
+    JA_UNTERHALTSVEREINBARUNG = 'JA_UNTERHALTSVEREINBARUNG',
+    NEIN_UNTERHALTSVEREINBARUNG = 'NEIN_UNTERHALTSVEREINBARUNG',
     UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH = 'UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH'
 }
 
 export function getTSUnterhaltsvereinbarungAnswerValues(): Array<TSUnterhaltsvereinbarungAnswer> {
     return [
-        TSUnterhaltsvereinbarungAnswer.JA,
-        TSUnterhaltsvereinbarungAnswer.NEIN,
+        TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG,
+        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG,
         TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
     ];
 }

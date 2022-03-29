@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.enums;
 
 public enum UnterhaltsvereinbarungAnswer {
-	JA,
-	NEIN,
+	JA_UNTERHALTSVEREINBARUNG,
+	NEIN_UNTERHALTSVEREINBARUNG,
 	UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
 }
