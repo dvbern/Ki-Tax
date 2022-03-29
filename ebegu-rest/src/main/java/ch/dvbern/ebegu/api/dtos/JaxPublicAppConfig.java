@@ -43,6 +43,8 @@ public class JaxPublicAppConfig {
 	private final boolean infomaZahlungen;
 	private boolean frenchEnabled;
 	private boolean geresEnabledForMandant;
+	private boolean ebeguKibonAnfrageTestGuiEnabled;
+	private final String steuerschnittstelleAktivAb;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -74,7 +76,10 @@ public class JaxPublicAppConfig {
 			boolean angebotTSActivated,
 			boolean infomaZahlungen,
 			boolean frenchEnabled,
-			boolean geresEnabled) {
+			boolean geresEnabled,
+			boolean ebeguKibonAnfrageTestGuiEnabled,
+			String steuerschnittstelleAktivAb
+		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -105,6 +110,8 @@ public class JaxPublicAppConfig {
 		this.infomaZahlungen = infomaZahlungen;
 		this.frenchEnabled = frenchEnabled;
 		this.geresEnabledForMandant = geresEnabled;
+		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
 	}
 
 	public String getCurrentNode() {
@@ -341,5 +348,17 @@ public class JaxPublicAppConfig {
 
 	public void setGeresEnabledForMandant(boolean geresEnabledForMandant) {
 		this.geresEnabledForMandant = geresEnabledForMandant;
+	}
+
+	public boolean isEbeguKibonAnfrageTestGuiEnabled() {
+		return ebeguKibonAnfrageTestGuiEnabled;
+	}
+
+	public void setEbeguKibonAnfrageTestGuiEnabled(boolean ebeguKibonAnfrageTestGuiEnabled) {
+		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+	}
+
+	public String getSteuerschnittstelleAktivAb() {
+		return steuerschnittstelleAktivAb;
 	}
 }

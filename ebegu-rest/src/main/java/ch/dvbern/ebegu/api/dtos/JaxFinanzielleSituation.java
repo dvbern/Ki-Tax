@@ -54,6 +54,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean steuerdatenZugriff;
 
 	@Nullable
+	private Boolean automatischePruefungErlaubt;
+
+	@Nullable
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -184,5 +187,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
 		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
+	}
+
+	@Nullable
+	public Boolean getAutomatischePruefungErlaubt() {
+		return automatischePruefungErlaubt;
+	}
+
+	public void setAutomatischePruefungErlaubt(@Nullable Boolean automatischePruefungErlaubt) {
+		this.automatischePruefungErlaubt = automatischePruefungErlaubt;
 	}
 }

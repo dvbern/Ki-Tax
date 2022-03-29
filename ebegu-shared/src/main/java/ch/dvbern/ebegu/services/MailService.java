@@ -209,5 +209,8 @@ public interface MailService {
 
 	void sendInfoLATSAntragZurueckAnGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet);
 
-	void sendInitGSZPVNr(@Nonnull GesuchstellerContainer gesuchsteller, @Nonnull String email);
+	void sendInitGSZPVNr(
+			@Nonnull String gesuchsteller,
+			GesuchstellerContainer gesuchstellerContainer,
+			@Nonnull String email, String korrespondenzSprache);
 }

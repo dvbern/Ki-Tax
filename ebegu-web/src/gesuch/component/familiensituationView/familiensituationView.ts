@@ -18,16 +18,16 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {
-    getTSFamilienstatusFKJVValues,
-    getTSFamilienstatusValues,
-    TSFamilienstatus,
-} from '../../../models/enums/TSFamilienstatus';
+import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
     TSGesuchstellerKardinalitaet,
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
+import {
+    getTSUnterhaltsvereinbarungAnswerValues,
+    TSUnterhaltsvereinbarungAnswer
+} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -76,6 +76,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public savedClicked: boolean = false;
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
+    public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -101,6 +102,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.model = angular.copy(this.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
+        this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
 
     }
@@ -112,8 +114,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
                     this.situationFKJV = value.getValueAsBoolean();
-                    this.familienstatusValues =
-                        this.situationFKJV ? getTSFamilienstatusFKJVValues() : getTSFamilienstatusValues();
+                    this.familienstatusValues = getTSFamilienstatusValues();
                     this.getFamiliensituation().fkjvFamSit = this.situationFKJV;
                 });
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
@@ -198,8 +199,12 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
-        if (!this.showGesuchstellerKardinalitaet()) {
+        // tslint:disable-next-line:early-exit
+        if (!this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
+            this.getFamiliensituation().unterhaltsvereinbarung = undefined;
+            this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
+            this.getFamiliensituation().geteilteObhut = undefined;
         }
     }
 
@@ -299,15 +304,75 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.familienstatusValues;
     }
 
+    public getUnterhaltvereinbarungValues(): Array<TSUnterhaltsvereinbarungAnswer> {
+        return this.unterhaltsvereinbarungAnswerValues;
+    }
+
     public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV) {
-            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+            return this.getFamiliensituation().geteilteObhut;
         }
         return false;
+    }
+
+    public showFrageUnterhaltsvereinbarung(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+            return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
+        }
+        return false;
+    }
+
+    public showBemerkungUnterhaltsvereinbarung(): boolean {
+        return this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+    }
+
+    public showFrageGeteilteObhut(): boolean {
+        if (this.getFamiliensituation() && this.situationFKJV) {
+            return this.isFamilienstatusAlleinerziehendOrShortKonkubinat()
+                || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
+        }
+        return false;
+    }
+
+    private isFamilienstatusAlleinerziehendOrShortKonkubinat(): boolean {
+        if (!this.getFamiliensituation()) {
+            return false;
+        }
+        if (this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND) {
+            return true;
+        }
+        return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+    }
+
+    private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
+        if (!this.getFamiliensituation()) {
+            return false;
+        }
+        return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
+            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+    }
+
+    public frageGeteiltObhutClicked(): void {
+        this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
+        this.getFamiliensituation().unterhaltsvereinbarung = undefined;
+        this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
+    }
+
+    public frageUnterhaltsvereinbarungClicked(): void {
+        this.getFamiliensituation().unterhaltsvereinbarungBemerkung = undefined;
     }
 
     public getTextForFamSitFrage2Tooltip(): string {
         return this.$translate.instant('FAMILIENSITUATION_HELP',
             {jahr: this.getFamiliensituation().minDauerKonkubinat});
+    }
+
+    public getTextForFamSitGeteilteObhut(): string {
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT_INFO');
+    }
+
+    public getTextForFamSitUnterhaltsvereinbarung(): string {
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG_INFO');
     }
 }

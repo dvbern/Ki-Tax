@@ -39,10 +39,12 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entitaet zum Speichern von Familiensituation in der Datenbank.
@@ -129,6 +131,20 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nonnull
 	@Column(nullable = false)
 	private Integer minDauerKonkubinat = 5;
+
+	@Nullable
+	@Column(nullable = true)
+	@Enumerated(EnumType.STRING)
+	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
+
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = DB_TEXTAREA_LENGTH)
+	private String unterhaltsvereinbarungBemerkung;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean geteilteObhut;
 
 	public Familiensituation() {
 	}
@@ -284,6 +300,33 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.minDauerKonkubinat = minDauerKonkubinat;
 	}
 
+	public void setUnterhaltsvereinbarung(@Nullable UnterhaltsvereinbarungAnswer unterhaltsvereinbarung) {
+		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public String getUnterhaltsvereinbarungBemerkung() {
+		return unterhaltsvereinbarungBemerkung;
+	}
+
+	public void setUnterhaltsvereinbarungBemerkung(@Nullable String unterhaltsvereinbarungBemerkung) {
+		this.unterhaltsvereinbarungBemerkung = unterhaltsvereinbarungBemerkung;
+	}
+
+	@Nullable
+	public Boolean getGeteilteObhut() {
+		return geteilteObhut;
+	}
+
+	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
+		this.geteilteObhut = geteilteObhut;
+	}
+
+	@Nullable
+	public UnterhaltsvereinbarungAnswer getUnterhaltsvereinbarung() {
+		return unterhaltsvereinbarung;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
@@ -292,6 +335,7 @@ public class Familiensituation extends AbstractMutableEntity {
 				if (!this.isFkjvFamSit()) {
 					return false;
 				}
+				return this.hasSecondGesuchstellerFKJV();
 			case PFLEGEFAMILIE:
 				return this.gesuchstellerKardinalitaet != null && this.gesuchstellerKardinalitaet.equals(
 					EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
@@ -302,13 +346,27 @@ public class Familiensituation extends AbstractMutableEntity {
 				// a konkubinat is considered to be "long" and therefore requires a 2nd Gesuchsteller
 				// when it started x years before the given date. Since the rule applies one month after
 				// this five years (as it is with all other rules) we need to substract one month too.
-				return this.startKonkubinat == null ||
-					!this.startKonkubinat.isAfter(referenzdatum
-						.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
-						.minus(1, ChronoUnit.MONTHS));
+				var dateMinusX = referenzdatum
+					.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
+					.minus(1, ChronoUnit.MONTHS);
+				if (this.startKonkubinat == null ||
+					!this.startKonkubinat.isAfter(dateMinusX)) {
+					return true;
+				};
+				if (isFkjvFamSit()) {
+					return this.hasSecondGesuchstellerFKJV();
+				}
 			}
 		}
 		return false;
+	}
+
+	private boolean hasSecondGesuchstellerFKJV() {
+		if (this.geteilteObhut != null && this.geteilteObhut) {
+			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
+		}
+
+		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN;
 	}
 
 	@Nonnull
@@ -321,6 +379,9 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
 		target.setFkjvFamSit(this.fkjvFamSit);
 		target.setMinDauerKonkubinat(this.minDauerKonkubinat);
+		target.setGeteilteObhut(this.getGeteilteObhut());
+		target.setUnterhaltsvereinbarung(this.unterhaltsvereinbarung);
+		target.setUnterhaltsvereinbarungBemerkung(this.unterhaltsvereinbarungBemerkung);
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -385,6 +446,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&
-			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet());
+			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet()) &&
+			Objects.equals(getGeteilteObhut(), otherFamiliensituation.getGeteilteObhut()) &&
+			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung());
 	}
 }

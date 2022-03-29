@@ -12,7 +12,7 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon - Lastenausgleich Tagesschule</title>
+	<title>kiBon - Verküpfung ihres Antrags mit weiterem BE-Login</title>
 
 </head>
 
@@ -29,7 +29,7 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<ul>
 		<li>Stellen Sie sicher, dass sie weder bei kiBon noch beim BE-Login eingeloggt sind</li>
-		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/init-zpv/${id}">diesem Link</a></li>
+		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}${link}">diesem Link</a></li>
 	</ul>
 	<p>
 		Nachdem Sie sich beim BE-Login eingeloggt haben, werden Sie zu kiBon zurückgeleitet, wo Ihr Antrag mit dem BE-Login verknüpft wird.

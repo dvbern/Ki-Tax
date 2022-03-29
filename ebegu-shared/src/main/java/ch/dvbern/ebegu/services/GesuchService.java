@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -468,4 +469,6 @@ public interface GesuchService {
 	 * haben. Z.B. Lastenausgleich 2020: Gesuche der Periode 2018/19 oder Periode 19/20 werden berücksichtigt
 	 */
 	List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr);
+
+	Gesuch findGesuchOfGS(GesuchstellerContainer container);
 }

@@ -649,6 +649,9 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 	}
 
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		if (finSitTyp.equals(FinanzielleSituationTyp.BERN_FKJV)) {
+			return;
+		}
 		createFusszeile(dirPdfContentByte, Lists.newArrayList(
 			translate(FUSSZEILE_EINKOMMEN),
 			translate(FUSSZEILE_VERMOEGEN),

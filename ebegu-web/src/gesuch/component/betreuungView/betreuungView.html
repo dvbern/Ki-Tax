@@ -456,6 +456,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                     <div class="row" ng-if="vm.showAbrechungDerGutscheineFrage">
                         <div class="col-xs-12 dv-input-container-question">
@@ -839,7 +840,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusBestaetigt() && !vm.isSavingData">
+                                 ng-if="vm.isBetreuungsstatusBestaetigtOrVerfuegt() && !vm.isSavingData">
                                 <div class=" well well-status-bestaetigt">
                                     <i class="fa fa-check" aria-hidden="true"></i>
                                     <span data-translate="BETREUUNG_BESTAETIGT_TEXT"

@@ -17,6 +17,7 @@ import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
@@ -64,6 +65,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
+        'ApplicationPropertyRS'
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -87,6 +89,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
+        applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -95,7 +98,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             $timeout,
             authServiceRS,
             einstellungRS,
-            dvDialog);
+            dvDialog,
+            applicationPropertyRS);
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
@@ -119,15 +123,19 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public showSteuerveranlagung(): boolean {
         // falls die Einstellung noch nicht geladen ist, zeigen wir die Fragen noch nicht
-        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktiv)) {
+        if (EbeguUtil.isNullOrUndefined(this.steuerSchnittstelleAktivForPeriode)) {
             return false;
         }
         // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
         if (!this.model.gemeinsameSteuererklaerung) {
             return false;
         }
+        // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+            return true;
+        }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
-        if (this.steuerSchnittstelleAktiv && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -229,6 +237,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
+        this.resetKiBonAnfrageFinSit();
         if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
@@ -337,11 +346,23 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktiv) {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
             return false;
         }
 
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
+    }
+
+    public showAutomatischePruefungSteuerdatenFrage(): boolean {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
+            return false;
+        }
+
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            this.model.gemeinsameSteuererklaerung &&
+            (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff) ||
+                (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff) &&
+                    !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)));
     }
 
     public steuerdatenzugriffClicked(): void {
@@ -353,7 +374,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public callKiBonAnfrageAndUpdateFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();

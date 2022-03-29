@@ -108,6 +108,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private isLuzern: boolean;
     public submitted: boolean = false;
     private isSpracheAmtspracheDisabled: boolean;
+    private isZemisDeaktiviert: boolean = false;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -165,6 +166,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungKinderabzugTyp();
         this.loadEinstellungMaxAusserordentlicherAnspruch();
         this.loadEinstellungSpracheAmtsprache();
+        this.loadEinstellungZemisDisabled();
     }
 
     public $postLink(): void {
@@ -274,7 +276,26 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.getModel().inPruefung = false;
 
         this.errorService.clearAll();
+        if (this.isGeburtstagInvalidForFkjv()) {
+            this.errorService.addMesageAsError(this.$translate.instant('ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG'));
+            return undefined;
+        }
         return this.gesuchModelManager.saveKind(this.model);
+    }
+
+    /**
+     * Geburtsdatum darf nicht auf über 18 Jahre sein, wenn für das Kind bereits eine Betreuung erfasst wurde
+     */
+    public isGeburtstagInvalidForFkjv(): boolean {
+        return this.showFkjvKinderabzug()
+            && this.isOrGetsKindVolljaehrigDuringGP()
+            && this.hasKindBetreuungen();
+    }
+
+    public isOrGetsKindVolljaehrigDuringGP(): boolean {
+        return EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+            this.getModel().geburtsdatum,
+            this.gesuchModelManager.getGesuchsperiode());
     }
 
     public cancel(): void {
@@ -387,8 +408,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showAusAsylwesen(): boolean {
-        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat
-        return this.getModel().familienErgaenzendeBetreuung;
+        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat und zemis nicht deaktiviert ist
+        return this.getModel().familienErgaenzendeBetreuung && !this.isZemisDeaktiviert;
     }
 
     public showZemisNummer(): boolean {
@@ -400,7 +421,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showFkjvKinderabzug(): boolean {
-        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV && this.getModel()?.geburtsdatum?.isValid();
+        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV;
+    }
+
+    public isGeburtsdatumValid(): boolean {
+        return this.getModel()?.geburtsdatum?.isValid();
+    }
+
+    public isUnder18Years(): boolean {
+        const gebDatum = this.getModel()?.geburtsdatum;
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+        return gebDatum?.isValid() && !EbeguUtil.calculateKindIsOrGetsVolljaehrig(gebDatum, gesuchsperiode);
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {
@@ -533,6 +564,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 if (this.isSpracheAmtspracheDisabled) {
                    this.getModel().sprichtAmtssprache = true;
                 }
+            });
+    }
+
+    private loadEinstellungZemisDisabled(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
+                this.isZemisDeaktiviert = einstellung.value === 'true';
             });
     }
 }
