@@ -89,6 +89,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Les données fiscales ne peuvent pas être récupérées. <br>La déclaration d’impôt semble avoir été remise en cours d’année. <br>Il convient de saisir les informations manuellement et de remettre les justificatifs correspondants.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Les données fiscales ne peuvent pas être récupérées.  <br>Aucun numéro GCP n’est indiqué pour \"{{email}}\". <br>Cliquez ici pour recevoir le courriel vous invitant à saisir un numéro GCP.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED": "ATTENTION! La date de naissance fournie par le système des impôts ne corrsepond pas avec la date de naissance que vous avez entré dans kiBon! Veuillez controller la date de naissance que vous avez saisi",
+    "FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE": "Pour des raisons techniques, les données fiscales pourront être récupérées à compter du {{date}}. Vous pourrez continuer à traiter la demande à partir de cette date.",
     "STEUERDATEN_ABHOLEN": "Récupérer les données des impôts",
     "ZUERST_STEUERDATEN_ABHOLEN": "Vous devez d'abord récupérer les données des impôts",
     "RESET_KIBON_ABFRAGE_WARNING": "Les informations déjà récupérées à partir des données fiscales seront supprimées.",
@@ -555,6 +556,7 @@
     "FAM_ERGAENZENDE_BETREUUNG": "Voulez-vous demander un bon de garde pour l'enfant ? ",
     "FAM_ERGAENZENDE_BETREUUNG_TS": "Voulez-vous inscrire votre enfant dans une école à journée continue ?",
     "FAM_ERGAENZENDE_BETREUUNG_BEIDE": "Voulez-vous demander un bon de garde pour l'enfant ou l'inscrire dans une école à journée continue ?",
+    "ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG": "Kinder mit Betreuungungen können nicht Volljährig sein. Prüfen Sie das Gebrutsdatum oder löschen Sie die Betreuung",
     "SPRICHT_AMTSSPRACHE": "Votre famille parle-t-elle {{amtssprache}} ?",
     "EINSCHULUNG": "Quelle classe fréquentera l'enfant à partir d'août {{jahr}} ?",
     "FACHSTELLE": "Service spécialisé",
@@ -2900,5 +2902,6 @@
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_NEIN": "Non, autoriser uniquement une vérification manuelle",
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Ce faisant, vous acceptez que les données fiscales soient récupérées à des fins de vérification de vos informations. Cette opération a généralement lieu dès que la déclaration d’impôt est disponible. <br><b>Important</b>: il se peut que vos informations soient vérifiées au moyen des données fiscales, même sans votre consentement. Ce contrôle est effectué manuellement par un échange avec les autorités fiscales.",
     "ONBOARDING_TO_FIN_SIT": "Retour à la demande",
+    "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

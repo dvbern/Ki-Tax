@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
+
 export class TSPublicAppConfig {
     public currentNode: string;
     public devmode: boolean;
@@ -43,4 +45,5 @@ export class TSPublicAppConfig {
     public frenchEnabled: boolean;
     public geresEnabledForMandant: boolean;
     public ebeguKibonAnfrageTestGuiEnabled: boolean;
+    public steuerschnittstelleAktivAb: moment.Moment;
 }

@@ -173,4 +173,9 @@ public enum ApplicationPropertyKey {
 	 */
 	GERES_ENABLED_FOR_MANDANT,
 
+	/*
+	 * Wenn dieses Datum überschritten wird, ist Steuerschnittstelle aktiv. Ansonste wird eine Warnung gezeigt.
+	 */
+	SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB
+
 }
