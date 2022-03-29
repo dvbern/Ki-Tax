@@ -2899,5 +2899,6 @@
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Sie geben mit dieser Frage Ihr Einverständnis für den Abruf der Steuerdaten, um Ihre Angaben zu überprüfen. Dieser Abruf geschieht in der Regel, sobald die Steuerveranlagung vorliegt. </br></br>Wichtig: Ihre Angaben können auch ohne Ihr Einverständnis anhand der Steuerdaten überprüft werden. Diese Prüfung geschieht manuell durch einen Austausch mit den Steuerbehörden. ",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED": "ACHTUNG! Das Geburtsdatum aus der Steuerabfrage stimmt nicht mit dem Geburtsdatum, das in kiBon angegeben wurde überein! Überprüfen Sie das angegebene Geburtsdatum",
     "ONBOARDING_TO_FIN_SIT": "Zurück zum Gesuch",
+    "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

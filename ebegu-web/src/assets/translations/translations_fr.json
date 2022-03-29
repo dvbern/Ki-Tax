@@ -2873,5 +2873,6 @@
     "NAME_INSTITUION": "Nom de l'institution",
     "UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH": "Ich kann keine Unterhaltsvereinbarung abschliessen",
     "BEGRUENDUNG": "Motif",
+    "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

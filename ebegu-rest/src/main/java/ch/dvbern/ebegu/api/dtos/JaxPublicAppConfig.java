@@ -44,6 +44,7 @@ public class JaxPublicAppConfig {
 	private boolean frenchEnabled;
 	private boolean geresEnabledForMandant;
 	private boolean ebeguKibonAnfrageTestGuiEnabled;
+	private final String warningSteuerschnittstelleAktivAb;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -76,7 +77,9 @@ public class JaxPublicAppConfig {
 			boolean infomaZahlungen,
 			boolean frenchEnabled,
 			boolean geresEnabled,
-			boolean ebeguKibonAnfrageTestGuiEnabled) {
+			boolean ebeguKibonAnfrageTestGuiEnabled,
+			String warningSteuerschnittstelleAktivAb
+		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -108,6 +111,7 @@ public class JaxPublicAppConfig {
 		this.frenchEnabled = frenchEnabled;
 		this.geresEnabledForMandant = geresEnabled;
 		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+		this.warningSteuerschnittstelleAktivAb = warningSteuerschnittstelleAktivAb;
 	}
 
 	public String getCurrentNode() {
@@ -352,5 +356,9 @@ public class JaxPublicAppConfig {
 
 	public void setEbeguKibonAnfrageTestGuiEnabled(boolean ebeguKibonAnfrageTestGuiEnabled) {
 		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+	}
+
+	public String getWarningSteuerschnittstelleAktivAb() {
+		return warningSteuerschnittstelleAktivAb;
 	}
 }
