@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -102,7 +103,10 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private Integer minDauerKonkubinat;
 
 	@Nullable
-	private Boolean unterhaltsvereinbarung;
+	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
+
+	@Nullable
+	private String unterhaltsvereinbarungBemerkung;
 
 	@Nullable
 	private Boolean geteilteObhut;
@@ -296,12 +300,21 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public Boolean getUnterhaltsvereinbarung() {
+	public UnterhaltsvereinbarungAnswer getUnterhaltsvereinbarung() {
 		return unterhaltsvereinbarung;
 	}
 
-	public void setUnterhaltsvereinbarung(@Nullable Boolean unterhaltsvereinbarung) {
+	public void setUnterhaltsvereinbarung(@Nullable UnterhaltsvereinbarungAnswer unterhaltsvereinbarung) {
 		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public String getUnterhaltsvereinbarungBemerkung() {
+		return unterhaltsvereinbarungBemerkung;
+	}
+
+	public void setUnterhaltsvereinbarungBemerkung(@Nullable String unterhaltsvereinbarungBemerkung) {
+		this.unterhaltsvereinbarungBemerkung = unterhaltsvereinbarungBemerkung;
 	}
 
 	@Nullable

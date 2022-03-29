@@ -21,6 +21,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
@@ -243,7 +244,12 @@ export class ErwerbspensumListViewController
     public showErwerbspensumGS2(): boolean {
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
-        if (EbeguUtil.isNotNullAndFalse(this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung)) {
+        const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
+            .familiensituationContainer.familiensituationJA.unterhaltsvereinbarung;
+        if (
+            unterhaltsvereinbarung !== null
+            && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
+        ) {
             return false;
         }
 

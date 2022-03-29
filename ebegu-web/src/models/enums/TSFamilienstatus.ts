@@ -28,12 +28,3 @@ export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
         TSFamilienstatus.ALLEINERZIEHEND,
     ];
 }
-
-export function getTSFamilienstatusFKJVValues(): Array<TSFamilienstatus> {
-    return [
-        TSFamilienstatus.ALLEINERZIEHEND,
-        TSFamilienstatus.VERHEIRATET,
-        TSFamilienstatus.KONKUBINAT,
-        TSFamilienstatus.KONKUBINAT_KEIN_KIND,
-    ];
-}

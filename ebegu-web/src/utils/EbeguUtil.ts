@@ -44,7 +44,6 @@ const defaultDateFormat = 'DD.MM.YYYY';
 export class EbeguUtil {
 
     public static $inject = ['$filter', '$translate', '$log'];
-    public static readonly VOLLJAEHRIG_NUMBER_YEARS = 18;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -322,7 +321,7 @@ export class EbeguUtil {
             return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
         if (gemeindeStammdaten.korrespondenzspracheFr) {
-            return translate.instant('FRANZOESISCH');
+            return translate.instant('FRANZOESISCH_IM_TEXT');
         }
         return translate.instant('DEUTSCH');
     }
@@ -393,13 +392,15 @@ export class EbeguUtil {
         return list.find(user => user.getFullName() === name);
     }
 
-    public static isOrGetKindVolljaehrigDuringGP(age: moment.Moment, gesuchsperiode: TSGesuchsperiode): boolean {
+    // returns true if age (z.B. of a child) gets volljaehrig in this gesuchsperiode
+    public static calculateKindIsOrGetsVolljaehrig(age: moment.Moment, gp: TSGesuchsperiode): boolean {
+        const volljaehrigNumberYears = 18;
         if (!age) {
             return false;
         }
         const ageClone = age.clone();
-        const dateWith18 = ageClone.add(EbeguUtil.VOLLJAEHRIG_NUMBER_YEARS, 'years');
-        return dateWith18.isSameOrBefore(gesuchsperiode.gueltigkeit.gueltigBis);
+        const dateWith18 = ageClone.add(volljaehrigNumberYears, 'years');
+        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
     }
 
     /**

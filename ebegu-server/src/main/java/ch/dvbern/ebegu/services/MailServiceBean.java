@@ -798,19 +798,24 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendInitGSZPVNr(@Nonnull GesuchstellerContainer container, @Nonnull String email) {
-		final Sprache sprache = container.getGesuchstellerJA().getKorrespondenzSprache();
-		try {
-			LOG.info("Sende Init ZPV Nr. Mail für GS {}", container.getId());
+	public void sendInitGSZPVNr(
+			@Nonnull String url,
+			GesuchstellerContainer gesuchstellerContainer,
+			@Nonnull String email, String korrespondenzSprache) {
 
-			String message = mailTemplateConfig.getInitGSZPVNr(container, Collections.singletonList(sprache), email);
+		try {
+			LOG.info("Sende Init ZPV Nr. Mail für GS {}", gesuchstellerContainer.getGesuchstellerJA().getId());
+
+			String trunctatedHostname = ebeguConfiguration.getHostname().replace("/#", "");
+
+			String message = mailTemplateConfig.getInitGSZPVNr(url, Collections.singletonList(Sprache.valueOf(korrespondenzSprache)), email, trunctatedHostname);
 			sendMessageWithTemplate(message, email);
 			LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", email);
 		}  catch (MailException mailException) {
 			logExceptionAccordingToEnvironment(
 					mailException,
 					"Mail sendInitGSZPVNr konnte nicht verschickt werden fuer Gesuchsteller",
-					container.getId());
+					gesuchstellerContainer.getGesuchstellerJA().getId());
 		}
 	}
 

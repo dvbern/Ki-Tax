@@ -28,9 +28,7 @@ import {
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
-import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
@@ -56,17 +54,16 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     private readonly unsubscribe$: Subject<void> = new Subject<void>();
     private kindIsOrGetsVolljaehrig: boolean = false;
-    private minimaldauerKonkubinat: number;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
         private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
-        private readonly einstellungenRS: EinstellungRS,
     ) {
     }
 
     public ngOnInit(): void {
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.fkjvExchangeService.getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => {
@@ -75,20 +72,13 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         this.fkjvExchangeService.getGeburtsdatumChanged$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(date => {
-                this.kindIsOrGetsVolljaehrig =
-                    EbeguUtil.isOrGetKindVolljaehrigDuringGP(date, this.gesuchModelManager.getGesuchsperiode());
+                this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(date, gesuchsperiode);
                 this.change();
             }, err => LOG.error(err));
-        this.kindIsOrGetsVolljaehrig =
-           EbeguUtil.isOrGetKindVolljaehrigDuringGP(
-                this.getModel().geburtsdatum,
-                this.gesuchModelManager.getGesuchsperiode());
-        this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT);
-                this.minimaldauerKonkubinat = parseInt(einstellung.value, 10);
-            });
+        this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+            this.getModel().geburtsdatum,
+            gesuchsperiode
+        );
         this.change();
     }
 
@@ -196,7 +186,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
             return false;
         }
 
-        return this.gesuchModelManager.getFamiliensituation().startKonkubinat.clone().add(this.minimaldauerKonkubinat, 'years')
-            .isAfter(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        return this.gesuchModelManager.getFamiliensituation()
+            .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
     }
 }

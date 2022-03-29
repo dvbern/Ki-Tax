@@ -20,16 +20,21 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  * Entität für die Finanzielle Situation
@@ -96,6 +101,12 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal bruttoLohn;
+
+	@Nullable
+	@OneToOne(optional = true, orphanRemoval = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanzielle_situation_stuerdaten_response"))
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+	private SteuerdatenResponse steuerdatenResponse;
 
 	public FinanzielleSituation() {
 	}
@@ -217,7 +228,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public Boolean isAutomatischePruefungErlaubt() {
+	public Boolean getAutomatischePruefungErlaubt() {
 		return automatischePruefungErlaubt;
 	}
 
@@ -271,9 +282,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		}
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
-			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
-			Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
-			Objects.equals(isAutomatischePruefungErlaubt(), otherFinSit.isAutomatischePruefungErlaubt()) &&
+				Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
+				Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
+				Objects.equals(getAutomatischePruefungErlaubt(), otherFinSit.getAutomatischePruefungErlaubt()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
@@ -286,4 +297,12 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege());
 	}
 
+	@Nullable
+	public SteuerdatenResponse getSteuerdatenResponse() {
+		return steuerdatenResponse;
+	}
+
+	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
+		this.steuerdatenResponse = steuerdatenResponse;
+	}
 }

@@ -76,6 +76,12 @@
                             <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
                         </div>
                     </div>
+                    <div ng-if="vm.showWarningSteuerschnittstelleNotYetActive()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3">
+                            {{'FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE' | translate:{date: vm.steuerSchnittstelleAktivAbStr} }}
+                        </p>
+                    </div>
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"

@@ -66,20 +66,22 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
-                                    <span ng-if="!vm.situationFKJV" data-translate="FAMILIENSITUATION_FRAGE_1"></span>
-                                    <span ng-if="vm.situationFKJV" data-translate="FAMILIENSITUATION_FRAGE_1_NEU"></span>
+                                    <span data-translate="FAMILIENSITUATION_FRAGE_1"></span>
+                                    <dv-tooltip ng-if="vm.situationFKJV" input-id="familienstatus"
+                                                text="'FAMILIENSITUATION_FRAGE_1_NEU_INFO' | translate"></dv-tooltip>
                                 </span>
                                 <dv-radio-container name="familienstatus"
                                                     ng-model="vm.getFamiliensituation().familienstatus"
                                                     ng-required="true"
-                                                    class="input-element sp" items="vm.getFamiliensituationValues()"
+                                                    class="input-element sp"
+                                                    items="vm.getFamiliensituationValues()"
                                                     ng-change="vm.familienstatusChanged()"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="vm.isFamiliensituationEnabled()"
                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_1' |translate}}"
                                                     aria-described-by="familienstatus-error"
-                                                    dv-fkjv-famsit="vm.situationFKJV"></dv-radio-container>
+                                                    ></dv-radio-container>
                                 <dv-error-messages input-id="familienstatus" for="vm.form.familienstatus.$error"
                                                    class="error"></dv-error-messages>
                                 <dv-bisher gs="vm.getFamiliensituationGS().familienstatus"
@@ -99,6 +101,7 @@
                                                    ng-model="vm.getFamiliensituation().startKonkubinat"
                                                    class="input-element"
                                                    ng-required="true"
+                                                   no-future="true"
                                                    dv-on-blur="vm.onDatumBlur()"
                                                    ng-disabled="vm.isStartKonkubinatDisabled()">
                                     </dv-datepicker>
@@ -152,6 +155,8 @@
                                                     ng-model="vm.getFamiliensituation().unterhaltsvereinbarung"
                                                     ng-required="true"
                                                     class="input-element sp"
+                                                    items="vm.getUnterhaltvereinbarungValues()"
+                                                    ng-change="vm.frageUnterhaltsvereinbarungClicked()"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="vm.isFamiliensituationEnabled()"
@@ -163,6 +168,28 @@
                                 <dv-bisher gs="vm.getFamiliensituationGS().unterhaltsvereinbarung"
                                            ja="vm.getFamiliensituation().unterhaltsvereinbarung"></dv-bisher>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="vm.showBemerkungUnterhaltsvereinbarung()">
+                        <div class="col-sm-12 dv-input-container-medium form-group">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" for="begruendung"
+                                       data-translate="BEGRUENDUNG"></label>
+                                <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
+                                          ng-maxlength="3000"
+                                          ng-minlength="5"
+                                          id="begruendung" name="begruendung"
+                                          ng-model="vm.getFamiliensituation().unterhaltsvereinbarungBemerkung"
+                                          ng-required="true"
+                                          dv-enable-element
+                                          dv-enable-allowed-roles="vm.allowedRoles"
+                                          dv-enable-expression="vm.isFamiliensituationEnabled()">
+                                    </textarea>
+                                <dv-error-messages input-id="begruendung" for="vm.form.begruendung.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+
                         </div>
                     </div>
 

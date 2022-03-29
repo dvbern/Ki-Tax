@@ -47,6 +47,9 @@ export class DvRadioInputXComponent implements OnInit {
     public required: boolean = false;
 
     @Input()
+    public tooltip: string;
+
+    @Input()
     public inlineHint: string;
 
     @Output()

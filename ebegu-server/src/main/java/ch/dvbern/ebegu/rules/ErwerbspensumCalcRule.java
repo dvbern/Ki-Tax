@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -102,7 +103,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			return false;
 		}
 
-		return isErwerbspensumForSecondGSRelevant(familiensituation);
+		return isErwerbspensumRelevantForExistingGS2(familiensituation);
 	}
 
 	private int getMinimumErwerbspensum(@Nonnull AbstractPlatz betreuung) {
@@ -220,12 +221,8 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
 	 */
-	private boolean isErwerbspensumForSecondGSRelevant(@Nonnull Familiensituation familiensituation) {
-		if(familiensituation.getUnterhaltsvereinbarung() == null) {
-			return true;
-		}
-
-		return familiensituation.getUnterhaltsvereinbarung();
+	private boolean isErwerbspensumRelevantForExistingGS2(@Nonnull Familiensituation familiensituation) {
+		return familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN;
 	}
 
 	@Nonnull
