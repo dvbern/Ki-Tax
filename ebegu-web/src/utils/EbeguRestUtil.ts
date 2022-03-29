@@ -4305,6 +4305,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
+        publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         return publicAppConfigTS;
 
     }

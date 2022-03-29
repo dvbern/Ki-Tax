@@ -360,7 +360,7 @@ public class ApplicationPropertyResource {
 		ApplicationProperty geresEnabledForMandant =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GERES_ENABLED_FOR_MANDANT, mandant)
 						.orElseThrow(() -> notFound);
-		ApplicationProperty warningSteuerschnittstelleAktivAb =
+		ApplicationProperty steuerschnittstelleAktivAb =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB, mandant)
 						.orElseThrow(() -> notFound);
 
@@ -412,7 +412,7 @@ public class ApplicationPropertyResource {
 			stringToBool(frenchEnabled.getValue()),
 			stringToBool(geresEnabledForMandant.getValue()),
 			isEbeguKibonAnfrageTestGuiEnabled,
-			warningSteuerschnittstelleAktivAb.getValue()
+			steuerschnittstelleAktivAb.getValue()
 			);
 		return Response.ok(pubAppConf).build();
 	}
