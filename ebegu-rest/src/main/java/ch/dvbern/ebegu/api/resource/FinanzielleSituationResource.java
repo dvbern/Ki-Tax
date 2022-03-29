@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -734,7 +733,7 @@ public class FinanzielleSituationResource {
 	@Path("/kibonanfrage/reset/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ GESUCHSTELLER })
+	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer resetFinSitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,

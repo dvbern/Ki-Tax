@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,16 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSUnterhaltsvereinbarungAnswer {
-    JA_UNTERHALTSVEREINBARUNG = 'JA_UNTERHALTSVEREINBARUNG',
-    NEIN_UNTERHALTSVEREINBARUNG = 'NEIN_UNTERHALTSVEREINBARUNG',
-    UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH = 'UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH'
-}
+UPDATE familiensituation set unterhaltsvereinbarung = 'JA_UNTERHALTSVEREINBARUNG' where unterhaltsvereinbarung = 'JA';
+UPDATE familiensituation set unterhaltsvereinbarung = 'NEIN_UNTERHALTSVEREINBARUNG' where unterhaltsvereinbarung = 'NEIN';
+UPDATE familiensituation_aud set unterhaltsvereinbarung = 'JA_UNTERHALTSVEREINBARUNG' where unterhaltsvereinbarung = 'JA';
+UPDATE familiensituation_aud set unterhaltsvereinbarung = 'NEIN_UNTERHALTSVEREINBARUNG' where unterhaltsvereinbarung = 'NEIN';
 
-export function getTSUnterhaltsvereinbarungAnswerValues(): Array<TSUnterhaltsvereinbarungAnswer> {
-    return [
-        TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG,
-        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG,
-        TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
-    ];
-}

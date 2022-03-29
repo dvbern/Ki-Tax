@@ -366,7 +366,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
 		}
 
-		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN;
+		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
 	@Nonnull

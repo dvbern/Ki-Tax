@@ -1092,7 +1092,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 
 		var unterhaltsvereinbarung = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
-		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA
+		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
 			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
 

@@ -375,4 +375,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public getTextForFamSitUnterhaltsvereinbarung(): string {
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG_INFO');
     }
+
+    public getTextForFamSitUnterhaltsvereinbarungGrund(): string {
+        return this.$translate.instant('UNTERHALTSVEREINBARUNG_GRUND_INFO');
+    }
 }

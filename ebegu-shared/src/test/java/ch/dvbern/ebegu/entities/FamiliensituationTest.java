@@ -108,11 +108,11 @@ public class FamiliensituationTest {
 		//NICHT GETEILTE OBHUT ABER UNTERHALTSVEREINBARUNG
 		familiensituation.setGeteilteObhut(false);
 		familiensituation.setGesuchstellerKardinalitaet(null);
-		familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.JA);
+		familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG);
 		Assert.assertFalse(familiensituation.hasSecondGesuchsteller(referenzDatum));
 
 		//NICHT GETEILTE OBHUT UND KEINE UNTERHALTSVEREINBARUNG
-		familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN);
+		familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
 		Assert.assertTrue(familiensituation.hasSecondGesuchsteller(referenzDatum));
 	}
 }
