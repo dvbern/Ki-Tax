@@ -293,7 +293,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public isOrGetsKindVolljaehrigDuringGP(): boolean {
-        return EbeguUtil.isOrGetKindVolljaehrigDuringGP(
+        return EbeguUtil.calculateKindIsOrGetsVolljaehrig(
             this.getModel().geburtsdatum,
             this.gesuchModelManager.getGesuchsperiode());
     }
