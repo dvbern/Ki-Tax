@@ -349,13 +349,13 @@ public class Familiensituation extends AbstractMutableEntity {
 				var dateMinusX = referenzdatum
 					.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
 					.minus(1, ChronoUnit.MONTHS);
-				if ((this.geteilteObhut != null || this.unterhaltsvereinbarung != null) && isFkjvFamSit()) {
-					return this.hasSecondGesuchstellerFKJV();
-				}
 				if (this.startKonkubinat == null ||
 					!this.startKonkubinat.isAfter(dateMinusX)) {
 					return true;
 				};
+				if (isFkjvFamSit()) {
+					return this.hasSecondGesuchstellerFKJV();
+				}
 			}
 		}
 		return false;
