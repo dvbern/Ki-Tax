@@ -349,22 +349,22 @@ public class Familiensituation extends AbstractMutableEntity {
 				var dateMinusX = referenzdatum
 					.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
 					.minus(1, ChronoUnit.MONTHS);
+				if (isFkjvFamSit()) {
+					return this.hasSecondGesuchstellerFKJV();
+				}
 				if (this.startKonkubinat == null ||
 					!this.startKonkubinat.isAfter(dateMinusX)) {
 					return true;
 				};
-				if (isFkjvFamSit()) {
-					return this.hasSecondGesuchstellerFKJV();
-				}
 			}
 		}
 		return false;
 	}
 
 	private boolean hasSecondGesuchstellerFKJV() {
-		if (this.geteilteObhut != null && this.geteilteObhut) {
-			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
-		}
+//		if (this.geteilteObhut != null && this.geteilteObhut) {
+//			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
+//		}
 
 		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
