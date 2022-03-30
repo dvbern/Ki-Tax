@@ -246,6 +246,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public steuerdatenzugriffClicked(): void {
+        this.resetAutomatischePruefungSteuerdaten();
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             return;
         }

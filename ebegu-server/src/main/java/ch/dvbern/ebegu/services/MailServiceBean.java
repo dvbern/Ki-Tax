@@ -808,8 +808,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		try {
 			LOG.info("Sende Init ZPV Nr. Mail für GS {}", gesuchstellerContainer.getGesuchstellerJA().getId());
 
-			URI uri = new URI(ebeguConfiguration.getHostname());
-			String trunctatedUrl = uri.getScheme() + "://" + uri.getHost();
+			String hostname = ebeguConfiguration.getHostname();
+
+			if(!hostname.startsWith("https://") && !hostname.startsWith("http://")) {
+				hostname = (ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://") + hostname;
+			}
+
+			URI uri = new URI(hostname);
+			String trunctatedUrl = uri.getHost();
 
 			if (uri.getPort() >= 0) {
 				trunctatedUrl += ":" + uri.getPort();
