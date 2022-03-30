@@ -61,15 +61,17 @@
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
-                        <div class="col-xs-12" ng-if="vm.showSteuerdatenAbholenButton()">
-                            <dv-loading-button
-                                button-disabled="!vm.isGesuchsteller()"
-                                type="button"
-                                button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
-                                {{'STEUERDATEN_ABHOLEN' | translate}}
-                            </dv-loading-button>
-                            <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
-                                <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                        <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
+                            <div class="col-xs-12">
+                                <dv-loading-button
+                                        button-disabled="!vm.isGesuchsteller()"
+                                        type="button"
+                                        button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                    {{'STEUERDATEN_ABHOLEN' | translate}}
+                                </dv-loading-button>
+                                <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
+                                    <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                                </div>
                             </div>
                         </div>
                         <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
