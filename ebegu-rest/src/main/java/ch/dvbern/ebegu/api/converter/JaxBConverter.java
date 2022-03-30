@@ -2761,9 +2761,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
 		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
-		// Verfahren
+		// Verfahren und die Flag für den Zugriff
 		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			return finanzielleSituation;

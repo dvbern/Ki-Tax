@@ -20,6 +20,7 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -246,13 +247,25 @@ export class ErwerbspensumListViewController
         // muss das Erwerbspensum von GS2 nicht angegeben werden
         const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
             .familiensituationContainer.familiensituationJA.unterhaltsvereinbarung;
+
         if (
             unterhaltsvereinbarung !== null
-            && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH
+            && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+            && this.isShortKonkubinat()
         ) {
             return false;
         }
 
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
+    private isShortKonkubinat(): boolean {
+        const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+
+        if (familiensitution.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+
+        return !familiensitution.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
     }
 }
