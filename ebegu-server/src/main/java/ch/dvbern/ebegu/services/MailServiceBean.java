@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.services;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -799,19 +801,24 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Override
 	public void sendInitGSZPVNr(
-			@Nonnull String url,
+			@Nonnull String ssoInitURL,
 			GesuchstellerContainer gesuchstellerContainer,
 			@Nonnull String email, String korrespondenzSprache) {
 
 		try {
 			LOG.info("Sende Init ZPV Nr. Mail für GS {}", gesuchstellerContainer.getGesuchstellerJA().getId());
 
-			String trunctatedHostname = ebeguConfiguration.getHostname().replace("/#", "");
+			URI uri = new URI(ebeguConfiguration.getHostname());
+			String trunctatedUrl = uri.getScheme() + "://" + uri.getHost();
 
-			String message = mailTemplateConfig.getInitGSZPVNr(url, Collections.singletonList(Sprache.valueOf(korrespondenzSprache)), email, trunctatedHostname);
+			if (uri.getPort() >= 0) {
+				trunctatedUrl += ":" + uri.getPort();
+			}
+
+			String message = mailTemplateConfig.getInitGSZPVNr(ssoInitURL, Collections.singletonList(Sprache.valueOf(korrespondenzSprache)), email, trunctatedUrl);
 			sendMessageWithTemplate(message, email);
 			LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", email);
-		}  catch (MailException mailException) {
+		}  catch (MailException | URISyntaxException mailException) {
 			logExceptionAccordingToEnvironment(
 					mailException,
 					"Mail sendInitGSZPVNr konnte nicht verschickt werden fuer Gesuchsteller",

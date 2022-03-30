@@ -210,7 +210,7 @@ public interface MailService {
 	void sendInfoLATSAntragZurueckAnGemeinde(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer wiederEroeffnet);
 
 	void sendInitGSZPVNr(
-			@Nonnull String gesuchsteller,
+			@Nonnull String ssoInitURL,
 			GesuchstellerContainer gesuchstellerContainer,
 			@Nonnull String email, String korrespondenzSprache);
 }

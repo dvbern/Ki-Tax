@@ -194,9 +194,9 @@ public class GesuchstellerResource {
 			mandant = mandantService.findMandantByCookie(mandantCookie);
 		}
 
-		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+		String ssoLoginInitURL = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
 
-		mailService.sendInitGSZPVNr(url, gesuchstellerContainer, email, korrespondenzSprache);
+		mailService.sendInitGSZPVNr(ssoLoginInitURL, gesuchstellerContainer, email, korrespondenzSprache);
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerContainer);
 	}
