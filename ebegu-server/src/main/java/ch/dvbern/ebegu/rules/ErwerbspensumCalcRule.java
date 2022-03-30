@@ -235,7 +235,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		}
 
 		LocalDate dateKonkubinatMinDauerReached = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat);
-		return !zeitabschnitt.contains(dateKonkubinatMinDauerReached);
+		return dateKonkubinatMinDauerReached.isBefore(zeitabschnitt.getGueltigAb());
 	}
 
 	@Nonnull
