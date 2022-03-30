@@ -349,7 +349,7 @@ public class Familiensituation extends AbstractMutableEntity {
 				var dateMinusX = referenzdatum
 					.minus(this.getMinDauerKonkubinat(), ChronoUnit.YEARS)
 					.minus(1, ChronoUnit.MONTHS);
-				if (isFkjvFamSit()) {
+				if ((this.geteilteObhut != null || this.unterhaltsvereinbarung != null) && isFkjvFamSit()) {
 					return this.hasSecondGesuchstellerFKJV();
 				}
 				if (this.startKonkubinat == null ||
@@ -362,9 +362,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	private boolean hasSecondGesuchstellerFKJV() {
-//		if (this.geteilteObhut != null && this.geteilteObhut) {
-//			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
-//		}
+		if (this.geteilteObhut != null && this.geteilteObhut) {
+			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
+		}
 
 		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
