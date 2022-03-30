@@ -389,7 +389,7 @@
                 </fieldset>
 
                 <!--Buttons-->
-                <dv-navigation dv-previous="true" dv-next="true" dv-saving-possible="vm.areZahlungsdatenEditable()"
+                <dv-navigation dv-previous="true" dv-next="true" dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()" dv-saving-possible="vm.areZahlungsdatenEditable()"
                                dv-save="vm.preSave()"
                                dv-sub-step="1" dv-sub-step-name="BERN_START">
                 </dv-navigation>
