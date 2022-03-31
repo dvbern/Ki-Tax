@@ -476,7 +476,7 @@ public class FinanzielleSituationResource {
 						Integer.valueOf(zpvNummer),
 						gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageId.getId(),
-						gesuch.getGesuchsperiode().getBasisJahr());
+						gesuch.getGesuchsperiode().getBasisJahrPlus1());
 					handleSteuerdatenGemeinsamResponse(
 						convertedFinSitCont.getFinanzielleSituationJA(),
 						finSitGS2Cont.getFinanzielleSituationJA(),
@@ -510,7 +510,7 @@ public class FinanzielleSituationResource {
 						Integer.valueOf(zpvNummer),
 						gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageId.getId(),
-						gesuch.getGesuchsperiode().getBasisJahr());
+						gesuch.getGesuchsperiode().getBasisJahrPlus1());
 					handleSteuerdatenResponse(convertedFinSitCont.getFinanzielleSituationJA(), steuerdatenResponseGS1);
 				} catch (KiBonAnfrageServiceException e) {
 					updateFinSitSteuerdatenAbfrageStatusFailed(
