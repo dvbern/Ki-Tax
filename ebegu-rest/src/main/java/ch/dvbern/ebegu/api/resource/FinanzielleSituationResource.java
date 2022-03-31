@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
+import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -537,7 +538,9 @@ public class FinanzielleSituationResource {
 	private void handleSteuerdatenResponse(
 		FinanzielleSituation finSit,
 		SteuerdatenResponse steuerdatenResponse) {
-		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(finSit, SteuerdatenAnfrageStatus.FAILED);
+		} else if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
 			updateFinSitSteuerdatenAbfrageStatusFailed(
 				finSit,
 				SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
@@ -773,6 +776,7 @@ public class FinanzielleSituationResource {
 			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
 			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
 
