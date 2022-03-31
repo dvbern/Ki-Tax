@@ -776,6 +776,7 @@ public class FinanzielleSituationResource {
 			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
 			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
 
