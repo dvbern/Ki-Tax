@@ -251,7 +251,7 @@ export class ErwerbspensumListViewController
         if (
             unterhaltsvereinbarung !== null
             && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            && this.isShortKonkubinat()
+            && (this.isShortKonkubinat() || this.isAlleinerziehend())
         ) {
             return false;
         }
@@ -267,5 +267,10 @@ export class ErwerbspensumListViewController
         }
 
         return !familiensitution.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+    }
+
+    private isAlleinerziehend(): boolean {
+        const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        return familiensitution.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
     }
 }

@@ -229,9 +229,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			return true;
 		}
 
-		//Falls Verheiratet exitiert GS2 immer aber es gibt kein StartDatum Konkubinat
+		//Wenn UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG und kein KonkubinatsDatum ist der Antragsteller immer
+		//Alleinerziehend und das EWP von GS2 ist nicht relevant
 		if (familiensituation.getStartKonkubinat() == null) {
-			return true;
+			return false;
 		}
 
 		LocalDate dateKonkubinatMinDauerReached = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat);
