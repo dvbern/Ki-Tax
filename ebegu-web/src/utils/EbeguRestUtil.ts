@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
@@ -617,6 +618,9 @@ export class EbeguRestUtil {
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.fkjvFamSit = familiensituation.fkjvFamSit;
             restFamiliensituation.minDauerKonkubinat = familiensituation.minDauerKonkubinat;
+            restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
+            restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
+            restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
             return restFamiliensituation;
         }
 
@@ -697,6 +701,9 @@ export class EbeguRestUtil {
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.fkjvFamSit = familiensituationFromServer.fkjvFamSit;
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
+            familiensituation.geteilteObhut = familiensituationFromServer.geteilteObhut;
+            familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
+            familiensituation.unterhaltsvereinbarungBemerkung = familiensituationFromServer.unterhaltsvereinbarungBemerkung;
             return familiensituation;
         }
         return undefined;
@@ -1858,6 +1865,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
+        restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         return restFinanzielleSituation;
     }
 
@@ -1997,6 +2005,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
+            finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
 
             return finanzielleSituationTS;
         }
@@ -2771,6 +2780,7 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.betreuungInGemeinde = erweiterteBetreuung.betreuungInGemeinde;
         restErweiterteBetreuung.keineKesbPlatzierung = erweiterteBetreuung.keineKesbPlatzierung;
         restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
+        restErweiterteBetreuung.kitaPlusZuschlagBestaetigt = erweiterteBetreuung.kitaPlusZuschlagBestaetigt;
         restErweiterteBetreuung.erweitereteBeduerfnisseBetrag = erweiterteBetreuung.erweitereteBeduerfnisseBetrag;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
@@ -2789,6 +2799,7 @@ export class EbeguRestUtil {
                 erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             erweiterteBetreuungTS.keineKesbPlatzierung = erweiterteBetreuungFromServer.keineKesbPlatzierung;
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
+            erweiterteBetreuungTS.kitaPlusZuschlagBestaetigt = erweiterteBetreuungFromServer.kitaPlusZuschlagBestaetigt;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
             erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag = erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {
@@ -4292,6 +4303,10 @@ export class EbeguRestUtil {
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
+        publicAppConfigTS.frenchEnabled = data.frenchEnabled;
+        publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
+        publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
+        publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         return publicAppConfigTS;
 
     }

@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<mat-dialog-content class="dv-dialog-content">
+    <h1>{{ 'INIT_GS2_ZPVNR' | translate }}</h1>
+    <p [innerHTML]="'INIT_GS2_ZPVNR_ERKLAERUNG' | translate"></p>
+
+    <form #mailForm="ngForm">
+        <fieldset>
+            <div class="row" dv-display-element>
+                <div class="col-sm-12 dv-input-container-medium margin-top-20">
+                    <div class="form-group">
+                        <label translate for="email">EMAIL</label>
+                        <input id="email"
+                               type="text"
+                               name="email"
+                               [(ngModel)]="email"
+                               class="form-control">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="save()" [textContent]="'SEND_MAIL' | translate"></button>
+        <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
+    </div>
+</mat-dialog-actions>

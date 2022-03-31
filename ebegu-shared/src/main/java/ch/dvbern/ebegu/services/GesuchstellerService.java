@@ -38,6 +38,8 @@ public interface GesuchstellerService {
 	@Nonnull
 	GesuchstellerContainer saveGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller, @Nonnull final Gesuch gesuch, @Nonnull Integer gsNumber, boolean umzug);
 
+	GesuchstellerContainer updateGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller);
+
 	/**
 	 * @param id PK (id) der Gesuchsteller
 	 * @return Gesuchsteller mit dem gegebenen key oder null falls nicht vorhanden

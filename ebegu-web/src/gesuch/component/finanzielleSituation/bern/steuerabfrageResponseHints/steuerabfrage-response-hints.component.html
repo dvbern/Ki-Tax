@@ -18,43 +18,74 @@
 <div *ngIf="showZugriffFailed()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate
-       [translateParams]="{gs1: getGS1Name()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED' | translate:{gs1: getGS1Name()}"></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningKeinPartnerGemeinsam()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM' | translate"></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showWarningGeburtsdatum()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate
-       [translateParams]="{namegs2: getGS2Name()}"
-    >FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM' | translate:{namegs2: getGS2Name()}"
+    ></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
 </div>
 
 <div *ngIf="showZugriffUnterjaehrigeFall()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG</p>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG' | translate"
+    ></p>
 </div>
 
 <div *ngIf="showZugriffKeineZpvNummer()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       translate
-       [translateParams]="{email: getEmailLoggedIn()}">FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV</p>
-    <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV' | translate:{email: getEmailLoggedIn()}"></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
+</div>
+
+<div *ngIf="showWarningPartnerNichtGemeinsam()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM' | translate"
+    ></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+</div>
+
+<div *ngIf="showZugriffKeineZpvNummerGS2()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2' | translate:{gs2: getGS2name()}"></p>
+    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
+</div>
+
+<div *ngIf="showRetry()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY' | translate"></p>
+    <dv-loading-button
+            [buttonDisabled]="!isGesuchsteller()"
+            type="button"
+            (buttonClick)="tryAgain()">
+        {{'STEUERDATEN_ABHOLEN' | translate}}
+    </dv-loading-button>
 </div>
 
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"
-       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH</p>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
+</div>
+
+<div *ngIf="geburtstagNotMatching$ | async"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       translate>FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED</p>
 </div>

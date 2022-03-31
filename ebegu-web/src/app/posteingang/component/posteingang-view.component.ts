@@ -94,6 +94,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'empfaengerVerantwortung',
     ];
 
+    private readonly hiddenColumnsUD: string[] = [
+        'familienName',
+    ];
+
     // Liste die im Gui angezeigt wird
     public displayedColumns: string[];
     public displayedCollection: MatTableDataSource<TSMitteilung>;
@@ -373,6 +377,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             return;
         }
         this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumnsUDInstituion.includes(column));
+        if (this.isSozialdienst()) {
+            this.displayedColumns = this.displayedColumns.filter(column => !this.hiddenColumnsUD.includes(column));
+        }
         this.filterColumns = this.displayedColumns.map(column => `${column}-filter`);
     }
 

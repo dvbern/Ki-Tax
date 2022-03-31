@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -39,16 +41,20 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +82,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	private final MandantService mandantService;
 	private final LocalhostChecker localhostChecker;
 	private final EbeguConfiguration configuration;
+	private final GesuchstellerService gesuchstellerService;
 
 	@Context
 	private HttpServletRequest request;
@@ -90,7 +97,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		EbeguConfiguration configuration,
 		BenutzerService benutzerService,
 		AuthService authService,
-		MandantService mandantService
+		MandantService mandantService,
+		GesuchstellerService gesuchstellerService
 	) {
 
 		this.configuration = configuration;
@@ -99,6 +107,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		this.benutzerService = benutzerService;
 		this.authService = authService;
 		this.mandantService = mandantService;
+		this.gesuchstellerService = gesuchstellerService;
 	}
 
 	@Override
@@ -169,7 +178,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer storedUser;
 
 
-		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitationByEmail(benutzer);
+		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitation(benutzer, mandant);
 		// wenn der Benutzer eingeladen ist, muss er die Einladung akzeptieren
 		if(invitedUserOpt.isPresent()) {
 			final Benutzer presentUser = invitedUserOpt.get();
@@ -293,14 +302,38 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public String getMandant() {
+	public String getMandant(@QueryParam("mandantIdentifier") String mandantIdentifier) {
 		checkLocalAccessOnly();
-		final Mandant first = mandantService.getMandantBern();
+
+		MandantIdentifier identifier;
+		try {
+			identifier = MandantIdentifier.valueOf(mandantIdentifier.toUpperCase(Locale.ROOT));
+		} catch (IllegalArgumentException e) {
+			identifier = MandantIdentifier.BERN;
+		}
+
+		final Mandant first = mandantService
+			.findMandantByIdentifier(identifier)
+			.orElse(mandantService.getMandantBern());
+
 		return first.getId();
 	}
 
 	@Override
-	public JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
+	public void updateGesuchstellerZPVNr(@Nonnull String gesuchstellerContainerId, @Nonnull String zpvNummer) {
+		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerContainerId).orElseThrow();
+
+		assert container.getFinanzielleSituationContainer() != null;
+
+		container.getGesuchstellerJA().setZpvNummer(zpvNummer);
+		container.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(
+				SteuerdatenAnfrageStatus.RETRY);
+		gesuchstellerService.updateGesuchsteller(container);
+	}
+
+	@Override
+	public JaxExternalAuthAccessElement createLogin(
+		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser, @QueryParam("tenant") @Nullable String mandantId) {
 		requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
 		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
@@ -309,8 +342,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
-		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser,
-				mandantService.getMandantBern());
+
+		Mandant mandant;
+		if (mandantId != null) {
+			mandant = mandantService.findMandant(mandantId).orElse(mandantService.getMandantBern());
+		} else {
+			mandant = mandantService.getMandantBern();
+		}
+
+		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser, mandant);
 		return convertToJaxExternalAuthAccessElement(loginDataForCookie);
 	}
 

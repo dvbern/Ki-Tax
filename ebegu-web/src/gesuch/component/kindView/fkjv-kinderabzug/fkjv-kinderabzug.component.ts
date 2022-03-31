@@ -23,13 +23,13 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import * as moment from 'moment';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -45,8 +45,6 @@ const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
-
-    public static readonly VOLLJAEHRIG_NUMBER_YEARS = 18;
 
     @ViewChild(NgForm)
     public readonly form: NgForm;
@@ -65,6 +63,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public ngOnInit(): void {
+        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         this.fkjvExchangeService.getFormValidationTriggered$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => {
@@ -73,10 +72,13 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         this.fkjvExchangeService.getGeburtsdatumChanged$()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(date => {
-                this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(date);
+                this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(date, gesuchsperiode);
                 this.change();
             }, err => LOG.error(err));
-        this.kindIsOrGetsVolljaehrig = this.calculateKindIsOrGetsVolljaehrig(this.getModel().geburtsdatum);
+        this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
+            this.getModel().geburtsdatum,
+            gesuchsperiode
+        );
         this.change();
     }
 
@@ -116,7 +118,9 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     public gemeinsamesGesuchVisible(): boolean {
-        return this.getModel().obhutAlternierendAusueben;
+        return this.getModel().obhutAlternierendAusueben &&
+            this.getModel().familienErgaenzendeBetreuung &&
+            this.isAlleinerziehenOrShortKonkubinat();
     }
 
     public inErstausbildungVisible(): boolean {
@@ -158,16 +162,31 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
+        // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
+        if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
+            this.getModel().familienErgaenzendeBetreuung = false;
+        }
     }
 
-    private calculateKindIsOrGetsVolljaehrig(age: moment.Moment): boolean {
-        if (!age) {
+    public famErgaenzendeBetreuuungVisible(): boolean {
+        return !this.kindIsOrGetsVolljaehrig;
+    }
+
+    private isAlleinerziehenOrShortKonkubinat(): boolean {
+        return this.gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
+            this.isShortKonkubinat();
+    }
+
+    public hasKindBetreuungen(): boolean {
+        return this.kindContainer.betreuungen?.length > 0;
+    }
+
+    private isShortKonkubinat(): boolean {
+        if (this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             return false;
         }
-        const gp = this.gesuchModelManager.getGesuchsperiode();
-        const ageClone = age.clone();
-        const dateWith18 = ageClone.add(FkjvKinderabzugComponent.VOLLJAEHRIG_NUMBER_YEARS, 'years');
-        return dateWith18.isSameOrBefore(gp.gueltigkeit.gueltigBis);
-    }
 
+        return this.gesuchModelManager.getFamiliensituation()
+            .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
+    }
 }

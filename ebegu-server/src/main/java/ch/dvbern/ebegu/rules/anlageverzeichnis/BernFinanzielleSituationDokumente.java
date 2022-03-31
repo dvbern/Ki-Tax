@@ -73,7 +73,14 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  * Notwendig, wenn keine Steuerveranlagung vorhanden und Summe der Erfolgsrechnungen > 0
  * <p>
  **/
-public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
+public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
+
+	private boolean isFKJV = false;
+
+	public BernFinanzielleSituationDokumente(boolean isFKJV) {
+		super();
+		this.isFKJV = isFKJV;
+	}
 
 	@Override
 	public void getAllDokumente(
@@ -91,11 +98,25 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 		LocalDate stichtag = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag, familiensituation);
+		getAllDokumenteGesuchsteller(
+			anlageVerzeichnis,
+			gesuchsteller1,
+			gemeinsam,
+			1,
+			basisJahr,
+			stichtag,
+			familiensituation);
 
 		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag, familiensituation);
+			getAllDokumenteGesuchsteller(
+				anlageVerzeichnis,
+				gesuchsteller2,
+				gemeinsam,
+				2,
+				basisJahr,
+				stichtag,
+				familiensituation);
 		}
 	}
 
@@ -118,6 +139,30 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			gesuchsteller.getFinanzielleSituationContainer();
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
+
+		if (this.isFKJV && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
+			&& finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet()) {
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_EINKOMMEN_VERFAHREN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+		}
+
+		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
+			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
+			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
+			.isSteuerdatenAbfrageErfolgreich()) {
+			return;
+		}
 
 		getAllDokumenteGesuchsteller(
 			anlageVerzeichnis,
@@ -143,6 +188,60 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			anlageVerzeichnis
 		);
 
+		if (this.isFKJV) {
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_BRUTTOVERMOEGENERTRAEGE,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_GEWINNUNGSKOSTEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_SCHULDZINSEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN,
+					finanzielleSituationJA,
+					familiensituation,
+					String.valueOf(basisJahr),
+					DokumentGrundPersonType.GESUCHSTELLER,
+					gesuchstellerNumber,
+					DokumentGrundTyp.FINANZIELLESITUATION,
+					stichtag
+				),
+				anlageVerzeichnis
+			);
+		}
 	}
 
 	@Override
@@ -158,16 +257,21 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 	}
 
 	@Override
-	protected boolean isErfolgsrechnungNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
+	protected boolean isErfolgsrechnungNeeded(
+		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation,
+		int minus) {
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
 			case 1:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
 			case 2:
-				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
 			default:
 				return false;
 			}

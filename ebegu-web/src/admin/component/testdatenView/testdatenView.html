@@ -385,42 +385,45 @@
             </div>
 
             <!-- KiBon Anfrage Schnittstelle Testen -->
-            <h2 clas="margin-top-20" translate>KIBON_ANFRAGE</h2>
+            <div *ngIf="this.kibonAnfrageTestEnabled">
 
-            <div class="row">
-                <div class="col-sm-2 dv-input-container-small">
-                    <label class="md-no-float" for="zpvNummer">zpv-Nummer:</label>
-                    <input id="zpvNummer" type="text" name="zpvNummer" [(ngModel)]="zpvNummer"
-                           class="input-testfall">
+                <h2 clas="margin-top-20" translate>KIBON_ANFRAGE</h2>
+
+                <div class="row">
+                    <div class="col-sm-2 dv-input-container-small">
+                        <label class="md-no-float" for="zpvNummer">zpv-Nummer:</label>
+                        <input id="zpvNummer" type="text" name="zpvNummer" [(ngModel)]="zpvNummer"
+                               class="input-testfall">
+                    </div>
+                    <div class="col-sm-2 dv-input-container-small">
+                        <label class="md-no-float" for="antragId">Antrag-Id:</label>
+                        <input id="antragId" type="text" name="antragId" [(ngModel)]="antragId"
+                               class="input-testfall">
+                    </div>
+                    <div class="col-sm-2 dv-input-container-small">
+                        <label class="md-no-float" for="gesuchsperiodeBeginnJahr">gesuchsperiodeBeginnJahr:</label>
+                        <input id="gesuchsperiodeBeginnJahr" type="text" name="gesuchsperiodeBeginnJahr" [(ngModel)]="gesuchsperiodeBeginnJahr"
+                               class="input-testfall">
+                    </div>
+                    <div class="col-sm-2 dv-input-container-small">
+                        <label class="required" class="md-no-float" translate for="begu_start_ID">GEBURTSDATUM</label>
+                        <input class="dv-mat-datepicker" type="text"
+                               name="geburtsdatum_name" id="begu_start_ID"
+                               [(ngModel)]="geburtsdatum"
+                               [matDatepicker]="geburtsdatum_name"
+                               placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                               required>
+                        <mat-datepicker-toggle matSuffix [for]="geburtsdatum_name"></mat-datepicker-toggle>
+                        <mat-datepicker #geburtsdatum_name></mat-datepicker>
+                    </div>
                 </div>
-                <div class="col-sm-2 dv-input-container-small">
-                    <label class="md-no-float" for="antragId">Antrag-Id:</label>
-                    <input id="antragId" type="text" name="antragId" [(ngModel)]="antragId"
-                           class="input-testfall">
-                </div>
-                <div class="col-sm-2 dv-input-container-small">
-                    <label class="md-no-float" for="gesuchsperiodeBeginnJahr">gesuchsperiodeBeginnJahr:</label>
-                    <input id="gesuchsperiodeBeginnJahr" type="text" name="gesuchsperiodeBeginnJahr" [(ngModel)]="gesuchsperiodeBeginnJahr"
-                           class="input-testfall">
-                </div>
-                <div class="col-sm-2 dv-input-container-small">
-                    <label class="required" class="md-no-float" translate for="begu_start_ID">GEBURTSDATUM</label>
-                    <input class="dv-mat-datepicker" type="text"
-                           name="geburtsdatum_name" id="begu_start_ID"
-                           [(ngModel)]="geburtsdatum"
-                           [matDatepicker]="geburtsdatum_name"
-                           placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                           required>
-                    <mat-datepicker-toggle matSuffix [for]="geburtsdatum_name"></mat-datepicker-toggle>
-                    <mat-datepicker #geburtsdatum_name></mat-datepicker>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button dvNgDebounceClick (debounceClick)="testKibonAnfrageResponse()"
-                            class="dv-btn testfall-button-duo">
-                        KiBon Anfrage Schnittstelle testen
-                    </button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button dvNgDebounceClick (debounceClick)="testKibonAnfrageResponse()"
+                                class="dv-btn testfall-button-duo">
+                            KiBon Anfrage Schnittstelle testen
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

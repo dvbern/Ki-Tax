@@ -17,22 +17,16 @@
 
 import {IPromise} from 'angular';
 import IDialogService = angular.material.IDialogService;
-import ITranslateService = angular.translate.ITranslateService;
 
 export class RedirectWarningDialogController {
 
     public static $inject = [
         '$mdDialog',
-        '$translate'
     ];
-
-    public content: string;
 
     public constructor(
         private readonly $mdDialog: IDialogService,
-        $translate: ITranslateService,
     ) {
-        this.content = $translate.instant('TESTLOGIN_REDIRECT_WARNING_CONTENT');
     }
 
     public hide(): IPromise<any> {

@@ -75,6 +75,7 @@ export class TestdatenViewComponent implements OnInit {
     public zpvNummer: number = 10099208;
     public gesuchsperiodeBeginnJahr: number = 2020;
     public geburtsdatum: moment.Moment = moment('1964-12-09', 'YYYY-MM-DD');
+    public kibonAnfrageTestEnabled: boolean = false;
 
     public constructor(
         public readonly testFaelleRS: TestFaelleRS,
@@ -102,6 +103,9 @@ export class TestdatenViewComponent implements OnInit {
         this.gemeindeRS.getAktiveGemeinden().then(response => {
             this.gemeindeList = angular.copy(response);
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
+        });
+        this.applicationPropertyRS.isEbeguKibonAnfrageTestGuiEnabled().then(response => {
+            this.kibonAnfrageTestEnabled = response;
         });
         this.initGemeindeAntragTypes();
     }

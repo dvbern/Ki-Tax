@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -76,8 +78,8 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.base.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -108,6 +110,7 @@ import static java.util.Objects.requireNonNull;
 public class FinanzielleSituationResource {
 
 	protected static final MathUtil GANZZAHL = MathUtil.GANZZAHL;
+	private static final BigDecimal BIG_DECIMAL_TWO = new BigDecimal(2);
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -161,11 +164,8 @@ public class FinanzielleSituationResource {
 		requireNonNull(gesuchId);
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituation");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -210,11 +210,8 @@ public class FinanzielleSituationResource {
 
 		requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
-			-> new EbeguEntityNotFoundException(
-			"saveFinanzielleSituation",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"GesuchstellerId invalid: " + gesuchstellerId));
+		GesuchstellerContainer gesuchsteller = findGesuchstellerById(gesuchstellerId, "saveFinanzielleSituationStart");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
@@ -256,11 +253,12 @@ public class FinanzielleSituationResource {
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 
+		requireNonNull(sozialhilfeBezueger);
+		requireNonNull(gemeinsameSteuererklaerung);
+
 		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)
 			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)
 			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
-			requireNonNull(sozialhilfeBezueger);
-			requireNonNull(gemeinsameSteuererklaerung);
 
 			if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
 				// Sozialhilfebezueger bekommen immer eine Verguenstigung
@@ -269,7 +267,6 @@ public class FinanzielleSituationResource {
 				requireNonNull(verguenstigungGewuenscht);
 			}
 		} else {
-			sozialhilfeBezueger = false;
 			verguenstigungGewuenscht = Boolean.TRUE;
 		}
 
@@ -410,7 +407,7 @@ public class FinanzielleSituationResource {
 	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, GESUCHSTELLER })
+	@RolesAllowed({ GESUCHSTELLER })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
@@ -423,8 +420,331 @@ public class FinanzielleSituationResource {
 
 		Objects.requireNonNull(kibonAnfrageId.getId());
 		Objects.requireNonNull(jaxGesuchstellerId.getId());
-		Objects.requireNonNull(jaxFinanzielleSituationContainer.getId());
 
+		//Antrag suchen
+		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			"getSteuerdatenBeiAntragId",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
+
+		assert gesuch.getFamiliensituationContainer() != null;
+		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
+
+		//FinSit Suchen, Feldern updaten
+		GesuchstellerContainer gesuchsteller =
+			findGesuchstellerById(jaxGesuchstellerId.getId(), "updateFinSitMitSteuerdaten");
+
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
+			jaxFinanzielleSituationContainer,
+			gesuchsteller.getFinanzielleSituationContainer());
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
+		Benutzer benutzer = principalBean.getBenutzer();
+
+		boolean hasTwoAntragStellende = gesuch.getGesuchsteller2() != null;
+
+		if (hasTwoAntragStellende && isGemeinsam) {
+			// init finSitGS2 START
+			FinanzielleSituationContainer finSitGS2Cont =
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null ?
+					gesuch.getGesuchsteller2().getFinanzielleSituationContainer() :
+					new FinanzielleSituationContainer();
+			if (finSitGS2Cont.getFinanzielleSituationJA() == null) {
+				finSitGS2Cont.setFinanzielleSituationJA(new FinanzielleSituation());
+			}
+			finSitGS2Cont.setJahr(convertedFinSitCont.getJahr());
+			finSitGS2Cont.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+			finSitGS2Cont.getFinanzielleSituationJA()
+				.setSteuererklaerungAusgefuellt(convertedFinSitCont.getFinanzielleSituationJA()
+					.getSteuererklaerungAusgefuellt());
+			finSitGS2Cont.getFinanzielleSituationJA()
+				.setSteuerveranlagungErhalten(convertedFinSitCont.getFinanzielleSituationJA()
+					.getSteuerveranlagungErhalten());
+			finSitGS2Cont.setGesuchsteller(gesuch.getGesuchsteller2());
+			// init finSitGS2 END
+
+			String zpvNummer = benutzer.getZpvNummer() != null ?
+				benutzer.getZpvNummer() :
+				gesuchsteller.getGesuchstellerJA().getZpvNummer();
+
+			if (zpvNummer != null) {
+				try {
+					// try gemeinsame Steuererklärung anfrage
+
+					SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
+						Integer.valueOf(zpvNummer),
+						gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
+						kibonAnfrageId.getId(),
+						gesuch.getGesuchsperiode().getBasisJahr());
+					handleSteuerdatenGemeinsamResponse(
+						convertedFinSitCont.getFinanzielleSituationJA(),
+						finSitGS2Cont.getFinanzielleSituationJA(),
+						steuerdatenResponse,
+						gesuch);
+					this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2Cont);
+				} catch (KiBonAnfrageServiceException e) {
+					updateFinSitSteuerdatenAbfrageStatusFailed(
+						convertedFinSitCont.getFinanzielleSituationJA(),
+						SteuerdatenAnfrageStatus.FAILED);
+					updateFinSitSteuerdatenAbfrageStatusFailed(
+						finSitGS2Cont.getFinanzielleSituationJA(),
+						SteuerdatenAnfrageStatus.FAILED);
+				}
+			} else {
+				updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+					convertedFinSitCont.getFinanzielleSituationJA(),
+					finSitGS2Cont.getFinanzielleSituationJA(),
+					SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+			}
+
+		} else {
+			// anfrage single GS
+			final boolean isGS2 = gesuchsteller.equals(gesuch.getGesuchsteller2());
+			String zpvNummer = isGS2 || benutzer.getZpvNummer() == null ?
+				gesuchsteller.getGesuchstellerJA().getZpvNummer() :
+				benutzer.getZpvNummer();
+			if (zpvNummer != null) {
+				try {
+					SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
+						Integer.valueOf(zpvNummer),
+						gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
+						kibonAnfrageId.getId(),
+						gesuch.getGesuchsperiode().getBasisJahr());
+					handleSteuerdatenResponse(convertedFinSitCont.getFinanzielleSituationJA(), steuerdatenResponseGS1);
+				} catch (KiBonAnfrageServiceException e) {
+					updateFinSitSteuerdatenAbfrageStatusFailed(
+						convertedFinSitCont.getFinanzielleSituationJA(),
+						SteuerdatenAnfrageStatus.FAILED);
+				}
+			} else {
+				updateFinSitSteuerdatenAbfrageStatusFailed(
+					convertedFinSitCont.getFinanzielleSituationJA(),
+					isGS2 ?
+						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2 :
+						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+			}
+		}
+		//und zusendlich speichern und zuruckgeben, GS2 speichern wir wo nötig
+		FinanzielleSituationContainer persistedFinSit =
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
+		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+	}
+
+	/**
+	 * handle steuerdatenResponse for single GS
+	 */
+	private void handleSteuerdatenResponse(
+		FinanzielleSituation finSit,
+		SteuerdatenResponse steuerdatenResponse) {
+		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(
+				finSit,
+				SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
+		} else if (steuerdatenResponse.getZpvNrPartner() != null) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(
+				finSit,
+				SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
+		} else {
+			updateFinSitSteuerdatenAbfrageStatusOk(finSit, steuerdatenResponse);
+		}
+	}
+
+	private void updateFinSitSteuerdatenAbfrageStatusOk(
+		FinanzielleSituation finSit,
+		SteuerdatenResponse steuerdatenResponse) {
+		assert steuerdatenResponse.getZpvNrPartner() == null;
+		finSit.setSteuerdatenResponse(steuerdatenResponse);
+		setValuesFromDossiertraegerToFinSit(finSit, steuerdatenResponse, BigDecimal.ONE);
+	}
+
+	private void updateFinSitSteuerdatenAbfrageStatusFailed(
+		FinanzielleSituation finSitGS1,
+		SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
+		finSitGS1.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+	}
+
+	private void handleSteuerdatenGemeinsamResponse(
+		FinanzielleSituation convertedFinSitCont,
+		FinanzielleSituation finSitGS2,
+		SteuerdatenResponse steuerdatenResponse,
+		Gesuch gesuch) {
+		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+				convertedFinSitCont,
+				finSitGS2,
+				SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
+		} else if (steuerdatenResponse.getZpvNrPartner() == null) {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+				convertedFinSitCont,
+				finSitGS2,
+				SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
+		} else if (!isGebrutsdatumGS2CorrectInResponse(gesuch, steuerdatenResponse)) {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+				convertedFinSitCont,
+				finSitGS2,
+				SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
+		} else {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(convertedFinSitCont, finSitGS2, steuerdatenResponse);
+		}
+	}
+
+	private boolean isGebrutsdatumGS2CorrectInResponse(
+		Gesuch gesuch,
+		SteuerdatenResponse steuerdatenResponse) {
+
+		requireNonNull(gesuch.getGesuchsteller2());
+		LocalDate geburstdatumGS2 = gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
+
+		if (isGS2Dossiertraeger(steuerdatenResponse)) {
+			return geburstdatumGS2.compareTo(
+				requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger())) == 0;
+		}
+
+		return geburstdatumGS2.compareTo(
+			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) == 0;
+	}
+
+	private void updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+		@Nonnull FinanzielleSituation finSitGS1,
+		@Nonnull FinanzielleSituation finSitGS2,
+		SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
+		finSitGS1.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+		finSitGS2.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+	}
+
+	private void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+		@Nonnull FinanzielleSituation finSitGS1,
+		@Nonnull FinanzielleSituation finSitGS2,
+		SteuerdatenResponse steuerdatenResponse) {
+		assert steuerdatenResponse.getZpvNrPartner() != null;
+		finSitGS1.setSteuerdatenResponse(steuerdatenResponse);
+		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
+		if (isAntragstellerDossiertraeger(steuerdatenResponse)) {
+			//GS1 = Dossierträger GS2 = Partner
+			setValuesFromDossiertraegerToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO);
+			setValuesFromPartnerToFinSit(finSitGS2, steuerdatenResponse);
+		} else {
+			//GS2 = Dossierträger GS1 = Partner
+			setValuesFromPartnerToFinSit(finSitGS1, steuerdatenResponse);
+			setValuesFromDossiertraegerToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO);
+		}
+	}
+
+	private boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
+		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
+	}
+
+	private boolean isGS2Dossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+		return !isAntragstellerDossiertraeger(steuerdatenResponse);
+	}
+
+	private void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
+		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
+		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
+		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
+		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
+		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
+
+		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
+		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
+		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+
+		setVeranlagungsstand(finSit, steuerdatenResponse);
+		setBerechneteFelder(finSit, steuerdatenResponse, BIG_DECIMAL_TWO);
+	}
+
+	private void setValuesFromDossiertraegerToFinSit(
+		FinanzielleSituation finSit,
+		SteuerdatenResponse steuerdatenResponse,
+		BigDecimal anzahlGesuchsteller) {
+
+		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
+		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
+		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
+		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
+		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
+		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
+
+		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
+		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
+		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
+		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+
+		setVeranlagungsstand(finSit, steuerdatenResponse);
+		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
+	}
+
+	private void setVeranlagungsstand(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
+		if (steuerdatenResponse.getVeranlagungsstand() != null) {
+			finSit.setSteuerdatenAbfrageStatus(
+				SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand().name()));
+		}
+	}
+
+	private void setBerechneteFelder(
+		FinanzielleSituation finSit,
+		SteuerdatenResponse steuerdatenResponse,
+		@NotNull BigDecimal anzahlGesuchsteller) {
+		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
+		BigDecimal bruttertraegeVermogenTotal =
+			GANZZAHL.addNullSafe(
+				getValueOrZero(steuerdatenResponse.getBruttoertraegeAusLiegenschaften()),
+				steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
+		BigDecimal gewinnungskostenTotal =
+			GANZZAHL.addNullSafe(
+				getValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
+				steuerdatenResponse.getLiegenschaftsAbzuege());
+
+		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(bruttertraegeVermogenTotal,
+			anzahlGesuchsteller));
+		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(steuerdatenResponse.getSchuldzinsen(),
+			anzahlGesuchsteller));
+		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller));
+		finSit.setGeleisteteAlimente(divideByAnzahlGesuchsteller(
+			steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(),
+			anzahlGesuchsteller));
+		finSit.setNettoVermoegen(divideByAnzahlGesuchsteller(
+			steuerdatenResponse.getNettovermoegen(),
+			anzahlGesuchsteller));
+	}
+
+	private BigDecimal divideByAnzahlGesuchsteller(
+		@Nullable BigDecimal value,
+		@NotNull BigDecimal anzahlGesuchsteller) {
+		assert anzahlGesuchsteller.compareTo(BigDecimal.ZERO) != 0;
+		return GANZZAHL.divide(getValueOrZero(value), anzahlGesuchsteller);
+	}
+
+	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
+
+		return value;
+	}
+
+	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"
+		+ "Ergebniss",
+		response = SteuerdatenResponse.class)
+	@Nullable
+	@PUT
+	@Path("/kibonanfrage/reset/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public JaxFinanzielleSituationContainer resetFinSitSteuerdaten(
+		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
+		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
+		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(kibonAnfrageId.getId());
+		Objects.requireNonNull(jaxGesuchstellerId.getId());
 		//Antrag suchen
 		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
@@ -434,235 +754,76 @@ public class FinanzielleSituationResource {
 
 		//FinSit Suchen, Feldern updaten
 		GesuchstellerContainer gesuchsteller =
-			gesuchstellerService.findGesuchsteller(jaxGesuchstellerId.getId()).orElseThrow(()
-				-> new EbeguEntityNotFoundException(
-				"getSteuerdatenBeiAntragId",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchstellerId invalid: " + jaxGesuchstellerId.getId()));
+			findGesuchstellerById(jaxGesuchstellerId.getId(), "resetFinSitSteuerdaten");
+
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
 			jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
-		//FinSit GS2 Suchen wenn er exisiert als man auch dort Daten ausfuellen muessen wenn GemeinsameStek
-		FinanzielleSituationContainer finSitGS2 = null;
+		// reset SteuerdatenAbfrageStatus und NettoVermoegen
+		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+		convertedFinSitCont.getFinanzielleSituationJA().setNettoVermoegen(null);
 
-		if (isGemeinsam && gesuch.getGesuchsteller2() != null) {
-			finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null ?
-				gesuch.getGesuchsteller2().getFinanzielleSituationContainer() :
-				new FinanzielleSituationContainer();
-			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
-			finSitGS2.setGesuchsteller(gesuch.getGesuchsteller2());
+		// auch fuer GS2 wenn gemeinsam
+		if (isGemeinsam
+			&& gesuch.getGesuchsteller2() != null
+			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
+			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
+			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
 
-		//wenn es ist einen Online Gesuch und der verlinkte Konto hat einen ZDP Nummber hinterlegt, Nesko anrufen
-		//sonst die query kann nur failed sein so wir setzen es sofort so
-		Benutzer benutzer = principalBean.getBenutzer();
-		if (gesuch.getEingangsart().isPapierGesuch() || Strings.isNullOrEmpty(benutzer.getZpvNummer())) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
-		} else {
-			try {
-				SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
-					Integer.valueOf(benutzer.getZpvNummer()),
-					gesuchsteller.getGesuchstellerJA().getGeburtsdatum(),
-					kibonAnfrageId.getId(),
-					gesuch.getGesuchsperiode().getBasisJahr());
-				handleSteuerdatenResponse(convertedFinSitCont, finSitGS2, steuerdatenResponse, isGemeinsam, gesuch);
-			} catch (KiBonAnfrageServiceException e) {
-				updateFinSitSteuerdatenAbfrageStatusFailed(
-					convertedFinSitCont,
-					finSitGS2,
-					SteuerdatenAnfrageStatus.FAILED);
-			}
-		}
 		//und zusendlich speichern und zuruckgeben
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(convertedFinSitCont);
-		if (finSitGS2 != null) {
-			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
-		}
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
-	private void updateFinSitSteuerdatenAbfrageStatusFailed(
-		@Nonnull FinanzielleSituationContainer finSitGS1,
-		@Nullable FinanzielleSituationContainer finSitGS2,
-		SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
-		finSitGS1.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
-		if (finSitGS2 != null) {
-			if (finSitGS2.getFinanzielleSituationJA() == null) {
-				finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
-			}
-			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"
+		+ "Ergebniss",
+		response = SteuerdatenResponse.class)
+	@GET
+	@Path("/geburtsdatum-matches-steuerabfrage/{containerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public boolean doesGeburtsdatumMatchSteuerabfrage(
+		@Nonnull @NotNull @PathParam("containerId") JaxId jaxContainerId,
+		@Nonnull @NotNull @QueryParam("geburtsdatum") String geburtsdatum,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+
+		Objects.requireNonNull(jaxContainerId.getId());
+		//Antrag suchen
+		FinanzielleSituationContainer finSitContainer =
+			finanzielleSituationService.findFinanzielleSituation(jaxContainerId.getId()).orElseThrow(()
+				-> new EbeguEntityNotFoundException(
+				"resetFinSitSteuerdaten",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"FinSit ID invalid: " + jaxContainerId.getId()));
+
+		LocalDate datumSteuerdatenAnfrage = requireNonNull(finSitContainer.getFinanzielleSituationJA()
+			.getSteuerdatenResponse()).getGeburtsdatumAntragsteller();
+
+		LocalDate formattedGeburtsdatum = LocalDate.parse(geburtsdatum, Constants.DATE_FORMATTER);
+
+		boolean isMatching = Objects.equals(datumSteuerdatenAnfrage, formattedGeburtsdatum);
+
+		if (!isMatching
+			&& finSitContainer.getFinanzielleSituationJA().getSteuerdatenResponse().getGeburtsdatumPartner() != null) {
+			isMatching = Objects.equals(finSitContainer.getFinanzielleSituationJA()
+				.getSteuerdatenResponse()
+				.getGeburtsdatumPartner(), formattedGeburtsdatum);
 		}
+
+		return isMatching;
 	}
-
-	private void handleSteuerdatenResponse(
-		@Nonnull FinanzielleSituationContainer convertedFinSitCont,
-		@Nullable FinanzielleSituationContainer finSitGS2,
-		@Nonnull SteuerdatenResponse steuerdatenResponse,
-		boolean gemeinsameStek,
-		Gesuch gesuch) {
-		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(
-				convertedFinSitCont,
-				finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
-		} else if (steuerdatenResponse.getZpvNrPartner() == null && gemeinsameStek) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(
-				convertedFinSitCont,
-				finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
-		} else if (steuerdatenResponse.getZpvNrPartner() != null && !gemeinsameStek) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(
-				convertedFinSitCont,
-				finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
-		} else if (gemeinsameStek
-			&& requireNonNull(gesuch.getGesuchsteller2()).getGesuchstellerJA().getGeburtsdatum().compareTo(
-			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) != 0) {
-			updateFinSitSteuerdatenAbfrageStatusFailed(
-				convertedFinSitCont,
-				finSitGS2,
-				SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
-		} else {
-			updateFinSitSteuerdatenAbfrageStatusOk(convertedFinSitCont, finSitGS2, steuerdatenResponse);
-		}
-	}
-
-	private void updateFinSitSteuerdatenAbfrageStatusOk(
-		@Nonnull FinanzielleSituationContainer convertedFinSitCont,
-		@Nullable FinanzielleSituationContainer finSitGS2,
-		@Nonnull SteuerdatenResponse steuerdatenResponse) {
-		if (steuerdatenResponse.getVeranlagungsstand() != null) {
-			convertedFinSitCont.getFinanzielleSituationJA()
-				.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand()
-					.name()));
-			if (finSitGS2 != null) {
-				if (finSitGS2.getFinanzielleSituationJA() == null) {
-					finSitGS2.setFinanzielleSituationJA(new FinanzielleSituation());
-				}
-				finSitGS2.getFinanzielleSituationJA()
-					.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand()
-						.name()));
-			}
-		}
-		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null ?
-				steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() :
-				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setFamilienzulage(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() != null ?
-				steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger() :
-				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() != null ?
-				steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger() :
-				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() != null ?
-				steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger() :
-				BigDecimal.ZERO);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() != null ?
-				steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger() :
-				BigDecimal.ZERO);
-
-		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
-
-		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
-		BigDecimal bruttertraegeVermogenTotal =
-			GANZZAHL.addNullSafe(steuerdatenResponse.getBruttoertraegeAusLiegenschaften() != null ?
-				steuerdatenResponse.getBruttoertraegeAusLiegenschaften() :
-				BigDecimal.ZERO, steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
-		boolean hasResponse2Antragstellende = steuerdatenResponse.getZpvNrPartner() != null;
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setBruttoertraegeVermoegen(hasResponse2Antragstellende ?
-				GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)) :
-				bruttertraegeVermogenTotal);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setAbzugSchuldzinsen(hasResponse2Antragstellende ?
-				GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
-					steuerdatenResponse.getSchuldzinsen() :
-					BigDecimal.ZERO, new BigDecimal(2)) :
-				steuerdatenResponse.getSchuldzinsen());
-		BigDecimal gewinnungskostenTotal =
-			GANZZAHL.addNullSafe(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() != null ?
-				steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen() :
-				BigDecimal.ONE, steuerdatenResponse.getLiegenschaftsAbzuege());
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setGewinnungskosten(hasResponse2Antragstellende ?
-				GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)) :
-				gewinnungskostenTotal);
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setGeleisteteAlimente(hasResponse2Antragstellende ?
-				GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
-					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
-					BigDecimal.ZERO, new BigDecimal(2)) :
-				steuerdatenResponse.getGeleisteteUnterhaltsbeitraege());
-		convertedFinSitCont.getFinanzielleSituationJA()
-			.setNettoVermoegen(hasResponse2Antragstellende ?
-				GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
-					steuerdatenResponse.getNettovermoegen() :
-					BigDecimal.ZERO, new BigDecimal(2)) :
-				steuerdatenResponse.getNettovermoegen());
-
-		if (finSitGS2 != null && hasResponse2Antragstellende) {
-			finSitGS2.getFinanzielleSituationJA()
-				.setNettolohn(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() != null ?
-					steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner() :
-					BigDecimal.ZERO);
-			finSitGS2.getFinanzielleSituationJA()
-				.setFamilienzulage(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner() != null ?
-					steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner() :
-					BigDecimal.ZERO);
-			finSitGS2.getFinanzielleSituationJA()
-				.setErsatzeinkommen(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner() != null ?
-					steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner() :
-					BigDecimal.ZERO);
-			finSitGS2.getFinanzielleSituationJA()
-				.setErhalteneAlimente(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner() != null ?
-					steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner() :
-					BigDecimal.ZERO);
-			finSitGS2.getFinanzielleSituationJA()
-				.setNettoertraegeErbengemeinschaft(steuerdatenResponse.getNettoertraegeAusEgmePartner() != null ?
-					steuerdatenResponse.getNettoertraegeAusEgmePartner() :
-					BigDecimal.ZERO);
-
-			finSitGS2.getFinanzielleSituationJA()
-				.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
-			finSitGS2.getFinanzielleSituationJA()
-				.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
-			finSitGS2.getFinanzielleSituationJA()
-				.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
-
-			finSitGS2.getFinanzielleSituationJA()
-				.setBruttoertraegeVermoegen(GANZZAHL.divide(bruttertraegeVermogenTotal, new BigDecimal(2)));
-			finSitGS2.getFinanzielleSituationJA()
-				.setAbzugSchuldzinsen(GANZZAHL.divide(steuerdatenResponse.getSchuldzinsen() != null ?
-					steuerdatenResponse.getSchuldzinsen() :
-					BigDecimal.ZERO, new BigDecimal(2)));
-			finSitGS2.getFinanzielleSituationJA()
-				.setGewinnungskosten(GANZZAHL.divide(gewinnungskostenTotal, new BigDecimal(2)));
-			finSitGS2.getFinanzielleSituationJA()
-				.setGeleisteteAlimente(GANZZAHL.divide(steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() != null ?
-					steuerdatenResponse.getGeleisteteUnterhaltsbeitraege() :
-					BigDecimal.ZERO, new BigDecimal(2)));
-			finSitGS2.getFinanzielleSituationJA()
-				.setNettoVermoegen(GANZZAHL.divide(steuerdatenResponse.getNettovermoegen() != null ?
-					steuerdatenResponse.getNettovermoegen() :
-					BigDecimal.ZERO, new BigDecimal(2)));
-		}
-	}
-
 
 	@ApiOperation(value = "",
 		response = JaxFinanzielleSituationContainer.class)
@@ -702,9 +863,20 @@ public class FinanzielleSituationResource {
 			jaxFinanzielleSituationAufteilungDTO
 		);
 
-		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), gesuchId.getId());
-		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuchId.getId());
+		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer(), gesuchId.getId());
+		this.finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2()
+			.getFinanzielleSituationContainer(), gesuchId.getId());
 
 		return Response.ok().build();
+	}
+
+	private GesuchstellerContainer findGesuchstellerById(@Nonnull String gesuchstellerId,
+		@Nonnull String methodeName) {
+		return gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
+			-> new EbeguEntityNotFoundException(
+			methodeName,
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			"GesuchstellerId invalid: " + gesuchstellerId));
 	}
 }

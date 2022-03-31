@@ -16,10 +16,13 @@
 import * as moment from 'moment';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
+import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAnswer';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
+import {TSGesuchsperiode} from './TSGesuchsperiode';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
+
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
@@ -41,6 +44,9 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
     private _fkjvFamSit: boolean;
     private _minDauerKonkubinat: number;
+    private _unterhaltsvereinbarung: TSUnterhaltsvereinbarungAnswer;
+    private _unterhaltsvereinbarungBemerkung: string;
+    private _geteilteObhut: boolean;
 
     public constructor() {
         super();
@@ -190,25 +196,55 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._gesuchstellerKardinalitaet = value;
     }
 
-    public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
+    public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if (!this.fkjvFamSit) {
                     return false;
                 }
-                return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+                return this.hasSecondGesuchstellerFKJV();
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                // falls das Konkubinat irgendwann in der Periode länger als 2 Jahre dauert,
+                // benötigen wir sowieso einen zweiten Gesuchsteller
+                if (this.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(endOfPeriode)) {
+                    return true;
+                }
+                // falls Konkubinat kürzer als zwei Jahre ist, wird ein Fragebaum für FKJV angezeigt. Wir
+                // schauen ob die Antworten dort einen zweiten Antragsteller verlangen
+                if (this.fkjvFamSit) {
+                    return this.hasSecondGesuchstellerFKJV();
+                }
+                return false;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
                 return true;
-            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
-                const xBack = ref
-                    .subtract(this.minDauerKonkubinat, 'years')  // x years for konkubinat
-                    .subtract(1, 'month'); // 1 month for rule
-                return !this.startKonkubinat || !this.startKonkubinat.isAfter(xBack);
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }
+    }
+
+    /**
+     * Wir schauen, ob es einen Zeitabschnitt in der Periode gibt, an dem das Konkubinat noch nicht X Jahre alt ist.
+     * Z.B. Periode 22/23 und Start Konkubinat 1.11.2020: Zwischen 1.8.2022 und 31.10.2022 ist das Konkubinat jünger
+     * als 2 Jahre und die Funktion gibt true zurück.
+     */
+    public konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(periode: TSGesuchsperiode): boolean {
+        if (!this.startKonkubinat) {
+            return false;
+        }
+        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
+        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        return konkubinatPlusYears.isAfter(periode.gueltigkeit.gueltigAb);
+    }
+
+    /**
+     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens zwei Jahre alt ist.
+     * z.B. Periode 22/23, Start Konkubinat 1.11.2020 => zwei Jahre am 1.11.2022 erreicht => true
+     */
+    public konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
+        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
+        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        return konkubinatPlusYears.isSameOrBefore(endOfPeriode);
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
@@ -238,5 +274,37 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set minDauerKonkubinat(value: number) {
         this._minDauerKonkubinat = value;
+    }
+
+    public get unterhaltsvereinbarung(): TSUnterhaltsvereinbarungAnswer {
+        return this._unterhaltsvereinbarung;
+    }
+
+    public set unterhaltsvereinbarung(value: TSUnterhaltsvereinbarungAnswer) {
+        this._unterhaltsvereinbarung = value;
+    }
+
+    public get unterhaltsvereinbarungBemerkung(): string {
+        return this._unterhaltsvereinbarungBemerkung;
+    }
+
+    public set unterhaltsvereinbarungBemerkung(value: string) {
+        this._unterhaltsvereinbarungBemerkung = value;
+    }
+
+    public get geteilteObhut(): boolean {
+        return this._geteilteObhut;
+    }
+
+    public set geteilteObhut(value: boolean) {
+        this._geteilteObhut = value;
+    }
+
+    private hasSecondGesuchstellerFKJV(): boolean {
+        if (this.geteilteObhut) {
+            return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+        }
+
+        return this.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
     }
 }

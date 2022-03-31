@@ -30,7 +30,9 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -108,9 +110,35 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			newFamiliensituation.setGemeinsameSteuererklaerung(false);
 		}
 
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+				oldFamiliensituation != null &&
+				(oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT
+						|| oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND) &&
+				mergedFamiliensituationContainer.getFamiliensituationJA() != null &&
+				mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+						== EnumFamilienstatus.VERHEIRATET) {
+			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
+		}
+		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
+		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+			oldFamiliensituation != null &&
+			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()) {
+			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
+		}
+
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+	private void resetFragenKinderabzugAndSetToUeberpruefen(Gesuch gesuch) {
+		gesuch.getKindContainers()
+			.forEach(kindContainer -> {
+				if(kindContainer.getKindJA() != null) {
+					kindContainer.getKindJA().setGemeinsamesGesuch(null);
+					kindContainer.getKindJA().setInPruefung(true);
+				}
+			});
 	}
 
 	@Nonnull

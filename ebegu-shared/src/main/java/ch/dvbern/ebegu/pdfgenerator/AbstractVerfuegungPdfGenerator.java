@@ -446,7 +446,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				Element.ALIGN_RIGHT,
 				PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()),
 				Color.LIGHT_GRAY,
-				fontTabelleBold,
+				getBgColorForBetreuungsgutscheinCell(),
 				1,
 				1));
 			table.addCell(createCell(
@@ -654,6 +654,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected abstract Font getBgColorForUeberwiesenerBetragCell();
+
+	protected Font getBgColorForBetreuungsgutscheinCell() {
+		return fontTabelleBold;
+	};
 
 	protected abstract String getTextGutschein();
 }

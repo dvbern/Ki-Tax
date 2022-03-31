@@ -15,6 +15,7 @@
 
 import {waitForAsync} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -38,6 +39,7 @@ describe('stammdatenView', () => {
     let $scope: IScope;
     let ewkRS: EwkRS;
     let $timeout: ITimeoutService;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -54,6 +56,7 @@ describe('stammdatenView', () => {
         ewkRS = $injector.get('EwkRS');
         $scope = $rootScope.$new();
         $timeout = $injector.get('$timeout');
+        einstellungRS = $injector.get('EinstellungRS');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -67,7 +70,8 @@ describe('stammdatenView', () => {
             undefined,
             $rootScope,
             ewkRS,
-            $timeout);
+            $timeout,
+            einstellungRS);
     })));
 
     describe('disableWohnadresseFor2GS', () => {

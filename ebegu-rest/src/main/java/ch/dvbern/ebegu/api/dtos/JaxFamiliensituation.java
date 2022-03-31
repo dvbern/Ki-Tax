@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -100,6 +101,15 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nonnull
 	private Integer minDauerKonkubinat;
+
+	@Nullable
+	private UnterhaltsvereinbarungAnswer unterhaltsvereinbarung;
+
+	@Nullable
+	private String unterhaltsvereinbarungBemerkung;
+
+	@Nullable
+	private Boolean geteilteObhut;
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -287,5 +297,32 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setMinDauerKonkubinat(Integer minDauerKonkubinat) {
 		this.minDauerKonkubinat = minDauerKonkubinat;
+	}
+
+	@Nullable
+	public UnterhaltsvereinbarungAnswer getUnterhaltsvereinbarung() {
+		return unterhaltsvereinbarung;
+	}
+
+	public void setUnterhaltsvereinbarung(@Nullable UnterhaltsvereinbarungAnswer unterhaltsvereinbarung) {
+		this.unterhaltsvereinbarung = unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public String getUnterhaltsvereinbarungBemerkung() {
+		return unterhaltsvereinbarungBemerkung;
+	}
+
+	public void setUnterhaltsvereinbarungBemerkung(@Nullable String unterhaltsvereinbarungBemerkung) {
+		this.unterhaltsvereinbarungBemerkung = unterhaltsvereinbarungBemerkung;
+	}
+
+	@Nullable
+	public Boolean getGeteilteObhut() {
+		return geteilteObhut;
+	}
+
+	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
+		this.geteilteObhut = geteilteObhut;
 	}
 }

@@ -212,6 +212,8 @@ public class VerfuegungsBemerkungDTOList {
 			// 1. Ausserordentlicher Anspruch
 			// 2. Fachstelle
 			// 3. Erwerbspensum
+			// 4. Erweiterte Beduefrnisse
+			// 5. Zusatzgutschein
 			if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
 				removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
@@ -225,6 +227,10 @@ public class VerfuegungsBemerkungDTOList {
 			}
 			if (messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+			}
+			if (messagesMap.containsKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE)) {
+				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
+				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
 			}
 		}
 

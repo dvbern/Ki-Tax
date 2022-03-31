@@ -289,8 +289,10 @@ public class BetreuungsgutscheinConfigurator {
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(minEWP_nichtEingeschultGmde, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultGmde, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(paramMinDauerKonkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
 		// Im Fall von BERN die Gueltigkeit einfach erst ab Tag X setzen?
 		if (kitaxParameterDTO != null && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
 			// Fuer die Stadt Bern gibt es die Rule mit verschiedenen Parameter: Vor dem Stichtag und nach dem Stichtag
@@ -300,6 +302,7 @@ public class BetreuungsgutscheinConfigurator {
 				vorStichtag,
 				kitaxParameterDTO.getMinEWP(),
 				kitaxParameterDTO.getMinEWP(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			// Wir muessen die Regel hier manuell hinzufuegen, da wir nicht die ueblichen Einstellungen verwenden!
 			// Sonst wird sie bei der Pruefung isRelevantForGemeinde wieder entfernt
@@ -310,6 +313,7 @@ public class BetreuungsgutscheinConfigurator {
 				nachStichtag,
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleNachStichtag, einstellungMap);
 		} else {
@@ -318,6 +322,7 @@ public class BetreuungsgutscheinConfigurator {
 				defaultGueltigkeit,
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			addToRuleSetIfRelevantForGemeinde(erwerbspensumGemeindeCalcRule, einstellungMap);
 		}
@@ -456,12 +461,14 @@ public class BetreuungsgutscheinConfigurator {
 
 		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		return new ErwerbspensumAsivCalcRule(
 			defaultGueltigkeit,
 			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
 			minEWP_eingeschultAsiv.getValueAsInteger(),
+			paramMinDauerKonkubinat.getValueAsInteger(),
 			locale);
 	}
 }

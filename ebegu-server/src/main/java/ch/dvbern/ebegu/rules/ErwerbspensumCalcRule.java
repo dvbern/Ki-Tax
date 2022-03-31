@@ -31,12 +31,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.service.spi.Manageable;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -53,17 +53,20 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
+	private final int paramMinDauerKonkubinat;
 
 	protected ErwerbspensumCalcRule(
 		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
+		int paramMinDauerKonkubinat,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, ruleValidity, validityPeriod, locale);
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
+		this.paramMinDauerKonkubinat = paramMinDauerKonkubinat;
 	}
 
 	@Override
@@ -78,13 +81,13 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	) {
 		requireNonNull(platz.extractGesuch(), "Gesuch muss gesetzt sein");
 		requireNonNull(platz.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
-		boolean hasSecondGesuchsteller = hasSecondGSForZeit(platz, inputData.getParent().getGueltigkeit());
-		int erwerbspensumOffset = hasSecondGesuchsteller ? 100 : 0;
+		boolean isErwerbspensumRelevantForGS2 = isErwerbspensumRelevantForGS2(platz, inputData);
+		int erwerbspensumOffset = isErwerbspensumRelevantForGS2 ? 100 : 0;
 		// Erwerbspensum ist immer die erste Rule, d.h. es wird das Erwerbspensum mal als Anspruch angenommen
 		// Das Erwerbspensum muss PRO GESUCHSTELLER auf 100% limitiert werden
 		Integer erwerbspensum1 = calculateErwerbspensumGS1(inputData, getLocale());
 		Integer erwerbspensum2 = 0;
-		if (hasSecondGesuchsteller) {
+		if (isErwerbspensumRelevantForGS2) {
 			erwerbspensum2 = calculateErwerbspensumGS2(inputData, getLocale());
 		}
 		int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
@@ -92,6 +95,18 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 		int roundedAnspruch = checkAndRoundAnspruch(inputData, anspruch, minimum, erwerbspensumOffset, getLocale(), platz.extractGesuch().extractMandant());
 		inputData.setAnspruchspensumProzent(roundedAnspruch);
 		inputData.setMinimalErforderlichesPensum(minimum);
+	}
+
+	private boolean isErwerbspensumRelevantForGS2(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+		final Gesuch gesuch = platz.extractGesuch();
+		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
+		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
+
+		if(!hasSecondGSForZeit(familiensituation, familiensituationErstGesuch, inputData.getParent().getGueltigkeit())) {
+			return false;
+		}
+
+		return isErwerbspensumRelevantForExistingGS2(familiensituation, inputData.getParent().getGueltigkeit());
 	}
 
 	private int getMinimumErwerbspensum(@Nonnull AbstractPlatz betreuung) {
@@ -187,10 +202,10 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * @param gueltigkeit
 	 * @return
 	 */
-	private boolean hasSecondGSForZeit(@Nonnull AbstractPlatz betreuung, @Nonnull DateRange gueltigkeit) {
-		final Gesuch gesuch = betreuung.extractGesuch();
-		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
-		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
+	private boolean hasSecondGSForZeit(
+		@Nonnull Familiensituation familiensituation,
+		Familiensituation familiensituationErstGesuch,
+		DateRange gueltigkeit) {
 
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null
@@ -199,6 +214,28 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
+	}
+
+	/**
+	 * Grundsätzlich ist das EWP für GS2 relevant.
+	 *
+	 * Einzige Ausnahme bietet folgender Spezialfall innerhalb einer FKJV Periode:
+	 * Die elterliche Obhut findet nicht in zwei Haushalten statt (Familiensituation#geteilteObhut)
+	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
+	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
+	 */
+	private boolean isErwerbspensumRelevantForExistingGS2(@Nonnull Familiensituation familiensituation, DateRange zeitabschnitt) {
+		if (familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
+			return true;
+		}
+
+		//Falls Verheiratet exitiert GS2 immer aber es gibt kein StartDatum Konkubinat
+		if (familiensituation.getStartKonkubinat() == null) {
+			return true;
+		}
+
+		LocalDate dateKonkubinatMinDauerReached = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat);
+		return dateKonkubinatMinDauerReached.isBefore(zeitabschnitt.getGueltigAb());
 	}
 
 	@Nonnull

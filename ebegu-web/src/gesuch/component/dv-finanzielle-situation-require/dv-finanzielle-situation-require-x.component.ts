@@ -37,6 +37,9 @@ const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
 export class DvFinanzielleSituationRequireX implements OnInit {
 
     @Input()
+    public hideVerguenstigungGewunscht: boolean = false;
+
+    @Input()
     public sozialhilfeBezueger: boolean;
     @Output()
     public readonly sozialhilfeBezuegerChange = new EventEmitter<boolean>();
@@ -107,6 +110,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
      * wenn es sich um keinen reinen BG-Antrag in der FKJV FinSit handelt
      */
     public showFinanzielleSituationDeklarieren(): boolean {
+        if (this.hideVerguenstigungGewunscht) {
+            return false;
+        }
         const isNotSozialhilfeBezueger = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
             && !this.sozialhilfeBezueger;
 

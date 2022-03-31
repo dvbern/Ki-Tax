@@ -768,28 +768,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		if (familiensituationJAXP.getIbanInfoma() != null || familiensituationJAXP.getKontoinhaberInfoma() != null) {
-			Objects.requireNonNull(
-				familiensituationJAXP.getKontoinhaberInfoma(),
-				"IBAN muss erfasst sein");
-			Objects.requireNonNull(
-				familiensituationJAXP.getKontoinhaberInfoma(),
-				"Kontoinhaber muss erfasst sein");
-			if (familiensituation.getAuszahlungsdatenInfoma() == null) {
-				familiensituation.setAuszahlungsdatenInfoma(new Auszahlungsdaten());
-			}
-			familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
-			familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
-			Adresse convertedAdresse = null;
-			if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
-				Adresse a =
-					Optional.ofNullable(familiensituation.getAuszahlungsdatenInfoma().getAdresseKontoinhaber())
-						.orElseGet(Adresse::new);
-				convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseInfoma(), a);
-			}
-			familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
-			familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
-			familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
-			familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
+			convertFamilienSituationInfomaProperties(familiensituationJAXP, familiensituation);
 		}
 
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
@@ -802,7 +781,37 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setGesuchstellerKardinalitaet(familiensituationJAXP.getGesuchstellerKardinalitaet());
 		familiensituation.setFkjvFamSit(familiensituationJAXP.isFkjvFamSit());
 		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
+		familiensituation.setGeteilteObhut(familiensituationJAXP.getGeteilteObhut());
+		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
+		familiensituation.setUnterhaltsvereinbarungBemerkung(familiensituationJAXP.getUnterhaltsvereinbarungBemerkung());
 		return familiensituation;
+	}
+
+	private void convertFamilienSituationInfomaProperties(
+		@Nonnull final JaxFamiliensituation familiensituationJAXP,
+		@Nonnull final Familiensituation familiensituation) {
+		Objects.requireNonNull(
+			familiensituationJAXP.getKontoinhaberInfoma(),
+			"IBAN muss erfasst sein");
+		Objects.requireNonNull(
+			familiensituationJAXP.getKontoinhaberInfoma(),
+			"Kontoinhaber muss erfasst sein");
+		if (familiensituation.getAuszahlungsdatenInfoma() == null) {
+			familiensituation.setAuszahlungsdatenInfoma(new Auszahlungsdaten());
+		}
+		familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
+		familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
+		Adresse convertedAdresse = null;
+		if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
+			Adresse a =
+				Optional.ofNullable(familiensituation.getAuszahlungsdatenInfoma().getAdresseKontoinhaber())
+					.orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseInfoma(), a);
+		}
+		familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
+		familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
+		familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
+		familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
 	}
 
 	public JaxFamiliensituation familiensituationToJAX(@Nonnull final Familiensituation persistedFamiliensituation) {
@@ -838,6 +847,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
+		jaxFamiliensituation.setUnterhaltsvereinbarung(persistedFamiliensituation.getUnterhaltsvereinbarung());
+		jaxFamiliensituation.setUnterhaltsvereinbarungBemerkung(persistedFamiliensituation.getUnterhaltsvereinbarungBemerkung());
+		jaxFamiliensituation.setGeteilteObhut(persistedFamiliensituation.getGeteilteObhut());
 		return jaxFamiliensituation;
 	}
 
@@ -2749,9 +2761,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
 		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
-		// Verfahren
+		// Verfahren und die Flag für den Zugriff
 		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			return finanzielleSituation;
@@ -2771,6 +2784,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
+		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 
 		return finanzielleSituation;
@@ -2834,6 +2848,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
+		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 
 		return jaxFinanzielleSituation;
 	}
@@ -3225,6 +3240,7 @@ public class JaxBConverter extends AbstractConverter {
 			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 		erweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuungJAXP.getKeineKesbPlatzierung());
 		erweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuungJAXP.getKitaPlusZuschlag());
+		erweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuungJAXP.getKitaPlusZuschlagBestaetigt());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
 
@@ -4091,6 +4107,7 @@ public class JaxBConverter extends AbstractConverter {
 			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 		jaxErweiterteBetreuung.setKeineKesbPlatzierung(erweiterteBetreuung.getKeineKesbPlatzierung());
 		jaxErweiterteBetreuung.setKitaPlusZuschlag(erweiterteBetreuung.getKitaPlusZuschlag());
+		jaxErweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuung.isKitaPlusZuschlagBestaetigt());
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 		jaxErweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuung.getErweitereteBeduerfnisseBetrag());
 

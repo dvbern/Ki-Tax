@@ -16,8 +16,10 @@
 package ch.dvbern.ebegu.api.connector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,6 +27,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
@@ -89,23 +92,36 @@ public interface ILoginConnectorResource {
 
 	/**
 	 * @return the first and only Mandant that currently exists
+	 * @param mandantIdentifier
 	 */
 	@Nonnull
 	@GET
 	@Path("/mandant")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	String getMandant();
+	String getMandant(@QueryParam("mandantIdentifier") String mandantIdentifier);
+
+	/**
+	 * updates the gesuchsteller from the id with the zpv nr
+	 */
+	@Nonnull
+	@PUT
+	@Path("/update-gs-zpv")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	void updateGesuchstellerZPVNr(@QueryParam("gesuchstellerContainerId") @Nonnull String gesuchstellerContainerId, @QueryParam("zpvNummer") @Nonnull String zpvNummer);
 
 	/**
 	 * This service exists to allow external login modules to create logins in Ki-Tax
 	 *
 	 * @param jaxExtAuthUser the login entry to create
+	 * @param mandantId
 	 * @return Object containing the information that is relevant for the Cookie
 	 */
 	@POST
 	@Path("/extauth")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser);
+	JaxExternalAuthAccessElement createLogin(
+		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser, @QueryParam("tenant") @Nullable String mandantId);
 }

@@ -20,6 +20,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
     private _steuerdatenZugriff: boolean;
+    private _automatischePruefungErlaubt: boolean;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
     private _quellenbesteuert: boolean;
@@ -127,6 +128,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set bruttoLohn(value: number) {
         this._bruttoLohn = value;
+    }
+
+    public get automatischePruefungErlaubt(): boolean {
+        return this._automatischePruefungErlaubt;
+    }
+
+    public set automatischePruefungErlaubt(value: boolean) {
+        this._automatischePruefungErlaubt = value;
     }
 
     public isSelbstaendig(): boolean {

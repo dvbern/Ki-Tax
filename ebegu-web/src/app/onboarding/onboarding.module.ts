@@ -24,6 +24,8 @@ import {OnboardingRoutingModule} from './onboarding-routing.module';
 import { OnboardingNeuBenutzerComponent } from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import { OnboardingInfoGemeindeComponent } from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
 import { OnboardingInfoInstitutionComponent } from './onboarding-info-institution/onboarding-info-institution.component';
+import { InitZpvNrComponent } from './init-zpv-nr/init-zpv-nr.component';
+import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component';
 
 @NgModule({
     imports: [
@@ -38,7 +40,9 @@ import { OnboardingInfoInstitutionComponent } from './onboarding-info-institutio
         OnboardingNeuBenutzerComponent,
         OnboardingInfoGemeindeComponent,
         OnboardingInfoInstitutionComponent,
-        DummyMandantSelectionComponent
+        DummyMandantSelectionComponent,
+        InitZpvNrComponent,
+        ZpvNrSuccessComponent
     ],
 })
 class OnboardingModule {

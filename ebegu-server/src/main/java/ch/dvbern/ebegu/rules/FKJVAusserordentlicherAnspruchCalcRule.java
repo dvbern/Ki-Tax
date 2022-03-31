@@ -76,6 +76,10 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 		int ausserordentlicherAnspruch = inputData.getAusserordentlicherAnspruch();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 
+		if (ausserordentlicherAnspruch == 0)  {
+			return;
+		}
+
 		if(!beschaeftigungspensumSufficient(platz, inputData)) {
 			inputData.setAusserordentlicherAnspruch(0);
 			inputData.addBemerkung(

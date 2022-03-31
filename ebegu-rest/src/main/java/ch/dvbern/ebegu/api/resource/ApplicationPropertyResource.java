@@ -286,6 +286,7 @@ public class ApplicationPropertyResource {
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
 		boolean angebotTSEnabled = mandant.isAngebotTS();
+		boolean isEbeguKibonAnfrageTestGuiEnabled = ebeguConfiguration.getEbeguKibonAnfrageTestGuiEnabled();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 
@@ -353,6 +354,15 @@ public class ApplicationPropertyResource {
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 							mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty frenchEnabled =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FRENCH_ENABLED, mandant)
+						.orElseThrow(() -> notFound);
+		ApplicationProperty geresEnabledForMandant =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.GERES_ENABLED_FOR_MANDANT, mandant)
+						.orElseThrow(() -> notFound);
+		ApplicationProperty steuerschnittstelleAktivAb =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB, mandant)
+						.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -398,7 +408,11 @@ public class ApplicationPropertyResource {
 			logoFileNameWhite.getValue(),
 			multimandantEnabled,
 			angebotTSEnabled,
-			stringToBool(infomaZahlungen.getValue())
+			stringToBool(infomaZahlungen.getValue()),
+			stringToBool(frenchEnabled.getValue()),
+			stringToBool(geresEnabledForMandant.getValue()),
+			isEbeguKibonAnfrageTestGuiEnabled,
+			steuerschnittstelleAktivAb.getValue()
 			);
 		return Response.ok(pubAppConf).build();
 	}

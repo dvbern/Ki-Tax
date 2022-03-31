@@ -21,6 +21,7 @@ import {IPromise} from 'angular';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -88,13 +89,26 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then((gesuch: TSGesuch) => {
-                if (this.isGemeinsam()) {
+                const isSozialhilfeBezueger = gesuch.extractFamiliensituation().sozialhilfeBezueger;
+                if (this.isGemeinsam() || this.gesuchModelManager.isLastGesuchsteller() || isSozialhilfeBezueger) {
                     this.updateWizardStepStatus();
+                }
+                if (isSozialhilfeBezueger) {
+                    onResult(isSozialhilfeBezueger);
+                    return undefined;
                 }
                 onResult(gesuch.gesuchsteller1.finanzielleSituationContainer);
                 return gesuch.gesuchsteller1.finanzielleSituationContainer;
             }).catch(error => {
                 throw(error);
             });
+    }
+
+    public getFamiliensituation(): TSFamiliensituation {
+        return this.gesuchModelManager.getFamiliensituation();
+    }
+
+    public isNotSozialhilfeBezueger(): boolean {
+        return EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger);
     }
 }

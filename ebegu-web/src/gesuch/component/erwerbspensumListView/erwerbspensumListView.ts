@@ -20,7 +20,9 @@ import {IDVFocusableController} from '../../../app/core/component/IDVFocusableCo
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
@@ -209,8 +211,19 @@ export class ErwerbspensumListViewController
             return true;
         }
 
-        return this.gesuchModelManager.isGesuchsteller2Required()
-            && this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
+        return this.isErwerbspensumRequiredForGS2();
+    }
+
+    private isErwerbspensumRequiredForGS2(): boolean {
+        if (!this.gesuchModelManager.isGesuchsteller2Required()) {
+            return false;
+        }
+
+        if (!this.showErwerbspensumGS2()) {
+            return false;
+        }
+
+        return this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
     }
 
     public setFocusBack(elementID: string): void {
@@ -227,5 +240,32 @@ export class ErwerbspensumListViewController
         return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
             undFerieninseln: undFerieninselnTxt
         });
+    }
+
+    public showErwerbspensumGS2(): boolean {
+        // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
+        // muss das Erwerbspensum von GS2 nicht angegeben werden
+        const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
+            .familiensituationContainer.familiensituationJA.unterhaltsvereinbarung;
+
+        if (
+            unterhaltsvereinbarung !== null
+            && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+            && this.isShortKonkubinat()
+        ) {
+            return false;
+        }
+
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
+    private isShortKonkubinat(): boolean {
+        const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+
+        if (familiensitution.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+
+        return !familiensitution.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
     }
 }

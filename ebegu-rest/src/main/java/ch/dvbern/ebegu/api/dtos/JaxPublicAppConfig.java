@@ -41,38 +41,45 @@ public class JaxPublicAppConfig {
 	private boolean multimandantAktiviert;
 	private boolean angebotTSActivated;
 	private final boolean infomaZahlungen;
-
+	private boolean frenchEnabled;
+	private boolean geresEnabledForMandant;
+	private boolean ebeguKibonAnfrageTestGuiEnabled;
+	private final String steuerschnittstelleAktivAb;
 
 	public JaxPublicAppConfig(
-		String currentNode,
-		boolean devmode,
-		String whitelist,
-		boolean dummyMode,
-		String sentryEnvName,
-		String backgroundColor,
-		boolean zahlungentestmode,
-		boolean personenSucheDisabled,
-		String kitaxHost,
-		String kitaxEndpoint,
-		String notverordnungDefaultEinreichefristOeffentlich,
-		String notverordnungDefaultEinreichefristPrivat,
-		boolean lastenausgleichAktiv,
-		boolean ferienbetreuungAktiv,
-		boolean lastenausgleichTagesschulenAktiv,
-		boolean gemeindeKennzahlenAktiv,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
-		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
-		String primaryColor,
-		String primaryColorDark,
-		String primaryColorLight,
-		String logoFileName,
-		String logoFileNameWhite,
-		boolean multimandantAktiviert,
-		boolean angebotTSActivated,
-		boolean infomaZahlungen
-	) {
+			String currentNode,
+			boolean devmode,
+			String whitelist,
+			boolean dummyMode,
+			String sentryEnvName,
+			String backgroundColor,
+			boolean zahlungentestmode,
+			boolean personenSucheDisabled,
+			String kitaxHost,
+			String kitaxEndpoint,
+			String notverordnungDefaultEinreichefristOeffentlich,
+			String notverordnungDefaultEinreichefristPrivat,
+			boolean lastenausgleichAktiv,
+			boolean ferienbetreuungAktiv,
+			boolean lastenausgleichTagesschulenAktiv,
+			boolean gemeindeKennzahlenAktiv,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
+			String primaryColor,
+			String primaryColorDark,
+			String primaryColorLight,
+			String logoFileName,
+			String logoFileNameWhite,
+			boolean multimandantAktiviert,
+			boolean angebotTSActivated,
+			boolean infomaZahlungen,
+			boolean frenchEnabled,
+			boolean geresEnabled,
+			boolean ebeguKibonAnfrageTestGuiEnabled,
+			String steuerschnittstelleAktivAb
+		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -101,6 +108,10 @@ public class JaxPublicAppConfig {
 		this.multimandantAktiviert = multimandantAktiviert;
 		this.angebotTSActivated = angebotTSActivated;
 		this.infomaZahlungen = infomaZahlungen;
+		this.frenchEnabled = frenchEnabled;
+		this.geresEnabledForMandant = geresEnabled;
+		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
 	}
 
 	public String getCurrentNode() {
@@ -321,5 +332,33 @@ public class JaxPublicAppConfig {
 
 	public boolean isInfomaZahlungen() {
 		return infomaZahlungen;
+	}
+
+	public boolean isFrenchEnabled() {
+		return frenchEnabled;
+	}
+
+	public void setFrenchEnabled(boolean frenchEnabled) {
+		this.frenchEnabled = frenchEnabled;
+	}
+
+	public boolean isGeresEnabledForMandant() {
+		return geresEnabledForMandant;
+	}
+
+	public void setGeresEnabledForMandant(boolean geresEnabledForMandant) {
+		this.geresEnabledForMandant = geresEnabledForMandant;
+	}
+
+	public boolean isEbeguKibonAnfrageTestGuiEnabled() {
+		return ebeguKibonAnfrageTestGuiEnabled;
+	}
+
+	public void setEbeguKibonAnfrageTestGuiEnabled(boolean ebeguKibonAnfrageTestGuiEnabled) {
+		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
+	}
+
+	public String getSteuerschnittstelleAktivAb() {
+		return steuerschnittstelleAktivAb;
 	}
 }

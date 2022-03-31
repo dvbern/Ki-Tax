@@ -16,162 +16,141 @@
   -->
 
 <div class="gesuch-modul">
-    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
-    <div class="row view-title">
-        <div class="col-md-12">
-            <h2>
+	<h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>
                 <span translate
-                      [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
-            </h2>
-            <hr class="header"/>
-        </div>
-    </div>
-    <div class="row">
-        <form role="form"
+					  [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+			</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+	<div class="row">
+		<form role="form"
+			  class="col-md-12"
               #form="ngForm"
-              novalidate>
+			  novalidate>
 
-            <div class="col-md-12">
-                <div class="row" *ngIf="showInfomaFields()">
-                    <div class="col-md-12 margin-bottom-20">
-                        <h3 translate class="uppercase ebegu-h1">ZAHLUNGSINFORMATIONEN</h3>
-                        <div class="margin-top-10 margin-bottom-30">
-                            <p class="italic" translate>ANGABEN_ZAHLUNGSINFORMATIONEN</p>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <dv-infoma-fields></dv-infoma-fields>
-                        <mat-divider class="margin-bottom-50"></mat-divider>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 margin-bottom-30">
-                        <h3 translate class="uppercase ebegu-h1">FRAGEN_ZU_ART_DER_VERANLAGUNG</h3>
-                    </div>
+			<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
+												[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"></dv-finanzielle-situation-require-x>
 
-                    <div class="col-xs-12">
-                        <div class="form-group">
-                            <dv-radio-container-x>
-                                <label for="quellenbesteuert_id" class="required ebegu-h1">
-                                    {{'QUELLENBESTEUERT' | translate}}
-                                </label>
-                                <mat-radio-group
-                                    (change)="quellenBesteuertChange($event)"
-                                    [(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"
-                                    name="quellenbesteuert"
-                                    id="quellenbesteuert_id"
-                                    #quellenbesteuert="ngModel"
-                                    [disabled]="readonly"
-                                    required>
-                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                                <dv-error-messages *ngIf="form.submitted"
-                                                   [errorObject]="quellenbesteuert.errors"
-                                                   inputId="quellenbesteuert_id">
-                                </dv-error-messages>
-                            </dv-radio-container-x>
-                        </div>
-                    </div>
+			<div *ngIf="isNotSozialhilfeBezueger()">
+				<div class="form-group">
+					<dv-radio-container-x>
+						<label for="quellenbesteuert_id" class="required ebegu-h1">
+							{{'QUELLENBESTEUERT' | translate}}
+						</label>
+						<mat-radio-group
+								(change)="quellenBesteuertChange($event)"
+								[(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"
+								name="quellenbesteuert"
+								id="quellenbesteuert_id"
+                                #quellenbesteuert="ngModel"
+								[disabled]="readonly"
+								required>
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages *ngIf="form.submitted"
+										   [errorObject]="quellenbesteuert.errors"
+										   inputId="quellenbesteuert_id">
+						</dv-error-messages>
+					</dv-radio-container-x>
+				</div>
 
-                    <div class="col-xs-12" *ngIf="gemeinsameStekVisible()">
-                        <div class="form-group">
-                            <dv-radio-container-x>
-                                <label for="gemeinsameSteuererklaerung_id" class="required ebegu-h1">
-                                    {{'GEMEINSAME_STEK' | translate: {antragsteller2: getAntragsteller2Name()} }}</label>
-                                <mat-radio-group
-                                    (change)="gemeinsameStekChange($event)"
-                                    [(ngModel)]="getModel().finanzielleSituationJA.gemeinsameStekVorjahr"
-                                    name="gemeinsameSteuererklaerung"
-                                    id="gemeinsameSteuererklaerung_id"
-                                    #gemeinsameSteuererklaerung="ngModel"
-                                    [disabled]="readonly"
-                                    required>
-                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                                <dv-error-messages *ngIf="form.submitted"
-                                                   [errorObject]="gemeinsameSteuererklaerung.errors"
-                                                   inputId="gemeinsameSteuererklaerung_id">
-                                </dv-error-messages>
-                            </dv-radio-container-x>
-                        </div>
-                    </div>
+				<div class="form-group" *ngIf="gemeinsameStekVisible()">
+					<dv-radio-container-x>
+						<label for="gemeinsameSteuererklaerung_id" class="required ebegu-h1">
+							{{'GEMEINSAME_STEK' | translate: {antragsteller2: getAntragsteller2Name()} }}</label>
+						<mat-radio-group
+								(change)="gemeinsameStekChange($event)"
+								[(ngModel)]="getModel().finanzielleSituationJA.gemeinsameStekVorjahr"
+								name="gemeinsameSteuererklaerung"
+								id="gemeinsameSteuererklaerung_id"
+                                #gemeinsameSteuererklaerung="ngModel"
+								[disabled]="readonly"
+								required>
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages *ngIf="form.submitted"
+										   [errorObject]="gemeinsameSteuererklaerung.errors"
+										   inputId="gemeinsameSteuererklaerung_id">
+						</dv-error-messages>
+					</dv-radio-container-x>
+				</div>
 
-                    <div class="col-xs-12" *ngIf="alleinigeStekVisible()">
-                        <div class="form-group">
-                            <dv-radio-container-x>
-                                <label for="alleinigeStekVorjahr_id" class="required ebegu-h1">
-                                    {{'ALLEINIGE_STEK' | translate}}</label>
-                                <mat-radio-group
-                                    (change)="alleinigeStekVorjahrChange($event)"
-                                    [(ngModel)]="getModel().finanzielleSituationJA.alleinigeStekVorjahr"
-                                    name="alleinigeStekVorjahr"
-                                    id="alleinigeStekVorjahr_id"
-                                    #alleinigeStekVorjahr="ngModel"
-                                    [disabled]="readonly"
-                                    required>
-                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                                <dv-error-messages *ngIf="form.submitted"
-                                                   [errorObject]="alleinigeStekVorjahr.errors"
-                                                   inputId="alleinigeStekVorjahr_id">
-                                </dv-error-messages>
-                            </dv-radio-container-x>
-                        </div>
-                    </div>
+				<div class="form-group" *ngIf="alleinigeStekVisible()">
+					<dv-radio-container-x>
+						<label for="alleinigeStekVorjahr_id" class="required ebegu-h1">
+							{{'ALLEINIGE_STEK' | translate}}</label>
+						<mat-radio-group
+								(change)="alleinigeStekVorjahrChange($event)"
+								[(ngModel)]="getModel().finanzielleSituationJA.alleinigeStekVorjahr"
+								name="alleinigeStekVorjahr"
+								id="alleinigeStekVorjahr_id"
+                                #alleinigeStekVorjahr="ngModel"
+								[disabled]="readonly"
+								required>
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages *ngIf="form.submitted"
+										   [errorObject]="alleinigeStekVorjahr.errors"
+										   inputId="alleinigeStekVorjahr_id">
+						</dv-error-messages>
+					</dv-radio-container-x>
+				</div>
 
-                    <div class="col-xs-12" *ngIf="veranlagtVisible()">
-                        <div class="form-group">
-                            <dv-radio-container-x>
-                                <label for="veranlagt_id" class="required ebegu-h1">
-                                    {{'VERANLAGT' | translate}}</label>
-                                <mat-radio-group
-                                    name="veranlagt"
-                                    id="veranlagt_id"
-                                    #veranlagt="ngModel"
-                                    [(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
-                                    (change)="veranlagtChange()"
-                                    [disabled]="readonly"
-                                    required>
-                                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                                </mat-radio-group>
-                                <dv-error-messages *ngIf="form.submitted"
-                                                   [errorObject]="veranlagt.errors"
-                                                   inputId="veranlagt_id">
-                                </dv-error-messages>
-                            </dv-radio-container-x>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
-                                      [antragstellerNummer]="getAntragstellerNummer()"
-                                      [isGemeinsam]="isGemeinsam()"
-                                      [basisJahr]="getYearForDeklaration()"
-                                      [readOnly]="readonly"
-                                      [finanzModel]="model"
-                                      [model]="getModel().finanzielleSituationJA"
-                ></dv-selbstdeklaration>
-                <dv-veranlagung *ngIf="showVeranlagung()"
-                                [antragstellerNummer]="getAntragstellerNummer()"
-                                [isGemeinsam]="isGemeinsam()"
-                                [year]="getYearForDeklaration()"
-                                [model]="getModel()"
-                                [finanzModel]="model"
-                                [readOnly]="readonly"
-                ></dv-veranlagung>
-                <dv-resultat *ngIf="showSelbstdeklaration() || showVeranlagung()"
-                             [isGemeinsam]="isGemeinsam()"
-                             [antragstellerNummer]="getAntragstellerNummer()"
-                             [year]="getYearForDeklaration()">
-                </dv-resultat>
-                <dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
-                                 [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
-            </div>
-        </form>
-    </div>
+				<div class="form-group" *ngIf="veranlagtVisible()">
+					<dv-radio-container-x>
+						<label for="veranlagt_id" class="required ebegu-h1">
+							{{'VERANLAGT' | translate}}</label>
+						<mat-radio-group
+								name="veranlagt"
+								id="veranlagt_id"
+                                #veranlagt="ngModel"
+								[(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
+								(change)="veranlagtChange()"
+								[disabled]="readonly"
+								required>
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages *ngIf="form.submitted"
+										   [errorObject]="veranlagt.errors"
+										   inputId="veranlagt_id">
+						</dv-error-messages>
+					</dv-radio-container-x>
+				</div>
+
+				<dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
+									  [antragstellerNummer]="getAntragstellerNummer()"
+									  [isGemeinsam]="isGemeinsam()"
+									  [basisJahr]="getYearForDeklaration()"
+									  [readOnly]="readonly"
+									  [finanzModel]="model"
+									  [model]="getModel().finanzielleSituationJA"
+				></dv-selbstdeklaration>
+				<dv-veranlagung *ngIf="showVeranlagung()"
+								[antragstellerNummer]="getAntragstellerNummer()"
+								[isGemeinsam]="isGemeinsam()"
+								[year]="getYearForDeklaration()"
+								[model]="getModel()"
+								[finanzModel]="model"
+								[readOnly]="readonly"
+				></dv-veranlagung>
+				<dv-resultat *ngIf="showSelbstdeklaration() || showVeranlagung()"
+							 [isGemeinsam]="isGemeinsam()"
+							 [antragstellerNummer]="getAntragstellerNummer()"
+							 [year]="getYearForDeklaration()">
+				</dv-resultat>
+			</div>
+			<div class="col-md-12">
+				<dv-navigation-x (dvSave)="prepareSave($event.onResult)" [dvPrevious]="hasPrevious" [dvNext]="hasNext"
+								 [dvSubStep]="getSubStepIndex()" [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+			</div>
+		</form>
+	</div>
 </div>
