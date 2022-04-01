@@ -102,6 +102,7 @@ public interface PDFService {
 	@Nonnull
 	byte[] generateVollmachtSozialdienst(
 		@Nonnull SozialdienstFall sozialdienstFall,
-		@Nonnull Sprache sprache
+		@Nonnull Sprache sprache,
+		boolean isFKJVTexte
 	) throws MergeDocException;
 }

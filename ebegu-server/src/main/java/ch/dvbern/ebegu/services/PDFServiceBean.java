@@ -50,6 +50,8 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
@@ -63,8 +65,6 @@ import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGe
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGeneratorVisitor;
 import ch.dvbern.ebegu.pdfgenerator.VollmachtPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
@@ -119,16 +119,26 @@ public class PDFServiceBean implements PDFService {
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 		assert mandant != null;
 
+		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
+
 		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
 		// was wir mitgeben
 		VerfuegungPdfGeneratorVisitor verfuegungPdfGeneratorVisitor = new VerfuegungPdfGeneratorVisitor(
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			false, false);
+			false, false, isFKJVTexte);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
+	}
+
+	private boolean getEinstellungFKJVTexte(@Nonnull Betreuung betreuung) {
+		return einstellungService.findEinstellung(
+			EinstellungKey.FKJV_TEXTE,
+			betreuung.extractGesuch().extractGemeinde(),
+			betreuung.extractGesuchsperiode()
+		).getValueAsBoolean();
 	}
 
 	@Nonnull
@@ -256,6 +266,7 @@ public class PDFServiceBean implements PDFService {
 		}
 
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
+		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
 
 		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 
@@ -267,7 +278,8 @@ public class PDFServiceBean implements PDFService {
 			stammdaten,
 			art,
 			showInfoKontingentierung,
-			stadtBernAsivConfigured);
+			stadtBernAsivConfigured,
+			isFKJVTexte);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 
@@ -416,12 +428,13 @@ public class PDFServiceBean implements PDFService {
 	@Override
 	public byte[] generateVollmachtSozialdienst(
 		@Nonnull SozialdienstFall sozialdienstFall,
-		@Nonnull Sprache sprache
+		@Nonnull Sprache sprache,
+		boolean isFKJVTexte
 	) throws MergeDocException {
 
 		Objects.requireNonNull(sozialdienstFall, "Das Argument 'sozialdienstFall' darf nicht leer sein");
 
-		VollmachtPdfGenerator pdfGenerator = new VollmachtPdfGenerator(sprache, sozialdienstFall);
+		VollmachtPdfGenerator pdfGenerator = new VollmachtPdfGenerator(sprache, sozialdienstFall, isFKJVTexte);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
