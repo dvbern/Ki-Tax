@@ -23,6 +23,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -74,6 +75,12 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	@Override
 	public Boolean getSteuerdatenZugriff() {
 		return false;
+	}
+
+	@Override
+	@Nullable
+	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
+		return null;
 	}
 
 	@Nullable

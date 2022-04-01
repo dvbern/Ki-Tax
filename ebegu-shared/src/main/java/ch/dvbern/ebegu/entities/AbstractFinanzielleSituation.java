@@ -28,10 +28,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
@@ -146,6 +146,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	public abstract Boolean getSteuererklaerungAusgefuellt();
 
 	public abstract Boolean getSteuerdatenZugriff();
+
+	public abstract SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus();
 
 	@Nullable
 	public BigDecimal getNettolohn() {
@@ -433,11 +435,24 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		case BERN_FKJV:
 		case BERN:
 		default:
-			return this.getSchulden() != null && this.getBruttovermoegen() != null
-					&& this.getNettolohn() != null && this.getFamilienzulage() != null
-					&& this.getErsatzeinkommen() != null && this.getErhalteneAlimente() != null
-					&& this.getGeleisteteAlimente() != null;
+			return isVollstaendingBern();
 		}
 
 	}
+
+	private boolean isVollstaendingBern() {
+		boolean isVollstaendig = this.getNettolohn() != null && this.getFamilienzulage() != null
+			&& this.getErsatzeinkommen() != null && this.getErhalteneAlimente() != null
+			&& this.getGeleisteteAlimente() != null;
+
+		//Wenn Daten von Steuerschnittstelle abgefragt wurden, sind die Schulden und das Bruttovermögen nicht gesetzt,
+		//dafür das Nettovermögen. Die Vollständigkeit der FinSit muss entsprechend validiert werden
+		if (this.getSteuerdatenAbfrageStatus() != null
+		&& this.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			return isVollstaendig && this.getNettoVermoegen() != null;
+		}
+
+		return isVollstaendig && this.getSchulden() != null && this.getBruttovermoegen() != null;
+	}
+
 }
