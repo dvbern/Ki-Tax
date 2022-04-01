@@ -428,13 +428,12 @@ public class PDFServiceBean implements PDFService {
 	@Override
 	public byte[] generateVollmachtSozialdienst(
 		@Nonnull SozialdienstFall sozialdienstFall,
-		@Nonnull Sprache sprache,
-		boolean isFKJVTexte
+		@Nonnull Sprache sprache
 	) throws MergeDocException {
 
 		Objects.requireNonNull(sozialdienstFall, "Das Argument 'sozialdienstFall' darf nicht leer sein");
 
-		VollmachtPdfGenerator pdfGenerator = new VollmachtPdfGenerator(sprache, sozialdienstFall, isFKJVTexte);
+		VollmachtPdfGenerator pdfGenerator = new VollmachtPdfGenerator(sprache, sozialdienstFall);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
