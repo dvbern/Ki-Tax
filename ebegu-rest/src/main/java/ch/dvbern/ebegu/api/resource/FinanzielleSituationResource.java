@@ -572,7 +572,9 @@ public class FinanzielleSituationResource {
 		FinanzielleSituation finSitGS2,
 		SteuerdatenResponse steuerdatenResponse,
 		Gesuch gesuch) {
-		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, SteuerdatenAnfrageStatus.FAILED);
+		} else if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
 				convertedFinSitCont,
 				finSitGS2,
@@ -709,7 +711,7 @@ public class FinanzielleSituationResource {
 			steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(),
 			anzahlGesuchsteller));
 		finSit.setNettoVermoegen(divideByAnzahlGesuchsteller(
-			steuerdatenResponse.getNettovermoegen(),
+			getPositvValueOrZero(steuerdatenResponse.getNettovermoegen()),
 			anzahlGesuchsteller));
 	}
 
@@ -722,6 +724,14 @@ public class FinanzielleSituationResource {
 
 	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
 		if (value == null) {
+			return BigDecimal.ZERO;
+		}
+
+		return value;
+	}
+
+	private BigDecimal getPositvValueOrZero(@Nullable BigDecimal value) {
+		if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
 			return BigDecimal.ZERO;
 		}
 
