@@ -15,23 +15,49 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.List;
+
 /**
  * Enum fuer Feld EinschulungTyp
  */
 public enum EinschulungTyp {
 
-	VORSCHULALTER,
-	KINDERGARTEN1,
-	KINDERGARTEN2,
-	KLASSE1,
-	KLASSE2,
-	KLASSE3,
-	KLASSE4,
-	KLASSE5,
-	KLASSE6,
-	KLASSE7,
-	KLASSE8,
-	KLASSE9;
+	VORSCHULALTER(0),
+	KINDERGARTEN1(1),
+	KINDERGARTEN2(2),
+	KLASSE1(3),
+	KLASSE2(4),
+	KLASSE3(5),
+	KLASSE4(6),
+	KLASSE5(7),
+	KLASSE6(8),
+	KLASSE7(9),
+	KLASSE8(10),
+	KLASSE9(11);
+
+	private final int ordinalitaet;
+
+	EinschulungTyp(int ordinalitaet) {
+		this.ordinalitaet = ordinalitaet;
+	}
+
+	public static List<EinschulungTyp> getListBern() {
+		return List.of(
+				VORSCHULALTER,
+				KINDERGARTEN1,
+				KINDERGARTEN2,
+				KLASSE1,
+				KLASSE2,
+				KLASSE3,
+				KLASSE4,
+				KLASSE5,
+				KLASSE6,
+				KLASSE7,
+				KLASSE8,
+				KLASSE9
+		);
+
+	}
 
 	public boolean isEingeschult() {
 		return this != VORSCHULALTER;
@@ -55,5 +81,9 @@ public enum EinschulungTyp {
 		return this == KLASSE7
 			|| this == KLASSE8
 			|| this == KLASSE9;
+	}
+
+	public int getOrdinalitaet() {
+		return ordinalitaet;
 	}
 }
