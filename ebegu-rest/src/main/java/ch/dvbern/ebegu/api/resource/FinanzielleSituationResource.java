@@ -572,7 +572,9 @@ public class FinanzielleSituationResource {
 		FinanzielleSituation finSitGS2,
 		SteuerdatenResponse steuerdatenResponse,
 		Gesuch gesuch) {
-		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
+			updateFinSitSteuerdatenAbfrageStatusFailed(convertedFinSitCont, SteuerdatenAnfrageStatus.FAILED);
+		} else if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
 				convertedFinSitCont,
 				finSitGS2,
