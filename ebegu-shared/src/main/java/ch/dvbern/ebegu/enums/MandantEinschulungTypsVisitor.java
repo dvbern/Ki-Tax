@@ -35,7 +35,7 @@ public class MandantEinschulungTypsVisitor implements MandantVisitor<List<Einsch
 
 	@Override
 	public List<EinschulungTyp> visitLuzern() {
-		return EinschulungTyp.getListBern();
+		return EinschulungTyp.getListLuzern();
 	}
 
 	@Override

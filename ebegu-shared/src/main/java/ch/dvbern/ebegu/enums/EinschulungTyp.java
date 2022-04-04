@@ -59,6 +59,15 @@ public enum EinschulungTyp {
 
 	}
 
+	public static List<EinschulungTyp> getListLuzern() {
+		return List.of(
+				VORSCHULALTER,
+				KINDERGARTEN1,
+				KINDERGARTEN2
+		);
+
+	}
+
 	public boolean isEingeschult() {
 		return this != VORSCHULALTER;
 	}
