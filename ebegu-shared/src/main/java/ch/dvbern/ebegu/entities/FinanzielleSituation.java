@@ -249,11 +249,13 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
 			target.setGemeinsameStekVorjahr(this.getGemeinsameStekVorjahr());
 			target.setAlleinigeStekVorjahr(this.getAlleinigeStekVorjahr());
-			target.setQuellenbesteuert(this.quellenbesteuert);
+			target.setQuellenbesteuert(this.getQuellenbesteuert());
 			target.setVeranlagt(this.getVeranlagt());
 			target.setUnterhaltsBeitraege(this.getUnterhaltsBeitraege());
 			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
 			target.setBruttoLohn(this.getBruttoLohn());
+			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
+			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			if (this.getSelbstdeklaration() != null) {
 				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
 			}
