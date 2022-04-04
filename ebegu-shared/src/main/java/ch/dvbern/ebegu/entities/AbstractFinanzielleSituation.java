@@ -419,7 +419,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getNettoVermoegen(), otherFinSituation.getNettoVermoegen()) &&
 			MathUtil.isSame(
 					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
-					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet()) &&
+			MathUtil.isSame(getDurchschnittlicherGeschaeftsgewinn(), otherFinSituation.getDurchschnittlicherGeschaeftsgewinn());
 	}
 
 	public boolean isVollstaendig(FinanzielleSituationTyp finSitTyp) {
