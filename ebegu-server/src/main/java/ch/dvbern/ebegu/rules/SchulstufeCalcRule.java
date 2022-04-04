@@ -71,7 +71,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 			final Kind kindJA = platz.getKind().getKindJA();
 			EinschulungTyp einschulungTyp = kindJA.getEinschulungTyp();
 			if (einschulungTyp != null) {
-				if (einschulungTyp.ordinal() > einschulungsTypAnspruchsgrenze.ordinal()) {
+				if (einschulungTyp.getOrdinalitaet() > einschulungsTypAnspruchsgrenze.getOrdinalitaet()) {
 					// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete Anspruch wieder als Restanspruch
 					// gefuehrt
 					inputData.setAnspruchZeroAndSaveRestanspruch();
