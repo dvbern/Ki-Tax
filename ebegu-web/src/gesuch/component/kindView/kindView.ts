@@ -583,4 +583,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public isEinschulungTypObligatorischerKindergarten(): boolean {
         return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
     }
+
+    public einschulungTypChanged(): void {
+        if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
+            this.getModel().keinPlatzInSchulhort = false;
+        }
+    }
 }
