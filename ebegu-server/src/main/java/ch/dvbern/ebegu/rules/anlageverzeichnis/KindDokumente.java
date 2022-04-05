@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 
 /**
  * Dokumente für Kinder:
@@ -53,14 +54,28 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		for (KindContainer kindContainer : kindContainers) {
 			final Kind kindJA = kindContainer.getKindJA();
 
-			add(getDokument(kindContainer, kindJA), anlageVerzeichnis);
+			add(getDokumentFachstellenbestaetigung(kindContainer, kindJA), anlageVerzeichnis);
+			add(getDokumentAbsageschreibenHortplatz(kindContainer, kindJA), anlageVerzeichnis);
 		}
 	}
 
 	@Nullable
-	private DokumentGrund getDokument(KindContainer kindContainer, @Nonnull Kind kindJA) {
+	private DokumentGrund getDokumentFachstellenbestaetigung(KindContainer kindContainer, @Nonnull Kind kindJA) {
 		return getDokument(
 			DokumentTyp.FACHSTELLENBESTAETIGUNG,
+			kindJA,
+			kindJA.getFullName(),
+			null,
+			DokumentGrundPersonType.KIND,
+			kindContainer.getKindNummer(),
+			DokumentGrundTyp.KINDER,
+			null);
+	}
+
+	@Nullable
+	private DokumentGrund getDokumentAbsageschreibenHortplatz(KindContainer kindContainer, @Nonnull Kind kindJA) {
+		return getDokument(
+			DokumentTyp.ABSAGESCHREIBEN_HORTPLATZ,
 			kindJA,
 			kindJA.getFullName(),
 			null,
@@ -73,6 +88,13 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
-		return kind != null && kind.getPensumFachstelle() != null;
+		switch (dokumentTyp) {
+		case FACHSTELLENBESTAETIGUNG:
+			return kind != null && kind.getPensumFachstelle() != null;
+		case ABSAGESCHREIBEN_HORTPLATZ:
+			return kind != null && kind.getEinschulungTyp() == EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN && kind.hasKeinPlatzInSchulhort();
+		default:
+			return false;
+		}
 	}
 }
