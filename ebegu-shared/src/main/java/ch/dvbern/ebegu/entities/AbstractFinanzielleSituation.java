@@ -379,6 +379,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
+			if (this.getSelbstdeklaration() != null) {
+				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

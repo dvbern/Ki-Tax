@@ -256,9 +256,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setBruttoLohn(this.getBruttoLohn());
 			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
-			if (this.getSelbstdeklaration() != null) {
-				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
-			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

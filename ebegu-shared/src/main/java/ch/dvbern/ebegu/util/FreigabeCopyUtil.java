@@ -396,7 +396,7 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyFinanzielleSituationSelbstdeklaration(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
-		if(ja.getSelbstdeklaration() != null) {
+		if(ja.getSelbstdeklaration() == null) {
 			gs.setSelbstdeklaration(null);
 			return;
 		}
