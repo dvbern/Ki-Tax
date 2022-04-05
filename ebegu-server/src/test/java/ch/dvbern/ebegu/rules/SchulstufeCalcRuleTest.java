@@ -59,8 +59,15 @@ public class SchulstufeCalcRuleTest {
 	@Test
 	public void kindObligatorischerKindergartenAndPlatzInSchulhorstShouldNotBeBerechtigt() {
 		final Betreuung betreuung = prepareData(100, EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
+		final Map<EinstellungKey, Einstellung> einstellungen =
+				EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
+		einstellungen.put(
+				EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+				new Einstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+						EinschulungTyp.FREIWILLIGER_KINDERGARTEN.toString(),
+						betreuung.extractGesuchsperiode()));
 		betreuung.getKind().getKindJA().setKeinPlatzInSchulhort(false);
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 		assertNichtBerechtigt(result);
 	}
 
@@ -100,7 +107,10 @@ public class SchulstufeCalcRuleTest {
 		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
 		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
 		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG)
+				|| result.get(0)
+				.getBemerkungenDTOList()
+				.containsMsgKey(MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG));
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {
