@@ -319,6 +319,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
+        tsBetreuung.auszahlungAnEltern = true;
+
         return tsBetreuung;
     }
 
