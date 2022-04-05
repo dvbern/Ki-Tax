@@ -16,12 +16,15 @@
 package ch.dvbern.ebegu.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
@@ -50,6 +53,29 @@ public class SchulstufeCalcRuleTest {
 	@Test
 	public void kindSchule() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(100, EinschulungTyp.KLASSE1));
+		assertNichtBerechtigt(result);
+	}
+
+	@Test
+	public void kindObligatorischerKindergartenAndPlatzInSchulhorstShouldNotBeBerechtigt() {
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
+		betreuung.getKind().getKindJA().setKeinPlatzInSchulhort(false);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		assertNichtBerechtigt(result);
+	}
+
+	@Test
+	public void kindObligatorischerKindergartenAndKeinPlatzInSchulhorstShouldBeBerechtigt() {
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
+		final Map<EinstellungKey, Einstellung> einstellungen =
+				EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
+		einstellungen.put(
+				EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+				new Einstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+						EinschulungTyp.FREIWILLIGER_KINDERGARTEN.toString(),
+						betreuung.extractGesuchsperiode()));
+		betreuung.getKind().getKindJA().setKeinPlatzInSchulhort(true);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 		assertNichtBerechtigt(result);
 	}
 
