@@ -284,10 +284,9 @@
                         </div>
 
 
-                        <div class="row">
+                        <div class="row" ng-if="vm.isEinschulungTypObligatorischerKindergarten()">
                             <div class="col-xs-12 dv-input-container-question">
-                                <div class="checkbox checkbox-with-margin no-tooltip margin-bottom-4rem"
-                                     ng-show="vm.isEinschulungTypObligatorischerKindergarten()">
+                                <div class="checkbox checkbox-with-margin no-tooltip margin-bottom-4rem">
                                     <md-checkbox ng-model="vm.getModel().keinPlatzInSchulhort"
                                                  name="keinPlatzInSchulhort"
                                                  id="keinPlatzInSchulhort"
