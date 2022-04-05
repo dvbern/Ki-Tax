@@ -71,8 +71,10 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 			final Kind kindJA = platz.getKind().getKindJA();
 			EinschulungTyp einschulungTyp = kindJA.getEinschulungTyp();
 			if (einschulungTyp != null) {
-				if (einschulungTyp.getOrdinalitaet() > einschulungsTypAnspruchsgrenze.getOrdinalitaet()
-						|| inObligatorischerKindergartenAndPlatzInSchulhorst(platz.getKind().getKindJA())) {
+				if (inObligatorischerKindergartenAndhasKeinPlatzInSchulhorst(platz.getKind().getKindJA())) {
+					return;
+				}
+				if (einschulungTyp.getOrdinalitaet() > einschulungsTypAnspruchsgrenze.getOrdinalitaet()) {
 					// Der Anspruch wird (nur fuer diese Betreuung!) auf 0 gesetzt. Dafuer wird der vorher berechnete
 					// Anspruch wieder als Restanspruch
 					// gefuehrt
@@ -84,12 +86,12 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 	}
 
 	/**
-	 * KIBON-2263: Luzern - Wenn ein Kind in der Schulstufe "obligatorischer Kindergarten" ist und die Checkbox
+	 * KIBON-2263: Spezialfall Luzern - Wenn ein Kind in der Schulstufe "obligatorischer Kindergarten" ist und die Checkbox
 	 * "Mein Kind hat keine Platz im Schulhort" (default false) angewählt ist, hat das Kind Anspruch
 	 */
-	private boolean inObligatorischerKindergartenAndPlatzInSchulhorst(Kind kindJA) {
+	private boolean inObligatorischerKindergartenAndhasKeinPlatzInSchulhorst(Kind kindJA) {
 		return kindJA.getEinschulungTyp() == EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN &&
-				!kindJA.hasKeinPlatzInSchulhort();
+				kindJA.hasKeinPlatzInSchulhort();
 	}
 
 	private MsgKey getMsgKey() {

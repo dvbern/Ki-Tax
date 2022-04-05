@@ -76,7 +76,7 @@ public class SchulstufeCalcRuleTest {
 						betreuung.extractGesuchsperiode()));
 		betreuung.getKind().getKindJA().setKeinPlatzInSchulhort(true);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
-		assertNichtBerechtigt(result);
+		assertBerechtigt(result);
 	}
 
 	private void assertBerechtigt(List<VerfuegungZeitabschnitt> result) {
