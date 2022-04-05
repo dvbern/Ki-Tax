@@ -50,8 +50,8 @@ export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {
 export function getTSEinschulungTypValuesLuzern(): Array<TSEinschulungTyp> {
     return [
         TSEinschulungTyp.VORSCHULALTER,
-        TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN,
         TSEinschulungTyp.FREIWILLIGER_KINDERGARTEN,
+        TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN,
     ];
 }
 
