@@ -23,7 +23,11 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypValues,
+    getTSEinschulungTypValuesLuzern,
+    TSEinschulungTyp,
+} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
@@ -157,7 +161,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        this.einschulungTypValues = this.isLuzern ? getTSEinschulungTypValuesLuzern() : getTSEinschulungTypValues();
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
@@ -574,5 +578,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                     .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
                 this.isZemisDeaktiviert = einstellung.value === 'true';
             });
+    }
+
+    public isEinschulungTypObligatorischerKindergarten(): boolean {
+        return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
     }
 }

@@ -282,6 +282,25 @@
                             </div>
                         </div>
 
+
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox checkbox-with-margin no-tooltip margin-bottom-4rem"
+                                     ng-show="vm.isEinschulungTypObligatorischerKindergarten()">
+                                    <md-checkbox ng-model="vm.getModel().keinPlatzInSchulhort"
+                                                 name="keinPlatzInSchulhort"
+                                                 id="keinPlatzInSchulhort"
+                                                 aria-label="{{'KEIN_PLATZ_IN_SCHULHORT'|translate}}"
+                                                 ng-disabled="vm.isGesuchReadonly()">
+                                        <span data-translate="KEIN_PLATZ_IN_SCHULHORT"></span>
+                                    </md-checkbox>
+                                    <dv-bisher gs="vm.model.kindGS.keinPlatzInSchulhort"
+                                               ja="vm.model.kindJA.keinPlatzInSchulhort"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
+                                </div>
+                            </div>
+                        </div>
+
                         <ng-container ng-if="vm.showExtendedKindQuestions()">
 
                             <!--Show Fachstelle?-->
@@ -301,8 +320,6 @@
                                                    ja="vm.showFachstelle"
                                                    specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
-                                        <dv-error-messages for="vm.form.showFachstelle.$error"
-                                                           class="error"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
