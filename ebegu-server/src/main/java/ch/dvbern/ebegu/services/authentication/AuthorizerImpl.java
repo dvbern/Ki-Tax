@@ -37,10 +37,12 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -2106,6 +2108,28 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		throwViolation(gemeindeKennzahlen);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull Einstellung einstellung) {
+		if (isSuperadminAndSameMandant(einstellung)) {
+			return;
+		}
+		throwViolation(einstellung);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull ApplicationProperty property) {
+		if (isSuperadminAndSameMandant(property)) {
+			return;
+		}
+		throwViolation(property);
+	}
+
+	private boolean isSuperadminAndSameMandant(@Nonnull HasMandant entity) {
+		return principalBean.isCallerInRole(SUPER_ADMIN)
+				&& principalBean.getMandant() != null
+				&& principalBean.getMandant().equals(entity.getMandant());
 	}
 
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
