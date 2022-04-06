@@ -15,6 +15,22 @@
 
 <mat-dialog-content role="document" tabindex="-1" id="dialogContent">
 
+    <ng-container [ngSwitch]="mandant$ | async">
+        <ng-container *ngSwitchCase="mandantTypes.BE" [ngTemplateOutlet]="be"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.LU" [ngTemplateOutlet]="lu"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.SO" [ngTemplateOutlet]="so"></ng-container>
+        <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
+    </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions class="margin-top-40" layout-align="center center">
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+    </div>
+</mat-dialog-actions>
+
+
+<ng-template #be>
     <div class="margin-top-10">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
@@ -67,11 +83,12 @@
             </a>
         </p>
     </div>
+</ng-template>
 
-</mat-dialog-content>
+<ng-template #so>
+    fill me so
+</ng-template>
 
-<mat-dialog-actions class="margin-top-40" layout-align="center center">
-    <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
-    </div>
-</mat-dialog-actions>
+<ng-template #lu>
+    fill me lu
+</ng-template>
