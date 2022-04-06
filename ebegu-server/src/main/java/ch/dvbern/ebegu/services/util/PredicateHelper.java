@@ -96,7 +96,7 @@ public final class PredicateHelper<V> {
 	 */
 	public static Predicate excludeUnknownInstitutionStammdatenPredicate(Root<? extends AbstractEntity> root) {
 		return root.get(AbstractEntity_.id)
-			.in(Constants.getAllUnknownInstitutionIDs())
+			.in(Constants.allUnknownInstitutionIDs)
 			.not();
 	}
 
