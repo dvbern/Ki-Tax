@@ -47,6 +47,7 @@
                         </dv-input-label-field>
                     </div>
                 </div>
+                <mat-divider></mat-divider>
                 <div class="row" *ngIf="hasSecondAntragstellende()">
                     <div class="col-sm-6">
                         <dv-input-label-field
@@ -77,6 +78,7 @@
                         </dv-input-label-field>
                     </div>
                 </div>
+                <mat-divider></mat-divider>
                 <div class="row">
                     <div class="col-sm-6">
                         <dv-input-label-field
@@ -85,6 +87,23 @@
                             [labelMessageKeyArgs]=""
                             [inputDisabled]="true">
                         </dv-input-label-field>
+                    </div>
+                </div>
+
+                <div class="row margin-top-20" *ngIf="ekvAkzeptiert()">
+                    <div class="col-md-12">
+                        <div class="well well-status-bestaetigt">
+                            <span translate
+                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith()}">RESULTATE_EKV_AKZEPTIERT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row margin-top-20" *ngIf="!ekvAkzeptiert()">
+                    <div class="col-md-12">
+                        <div class="well well-status-warten">
+                            <span translate
+                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith()}">RESULTATE_EKV_NICHT_AKZEPTIERT</span>
+                        </div>
                     </div>
                 </div>
 
