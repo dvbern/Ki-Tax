@@ -646,11 +646,11 @@ public class FinanzielleSituationResource {
 	}
 
 	private void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
-		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
-		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
-		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
-		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
-		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
+		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
+		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
+		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
+		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
+		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
 		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
 		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
@@ -666,11 +666,11 @@ public class FinanzielleSituationResource {
 		BigDecimal anzahlGesuchsteller) {
 
 		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
-		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
-		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
-		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
-		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
-		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
+		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
+		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
+		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
+		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
+		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
 
 		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
 		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
@@ -695,11 +695,11 @@ public class FinanzielleSituationResource {
 		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
 		BigDecimal bruttertraegeVermogenTotal =
 			GANZZAHL.addNullSafe(
-				getValueOrZero(steuerdatenResponse.getBruttoertraegeAusLiegenschaften()),
+				getPositvValueOrZero(steuerdatenResponse.getBruttoertraegeAusLiegenschaften()),
 				steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 		BigDecimal gewinnungskostenTotal =
 			GANZZAHL.addNullSafe(
-				getValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
+				getPositvValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
 				steuerdatenResponse.getLiegenschaftsAbzuege());
 
 		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(bruttertraegeVermogenTotal,
@@ -719,15 +719,7 @@ public class FinanzielleSituationResource {
 		@Nullable BigDecimal value,
 		@NotNull BigDecimal anzahlGesuchsteller) {
 		assert anzahlGesuchsteller.compareTo(BigDecimal.ZERO) != 0;
-		return GANZZAHL.divide(getValueOrZero(value), anzahlGesuchsteller);
-	}
-
-	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
-		if (value == null) {
-			return BigDecimal.ZERO;
-		}
-
-		return value;
+		return GANZZAHL.divide(getPositvValueOrZero(value), anzahlGesuchsteller);
 	}
 
 	private BigDecimal getPositvValueOrZero(@Nullable BigDecimal value) {

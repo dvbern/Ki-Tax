@@ -129,13 +129,18 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	}
 
 	@Nonnull
-	public Einkommensverschlechterung copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung target, @Nonnull AntragCopyType copyType) {
+	public Einkommensverschlechterung copyEinkommensverschlechterung(
+		@Nonnull Einkommensverschlechterung target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
+			target.setBruttolohnAbrechnung1(this.getBruttolohnAbrechnung1());
+			target.setBruttolohnAbrechnung2(this.getBruttolohnAbrechnung2());
+			target.setBruttolohnAbrechnung3(this.getBruttolohnAbrechnung3());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -161,6 +166,11 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			return false;
 		}
 		final Einkommensverschlechterung otherEinkommensverschlechterung = (Einkommensverschlechterung) other;
-		return MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
+		return MathUtil.isSame(
+			getGeschaeftsgewinnBasisjahrMinus1(),
+			otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1()) &&
+			MathUtil.isSame(getBruttolohnAbrechnung1(), otherEinkommensverschlechterung.getBruttolohnAbrechnung1()) &&
+			MathUtil.isSame(getBruttolohnAbrechnung2(), otherEinkommensverschlechterung.getBruttolohnAbrechnung2()) &&
+			MathUtil.isSame(getBruttolohnAbrechnung3(), otherEinkommensverschlechterung.getBruttolohnAbrechnung3());
 	}
 }

@@ -1313,8 +1313,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().kitaPlusZuschlag);
     }
 
-    public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
         return this.besondereBeduerfnisseAufwandKonfigurierbar;
+    }
+
+    public isBesondereBeduerfnisseAufwandVisible(): boolean {
+        if (!this.isBesondereBeduerfnisseAufwandKonfigurierbar()) {
+            return false;
+        }
+        // für Institutionen und Trägerschaften ist der Betrag readonly. Deshalb soll er erst sichtbar sein,
+        // wenn er durch die Gemeinde ausgefüllt wurde
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag);
+        }
+        return true;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {
