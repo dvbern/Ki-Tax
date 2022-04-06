@@ -21,6 +21,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -134,9 +136,19 @@ public final class Constants {
 
 	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE= "00000000-0000-0000-0000-000000000002";
+	// Wir reservieren die 99 erste Stellen für die Unknown Institution
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_MUSTER = "00000000-0000-0000-0000-0000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_BE = "00000000-0000-0000-0000-000000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_BE = "00000000-0000-0000-0000-000000000001";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_BE = "00000000-0000-0000-0000-000000000002";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_LU = "00000000-0000-0000-0000-000000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_LU = "00000000-0000-0000-0000-000000000001";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_LU= "00000000-0000-0000-0000-000000000002";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_SO = "00000000-0000-0000-0000-000000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_SO = "00000000-0000-0000-0000-000000000001";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_SO= "00000000-0000-0000-0000-000000000002";
+
+
 
 	public static final String CSV_DELIMITER = ";";
 	public static final String CSV_NEW_LINE = "\n";
@@ -169,5 +181,18 @@ public final class Constants {
 		String EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT = String.valueOf(MIN_ERWERBSPENSUM_EINGESCHULT);
 		int ZUSCHLAG_ERWERBSPENSUM = 20;
 		String EINSTELLUNG_ZUSCHLAG_ERWERBSPENSUM = String.valueOf(ZUSCHLAG_ERWERBSPENSUM);
+	}
+
+	public static List<String> getAllUnknownInstitutionIDs() {
+		return Arrays.asList(
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_BE,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_BE,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_BE,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_LU,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_LU,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_LU,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_SO,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_SO,
+			Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_SO);
 	}
 }

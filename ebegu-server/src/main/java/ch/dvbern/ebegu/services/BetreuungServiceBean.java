@@ -184,11 +184,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (exportBetreuung(isNew, mergedBetreuung)) {
 			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()
 				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
-				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
+				.getId().startsWith(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_MUSTER)) {
 				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
 					betreuungAnfrageEventConverter.of(mergedBetreuung);
 				this.event.fire(betreuungAnfrageAddedEvent);
