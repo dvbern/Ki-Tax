@@ -34,7 +34,13 @@
             [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ERWERB_HELP'"
             [inputRequired]="true"
             [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly">
+            [inputDisabled]="readOnly"
+            [neuerWert]="model.selbstdeklaration.einkunftErwerb"
+            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftErwerb : undefined"
+            [basisjahr]="finanzModel.getBasisjahr()"
+            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
+            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftErwerb : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftErwerb"
+            [korrektur]="model.selbstdeklaration?.einkunftErwerb">
         </dv-input-label-field>
     </div>
 </div>

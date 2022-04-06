@@ -132,7 +132,8 @@
 									  [readOnly]="readonly"
 									  [finanzModel]="model"
 									  [model]="getModel().finanzielleSituationJA"
-				></dv-selbstdeklaration>
+                                      [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
+                ></dv-selbstdeklaration>
 				<dv-veranlagung *ngIf="showVeranlagung()"
 								[antragstellerNummer]="getAntragstellerNummer()"
 								[isGemeinsam]="isGemeinsam()"
