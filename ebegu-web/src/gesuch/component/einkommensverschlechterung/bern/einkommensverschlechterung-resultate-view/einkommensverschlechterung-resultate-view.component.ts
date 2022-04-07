@@ -172,11 +172,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.form.valid;
     }
 
-    public showBisher(einkommensverschlechterung: TSEinkommensverschlechterung): boolean {
-        return (EbeguUtil.isNotNullOrUndefined(einkommensverschlechterung))
-            && this.isKorrekturModusJugendamtOrFreigegeben();
-    }
-
     /**
      * Hier wird der Status von WizardStep auf OK (MUTIERT fuer Mutationen) aktualisiert aber nur wenn es die letzt
      * Seite EVResultate gespeichert wird. Sonst liefern wir einfach den aktuellen GS als Promise zurueck.

@@ -141,6 +141,7 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			target.setBruttolohnAbrechnung1(this.getBruttolohnAbrechnung1());
 			target.setBruttolohnAbrechnung2(this.getBruttolohnAbrechnung2());
 			target.setBruttolohnAbrechnung3(this.getBruttolohnAbrechnung3());
+			target.setExtraLohn(this.getExtraLohn());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
