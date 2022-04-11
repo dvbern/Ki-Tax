@@ -652,21 +652,16 @@ public class FinanzielleSituationResource {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
 		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
-		if ((steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner().compareTo(BigDecimal.ZERO) != 0)
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null
 			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner().compareTo(BigDecimal.ZERO) != 0)
+			&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner().compareTo(BigDecimal.ZERO) != 0)
 			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner().compareTo(BigDecimal.ZERO) != 0)
-			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner() != null)) {
+			&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner().compareTo(BigDecimal.ZERO) != 0))
+		{
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null ?
-				steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() :	BigDecimal.ZERO);
-			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner() != null ?
-				steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner() : BigDecimal.ZERO);
-			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner() != null ?
-				steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner() : BigDecimal.ZERO);
+				steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() : BigDecimal.ZERO);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
 		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
@@ -685,21 +680,15 @@ public class FinanzielleSituationResource {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
 		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
 
-		if ((steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger().compareTo(BigDecimal.ZERO) != 0)
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null
 			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger().compareTo(BigDecimal.ZERO) != 0)
+			&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger().compareTo(BigDecimal.ZERO) != 0)
 			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger().compareTo(BigDecimal.ZERO) != 0)
-			|| (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger() != null
-				&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger() != null)) {
+			&& steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger().compareTo(BigDecimal.ZERO) != 0)) {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null ?
 				steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() : BigDecimal.ZERO);
-			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger() != null ?
-				steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger() : BigDecimal.ZERO);
-			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger() != null ?
-				steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger() : BigDecimal.ZERO);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
 		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
