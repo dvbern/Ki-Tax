@@ -105,6 +105,7 @@ public class FerieninselResource {
 			List<BelegungFerieninselTag> possibleFerieninselTage = ferieninselStammdatenService.getPossibleFerieninselTage(stammdaten);
 			List<JaxBelegungFerieninselTag> possibleFerieninselTageJAX = converter.belegungFerieninselTageListToJAX(possibleFerieninselTage);
 			ferieninselStammdatenJAX.setPotenzielleFerieninselTageFuerBelegung(possibleFerieninselTageJAX);
+			ferieninselStammdatenJAX.setPotenzielleFerieninselTageFuerBelegungMorgenmodul(possibleFerieninselTageJAX);
 			return ferieninselStammdatenJAX;
 		}
 		return null;
