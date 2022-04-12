@@ -661,12 +661,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull List<RueckforderungStatus> statusList
 	) {
 		if (StringUtils.isNotEmpty(empfaengerMail)) {
+			Mandant mandant = mitteilung.getAbsender().getMandant();
 			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(
-				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt());
+				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt(), mandant.getMandantIdentifier());
 			String statusAsString = statusList.stream()
 				.map(RueckforderungStatus::name)
 				.collect(Collectors.joining(","));
-			Mandant mandant = mitteilung.getAbsender().getMandant();
 			try {
 				sendMessageWithTemplate(mail, empfaengerMail, mandant.getMandantIdentifier());
 				LOG.debug("Email fuer NotrechtGenerischeMitteilung wurde versendet an {} für Status {}",

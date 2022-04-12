@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Anmeldung für ${betreuung.kind.kindJA.fullName} akzeptiert</@base64Header>
@@ -24,7 +25,7 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Wir bestätigen Ihnen Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der Tagesschule "${betreuung.institutionStammdaten.institution.name}". Die Anmeldebestätigung kann <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">hier</a> eingesehen werden.
+		Wir bestätigen Ihnen Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der Tagesschule "${betreuung.institutionStammdaten.institution.name}". Die Anmeldebestätigung kann <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegenView/${betreuung.extractGesuch().id}/${betreuung.betreuungNummer}/${betreuung.kind.kindNummer}">hier</a> eingesehen werden.
 		Ihr Antrag auf einen vergünstigten Tarif wurde noch nicht geprüft. Nach Abschluss der Prüfung erhalten Sie eine neue Bestätigung mit der definitiven Gebühr.
 	</p>
 	<p>

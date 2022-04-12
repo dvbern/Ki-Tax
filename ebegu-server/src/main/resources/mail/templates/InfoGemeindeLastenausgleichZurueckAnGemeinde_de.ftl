@@ -2,6 +2,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="id" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
 Subject: <@base64Header>kiBon - Lastenausgleich Tagesschule</@base64Header>
@@ -24,7 +25,7 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<p>
 		Wir möchten Sie darüber informieren, dass der Kanton Ihr Formular zum Lastenausgleich Tagesschulen zur erneuten Bearbeitung zurückgegeben hat.
-		Sie können es <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/lastenausgleich-ts/${id}/angaben-gemeinde">hier</a> ansehen.
+		Sie können es <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/lastenausgleich-ts/${id}/angaben-gemeinde">hier</a> ansehen.
 	</p>
 	<p>
 		Freundliche Grüsse<br/>

@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Rejet de l'inscription</@base64Header>
@@ -26,7 +27,7 @@ ${templateConfiguration.mailCss}
 	<p>
 		Votre inscription pour ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} a été rejetée.
 		Vous pouvez consulter la liste des offres de prise en charge
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
