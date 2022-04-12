@@ -30,6 +30,7 @@ import javax.transaction.TransactionSynchronizationRegistry;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.mail.Email;
@@ -159,7 +160,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			client.connect(configuration.getSMTPHost(), configuration.getSMTPPort());
 			client.setSoTimeout(CONNECTION_TIMEOUT);
 			assertPositiveCompletion(client);
-			client.helo(configuration.getHostname());
+			//TODO
+			client.helo(configuration.getHostname(MandantIdentifier.BERN));
 			assertPositiveCompletion(client);
 			client.setSender(configuration.getSenderAddress());
 			assertPositiveCompletion(client);

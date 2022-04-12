@@ -19,6 +19,8 @@ import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+
 /**
  * Konfiguration fuer Testing
  */
@@ -41,7 +43,7 @@ public class EbeguConfigurationDummyImpl extends EbeguConfigurationImpl {
 	}
 
 	@Override
-	public String getHostname() {
+	public String getHostname(MandantIdentifier mandantIdentifier) {
 		return "localhost";
 	}
 

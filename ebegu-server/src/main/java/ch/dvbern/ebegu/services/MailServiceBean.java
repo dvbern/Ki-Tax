@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -808,7 +809,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		try {
 			LOG.info("Sende Init ZPV Nr. Mail für GS {}", gesuchstellerContainer.getGesuchstellerJA().getId());
 
-			String hostname = ebeguConfiguration.getHostname();
+			String hostname = ebeguConfiguration.getHostname(MandantIdentifier.BERN);
 
 			if(!hostname.startsWith("https://") && !hostname.startsWith("http://")) {
 				hostname = (ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://") + hostname;
