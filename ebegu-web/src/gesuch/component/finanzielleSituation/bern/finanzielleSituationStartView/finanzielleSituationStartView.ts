@@ -20,6 +20,7 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -358,7 +359,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung
+            && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {

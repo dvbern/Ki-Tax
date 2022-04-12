@@ -19,7 +19,12 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {SearchRS} from '../../../../gesuch/service/searchRS.rest';
-import {IN_BEARBEITUNG_BASE_NAME, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
+import {
+    IN_BEARBEITUNG_BASE_NAME,
+    isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt,
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus,
+} from '../../../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreuungenStatus';
@@ -291,7 +296,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 // Noch nicht freigegeben -> Text BEARBEITEN
                 return this.$translate.instant('GS_BEARBEITEN');
             }
-            if (!isAnyStatusOfVerfuegt(antrag.status) || antrag.beschwerdeHaengig) {
+            if (!isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung -> Text DOKUMENTE HOCHLADEN
                 return this.$translate.instant('GS_DOKUMENTE_HOCHLADEN');
             }

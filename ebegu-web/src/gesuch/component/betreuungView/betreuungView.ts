@@ -496,6 +496,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public direktAnmeldenSchulamt(): boolean {
         // Eigentlich immer ausser in Bearbeitung GS
         return !(this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
             || this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG));
     }
 

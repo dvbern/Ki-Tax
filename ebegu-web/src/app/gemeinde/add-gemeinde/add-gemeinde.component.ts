@@ -221,9 +221,9 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     public handleIsBesondereVolksschuleChange(checked: boolean): void {
-        this.resetGemeinde();
         if (checked) {
             this.setBesondereVolksschuleBfsNummer();
+            this.resetGemeinde();
         }
     }
 
