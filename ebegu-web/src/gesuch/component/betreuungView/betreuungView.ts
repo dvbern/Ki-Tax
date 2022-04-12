@@ -22,6 +22,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -73,6 +74,8 @@ import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
+
+const LOG = LogFactory.createLog('BetreuungViewController');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -172,8 +175,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$translate = $translate;
         this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
                 this.mandant = mandant;
-            },
-        );
+            }, err => LOG.error(err));
     }
 
     // tslint:disable-next-line:cognitive-complexity

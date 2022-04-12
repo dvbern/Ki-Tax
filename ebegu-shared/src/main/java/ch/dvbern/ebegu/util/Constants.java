@@ -193,7 +193,7 @@ public final class Constants {
 		String EINSTELLUNG_ZUSCHLAG_ERWERBSPENSUM = String.valueOf(ZUSCHLAG_ERWERBSPENSUM);
 	}
 
-	public static List<String> allUnknownInstitutionIDs = Arrays.asList(
+	public static final List<String> allUnknownInstitutionIDs = Arrays.asList(
 		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_BE,
 		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_BE,
 		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_BE,
