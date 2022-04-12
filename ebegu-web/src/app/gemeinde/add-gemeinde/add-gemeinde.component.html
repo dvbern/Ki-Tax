@@ -96,8 +96,9 @@
                             </div>
 
                             <mat-checkbox id="angebotTS" name="angebotTS"
+                                          [(ngModel)]="gemeinde.angebotTS"
                                           (ngModelChange)="handleAngebotTSChange()"
-                                          [(ngModel)]="gemeinde.angebotTS" *ngIf="tageschuleEnabledForMandant">
+                                          *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
                             <div *ngIf="gemeinde.angebotTS" class="inner-option">
