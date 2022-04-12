@@ -153,15 +153,14 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	}
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
-	private void doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
+	private void  doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress, @Nonnull MandantIdentifier mandantIdentifier) throws MailException {
 		final SMTPClient client = new SMTPClient("UTF-8");
 		try {
 			client.setDefaultTimeout(CONNECTION_TIMEOUT);
 			client.connect(configuration.getSMTPHost(), configuration.getSMTPPort());
 			client.setSoTimeout(CONNECTION_TIMEOUT);
 			assertPositiveCompletion(client);
-			//TODO
-			client.helo(configuration.getHostname(MandantIdentifier.BERN));
+			client.helo(configuration.getHostname(mandantIdentifier));
 			assertPositiveCompletion(client);
 			client.setSender(configuration.getSenderAddress());
 			assertPositiveCompletion(client);
@@ -189,7 +188,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	 * Emails should only be sent when all actions were performed withou any error.
 	 * For this reason this method flushes the EntityManager before sending emails.
 	 */
-	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress)
+	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress, @Nonnull final MandantIdentifier mandantIdentifier)
 		throws MailException {
 		Objects.requireNonNull(mailadress);
 		Objects.requireNonNull(messageBody);
@@ -202,7 +201,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
-			doSendMessage(messageBody, mailadress);
+			doSendMessage(messageBody, mailadress, mandantIdentifier);
 		}
 	}
 
