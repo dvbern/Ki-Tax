@@ -141,8 +141,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         this.tryAgainEvent.emit();
     }
 
-    public getEmailLoggedIn(): string {
-        return this.principal.email;
+    public getEmailBesitzende(): string {
+        return this.gesuchModelManager.getGesuch().dossier.fall.besitzer.email;
     }
 
     public getGS2name(): string {
