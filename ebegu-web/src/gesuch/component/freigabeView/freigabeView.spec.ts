@@ -16,6 +16,7 @@
 import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -49,6 +50,7 @@ describe('freigabeView', () => {
     let dossier: TSDossier;
     let fall: TSFall;
     let $translate: TranslateService;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -70,6 +72,7 @@ describe('freigabeView', () => {
         authServiceRS = $injector.get('AuthServiceRS');
         $timeout = $injector.get('$timeout');
         $translate = $injector.get('$translate');
+        einstellungRS = $injector.get('EinstellungRS');
 
         spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
@@ -82,8 +85,17 @@ describe('freigabeView', () => {
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
 
-        controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout, $translate);
+        controller = new FreigabeViewController(gesuchModelManager,
+            $injector.get('BerechnungsManager'),
+            wizardStepManager,
+            dialog,
+            downloadRS,
+            $scope,
+            applicationPropertyRS,
+            authServiceRS,
+            $timeout,
+            $translate,
+            einstellungRS);
 
         controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
