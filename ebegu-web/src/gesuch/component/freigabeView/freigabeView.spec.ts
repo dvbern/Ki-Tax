@@ -26,8 +26,11 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFall} from '../../../models/TSFall';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -84,6 +87,11 @@ describe('freigabeView', () => {
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(new TSGemeinde());
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
+        spyOn(einstellungRS, 'findEinstellung')
+            .and
+            .returnValue(Promise.resolve(new TSEinstellung()));
 
         controller = new FreigabeViewController(gesuchModelManager,
             $injector.get('BerechnungsManager'),
