@@ -97,7 +97,7 @@
 
                             <mat-checkbox id="angebotTS" name="angebotTS"
                                           [(ngModel)]="gemeinde.angebotTS"
-                                          (ngModelChange)="handleAngebotTSChange($event)"
+                                          (ngModelChange)="handleAngebotTSChange()"
                                           *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_TAGESSCHULE'|translate}}</mat-checkbox>
 
