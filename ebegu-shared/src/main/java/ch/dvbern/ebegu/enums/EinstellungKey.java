@@ -267,7 +267,9 @@ public enum EinstellungKey {
 	ZEMIS_DISABLED,
 
 	// Soll die Frage, ob die Sprache die Amtsprache ist, gestellt werden
-	SPRACHE_AMTSPRACHE_DISABLED;
+	SPRACHE_AMTSPRACHE_DISABLED,
+
+	FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
 
 
 	private EinstellungTyp typ;
