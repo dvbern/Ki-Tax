@@ -61,7 +61,7 @@ export class ErwerbspensumListViewController
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'GemeindeRS'
+        'GemeindeRS',
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -238,11 +238,14 @@ export class ErwerbspensumListViewController
             undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
         }
         return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
-            undFerieninseln: undFerieninselnTxt
+            undFerieninseln: undFerieninselnTxt,
         });
     }
 
     public showErwerbspensumGS2(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
+            return false;
+        }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
         const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
