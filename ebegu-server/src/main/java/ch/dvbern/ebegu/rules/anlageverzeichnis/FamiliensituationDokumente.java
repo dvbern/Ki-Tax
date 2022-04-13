@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.util.EbeguUtil;
 
 /**
@@ -66,6 +67,8 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 				anlageVerzeichnis
 			);
 		}
+		add(getDokument(DokumentTyp.NACHWEIS_UNTERHALTSVEREINBARUNG, gesuch.extractFamiliensituation(),
+				null, null, null, DokumentGrundTyp.FAMILIENSITUATION), anlageVerzeichnis);
 		// dieses Dokument gehoert eigentlich zur FinSit aber muss hier hinzugefuegt werden, da es Daten aus der
 		// Familiensituation benoetigt
 		add(getDokument(DokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG, gesuch.extractFamiliensituation(),
@@ -81,6 +84,9 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		switch (dokumentTyp) {
 		case UNTERSTUETZUNGSBESTAETIGUNG:
 			return !EbeguUtil.isNullOrFalse(familiensituation.getSozialhilfeBezueger());
+		case NACHWEIS_UNTERHALTSVEREINBARUNG:
+			return EbeguUtil.isNotNullAndTrue(familiensituation.isFkjvFamSit()) &&
+					familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
 		default:
 			return false;
 		}

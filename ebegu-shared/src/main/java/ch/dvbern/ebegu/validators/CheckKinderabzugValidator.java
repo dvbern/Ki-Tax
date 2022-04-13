@@ -75,9 +75,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 			if (kind.getAlimenteBezahlen() != null) {
 				return false;
 			}
-			if (kind.getObhutAlternierendAusueben()) {
-				return kind.getGemeinsamesGesuch() != null;
-			}
 		}
 		return true;
 	}

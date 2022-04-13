@@ -202,7 +202,12 @@
                 <dv-input-container class="form-group">
                         <!--suppress XmlInvalidId -->
                         <label class="md-no-float" for="{{vm.prefix}}-gueltigAb" id="umzug-label">
-                            <span data-translate>ADRESSE_GUELTIGAB</span>
+                            <span>
+                                <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate>ADRESSE_GUELTIGAB</span>
+                                <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate>UMZUG_GUELTIG_AB_FKJV</span>
+                                <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte" input-id="{{vm.prefix}}-gueltigAb"
+                                            text="'UMZUG_GUELTIG_AB_FKJV_HINT' | translate"></dv-tooltip>
+                            </span>
                         </label>
                         <dv-datepicker input-id="{{vm.prefix}}-gueltigAb" input-name="gueltigAb" name="gueltigAb"
                                        ng-model="vm.getModel().adresseJA.gueltigkeit.gueltigAb"

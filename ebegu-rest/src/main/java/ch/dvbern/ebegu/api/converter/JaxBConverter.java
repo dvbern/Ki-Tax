@@ -323,7 +323,6 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity", "PMD.CollapsibleIfStatements" })
 public class JaxBConverter extends AbstractConverter {
 
-
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DROPPED_DUPLICATE_ABWEICHUNG = "dropped duplicate abweichung ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
@@ -739,7 +738,8 @@ public class JaxBConverter extends AbstractConverter {
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
 				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
-				if (familiensituationJAXP.getIbanMahlzeiten() != null || familiensituationJAXP.getKontoinhaberMahlzeiten() != null) {
+				if (familiensituationJAXP.getIbanMahlzeiten() != null
+					|| familiensituationJAXP.getKontoinhaberMahlzeiten() != null) {
 					Objects.requireNonNull(
 						familiensituationJAXP.getIbanMahlzeiten(),
 						"IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
@@ -749,12 +749,15 @@ public class JaxBConverter extends AbstractConverter {
 					if (familiensituation.getAuszahlungsdatenMahlzeiten() == null) {
 						familiensituation.setAuszahlungsdatenMahlzeiten(new Auszahlungsdaten());
 					}
-					familiensituation.getAuszahlungsdatenMahlzeiten().setIban(new IBAN(familiensituationJAXP.getIbanMahlzeiten()));
-					familiensituation.getAuszahlungsdatenMahlzeiten().setKontoinhaber(familiensituationJAXP.getKontoinhaberMahlzeiten());
+					familiensituation.getAuszahlungsdatenMahlzeiten()
+						.setIban(new IBAN(familiensituationJAXP.getIbanMahlzeiten()));
+					familiensituation.getAuszahlungsdatenMahlzeiten()
+						.setKontoinhaber(familiensituationJAXP.getKontoinhaberMahlzeiten());
 					Adresse convertedAdresse = null;
 					if (familiensituationJAXP.getZahlungsadresseMahlzeiten() != null) {
 						Adresse a =
-							Optional.ofNullable(familiensituation.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber())
+							Optional.ofNullable(familiensituation.getAuszahlungsdatenMahlzeiten()
+								.getAdresseKontoinhaber())
 								.orElseGet(Adresse::new);
 						convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseMahlzeiten(), a);
 					}
@@ -768,28 +771,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		if (familiensituationJAXP.getIbanInfoma() != null || familiensituationJAXP.getKontoinhaberInfoma() != null) {
-			Objects.requireNonNull(
-				familiensituationJAXP.getKontoinhaberInfoma(),
-				"IBAN muss erfasst sein");
-			Objects.requireNonNull(
-				familiensituationJAXP.getKontoinhaberInfoma(),
-				"Kontoinhaber muss erfasst sein");
-			if (familiensituation.getAuszahlungsdatenInfoma() == null) {
-				familiensituation.setAuszahlungsdatenInfoma(new Auszahlungsdaten());
-			}
-			familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
-			familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
-			Adresse convertedAdresse = null;
-			if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
-				Adresse a =
-					Optional.ofNullable(familiensituation.getAuszahlungsdatenInfoma().getAdresseKontoinhaber())
-						.orElseGet(Adresse::new);
-				convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseInfoma(), a);
-			}
-			familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
-			familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
-			familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
-			familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
+			convertFamilienSituationInfomaProperties(familiensituationJAXP, familiensituation);
 		}
 
 		convertAbstractVorgaengerFieldsToEntity(familiensituationJAXP, familiensituation);
@@ -802,7 +784,37 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setGesuchstellerKardinalitaet(familiensituationJAXP.getGesuchstellerKardinalitaet());
 		familiensituation.setFkjvFamSit(familiensituationJAXP.isFkjvFamSit());
 		familiensituation.setMinDauerKonkubinat(familiensituationJAXP.getMinDauerKonkubinat());
+		familiensituation.setGeteilteObhut(familiensituationJAXP.getGeteilteObhut());
+		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
+		familiensituation.setUnterhaltsvereinbarungBemerkung(familiensituationJAXP.getUnterhaltsvereinbarungBemerkung());
 		return familiensituation;
+	}
+
+	private void convertFamilienSituationInfomaProperties(
+		@Nonnull final JaxFamiliensituation familiensituationJAXP,
+		@Nonnull final Familiensituation familiensituation) {
+		Objects.requireNonNull(
+			familiensituationJAXP.getKontoinhaberInfoma(),
+			"IBAN muss erfasst sein");
+		Objects.requireNonNull(
+			familiensituationJAXP.getKontoinhaberInfoma(),
+			"Kontoinhaber muss erfasst sein");
+		if (familiensituation.getAuszahlungsdatenInfoma() == null) {
+			familiensituation.setAuszahlungsdatenInfoma(new Auszahlungsdaten());
+		}
+		familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
+		familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
+		Adresse convertedAdresse = null;
+		if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
+			Adresse a =
+				Optional.ofNullable(familiensituation.getAuszahlungsdatenInfoma().getAdresseKontoinhaber())
+					.orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseInfoma(), a);
+		}
+		familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
+		familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
+		familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
+		familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
 	}
 
 	public JaxFamiliensituation familiensituationToJAX(@Nonnull final Familiensituation persistedFamiliensituation) {
@@ -824,7 +836,8 @@ public class JaxBConverter extends AbstractConverter {
 				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
 			}
 		}
-		final Auszahlungsdaten persistedAuszahlungsdatenInfoma = persistedFamiliensituation.getAuszahlungsdatenInfoma();
+		final Auszahlungsdaten persistedAuszahlungsdatenInfoma =
+			persistedFamiliensituation.getAuszahlungsdatenInfoma();
 		if (persistedAuszahlungsdatenInfoma != null) {
 			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.getIban().getIban());
 			jaxFamiliensituation.setKontoinhaberInfoma(persistedAuszahlungsdatenInfoma.getKontoinhaber());
@@ -838,6 +851,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
+		jaxFamiliensituation.setUnterhaltsvereinbarung(persistedFamiliensituation.getUnterhaltsvereinbarung());
+		jaxFamiliensituation.setUnterhaltsvereinbarungBemerkung(persistedFamiliensituation.getUnterhaltsvereinbarungBemerkung());
+		jaxFamiliensituation.setGeteilteObhut(persistedFamiliensituation.getGeteilteObhut());
 		return jaxFamiliensituation;
 	}
 
@@ -980,8 +996,9 @@ public class JaxBConverter extends AbstractConverter {
 		convertMandantFieldsToEntity(fall);
 		//Fall nummer wird auf server bzw DB verwaltet und daher hier nicht gesetzt, dasselbe fuer NextKindNumber
 		if (fallJAXP.getBesitzer() != null) {
-			Optional<Benutzer> besitzer = benutzerService.findBenutzer(fallJAXP.getBesitzer().getUsername(),
-					fall.getMandant());
+			Optional<Benutzer> besitzer = benutzerService.findBenutzer(
+				fallJAXP.getBesitzer().getUsername(),
+				fall.getMandant());
 			if (besitzer.isPresent()) {
 				fall.setBesitzer(besitzer.get()); // because the user doesn't come from the client but from the server
 			} else {
@@ -1052,7 +1069,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (dossierJAX.getVerantwortlicherBG() != null) {
 			Optional<Benutzer> verantwortlicher =
 				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherBG().getUsername(), dossier.getFall()
-						.getMandant());
+					.getMandant());
 			if (verantwortlicher.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherBG(verantwortlicher.get());
@@ -1067,7 +1084,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		if (dossierJAX.getVerantwortlicherTS() != null) {
 			Optional<Benutzer> verantwortlicherTS =
-				benutzerService.findBenutzer(dossierJAX.getVerantwortlicherTS().getUsername(), dossier.getFall().getMandant());
+				benutzerService.findBenutzer(
+					dossierJAX.getVerantwortlicherTS().getUsername(),
+					dossier.getFall().getMandant());
 			if (verantwortlicherTS.isPresent()) {
 				// because the user doesn't come from the client but from the server
 				dossier.setVerantwortlicherTS(verantwortlicherTS.get());
@@ -2381,16 +2400,16 @@ public class JaxBConverter extends AbstractConverter {
 
 		if (pensumFachstelleJAXP.getFachstelle() != null) {
 			final Optional<Fachstelle> fachstelleFromDB =
-					fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
+				fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
 			if (fachstelleFromDB.isPresent()) {
 				// Fachstelle darf nicht vom Client ueberschrieben werden
 				pensumFachstelle.setFachstelle(fachstelleFromDB.get());
 			} else {
 				throw new EbeguEntityNotFoundException(
-						"pensumFachstelleToEntity",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						pensumFachstelleJAXP.getFachstelle()
-								.getId());
+					"pensumFachstelleToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					pensumFachstelleJAXP.getFachstelle()
+						.getId());
 			}
 		}
 		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
@@ -2681,13 +2700,13 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
 		abstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
-		abstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		abstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			abstractFinanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		abstractFinanzielleSituation.setGewinnungskosten(abstractFinanzielleSituationJAXP.getGewinnungskosten());
 		abstractFinanzielleSituation.setBruttoertraegeVermoegen(abstractFinanzielleSituationJAXP.getBruttoertraegeVermoegen());
 		abstractFinanzielleSituation.setNettoertraegeErbengemeinschaft(abstractFinanzielleSituationJAXP.getNettoertraegeErbengemeinschaft());
 		abstractFinanzielleSituation.setNettoVermoegen(abstractFinanzielleSituationJAXP.getNettoVermoegen());
 		abstractFinanzielleSituation.setAbzugSchuldzinsen(abstractFinanzielleSituationJAXP.getAbzugSchuldzinsen());
-
 
 		abstractFinanzielleSituation.setSteuerbaresEinkommen(abstractFinanzielleSituationJAXP.getSteuerbaresEinkommen());
 		abstractFinanzielleSituation.setSteuerbaresVermoegen(abstractFinanzielleSituationJAXP.getSteuerbaresVermoegen());
@@ -2695,10 +2714,13 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setGeschaeftsverlust(abstractFinanzielleSituationJAXP.getGeschaeftsverlust());
 		abstractFinanzielleSituation.setAbzuegeLiegenschaft(abstractFinanzielleSituationJAXP.getAbzuegeLiegenschaft());
 
-		if(abstractFinanzielleSituationJAXP.getSelbstdeklaration() != null) {
+		if (abstractFinanzielleSituationJAXP.getSelbstdeklaration() != null) {
 			FinanzielleSituationSelbstdeklaration selbstdeklarationToMerge =
-				Optional.ofNullable(abstractFinanzielleSituation.getSelbstdeklaration()).orElse(new FinanzielleSituationSelbstdeklaration());
-			abstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(abstractFinanzielleSituationJAXP.getSelbstdeklaration(), selbstdeklarationToMerge));
+				Optional.ofNullable(abstractFinanzielleSituation.getSelbstdeklaration())
+					.orElse(new FinanzielleSituationSelbstdeklaration());
+			abstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToEntity(
+				abstractFinanzielleSituationJAXP.getSelbstdeklaration(),
+				selbstdeklarationToMerge));
 		}
 
 		return abstractFinanzielleSituation;
@@ -2722,10 +2744,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
 
-		jaxAbstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedAbstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxAbstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			persistedAbstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		jaxAbstractFinanzielleSituation.setGewinnungskosten(persistedAbstractFinanzielleSituation.getGewinnungskosten());
 		jaxAbstractFinanzielleSituation.setNettoertraegeErbengemeinschaft(persistedAbstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
-		jaxAbstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(persistedAbstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+		jaxAbstractFinanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(
+			persistedAbstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		jaxAbstractFinanzielleSituation.setBruttoertraegeVermoegen(persistedAbstractFinanzielleSituation.getBruttoertraegeVermoegen());
 		jaxAbstractFinanzielleSituation.setNettoVermoegen(persistedAbstractFinanzielleSituation.getNettoVermoegen());
 		jaxAbstractFinanzielleSituation.setAbzugSchuldzinsen(persistedAbstractFinanzielleSituation.getAbzugSchuldzinsen());
@@ -2736,7 +2760,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setGeschaeftsverlust(persistedAbstractFinanzielleSituation.getGeschaeftsverlust());
 		jaxAbstractFinanzielleSituation.setAbzuegeLiegenschaft(persistedAbstractFinanzielleSituation.getAbzuegeLiegenschaft());
 
-		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
+		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(
+			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
 
 	}
 
@@ -2749,9 +2774,10 @@ public class JaxBConverter extends AbstractConverter {
 
 		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
 		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
-		// Verfahren
+		// Verfahren und die Flag für den Zugriff
 		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			return finanzielleSituation;
@@ -2764,13 +2790,13 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
-
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
 		finanzielleSituation.setAlleinigeStekVorjahr(finanzielleSituationJAXP.getAlleinigeStekVorjahr());
 		finanzielleSituation.setAbzuegeKinderAusbildung(finanzielleSituationJAXP.getAbzuegeKinderAusbildung());
 		finanzielleSituation.setUnterhaltsBeitraege(finanzielleSituationJAXP.getUnterhaltsBeitraege());
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
+		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 
 		return finanzielleSituation;
@@ -2834,6 +2860,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
+		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 
 		return jaxFinanzielleSituation;
 	}
@@ -2841,7 +2868,7 @@ public class JaxBConverter extends AbstractConverter {
 	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration finanzielleSituationSelbstdeklarationToJAX(
 		@Nullable FinanzielleSituationSelbstdeklaration persistedSelbstdeklaration) {
-		if(persistedSelbstdeklaration == null) {
+		if (persistedSelbstdeklaration == null) {
 			return null;
 		}
 
@@ -3234,13 +3261,13 @@ public class JaxBConverter extends AbstractConverter {
 
 			if (erweiterteBetreuungJAXP.getFachstelle() != null) {
 				final Optional<Fachstelle> fachstelleFromDB =
-						fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
+					fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
 
 				if (!fachstelleFromDB.isPresent()) {
 					throw new EbeguEntityNotFoundException(
-							"erweiterteBetreuungToEntity",
-							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-							erweiterteBetreuungJAXP.getFachstelle().getId());
+						"erweiterteBetreuungToEntity",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						erweiterteBetreuungJAXP.getFachstelle().getId());
 				}
 				// Fachstelle darf nicht vom Client ueberschrieben werden
 				erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
@@ -3882,7 +3909,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setSameAusbezahlteMahlzeiten(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameAusbezahlteMahlzeiten());
 		jaxZeitabschn.setSameVerfuegteMahlzeitenVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
-				.isSameVerfuegteMahlzeitenVerguenstigung());
+			.isSameVerfuegteMahlzeitenVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultMitPaedagogischerBetreuung()));
 		jaxZeitabschn.setTsCalculationResultOhnePaedagogischerBetreuung(
@@ -3898,14 +3925,16 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungenToJax(@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungen) {
+	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungenToJax(
+		@Nonnull List<VerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungen) {
 		return verfuegungZeitabschnittBemerkungen.stream()
 			.map(this::verfuegungZeitabschnittBemerkungToJax)
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private JaxVerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToJax(@Nonnull VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkung) {
+	private JaxVerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkungToJax(
+		@Nonnull VerfuegungZeitabschnittBemerkung verfuegungZeitabschnittBemerkung) {
 		JaxVerfuegungZeitabschnittBemerkung result = new JaxVerfuegungZeitabschnittBemerkung();
 		convertAbstractDateRangedFieldsToJAX(verfuegungZeitabschnittBemerkung, result);
 		result.setBemerkung(verfuegungZeitabschnittBemerkung.getBemerkung());
@@ -4358,7 +4387,11 @@ public class JaxBConverter extends AbstractConverter {
 		convertFileToJax(dokument, jaxDokument);
 		jaxDokument.setTimestampUpload(dokument.getTimestampUpload());
 		if (StringUtils.isNotEmpty(dokument.getUserErstellt())) {
-			benutzerService.findBenutzer(dokument.getUserErstellt(), getPrincipalBean().getMandant())
+			int userMandantTrennungPosition = dokument.getUserErstellt().indexOf(":");
+			String username = userMandantTrennungPosition != -1 ?
+				dokument.getUserErstellt().substring(0, userMandantTrennungPosition) :
+				dokument.getUserErstellt();
+			benutzerService.findBenutzer(username, getPrincipalBean().getMandant())
 				.map(this::benutzerToJaxBenutzer)
 				.ifPresent(jaxDokument::setUserUploaded);
 		}
@@ -4650,10 +4683,9 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGemeindeId(gesuch.getDossier().getGemeinde().getId());
 		antrag.setSozialdienst(gesuch.getDossier().getFall().isSozialdienstFall());
 		antrag.setInternePendenz(gesuch.getInternePendenz());
-		if(antrag.hasInternePendenz()) {
+		if (antrag.hasInternePendenz()) {
 			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(gesuch));
-		}
-		else{
+		} else {
 			antrag.setInternePendenzAbgelaufen(false);
 		}
 		return antrag;
@@ -4772,8 +4804,9 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(mitteilungJAXP, mitteilung);
 
 		if (mitteilungJAXP.getEmpfaenger() != null) {
-			Benutzer empfaenger = benutzerService.findBenutzer(mitteilungJAXP.getEmpfaenger().getUsername(),
-							mitteilung.getDossier().getFall().getMandant())
+			Benutzer empfaenger = benutzerService.findBenutzer(
+				mitteilungJAXP.getEmpfaenger().getUsername(),
+				mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity - findBenutzer",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4813,7 +4846,9 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilung.setMitteilungStatus(mitteilungJAXP.getMitteilungStatus());
 
 		if (mitteilungJAXP.getSender() != null) {
-			Benutzer sender = benutzerService.findBenutzer(mitteilungJAXP.getSender().getUsername(), mitteilung.getDossier().getFall().getMandant())
+			Benutzer sender = benutzerService.findBenutzer(
+				mitteilungJAXP.getSender().getUsername(),
+				mitteilung.getDossier().getFall().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"mitteilungToEntity",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -4839,7 +4874,7 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedMitteilung.getBetreuung() != null) {
 			jaxMitteilung.setBetreuung(betreuungToJAX(persistedMitteilung.getBetreuung()));
 		}
-		if(persistedMitteilung.getInstitution() != null) {
+		if (persistedMitteilung.getInstitution() != null) {
 			jaxMitteilung.setInstitution(institutionToJAX(persistedMitteilung.getInstitution()));
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
@@ -5168,7 +5203,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
 		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
-				.ifPresent(stammdaten::setGemeinde);
+			.ifPresent(stammdaten::setGemeinde);
 
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 
@@ -5185,7 +5220,7 @@ public class JaxBConverter extends AbstractConverter {
 				.ifPresent(stammdaten::setDefaultBenutzer);
 		}
 
-		if(jaxStammdaten.getGemeindeAusgabestelle() != null) {
+		if (jaxStammdaten.getGemeindeAusgabestelle() != null) {
 			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
 			gemeindeService.findGemeinde(jaxStammdaten.getGemeindeAusgabestelle().getId())
 				.ifPresent(stammdaten::setGemeindeAusgabestelle);
@@ -5320,13 +5355,14 @@ public class JaxBConverter extends AbstractConverter {
 
 		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
 		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
-		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde = gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
-			.stream()
-			.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
-			.filter(gesuchsperiode -> stammdaten.getGemeinde()
-				.getGueltigBis()
-				.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
-			.collect(Collectors.toList());
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde =
+			gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
+				.stream()
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
+				.filter(gesuchsperiode -> stammdaten.getGemeinde()
+					.getGueltigBis()
+					.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+				.collect(Collectors.toList());
 
 		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
 			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
@@ -5358,7 +5394,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
 
 		jaxStammdaten.setGutscheinSelberAusgestellt(stammdaten.getGutscheinSelberAusgestellt());
-		if(stammdaten.getGemeindeAusgabestelle() != null) {
+		if (stammdaten.getGemeindeAusgabestelle() != null) {
 			jaxStammdaten.setGemeindeAusgabestelle(gemeindeToJAX(stammdaten.getGemeindeAusgabestelle()));
 		}
 
@@ -6415,8 +6451,10 @@ public class JaxBConverter extends AbstractConverter {
 		return angabenInstitution;
 	}
 
-	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(LastenausgleichTagesschuleAngabenGemeindeStatusHistory latsStatusHistory) {
-		final JaxLastenausgleichTagesschulenStatusHistory jaxStatusHistory = new JaxLastenausgleichTagesschulenStatusHistory();
+	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(
+		LastenausgleichTagesschuleAngabenGemeindeStatusHistory latsStatusHistory) {
+		final JaxLastenausgleichTagesschulenStatusHistory jaxStatusHistory =
+			new JaxLastenausgleichTagesschulenStatusHistory();
 		convertAbstractFieldsToJAX(latsStatusHistory, jaxStatusHistory);
 		jaxStatusHistory.setContainerId(latsStatusHistory.getAngabenGemeindeContainer().getId());
 		jaxStatusHistory.setStatus(latsStatusHistory.getStatus());

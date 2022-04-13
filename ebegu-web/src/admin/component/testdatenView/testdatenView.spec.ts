@@ -16,6 +16,7 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import * as moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -50,8 +51,9 @@ describe('testdatenView', () => {
             ['getAllGesuchsperioden', 'removeGesuchsperiode']);
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-            ['isDevMode', 'getPublicPropertiesCached']);
+            ['isDevMode', 'getPublicPropertiesCached', 'isEbeguKibonAnfrageTestGuiEnabled']);
         applicationPropertyRSSpy.isDevMode.and.resolveTo(false);
+        applicationPropertyRSSpy.isEbeguKibonAnfrageTestGuiEnabled.and.resolveTo(false);
         applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({
             currentNode: '',
             devmode: false,
@@ -78,7 +80,9 @@ describe('testdatenView', () => {
             angebotTSActivated: true,
             infomaZahlungen: true,
             frenchEnabled: true,
-            geresEnabledForMandant: true
+            geresEnabledForMandant: true,
+            ebeguKibonAnfrageTestGuiEnabled: false,
+            steuerschnittstelleAktivAb: moment('2020-01-01')
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

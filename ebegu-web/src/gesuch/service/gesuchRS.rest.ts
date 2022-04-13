@@ -293,4 +293,12 @@ export class GesuchRS implements IEntityRS {
                 return undefined;
             });
     }
+
+    public findGesuchOfGesuchsteller(gesuchstellerId: string): IPromise<TSGesuch> {
+        return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(gesuchstellerId)}`)
+            .then(response => {
+                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
+            });
+
+    }
 }

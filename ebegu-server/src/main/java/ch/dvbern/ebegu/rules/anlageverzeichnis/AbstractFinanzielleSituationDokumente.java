@@ -143,6 +143,21 @@ abstract class AbstractFinanzielleSituationDokumente
 			case NACHWEIS_LOHNAUSWEIS_2:
 			case NACHWEIS_LOHNAUSWEIS_3:
 				return true;
+			case NACHWEIS_EINKOMMEN_VERFAHREN:
+				return abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null &&
+					abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet();
+			case NACHWEIS_BRUTTOVERMOEGENERTRAEGE:
+				return abstractFinanzielleSituation.getBruttoertraegeVermoegen() != null
+					&& abstractFinanzielleSituation.getBruttoertraegeVermoegen().compareTo(BigDecimal.ZERO) > 0;
+			case NACHWEIS_GEWINNUNGSKOSTEN:
+				return abstractFinanzielleSituation.getGewinnungskosten() != null
+					&& abstractFinanzielleSituation.getGewinnungskosten().compareTo(BigDecimal.ZERO) > 0;
+			case NACHWEIS_SCHULDZINSEN:
+				return abstractFinanzielleSituation.getAbzugSchuldzinsen() != null
+					&& abstractFinanzielleSituation.getAbzugSchuldzinsen().compareTo(BigDecimal.ZERO) > 0;
+			case NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN:
+				return abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft() != null
+					&& abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft().compareTo(BigDecimal.ZERO) > 0;
 			default:
 				return false;
 			}

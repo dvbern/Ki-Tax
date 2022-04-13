@@ -151,8 +151,23 @@ public class VerfuegungsBemerkungDTOList {
 	}
 
 	private void overwriteASIVBemerkungenWithFKJVBemerkungen() {
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV);
 		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.UNBEZAHLTER_URLAUB_MSG, MsgKey.UNBEZAHLTER_URLAUB_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_ANSPRUCH, MsgKey.ERWERBSPENSUM_ANSPRUCH_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.WOHNSITZ_MSG, MsgKey.WOHNSITZ_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.FACHSTELLE_MSG, MsgKey.FACHSTELLE_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINREICHUNGSFRIST_MSG, MsgKey.EINREICHUNGSFRIST_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, MsgKey.REDUCKTION_RUECKWIRKEND_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ANSPRUCHSAENDERUNG_MSG, MsgKey.ANSPRUCHSAENDERUNG_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG, MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.VERFUEGUNG_MIT_ANSPRUCH, MsgKey.VERFUEGUNG_MIT_ANSPRUCH_FKJV);
 	}
 
 	private void overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey bemerkungToReplace, MsgKey replaceWithBemerkung) {
@@ -212,6 +227,8 @@ public class VerfuegungsBemerkungDTOList {
 			// 1. Ausserordentlicher Anspruch
 			// 2. Fachstelle
 			// 3. Erwerbspensum
+			// 4. Erweiterte Beduefrnisse
+			// 5. Zusatzgutschein
 			if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
 				removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
@@ -225,6 +242,10 @@ public class VerfuegungsBemerkungDTOList {
 			}
 			if (messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+			}
+			if (messagesMap.containsKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE)) {
+				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
+				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
 			}
 		}
 

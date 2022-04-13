@@ -32,6 +32,7 @@
                 <dv-radio-container-x>
                     <dv-radio-input-x
                         [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
+                        [tooltip]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN_INFO'"
                         [(model)]="getModel().pflegeEntschaedigungErhalten"
                         (modelChange)="change()"
                         [dvBisherValue]="getModelGS()?.pflegeEntschaedigungErhalten"
@@ -45,6 +46,7 @@
                 <dv-radio-container-x>
                     <dv-radio-input-x
                         [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
+                        [tooltip]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN_INFO'"
                         [(model)]="getModel().obhutAlternierendAusueben"
                         (modelChange)="change()"
                         [dvBisherValue]="getModelGS()?.obhutAlternierendAusueben"
@@ -53,11 +55,28 @@
                 </dv-radio-container-x>
             </div>
         </div>
+        <div class="row" *ngIf="famErgaenzendeBetreuuungVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        [label]="'FAM_ERGAENZENDE_BETREUUNG_BEIDE'"
+                        [(model)]="getModel().familienErgaenzendeBetreuung"
+                        (modelChange)="change()"
+                        [readonly]="hasKindBetreuungen()"
+                        [dvBisherValue]="getModelGS()?.familienErgaenzendeBetreuung"
+                        [inlineHint]="'FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE'"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+
+            </div>
+        </div>
         <div class="row" *ngIf="gemeinsamesGesuchVisible()">
             <div class="col-xs-12">
                 <dv-radio-container-x>
                     <dv-radio-input-x
                         [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
+                        [tooltip]="'KINDERABZUG_GEMEINSAMES_GESUCH_INFO'"
                         [(model)]="getModel().gemeinsamesGesuch"
                         (modelChange)="change()"
                         [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
@@ -71,6 +90,7 @@
                 <dv-radio-container-x>
                     <dv-radio-input-x
                         [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
+                        [tooltip]="'KINDERABZUG_IN_ERSTAUSBILDUNG_INFO'"
                         [(model)]="getModel().inErstausbildung"
                         (modelChange)="change()"
                         [dvBisherValue]="getModelGS()?.inErstausbildung"

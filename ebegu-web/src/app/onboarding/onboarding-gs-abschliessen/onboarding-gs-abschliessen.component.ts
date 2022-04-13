@@ -115,8 +115,9 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
     public changeGemeinde(): void {
         switch (this.authServiceRS.getPrincipalRole()) {
             case TSRole.GESUCHSTELLER:
-                this.onboardingPlaceholderService.setSplittedScreen(true);
-                this.stateService.go('onboarding.gesuchsteller.registration-incomplete');
+                this.stateService.transitionTo('onboarding.gesuchsteller.registration-incomplete').then(() => {
+                    this.onboardingPlaceholderService.setSplittedScreen(true);
+                });
                 break;
             case TSRole.ANONYMOUS:
                 this.onboardingPlaceholderService.setSplittedScreen(true);

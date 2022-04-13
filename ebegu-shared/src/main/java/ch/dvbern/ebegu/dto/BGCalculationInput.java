@@ -764,8 +764,14 @@ public class BGCalculationInput {
 		// Zusätzliche Felder aus Result
 		this.betreuungspensumProzent = this.betreuungspensumProzent.add(other.betreuungspensumProzent);
 		this.anspruchspensumProzent = add(this.anspruchspensumProzent, other.anspruchspensumProzent);
-		//nach add der anspruchspensumprozente muss geprüft werden, ob das minErofderlichePensum unterschritten wurde oder nicht
-		this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
+
+		//Beim add von zwei anspruchspensen kann das anspruchspensum steigen. Es muss geprüft werden, ob das minimal
+		//erforderliche Pensum jetzt überschritten ist. Dies muss nur geprüft werden, wenn das minimalesEwpUnterschritten
+		//zuvor in einem der beiden Zeitabschnitte unterschritten wurde
+		if(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten) {
+			this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
+		}
+
 		this.einkommensjahr = other.einkommensjahr;
 		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;

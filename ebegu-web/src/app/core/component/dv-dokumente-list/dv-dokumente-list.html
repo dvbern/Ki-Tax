@@ -18,8 +18,7 @@
     <div class="col-md-12 table-responsive" ng-if="vm.dokumente.length">
 
         <h2>
-            <span data-translate="{{vm.tableTitle}}"></span>
-            {{vm.titleValue}}
+            <span>{{vm.getTableTitleText()}}</span>
         </h2>
         <div class="overflow-scroll-table">
             <table st-table="table" st-safe-src="vm.dokumente" class="table dokumentgrundtable" id="{{vm.tableId}}">

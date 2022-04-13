@@ -270,13 +270,9 @@ export class DVDokumenteListController implements IController {
         }
 
         if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
-            if (dokumentGrund.personNumber === 2 && gesuch.gesuchsteller2) {
-                return gesuch.gesuchsteller2.extractFullName();
-            }
-            if (dokumentGrund.personNumber === 1 && gesuch.gesuchsteller1) {
-                return gesuch.gesuchsteller1.extractFullName();
-            }
-        } else if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND && gesuch.kindContainers) {
+           return this.getFullNameGesuchsteller(dokumentGrund.personNumber);
+        }
+        if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND && gesuch.kindContainers) {
             const kindContainer = gesuch.extractKindFromKindNumber(dokumentGrund.personNumber);
             if (kindContainer && kindContainer.kindJA) {
                 return kindContainer.kindJA.getFullName();
@@ -285,8 +281,30 @@ export class DVDokumenteListController implements IController {
         return '';
     }
 
+    private getFullNameGesuchsteller(personNumber: number): string {
+        const gesuch = this.gesuchModelManager.getGesuch();
+
+        if (personNumber === 2 && gesuch.gesuchsteller2) {
+            return gesuch.gesuchsteller2.extractFullName();
+        }
+        if (personNumber === 1 && gesuch.gesuchsteller1) {
+            return gesuch.gesuchsteller1.extractFullName();
+        }
+        if (personNumber === 0 && gesuch.gesuchsteller1 && gesuch.gesuchsteller2) {
+            return this.$translate.instant('DOK_GS1_AND_GS2', {
+                gs1: gesuch.gesuchsteller1.extractFullName(),
+                gs2: gesuch.gesuchsteller2.extractFullName()});
+        }
+
+        return '';
+    }
+
     public getDokumentText(dokumentGrund: TSDokumentGrund): string {
         const key = `${dokumentGrund.dokumentGrundTyp}_${dokumentGrund.dokumentTyp}`;
         return this.$translate.instant(key);
+    }
+
+    public getTableTitleText(): string {
+        return this.$translate.instant(this.tableTitle, {basisjahr: this.titleValue});
     }
 }

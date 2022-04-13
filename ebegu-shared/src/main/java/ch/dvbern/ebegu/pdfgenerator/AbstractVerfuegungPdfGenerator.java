@@ -98,6 +98,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
 	private static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
 	private static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
+	private static final String NICHT_EINTRETEN_CONTENT_5_FKJV = "PdfGeneration_NichtEintreten_Content_5_FKJV";
 	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	private static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
@@ -106,7 +107,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
 	private static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
+	private static final String FUSSZEILE_2_NICHT_EINTRETEN_FKJV = "PdfGeneration_NichtEintreten_Fusszeile2_FKJV";
 	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
+	private static final String FUSSZEILE_1_VERFUEGUNG_FKJV = "PdfGeneration_Verfuegung_Fusszeile1_FKJV";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
 	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
@@ -125,6 +128,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected final Betreuung betreuung;
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
+	private final boolean isFKJVTexte;
 
 	@Nonnull
 	private final Art art;
@@ -134,7 +138,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
 		boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured
+		boolean stadtBernAsivConfigured,
+		boolean isFKJVTexte
 	) {
 		super(betreuung.extractGesuch(), stammdaten);
 
@@ -142,6 +147,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		this.art = art;
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
+		this.isFKJVTexte = isFKJVTexte;
 	}
 
 	@Nonnull
@@ -228,7 +234,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_3)));
 			paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(translate(NICHT_EINTRETEN_CONTENT_5)));
+			paragraphWithSupertext.add(new Chunk(getContent5NichtEintreten()));
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
 			paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 			document.add(paragraphWithSupertext);
@@ -244,6 +250,13 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		gruesseElements.add(createParagraphSignatur());
 		document.add(PdfUtil.createKeepTogetherTable(gruesseElements, 2, 0));
 		document.add(createRechtsmittelBelehrung());
+	}
+
+	private String getContent5NichtEintreten() {
+		if (isFKJVTexte) {
+			return translate(NICHT_EINTRETEN_CONTENT_5_FKJV);
+		}
+		return translate(NICHT_EINTRETEN_CONTENT_5);
 	}
 
 	private void addBemerkungenIfAvailable(Document document, boolean showTitle) {
@@ -589,22 +602,36 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_1_NICHT_EINTRETEN), translate(FUSSZEILE_2_NICHT_EINTRETEN))
+			Lists.newArrayList(translate(FUSSZEILE_1_NICHT_EINTRETEN), getFusszeile2NichtEintreten())
 		);
+	}
+
+	private String getFusszeile2NichtEintreten() {
+		if (isFKJVTexte) {
+			return translate(FUSSZEILE_2_NICHT_EINTRETEN_FKJV);
+		}
+		return translate(FUSSZEILE_2_NICHT_EINTRETEN);
 	}
 
 	private void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_2_NICHT_EINTRETEN))
+			Lists.newArrayList(getFusszeile2NichtEintreten())
 		);
 	}
 
 	private void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_1_VERFUEGUNG))
+			Lists.newArrayList(getFusszeile1Verfuegung())
 		);
+	}
+
+	private String getFusszeile1Verfuegung() {
+		if (isFKJVTexte) {
+			return translate(FUSSZEILE_1_VERFUEGUNG_FKJV);
+		}
+		return translate(FUSSZEILE_1_VERFUEGUNG);
 	}
 
 	private boolean isTFO() {

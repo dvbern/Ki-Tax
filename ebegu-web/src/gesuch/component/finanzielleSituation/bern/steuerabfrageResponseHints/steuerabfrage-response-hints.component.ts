@@ -15,8 +15,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {BehaviorSubject, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
@@ -26,7 +35,9 @@ import {
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 
@@ -46,9 +57,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     private principal: TSBenutzer;
     private subscription: Subscription;
 
+    public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly dialog: MatDialog,
+        private readonly finSitRS: FinanzielleSituationRS,
     ) {
     }
 
@@ -58,6 +73,17 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 principal => this.principal = principal,
                 err => LOG.error(err),
             );
+
+        const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1 :
+            this.gesuchModelManager.getGesuch().gesuchsteller2;
+        // tslint:disable-next-line:early-exit
+        if (this.showZugriffErfolgreich()) {
+            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
+                gs.finanzielleSituationContainer.id).then(isMatching => {
+                    this.geburtstagNotMatching$.next(!isMatching);
+            });
+        }
     }
 
     public ngOnDestroy(): void {
@@ -93,8 +119,18 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM;
     }
 
+    public showZugriffKeineZpvNummerGS2(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
+    }
+
+    public showRetry(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.RETRY;
+    }
+
     public getGS1Name(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName() :
+            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 
     public getGS2Name(): string {
@@ -105,11 +141,29 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         this.tryAgainEvent.emit();
     }
 
-    public getEmailLoggedIn(): string {
-        return this.principal.email;
+    public getEmailBesitzende(): string {
+        return this.gesuchModelManager.getGesuch().dossier.fall.besitzer.email;
+    }
+
+    public getGS2name(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.gesuchstellerJA.getFullName();
     }
 
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+    }
+
+    public openDialogGSZPVVerknuepfen(): void {
+        const dialogOptions: MatDialogConfig = {
+            data: {
+                gs: this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+                    this.gesuchModelManager.getGesuch().gesuchsteller1 :
+                    this.gesuchModelManager.getGesuch().gesuchsteller2,
+                korrespondenzSprache:
+                    this.gesuchModelManager.getGesuch().gesuchsteller1.gesuchstellerJA.korrespondenzSprache,
+            },
+            panelClass: 'steuerdaten-email-dialog'
+        };
+        this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
     }
 }

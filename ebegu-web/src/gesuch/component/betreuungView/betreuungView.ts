@@ -496,6 +496,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public direktAnmeldenSchulamt(): boolean {
         // Eigentlich immer ausser in Bearbeitung GS
         return !(this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
             || this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG));
     }
 
@@ -971,6 +972,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT);
     }
 
+    public isBetreuungsstatusBestaetigtOrVerfuegt(): boolean {
+        return this.isBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
+            || this.isBetreuungsstatus(TSBetreuungsstatus.VERFUEGT);
+    }
+
     public isBetreuungsstatusAusstehend(): boolean {
         return this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
     }
@@ -1308,8 +1314,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().kitaPlusZuschlag);
     }
 
-    public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
         return this.besondereBeduerfnisseAufwandKonfigurierbar;
+    }
+
+    public isBesondereBeduerfnisseAufwandVisible(): boolean {
+        if (!this.isBesondereBeduerfnisseAufwandKonfigurierbar()) {
+            return false;
+        }
+        // für Institutionen und Trägerschaften ist der Betrag readonly. Deshalb soll er erst sichtbar sein,
+        // wenn er durch die Gemeinde ausgefüllt wurde
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag);
+        }
+        return true;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {

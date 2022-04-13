@@ -24,7 +24,8 @@
                 <span translate [translateParams]="{gs1: gs1Name(), gs2: gs2Name()}">FINANZIELLE_SITUATION_AUFTEILUNG</span>
             </h2>
             <hr class="header"/>
-            <p class="inline-hint" translate [translateParams]="{gs1: gs1Name(), gs2: gs2Name()}">FINANZIELLE_SITUATION_AUFTEILUNG_HINT</p>
+            <p class="inline-hint"
+            [innerHTML]="'FINANZIELLE_SITUATION_AUFTEILUNG_HINT' | translate:{gs1: gs1Name(), gs2: gs2Name()}"></p>
         </div>
     </div>
     <form role="form"

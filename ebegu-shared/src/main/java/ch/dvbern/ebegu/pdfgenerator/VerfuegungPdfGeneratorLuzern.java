@@ -28,8 +28,11 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	public VerfuegungPdfGeneratorLuzern(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,  boolean stadtBernAsivConfigured) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured);
+		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
+		boolean stadtBernAsivConfigured,
+		boolean isFKJVTexte
+	) {
+		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 
 	@Override

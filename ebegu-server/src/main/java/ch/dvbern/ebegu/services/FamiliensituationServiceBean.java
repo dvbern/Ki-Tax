@@ -119,10 +119,26 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 						== EnumFamilienstatus.VERHEIRATET) {
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
 		}
+		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
+		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+			oldFamiliensituation != null &&
+			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()) {
+			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
+		}
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+	private void resetFragenKinderabzugAndSetToUeberpruefen(Gesuch gesuch) {
+		gesuch.getKindContainers()
+			.forEach(kindContainer -> {
+				if(kindContainer.getKindJA() != null) {
+					kindContainer.getKindJA().setGemeinsamesGesuch(null);
+					kindContainer.getKindJA().setInPruefung(true);
+				}
+			});
 	}
 
 	@Nonnull
