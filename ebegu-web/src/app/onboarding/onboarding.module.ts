@@ -26,6 +26,7 @@ import { OnboardingInfoGemeindeComponent } from './onboarding-info-gemeinde/onbo
 import { OnboardingInfoInstitutionComponent } from './onboarding-info-institution/onboarding-info-institution.component';
 import { InitZpvNrComponent } from './init-zpv-nr/init-zpv-nr.component';
 import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component';
+import { PortalSelectionComponent } from './portal-selection/portal-selection.component';
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component
         OnboardingInfoInstitutionComponent,
         DummyMandantSelectionComponent,
         InitZpvNrComponent,
-        ZpvNrSuccessComponent
+        ZpvNrSuccessComponent,
+        PortalSelectionComponent
     ],
 })
 class OnboardingModule {

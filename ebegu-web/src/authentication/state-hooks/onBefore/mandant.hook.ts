@@ -80,7 +80,7 @@ function redirectToMandantSelection(
                 if (mandantFromHostname === KiBonMandant.NONE) {
                     if (mandantRedirectFromCookie === KiBonMandant.NONE) {
                         console.log('redirecting to mandant selection');
-                        return $state.target('mandant', {path});
+                        return $state.target('onboarding.mandant', {path});
                     }
                     mandantService.redirectToMandantSubdomain(mandantRedirectFromCookie, path);
                     return false;

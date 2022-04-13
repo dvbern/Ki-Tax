@@ -31,6 +31,7 @@ import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
+import {PortalSelectionComponent} from './portal-selection/portal-selection.component';
 import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 
 export function nextState(): string {
@@ -53,13 +54,12 @@ export const STATES: NgHybridStateDeclaration[] = [
         onEnter: redirectToLandingPage,
     },
     {
-        parent: 'app',
-        name: 'mandant',
+        name: 'onboarding.mandant',
         url: '/mandant?path',
         data: {
             roles: TSRoleUtil.getAllRoles(),
         },
-        component: DummyMandantSelectionComponent,
+        component: PortalSelectionComponent,
     },
     {
         name: 'onboarding.anmeldung',

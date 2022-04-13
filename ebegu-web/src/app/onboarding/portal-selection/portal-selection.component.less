@@ -1,0 +1,106 @@
+/*
+ * Copyright (C) 2022 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
+@import "src/style/variables";
+
+.select-portal {
+    display: flex;
+    justify-content: center;
+    padding-top: 25%;
+    overflow-y: hidden;
+    margin-bottom: 5rem;
+
+    p {
+        color: #000000;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 20px;
+        letter-spacing: 1.38px;
+        line-height: 24px;
+    }
+}
+
+input.filter {
+    margin-bottom: 2em;
+    outline-style: solid;
+    outline-width: 2px;
+}
+
+.portal-list {
+    width: 60%;
+    margin-left: 20%;
+
+
+    @media(max-width: 1400px) {
+        width: 70%;
+        margin: 0 15%;
+    }
+
+    @media(max-width: 1200px) {
+        width: 80%;
+        margin: 0 10%;
+    }
+
+    @media(max-width: 1036px) {
+        width: 85%;
+        margin: 0 7%;
+    }
+
+    @media(max-width: 980px) {
+        width: 70%;
+        margin: 0 15%;
+    }
+
+    @media(max-width: 700px) {
+        width: 90%;
+        margin: 0 5%;
+    }
+
+    p {
+        font-size: 20px;
+        color: black;
+    }
+}
+
+.portal {
+    display: flex;
+    height: 84px;
+    border-bottom: rgba(192, 192, 192, 0.3) 1px solid;
+
+    &:first-of-type {
+        border-top: rgba(192, 192, 192, 0.3) 1px solid;
+    }
+
+    &:hover {
+        background-color: rgba(220, 220, 220, 0.2);
+    }
+
+    img {
+        flex: 0 0 auto;
+        margin-right: 5rem;
+
+        @media(max-width: 340px) {
+            margin-right: 2rem;
+        }
+    }
+
+    i {
+        color: @primary;
+        margin-left: 2rem;
+    }
+
+}
