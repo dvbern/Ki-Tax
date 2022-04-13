@@ -253,7 +253,10 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 			addSpacing(document);
 		}
 
-		FinanzielleSituationRow title = createTableTitleForEkv(basisJahr);
+		String gesuchstellerName = getNameForFinSit1();
+
+		FinanzielleSituationRow title = new FinanzielleSituationRow(
+			translate(EKV_TITLE,  String.valueOf(basisJahr)), gesuchstellerName);
 		//EKV Tabelle ist dieselbe wie die Selbstdeklarations-Tabelle
 		document.add(createTableSelbstdeklaration(hasSecondGesuchsteller, 1, finSitDTO, title));
 	}
