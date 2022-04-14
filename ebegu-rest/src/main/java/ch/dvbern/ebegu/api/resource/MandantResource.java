@@ -71,16 +71,19 @@ public class MandantResource {
 		return optional.map(mandant -> converter.mandantToJAX(mandant)).orElse(null);
 	}
 
-	@ApiOperation(value = "Gibt alle Mandanten zurueck.")
+	@ApiOperation(value = "Gibt alle aktiven Mandanten zurueck.")
 	@Nullable
 	@GET
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<JaxMandant> findAll() {
+	public Collection<JaxMandant> findAllActive() {
 		Collection<Mandant> all = mandantService.getAll();
 
-		return all.stream().map(mandant -> converter.mandantToJAX(mandant)).collect(Collectors.toList());
+		return all.stream()
+				.filter(Mandant::isActivated)
+				.map(mandant -> converter.mandantToJAX(mandant))
+				.collect(Collectors.toList());
 	}
 
 }
