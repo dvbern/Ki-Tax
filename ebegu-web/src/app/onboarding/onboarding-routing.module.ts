@@ -22,7 +22,6 @@ import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
-import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {InitZpvNrComponent} from './init-zpv-nr/init-zpv-nr.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';

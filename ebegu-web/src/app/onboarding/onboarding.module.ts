@@ -15,7 +15,6 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -41,7 +40,6 @@ import { PortalSelectionComponent } from './portal-selection/portal-selection.co
         OnboardingNeuBenutzerComponent,
         OnboardingInfoGemeindeComponent,
         OnboardingInfoInstitutionComponent,
-        DummyMandantSelectionComponent,
         InitZpvNrComponent,
         ZpvNrSuccessComponent,
         PortalSelectionComponent
