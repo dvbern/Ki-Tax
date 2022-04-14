@@ -23,7 +23,9 @@
 	<div *ngFor="let mandant of mandants" class="portal" (click)="selectMandant(mandant)">
 		<div class="flex-row flex-no-grow-auto">
 			<div class="flew-column-center">
-				<img [src]="getMandantLogoUrl(mandant)" height="40px" alt="Logo {{mandant.name}}">
+				<div class="img-container">
+					<img [src]="getMandantLogoUrl(mandant)" height="40px" alt="Logo {{mandant.name}}">
+				</div>
 			</div>
 			<div class="flew-column-center">
 				<p>{{mandant.name}}</p>
