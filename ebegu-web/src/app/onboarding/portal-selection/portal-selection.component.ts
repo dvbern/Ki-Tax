@@ -15,7 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {fromEvent, Observable} from 'rxjs';
 import {map, startWith, throttleTime} from 'rxjs/operators';
 import {TSMandant} from '../../../models/TSMandant';
@@ -32,25 +33,35 @@ export class PortalSelectionComponent implements OnInit {
     public mandants: TSMandant[];
     public isScreenMobile$: Observable<boolean>;
 
+    private readonly MOBILE_THRESHOLD = 700;
+    private readonly THROTTLE_TIME = 50;
+
     public constructor(
-        private mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly routerGlobals: UIRouterGlobals,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
-        this.mandants = [];
-        this.mandants.push(new TSMandant('Kanton Bern'));
-        this.mandants.push(new TSMandant('Kanton Luzern'));
+        this.mandantService.getAll().subscribe(mandants => {
+            this.mandants = mandants;
+            this.cd.markForCheck();
+        });
 
         // Checks if screen size is less than 1024 pixels
-        const checkScreenSize = () => document.body.offsetWidth < 700;
+        const checkScreenSize = () => document.body.offsetWidth < this.MOBILE_THRESHOLD;
 
         // Create observable from window resize event throttled so only fires every 500ms
         this.isScreenMobile$ = fromEvent(window, 'resize').pipe(
             startWith(checkScreenSize()),
-            throttleTime(50),
+            throttleTime(this.THROTTLE_TIME),
             map(checkScreenSize));
 
     }
 
+    public selectMandant(mandant: TSMandant): void {
+        const kibonMandant = this.mandantService.mandantToKibonMandant(mandant);
+        this.mandantService.selectMandant(kibonMandant, this.routerGlobals.params.path || '');
+    }
 }

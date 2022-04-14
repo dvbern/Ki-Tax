@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+
 /**
  * DTO fuer Mandanten
  */
@@ -35,6 +37,7 @@ public class JaxMandant extends JaxAbstractDTO {
 
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
+	private MandantIdentifier mandantIdentifier;
 
 	@Nonnull
 	public String getName() {
@@ -59,5 +62,13 @@ public class JaxMandant extends JaxAbstractDTO {
 
 	public void setAngebotFI(boolean angebotFI) {
 		this.angebotFI = angebotFI;
+	}
+
+	public MandantIdentifier getMandantIdentifier() {
+		return mandantIdentifier;
+	}
+
+	public void setMandantIdentifier(MandantIdentifier mandantIdentifier) {
+		this.mandantIdentifier = mandantIdentifier;
 	}
 }

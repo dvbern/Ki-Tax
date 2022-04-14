@@ -20,7 +20,7 @@
 </div>
 
 <div class="portal-list">
-	<div *ngFor="let mandant of mandants" class="portal">
+	<div *ngFor="let mandant of mandants" class="portal" (click)="selectMandant(mandant)">
 		<div class="flex-row flex-no-grow-auto">
 			<div class="flew-column-center">
 				<img src="assets/images/logo-kibon-bern.svg" height="40px" alt="Logo {{mandant.name}}">
