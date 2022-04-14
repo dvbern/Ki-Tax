@@ -74,6 +74,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
 
+	@Nullable
+	private Boolean momentanSelbststaendig;
+
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
 	}
@@ -196,5 +199,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setAutomatischePruefungErlaubt(@Nullable Boolean automatischePruefungErlaubt) {
 		this.automatischePruefungErlaubt = automatischePruefungErlaubt;
+	}
+
+	@Nullable
+	public Boolean getMomentanSelbststaendig() {
+		return momentanSelbststaendig;
+	}
+
+	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
+		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 }

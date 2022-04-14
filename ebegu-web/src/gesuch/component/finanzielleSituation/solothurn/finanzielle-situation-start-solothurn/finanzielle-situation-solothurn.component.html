@@ -28,7 +28,9 @@
 	</div>
 	<form #form="ngForm">
 		<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
-                                            [(sozialhilfeBezueger)]="model.sozialhilfeBezueger"></dv-finanzielle-situation-require-x>
+                                            [(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                            (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChanged($event)">
+        </dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
 			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
 			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"

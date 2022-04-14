@@ -2798,6 +2798,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
+		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
 		return finanzielleSituation;
 	}
@@ -2861,6 +2862,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
+		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
 		return jaxFinanzielleSituation;
 	}

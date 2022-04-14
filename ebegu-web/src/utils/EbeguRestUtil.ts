@@ -1866,6 +1866,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
+        restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         return restFinanzielleSituation;
     }
 
@@ -2006,6 +2007,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
+            finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
         }

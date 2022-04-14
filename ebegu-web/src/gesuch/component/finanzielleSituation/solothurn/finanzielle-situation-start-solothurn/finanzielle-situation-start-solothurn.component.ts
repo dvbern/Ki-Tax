@@ -82,10 +82,10 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.getGesuch().familiensituationContainer.familiensituationJA;
     }
 
-    public finanzielleSituationRequiredChange(finanzielleSituationRequired: boolean): void {
-        this.finanzielleSituationRequired = finanzielleSituationRequired;
+    public sozialhilfeBezuegerChanged(isSozialhilfebezueger: boolean): void {
+        this.finanzielleSituationRequired = !isSozialhilfebezueger;
         // tslint:disable-next-line:early-exit
-        if (EbeguUtil.isNotNullAndFalse(finanzielleSituationRequired)) {
+        if (EbeguUtil.isNotNullAndFalse(isSozialhilfebezueger)) {
             this.resetVeranlagungSolothurn();
             this.resetBruttoLohn();
         }
