@@ -26,16 +26,19 @@ import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 @Stateless
@@ -76,7 +79,7 @@ public class WSSSecurityKibonAnfrageAssertionOutboundHandler implements SOAPHand
 				header.addChildElement(securityElem);
 
 				WSUtil.correctAssertionNodes(header.getElementsByTagName("*"));
-			} catch (Exception e) {
+			} catch (SOAPException | STSZertifikatServiceException | DOMException e) {
 				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the kiBonAnfrage Service", e);
 			}
 		}
