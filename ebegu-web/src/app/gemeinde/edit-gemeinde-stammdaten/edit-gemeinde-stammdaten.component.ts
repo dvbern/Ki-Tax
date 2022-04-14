@@ -29,6 +29,7 @@ import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
 
@@ -53,6 +54,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public benutzerListe: Array<TSBenutzer>;
     public showMessageKeinAngebotSelected: boolean = false;
     public minDateTSFI = moment('20200801', 'YYYYMMDD');
+    public frenchEnabled: boolean = false;
 
     private readonly unsubscribe$ = new Subject<void>();
     public ebeguUtil = EbeguUtil;
@@ -60,6 +62,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     public constructor(
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -81,14 +84,7 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     }
 
     private initValues(stammdaten: TSGemeindeStammdaten): void {
-        const languages: string[] = [];
-        if (stammdaten.korrespondenzspracheDe) {
-            languages.push(this.translate.instant('DEUTSCH'));
-        }
-        if (stammdaten.korrespondenzspracheFr) {
-            languages.push(this.translate.instant('FRANZOESISCH'));
-        }
-        this.korrespondenzsprache = languages.join(', ');
+        this.initKorrespondenzsprache(stammdaten);
 
         // Für den "normalen" Defaultbenutzer sollen alle Benutzer der BG oder TS Rolle vorgeschlagen werden
         // Duplikate müssen aber vermieden werden
@@ -102,6 +98,26 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             && !stammdaten.gemeinde.angebotBG
             && !stammdaten.gemeinde.angebotTS
             && !stammdaten.gemeinde.angebotFI;
+    }
+
+    private initKorrespondenzsprache(stammdaten: TSGemeindeStammdaten): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(properties => properties.frenchEnabled)
+            .then(frenchEnabled => {
+                this.frenchEnabled = frenchEnabled;
+                if (!frenchEnabled) {
+                    stammdaten.korrespondenzspracheFr = false;
+                    stammdaten.korrespondenzspracheDe = true;
+                }
+                const languages: string[] = [];
+                if (stammdaten.korrespondenzspracheDe) {
+                    languages.push(this.translate.instant('DEUTSCH'));
+                }
+                if (stammdaten.korrespondenzspracheFr) {
+                    languages.push(this.translate.instant('FRANZOESISCH'));
+                }
+                this.korrespondenzsprache = languages.join(', ');
+            });
     }
 
     public isSuperadminOrMandant(): boolean {
