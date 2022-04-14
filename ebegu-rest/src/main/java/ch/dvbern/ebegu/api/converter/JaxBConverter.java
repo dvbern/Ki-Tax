@@ -1573,8 +1573,8 @@ public class JaxBConverter extends AbstractConverter {
 	 * @return TRUE when the Traegerschaft of the institution was updated
 	 */
 	private boolean updateTraegerschaft(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
-		if (!getPrincipalBean().isCallerInRole(UserRole.SUPER_ADMIN)) {
-			// only SUPER_ADMIN may change Traegerschaft
+		if (!getPrincipalBean().isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			// only SUPER_ADMIN or Mandant may change Traegerschaft
 			return false;
 		}
 
