@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {TSMandant} from '../../../models/TSMandant';
+import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {MandantService} from '../../shared/services/mandant.service';
 
 import {PortalSelectionComponent} from './portal-selection.component';
@@ -29,12 +30,13 @@ describe('PortalSelectionComponent', () => {
 
     beforeEach(async () => {
 
-        const mandantService = jasmine.createSpyObj<MandantService>(MandantService.name, ['mandant$']);
+        const mandantService = jasmine.createSpyObj<MandantService>(MandantService.name,
+            ['mandant$', 'getAll', 'mandantToKibonMandant', 'getMandantLogoName']);
         const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
             ['$current']);
 
         mandantService.getAll.and.returnValue(of([new TSMandant()]));
-
+        mandantService.mandantToKibonMandant.and.returnValue(KiBonMandant.BE);
         await TestBed.configureTestingModule({
             declarations: [PortalSelectionComponent],
             providers: [
