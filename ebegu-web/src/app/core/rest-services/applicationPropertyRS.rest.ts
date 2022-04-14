@@ -150,10 +150,8 @@ export class ApplicationPropertyRS {
     }
 
     public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
-        return this.getAllApplicationProperties().then(response => {
-            return response.find(applicationProperty => {
-                return applicationProperty.name === 'ZUSATZINFORMATIONEN_INSTITUTION';
-            }).value === 'true';
+        return this.getPublicPropertiesCached().then(response => {
+            return response.zusatzinformationenInstitution;
         });
     }
 }

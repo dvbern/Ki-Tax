@@ -4309,6 +4309,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
+        publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
         return publicAppConfigTS;
 
     }
