@@ -21,6 +21,7 @@ import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSGesuch} from '../../models/TSGesuch';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {GesuchModelManager} from '../service/gesuchModelManager';
 import {WizardStepManager} from '../service/wizardStepManager';
 
@@ -110,6 +111,6 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     }
 
     public isFKJV(): boolean {
-        return this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+        return EbeguUtil.isNotNullOrUndefined(this.getGesuch()) && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 }
