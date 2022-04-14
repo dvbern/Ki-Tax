@@ -16,16 +16,16 @@
  */
 
 
-@import "src/style/variables";
+@import 'src/style/variables';
 
 .select-portal {
     display: flex;
     justify-content: center;
+    margin-bottom: 5rem;
+    overflow-y: hidden;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 25%;
-    overflow-y: hidden;
-    margin-bottom: 5rem;
 
     p {
         color: #000000;
@@ -43,26 +43,30 @@ input.filter {
 }
 
 .portal-list {
-    width: 60%;
     margin-left: 20%;
-
-    overflow-y: auto;
     max-height: 55vh;
+    overflow-y: auto;
     padding-right: 2rem;
+    width: 60%;
+
+    p {
+        color: black;
+        font-size: 20px;
+    }
 
     @media(max-width: 1500px) {
-        width: 70%;
         margin: 0 15%;
+        width: 70%;
     }
 
     @media(max-width: 1250px) {
-        width: 80%;
         margin: 0 10%;
+        width: 80%;
     }
 
     @media(max-width: 1115px) {
-        width: 85%;
         margin: 0 7%;
+        width: 85%;
     }
 
     @media(max-width: 1000px) {
@@ -70,25 +74,20 @@ input.filter {
     }
 
     @media(max-width: 980px) {
-        width: 70%;
         margin: 0 15%;
+        width: 70%;
     }
 
     @media(max-width: 700px) {
-        width: 90%;
         margin: 0 5%;
-    }
-
-    p {
-        font-size: 20px;
-        color: black;
+        width: 90%;
     }
 }
 
 .portal {
+    border-bottom: rgba(192, 192, 192, 0.3) 1px solid;
     display: flex;
     height: 84px;
-    border-bottom: rgba(192, 192, 192, 0.3) 1px solid;
 
     &:first-of-type {
         border-top: rgba(192, 192, 192, 0.3) 1px solid;
@@ -101,6 +100,8 @@ input.filter {
     img {
         flex: 0 0 auto;
         margin-right: 4rem;
+        // adjust to largest logo
+        min-width: 119px;
 
         @media(min-width: 1400px) {
             margin-right: 5rem;

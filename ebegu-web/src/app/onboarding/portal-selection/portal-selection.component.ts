@@ -64,4 +64,9 @@ export class PortalSelectionComponent implements OnInit {
         const kibonMandant = this.mandantService.mandantToKibonMandant(mandant);
         this.mandantService.selectMandant(kibonMandant, this.routerGlobals.params.path || '');
     }
+
+    public getMandantLogoUrl(mandant: TSMandant): string {
+        const kibonMandant = this.mandantService.mandantToKibonMandant(mandant);
+        return `assets/images/${this.mandantService.getMandantLogoName(kibonMandant)}`;
+    }
 }

@@ -230,4 +230,17 @@ export class MandantService {
                 map(results => results.map(restMandant => this.restUtil.parseMandant(new TSMandant(), restMandant))),
             );
     }
+
+    public getMandantLogoName(mandant: KiBonMandant): string {
+        switch (mandant) {
+            case KiBonMandant.BE:
+                return 'logo-kibon-bern.svg';
+            case KiBonMandant.LU:
+                return 'logo-kibon-luzern.svg';
+            case KiBonMandant.SO:
+                return 'logo-kibon-solothurn.svg';
+            default:
+                return 'logo-kibon-bern.svg';
+        }
+    }
 }
