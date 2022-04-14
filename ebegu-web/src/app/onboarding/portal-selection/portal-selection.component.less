@@ -21,6 +21,8 @@
 .select-portal {
     display: flex;
     justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
     padding-top: 25%;
     overflow-y: hidden;
     margin-bottom: 5rem;
@@ -44,20 +46,27 @@ input.filter {
     width: 60%;
     margin-left: 20%;
 
+    overflow-y: auto;
+    max-height: 55vh;
+    padding-right: 2rem;
 
-    @media(max-width: 1400px) {
+    @media(max-width: 1500px) {
         width: 70%;
         margin: 0 15%;
     }
 
-    @media(max-width: 1200px) {
+    @media(max-width: 1250px) {
         width: 80%;
         margin: 0 10%;
     }
 
-    @media(max-width: 1036px) {
+    @media(max-width: 1115px) {
         width: 85%;
         margin: 0 7%;
+    }
+
+    @media(max-width: 1000px) {
+        max-height: 50vh;
     }
 
     @media(max-width: 980px) {
@@ -91,10 +100,18 @@ input.filter {
 
     img {
         flex: 0 0 auto;
-        margin-right: 5rem;
+        margin-right: 4rem;
 
-        @media(max-width: 340px) {
+        @media(min-width: 1400px) {
+            margin-right: 5rem;
+        }
+
+        @media(max-width: 400px) {
             margin-right: 2rem;
+        }
+
+        @media(max-width: 370px) {
+            margin-right: 1rem;
         }
     }
 
