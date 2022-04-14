@@ -32,7 +32,6 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
 import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOA
 	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityGeresAssertionOutboundHandler.class.getSimpleName());
 
 	@Inject
-	private STSAssertionManager stsAssertionManager;
+	private STSGeresAssertionManagerBean stsAssertionManager;
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {

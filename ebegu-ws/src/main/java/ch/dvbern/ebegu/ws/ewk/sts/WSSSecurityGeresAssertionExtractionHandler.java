@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.sts;
+package ch.dvbern.ebegu.ws.ewk.sts;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,6 +31,9 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.ws.sts.SAMLAuthenticationUtil;
+import ch.dvbern.ebegu.ws.sts.STSAssertionExtractionResult;
+import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +46,12 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-public class WSSSecurityAssertionExtractionHandler implements SOAPHandler<SOAPMessageContext> {
-	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityAssertionExtractionHandler.class.getSimpleName());
+public class WSSSecurityGeresAssertionExtractionHandler implements SOAPHandler<SOAPMessageContext> {
+	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityGeresAssertionExtractionHandler.class.getSimpleName());
 
 
 	@Inject
-	private STSAssertionManager stsAssertionManager;
+	private STSGeresAssertionManagerBean stsAssertionManager;
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
