@@ -148,4 +148,12 @@ export class ApplicationPropertyRS {
             return response.geresEnabledForMandant;
         });
     }
+
+    public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
+        return this.getAllApplicationProperties().then(response => {
+            return response.find(applicationProperty => {
+                return applicationProperty.name === 'ZUSATZINFORMATIONEN_INSTITUTION';
+            }).value === 'true';
+        });
+    }
 }
