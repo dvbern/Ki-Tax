@@ -35,6 +35,14 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public ngOnInit(): void {
+        this.initVerguenstiungGewuenscht();
+    }
+
+    private initVerguenstiungGewuenscht(): void {
+        // vergünstigung bei solothurn immer gewünscht
+        const famSit = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        famSit.verguenstigungGewuenscht = true;
+        this.calculateFinSitRequired(famSit.sozialhilfeBezueger);
     }
 
     public getAntragstellerNummer(): number {
@@ -82,7 +90,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.getGesuch().familiensituationContainer.familiensituationJA;
     }
 
-    public sozialhilfeBezuegerChanged(isSozialhilfebezueger: boolean): void {
+    public calculateFinSitRequired(isSozialhilfebezueger: boolean): void {
         this.finanzielleSituationRequired = !isSozialhilfebezueger;
         // tslint:disable-next-line:early-exit
         if (EbeguUtil.isNotNullAndFalse(isSozialhilfebezueger)) {
