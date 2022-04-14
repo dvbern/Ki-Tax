@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 
 /**
  * Dokumente für Kinder:
@@ -92,7 +91,7 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		case FACHSTELLENBESTAETIGUNG:
 			return kind != null && kind.getPensumFachstelle() != null;
 		case ABSAGESCHREIBEN_HORTPLATZ:
-			return kind != null && kind.getEinschulungTyp() == EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN && kind.hasKeinPlatzInSchulhort();
+			return kind != null && kind.hasKeinPlatzInSchulhort();
 		default:
 			return false;
 		}
