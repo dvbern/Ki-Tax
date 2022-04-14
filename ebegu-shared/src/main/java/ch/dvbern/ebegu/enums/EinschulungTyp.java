@@ -64,8 +64,8 @@ public enum EinschulungTyp {
 	public static List<EinschulungTyp> getListLuzern() {
 		return List.of(
 				VORSCHULALTER,
-				KINDERGARTEN1,
-				KINDERGARTEN2
+				FREIWILLIGER_KINDERGARTEN,
+				OBLIGATORISCHER_KINDERGARTEN
 		);
 
 	}
