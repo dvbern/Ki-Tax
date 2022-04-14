@@ -36,6 +36,7 @@ export class OnboardingComponent implements OnInit {
     private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
     public currentLangDe$: BehaviorSubject<boolean>;
+    public isMultimandantEnabled$: Observable<boolean>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -43,6 +44,7 @@ export class OnboardingComponent implements OnInit {
         private readonly translate: TranslateService,
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
+        this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());
 
     }
 

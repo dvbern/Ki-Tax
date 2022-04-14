@@ -2905,5 +2905,6 @@
     "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
     "SELECT_PORTAL": "Wählen Sie folgend Ihr Portal aus",
     "PORTAL_OEFFNEN": "Portal öffnen",
+    "PORTAL_WECHSELN": "Portal wechseln",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

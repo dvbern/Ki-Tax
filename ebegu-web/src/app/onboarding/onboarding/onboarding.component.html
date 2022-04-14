@@ -44,6 +44,11 @@
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
+        <ng-container *ngIf="isMultimandantEnabled$ | async">
+            <br/>
+            <br/>
+            <a href="" uiSref="onboarding.mandant" translate>PORTAL_WECHSELN</a>
+        </ng-container>
         <div class="onboarding-iframe-tutorial">
             <iframe *ngIf="isGerman$() | async"
                     src="https://www.youtube.com/embed/-nwcolwnI1M"
