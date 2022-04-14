@@ -20,7 +20,10 @@ import {UIRouterGlobals} from '@uirouter/core';
 import {fromEvent, Observable} from 'rxjs';
 import {map, startWith, throttleTime} from 'rxjs/operators';
 import {TSMandant} from '../../../models/TSMandant';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {MandantService} from '../../shared/services/mandant.service';
+
+const LOG = LogFactory.createLog('PortalSelectionComponent');
 
 @Component({
     selector: 'dv-portal-selection',
@@ -47,7 +50,7 @@ export class PortalSelectionComponent implements OnInit {
         this.mandantService.getAll().subscribe(mandants => {
             this.mandants = mandants;
             this.cd.markForCheck();
-        });
+        }, error => LOG.error(error));
 
         // Checks if screen size is less than 1024 pixels
         const checkScreenSize = () => document.body.offsetWidth < this.MOBILE_THRESHOLD;
