@@ -2904,6 +2904,9 @@
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Ce faisant, vous acceptez que les données fiscales soient récupérées à des fins de vérification de vos informations. Cette opération a généralement lieu dès que la déclaration d’impôt est disponible. <br><b>Important</b>: il se peut que vos informations soient vérifiées au moyen des données fiscales, même sans votre consentement. Ce contrôle est effectué manuellement par un échange avec les autorités fiscales.",
     "ONBOARDING_TO_FIN_SIT": "Retour à la demande",
     "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
+    "SELECT_PORTAL": "Wählen Sie folgend Ihr Portal aus",
+    "PORTAL_OEFFNEN": "Portal öffnen",
+    "PORTAL_WECHSELN": "Portal wechseln",
     "FREIGABE_QUITTUNG_EINLESEN_REQUIRED": "Solothurn: Einlesen Freigabequittung aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

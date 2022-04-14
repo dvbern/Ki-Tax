@@ -55,6 +55,9 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 	@Enumerated(EnumType.STRING)
 	private MandantIdentifier mandantIdentifier;
 
+	@Column(nullable = false)
+	private boolean activated = false;
+
 	public Mandant() {
 	}
 
@@ -90,6 +93,14 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setMandantIdentifier(MandantIdentifier mandantIdentifier) {
 		this.mandantIdentifier = mandantIdentifier;
+	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 
 	@Override

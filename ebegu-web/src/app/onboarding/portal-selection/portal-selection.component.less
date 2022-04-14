@@ -1,0 +1,125 @@
+/*
+ * Copyright (C) 2022 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
+@import 'src/style/variables';
+
+.select-portal {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5rem;
+    overflow-y: hidden;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 25%;
+
+    p {
+        color: #000000;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 20px;
+        letter-spacing: 1.38px;
+        line-height: 24px;
+    }
+}
+
+input.filter {
+    margin-bottom: 2em;
+    outline-style: solid;
+    outline-width: 2px;
+}
+
+.portal-list {
+    margin-left: 20%;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 2rem;
+    width: 60%;
+
+    p {
+        color: black;
+        font-size: 20px;
+    }
+
+    @media(max-width: 1500px) {
+        margin: 0 15%;
+        width: 70%;
+    }
+
+    @media(max-width: 1250px) {
+        margin: 0 10%;
+        width: 80%;
+    }
+
+    @media(max-width: 1115px) {
+        margin: 0 7%;
+        width: 85%;
+    }
+
+    @media(max-width: 1000px) {
+        max-height: 50vh;
+    }
+
+    @media(max-width: 980px) {
+        margin: 0 15%;
+        width: 70%;
+    }
+
+    @media(max-width: 700px) {
+        margin: 0 5%;
+        width: 90%;
+    }
+}
+
+.portal {
+    border-bottom: rgba(192, 192, 192, 0.3) 1px solid;
+    cursor: pointer;
+    display: flex;
+    height: 84px;
+
+    &:first-of-type {
+        border-top: rgba(192, 192, 192, 0.3) 1px solid;
+    }
+
+    &:hover {
+        background-color: rgba(220, 220, 220, 0.2);
+    }
+
+    .img-container {
+        flex: 0 0 auto;
+        margin-right: 4rem;
+        // adjust to largest logo
+        min-width: 119px;
+
+        @media(min-width: 1400px) {
+            margin-right: 5rem;
+        }
+
+        @media(max-width: 400px) {
+            margin-right: 2rem;
+        }
+
+        @media(max-width: 370px) {
+            margin-right: 1rem;
+        }
+    }
+
+    i {
+        color: @primary;
+        margin-left: 2rem;
+    }
+
+}
