@@ -86,9 +86,24 @@
 </ng-template>
 
 <ng-template #so>
-    fill me so
+
 </ng-template>
 
 <ng-template #lu>
-    fill me lu
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
+        <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
+        <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>
+        <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a href="" (click)="startTour()">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
 </ng-template>
