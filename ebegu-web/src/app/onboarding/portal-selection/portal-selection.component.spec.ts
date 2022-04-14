@@ -16,6 +16,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {UIRouterGlobals} from '@uirouter/core';
+import {of} from 'rxjs';
+import {TSMandant} from '../../../models/TSMandant';
 import {MandantService} from '../../shared/services/mandant.service';
 
 import {PortalSelectionComponent} from './portal-selection.component';
@@ -26,12 +29,17 @@ describe('PortalSelectionComponent', () => {
 
     beforeEach(async () => {
 
-        const mandantService = jasmine.createSpyObj(MandantService.name, ['mandant$']);
+        const mandantService = jasmine.createSpyObj<MandantService>(MandantService.name, ['mandant$']);
+        const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
+            ['$current']);
+
+        mandantService.getAll.and.returnValue(of([new TSMandant()]));
 
         await TestBed.configureTestingModule({
             declarations: [PortalSelectionComponent],
             providers: [
                 {provide: MandantService, useValue: mandantService},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
         })
             .compileComponents();
