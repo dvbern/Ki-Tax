@@ -2904,8 +2904,5 @@
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Sie geben mit dieser Frage Ihr Einverständnis für den Abruf der Steuerdaten, um Ihre Angaben zu überprüfen. Dieser Abruf geschieht in der Regel, sobald die Steuerveranlagung vorliegt. </br></br>Wichtig: Ihre Angaben können auch ohne Ihr Einverständnis anhand der Steuerdaten überprüft werden. Diese Prüfung geschieht manuell durch einen Austausch mit den Steuerbehörden. ",
     "ONBOARDING_TO_FIN_SIT": "Zurück zum Antrag",
     "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
-    "FREIWILLIGER_KINDERGARTEN": "Freiwilliger Kindergarten",
-    "OBLIGATORISCHER_KINDERGARTEN": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
-    "KEIN_PLATZ_IN_SCHULHORT": "Mein Kind hat kein Platz im Schulhort",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
