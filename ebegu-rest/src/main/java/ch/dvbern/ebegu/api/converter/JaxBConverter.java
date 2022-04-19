@@ -1425,6 +1425,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxMandant.setName(persistedMandant.getName());
 		jaxMandant.setAngebotTS(persistedMandant.isAngebotTS());
 		jaxMandant.setAngebotFI(persistedMandant.isAngebotFI());
+		jaxMandant.setMandantIdentifier(persistedMandant.getMandantIdentifier());
 		return jaxMandant;
 	}
 

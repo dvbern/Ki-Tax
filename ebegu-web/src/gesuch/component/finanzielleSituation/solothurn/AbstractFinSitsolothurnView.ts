@@ -35,7 +35,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public readonly: boolean = false;
     public finanzielleSituationResultate?: TSFinanzielleSituationResultateDTO;
 
-    public constructor(
+    protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected readonly finSitSoService: FinanzielleSituationSolothurnService,

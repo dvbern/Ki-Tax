@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,36 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.flex-row {
-    display: flex;
-}
-
-.flex-row-center-center {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
-
-.flex-row-start-center {
-    align-items: center;
-    display: flex;
-}
-
-.flex-row-center-start {
-    display: flex;
-    justify-content: center;
-}
-
-.flex-no-grow-auto {
-    flex: 0 0 auto;
-}
-
-.flex-grow {
-    flex: 1 1 0;
-}
-
-.flew-column-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+ALTER TABLE mandant ADD COLUMN IF NOT EXISTS `activated` BIT NOT NULL DEFAULT FALSE;
+UPDATE mandant SET `activated` = TRUE WHERE mandant_identifier = 'BERN';

@@ -22,7 +22,6 @@ import {TSRole} from '../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
-import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {InitZpvNrComponent} from './init-zpv-nr/init-zpv-nr.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
@@ -31,6 +30,7 @@ import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
+import {PortalSelectionComponent} from './portal-selection/portal-selection.component';
 import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 
 export function nextState(): string {
@@ -53,13 +53,12 @@ export const STATES: NgHybridStateDeclaration[] = [
         onEnter: redirectToLandingPage,
     },
     {
-        parent: 'app',
-        name: 'mandant',
+        name: 'onboarding.mandant',
         url: '/mandant?path',
         data: {
             roles: TSRoleUtil.getAllRoles(),
         },
-        component: DummyMandantSelectionComponent,
+        component: PortalSelectionComponent,
     },
     {
         name: 'onboarding.anmeldung',

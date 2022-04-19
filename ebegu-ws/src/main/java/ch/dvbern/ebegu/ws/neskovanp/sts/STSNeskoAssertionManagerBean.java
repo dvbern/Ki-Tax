@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,37 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package ch.dvbern.ebegu.ws.neskovanp.sts;
 
-.flex-row {
-    display: flex;
-}
+import javax.ejb.Singleton;
 
-.flex-row-center-center {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-}
+import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
 
-.flex-row-start-center {
-    align-items: center;
-    display: flex;
-}
-
-.flex-row-center-start {
-    display: flex;
-    justify-content: center;
-}
-
-.flex-no-grow-auto {
-    flex: 0 0 auto;
-}
-
-.flex-grow {
-    flex: 1 1 0;
-}
-
-.flew-column-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/**
+ * This class is responsible to store the currently issued SAML1-Assertion that will be used
+ * when calling the GERES Webservice.
+ *
+ * Clients should usually use the getValidSTSAssertionForPersonensuche Method to get the current Assertion.
+ * In case there was no Assertion issued yet or the Assertion is no longer valid the manager will try to
+ * obtain one
+ */
+@Singleton
+public class STSNeskoAssertionManagerBean extends STSAssertionManager {
 }
