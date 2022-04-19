@@ -1782,6 +1782,7 @@
     "DEBUGGING_SENTRY": "Fehler für Sentry triggern",
     "ERROR_STARTDATUM_FIRST_OF_MONTH": "Das Startdatum muss am 1. des jeweiligen Monats beginnen!",
     "ERROR_STARTDATUM_FUTURE": "Das Startdatum muss in der Zukunft liegen!",
+    "ERROR_GP_DATE": "Sie befinden sich im Antrag für das Schuljahr {{startgp}}/{{endgp}}. Wählen Sie ein Eintrittsdatum zwischen dem 1.8.{{startgp}} und dem 31.7.{{endgp}}.",
     "ADMINISTRATOREN": "Administrierende",
     "SACHBEARBEITER": "Sachbearbeitende",
     "GESCHAETZTE_MONATLICHE_BETREUUNGSKOSTEN": "geschätzte monatliche Betreuungskosten",
