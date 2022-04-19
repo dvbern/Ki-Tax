@@ -2380,7 +2380,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
 		}
 		if (gemeinde != null) {
-			row.setGemeinde(gemeinde.getName());
+			row.setTraegergemeinde(gemeinde.getName());
 			row.setBfsGemeinde(gemeinde.getBfsNummer());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());

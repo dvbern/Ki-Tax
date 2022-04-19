@@ -39,14 +39,14 @@ public class InstitutionenDataRow {
 	private String plz = null;
 	private String ort = null;
 	@Nullable
-	private String gemeinde = null;
+	private String traegergemeinde = null;
 	@Nullable private
 	Long bfsGemeinde = null;
 	private String telefon = null;
 	private String url = null;
 	@Nullable
 	private BigDecimal oeffnungstageProJahr = null;
-	@Nullable 
+	@Nullable
 	private LocalDate gueltigAb = null;
 	@Nullable
 	private LocalDate gueltigBis = null;
@@ -281,12 +281,12 @@ public class InstitutionenDataRow {
 	}
 
 	@Nullable
-	public String getGemeinde() {
-		return gemeinde;
+	public String getTraegergemeinde() {
+		return traegergemeinde;
 	}
 
-	public void setGemeinde(@Nullable String gemeinde) {
-		this.gemeinde = gemeinde;
+	public void setTraegergemeinde(@Nullable String gemeinde) {
+		this.traegergemeinde = gemeinde;
 	}
 
 	@Nullable
