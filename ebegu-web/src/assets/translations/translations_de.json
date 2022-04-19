@@ -1279,6 +1279,7 @@
     "MITTEILUNG_MESSAGE": "Nachricht",
     "MITTEILUNG_SENDEN": "Senden",
     "MITTEILUNG_WEITERLEITEN": "Weiterleiten",
+    "MITTEILUNG_UNGELESEN": "Mitteilung auf ungelesen setzen",
     "MITTEILUNG_DELEGATION_AN_JA": "Meldung an BG-Verantwortliche/n delegieren",
     "MITTEILUNG_DELEGATION_AN_SCH": "Meldung an Tagesschule-Verantwortliche/n delegieren",
     "MITTEILUNGEN_ERLEDIGT": "erledigt",

@@ -360,6 +360,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
+	public Mitteilung setMitteilungUngelesen(@Nonnull String mitteilungsId) {
+		return setMitteilungsStatusIfBerechtigt(
+			mitteilungsId,
+			MitteilungStatus.NEU,
+			MitteilungStatus.GELESEN);
+	}
+
+	@Nonnull
+	@Override
 	public Optional<Mitteilung> findMitteilung(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Mitteilung mitteilung = persistence.find(Mitteilung.class, key);

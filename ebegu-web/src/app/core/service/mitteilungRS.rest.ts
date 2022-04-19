@@ -65,6 +65,12 @@ export class MitteilungRS {
         });
     }
 
+    public setMitteilungUngelesen(mitteilungId: string): IPromise<TSMitteilung> {
+        return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null).then((response: any) => {
+            return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
+        });
+    }
+
     public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
         return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`).then((response: any) => {
             return this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data);
