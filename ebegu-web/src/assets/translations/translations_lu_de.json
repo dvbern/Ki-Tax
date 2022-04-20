@@ -21,8 +21,6 @@
     "EKV_RESULTATE_PRUEFUNG": "Prüfung Einkommensänderung {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
     "INVOLVIERTE_FACHSTELLE": "Das Kind verfügt über eine Fachstellenbestätigung zur sprachlichen oder sozialen Integration",
-    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
-    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_1": "Wir bestätigen, dass wir das Betreuungspensum bei Änderungen online unmittelbar anpassen",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_2": "",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_3": "",
