@@ -276,84 +276,77 @@ export class DossierToolbarController implements IDVFocusableController {
 
     // tslint:disable-next-line:cognitive-complexity
     public updateAntragDTOList(): void {
-        if (this.dossierId) {
-            this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
-                if (!response) {
-                    return;
-                }
-                this.dossier = response;
-                this.gemeindeId = this.dossier.gemeinde.id;
+        if (this.dossierId && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier())) {
+            this.dossier = this.gesuchModelManager.getDossier();
+            this.gemeindeId = this.dossier.gemeinde.id;
 
-                this.updateGemeindeStammdaten();
+            this.updateGemeindeStammdaten();
 
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((stammdaten => {
-                        this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
-                    }));
-                }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                this.gemeindeInstitutionKontakteHtml =
+                    this.gemeindeStammdatenToHtml(this.gesuchModelManager.gemeindeStammdaten);
+            }
 
-                if (this.dossier.fall.sozialdienstFall) {
-                    this.sozialdienstRS.getSozialdienstStammdaten(this.dossier.fall.sozialdienstFall.sozialdienst.id)
-                        .toPromise()
-                        .then(
-                            stammdaten => this.gemeindeSozialdienstKontakteHtml =
-                                this.sozialdienstStammdatenToHtml(stammdaten),
-                        );
-                }
+            if (this.dossier.fall.sozialdienstFall) {
+                this.sozialdienstRS.getSozialdienstStammdaten(this.dossier.fall.sozialdienstFall.sozialdienst.id)
+                    .toPromise()
+                    .then(
+                        stammdaten => this.gemeindeSozialdienstKontakteHtml =
+                            this.sozialdienstStammdatenToHtml(stammdaten),
+                    );
+            }
 
-                if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
-                    this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then(antraege => {
-                        this.antragList = angular.copy(antraege);
-                        this.updateGesuchperiodeList();
-                        this.updateGesuchNavigationList();
-                        this.updateAntragTypList();
-                        this.antragMutierenPossible();
-                        this.antragErneuernPossible();
-                    });
-                } else if (this.dossier) {
-                    this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(antraege => {
-                        this.antragList = angular.copy(antraege);
-                        if (antraege && antraege.length > 0) {
-                            const newest = this.getNewest(this.antragList);
-                            this.gesuchRS.findGesuch(newest.antragId).then(gesuch => {
-                                if (!gesuch) {
-                                    this.$log.warn(`Could not find gesuch for id ${newest.antragId}`);
-                                }
-                                this.gesuchModelManager.setGesuch(angular.copy(gesuch));
-                                this.updateGesuchperiodeList();
-                                this.updateGesuchNavigationList();
-                                this.updateAntragTypList();
-                                this.antragMutierenPossible();
-                                this.antragErneuernPossible();
-                            });
-                        } else if (!this.gesuchModelManager.getGesuch()
-                            || !this.gesuchModelManager.getGesuch().isNew()) {
-                            // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
-                            // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
-                            const gesuch = new TSGesuch();
-                            gesuch.dossier = angular.copy(this.dossier);
-                            this.gesuchModelManager.setGesuch(gesuch);
-                            this.resetNavigationParameters();
-                        }
-                    });
-                    this.updateAmountNewMitteilungenGS();
-                } else {
-                    this.resetNavigationParameters();
-                }
+            if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
+                this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then(antraege => {
+                    this.antragList = angular.copy(antraege);
+                    this.updateGesuchperiodeList();
+                    this.updateGesuchNavigationList();
+                    this.updateAntragTypList();
+                    this.antragMutierenPossible();
+                    this.antragErneuernPossible();
+                });
+            } else if (this.dossier) {
+                this.gesuchRS.getAllAntragDTOForDossier(this.dossier.id).then(antraege => {
+                    this.antragList = angular.copy(antraege);
+                    if (antraege && antraege.length > 0) {
+                        const newest = this.getNewest(this.antragList);
+                        this.gesuchRS.findGesuch(newest.antragId).then(gesuch => {
+                            if (!gesuch) {
+                                this.$log.warn(`Could not find gesuch for id ${newest.antragId}`);
+                            }
+                            this.gesuchModelManager.setGesuch(angular.copy(gesuch));
+                            this.updateGesuchperiodeList();
+                            this.updateGesuchNavigationList();
+                            this.updateAntragTypList();
+                            this.antragMutierenPossible();
+                            this.antragErneuernPossible();
+                        });
+                    } else if (!this.gesuchModelManager.getGesuch()
+                        || !this.gesuchModelManager.getGesuch().isNew()) {
+                        // Wenn das Gesuch noch neu ist, sind wir noch ungespeichert auf der FallCreation-Seite
+                        // In diesem Fall durfen wir das Gesuch nicht zuruecksetzen
+                        const gesuch = new TSGesuch();
+                        gesuch.dossier = angular.copy(this.dossier);
+                        this.gesuchModelManager.setGesuch(gesuch);
+                        this.resetNavigationParameters();
+                    }
+                });
+                this.updateAmountNewMitteilungenGS();
+            } else {
+                this.resetNavigationParameters();
+            }
 
-                if (this.authServiceRS.isOneOfRoles(PERMISSIONS[Permission.ROLE_GEMEINDE]) && this.getGesuch()) {
-                    this.gemeindeInstitutionKontakteHtml = this.institutionenStammdatenToHtml();
-                }
-            });
+            if (this.authServiceRS.isOneOfRoles(PERMISSIONS[Permission.ROLE_GEMEINDE]) && this.getGesuch()) {
+                this.gemeindeInstitutionKontakteHtml = this.institutionenStammdatenToHtml();
+            }
         }
         this.forceLoadingFromFall = false; // reset it because it's not needed any more
     }
 
     private updateGemeindeStammdaten(): void {
-        this.$kontaktLoaded = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(gemeindeDaten);
-            return true;
-        }));
+        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
+            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(this.gesuchModelManager.gemeindeStammdaten);
+        }
     }
 
     private getKontaktdatenHtml(gemeindeDaten: TSGemeindeStammdaten): string {
@@ -725,14 +718,17 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        this.$kontaktLoaded.then(() => {
-            this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
-                title: '',
-                text: this.kontaktdatenGemeindeAsHtml,
-                parentController: this,
-            });
+        if (EbeguUtil.isNullOrUndefined(this.kontaktdatenGemeindeAsHtml)) {
+            this.updateGemeindeStammdaten();
+        }
+        if (!EbeguUtil.isNotNullOrUndefined(this.kontaktdatenGemeindeAsHtml)) {
+            return;
+        }
+        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
+            title: '',
+            text: this.kontaktdatenGemeindeAsHtml,
+            parentController: this,
         });
-
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
