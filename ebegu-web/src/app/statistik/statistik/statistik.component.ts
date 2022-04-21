@@ -685,8 +685,4 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public showLastenausgleichTagesschulenStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
     }
-
-    private isLastenausgleichAktiv() {
-        return false;
-    }
 }
