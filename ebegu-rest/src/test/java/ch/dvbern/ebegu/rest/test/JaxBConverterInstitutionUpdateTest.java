@@ -91,7 +91,7 @@ public class JaxBConverterInstitutionUpdateTest {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		institution.setTraegerschaft(traegerschaft);
 
-		EasyMock.expect(principalBeanMock.isCallerInRole(UserRole.SUPER_ADMIN)).andReturn(true);
+		EasyMock.expect(principalBeanMock.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())).andReturn(true);
 
 		Traegerschaft existingTraegerschaft = new Traegerschaft();
 		EasyMock.expect(traegerschaftServiceMock.findTraegerschaft("1"))
@@ -117,7 +117,7 @@ public class JaxBConverterInstitutionUpdateTest {
 		Traegerschaft traegerschaft = new Traegerschaft();
 		institution.setTraegerschaft(traegerschaft);
 
-		EasyMock.expect(principalBeanMock.isCallerInRole(UserRole.SUPER_ADMIN)).andReturn(false);
+		EasyMock.expect(principalBeanMock.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())).andReturn(false);
 
 		EasyMock.replay(principalBeanMock);
 
@@ -140,7 +140,7 @@ public class JaxBConverterInstitutionUpdateTest {
 		traegerschaft.setId("2");
 		institution.setTraegerschaft(traegerschaft);
 
-		EasyMock.expect(principalBeanMock.isCallerInRole(UserRole.SUPER_ADMIN)).andReturn(true);
+		EasyMock.expect(principalBeanMock.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())).andReturn(true);
 
 		EasyMock.replay(principalBeanMock);
 
@@ -163,7 +163,7 @@ public class JaxBConverterInstitutionUpdateTest {
 		traegerschaft.setId("1");
 		institution.setTraegerschaft(traegerschaft);
 
-		EasyMock.expect(principalBeanMock.isCallerInRole(UserRole.SUPER_ADMIN)).andReturn(true);
+		EasyMock.expect(principalBeanMock.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())).andReturn(true);
 
 		Traegerschaft existingTraegerschaft = new Traegerschaft();
 		existingTraegerschaft.setId("1");
