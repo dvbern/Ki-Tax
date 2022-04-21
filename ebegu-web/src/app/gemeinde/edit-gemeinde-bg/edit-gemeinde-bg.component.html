@@ -609,21 +609,21 @@
                                                 </div>
 
                                                 <!-- Custom Erwerbspensum Zuschlag -->
-                                                <div class="form-group">
+                                                <div class="form-group" *ngIf="!konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum">
                                                     <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
                                                                   name="ewp_zuschlag_override_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"
                                                                   (change)="changeKonfigErwerbspensumZuschlagOverriden(konfigurationsListe[i])">
-                                                <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
-                                                      translate
-                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
-                                                    EWP_ZUSCHLAG_OVERRIDE
-                                                </span>
-                                                <span *ngIf="konfigurationsListe[i].isTextForFKJV"
-                                                      translate
-                                                      [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
-                                                    EWP_ZUSCHLAG_OVERRIDE_FKJV
-                                                </span>
+                                                        <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
+                                                              translate
+                                                              [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
+                                                            EWP_ZUSCHLAG_OVERRIDE
+                                                        </span>
+                                                        <span *ngIf="konfigurationsListe[i].isTextForFKJV"
+                                                              translate
+                                                              [translateParams]="{valueMandant: konfigurationsListe[i].erwerbspensumZuschlagMax}">
+                                                            EWP_ZUSCHLAG_OVERRIDE_FKJV
+                                                        </span>
                                                     </mat-checkbox>
                                                 </div>
                                                 <div class="form-group"
