@@ -48,26 +48,23 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		}
 
 		if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus1())  {
-			final int basisJahrPlus1 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 1;
-			addDokuemnteEKV(basisJahrPlus1, gesuch, anlageVerzeichnis);
+			addDokuemnteEKV(gesuch, anlageVerzeichnis);
 		}
 
 		if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
-			final int basisJahrPlus2 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 2;
-			addDokuemnteEKV(basisJahrPlus2, gesuch, anlageVerzeichnis);
+			addDokuemnteEKV(gesuch, anlageVerzeichnis);
 		}
 	}
 
-	private void addDokuemnteEKV(int basisJahr, Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
-		addDokuemnteEKV(basisJahr, 1, anlageVerzeichnis);
+	private void addDokuemnteEKV(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
+		addDokuemnteEKV(1, anlageVerzeichnis);
 
 		if(gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
-			addDokuemnteEKV(basisJahr, 2, anlageVerzeichnis);
+			addDokuemnteEKV(2, anlageVerzeichnis);
 		}
 	}
 
 	private void addDokuemnteEKV(
-		int basisJahr,
 		int personNumber,
 		Set<DokumentGrund> anlageVerzeichnis) {
 
