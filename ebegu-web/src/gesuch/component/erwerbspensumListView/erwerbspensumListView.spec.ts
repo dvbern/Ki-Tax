@@ -18,7 +18,7 @@ import {IComponentControllerService, IHttpBackendService, IScope} from 'angular'
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSDossier} from '../../../models/TSDossier';
-import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GemeindeRS} from '../../service/gemeindeRS.rest';
@@ -30,7 +30,7 @@ describe('erwerbspensumListView', () => {
 
     const gemeindeTelefon = '915445152';
     const gemeindeMail = 'mail@mail.com';
-    const gemeindeStammdaten = new TSGemeindeStammdaten();
+    const gemeindeStammdaten = new TSGemeindeStammdatenLite();
     gemeindeStammdaten.telefon = gemeindeTelefon;
     gemeindeStammdaten.mail = gemeindeMail;
 

@@ -229,12 +229,35 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		return result;
 	}
 
+	@Override
+	@Nonnull
+	public Optional<Einstellung> getEinstellungByMandant(@Nonnull EinstellungKey einstellungKey, @Nonnull Gesuchsperiode gesuchsperiode) {
+
+		final EntityManager entityManager = persistence.getEntityManager();
+
+		Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, gesuchsperiode.getMandant(), gesuchsperiode, entityManager);
+
+		return einstellungByMandant;
+	}
+
 	@Nonnull
 	@Override
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
+			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
+			result.put(einstellungKey, einstellung);
+		});
+		return result;
+	}
+
+	@Nonnull
+	@Override
+	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenOnlyAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
+		Arrays.stream(EinstellungKey.values()).filter(EinstellungKey::isGemeindeEinstellung).forEach(einstellungKey -> {
 			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
 			result.put(einstellungKey, einstellung);
 		});

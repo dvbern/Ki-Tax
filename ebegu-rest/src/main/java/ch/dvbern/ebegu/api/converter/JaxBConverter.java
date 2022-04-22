@@ -5511,33 +5511,33 @@ public class JaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
-		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
-			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
-			.filter(map -> map.getKey().isGemeindeEinstellung())
+		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
+			.getGemeindeEinstellungenOnlyAsMap(gemeinde, gesuchsperiode);
+		konfiguration.getKonfigurationen().addAll(gemeindeKonfigurationMap.entrySet().stream()
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 
-		Collection<Einstellung> einstellungenByMandant =
-			einstellungService.getAllEinstellungenByMandant(gesuchsperiode);
-		konfiguration.setErwerbspensumZuschlagMax(
-			einstellungenByMandant.stream()
-				.filter(einstellung ->
-					einstellung.getKey() == EinstellungKey.ERWERBSPENSUM_ZUSCHLAG)
-				.findFirst().get().getValueAsInteger()
-		);
-		konfiguration.setErwerbspensumMiminumVorschuleMax(
-			einstellungenByMandant.stream()
-				.filter(einstellung ->
-					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT)
-				.findFirst().get().getValueAsInteger()
-		);
-		konfiguration.setErwerbspensumMiminumSchulkinderMax(
-			einstellungenByMandant.stream()
-				.filter(einstellung ->
-					einstellung.getKey() == EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT)
-				.findFirst().get().getValueAsInteger()
-		);
+		Optional<Einstellung> erwerbspensumZuschlagMax =
+			einstellungService.getEinstellungByMandant(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, gesuchsperiode);
+		if (erwerbspensumZuschlagMax.isPresent()) {
+			konfiguration.setErwerbspensumZuschlagMax(
+				erwerbspensumZuschlagMax.get().getValueAsInteger()
+			);
+		}
+		Optional<Einstellung> erwerbspensumMiminumVorschuleMax =
+			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gesuchsperiode);
+		if (erwerbspensumMiminumVorschuleMax.isPresent()) {
+			konfiguration.setErwerbspensumMiminumVorschuleMax(
+				erwerbspensumMiminumVorschuleMax.get().getValueAsInteger()
+			);
+		}
+		Optional<Einstellung> erwerbspensumMiminumSchulkinderMax =
+			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
+		if (erwerbspensumMiminumSchulkinderMax.isPresent()) {
+			konfiguration.setErwerbspensumMiminumSchulkinderMax(
+				erwerbspensumMiminumSchulkinderMax.get().getValueAsInteger()
+			);
+		}
 
 		List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten =
 			ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(
