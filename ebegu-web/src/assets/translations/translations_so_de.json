@@ -14,5 +14,7 @@
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
     "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Nachweis Bruttolohn (Lohnausweis)",
     "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Aktuellste Steuerveranlagung",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis Vermögensänderung",
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
 }

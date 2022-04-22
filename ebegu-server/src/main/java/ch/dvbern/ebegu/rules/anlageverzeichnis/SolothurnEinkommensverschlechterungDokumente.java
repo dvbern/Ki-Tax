@@ -71,13 +71,10 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		int personNumber,
 		Set<DokumentGrund> anlageVerzeichnis) {
 
-
-		final String basisJahrString = String.valueOf(basisJahr);
-
 		add(getDokument
 				(DokumentTyp.NACHWEIS_VERMOEGEN,
 					null,
-					basisJahrString,
+					null,
 					DokumentGrundPersonType.GESUCHSTELLER,
 					personNumber,
 					DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
@@ -86,7 +83,7 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1,
 					null,
-					basisJahrString,
+					null,
 					DokumentGrundPersonType.GESUCHSTELLER,
 					personNumber,
 					DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
@@ -94,7 +91,7 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_2,
 					null,
-					basisJahrString,
+					null,
 					DokumentGrundPersonType.GESUCHSTELLER,
 					personNumber,
 					DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
@@ -102,7 +99,7 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_3,
 					null,
-					basisJahrString,
+					null,
 					DokumentGrundPersonType.GESUCHSTELLER,
 					personNumber,
 					DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
