@@ -45,6 +45,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
@@ -100,6 +101,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
@@ -5327,7 +5329,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(stammdaten.getGemeinde());
 		requireNonNull(stammdaten.getAdresse());
 		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
-		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
+		abstractGemeindeStammdatenToJax(jaxStammdaten, stammdaten);
 		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
 		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
 		jaxStammdaten.setAdministratoren(administratoren.stream()
@@ -5337,38 +5339,16 @@ public class JaxBConverter extends AbstractConverter {
 			.map(Benutzer::getFullName)
 			.collect(Collectors.joining(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
-		jaxStammdaten.setMail(stammdaten.getMail());
-		jaxStammdaten.setTelefon(stammdaten.getTelefon());
-		jaxStammdaten.setWebseite(stammdaten.getWebseite());
 		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
-		gemeindeStammdatenAdressenToJax(jaxStammdaten, stammdaten);
+		gemeindeStammdatenZusaetzlicheAdressenToJax(jaxStammdaten, stammdaten);
 		jaxStammdaten.setBgTelefon(stammdaten.getBgTelefon());
 		jaxStammdaten.setBgEmail(stammdaten.getBgEmail());
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
-		jaxStammdaten.setHasAltGemeindeKontakt(stammdaten.getHasAltGemeindeKontakt());
-		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
 		jaxStammdaten.setHasZusatzText(stammdaten.getHasZusatzText());
 		jaxStammdaten.setZusatzText(stammdaten.getZusatzText());
-
-		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
-		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
-		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde =
-			gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
-				.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
-				.filter(gesuchsperiode -> stammdaten.getGemeinde()
-					.getGueltigBis()
-					.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
-				.collect(Collectors.toList());
-
-		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
-			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-				stammdaten.getGemeinde(),
-				gesuchsperiode));
-		}
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
 		if (stammdaten.getIban() != null) {
@@ -5401,6 +5381,46 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxStammdaten;
 	}
 
+	public JaxGemeindeStammdatenLite gemeindeStammdatenLiteToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
+		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getGemeinde());
+		requireNonNull(stammdaten.getAdresse());
+		final JaxGemeindeStammdatenLite jaxStammdaten = new JaxGemeindeStammdatenLite();
+		abstractGemeindeStammdatenToJax(jaxStammdaten, stammdaten);
+		jaxStammdaten.setGemeindeName(stammdaten.getGemeinde().getName());
+		return jaxStammdaten;
+	}
+
+	private JaxAbstractGemeindeStammdaten abstractGemeindeStammdatenToJax(
+		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten) {
+		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
+		jaxStammdaten.setMail(stammdaten.getMail());
+		jaxStammdaten.setTelefon(stammdaten.getTelefon());
+		jaxStammdaten.setWebseite(stammdaten.getWebseite());
+		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
+		jaxStammdaten.setHasAltGemeindeKontakt(stammdaten.getHasAltGemeindeKontakt());
+		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
+		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
+		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
+		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde =
+			gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
+				.stream()
+				.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
+				.filter(gesuchsperiode -> stammdaten.getGemeinde()
+					.getGueltigBis()
+					.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
+				.collect(Collectors.toList());
+
+		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
+			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+				stammdaten.getGemeinde(),
+				gesuchsperiode));
+		}
+		return jaxStammdaten;
+	}
+
 	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
 		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
 		@Nonnull GemeindeStammdaten stammdaten
@@ -5423,11 +5443,10 @@ public class JaxBConverter extends AbstractConverter {
 		}
 	}
 
-	private void gemeindeStammdatenAdressenToJax(
+	private void gemeindeStammdatenZusaetzlicheAdressenToJax(
 		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
 		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 		if (stammdaten.getBeschwerdeAdresse() != null) {
 			jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
 		}
@@ -5440,7 +5459,7 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(
-		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
 		@Nonnull GemeindeStammdaten stammdaten
 	) {
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
