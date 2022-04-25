@@ -32,10 +32,11 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -50,7 +51,7 @@ public class AnmeldungTagesschuleEventGenerator {
 	private Event<ExportedEvent> event;
 
 	@Inject
-	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
+	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
@@ -63,10 +64,9 @@ public class AnmeldungTagesschuleEventGenerator {
 	 * value is false
 	 */
 	@Schedule(info = "Migration-aid, pushes Anmeldungen waiting for confirmation and not yet published",
-		hour = "5",
-		persistent = true)
+		hour = "5")
 	public void publishWartendeAnmeldungen() {
-		if (!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
+		if (!ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
 			return;
 		}
 
@@ -95,10 +95,10 @@ public class AnmeldungTagesschuleEventGenerator {
 		anmeldungTagesschuleList.stream()
 			.filter(anmeldungTagesschule -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(
 				anmeldungTagesschule.extractGesuch().extractMandant()))
-			.forEach(betreuung -> {
-				event.fire(betreuungAnfrageEventConverter.of(betreuung));
-				betreuung.setEventPublished(true);
-				persistence.merge(betreuung);
+			.forEach(anmeldungTagesschule -> {
+				event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+				anmeldungTagesschule.setEventPublished(true);
+				persistence.merge(anmeldungTagesschule);
 			});
 	}
 }
