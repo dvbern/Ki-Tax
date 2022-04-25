@@ -2112,7 +2112,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkWriteAuthorization(@Nonnull Einstellung einstellung) {
-		if (isSuperadminAndSameMandant(einstellung)) {
+		if (isSameMandantForEinstellung(einstellung)
+			&& principalBean.isCallerInAnyOfRole(
+				SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG,
+			    ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return;
 		}
 		throwViolation(einstellung);
@@ -2120,15 +2123,24 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Override
 	public void checkWriteAuthorization(@Nonnull ApplicationProperty property) {
-		if (isSuperadminAndSameMandant(property)) {
+		if (isSameMandant(property)
+			&& principalBean.isCallerInRole(SUPER_ADMIN)) {
 			return;
 		}
 		throwViolation(property);
 	}
 
-	private boolean isSuperadminAndSameMandant(@Nonnull HasMandant entity) {
-		return principalBean.isCallerInRole(SUPER_ADMIN)
-				&& principalBean.getMandant() != null
+	private boolean isSameMandantForEinstellung(@Nonnull Einstellung einstellung) {
+		//Bei Gemeinde-Einstellungen, ist der Mandant nur auf der Gemeinde, aber nicht auf der Einstellung gesetzt
+		if (einstellung.getGemeinde() != null) {
+			return isSameMandant(einstellung.getGemeinde());
+		}
+
+		return isSameMandant(einstellung);
+	}
+
+	private boolean isSameMandant(@Nonnull HasMandant entity) {
+		return principalBean.getMandant() != null
 				&& principalBean.getMandant().equals(entity.getMandant());
 	}
 
