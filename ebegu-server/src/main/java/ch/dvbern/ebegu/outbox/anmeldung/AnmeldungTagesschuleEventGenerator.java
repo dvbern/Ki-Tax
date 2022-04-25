@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ *
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.outbox.platzbestaetigung;
+package ch.dvbern.ebegu.outbox.anmeldung;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
-import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,23 +31,17 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractPlatz_;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 
-@Stateless
-@RunAs(UserRoleName.SUPER_ADMIN)
-public class BetreuungAnfrageEventGenerator {
+public class AnmeldungTagesschuleEventGenerator {
 
 	@Inject
 	private Persistence persistence;
@@ -66,50 +59,46 @@ public class BetreuungAnfrageEventGenerator {
 	private ApplicationPropertyService applicationPropertyService;
 
 	/**
-	 * This is a job starting every night, there must be no more need for this job after the first execution
-	 * but this could be a great help if we want to re-export something, then we just have to change the database
-	 * column event_published value and it is re-exported automatically during the following night
+	 * This is a job starting every night and exports all anmeldungen for which event_published
+	 * value is false
 	 */
-	@Schedule(info = "Migration-aid, pushes Betreuung waiting for Platzbestaetigung and not yet published",
-		hour = "4",
+	@Schedule(info = "Migration-aid, pushes Anmeldungen waiting for confirmation and not yet published",
+		hour = "5",
 		persistent = true)
-	public void publishWartendeBetreuung() {
+	public void publishWartendeAnmeldungen() {
 		if (!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
 			return;
 		}
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
-		Root<Betreuung> root = query.from(Betreuung.class);
+		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
 		List<Predicate> predicates = new ArrayList<>();
 
 		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
-		Join<Betreuung, InstitutionStammdaten> institutionStammdatenJoin =
-			root.join(Betreuung_.institutionStammdaten);
+		Join<AnmeldungTagesschule, InstitutionStammdaten> institutionStammdatenJoin =
+			root.join(AnmeldungTagesschule_.institutionStammdaten);
 		Predicate isKitaOderTFO =
 			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
 				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
 		predicates.add(isKitaOderTFO);
 
 		//Event muss noch nicht plubliziert sein
-		Predicate isNotPublished = cb.isFalse(root.get(Betreuung_.eventPublished));
+		Predicate isNotPublished = cb.isFalse(root.get(AnmeldungTagesschule_.eventPublished));
 		predicates.add(isNotPublished);
-
-		//Status muss warten sein
-		Predicate statusWarten = cb.equal(root.get(AbstractPlatz_.betreuungsstatus), Betreuungsstatus.WARTEN);
-		predicates.add(statusWarten);
 
 		query.where(predicates.toArray(NEW));
 
-		List<Betreuung> betreuungs = persistence.getEntityManager().createQuery(query)
+		List<AnmeldungTagesschule> anmeldungTagesschuleList = persistence.getEntityManager().createQuery(query)
 			.getResultList();
 
-		betreuungs.stream()
-		.filter(betreuung -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(betreuung.extractGesuch().extractMandant()))
-		.forEach(betreuung -> {
-			event.fire(betreuungAnfrageEventConverter.of(betreuung));
-			betreuung.setEventPublished(true);
-			persistence.merge(betreuung);
-		});
+		anmeldungTagesschuleList.stream()
+			.filter(anmeldungTagesschule -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(
+				anmeldungTagesschule.extractGesuch().extractMandant()))
+			.forEach(betreuung -> {
+				event.fire(betreuungAnfrageEventConverter.of(betreuung));
+				betreuung.setEventPublished(true);
+				persistence.merge(betreuung);
+			});
 	}
 }

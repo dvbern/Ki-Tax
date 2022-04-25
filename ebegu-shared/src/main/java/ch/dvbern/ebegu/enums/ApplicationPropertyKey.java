@@ -176,6 +176,11 @@ public enum ApplicationPropertyKey {
 	/*
 	 * Wenn dieses Datum überschritten wird, ist Steuerschnittstelle aktiv. Ansonste wird eine Warnung gezeigt.
 	 */
-	SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB
+	SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB,
+	/**
+	 * Wenn TRUE koennen die Schnittstelle events z.B. AnmeldungTagesschuleEvent, BetreuungAnfrageAddedEvent
+	 * werden veröffentlicht
+	 */
+	SCHNITTSTELLE_EVENTS_AKTIVIERT
 
 }
