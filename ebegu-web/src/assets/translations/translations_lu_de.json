@@ -52,11 +52,11 @@
     "CONFIRM_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN": "Möchten Sie das Betreuungsangebot wirklich schliessen ohne neu zu BG bestätigen?",
     "BESCHREIBUNG_CONFIRM_ALREADY_IGNORED": "Diese Mutation beinhaltet ebenfalls Korrekturen von bereits ausbezahlten Beträgen. Auch diese müssen Sie ausserhalb von kiBon direkt mit den Eltern abgleichen. Dies gilt nicht für noch nicht ausbezahlte Beträge. Diese werden in jedem Fall direkt über die Institutionen abgewickelt. Möchten Sie die BG trotzdem BG bestätigen?",
     "BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN": "Diese Mutation beinhaltet ebenfalls Korrekturen von bereits ausbezahlten Mahlzeitenvergünstigungen. Auch diese müssen Sie ausserhalb von kiBon direkt mit den Eltern abgleichen. Dies gilt nicht für noch nicht ausbezahlte Beträge. Diese werden normal über den Zahlungslauf abgehandelt. Möchten Sie die Betreuung trotzdem BG bestätigen?",
-    "PDF_VERFUEGUNG_ANZEIGEN": "BG Bestätigung als PDF anzeigen",
-    "PDF_NICHT_EINTRETEN_ANZEIGEN": "NichteintretensBGbestätigen als PDF anzeigen",
+    "PDF_VERFUEGUNG_ANZEIGEN": "Bestätigte Betreuungsgutscheine als PDF anzeigen",
+    "PDF_NICHT_EINTRETEN_ANZEIGEN": "Nichteintreten BG Bestätigung als PDF anzeigen",
     "ZAHLUNGSLAUF_INFO_1": "Im ersten Zahlungslauf eines Kalendermonats wird von allen BG bestätigten Anträgen der aktuelle Kalendermonat ausbezahlt (Reguläre Zahlung). Zusätzlich werden alle seit dem letzten Zahlungslauf BG bestätigte Anträge überprüft: Falls diese eine  rückwirkende Korrektur zur Folge hatten, wird diese Korrektur ebenfalls in den Zahlunslauf übernommen. Diese Korrekturen können negativ sein, werden aber mit der regulären Zahlung verrechnet. Falls ein weiterer Zahlungslauf im selben Kalendermonat erstellt wird, werden nur noch die Korrekturen seit dem letzten Zahlungslauf ausgeführt. Normalerweise empfehlen wir daher, nur einmal pro Monat einen Zahlungslauf zu erstellen, da sonst das Total der Auszahlung negativ werden kann.",
     "GESUCHE_NACH_ZEITRAUM": "Betreuungsgutscheine: BG bestätigte Anträge und Mutationen nach Zeitraum",
-    "ReportType_kanton": "BG bestätigte Betreuungsgutscheine nach Zeitraum (lastenausgleichsberechtigt)",
+    "ReportType_kanton": "Bestätigte Betreuungsgutscheine nach Zeitraum (lastenausgleichsberechtigt)",
     "ReportType_gesuchZeitraum": "BG bestätigte Anträge und Mutationen nach Zeitraum",
     "STATISTIKEN_KANTON_HINT": "Die Statistik Kanton ist eine Liste mit Kosten, BG bestätigten Pensen und Zeitabschnitten zu sämtlichen Kindern und deren Institutionen.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum eingegeben werden.",
     "STATISTIK_MIRABEITERINNEN_HINT": "Zeigt eine Liste mit der Anzahl zugewiesenen Fällen und der Anzahl erstellten BG Bestätigungen je Mitarbeiter/in<br><br>Bei der Erstellung muss ein von- und bis-Datum eingegeben werden:",
@@ -84,6 +84,6 @@
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN": "Verantwortlicher Tagesschule per Email informieren, nachdem ein Mischgesuch bestätigt wurde",
     "TS_VERANTWORTLICHER_NACH_VERFUEGUNG_BENACHRICHTIGEN_JA": "Verantwortlicher Tagesschule wird per Email informiert, nachdem ein Mischgesuch bestätigt wurde",
     "VERFUEGUNG_EINGESCHRIEBEN": "BG Bestätigung eingeschrieben versenden",
-    "VERFUEGUNG_EINGESCHRIEBEN_HELP": "<b>Müssen die BG Bestätigungen eingeschrieben verschickt werden?</b><br>In einem allfälligen Beschwerdeverfahren muss die Gemeinde für die Berechnung der Beschwerdefrist die Zustellung belegen können. Gelingt ihr das nicht (weil die Verfügung nicht eingeschrieben verschickt wurde), wird auf die Angaben der Beschwerdeführenden abgestellt. Es empfiehlt sich daher, mindestens in Fällen, die beschwerdegefährdet sind (Abweisungen der Anträge, Kürzungen der Gutscheine) diese eingeschrieben zu verschicken."
-
+    "VERFUEGUNG_EINGESCHRIEBEN_HELP": "<b>Müssen die BG Bestätigungen eingeschrieben verschickt werden?</b><br>In einem allfälligen Beschwerdeverfahren muss die Gemeinde für die Berechnung der Beschwerdefrist die Zustellung belegen können. Gelingt ihr das nicht (weil die Verfügung nicht eingeschrieben verschickt wurde), wird auf die Angaben der Beschwerdeführenden abgestellt. Es empfiehlt sich daher, mindestens in Fällen, die beschwerdegefährdet sind (Abweisungen der Anträge, Kürzungen der Gutscheine) diese eingeschrieben zu verschicken.",
+    "BESTAETIGT": "Platz bestätigt"
 }
