@@ -12,5 +12,6 @@
     "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
     "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
+    "BESCHAEFTIGUNGSPENSUM_OPTIONAL_HINT": "Die Angabe des Beschäftigungspensums dient Statistikzwecken und ist optional. Sollten Sie keine Angaben machen wollen, klicken Sie direkt auf Weiter. Wir danken Ihnen für die Unterstützung der statistischen Auswertung und damit der Optimierung des Angebotes.",
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
 }

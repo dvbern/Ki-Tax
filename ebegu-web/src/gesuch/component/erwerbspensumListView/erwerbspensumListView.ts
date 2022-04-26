@@ -16,10 +16,12 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
@@ -61,7 +63,8 @@ export class ErwerbspensumListViewController
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'GemeindeRS'
+        'GemeindeRS',
+        'EinstellungRS'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -71,6 +74,7 @@ export class ErwerbspensumListViewController
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
+    public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -84,6 +88,7 @@ export class ErwerbspensumListViewController
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungenRS: EinstellungRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -115,6 +120,7 @@ export class ErwerbspensumListViewController
             this.gemeindeTelefon = gemeindeDaten.telefon;
             this.gemeindeEmail = gemeindeDaten.mail;
         });
+        this.loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig();
     }
 
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
@@ -272,5 +278,14 @@ export class ErwerbspensumListViewController
     private isAlleinerziehend(): boolean {
         const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
         return familiensitution.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+    }
+
+    private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
+        this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellungen => {
+                const einstellung = einstellungen
+                    .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.value === 'true';
+            });
     }
 }
