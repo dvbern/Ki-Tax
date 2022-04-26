@@ -13,5 +13,12 @@
     "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
     "BESCHAEFTIGUNGSPENSUM_OPTIONAL_HINT": "Die Angabe des Beschäftigungspensums dient Statistikzwecken und ist optional. Sollten Sie keine Angaben machen wollen, klicken Sie direkt auf Weiter. Wir danken Ihnen für die Unterstützung der statistischen Auswertung und damit der Optimierung des Angebotes.",
+    "FINANZIELLE_SITUATION_BRUTTOLOHN_HINT": "Bruttolohn gemäss Ziff. 8 auf dem Lohnausweis des Vorjahres",
+    "FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HINT": "Steuerbares Vermögen per 31.12. des Vorjahres",
+    "FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT": "Tragen Sie hier den Betrag aus Ziffer 400 der Staatssteuerveranlagung ein",
+    "FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT": "Tragen Sie hier den Betrag aus Ziffer 521 der Staatssteuerveranlagung ein. Dieser Betrag wird vom Nettoeinkommen abgezogen",
+    "FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER_HINT": "Tragen Sie hier den Betrag aus Ziffer 630 der Staatssteuerveranlagung ein. Dieser Betrag wird vom Nettoeinkommen abgezogen",
+    "FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT": "Tragen Sie hier den Betrag aus Ziffer 990 der Staatssteuerveranlagung ein. Es werden 5 % des steuerbaren Vermögens zum Nettoeinkommen hinzugerechnet.",
+    "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen",
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
 }

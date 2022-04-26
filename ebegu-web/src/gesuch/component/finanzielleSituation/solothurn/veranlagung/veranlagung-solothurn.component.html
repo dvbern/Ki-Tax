@@ -7,6 +7,7 @@
 					[name]="'nettoEinkommen'"
 					[(model)]="model.finanzielleSituationJA.nettolohn"
 					[labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
+					[tooltipMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'"
                     [dvOnBlur]="dvValueChange"
 					[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.nettolohn"
@@ -22,6 +23,7 @@
 							[name]="'unterhaltsBeitraege'"
 							[(model)]="model.finanzielleSituationJA.unterhaltsBeitraege"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE'"
+							[tooltipMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT'"
                             [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
@@ -37,6 +39,7 @@
 							[name]="'abzuegeKinderAusbildung'"
 							[(model)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER'"
+							[tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER_HINT'"
                             [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
@@ -52,6 +55,7 @@
 							[name]="'steuerbaresVermoegen'"
 							[(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT'"
                             [dvOnBlur]="dvValueChange"
 							[inputRequired]="true"></dv-input-label-field>
 					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"

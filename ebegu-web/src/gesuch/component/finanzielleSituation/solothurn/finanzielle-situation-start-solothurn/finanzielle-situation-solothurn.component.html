@@ -43,8 +43,8 @@
 						   [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
             <dv-massgebendes-einkommen
                 [isGemeinsam]="isGemeinsam()"
-                [antragstellerNummer]="getAntragstellerNummer()"
-            >
+                [nameGS1]="extractFullNameGS1()"
+                [antragstellerNummer]="getAntragstellerNummer()">
             </dv-massgebendes-einkommen>
 		</div>
 		<div *ngIf="finanzielleSituationRequired && isGemeinsam()">
