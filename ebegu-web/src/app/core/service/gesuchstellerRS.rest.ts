@@ -16,6 +16,7 @@
 import {IHttpService, ILogService, IPromise} from 'angular';
 import {WizardStepManager} from '../../../gesuch/service/wizardStepManager';
 import {TSSprache} from '../../../models/enums/TSSprache';
+import {TSGesuchstellerAusweisDokument} from '../../../models/TSGesuchstellerAusweisDokument';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -65,5 +66,19 @@ export class GesuchstellerRS {
     ): angular.IPromise<any> {
         return this.http.get(`${this.serviceURL}/initZPVNr/${encodeURIComponent(gs2.id)}?email=${encodeURIComponent(
             email)}&language=${korrespondenzSprache}&relayPath=${encodeURIComponent(relayPath)}`);
+    }
+
+    public getAllGesuchstellerAusweisDokumente(
+        gesuchstellerContainerId: string
+    ): IPromise<TSGesuchstellerAusweisDokument[]> {
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuchstellerContainerId)}/ausweisdokumente/`)
+            .then(
+                response => response.data,
+            )
+            .then(restDokumente => this.ebeguRestUtil.parseGesuchstellerAusweisDokumente(restDokumente));
+    }
+
+    public removeGesuchstellerAusweisDokument(id: string): IPromise<unknown> {
+        return this.http.delete(`${this.serviceURL}/ausweisdokumente/${encodeURIComponent(id)}`);
     }
 }

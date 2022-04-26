@@ -344,7 +344,25 @@
                             </dv-input-container>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <dv-file-upload
+                                        (download)="vm.downloadAusweisDokument($event[0],$event[1])"
+                                        [title]="'AUSWEIS_NACHWEIS'"
+                                        (delete)="vm.onDeleteFile($event)"
+                                        (upload-file)="vm.onUpload($event)"
+                                        [files]="vm.dokumente"
+                                        [read-only]="vm.isGesuchReadonly()"
+                                        [read-only-delete]="vm.isGesuchReadonly()"
+                                >
+                                </dv-file-upload>
+                                <dv-error-messages input-id="ausweis_nachweis" for="vm.dvFileUploadError" class="error file-upload-error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
                 </fieldset>
+
 
                 <!--Buttons-->
                 <div class="row">

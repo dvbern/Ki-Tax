@@ -15,9 +15,12 @@
 
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -27,11 +30,15 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
+import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
+import {TSGesuchstellerAusweisDokument} from '../../../models/TSGesuchstellerAusweisDokument';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
@@ -45,6 +52,8 @@ import IRootScopeService = angular.IRootScopeService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('StammdatenViewController');
 
 export class StammdatenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -70,8 +79,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         '$rootScope',
         'EwkRS',
         '$timeout',
-        'EinstellungRS'
+        'EinstellungRS',
+        'UploadRS',
+        'DownloadRS'
     ];
+
+    public filesTooBig: File[];
+    public dokumente: TSGesuchstellerAusweisDokument[];
 
     public readonly CONSTANTS: any = CONSTANTS;
     public geschlechter: Array<string>;
@@ -83,6 +97,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
     private diplomatenStatusDisabled: boolean;
+    public dvFileUploadError: object;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -98,7 +113,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly $rootScope: IRootScopeService,
         private readonly ewkRS: EwkRS,
         $timeout: ITimeoutService,
-        private readonly einstellungRS: EinstellungRS
+        private readonly einstellungRS: EinstellungRS,
+        private readonly uploadRS: UploadRS,
+        private readonly downloadRS: DownloadRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -113,6 +130,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public $onInit(): void {
         super.$onInit();
         this.initViewmodel();
+        this.gesuchModelManager.getAllGesuchstellerAusweisDokumente(this.getModel().id).then(
+            dokumente => this.dokumente = dokumente,
+        );
     }
 
     private initViewmodel(): void {
@@ -198,6 +218,18 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
 
         return this.save();
+    }
+
+    public isGesuchValid(): boolean {
+        if (!this.form.$valid) {
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        if (this.dokumente.length === 0) {
+            this.dvFileUploadError = {required: true};
+        }
+
+        return this.form.$valid && this.dokumente.length > 0;
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {
@@ -373,5 +405,62 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public isLastStepOfSteueramt(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())
             && this.gesuchModelManager.isLastGesuchsteller();
+    }
+
+    public onUpload(event: any): void {
+        if (EbeguUtil.isNullOrUndefined(event?.target?.files?.length)) {
+            return;
+        }
+        const files = event.target.files;
+        if (this.checkFilesLength(files as File[])) {
+            return;
+        }
+        this.uploadRS.uploadGesuchstellerAusweisDokumente(files, this.getModel().id)
+            .then(dokumente => {
+                this.dokumente = this.dokumente.concat(dokumente);
+                this.dvFileUploadError = null;
+            })
+            .catch(err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(this.$translate.instant('ERROR_UNEXPECTED'));
+            });
+
+    }
+
+    /**
+     * checks if some files are too big and stores them in filesTooBig variable
+     */
+    private checkFilesLength(files: File[]): boolean {
+        this.filesTooBig = [];
+        for (const file of files) {
+            if (file.size > MAX_FILE_SIZE) {
+                this.filesTooBig.push(file);
+            }
+        }
+        return this.filesTooBig.length > 0;
+    }
+
+    public onDeleteFile(dokument: TSSozialdienstFallDokument): void {
+        this.gesuchModelManager.removeGesuchstellerAusweisDokument(dokument.id)
+            .then(() => {
+                this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
+                if (this.dokumente.length === 0) {
+                    this.dvFileUploadError = { required: true };
+                }
+            }).catch(err => {
+                LOG.error(err);
+                this.errorService.addMesageAsError(err);
+        });
+    }
+
+    public downloadAusweisDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenGesuchstellerAusweisDokument(dokument.id)
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
+            })
+            .catch(() => {
+                win.close();
+            });
     }
 }
