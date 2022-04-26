@@ -126,6 +126,7 @@ import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
+import {TSGesuchstellerAusweisDokument} from '../models/TSGesuchstellerAusweisDokument';
 import {TSGesuchstellerContainer} from '../models/TSGesuchstellerContainer';
 import {TSInstitution} from '../models/TSInstitution';
 import {TSInstitutionExternalClient} from '../models/TSInstitutionExternalClient';
@@ -5523,6 +5524,28 @@ export class EbeguRestUtil {
         dokument: TSFerienbetreuungDokument,
         dokumentFromServer: any,
     ): TSFerienbetreuungDokument {
+        if (!dokumentFromServer) {
+            return undefined;
+        }
+        this.parseTSFileDokument(dokument, dokumentFromServer);
+        dokument.timestampUpload = DateUtil.localDateTimeToMoment(dokumentFromServer.timestampUpload);
+        return dokument;
+    }
+
+    public parseGesuchstellerAusweisDokumente(data: any): TSGesuchstellerAusweisDokument[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGesuchstellerAusweisDokument(new TSGesuchstellerAusweisDokument(), item))
+            : [this.parseGesuchstellerAusweisDokument(new TSGesuchstellerAusweisDokument(), data)];
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    public parseGesuchstellerAusweisDokument(
+        dokument: TSGesuchstellerAusweisDokument,
+        dokumentFromServer: any,
+    ): TSGesuchstellerAusweisDokument {
         if (!dokumentFromServer) {
             return undefined;
         }

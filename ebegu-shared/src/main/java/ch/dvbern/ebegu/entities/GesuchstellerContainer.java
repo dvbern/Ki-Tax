@@ -28,6 +28,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
@@ -90,6 +91,10 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	// es handelt sich um eine "private" Relation, das heisst Adressen koennen nie einer anderen Gesuchsteller zugeordnet werden
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuchstellerContainer")
 	private List<GesuchstellerAdresseContainer> adressen = new ArrayList<>();
+
+	@Nullable
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuchstellerContainer")
+	private Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente;
 
 	public GesuchstellerContainer() {
 	}
@@ -416,5 +421,14 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			return rechnungsadresse.getGesuchstellerAdresseJA();
 		}
 		return getWohnadresseAm(stichtag);
+	}
+
+	@Nullable
+	public Set<GesuchstellerAusweisDokument> getGesuchstellerAusweisDokumente() {
+		return gesuchstellerAusweisDokumente;
+	}
+
+	public void setGesuchstellerAusweisDokumente(@Nullable Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokument) {
+		this.gesuchstellerAusweisDokumente = gesuchstellerAusweisDokument;
 	}
 }
