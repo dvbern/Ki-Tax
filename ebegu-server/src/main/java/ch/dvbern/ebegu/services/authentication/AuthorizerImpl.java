@@ -37,10 +37,12 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -2106,6 +2108,40 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 
 		throwViolation(gemeindeKennzahlen);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull Einstellung einstellung) {
+		if (isSameMandantForEinstellung(einstellung)
+			&& principalBean.isCallerInAnyOfRole(
+				SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG,
+			    ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			return;
+		}
+		throwViolation(einstellung);
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nonnull ApplicationProperty property) {
+		if (isSameMandant(property)
+			&& principalBean.isCallerInRole(SUPER_ADMIN)) {
+			return;
+		}
+		throwViolation(property);
+	}
+
+	private boolean isSameMandantForEinstellung(@Nonnull Einstellung einstellung) {
+		//Bei Gemeinde-Einstellungen, ist der Mandant nur auf der Gemeinde, aber nicht auf der Einstellung gesetzt
+		if (einstellung.getGemeinde() != null) {
+			return isSameMandant(einstellung.getGemeinde());
+		}
+
+		return isSameMandant(einstellung);
+	}
+
+	private boolean isSameMandant(@Nonnull HasMandant entity) {
+		return principalBean.getMandant() != null
+				&& principalBean.getMandant().equals(entity.getMandant());
 	}
 
 	@Override
