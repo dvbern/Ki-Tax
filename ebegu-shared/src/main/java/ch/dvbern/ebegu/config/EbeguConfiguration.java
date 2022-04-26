@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Konfiguration von kiBon
@@ -70,7 +71,7 @@ public interface EbeguConfiguration {
 	 *
 	 * @return den Hostname oder {@code null}
 	 */
-	String getHostname();
+	String getHostname(MandantIdentifier mandantIdentifier);
 
 	/**
 	 * Gibt die Hostdomain des Servers zurück.

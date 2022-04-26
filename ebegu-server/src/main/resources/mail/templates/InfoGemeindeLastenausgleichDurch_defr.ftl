@@ -2,6 +2,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="jahr" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
 Subject: <@base64Header>kiBon - Lastenausgleich verbucht - compensation des charges comptabilisée</@base64Header>
@@ -23,7 +24,7 @@ Content-Type: text/html;charset=utf-8
 		Guten Tag
 	</p>
 	<p>
-		Der Lastenausgleich des Jahres ${jahr} wurde verbucht. Die Berechnungsresultate sind <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/lastenausgleich">hier</a> ersichtlich
+		Der Lastenausgleich des Jahres ${jahr} wurde verbucht. Die Berechnungsresultate sind <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/lastenausgleich">hier</a> ersichtlich
 	</p>
 	<p>
 		Freundliche Grüsse<br/>
@@ -39,7 +40,7 @@ Content-Type: text/html;charset=utf-8
 		Bonjour,
 	</p>
 	<p>
-		La compensation des charges pour l'année ${jahr} a été comptabilisée. Les résultats sont disponibles <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/lastenausgleich">ici</a>
+		La compensation des charges pour l'année ${jahr} a été comptabilisée. Les résultats sont disponibles <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/lastenausgleich">ici</a>
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>

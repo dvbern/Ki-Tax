@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaenger" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaenger}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
@@ -35,8 +36,7 @@ ${institutionStammdaten.institution.name}<br>
 	<p>
 		Wir haben Ihr Gesuch um eine Ausfallentschädigung für entgangene Betreuungsbeiträge infolge der Massnahmen zur
 		Bekämpfung des Coronavirus geprüft. Ihre Verfügung finden Sie unter <a href="<#if configuration
-		.clientUsingHTTPS>https://<#else>http://</#if>${configuration
-		.hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}/verfuegungen">diesem Link</a>.
+		.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}/verfuegungen">diesem Link</a>.
 	</p>
 	<p>
 		Bitte beachten Sie, dass die Ausfallentschädigung unter Vorbehalt einer späteren Korrektur verfügt wurde.
