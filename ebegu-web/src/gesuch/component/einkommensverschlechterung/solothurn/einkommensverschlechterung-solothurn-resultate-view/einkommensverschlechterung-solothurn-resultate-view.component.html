@@ -37,7 +37,7 @@
             <form role="form"
                   #form="ngForm"
                   novalidate>
-                <div class="row">
+                <div class="row margin-bottom-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
                             [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
@@ -47,7 +47,6 @@
                         </dv-input-label-field>
                     </div>
                 </div>
-                <mat-divider></mat-divider>
                 <div class="row" *ngIf="hasSecondAntragstellende()">
                     <div class="col-sm-6">
                         <dv-input-label-field
@@ -78,8 +77,7 @@
                         </dv-input-label-field>
                     </div>
                 </div>
-                <mat-divider></mat-divider>
-                <div class="row">
+                <div class="row margin-top-20">
                     <div class="col-sm-6">
                         <dv-input-label-field
                             [model]="resultatProzent"
