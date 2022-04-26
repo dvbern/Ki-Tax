@@ -61,6 +61,7 @@
 			<url-pattern>/api/v1/gemeinde/allBfs</url-pattern>
 			<url-pattern>/api/v1/i18n/change</url-pattern>
 			<url-pattern>/api/v1/mandanten/id/*</url-pattern>
+			<url-pattern>/api/v1/mandanten/all</url-pattern>
 			<url-pattern>/api/v1/gemeinde/activeAndSchulverbund</url-pattern>
 		</web-resource-collection>
 	</security-constraint>

@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
-import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -69,7 +68,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		"PdfGeneration_FinSit_AmountEinkommenInVereinfachtemVerfahrenAbgerechnet";
 	private static final String EINKOMMEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_EinkommenZwischentotal";
 	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
-	private static final String NETTOVERMOEGEN = "PdfGeneration_FinSit_Nettovermoegen";
 	private static final String BRUTTOVERMOEGEN = "PdfGeneration_FinSit_Bruttovermoegen";
 	private static final String SCHULDEN = "PdfGeneration_FinSit_Schulden";
 	private static final String NETTOVERMOEGEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_Nettovermoegen_Zwischentotal";
@@ -93,7 +91,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 	private static final String FUSSZEILE_EINKOMMEN = "PdfGeneration_FinSit_Fusszeile_Einkuenfte";
 	private static final String FUSSZEILE_VERMOEGEN = "PdfGeneration_FinSit_Fusszeile_Vermoegen";
 	private static final String FUSSZEILE_ABZUEGE = "PdfGeneration_FinSit_Fusszeile_Abzuege";
-	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	private final FinanzielleSituationTyp finSitTyp;
@@ -252,10 +249,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
-		document.add(PdfUtil.createBoldParagraph(
-			translate(EKV_TITLE, String.valueOf(gesuch.getGesuchsperiode().getBasisJahrPlus1())),
-			2)
-		);
+		document.add(createTitleEkv(gesuch.getGesuchsperiode().getBasisJahrPlus1()));
 		document.add(createIntroEkv());
 
 		Einkommensverschlechterung ekv1GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus1();
@@ -282,10 +276,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
-		document.add(PdfUtil.createBoldParagraph(
-			translate(EKV_TITLE, String.valueOf(gesuch.getGesuchsperiode().getBasisJahrPlus2())),
-			2)
-		);
+		document.add(createTitleEkv(gesuch.getGesuchsperiode().getBasisJahrPlus2()));
 		document.add(createIntroEkv());
 
 		Einkommensverschlechterung ekv2GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus2();
@@ -359,13 +350,6 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
 		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
-	}
-
-	@Nonnull
-	private PdfPTable createIntroEkv() {
-		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
-		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		return PdfUtil.createIntroTable(introEkv1, sprache, mandant);
 	}
 
 	@Nonnull

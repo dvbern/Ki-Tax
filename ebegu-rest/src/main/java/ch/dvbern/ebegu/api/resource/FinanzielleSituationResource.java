@@ -652,9 +652,12 @@ public class FinanzielleSituationResource {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
 		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
-		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
-		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
-		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null)
+		{
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
 		setBerechneteFelder(finSit, steuerdatenResponse, BIG_DECIMAL_TWO);
@@ -672,10 +675,11 @@ public class FinanzielleSituationResource {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
 		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
 
-		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
-		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
-		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
-		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null) {
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
@@ -702,9 +706,11 @@ public class FinanzielleSituationResource {
 				getPositvValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
 				steuerdatenResponse.getLiegenschaftsAbzuege());
 
-		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(bruttertraegeVermogenTotal,
+		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(
+			bruttertraegeVermogenTotal,
 			anzahlGesuchsteller));
-		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(steuerdatenResponse.getSchuldzinsen(),
+		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(
+			steuerdatenResponse.getSchuldzinsen(),
 			anzahlGesuchsteller));
 		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller));
 		finSit.setGeleisteteAlimente(divideByAnzahlGesuchsteller(
@@ -778,7 +784,8 @@ public class FinanzielleSituationResource {
 			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
 			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
-			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
+			finSitGS2.getFinanzielleSituationJA()
+				.setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
 
@@ -877,7 +884,8 @@ public class FinanzielleSituationResource {
 		return Response.ok().build();
 	}
 
-	private GesuchstellerContainer findGesuchstellerById(@Nonnull String gesuchstellerId,
+	private GesuchstellerContainer findGesuchstellerById(
+		@Nonnull String gesuchstellerId,
 		@Nonnull String methodeName) {
 		return gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
 			-> new EbeguEntityNotFoundException(

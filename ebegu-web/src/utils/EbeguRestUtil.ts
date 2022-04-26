@@ -1328,6 +1328,7 @@ export class EbeguRestUtil {
             restMandant.name = mandant.name;
             restMandant.angebotTS = mandant.angebotTS;
             restMandant.angebotFI = mandant.angebotFI;
+            restMandant.mandantIdentifier = mandant.mandantIdentifier;
             return restMandant;
         }
         return undefined;
@@ -1339,6 +1340,7 @@ export class EbeguRestUtil {
             mandantTS.name = mandantFromServer.name;
             mandantTS.angebotTS = mandantFromServer.angebotTS;
             mandantTS.angebotFI = mandantFromServer.angebotFI;
+            mandantTS.mandantIdentifier = mandantFromServer.mandantIdentifier;
             return mandantTS;
         }
         return undefined;

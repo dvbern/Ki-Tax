@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.services.interceptors.UpdateRueckfordFormStatusIntercepto
 import ch.dvbern.ebegu.services.util.ZipCreator;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Stateless
@@ -156,6 +157,11 @@ public class RueckforderungFormularServiceBean extends AbstractBaseService imple
 
 		Collection<Institution> institutionenCurrentBenutzer =
 			institutionService.getInstitutionenEditableForCurrentBenutzer(false);
+
+		if (CollectionUtils.isEmpty(institutionenCurrentBenutzer)) {
+			return new ArrayList<>();
+		}
+
 		Predicate predicateBerechtigtInstitution =
 			root.get(RueckforderungFormular_.institutionStammdaten).get(InstitutionStammdaten_.institution)
 				.in(institutionenCurrentBenutzer);

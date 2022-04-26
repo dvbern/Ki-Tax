@@ -120,7 +120,7 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private LocalDate gueltigBis = END_OF_TIME;
 
-
+	@Nonnull
 	public Mandant getMandant() {
 		return mandant;
 	}

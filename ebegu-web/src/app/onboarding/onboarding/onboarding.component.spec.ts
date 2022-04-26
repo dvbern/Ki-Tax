@@ -31,13 +31,14 @@ describe('OnboardingComponent', () => {
     let fixture: ComponentFixture<OnboardingComponent>;
 
     const applicationPropertyRSSpy =
-        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+            ['isDummyMode', 'isMultimandantEnabled']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(waitForAsync(() => {
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
-
+        applicationPropertyRSSpy.isMultimandantEnabled.and.returnValue(of(true).toPromise());
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
