@@ -290,7 +290,7 @@
     </div>
 
     <!--    familienportal-->
-    <div class="row" *ngIf="!isLuzern">
+    <div class="row">
         <div class="col-sm-12">
             <div class="title">
                 <h3>
@@ -352,7 +352,7 @@
                         </mat-checkbox>
                     </div>
                 </div>
-                <h3 *ngIf="!isLuzern" translate>TARIFE_MAHLZEITEN</h3>
+                <h3 translate>TARIFE_MAHLZEITEN</h3>
             </div>
             <!-- Subventionierte Plätze -->
             <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
@@ -395,7 +395,7 @@
             </div>
         </div>
 
-        <div class="row" *ngIf="!isLuzern">
+        <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <div class="form-group">
@@ -420,7 +420,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-3" *ngIf="!isLuzern">
+            <div class="col-sm-3">
                 <div class="form-group">
                     <label translate for="auslastungInstitutionen_id">INSTITUTION_AUSLASTUNG_INSTITUTIONEN</label>
                     <input id="auslastungInstitutionen_id" type="number" name="auslastungInstitutionen_id"

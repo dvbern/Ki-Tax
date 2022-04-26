@@ -22,23 +22,17 @@ import {
     Input,
     OnChanges,
     OnInit,
-    SimpleChanges,
+    SimpleChanges
 } from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
-import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
-import {MandantService} from '../../shared/services/mandant.service';
-
-const LOG = LogFactory.createLog('EditInstitutionBetreuungsgutscheineComponent');
 
 @Component({
     selector: 'dv-edit-institution-betreuungsgutscheine',
@@ -56,7 +50,6 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     public abweichendeZahlungsAdresse: boolean;
     public incompleteOeffnungszeiten: boolean = false;
     public isInfomazahlungen: boolean = false;
-    public isLuzern: boolean;
 
     public readonly CONSTANTS = CONSTANTS;
 
@@ -64,8 +57,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly mandantService: MandantService,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -77,9 +69,6 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
             this.isInfomazahlungen = res.infomaZahlungen;
             this.cd.markForCheck();
         });
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-        }, err => LOG.error(err));
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -143,6 +132,6 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
 
     public showInfomaFields(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
-            && this.isInfomazahlungen;
+        && this.isInfomazahlungen;
     }
 }
