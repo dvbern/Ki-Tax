@@ -23,5 +23,10 @@
     "EKV_SOLOTHURN_HINT": "Zur Geltendmachung einer Einkommensänderung sind die Bruttolöhne gemäss den letzten 3 Lohnabrechnungen anzugeben",
     "EVK_BRUTTOLOHN_JAHR_HINT": "Zur Berechnung des Massgebenden Einkommens wird vom Bruttolohn 25 % abgezogen.",
     "NETTO_VERMOEGEN_STAND_HINT": "Es ist das Nettovermögen zum Zeitpunkt der Meldung der Einkommensänderung zu deklarieren (Stand heute). Es werden 5 % des Vermögens für das massgebende Einkommen hinzugerechnet.",
-    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
+    "KORREKTE_KOSTEN_BESTAETIGUNG_2": "dass wir die Betreuungspensen wahrheitsgetreu erfasst haben und insbesondere eine allfällige Kindergartenzeit innerhalb der gebuchten Module in Abzug gebracht haben",
+    "KORREKTE_KOSTEN_BESTAETIGUNG_3": "dass das betreute Kind keinen anderweitig vergünstigten Platz nutzt.",
+    "KORREKTE_KOSTEN_BESTAETIGUNG_4": "",
+    "ERWEITERTE_BEDUERFNISSE_HINT": "Ein zusätzlicher Beitrag aufgrund besonderer Bedürfnisse muss durch den Heilpädagogischen Dienst des Kantons Solothurn oder die zuständige Sozialregion bestätigt werden.",
+    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST_WITH_FIX_BETRAG": "Wir bestätigen, dass wir einen ausserordentlichen Betreuungs- oder Förderaufwand verrechnen."
 }
