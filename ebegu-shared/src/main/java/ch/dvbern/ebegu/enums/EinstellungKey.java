@@ -271,7 +271,11 @@ public enum EinstellungKey {
 
 	// falls diese Einstellung disabled ist, dann wechselt der Status des Antrags nach der Freigabe durch den Antragstellenden
 	// direkt auf Freigegeben. "Freigabequittung ausstehend" wird übersprungen.
-	FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
+	FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+
+	// LU: falls diese Einstellung aktiviert ist, wird bei den Gesuchstellenden ein Ausweisnachweis verlangt
+	// Siehe KIBON-3210
+	AUSWEIS_NACHWEIS_REQUIRED;
 
 
 	private EinstellungTyp typ;

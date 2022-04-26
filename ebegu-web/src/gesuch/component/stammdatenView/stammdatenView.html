@@ -344,7 +344,7 @@
                             </dv-input-container>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-if="vm.isAusweisNachweisRequired()">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
                                 <dv-file-upload

@@ -85,7 +85,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     ];
 
     public filesTooBig: File[];
-    public dokumente: TSGesuchstellerAusweisDokument[];
+    public dokumente: TSGesuchstellerAusweisDokument[] = [];
 
     public readonly CONSTANTS: any = CONSTANTS;
     public geschlechter: Array<string>;
@@ -97,6 +97,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
     private diplomatenStatusDisabled: boolean;
+    public ausweisNachweisRequiredEinstellung: boolean;
     public dvFileUploadError: object;
 
     public constructor(
@@ -130,6 +131,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public $onInit(): void {
         super.$onInit();
         this.initViewmodel();
+        this.loadAusweisNachweiseIfNotNewContainer();
+    }
+
+    private loadAusweisNachweiseIfNotNewContainer(): void {
+        if (EbeguUtil.isNullOrUndefined(this.getModel().id)) {
+            return;
+        }
         this.gesuchModelManager.getAllGesuchstellerAusweisDokumente(this.getModel().id).then(
             dokumente => this.dokumente = dokumente,
         );
@@ -153,6 +161,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id).then(diplomatenStatusDisabled => {
             this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
+        });
+        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id).then(ausweisNachweisRequired => {
+            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
         });
     }
 
@@ -225,11 +238,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             EbeguUtil.selectFirstInvalid();
         }
 
-        if (this.dokumente.length === 0) {
+        if (this.isAusweisNachweisRequired() && this.dokumente.length === 0) {
             this.dvFileUploadError = {required: true};
         }
 
-        return this.form.$valid && this.dokumente.length > 0;
+        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumente.length > 0);
+    }
+
+    private isAusweisNachweisRequired(): boolean {
+        return this.ausweisNachweisRequiredEinstellung && this.gesuchModelManager.getGesuch().isOnlineGesuch();
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {
@@ -407,13 +424,16 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             && this.gesuchModelManager.isLastGesuchsteller();
     }
 
-    public onUpload(event: any): void {
+    public async onUpload(event: any): Promise<void> {
         if (EbeguUtil.isNullOrUndefined(event?.target?.files?.length)) {
             return;
         }
         const files = event.target.files;
         if (this.checkFilesLength(files as File[])) {
             return;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.getModel().id)) {
+            await this.gesuchModelManager.updateGesuchsteller(false);
         }
         this.uploadRS.uploadGesuchstellerAusweisDokumente(files, this.getModel().id)
             .then(dokumente => {

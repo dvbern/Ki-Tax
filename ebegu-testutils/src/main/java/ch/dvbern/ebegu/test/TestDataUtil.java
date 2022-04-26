@@ -173,6 +173,7 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
@@ -1998,6 +1999,7 @@ public final class TestDataUtil {
 		saveEinstellung(ZEMIS_DISABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(SPRACHE_AMTSPRACHE_DISABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode, persistence);
+		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
