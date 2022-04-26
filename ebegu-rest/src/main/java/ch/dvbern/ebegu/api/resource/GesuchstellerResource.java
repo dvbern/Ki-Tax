@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -43,16 +45,19 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.authentication.LoginProviderInfoRestService;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchstellerAusweisDokumentService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -101,6 +106,9 @@ public class GesuchstellerResource {
 
 	@Inject
 	private MandantService mandantService;
+
+	@Inject
+	private GesuchstellerAusweisDokumentService ausweisDokumentService;
 
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
 		"object also has a relation to adressen (wohnadresse, umzugadresse, korrespondenzadresse, rechnungsadresse) " +
@@ -160,6 +168,43 @@ public class GesuchstellerResource {
 		GesuchstellerContainer gesuchstellerToReturn = optional.get();
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerToReturn);
+	}
+
+	@ApiOperation(value = "Sucht alle AusweisDokuemente der Gesuchsteller mit der uebergebenen Id in der Datenbank.",
+		response = JaxGesuchstellerContainer.class)
+	@Nullable
+	@GET
+	@Path("/{gesuchstellerId}/ausweisdokumente")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+			SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public List<JaxGesuchstellerAusweisDokument> findGesuchstellerAusweisDokumente(
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
+
+		Objects.requireNonNull(gesuchstellerJAXPId.getId());
+		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
+		List<GesuchstellerAusweisDokument> ausweisDokumente = ausweisDokumentService.findDokumente(gesuchstellerID);
+
+		return converter.gesuchstellerAusweisDokumenteToJax(ausweisDokumente);
+	}
+
+	@ApiOperation(value = "Sucht alle AusweisDokuemente der Gesuchsteller mit der uebergebenen Id in der Datenbank.",
+		response = JaxGesuchstellerContainer.class)
+	@DELETE
+	@Path("/ausweisdokumente/{dokumentId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+			SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public void deleteGesuchstellerAusweisDokument(
+		@Nonnull @NotNull @PathParam("dokumentId") JaxId dokumentJAXPId) {
+		Objects.requireNonNull(dokumentJAXPId.getId());
+		GesuchstellerAusweisDokument toRemove = ausweisDokumentService.findDokument(dokumentJAXPId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"deleteGesuchstellerAusweisDokument",
+						dokumentJAXPId.getId()));
+		ausweisDokumentService.removeDokument(toRemove);
 	}
 
 	@ApiOperation(value = "Send mail to provided email to init connecting GS with ZPV Nr from BE-Login.",

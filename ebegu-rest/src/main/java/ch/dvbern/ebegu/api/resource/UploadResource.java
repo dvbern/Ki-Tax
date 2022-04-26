@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
@@ -67,6 +68,8 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -89,6 +92,8 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.GesuchstellerAusweisDokumentService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
@@ -180,10 +185,16 @@ public class UploadResource {
 	private FerienbetreuungDokumentService ferienbetreuungDokumentService;
 
 	@Inject
+	private GesuchstellerAusweisDokumentService gesuchstellerAusweisDokumentService;
+
+	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private GesuchstellerService gesuchstellerService;
 
 	@Inject
 	private PrincipalBean principal;
@@ -443,6 +454,91 @@ public class UploadResource {
 			.build();
 
 		return Response.created(uri).entity(jaxFerienbetreuungDokumente).build();
+	}
+
+	@ApiOperation(value = "Speichert ein oder mehrere FerienbetreuungDokumente in der Datenbank", response =
+		JaxRueckforderungDokument.class)
+	@Path("/gesuchstellerausweis/{gesuchstellerContainerId}")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
+	public Response uploadGesuchstellerAusweisDokument(
+		@Nonnull @NotNull @PathParam("gesuchstellerContainerId") JaxId gesuchstellerContainerJAXPId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo,
+		MultipartFormDataInput input)
+		throws IOException, MimeTypeParseException {
+
+		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, CONTENT_TYPE);
+
+		String[] encodedFilenames = getFilenamesFromHeader(request);
+
+		// check if filenames available
+		if (encodedFilenames == null || encodedFilenames.length == 0) {
+			final String problemString = FILENAME_WARNING;
+			LOG.error(problemString);
+			return Response.serverError().entity(problemString).build();
+		}
+
+		// Get RueckforderungId from request Parameter
+		String gesuchstellerContainerId = converter.toEntityId(gesuchstellerContainerJAXPId);
+
+		GesuchstellerContainer container =
+			gesuchstellerService.findGesuchsteller(gesuchstellerContainerId)
+				.orElseThrow(() -> new EbeguRuntimeException(
+					"uploadGesuchstellerAusweisDokument",
+					gesuchstellerContainerId));
+
+		// for every file create a new FerienbetreuungDokument linked with the given FerienbetreuungContainer
+		List<JaxGesuchstellerAusweisDokument> jaxGSAusweisDokumente =
+			extractFilesFromInputAndCreateGesuchstellerAusweisDokument(encodedFilenames, input, container);
+
+		URI uri = uriInfo.getBaseUriBuilder()
+			.path(UploadResource.class)
+			.path('/' + container.getId())
+			.build();
+
+		return Response.created(uri).entity(jaxGSAusweisDokumente).build();
+	}
+
+	private List<JaxGesuchstellerAusweisDokument> extractFilesFromInputAndCreateGesuchstellerAusweisDokument(
+			String[] encodedFilenames,
+			MultipartFormDataInput input,
+			GesuchstellerContainer container) throws MimeTypeParseException, IOException {int filecounter = 0;
+		String partrileName = PART_FILE + '[' + filecounter + ']';
+
+		List<JaxGesuchstellerAusweisDokument> jaxFerienbetreuungDokumente = new ArrayList<>();
+
+		// do for every file:
+		List<InputPart> inputParts = input.getFormDataMap().get(partrileName);
+		while (inputParts != null && inputParts.stream().findAny().isPresent()) {
+
+			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[0], partrileName, input);
+
+			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
+			fileSaverService.save(fileInfo, container.getId());
+			checkFiletypeAllowed(fileInfo);
+
+			// create and add the new file to FerienbetreuungDokument object and persist it
+			GesuchstellerAusweisDokument gesuchstellerAusweisDokument = new GesuchstellerAusweisDokument();
+			gesuchstellerAusweisDokument.setGesuchstellerContainer(container);
+			gesuchstellerAusweisDokument.setFilepfad(fileInfo.getPath());
+			gesuchstellerAusweisDokument.setFilename(fileInfo.getFilename());
+			gesuchstellerAusweisDokument.setFilesize(fileInfo.getSizeString());
+			gesuchstellerAusweisDokument.setTimestampUpload(LocalDateTime.now());
+
+			GesuchstellerAusweisDokument documentFromDB =
+					gesuchstellerAusweisDokumentService.saveDokument(gesuchstellerAusweisDokument);
+
+			jaxFerienbetreuungDokumente.add(converter.gesuchstellerAusweisDokumentToJax(documentFromDB));
+			filecounter++;
+			partrileName = PART_FILE + '[' + filecounter + ']';
+			inputParts = input.getFormDataMap().get(partrileName);
+		}
+
+		return jaxFerienbetreuungDokumente;
 	}
 
 	@ApiOperation("Stores the Erlaeuterungen zu Verfuegung pdf of the Gesuchsperiode with the given id and Sprache")

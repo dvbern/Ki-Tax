@@ -2108,6 +2108,25 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		throwViolation(gemeindeKennzahlen);
 	}
 
+	@Override
+	public void checkWriteAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
+		Gesuch gesuch = extractGesuch(gesuchstellerContainer);
+		checkWriteAuthorization(gesuch);
+	}
+
+	private Gesuch extractGesuchFromGSContainer(GesuchstellerContainer gesuchstellerContainer) {
+		Gesuch gesuch = gesuchService.findGesuch(Objects.requireNonNull(gesuchstellerContainer.getOwningGesuchId()))
+				.orElseThrow(() -> new EbeguEntityNotFoundException("checkWriteAuthorization",
+						gesuchstellerContainer));
+		return gesuch;
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
+		Gesuch gesuch = extractGesuch(gesuchstellerContainer);
+		checkReadAuthorization(gesuch);
+	}
+
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
 		return principalBean.belongsToSozialdienst(sozialdienst);
 	}
