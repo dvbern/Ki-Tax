@@ -65,7 +65,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldInstitutionen.strasse, dataRow.getStrasse());
 			excelRowGroup.addValue(MergeFieldInstitutionen.plz, dataRow.getPlz());
 			excelRowGroup.addValue(MergeFieldInstitutionen.ort, dataRow.getOrt());
-			excelRowGroup.addValue(MergeFieldInstitutionen.standortgemeinde, dataRow.getTraegergemeinde());
+			excelRowGroup.addValue(MergeFieldInstitutionen.standortgemeinde, dataRow.getStandortgemeinde());
 			excelRowGroup.addValue(MergeFieldInstitutionen.traegergemeinde, dataRow.getTraegergemeinde());
 			excelRowGroup.addValue(MergeFieldInstitutionen.bfsGemeinde, dataRow.getBfsGemeinde());
 			excelRowGroup.addValue(MergeFieldInstitutionen.telefon, dataRow.getTelefon());

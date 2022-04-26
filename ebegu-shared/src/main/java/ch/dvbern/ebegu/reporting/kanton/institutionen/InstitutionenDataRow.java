@@ -40,6 +40,8 @@ public class InstitutionenDataRow {
 	private String ort = null;
 	@Nullable
 	private String traegergemeinde = null;
+	@Nullable
+	private String standortgemeinde = null;
 	@Nullable private
 	Long bfsGemeinde = null;
 	private String telefon = null;
@@ -287,6 +289,15 @@ public class InstitutionenDataRow {
 
 	public void setTraegergemeinde(@Nullable String gemeinde) {
 		this.traegergemeinde = gemeinde;
+	}
+
+	@Nullable
+	public String getStandortgemeinde() {
+		return standortgemeinde;
+	}
+
+	public void setStandortgemeinde(@Nullable String _gemeinde) {
+		this.standortgemeinde = _gemeinde;
 	}
 
 	@Nullable

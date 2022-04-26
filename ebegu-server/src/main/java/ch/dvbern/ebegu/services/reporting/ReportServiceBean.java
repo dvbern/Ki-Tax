@@ -2383,13 +2383,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setTraegergemeinde(gemeinde.getName());
 			row.setBfsGemeinde(gemeinde.getBfsNummer());
 		}
+
+		if (institutionStammdaten.getBetreuungsangebotTyp().isKita() || institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien() && institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			row.setStandortgemeinde(institutionStammdaten.getAdresse().getGemeinde());
+		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
 		zuletztGeandertList.add(adresse.getTimestampMutiert());
 
 		zuletztGeandert = zuletztGeandertList.stream().max(LocalDateTime::compareTo).get();
 		row.setZuletztGeaendert(zuletztGeandert);
-
 		return row;
 	}
 
