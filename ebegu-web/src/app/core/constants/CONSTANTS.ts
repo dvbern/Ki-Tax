@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {KiBonMandant} from './MANDANTS';
+
 export const CONSTANTS = {
     name: 'EBEGU',
     REST_API: '/ebegu/api/v1/',
@@ -31,10 +33,6 @@ export const CONSTANTS = {
     PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
     PATTERN_ZEMIS_NUMMER: '(^0?\\d{8}\\.\\d$)|(^0\\d{2}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
     PATTERN_HHHMM: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
-    INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
-    ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA: '00000000-0000-0000-0000-000000000000',
-    ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE: '00000000-0000-0000-0000-000000000001',
-    ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE: '00000000-0000-0000-0000-000000000002',
     PARTS_OF_BETREUUNGSNUMMER: 5,
     END_OF_TIME_STRING: '31.12.9999',
     START_OF_TIME_STRING: '01.01.1000',
@@ -42,7 +40,7 @@ export const CONSTANTS = {
     DATE_TIME_FORMAT: 'DD.MM.YYYY HH:mm',
     EARLIEST_DATE_OF_TS_ANMELDUNG: '2020-08-01',
     BERN_BFS_NUMMER: 351,
-    MANDANT_LOCAL_STORAGE_KEY: 'mandant'
+    MANDANT_LOCAL_STORAGE_KEY: 'mandant',
 };
 // 100% = 20 days => 1% = 0.2 days
 export const MULTIPLIER_KITA = 0.2;
@@ -55,6 +53,53 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10485760;
+
+export function getUnknowKitaIdForMandant(mandant: KiBonMandant): string {
+    switch (mandant) {
+        case KiBonMandant.LU:
+            return '00000000-0000-0000-0000-000000000003';
+            break;
+        case KiBonMandant.SO:
+            return '00000000-0000-0000-0000-000000000006';
+            break;
+        case KiBonMandant.BE:
+        default:
+            return '00000000-0000-0000-0000-000000000000';
+            break;
+    }
+}
+
+// tslint:disable-next-line:no-identical-functions
+export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
+    switch (mandant) {
+        case KiBonMandant.LU:
+            return '00000000-0000-0000-0000-000000000004';
+            break;
+        case KiBonMandant.SO:
+            return '00000000-0000-0000-0000-000000000007';
+            break;
+        case KiBonMandant.BE:
+        default:
+            return '00000000-0000-0000-0000-000000000001';
+            break;
+    }
+}
+
+// tslint:disable-next-line:no-identical-functions
+export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string {
+    switch (mandant) {
+        case KiBonMandant.LU:
+            return '00000000-0000-0000-0000-000000000005';
+            break;
+        case KiBonMandant.SO:
+            return '00000000-0000-0000-0000-000000000008';
+            break;
+        case KiBonMandant.BE:
+        default:
+            return '00000000-0000-0000-0000-000000000002';
+            break;
+    }
+}
 
 export const HTTP_ERROR_CODES = {
     BAD_REQUEST: 400,

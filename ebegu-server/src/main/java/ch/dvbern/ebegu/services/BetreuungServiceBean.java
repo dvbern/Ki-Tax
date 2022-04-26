@@ -183,12 +183,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		// if isNew or not published and Jugendamt -> generate Event for Kafka when API enabled and institution bekannt
 		if (exportBetreuung(isNew, mergedBetreuung)) {
 			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()
-				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
-				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
+				&& !Constants.ALL_UNKNOWN_INSTITUTION_IDS.contains(betreuung.getInstitutionStammdaten()
+				.getId())) {
 				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
 					betreuungAnfrageEventConverter.of(mergedBetreuung);
 				this.event.fire(betreuungAnfrageAddedEvent);
