@@ -61,7 +61,7 @@ describe('erwerbspensumListView', () => {
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
-        spyOn(gemeindeRS, 'getGemeindeStammdatenLite').and.returnValue($q.resolve(gemeindeStammdaten));
+        gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/erwerbspensen/required/').respond({});
