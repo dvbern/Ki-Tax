@@ -201,14 +201,28 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
             this.ferieninselStammdaten = response;
             // Bereits gespeicherte Daten wieder ankreuzen
-            for (const obj of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
-                for (const tagAngemeldet of this.betreuung.belegungFerieninsel.tage) {
-                    if (tagAngemeldet.tag.isSame(obj.tag)) {
-                        obj.angemeldet = true;
+                this.activateFerieninselTage(
+                    this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung,
+                    this.betreuung.belegungFerieninsel.tage
+                );
+                this.activateFerieninselTage(
+                    this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul,
+                    this.betreuung.belegungFerieninsel.tageMorgenmodul
+                );
+            });
+    }
+
+    private activateFerieninselTage(
+        potenzielleTage: TSBelegungFerieninselTag[],
+        angemeldeteTage: TSBelegungFerieninselTag[]
+    ): void {
+        for (const obj of potenzielleTage) {
+            for (const tagAngemeldet of angemeldeteTage) {
+                        if (tagAngemeldet.tag.isSame(obj.tag)) {
+                            obj.angemeldet = true;
+                        }
                     }
                 }
-            }
-        });
     }
 
     public isAnmeldungNichtFreigegeben(): boolean {
@@ -249,6 +263,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         if (this.form.$valid) {
             // Validieren, dass mindestens 1 Tag ausgewählt war
             this.setChosenFerientage();
+            this.setChosenFerientageMorgenmodul();
             if (this.betreuung.belegungFerieninsel.tage.length <= 0) {
                 if (this.isAnmeldungMoeglich()) {
                     this.showErrorMessage = true;
@@ -275,6 +290,15 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         for (const tag of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung) {
             if (tag.angemeldet) {
                 this.betreuung.belegungFerieninsel.tage.push(tag);
+            }
+        }
+    }
+
+    private setChosenFerientageMorgenmodul(): void {
+        this.betreuung.belegungFerieninsel.tageMorgenmodul = [];
+        for (const tag of this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul) {
+            if (tag.angemeldet) {
+                this.betreuung.belegungFerieninsel.tageMorgenmodul.push(tag);
             }
         }
     }

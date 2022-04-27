@@ -5108,6 +5108,7 @@ public class JaxBConverter extends AbstractConverter {
 		belegungFerieninsel.setFerienname(belegungFerieninselJAX.getFerienname());
 		belegungFerieninsel.setNotfallAngaben(belegungFerieninselJAX.getNotfallAngaben());
 		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTage(), belegungFerieninsel.getTage());
+		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTageMorgenmodul(), belegungFerieninsel.getTageMorgenmodul());
 
 		return belegungFerieninsel;
 	}
@@ -5159,6 +5160,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedBelegungFerieninsel, jaxBelegungFerieninsel);
 		jaxBelegungFerieninsel.setFerienname(persistedBelegungFerieninsel.getFerienname());
 		jaxBelegungFerieninsel.setTage(belegungFerieninselTageListToJAX(persistedBelegungFerieninsel.getTage()));
+		jaxBelegungFerieninsel.setTageMorgenmodul(belegungFerieninselTageListToJAX(persistedBelegungFerieninsel.getTageMorgenmodul()));
 		jaxBelegungFerieninsel.setNotfallAngaben(persistedBelegungFerieninsel.getNotfallAngaben());
 		return jaxBelegungFerieninsel;
 	}

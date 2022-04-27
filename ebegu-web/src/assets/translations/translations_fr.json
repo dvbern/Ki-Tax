@@ -1543,6 +1543,7 @@
     "WARN_ANGEBOT_NOCH_NICHT_FREIGEGEBEN": "Cette offre n'a pas encore été validée.  Veuillez traiter l'offre actuelle. ",
     "WARN_ANGEBOT_MUTIERT": "Cette offre a été modifiée. Veuillez traiter l'offre actuellement valable. ",
     "FERIENINSELTAGE": "Pour quels jours souhaitez-vous inscrire votre enfant à l'accueil extrascolaire pendant les vacances ?",
+    "FERIENINSELTAGE_MORGENMODUL": "An welchen Tagen möchten Sie Ihr Kind für das Morgenmodul der Ferieninsel anmelden (7:00 - 8:00 Uhr)?",
     "FERIENINSEL_NOTFALLANGABEN":"Messages / particularitées (par ex. médicaments, allergies/intolérances, TDA, pas de porc, etc.)",
     "ANMELDEN_FERIENINSEL": "Soumettre définitivement l'inscription",
     "ANMELDEN_TAGESSCHULE": "Soumettre définitivement l'inscription",

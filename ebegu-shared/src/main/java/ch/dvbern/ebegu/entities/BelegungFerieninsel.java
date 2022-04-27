@@ -71,6 +71,23 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 	)
 	private List<BelegungFerieninselTag> tage = new ArrayList<>();
 
+	@NotNull
+	@Valid
+	@SortNatural
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		name = "belegung_ferieninsel_morgen_belegung_ferieninsel_tag",
+		joinColumns = @JoinColumn(name = "belegung_ferieninsel_morgen_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "tage_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_belegung_ferieninsel_belegung_morgen_ferieninsel_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_belegung_morgen_ferieninsel_tage_id"),
+		indexes = {
+			@Index(name = "IX_belegung_ferieninsel_belegung_morgen_ferieninsel_id", columnList = "belegung_ferieninsel_morgen_id"),
+			@Index(name = "IX_belegung_morgen_ferieninsel_tage_id", columnList = "tage_id"),
+		}
+	)
+	private List<BelegungFerieninselTag> tageMorgenmodul = new ArrayList<>();
+
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
@@ -113,6 +130,14 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 
 	public void setTage(List<BelegungFerieninselTag> tage) {
 		this.tage = tage;
+	}
+
+	public List<BelegungFerieninselTag> getTageMorgenmodul() {
+		return tageMorgenmodul;
+	}
+
+	public void setTageMorgenmodul(List<BelegungFerieninselTag> tageMorgenmodul) {
+		this.tageMorgenmodul = tageMorgenmodul;
 	}
 
 	@Nullable
