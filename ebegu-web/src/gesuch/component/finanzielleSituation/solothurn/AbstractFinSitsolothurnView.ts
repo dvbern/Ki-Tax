@@ -200,6 +200,9 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     private isStartOk(): boolean {
         const finanzielleSituationJA = this.getModel().finanzielleSituationJA;
+        if (this.model.sozialhilfeBezueger) {
+            return true;
+        }
         const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten ?
             EbeguUtil.areAllNotNullOrUndefined(
                 finanzielleSituationJA.nettolohn,

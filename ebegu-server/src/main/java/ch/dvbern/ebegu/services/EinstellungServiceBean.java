@@ -70,11 +70,15 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+	@Inject
+	private Authorizer authorizer;
+
 
 	@Override
 	@Nonnull
 	public Einstellung saveEinstellung(@Nonnull Einstellung einstellung) {
 		Objects.requireNonNull(einstellung);
+		authorizer.checkWriteAuthorization(einstellung);
 		if (einstellung.getGemeinde() != null) {
 			// Mandant bei Gemeindespezifischen Einstellungen setzen
 			einstellung.setMandant(einstellung.getGemeinde().getMandant());

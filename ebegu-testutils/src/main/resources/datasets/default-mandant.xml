@@ -26,5 +26,6 @@
 			 name="Kanton Bern"
 			 mandant_identifier="BERN"
 			 angebotts="false"
-			 angebotfi="false"/>
+			 angebotfi="false"
+			 activated="true"/>
 </dataset>

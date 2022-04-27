@@ -12,10 +12,16 @@
     "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
     "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
-    "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen",
+    "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen (Kontoauszug per 31.12)",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
     "UMZUG_IN_NEUE_GEMEINDE": "Sofern Sie in eine neue Gemeinde im Kanton Solothurn umgezogen sind/umziehen klicken Sie bitte oben neben Ihrer Gemeinde auf \"+Gemeinde hinzufügen\" und klicken Sie sich dort durch den Antrag, um die Daten zu bestätigen. <b>Danach müssen Sie den Antrag bei der neuen Gemeinde erneut einreichen</b>.<br><br>Erfassen Sie unten Ihre neue Adresse.<br><br><b>Betreuungsgutscheine:</b> Der Betreuungsgutschein wird immer von Ihrer Wohnsitzgemeinde ausgestellt. Wenn Sie in eine neue Gemeinde umziehen, müssen Sie zusätzlich bei der neuen Gemeinde einen neuen Antrag um Betreuungsgutscheine stellen.",
     "FAM_ERGAENZENDE_BETREUUNG": "Wird dieses Kind extern betreuut?",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Falls der Standardtext ausgewählt wird, wird am Ende der Verfügungen folgende Rechtsmittelbelehrung eingefügt: <br><br>Rechtsmittelbelehrung<br>Gegen diese Verfügung kann innert 10 Tagen ab Zustellung bei der Beschwerdekommission der Gemeinde Beschwerde erhoben werden. Beschwerdeentscheide können an das Departement des Innern weitergezogen werden. Die Beschwerde muss einen Antrag und eine Begründung enthalten. Der Beschwerdeschrift beizulegen sind wenn möglich die Beweismittel und die angefochtene Verfügung."
+    "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Nachweis Bruttolohn (Lohnausweis)",
+    "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Aktuellste Steuerveranlagung",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis Vermögensänderung",
+    "MANDANT_DIREKTION_BG": "Nino Freuler <br/>Pumag Consulting AG",
+    "FACHLICHE_HILFE_BG": "Fachliche Hilfe"
 }
