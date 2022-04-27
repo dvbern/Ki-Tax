@@ -28,7 +28,7 @@
 <div class="row" *ngIf="showVeranlagungErhalten()">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
-			<span *ngIf="!model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
+			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
 			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === true"  class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
             <dv-input-container-x [verticalAlign]="true">
 				<dv-radio-container-x>
