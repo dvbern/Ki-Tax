@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern.service';
 
@@ -76,4 +77,7 @@ export class VeranlagungComponent implements OnInit {
             this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
     }
 
+    public isNotNullOrUndefined(toCheck: any): boolean {
+        return EbeguUtil.isNotNullOrUndefined(toCheck);
+    }
 }

@@ -15,7 +15,6 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {DummyMandantSelectionComponent} from './dummy-mandant-selection/dummy-mandant-selection.component';
 import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingComponent} from './onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
@@ -26,6 +25,7 @@ import { OnboardingInfoGemeindeComponent } from './onboarding-info-gemeinde/onbo
 import { OnboardingInfoInstitutionComponent } from './onboarding-info-institution/onboarding-info-institution.component';
 import { InitZpvNrComponent } from './init-zpv-nr/init-zpv-nr.component';
 import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component';
+import { PortalSelectionComponent } from './portal-selection/portal-selection.component';
 
 @NgModule({
     imports: [
@@ -40,9 +40,9 @@ import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component
         OnboardingNeuBenutzerComponent,
         OnboardingInfoGemeindeComponent,
         OnboardingInfoInstitutionComponent,
-        DummyMandantSelectionComponent,
         InitZpvNrComponent,
-        ZpvNrSuccessComponent
+        ZpvNrSuccessComponent,
+        PortalSelectionComponent
     ],
 })
 class OnboardingModule {

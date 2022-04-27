@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="betrag1" type="java.lang.String" -->
 <#-- @ftlvariable name="betrag2" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Corona-Finanzierung
@@ -34,7 +35,7 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<p>
 	<p>
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">Hier</a>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list">Hier</a>
 		können Sie sehen, ob im Vergleich zu Ihrer Eingabe Änderungen vorgenommen wurden. Die definitive
 		Abrechnung mit Begründung von Abweichungen zur Eingabe erfolgt nach der detaillierten Prüfung Ihres Gesuchs in
 		der Stufe 2.
@@ -79,7 +80,7 @@ Content-Type: text/html;charset=utf-8
 	</p>
 	<p>
 		Vous pouvez contrôler <a
-				href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">ici</a>
+				href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list">ici</a>
 		si les données saisies ont été modifiées. Le décompte définitif avec justification des
 		écarts sera établi après examen détaillé de votre demande dans le cadre de la seconde étape.
 	</p>

@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Der Antrag für ${gesuchsteller.fullName}<#else>Ihr Antrag</#if> wurde bearbeitet</@base64Header>
@@ -27,7 +28,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Die Prüfung und Berechnung <#if isSozialdienst>des Antrags für ${gesuchsteller.fullName}<#else>Ihres Antrags</#if> wurde bearbeitet. Sie können die Ergebnisse
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		einsehen.
 	</p>
 	<p>

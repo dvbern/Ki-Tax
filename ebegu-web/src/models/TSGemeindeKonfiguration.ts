@@ -30,6 +30,8 @@ export class TSGemeindeKonfiguration {
     public gesuchsperiode: TSGesuchsperiode;
     public konfigKontingentierung: boolean; // only on client
     public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
+    public konfigMinVerguenstigungProTg: number;
+    public konfigMinVerguenstigungProStd: number;
     public konfigTagesschuleTagisEnabled: boolean;
     public konfigFerieninselAktivierungsdatum: moment.Moment;
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
@@ -235,6 +237,14 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED: {
                     this.konfigSchnittstelleKitaxEnabled = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG: {
+                    this.konfigMinVerguenstigungProTg = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD: {
+                    this.konfigMinVerguenstigungProStd = Number(property.value);
                     break;
                 }
                 default: {

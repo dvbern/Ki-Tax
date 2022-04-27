@@ -267,7 +267,11 @@ public enum EinstellungKey {
 	ZEMIS_DISABLED,
 
 	// Soll die Frage, ob die Sprache die Amtsprache ist, gestellt werden
-	SPRACHE_AMTSPRACHE_DISABLED;
+	SPRACHE_AMTSPRACHE_DISABLED,
+
+	// falls diese Einstellung disabled ist, dann wechselt der Status des Antrags nach der Freigabe durch den Antragstellenden
+	// direkt auf Freigegeben. "Freigabequittung ausstehend" wird übersprungen.
+	FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
 
 
 	private EinstellungTyp typ;

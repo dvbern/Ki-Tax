@@ -10,7 +10,13 @@
     "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
     "EKVI_ABLEHNEN": "Einkommensänderung annulliert",
-    "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen",
+    "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Nachweis Vermögen (Kontoauszug per 31.12)",
     "DOK_FINANZIELLE_SITUATION": "Berechnung der finanziellen Verhältnisse",
-    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}"
+    "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Nachweis Bruttolohn (Lohnausweis)",
+    "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Aktuellste Steuerveranlagung",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis Vermögensänderung",
+    "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
+    "MANDANT_DIREKTION_BG": "Nino Freuler <br/>Pumag Consulting AG",
+    "FACHLICHE_HILFE_BG": "Fachliche Hilfe"
 }

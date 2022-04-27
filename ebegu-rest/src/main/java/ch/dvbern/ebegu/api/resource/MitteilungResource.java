@@ -269,6 +269,23 @@ public class MitteilungResource {
 		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
 	}
 
+	@ApiOperation(value = "Markiert eine Mitteilung als ungelesen", response = JaxMitteilung.class)
+	@Nullable
+	@PUT
+	@Path("/setneu/{mitteilungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN })
+	public JaxMitteilung setMitteilungUngelesen(
+		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		final Mitteilung mitteilung = mitteilungService.setMitteilungUngelesen(mitteilungId.getId());
+
+		return converter.mitteilungToJAX(mitteilung, new JaxMitteilung());
+	}
+
 	@ApiOperation(value = "Gibt die Mitteilung mit der uebergebenen Id zurueck", response = JaxMitteilung.class)
 	@Nullable
 	@GET

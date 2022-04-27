@@ -21,9 +21,7 @@
     "EKV_RESULTATE_PRUEFUNG": "Prüfung Einkommensänderung {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
     "INVOLVIERTE_FACHSTELLE": "Das Kind verfügt über eine Fachstellenbestätigung zur sprachlichen oder sozialen Integration",
-    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
-    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
-	"KORREKTE_KOSTEN_BESTAETIGUNG_1": "Wir bestätigen, dass wir das Betreuungspensum bei Änderungen online unmittelbar anpassen",
+    "KORREKTE_KOSTEN_BESTAETIGUNG_1": "Wir bestätigen, dass wir das Betreuungspensum bei Änderungen online unmittelbar anpassen",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_2": "",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_3": "",
 	"KORREKTE_KOSTEN_BESTAETIGUNG_4": "",
@@ -31,5 +29,7 @@
 	"KINDERGARTEN2": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
 	"KLASSE1": "1. Klasse (kein Anspruch auf Betreuungsgutscheine)",
 	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)",
-	"FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Beziehen Sie aktuell wirtschaftliche Sozialhilfe?"
+	"FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Beziehen Sie aktuell wirtschaftliche Sozialhilfe?",
+	"MANDANT_DIREKTION_BG": "Stadt Luzern <br/>Kinder Jugend Familie <br/>Kasernenplatz 3, Postfach <br/> 6000 Luzern 7",
+	"FACHLICHE_HILFE_BG": "Fachliche Hilfe"
 }

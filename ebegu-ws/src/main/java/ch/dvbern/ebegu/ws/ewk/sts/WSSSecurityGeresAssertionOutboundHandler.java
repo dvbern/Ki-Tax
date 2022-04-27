@@ -26,27 +26,31 @@ import javax.inject.Inject;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
+import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 
 @Stateless
 @LocalBean
 public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOAPMessageContext> {
-	private static final String WSSE_NS_URI = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-	private static final Logger LOGGER = LoggerFactory.getLogger(WSSSecurityGeresAssertionOutboundHandler.class.getSimpleName());
+	private static final String WSSE_NS_URI =
+		"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(WSSSecurityGeresAssertionOutboundHandler.class.getSimpleName());
 
 	@Inject
-	private STSAssertionManager stsAssertionManager;
+	private STSGeresAssertionManagerBean stsAssertionManager;
 
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
@@ -69,7 +73,7 @@ public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOA
 				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
-				if(importedAssertionNode.getNodeType() ==  Node.DOCUMENT_NODE){
+				if (importedAssertionNode.getNodeType() == Node.DOCUMENT_NODE) {
 					importedAssertionNode = importedAssertionNode.getFirstChild();
 				}
 				securityElem.appendChild(importedAssertionNode);
@@ -77,8 +81,11 @@ public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOA
 				header.addChildElement(securityElem);
 
 				WSUtil.correctAssertionNodes(header.getElementsByTagName("*"));
-			} catch (Exception e) {
-				LOGGER.error("Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when calling the GERES Service", e);
+			} catch (SOAPException | STSZertifikatServiceException | DOMException e) {
+				LOGGER.error(
+					"Could not add the Assertion to the SOAP Request. This will probably lead to a Failure when "
+						+ "calling the GERES Service",
+					e);
 			}
 		}
 		return true;

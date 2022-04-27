@@ -22,6 +22,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -69,7 +70,6 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         '$state',
         'GesuchModelManager',
         'EbeguUtil',
-        'CONSTANTS',
         '$scope',
         'BerechnungsManager',
         'ErrorService',
@@ -85,6 +85,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         '$translate',
         'ApplicationPropertyRS',
         'FerieninselStammdatenRS',
+        'MandantService',
     ];
 
     public betreuung: TSBetreuung;
@@ -101,7 +102,6 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         $state: StateService,
         gesuchModelManager: GesuchModelManager,
         ebeguUtil: EbeguUtil,
-        CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         errorService: ErrorService,
@@ -117,11 +117,11 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         $translate: ITranslateService,
         applicationPropertyRS: ApplicationPropertyRS,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
+        mandantService: MandantService,
     ) {
         super($state,
             gesuchModelManager,
             ebeguUtil,
-            CONSTANTS,
             $scope,
             berechnungsManager,
             errorService,
@@ -135,7 +135,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             globalCacheService,
             $timeout,
             $translate,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            mandantService);
     }
 
     public $onInit(): void {
@@ -198,8 +199,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             this.gesuchModelManager.getGesuchsperiode().id,
             this.gesuchModelManager.getGemeinde().id,
             this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
-                this.ferieninselStammdaten = response;
-                // Bereits gespeicherte Daten wieder ankreuzen
+            this.ferieninselStammdaten = response;
+            // Bereits gespeicherte Daten wieder ankreuzen
                 this.activateFerieninselTage(
                     this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung,
                     this.betreuung.belegungFerieninsel.tage
@@ -217,11 +218,11 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     ): void {
         for (const obj of potenzielleTage) {
             for (const tagAngemeldet of angemeldeteTage) {
-                if (tagAngemeldet.tag.isSame(obj.tag)) {
-                    obj.angemeldet = true;
+                        if (tagAngemeldet.tag.isSame(obj.tag)) {
+                            obj.angemeldet = true;
+                        }
+                    }
                 }
-            }
-        }
     }
 
     public isAnmeldungNichtFreigegeben(): boolean {
