@@ -19,7 +19,6 @@ import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/co
 import {Transition} from '@uirouter/core';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
-import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
