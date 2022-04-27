@@ -19,6 +19,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GemeindeRS} from '../../service/gemeindeRS.rest';
@@ -47,10 +48,12 @@ describe('erwerbspensumListView', () => {
     let gemeindeRS: GemeindeRS;
     let $q: angular.IQService;
     let dossier: TSDossier;
+    let gesuchsperiode: TSGesuchsperiode;
     let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         prepareDossier();
+        prepareGesuchsperiode();
 
         gesuchModelManager = $injector.get('GesuchModelManager');
         gemeindeRS = $injector.get('GemeindeRS');
@@ -61,6 +64,7 @@ describe('erwerbspensumListView', () => {
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
         spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.resolve(gemeindeStammdaten));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
@@ -89,5 +93,10 @@ describe('erwerbspensumListView', () => {
     function prepareDossier(): void {
         dossier = new TSDossier();
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
+    }
+
+    function prepareGesuchsperiode(): void {
+        gesuchsperiode = new TSGesuchsperiode();
+        gesuchsperiode.id = '123';
     }
 });
