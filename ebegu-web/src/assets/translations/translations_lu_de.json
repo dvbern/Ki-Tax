@@ -31,5 +31,8 @@
 	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)",
 	"FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Beziehen Sie aktuell wirtschaftliche Sozialhilfe?",
 	"MANDANT_DIREKTION_BG": "Stadt Luzern <br/>Kinder Jugend Familie <br/>Kasernenplatz 3, Postfach <br/> 6000 Luzern 7",
-	"FACHLICHE_HILFE_BG": "Fachliche Hilfe"
+	"FACHLICHE_HILFE_BG": "Fachliche Hilfe",
+    "IMPRESSUM_TEXT": "<h1>Impressum</h1><h2>Gesamtverantwortung</h2>Stadt Luzern<br>Kinder Jugend Familie<br>Kasernenplatz 3, Postfach<br>6000 Luzern 7<br><br><h2>Betrieb & Technik</h2>DV Bern<br>Nussbaumstrasse 21<br>CH-3000 Bern 22 · Schweiz",
+    "TESTLOGIN_REDIRECT_WARNING_TITLE": "Sie werden jetzt auf das <b>TEST-LOGIN</b> weitergeleitet",
+    "TESTLOGIN_REDIRECT_WARNING_CONTENT": "<br>(<b>Achtung:</b> die Ansicht der Testumgebung des Logins sieht genau gleich aus wie das \"echte\" Login - die beiden Umgebungen sind aber <b>nicht</b> miteinander verbunden)<br><br>Falls Sie noch kein Test-Login erstellt haben, müssen Sie folgendes wissen:<br>Sie müssen ein <b>neues Login in dieser Testumgebung erstellen</b> &rArr; Neu registrieren.<br><br>Für die Erstellung des BE-Logins müssen sie die E-Mailadresse verwenden, mit welcher Sie für die Testumgebung eingeladen worden sind.<br>"
 }
