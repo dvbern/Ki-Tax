@@ -201,14 +201,14 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             this.betreuung.belegungFerieninsel.ferienname).then((response: TSFerieninselStammdaten) => {
             this.ferieninselStammdaten = response;
             // Bereits gespeicherte Daten wieder ankreuzen
-                this.activateFerieninselTage(
-                    this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung,
-                    this.betreuung.belegungFerieninsel.tage
-                );
-                this.activateFerieninselTage(
-                    this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul,
-                    this.betreuung.belegungFerieninsel.tageMorgenmodul
-                );
+            this.activateFerieninselTage(
+                this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegung,
+                this.betreuung.belegungFerieninsel.tage
+            );
+            this.activateFerieninselTage(
+                this.ferieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul,
+                this.betreuung.belegungFerieninsel.tageMorgenmodul
+            );
             });
     }
 
