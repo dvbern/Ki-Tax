@@ -1868,6 +1868,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
+        restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         return restFinanzielleSituation;
     }
 
@@ -2008,6 +2009,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
+            finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
         }
@@ -4327,6 +4329,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
+        publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
         return publicAppConfigTS;
 
     }

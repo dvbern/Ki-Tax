@@ -518,6 +518,7 @@ public final class FreigabeCopyUtil {
 		gs.setUnterhaltsBeitraege(ja.getUnterhaltsBeitraege());
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
+		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
 
 	}
 

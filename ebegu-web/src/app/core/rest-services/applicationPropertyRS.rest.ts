@@ -154,4 +154,10 @@ export class ApplicationPropertyRS {
             return response.geresEnabledForMandant;
         });
     }
+
+    public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.zusatzinformationenInstitution;
+        });
+    }
 }
