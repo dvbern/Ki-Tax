@@ -20,7 +20,7 @@ ALTER TABLE finanzielle_situation_aud ADD momentan_selbststaendig BIT NULL;
 
 # Insert for all mandants
 INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'ZUSATZINFORMATIONEN_INSTITUTION', true FROM mandant;
+SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'ZUSATZINFORMATIONEN_INSTITUTION', 'true' FROM mandant;
 
 # set false for LU and SO
 UPDATE application_property INNER JOIN mandant ON application_property.mandant_id = mandant.id SET value = 'false' WHERE mandant_identifier = 'SOLOTHURN' and application_property.name = 'ZUSATZINFORMATIONEN_INSTITUTION';
