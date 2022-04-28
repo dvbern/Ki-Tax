@@ -21,7 +21,6 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {ErwerbspensumListViewController} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
@@ -44,7 +43,6 @@ describe('erwerbspensumListView', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
     let gesuchModelManager: GesuchModelManager;
-    let gemeindeRS: GemeindeRS;
     let $q: angular.IQService;
     let dossier: TSDossier;
     let $httpBackend: IHttpBackendService;
@@ -53,7 +51,6 @@ describe('erwerbspensumListView', () => {
         prepareDossier();
 
         gesuchModelManager = $injector.get('GesuchModelManager');
-        gemeindeRS = $injector.get('GemeindeRS');
         $componentController = $injector.get('$componentController');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
