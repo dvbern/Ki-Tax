@@ -19,7 +19,6 @@ import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/co
 import {Transition} from '@uirouter/core';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
-import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -36,7 +35,6 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
 
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
-    private readonly grenze: number = 25;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -51,13 +49,5 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             $transition$);
-    }
-
-    public ekvAkzeptiert(): boolean {
-        if (EbeguUtil.isNotNullOrUndefined(this.resultatProzent) && (Number(this.resultatProzent) >= this.grenze ||
-            Number(this.resultatProzent) <= -this.grenze)) {
-            return true;
-        }
-        return false;
     }
 }

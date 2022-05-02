@@ -357,6 +357,7 @@ public class FinanzielleSituationResource {
 				converter.finanzielleSituationContainerToEntity(
 					jaxFinSitModel.getFinanzielleSituationContainerGS1(),
 					new FinanzielleSituationContainer()));
+			setFinSitAbfrageStatus(gesuch.getGesuchsteller1(), jaxFinSitModel.getFinanzielleSituationContainerGS1());
 		}
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS2() != null) {
 			gesuch.setGesuchsteller2(new GesuchstellerContainer());
@@ -365,6 +366,7 @@ public class FinanzielleSituationResource {
 				converter.finanzielleSituationContainerToEntity(
 					jaxFinSitModel.getFinanzielleSituationContainerGS2(),
 					new FinanzielleSituationContainer()));
+			setFinSitAbfrageStatus(gesuch.getGesuchsteller2(), jaxFinSitModel.getFinanzielleSituationContainerGS2());
 		}
 
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO =
@@ -372,6 +374,16 @@ public class FinanzielleSituationResource {
 		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden
 		context.setRollbackOnly();
 		return Response.ok(finanzielleSituationResultateDTO).build();
+	}
+
+	private void setFinSitAbfrageStatus(@Nonnull GesuchstellerContainer gesuchstellerContainer, @Nonnull JaxFinanzielleSituationContainer finanzielleSituationContainer) {
+		if(finanzielleSituationContainer.getId() != null) {
+		   Optional<FinanzielleSituationContainer> finSitCont = finanzielleSituationService.findFinanzielleSituation(finanzielleSituationContainer.getId());
+		   if(finSitCont.isPresent()) {
+			   assert gesuchstellerContainer.getFinanzielleSituationContainer() != null;
+			   gesuchstellerContainer.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(finSitCont.get().getFinanzielleSituationJA().getSteuerdatenAbfrageStatus());
+		   }
+		}
 	}
 
 	@ApiOperation(value = "Sucht die FinanzielleSituation mit der uebergebenen Id in der Datenbank",
@@ -652,8 +664,7 @@ public class FinanzielleSituationResource {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
 		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
-		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null)
-		{
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null) {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
 			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
 			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());

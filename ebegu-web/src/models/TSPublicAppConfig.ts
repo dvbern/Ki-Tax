@@ -46,4 +46,5 @@ export class TSPublicAppConfig {
     public geresEnabledForMandant: boolean;
     public ebeguKibonAnfrageTestGuiEnabled: boolean;
     public steuerschnittstelleAktivAb: moment.Moment;
+    public zusatzinformationenInstitution: boolean;
 }

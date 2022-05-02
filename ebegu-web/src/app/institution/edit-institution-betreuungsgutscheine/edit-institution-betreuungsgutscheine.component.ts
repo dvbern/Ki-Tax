@@ -50,6 +50,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     public abweichendeZahlungsAdresse: boolean;
     public incompleteOeffnungszeiten: boolean = false;
     public isInfomazahlungen: boolean = false;
+    public zusatzinformationenInstitution: boolean;
 
     public readonly CONSTANTS = CONSTANTS;
 
@@ -67,6 +68,10 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
         this.abweichendeZahlungsAdresse = stammdatenBg && !!stammdatenBg.adresseKontoinhaber;
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.isInfomazahlungen = res.infomaZahlungen;
+            this.cd.markForCheck();
+        });
+        this.applicationPropertyRS.getZusatzinformationenInstitutionEnabled().then(enabled => {
+            this.zusatzinformationenInstitution = enabled;
             this.cd.markForCheck();
         });
     }
