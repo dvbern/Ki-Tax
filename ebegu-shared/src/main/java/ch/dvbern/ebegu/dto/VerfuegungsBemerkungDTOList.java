@@ -168,6 +168,10 @@ public class VerfuegungsBemerkungDTOList {
 		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG, MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG_FKJV);
 		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG_FKJV);
 		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.VERFUEGUNG_MIT_ANSPRUCH, MsgKey.VERFUEGUNG_MIT_ANSPRUCH_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_MAX_MSG, MsgKey.EINKOMMEN_MAX_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ABWESENHEIT_MSG, MsgKey.ABWESENHEIT_MSG_FKJV);
+		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG, MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG_FKJV);
 	}
 
 	private void overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey bemerkungToReplace, MsgKey replaceWithBemerkung) {
