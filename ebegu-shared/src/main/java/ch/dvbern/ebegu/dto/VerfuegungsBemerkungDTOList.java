@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -84,12 +85,12 @@ public class VerfuegungsBemerkungDTOList {
 
 	public void addAllBemerkungen(@Nonnull VerfuegungsBemerkungDTOList additionalBemerkungen) {
 		for (VerfuegungsBemerkungDTO additionalBemerkung : additionalBemerkungen.bemerkungenList) {
-			addBemerkung(additionalBemerkung);
+			bemerkungenList.add(new VerfuegungsBemerkungDTO(additionalBemerkung));
 		}
 	}
 
-	public void addBemerkung(@Nonnull VerfuegungsBemerkungDTO bemerkung) {
-		bemerkungenList.add(new VerfuegungsBemerkungDTO(bemerkung));
+	public void addBemerkung(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
+		bemerkungenList.add(new VerfuegungsBemerkungDTO(ruleValidity, msgKey, locale, args));
 	}
 
 	@Nonnull
