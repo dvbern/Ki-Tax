@@ -17,8 +17,11 @@
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
@@ -32,7 +35,9 @@ describe('EditGemeindeComponentStammdaten', () => {
 
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
 
     beforeEach(waitForAsync(() => {
@@ -48,6 +53,7 @@ describe('EditGemeindeComponentStammdaten', () => {
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
             declarations: [
             ],
@@ -57,6 +63,8 @@ describe('EditGemeindeComponentStammdaten', () => {
     }));
 
     beforeEach(waitForAsync(() => {
+        const properties = new TSPublicAppConfig();
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(properties).toPromise());
         fixture = TestBed.createComponent(EditGemeindeComponentStammdaten);
         component = fixture.componentInstance;
         fixture.detectChanges();

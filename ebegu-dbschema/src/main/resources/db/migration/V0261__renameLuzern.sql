@@ -15,18 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Corresponds with URL
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'lu',
-    SO = 'so',
-    NONE = ''
-}
-
-// Corresponds with name in DB
-export enum KiBonMandantFull {
-    BE = 'Kanton Bern',
-    LU = 'Stadt Luzern',
-    SO = 'Kanton Solothurn',
-    NONE = ''
-}
+UPDATE mandant SET name= 'Stadt Luzern' where mandant_identifier = 'LUZERN';

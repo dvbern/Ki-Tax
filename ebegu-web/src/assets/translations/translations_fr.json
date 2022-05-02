@@ -2911,5 +2911,8 @@
     "PORTAL_OEFFNEN": "Ouvrir le portail",
     "PORTAL_WECHSELN": "Changer de portail",
     "FREIGABE_QUITTUNG_EINLESEN_REQUIRED": "Solothurn: Einlesen Freigabequittung aktiviert",
+    "ZUSATZINFORMATIONEN_INSTITUTION": "Zusatzinformationen Institution",
+    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
+    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

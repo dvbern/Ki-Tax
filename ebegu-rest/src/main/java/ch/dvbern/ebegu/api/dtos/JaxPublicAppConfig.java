@@ -45,6 +45,7 @@ public class JaxPublicAppConfig {
 	private boolean geresEnabledForMandant;
 	private boolean ebeguKibonAnfrageTestGuiEnabled;
 	private final String steuerschnittstelleAktivAb;
+	private boolean zusatzinformationenInstitution;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -78,7 +79,8 @@ public class JaxPublicAppConfig {
 			boolean frenchEnabled,
 			boolean geresEnabled,
 			boolean ebeguKibonAnfrageTestGuiEnabled,
-			String steuerschnittstelleAktivAb
+			String steuerschnittstelleAktivAb,
+			boolean zusatzinformationenInstitution
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -112,6 +114,7 @@ public class JaxPublicAppConfig {
 		this.geresEnabledForMandant = geresEnabled;
 		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
 		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
+		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
 	}
 
 	public String getCurrentNode() {
@@ -360,5 +363,13 @@ public class JaxPublicAppConfig {
 
 	public String getSteuerschnittstelleAktivAb() {
 		return steuerschnittstelleAktivAb;
+	}
+
+	public boolean isZusatzinformationenInstitution() {
+		return zusatzinformationenInstitution;
+	}
+
+	public void setZusatzinformationenInstitution(boolean zusatzinformationenInstitution) {
+		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
 	}
 }
