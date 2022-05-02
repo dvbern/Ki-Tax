@@ -57,7 +57,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		list.addBemerkung(verfuegungsBemerkungDTOGemeinde);
 
 
-		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen(false);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(RuleValidity.GEMEINDE, result.get(0).getRuleValidity());
 		Assert.assertEquals(dateRangeFullAugust, result.get(0).getGueltigkeit());
@@ -70,7 +70,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
 
-		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen(false);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, result.get(0).getMsgKey());
 	}
@@ -81,7 +81,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 
-		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen(false);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(MsgKey.FACHSTELLE_MSG, result.get(0).getMsgKey());
 	}
@@ -103,7 +103,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 
-		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen(false);
 		Assert.assertEquals(0, result.size());
 	}
 
@@ -116,7 +116,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		VerfuegungsBemerkungDTOList bemerkungList = new VerfuegungsBemerkungDTOList();
 		bemerkungList.addBemerkung(bemerkung);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(false);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(dateRangeFirstHalfAugust, result.get(0).getGueltigkeit());
 	}
@@ -133,7 +133,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		bemerkungList.addBemerkung(bemerkung1);
 		bemerkungList.addBemerkung(bemerkung2);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen().stream()
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(false).stream()
 			.sorted(Comparator.comparing(VerfuegungsBemerkungDTO::getGueltigkeit))
 			.collect(Collectors.toList());
 		Assert.assertEquals(2, result.size());
@@ -157,7 +157,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		bemerkungList.addBemerkung(bemerkungErwerbspensumFirst);
 		bemerkungList.addBemerkung(bemerkungErwerbspensumLast);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(false);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, result.get(0).getMsgKey());
 		Assert.assertEquals(dateRangeFullAugust, result.get(0).getGueltigkeit());
@@ -179,7 +179,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		bemerkungList.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
 		bemerkungList.addBemerkung(bemerkungAusserordernlicherAnspruch);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(false);
 		Assert.assertEquals(2, result.size());
 
 		Map<MsgKey, List<VerfuegungsBemerkungDTO>> bemerkungenByMessageKey = mapVerfuegungsBemerkungByMsgKey(result);
@@ -208,7 +208,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		bemerkungList.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
 		bemerkungList.addBemerkung(bemerkungAusserordernlicherAnspruch);
 
-		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen();
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(false);
 		Assert.assertEquals(3, result.size());
 
 		DateRange expectedFachstellenGueltigkeitPart1 =

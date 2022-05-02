@@ -134,12 +134,6 @@ public class VerfuegungsBemerkungDTOList {
 	 * Anspruch FACHSTELLE ueberschreibt Anspruch ERWERBSPENSUM) werden entfernt.
 	 */
 	@Nonnull
-	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
-		return getRequiredBemerkungen(false);
-	}
-
-
-	@Nonnull
 	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen(boolean isTexteForFKJV) {
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
 		BemerkungenRemover bemerkungenRemover = new BemerkungenRemover(toUniqueMap());
