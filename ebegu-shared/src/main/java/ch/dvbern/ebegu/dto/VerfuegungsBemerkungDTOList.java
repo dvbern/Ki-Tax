@@ -89,7 +89,7 @@ public class VerfuegungsBemerkungDTOList {
 	}
 
 	public void addBemerkung(@Nonnull VerfuegungsBemerkungDTO bemerkung) {
-		bemerkungenList.add(bemerkung);
+		bemerkungenList.add(new VerfuegungsBemerkungDTO(bemerkung));
 	}
 
 	@Nonnull
@@ -136,46 +136,9 @@ public class VerfuegungsBemerkungDTOList {
 	@Nonnull
 	public List<VerfuegungsBemerkungDTO> getRequiredBemerkungen(boolean isTexteForFKJV) {
 		// Wir muessen bei gleichem MsgKey dejenigen aus ASIV loeschen
-		BemerkungenRemover bemerkungenRemover = new BemerkungenRemover(toUniqueMap());
+		BemerkungenReplacer bemerkungenRemover = new BemerkungenReplacer(toUniqueMap());
 		// Ab jetzt muessen wir die Herkunft (ASIV oder Gemeinde) nicht mehr beachten.
-		List<VerfuegungsBemerkungDTO> requiredBemerkungen = bemerkungenRemover.getRequiredBemerkungen();
-
-		if(isTexteForFKJV) {
-			overwriteASIVBemerkungenWithFKJVBemerkungen(requiredBemerkungen);
-		}
-
-		return requiredBemerkungen;
-	}
-
-
-	private void overwriteASIVBemerkungenWithFKJVBemerkungen(List<VerfuegungsBemerkungDTO> listToOverwriteKeys) {
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.UNBEZAHLTER_URLAUB_MSG, MsgKey.UNBEZAHLTER_URLAUB_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_ANSPRUCH, MsgKey.ERWERBSPENSUM_ANSPRUCH_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.WOHNSITZ_MSG, MsgKey.WOHNSITZ_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.FACHSTELLE_MSG, MsgKey.FACHSTELLE_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINREICHUNGSFRIST_MSG, MsgKey.EINREICHUNGSFRIST_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, MsgKey.REDUCKTION_RUECKWIRKEND_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ANSPRUCHSAENDERUNG_MSG, MsgKey.ANSPRUCHSAENDERUNG_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG, MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG_FKJV, listToOverwriteKeys);
-		overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.VERFUEGUNG_MIT_ANSPRUCH, MsgKey.VERFUEGUNG_MIT_ANSPRUCH_FKJV, listToOverwriteKeys);
-	}
-
-	private void overwriteASIVBemerkungenWithFKJVBemerkungen(
-		MsgKey bemerkungToReplace,
-		MsgKey replaceWithBemerkung,
-		List<VerfuegungsBemerkungDTO> listToOverwriteKeys) {
-		listToOverwriteKeys.stream()
-			.filter(verfuegungsBemerkungDTO -> bemerkungToReplace
-				== verfuegungsBemerkungDTO.getMsgKey())
-			.forEach(verfuegungsBemerkungDTO -> verfuegungsBemerkungDTO.setMsgKey(replaceWithBemerkung));
+		return bemerkungenRemover.getRequiredBemerkungen(isTexteForFKJV);
 	}
 
 	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> toUniqueMap() {
@@ -206,16 +169,20 @@ public class VerfuegungsBemerkungDTOList {
 		return verfuegungBemerkungList.stream().collect(Collectors.groupingBy(VerfuegungsBemerkungDTO::getMsgKey));
 	}
 
-	private static class BemerkungenRemover {
+	private static class BemerkungenReplacer {
 
 		private final Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap;
 
-		private BemerkungenRemover(Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap) {
+		private BemerkungenReplacer(Map<MsgKey, List<VerfuegungsBemerkungDTO>> messagesMap) {
 			this.messagesMap = messagesMap;
 		}
 
-		protected List<VerfuegungsBemerkungDTO> getRequiredBemerkungen() {
+		protected List<VerfuegungsBemerkungDTO> getRequiredBemerkungen(boolean isFKJVText) {
 			this.removeNotRequiredBemerkungen();
+
+			if (isFKJVText) {
+				this.overwriteASIVBemerkungenWithFKJVBemerkungen();
+			}
 
 			return messagesMap.values().stream()
 				.flatMap(List::stream)
@@ -348,6 +315,37 @@ public class VerfuegungsBemerkungDTOList {
 			return messagesMap.get(messageKey).stream()
 				.map(VerfuegungsBemerkungDTO::getGueltigkeit)
 				.collect(Collectors.toList());
+		}
+
+
+		private void overwriteASIVBemerkungenWithFKJVBemerkungen() {
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.UNBEZAHLTER_URLAUB_MSG, MsgKey.UNBEZAHLTER_URLAUB_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWERBSPENSUM_ANSPRUCH, MsgKey.ERWERBSPENSUM_ANSPRUCH_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.WOHNSITZ_MSG, MsgKey.WOHNSITZ_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.FACHSTELLE_MSG, MsgKey.FACHSTELLE_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.EINREICHUNGSFRIST_MSG, MsgKey.EINREICHUNGSFRIST_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, MsgKey.REDUCKTION_RUECKWIRKEND_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ANSPRUCHSAENDERUNG_MSG, MsgKey.ANSPRUCHSAENDERUNG_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG, MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG_FKJV);
+			overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey.VERFUEGUNG_MIT_ANSPRUCH, MsgKey.VERFUEGUNG_MIT_ANSPRUCH_FKJV);
+		}
+
+		private void overwriteASIVBemerkungenWithFKJVBemerkungen(MsgKey bemerkungToReplace, MsgKey replaceWithBemerkung) {
+			if (!messagesMap.containsKey(bemerkungToReplace)) {
+				return;
+			}
+
+			messagesMap
+				.get(bemerkungToReplace)
+				.forEach(verfuegungsBemerkungDTO -> verfuegungsBemerkungDTO.setMsgKey(replaceWithBemerkung));
 		}
 	}
 }
