@@ -48,8 +48,7 @@ export class PortalSelectionComponent implements OnInit {
 
     public ngOnInit(): void {
         this.mandantService.getAll().subscribe(mandants => {
-            this.mandants = mandants.sort((a, b) =>
-                a.timestampErstellt.diff(b.timestampErstellt));
+            this.mandants = this.orderByTimestampErstellt(mandants);
             this.cd.markForCheck();
         }, error => LOG.error(error));
 
@@ -62,6 +61,11 @@ export class PortalSelectionComponent implements OnInit {
             throttleTime(this.THROTTLE_TIME),
             map(checkScreenSize));
 
+    }
+
+    private orderByTimestampErstellt(mandants: TSMandant[]): TSMandant[] {
+        return mandants.sort((a, b) =>
+            a.timestampErstellt.diff(b.timestampErstellt));
     }
 
     public selectMandant(mandant: TSMandant): void {
