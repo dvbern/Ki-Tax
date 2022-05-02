@@ -87,6 +87,17 @@ public class VerfuegungsBemerkungDTOListTest {
 	}
 
 	@Test
+	public void test_fachstellen_ueberschreibt_FKJV() {
+		VerfuegungsBemerkungDTOList list = new VerfuegungsBemerkungDTOList();
+		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.FACHSTELLE_MSG));
+		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+
+		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen(true);
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(MsgKey.FACHSTELLE_MSG_FKJV, result.get(0).getMsgKey());
+	}
+
+	@Test
 	public void test_keineErweitertenBeduerfnisse_ueberschreibt() {
 		VerfuegungsBemerkungDTOList list = new VerfuegungsBemerkungDTOList();
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
