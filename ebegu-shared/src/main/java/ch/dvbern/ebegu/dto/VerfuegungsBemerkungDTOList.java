@@ -93,6 +93,10 @@ public class VerfuegungsBemerkungDTOList {
 		bemerkungenList.add(new VerfuegungsBemerkungDTO(ruleValidity, msgKey, locale, args));
 	}
 
+	public void addBemerkung(@Nonnull VerfuegungsBemerkungDTO verfuegungsBemerkungDTO) {
+		bemerkungenList.add(verfuegungsBemerkungDTO);
+	}
+
 	@Nonnull
 	public Stream<VerfuegungsBemerkungDTO> getBemerkungenStream() {
 		return this.bemerkungenList.stream();
