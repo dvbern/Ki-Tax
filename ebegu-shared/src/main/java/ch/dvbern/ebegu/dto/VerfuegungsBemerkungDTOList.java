@@ -249,6 +249,9 @@ public class VerfuegungsBemerkungDTOList {
 			}
 			if (messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
+				// Die Key KEINE_ERWEITERTE_BEDUERFNISSE_MSG soll nicht angezeigt werden, er wird nur verwendet,
+				// um den ERWEITERTE_BEDUERFNISSE_MSG zu überschreiben, desshalb löschen wir in auch
+				removeBemerkungForPeriodes(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));
 			}
 			if (messagesMap.containsKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE)) {
 				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));

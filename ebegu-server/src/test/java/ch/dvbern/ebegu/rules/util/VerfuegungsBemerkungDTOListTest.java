@@ -104,8 +104,7 @@ public class VerfuegungsBemerkungDTOListTest {
 		list.addBemerkung(createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 
 		List<VerfuegungsBemerkungDTO> result = list.getRequiredBemerkungen();
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, result.get(0).getMsgKey());
+		Assert.assertEquals(0, result.size());
 	}
 
 
