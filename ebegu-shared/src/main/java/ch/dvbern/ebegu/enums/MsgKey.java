@@ -90,7 +90,7 @@ public enum MsgKey {
 	KESB_PLATZIERUNG_MSG,
 	ERWEITERTE_BEDUERFNISSE_MSG,
 	ERWEITERTE_BEDUERFNISSE_MSG_FKJV,
-	KEINE_ERWEITERTE_BEDUERFNISSE_MSG,
+	KEINE_ERWEITERTE_BEDUERFNISSE_MSG, //Zu diesem Key existiert keine Übersetztung, er wird nur zum Überschreibe verwenet (@see VerfuegungsBemerkungDTOList#removeNotRequiredBemerkungen())
 
 	ZUSATZGUTSCHEIN_JA_KITA,
 	ZUSATZGUTSCHEIN_JA_TFO,
