@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -27,7 +26,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
@@ -44,13 +42,14 @@ public class DokumentenverzeichnisEvaluator {
 
 	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
 	private final AbstractDokumente<Kind, Object> kindAnlagen = new KindDokumente();
-	private final AbstractDokumente<Erwerbspensum, LocalDate> erwerbspensumDokumente = new ErwerbspensumDokumente();
 	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
 
 	private final FinanzielleSituationDokumenteVisitor
 		finanzielleSituationVisitor = new FinanzielleSituationDokumenteVisitor();
 	private final EinkommenVerschlechterungDokumenteVisitor
 		einkommenVerschlechterungDokumenteVisitor = new EinkommenVerschlechterungDokumenteVisitor();
+	private final ErwerbspensumDokumenteVisitor
+		erwerbspensumDokumenteVisitor = new ErwerbspensumDokumenteVisitor();
 
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
@@ -66,7 +65,9 @@ public class DokumentenverzeichnisEvaluator {
 			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			if (isErwerbpensumDokumenteRequired(gesuch)) {
-				erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+				erwerbspensumDokumenteVisitor
+					.getErwerbspensumeDokumenteForMandant(gesuch.extractMandant())
+					.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			}
 			finanzielleSituationVisitor
 				.getFinanzielleSituationDokumenteForFinSitTyp(gesuch.getFinSitTyp())
