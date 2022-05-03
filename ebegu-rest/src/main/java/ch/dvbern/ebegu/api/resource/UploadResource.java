@@ -267,6 +267,11 @@ public class UploadResource {
 			if (existingDokumentGrundOptional.isPresent()) {
 				dokumentGrundToMerge = existingDokumentGrundOptional.get();
 				jaxDokumentGrund = converter.dokumentGrundToJax(dokumentGrundToMerge);
+				if (!dokumentGrundToMerge.getGesuch().getId().equals(gesuchId)) {
+					final String problemString = "Gesuch zu ueberschreiben ist nicht erlaubt";
+					LOG.error(problemString);
+					return Response.serverError().entity(problemString).build();
+				}
 			}
 		}
 
