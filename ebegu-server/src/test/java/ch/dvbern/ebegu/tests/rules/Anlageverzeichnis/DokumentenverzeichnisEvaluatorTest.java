@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.BernErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.KindDokumente;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernErwerbspensumDokumente;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -89,29 +90,42 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	private final KindDokumente kindDokumente = new KindDokumente();
 	private final BernErwerbspensumDokumente bernErwerbspensumDokumente = new BernErwerbspensumDokumente();
+	private final LuzernErwerbspensumDokumente luzernErwerbspensumDokumente = new LuzernErwerbspensumDokumente();
 	private Gesuch testgesuch;
-	private Mandant mandant;
+	private Gesuch testgesuchLuzern;
+	private Mandant mandantBern;
+	private Mandant mandantLuzern;
 
 	@BeforeEach
 	public void setUpCalculator() {
 		testgesuch = new Gesuch();
-		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
-		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
-		testgesuch.setKindContainers(new HashSet<>());
-		testgesuch.setDossier(new Dossier());
-		mandant = TestDataUtil.getMandantKantonBern();
+		testgesuchLuzern = new Gesuch();
+		mandantBern = TestDataUtil.getMandantKantonBern();
+		mandantLuzern = TestDataUtil.getMandantLuzern();
+
+		setUpTestgesuch(testgesuch, mandantBern);
+		setUpTestgesuch(testgesuchLuzern, mandantLuzern);
+	}
+
+	private void setUpTestgesuch(Gesuch gesuch, Mandant mandant) {
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
+		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
+		gesuch.setKindContainers(new HashSet<>());
+		gesuch.setDossier(new Dossier());
+
 		Fall fall = new Fall();
 		fall.setMandant(mandant);
 		Dossier dossier = new Dossier();
 		dossier.setFall(fall);
-		testgesuch.setDossier(dossier);
+		gesuch.setDossier(dossier);
 	}
 
 	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
 		var einstellung = new Einstellung();
 		einstellung.setValue(anspruchUnabhaengig);
-		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, testgesuch.extractGemeinde(), testgesuch.getGesuchsperiode()))
+		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+			testgesuch.extractGemeinde(), testgesuch.getGesuchsperiode()))
 			.andReturn(einstellung)
 			.anyTimes();
 		replayAll();
@@ -237,8 +251,16 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		return dokumentGrund;
 	}
 
-	private DokumentGrund assertDokumentGrund(Erwerbspensum erwerbspensum) {
-		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+	private DokumentGrund assertDokumentGrundBern(Erwerbspensum erwerbspensum) {
+		return assertDokumentGrund(erwerbspensum, testgesuch, mandantBern);
+	}
+
+	private DokumentGrund assertDokumentGrundLuzern(Erwerbspensum erwerbspensum) {
+		return assertDokumentGrund(erwerbspensum, testgesuchLuzern, mandantLuzern);
+	}
+
+	private DokumentGrund assertDokumentGrund(Erwerbspensum erwerbspensum, Gesuch gesuch, Mandant mandant) {
+		final Set<DokumentGrund> calculate = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokumentGrund.getDokumentGrundTyp());
@@ -312,7 +334,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertEquals(1, dokumentList.size());
 		DokumentGrund nachweisSelbstaendigkeit = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(Constants.DEFAULT_LOCALE,
-						mandant),
+				mandantBern),
 			DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 	}
 
@@ -327,7 +349,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assert.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
 
 		Assert.assertEquals(DokumentTyp.NACHWEIS_AUSBILDUNG, dokumentGrund.getDokumentTyp());
 	}
@@ -343,7 +365,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertTrue(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assert.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
 
 		Assert.assertEquals(DokumentTyp.NACHWEIS_RAV, dokumentGrund.getDokumentTyp());
 	}
@@ -359,9 +381,86 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assert.assertTrue(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
 
 		Assert.assertEquals(DokumentTyp.BESTAETIGUNG_ARZT, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void erwpDokumentAngestelltLuzern() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.ANGESTELLT, false);
+
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
+	}
+
+	@Test
+	public void erwpDokumentArbeitlosLuzern() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.RAV, false);
+
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		Assert.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
+
+		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		Assert.assertEquals(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void erwpDokumentInAusbildungLuzern() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.AUSBILDUNG, false);
+
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, erwerbspensum));
+		Assert.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
+
+		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		Assert.assertEquals(DokumentTyp.NACHWEIS_AUSBILDUNG, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void erwpDokumentGesundheitlicheIndikationLuzern() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN, false);
+
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
+		Assert.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
+
+		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		Assert.assertEquals(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void erwpDokumentSelbststaendigLuzern() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.SELBSTAENDIG, false);
+
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
+		Assert.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
+		Assert.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
+
+		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		Assert.assertEquals(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, dokumentGrund.getDokumentTyp());
 	}
 
 	private Set<DokumentGrund> getDokumentGrundsForGS(int gesuchstellerNumber, Set<DokumentGrund> dokumentGrunds) {

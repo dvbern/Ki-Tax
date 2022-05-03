@@ -489,6 +489,7 @@ public final class TestDataUtil {
 		Mandant mandant;
 		mandant = new Mandant();
 		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
+		mandant.setMandantIdentifier(MandantIdentifier.LUZERN);
 		mandant.setName("Stadt Luzern");
 		return mandant;
 	}
