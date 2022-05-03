@@ -139,7 +139,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             mandantService);
     }
 
-    public async $onInit(): Promise<void> {
+    public $onInit(): void {
         this.initFerieninselViewModel();
 
         if (!this.getBetreuungModel().anmeldungMutationZustand) {

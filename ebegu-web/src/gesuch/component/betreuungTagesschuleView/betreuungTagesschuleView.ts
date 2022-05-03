@@ -204,7 +204,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         });
     }
 
-    public async $onInit(): Promise<void> {
+    public $onInit(): void {
         this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuungModel(),
             this.gesuchModelManager.getGesuchsperiode(),
             false);
