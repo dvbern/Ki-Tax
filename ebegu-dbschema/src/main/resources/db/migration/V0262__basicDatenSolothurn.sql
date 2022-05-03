@@ -38,5 +38,5 @@ SELECT UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(), 'system', 'system', 0, ein
 FROM einstellung
 	 INNER JOIN gesuchsperiode g ON einstellung.gesuchsperiode_id = g.id
 	 INNER JOIN mandant m2 ON g.mandant_id = m2.id
-WHERE m2.mandant_identifier = 'BERN' AND gueltig_ab = '2021-08-01' AND gemeinde_id IS NULL AND
+WHERE m2.mandant_identifier = 'BERN' AND gueltig_ab = '2019-08-01' AND gemeinde_id IS NULL AND
 	gesuchsperiode_id IS NOT NULL AND einstellung.mandant_id is NULL;
