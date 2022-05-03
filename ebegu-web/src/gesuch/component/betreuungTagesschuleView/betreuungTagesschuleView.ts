@@ -576,7 +576,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
-            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
     }
 
