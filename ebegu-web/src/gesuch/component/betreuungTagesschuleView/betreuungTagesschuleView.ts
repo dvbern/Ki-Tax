@@ -23,6 +23,7 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
@@ -90,7 +91,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         '$state',
         'GesuchModelManager',
         'EbeguUtil',
-        'CONSTANTS',
         '$scope',
         'BerechnungsManager',
         'ErrorService',
@@ -107,7 +107,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'ApplicationPropertyRS',
         'DownloadRS',
         'GemeindeRS',
-        'I18nServiceRSRest'
+        'I18nServiceRSRest',
+        'MandantService'
     ];
 
     public onSave: () => void;
@@ -132,7 +133,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         $state: StateService,
         gesuchModelManager: GesuchModelManager,
         ebeguUtil: EbeguUtil,
-        CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         errorService: ErrorService,
@@ -150,12 +150,12 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         private readonly downloadRS: DownloadRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        mandantService: MandantService,
     ) {
 
         super($state,
             gesuchModelManager,
             ebeguUtil,
-            CONSTANTS,
             $scope,
             berechnungsManager,
             errorService,
@@ -169,7 +169,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             globalCacheService,
             $timeout,
             $translate,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            mandantService);
 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
@@ -584,5 +585,21 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return this.isAnmeldungTSEditable()
             // neue Anmeldungen haben Status AUSSTEHEND
         || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND);
+    }
+
+    public getMinDateInCurrentPeriode(): moment.Moment {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
+    }
+
+    public getMaxDateInCurrentPeriode(): moment.Moment {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+    }
+
+    public getStartYearCurrentPeriode(): number {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb.year();
+    }
+
+    public getEndYearCurrentPeriode(): number {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis.year();
     }
 }

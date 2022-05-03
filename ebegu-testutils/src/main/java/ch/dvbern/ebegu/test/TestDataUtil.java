@@ -173,6 +173,7 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
@@ -190,11 +191,11 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERU
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_FAMILIENSITUATION_NEU;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH;
-import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
@@ -488,7 +489,7 @@ public final class TestDataUtil {
 		Mandant mandant;
 		mandant = new Mandant();
 		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_LUZERN);
-		mandant.setName("Kanton Luzern");
+		mandant.setName("Stadt Luzern");
 		return mandant;
 	}
 
@@ -1996,6 +1997,7 @@ public final class TestDataUtil {
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(ZEMIS_DISABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(SPRACHE_AMTSPRACHE_DISABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2491,6 +2493,8 @@ public final class TestDataUtil {
 		belegungFerieninsel.setFerienname(Ferienname.SOMMERFERIEN);
 		belegungFerieninsel.setTage(new ArrayList<>());
 		belegungFerieninsel.getTage().add(createBelegungFerieninselTag(LocalDate.now().plusMonths(3)));
+		belegungFerieninsel.setTageMorgenmodul(new ArrayList<>());
+		belegungFerieninsel.getTageMorgenmodul().add(createBelegungFerieninselTag(LocalDate.now().plusMonths(3)));
 		return belegungFerieninsel;
 	}
 

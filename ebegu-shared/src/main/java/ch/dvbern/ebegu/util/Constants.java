@@ -21,6 +21,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -59,17 +61,20 @@ public final class Constants {
 
 	public static final Character LINE_BREAK = '\n';
 	public static final String DATA = "Data";
-	public static final String REGEX_UUID = "(^.*)([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})(.*$)";
+	public static final String REGEX_UUID =
+		"(^.*)([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})(.*$)";
 	public static final String REGEX_EMAIL = "[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}";
 	public static final String REGEX_TELEFON = "(0|\\+41|0041)[ ]*[\\d]{2}[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
-	public static final String REGEX_TELEFON_MOBILE = "(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
+	public static final String REGEX_TELEFON_MOBILE =
+		"(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_URL =
 		"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
 	public static final String REGEX_ZEMIS = "^[0-9]{8}\\.[0-9]$";
 	public static final String PATTERN_DATE = "dd.MM.yyyy";
 	public static final String PATTERN_FILENAME_DATE_TIME = "dd.MM.yyyy_HH.mm.ss";
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(Constants.PATTERN_DATE);
-	public static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(Constants.PATTERN_FILENAME_DATE_TIME);
+	public static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER =
+		DateTimeFormatter.ofPattern(Constants.PATTERN_FILENAME_DATE_TIME);
 
 	public static final String SQL_PATTERN_DATE = "yyyy-MM-dd";
 	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern(SQL_PATTERN_DATE);
@@ -89,11 +94,13 @@ public final class Constants {
 
 	public static final LocalDate GESUCHSPERIODE_17_18_AB = LocalDate.of(2017, 8, 1);
 	public static final LocalDate GESUCHSPERIODE_17_18_BIS = LocalDate.of(2018, 7, 31);
-	public static final DateRange GESUCHSPERIODE_17_18 = new DateRange(Constants.GESUCHSPERIODE_17_18_AB, Constants.GESUCHSPERIODE_17_18_BIS);
+	public static final DateRange GESUCHSPERIODE_17_18 =
+		new DateRange(Constants.GESUCHSPERIODE_17_18_AB, Constants.GESUCHSPERIODE_17_18_BIS);
 
 	public static final LocalDate GESUCHSPERIODE_18_19_AB = LocalDate.of(2018, 8, 1);
 	public static final LocalDate GESUCHSPERIODE_18_19_BIS = LocalDate.of(2019, 7, 31);
-	public static final DateRange GESUCHSPERIODE_18_19 = new DateRange(Constants.GESUCHSPERIODE_18_19_AB, Constants.GESUCHSPERIODE_18_19_BIS);
+	public static final DateRange GESUCHSPERIODE_18_19 =
+		new DateRange(Constants.GESUCHSPERIODE_18_19_AB, Constants.GESUCHSPERIODE_18_19_BIS);
 
 	public static final LocalDateTime START_OF_DATETIME = LocalDateTime.of(1000, 1, 1, 0, 0, 0);
 
@@ -107,7 +114,9 @@ public final class Constants {
 	public static final long BESONDERE_VOLKSSCHULE_BFS_MAX = 10500L;
 	public static final long MAX_LUCENE_QUERY_RUNTIME = 500L;
 
-	public static final int MAX_LUCENE_QUICKSEARCH_RESULTS = 25; // hier gibt es ein Problem, wenn wir fuer keines der Resultate berechtigt sind wird unser resultset leer sein auf client
+	public static final int MAX_LUCENE_QUICKSEARCH_RESULTS = 25;
+		// hier gibt es ein Problem, wenn wir fuer keines der Resultate berechtigt sind wird unser resultset leer sein
+	// auf client
 
 	public static final String DEFAULT_MANDANT_ID = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 	public static final String AUTH_TOKEN_SUFFIX_FOR_NO_TOKEN_REFRESH_REQUESTS = "NO_REFRESH";
@@ -132,11 +141,24 @@ public final class Constants {
 
 	public static final String UNKNOWN_INSTITUTION_NAME = "";
 
-	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
+	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu
+	// generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
-	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE= "00000000-0000-0000-0000-000000000002";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_BE = "00000000-0000-0000-0000-000000000000";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_BE =
+		"00000000-0000-0000-0000-000000000001";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_BE =
+		"00000000-0000-0000-0000-000000000002";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_LU = "00000000-0000-0000-0000-000000000003";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_LU =
+		"00000000-0000-0000-0000-000000000004";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_LU =
+		"00000000-0000-0000-0000-000000000005";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_SO = "00000000-0000-0000-0000-000000000006";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_SO =
+		"00000000-0000-0000-0000-000000000007";
+	public static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_SO =
+		"00000000-0000-0000-0000-000000000008";
 
 	public static final String CSV_DELIMITER = ";";
 	public static final String CSV_NEW_LINE = "\n";
@@ -170,4 +192,16 @@ public final class Constants {
 		int ZUSCHLAG_ERWERBSPENSUM = 20;
 		String EINSTELLUNG_ZUSCHLAG_ERWERBSPENSUM = String.valueOf(ZUSCHLAG_ERWERBSPENSUM);
 	}
+
+	public static final List<String> ALL_UNKNOWN_INSTITUTION_IDS = Arrays.asList(
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_BE,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_BE,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_BE,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_LU,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_LU,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_LU,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA_SO,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE_SO,
+		Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE_SO
+	);
 }

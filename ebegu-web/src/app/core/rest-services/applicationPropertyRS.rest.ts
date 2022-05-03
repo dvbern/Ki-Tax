@@ -53,6 +53,12 @@ export class ApplicationPropertyRS {
         });
     }
 
+    public isMultimandantEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.mulitmandantAktiv;
+        });
+    }
+
     public getSentryEnvName(): IPromise<string> {
         return this.getPublicPropertiesCached().then(response => {
             return response.sentryEnvName;
@@ -146,6 +152,12 @@ export class ApplicationPropertyRS {
     public getGeresEnabledForMandant(): IPromise<boolean> {
         return this.getPublicPropertiesCached().then(response => {
             return response.geresEnabledForMandant;
+        });
+    }
+
+    public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.zusatzinformationenInstitution;
         });
     }
 }

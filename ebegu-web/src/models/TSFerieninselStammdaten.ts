@@ -28,6 +28,7 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
     private _gesuchsperiode: TSGesuchsperiode;
     private _ferienActive: boolean;
     private _potenzielleFerieninselTageFuerBelegung: TSBelegungFerieninselTag[] = [];
+    private _potenzielleFerieninselTageFuerBelegungMorgenmodul: TSBelegungFerieninselTag[] = [];
 
     public constructor() {
         super();
@@ -71,6 +72,14 @@ export class TSFerieninselStammdaten extends TSAbstractMutableEntity {
 
     public set potenzielleFerieninselTageFuerBelegung(value: TSBelegungFerieninselTag[]) {
         this._potenzielleFerieninselTageFuerBelegung = value;
+    }
+
+    public get potenzielleFerieninselTageFuerBelegungMorgenmodul(): TSBelegungFerieninselTag[] {
+        return this._potenzielleFerieninselTageFuerBelegungMorgenmodul;
+    }
+
+    public set potenzielleFerieninselTageFuerBelegungMorgenmodul(value: TSBelegungFerieninselTag[]) {
+        this._potenzielleFerieninselTageFuerBelegungMorgenmodul = value;
     }
 
     public get ferienActive(): boolean {

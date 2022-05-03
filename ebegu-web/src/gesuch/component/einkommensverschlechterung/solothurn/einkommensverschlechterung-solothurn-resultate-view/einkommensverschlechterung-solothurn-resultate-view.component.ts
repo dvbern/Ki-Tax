@@ -50,5 +50,4 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             $transition$);
     }
-
 }

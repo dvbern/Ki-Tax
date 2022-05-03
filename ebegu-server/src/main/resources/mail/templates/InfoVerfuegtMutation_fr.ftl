@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement <#if isSozialdienst>pour ${gesuchsteller.fullName}</#if> a été enregistré</@base64Header>
@@ -28,7 +29,7 @@ ${templateConfiguration.mailCss}
 	<p>
         <#if isSozialdienst>Le changement pour ${gesuchsteller.fullName}<#else>Le changement</#if> que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
 		Vous pouvez consulter le résultat
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>

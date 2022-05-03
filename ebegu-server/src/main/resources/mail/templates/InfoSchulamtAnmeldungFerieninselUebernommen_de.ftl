@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Anmeldung für ${betreuung.kind.kindJA.fullName} akzeptiert</@base64Header>
@@ -27,7 +28,7 @@ ${templateConfiguration.mailCss}
 		Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} an der ${betreuung.institutionStammdaten.institution
 		.name} wurde entgegengenommen. Sie erhalten die definitive Bestätigung der Anmeldung von der gewählten Institution. <br/>
 		Die Betreuungen können <a href="<#if configuration
-		.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${betreuung.extractGesuch().id}">hier</a> eingesehen werden.
+		.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${betreuung.extractGesuch().id}">hier</a> eingesehen werden.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

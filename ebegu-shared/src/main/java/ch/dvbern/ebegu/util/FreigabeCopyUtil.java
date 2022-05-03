@@ -390,7 +390,7 @@ public final class FreigabeCopyUtil {
 		gs.setEinkommenInVereinfachtemVerfahrenAbgerechnet(ja.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		gs.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(ja.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		gs.setGewinnungskosten(ja.getGewinnungskosten());
-		gs.setAbzuegeLiegenschaft(ja.getAbzuegeLiegenschaft());
+		gs.setAbzugSchuldzinsen(ja.getAbzugSchuldzinsen());
 		copyFinanzielleSituationSelbstdeklaration(gs, ja);
 
 	}
@@ -518,6 +518,7 @@ public final class FreigabeCopyUtil {
 		gs.setUnterhaltsBeitraege(ja.getUnterhaltsBeitraege());
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
+		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
 
 	}
 

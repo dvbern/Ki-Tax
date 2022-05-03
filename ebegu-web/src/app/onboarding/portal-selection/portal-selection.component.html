@@ -1,0 +1,44 @@
+<!--
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="select-portal">
+	<p translate>SELECT_PORTAL</p>
+</div>
+
+<div class="portal-list">
+	<div *ngFor="let mandant of mandants" class="portal" (click)="selectMandant(mandant)">
+		<div class="flex-row flex-no-grow-auto">
+			<div class="flew-column-center">
+				<div class="img-container">
+					<img [src]="getMandantLogoUrl(mandant)" height="40px" alt="Logo {{mandant.name}}">
+				</div>
+			</div>
+			<div class="flew-column-center">
+				<p>{{mandant.name}}</p>
+			</div>
+		</div>
+		<div class="flex-grow"></div>
+		<div class="flew-column-center">
+			<div class="onboarding-login-buttons flex-no-grow-auto" *ngIf="!(isScreenMobile$ | async)">
+				<button class="dv-btn onboarding-red-border-button onboarding-login-button-width no-margin">
+					<span translate>PORTAL_OEFFNEN</span>
+				</button>
+			</div>
+			<i class="fa fa-arrow-right" *ngIf="isScreenMobile$ | async"></i>
+		</div>
+	</div>
+</div>

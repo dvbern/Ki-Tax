@@ -134,4 +134,8 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
             this.getResultate()?.massgebendesEinkVorAbzFamGrGS1 :
             this.getResultate()?.massgebendesEinkVorAbzFamGrGS2;
     }
+
+    public getLabelExtralohn(): string {
+       return this.model.getEkvToWorkWith_GS()?.extraLohn ? 'LABEL_13' : 'LABEL_12';
+    }
 }
