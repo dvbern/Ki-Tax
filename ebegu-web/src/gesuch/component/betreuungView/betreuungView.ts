@@ -19,7 +19,6 @@ import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -71,6 +70,7 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
@@ -147,7 +147,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public infomaZahlungen: boolean = false;
+    public showAbrechungDerGutscheineFrage: boolean = false;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -179,7 +179,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public async $onInit(): Promise<void> {
+    public $onInit(): void {
         super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
@@ -197,7 +197,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             } else {
                 // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
-                this.model = await this.initEmptyBetreuung();
+                this.model = this.initEmptyBetreuung();
                 this.initialBetreuung = angular.copy(this.model);
                 this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
                     ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
@@ -305,16 +305,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.zuschlagBehinderungProStd = Number(res.value);
         });
 
-        this.loadInfomaZahlungenActive();
-    }
-
-    private async loadInfomaZahlungenActive(): Promise<void> {
-        if (this.infomaZahlungen) {
-            return;
-        }
-        await this.applicationPropertyRS.getPublicPropertiesCached()
+        this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.infomaZahlungen = response.infomaZahlungen;
+                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
             });
     }
 
@@ -322,7 +315,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Creates a Betreuung for the kind given by the kindNumber attribute of the class.
      * Thus the kindnumber must be set before this method is called.
      */
-    public async initEmptyBetreuung(): Promise<TSBetreuung> {
+    public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
 
         // radio group für vertrag soll zu beginn leer sein falls GS, ansonsten true
@@ -337,9 +330,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        await this.loadInfomaZahlungenActive();
-        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
-        tsBetreuung.auszahlungAnEltern = this.infomaZahlungen;
+        tsBetreuung.auszahlungAnEltern = true;
 
         return tsBetreuung;
     }
