@@ -169,6 +169,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
@@ -611,6 +612,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode);
 		saveEinstellung(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM, "100", gesuchsperiode);
 		saveEinstellung(FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "VORSCHULALTER", gesuchsperiode);
+		saveEinstellung(SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, "VORSCHULALTER", gesuchsperiode);
 		saveEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode);
 		saveEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);

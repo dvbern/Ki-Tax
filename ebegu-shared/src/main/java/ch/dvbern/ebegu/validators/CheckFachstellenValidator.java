@@ -88,7 +88,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		var gemeinde = kindContainer.getGesuch().extractGemeinde();
 		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
 		var mandant = kindContainer.getGesuch().extractMandant();
-		Einstellung schulstufeEinstellung = findSchulstufeEinstellung(gemeinde, gesuchsperiode);
+		Einstellung schulstufeEinstellung = findSchulstufeEinstellungFor(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
 		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
 		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
 		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
@@ -98,10 +98,10 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		return false;
 	}
 
-	private Einstellung findSchulstufeEinstellung(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private Einstellung findSchulstufeEinstellungFor(@Nonnull EinstellungKey einstellungKey, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		var em = createEntityManager();
 		Einstellung schulstufeEinstellung = this.einstellungService
-			.findEinstellung(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode, em);
+			.findEinstellung(einstellungKey, gemeinde, gesuchsperiode, em);
 		closeEntityManager(em);
 		return schulstufeEinstellung;
 	}
@@ -120,10 +120,15 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	private boolean validateSprachlicheIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {
-		if (kindContainer.getKindJA().getEinschulungTyp() == EinschulungTyp.VORSCHULALTER) {
+		var gemeinde = kindContainer.getGesuch().extractGemeinde();
+		var gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
+		Einstellung schulstufeEinstellung = findSchulstufeEinstellungFor(EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
+		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
+		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
+		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
 			return true;
 		}
-		createConstraintViolation("invalid_fachstellen_sprachlich", EinschulungTyp.VORSCHULALTER, context, kindContainer.getGesuch().extractMandant());
+		createConstraintViolation("invalid_fachstellen_sprachlich", maxEinschulungTyp, context, kindContainer.getGesuch().extractMandant());
 		return false;
 	}
 

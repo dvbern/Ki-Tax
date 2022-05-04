@@ -2792,6 +2792,7 @@
     "FKJV_EINGEWOEHNUNG": "FKJV: acclimatation activée",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: différence maximale entre Maximale entre le taux d'activité effectif et requis pour le taux d'activité minimal (en %)",
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: insertion sociale jusqu'à l'âge scolaire compris",
+    "SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE": "Insertion linguistique jusqu'à l'âge scolaire compris",
     "FKJV_PAUSCHALE_BEI_ANSPRUCH": "FKJV: forfait seulement possible, si il y a un droit de bon",
     "FKJV_PAUSCHALE_RUECKWIRKEND": "FKJV: forfait payer retrospectivement, pour autant qu'il y ait un droit de bon",
     "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "FKJV: diminution du revenu que pour les revenus en dessous de X CHF",

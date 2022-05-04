@@ -24,3 +24,16 @@ ALTER table finanzielle_situation_selbstdeklaration_aud drop column abzug_freiwe
 ALTER table finanzielle_situation_selbstdeklaration add sonderabzug_erwerbstaetigkeit_ehegatten DECIMAL(19, 2);
 ALTER table finanzielle_situation_selbstdeklaration_aud add sonderabzug_erwerbstaetigkeit_ehegatten DECIMAL(19, 2);
 
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gesuchsperiode_id)
+	(
+		SELECT UNHEX(REPLACE(UUID(), '-', '')) as id,
+			NOW() as timestamp_erstellt,
+			NOW() as timestamp_muiert,
+			'ebegu' as user_erstellt,
+			'ebegu' as user_mutiert,
+			'0' as version,
+			'SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE' as einstellungkey,
+			'VORSCHULALTER' as value,
+            id as gesuchsperiode_id
+		FROM gesuchsperiode
+	);
