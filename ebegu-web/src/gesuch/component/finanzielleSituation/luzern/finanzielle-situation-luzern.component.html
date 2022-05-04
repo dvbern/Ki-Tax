@@ -46,7 +46,9 @@
             </div>
 
 			<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
-												[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"></dv-finanzielle-situation-require-x>
+												[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                                (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
+            </dv-finanzielle-situation-require-x>
 
 			<div *ngIf="isNotSozialhilfeBezueger()">
 				<div class="form-group">

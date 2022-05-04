@@ -91,6 +91,15 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
     }
 
+    public sozialhilfeBezuegerChange(): void {
+        this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
+        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
+        this.initOrResetDekarationen();
+    }
+
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
         if (newQuellenBesteuert.value === true) {
             this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
