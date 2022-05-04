@@ -42,12 +42,16 @@ public class LuzernKindDokumente extends BernKindDokumente {
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable Kind kind) {
-		if(kind != null && kind.getPensumFachstelle() != null) {
-			//Luzern fordert keine Dokumente für die sprachliche Integration
-			return kind.getPensumFachstelle().getIntegrationTyp() != IntegrationTyp.SPRACHLICHE_INTEGRATION;
+
+		// Für Luzern muss eine andere Prüfung gemacht werden, ob eine Fachstellenbestätigung gefordert ist als für Bern
+		// da Luzern keine Dokumente für die sprachliche Integration fordert
+		if(dokumentTyp == DokumentTyp.FACHSTELLENBESTAETIGUNG) {
+			if(kind != null && kind.getPensumFachstelle() != null) {
+				return kind.getPensumFachstelle().getIntegrationTyp() != IntegrationTyp.SPRACHLICHE_INTEGRATION;
+			}
 		}
 
-		return false;
+		return super.isDokumentNeeded(dokumentTyp, kind);
 	}
 
 }
