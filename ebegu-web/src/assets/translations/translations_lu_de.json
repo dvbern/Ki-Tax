@@ -38,5 +38,7 @@
     "ONBOARDING_BE_LOGIN_DESCRIPTION": "Sie benötigen ein Login für kiBon. Über \"Anmelden\" gelangen Sie auf das Loginportal, wo Sie sich entweder mit einem bestehenden Konto anmelden oder sich registrieren können. Nach der Anmeldung werden Sie wieder auf kiBon zurückgeleitet.",
     "UNREGELMAESSIGE_ARBEITSZEITEN": "Unregelmässige Arbeitszeiten",
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
+    "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
+    "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
