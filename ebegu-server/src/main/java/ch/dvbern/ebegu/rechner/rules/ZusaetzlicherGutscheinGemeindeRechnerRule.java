@@ -51,7 +51,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		EinschulungTyp einschulungsTypAnspruchsgrenze = getAnspruchsgrenzeSchulstufe(inputGemeinde, parameterDTO);
 		EinschulungTyp einschulungTyp = inputGemeinde.getEinschulungTyp();
 		if (einschulungTyp != null) {
-			boolean schulstufeErfuellt = einschulungTyp.ordinal() <= einschulungsTypAnspruchsgrenze.ordinal();
+			boolean schulstufeErfuellt = einschulungTyp.getOrdinalitaet() <= einschulungsTypAnspruchsgrenze.getOrdinalitaet();
 			if (!schulstufeErfuellt) {
 				hasAnspruch = false;
 				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_SCHULSTUFE);

@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
@@ -268,6 +269,22 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Kind kind = createKind(testgesuchLuzern, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SPRACHLICHE_INTEGRATION);
 
 		Assert.assertFalse(luzernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
+	}
+
+	@Test
+	public void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
+		setUpEinstellungMock(testgesuch, "false");
+
+		clearKinder(testgesuch);
+		final String kindName = "Jan";
+		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, null);
+		kind.setKeinPlatzInSchulhort(true);
+		kind.setEinschulungTyp(EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
+
+		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.ABSAGESCHREIBEN_HORTPLATZ, kind));
+
+		final DokumentGrund dokumentGrund = getDokumentGrund();
+		Assert.assertEquals(DokumentTyp.ABSAGESCHREIBEN_HORTPLATZ, dokumentGrund.getDokumentTyp());
 	}
 
 
