@@ -138,6 +138,28 @@
 					</dv-radio-container-x>
 				</div>
 
+				<div class="form-group" *ngIf="veranlagtVorjahrVisible()">
+					<dv-radio-container-x>
+						<label for="veranlagtVorjahr_id" class="required ebegu-h1">
+							{{'VERANLAGT_VORJAHR' | translate}}</label>
+						<mat-radio-group
+								name="veranlagtVorjahr"
+								id="veranlagtVorjahr_id"
+                                #veranlagtVorjahr="ngModel"
+								[(ngModel)]="getModel().finanzielleSituationJA.veranlagtVorjahr"
+								(change)="veranlagtVorjahrChange()"
+								[disabled]="readonly"
+								required>
+							<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+							<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+						</mat-radio-group>
+						<dv-error-messages *ngIf="form.submitted"
+										   [errorObject]="veranlagtVorjahr.errors"
+										   inputId="veranlagt_id">
+						</dv-error-messages>
+					</dv-radio-container-x>
+				</div>
+
 				<dv-selbstdeklaration *ngIf="showSelbstdeklaration()"
 									  [antragstellerNummer]="getAntragstellerNummer()"
 									  [isGemeinsam]="isGemeinsam()"
