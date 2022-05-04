@@ -27,7 +27,6 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBelegungTagesschuleModulIntervallValues,
     TSBelegungTagesschuleModulIntervall,
@@ -576,7 +575,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
-            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
     }
 
