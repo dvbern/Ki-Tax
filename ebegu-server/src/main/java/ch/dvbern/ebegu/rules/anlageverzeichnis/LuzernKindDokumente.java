@@ -25,8 +25,9 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 
-public class LuzernKindDokumente extends AbstractDokumente<Kind, Object> {
+public class LuzernKindDokumente extends BernKindDokumente {
 
 	@Override
 	public void getAllDokumente(
@@ -34,12 +35,18 @@ public class LuzernKindDokumente extends AbstractDokumente<Kind, Object> {
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale
 	) {
+		super.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 	}
 
 	@Override
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
-		@Nullable Kind dataForDocument) {
+		@Nullable Kind kind) {
+		if(kind != null && kind.getPensumFachstelle() != null) {
+			//Luzern fordert keine Dokumente für die sprachliche Integration
+			return kind.getPensumFachstelle().getIntegrationTyp() != IntegrationTyp.SPRACHLICHE_INTEGRATION;
+		}
+
 		return false;
 	}
 

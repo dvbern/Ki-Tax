@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -58,6 +59,7 @@ import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.BernErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.BernKindDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernErwerbspensumDokumente;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernKindDokumente;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -88,7 +90,8 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	@Mock
 	private EinstellungService einstellungServiceMock;
 
-	private final BernKindDokumente kindDokumente = new BernKindDokumente();
+	private final BernKindDokumente bernKindDokumente = new BernKindDokumente();
+	private final LuzernKindDokumente luzernKindDokumente = new LuzernKindDokumente();
 	private final BernErwerbspensumDokumente bernErwerbspensumDokumente = new BernErwerbspensumDokumente();
 	private final LuzernErwerbspensumDokumente luzernErwerbspensumDokumente = new LuzernErwerbspensumDokumente();
 	private Gesuch testgesuch;
@@ -131,7 +134,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		replayAll();
 	}
 
-	private Kind createKind(Gesuch gesuch, String vorname, Kinderabzug ganzerAbzug, FachstelleName fachstellename) {
+	private Kind createKind(Gesuch gesuch, String vorname, Kinderabzug ganzerAbzug, FachstelleName fachstellename, IntegrationTyp integrationTyp) {
 		final KindContainer kindContainer = TestDataUtil.createDefaultKindContainer();
 		kindContainer.getKindJA().setNachname("Chavez");
 		kindContainer.getKindJA().setVorname(vorname);
@@ -141,6 +144,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		if (fachstellename != null) {
 			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 			defaultPensumFachstelle.getFachstelle().setName(fachstellename);
+			defaultPensumFachstelle.setIntegrationTyp(integrationTyp);
 			kindContainer.getKindJA().setPensumFachstelle(defaultPensumFachstelle);
 		} else {
 			kindContainer.getKindJA().setPensumFachstelle(null);
@@ -228,21 +232,47 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void kindDokumentFachstelleTest() {
+	public void kindDokumentFachstelleBernTest() {
 		setUpEinstellungMock(testgesuch, "false");
 
 		clearKinder(testgesuch);
 		final String kindName = "Jan";
-		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG);
+		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG, null);
 
-		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
+		Assert.assertTrue(bernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
 
-		final DokumentGrund dokumentGrund = getDokumentGrund();
+		final DokumentGrund dokumentGrund = getDokumentGrund(testgesuch);
 		Assert.assertEquals(DokumentTyp.FACHSTELLENBESTAETIGUNG, dokumentGrund.getDokumentTyp());
 	}
 
-	private DokumentGrund getDokumentGrund() {
-		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+	@Test
+	public void kindDokumentFachstelleLuzernTest() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		clearKinder(testgesuchLuzern);
+		final String kindName = "Jan";
+		Kind kind = createKind(testgesuchLuzern, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SOZIALE_INTEGRATION);
+
+		Assert.assertTrue(luzernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
+
+		final DokumentGrund dokumentGrund = getDokumentGrund(testgesuchLuzern);
+		Assert.assertEquals(DokumentTyp.FACHSTELLENBESTAETIGUNG, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void kindDokumentFachstelleSrachlicheIntegrationLuzernTest() {
+		setUpEinstellungMock(testgesuchLuzern, "false");
+
+		clearKinder(testgesuchLuzern);
+		final String kindName = "Jan";
+		Kind kind = createKind(testgesuchLuzern, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SPRACHLICHE_INTEGRATION);
+
+		Assert.assertFalse(luzernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
+	}
+
+
+	private DokumentGrund getDokumentGrund(Gesuch gesuch) {
+		final Set<DokumentGrund> calculate = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.KINDER, dokumentGrund.getDokumentGrundTyp());
