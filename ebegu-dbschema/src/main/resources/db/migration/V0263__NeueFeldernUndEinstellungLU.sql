@@ -17,3 +17,10 @@
 
 ALTER table erwerbspensum add unregelmaessige_arbeitszeiten BIT(1) NULL DEFAULT NULL;
 ALTER table erwerbspensum_aud add unregelmaessige_arbeitszeiten BIT(1);
+
+ALTER table finanzielle_situation_selbstdeklaration drop column abzug_freiweilige_zuwendung_partien;
+ALTER table finanzielle_situation_selbstdeklaration_aud drop column abzug_freiweilige_zuwendung_partien;
+
+ALTER table finanzielle_situation_selbstdeklaration add sonderabzug_erwerbstaetigkeit_ehegatten DECIMAL(19, 2);
+ALTER table finanzielle_situation_selbstdeklaration_aud add sonderabzug_erwerbstaetigkeit_ehegatten DECIMAL(19, 2);
+

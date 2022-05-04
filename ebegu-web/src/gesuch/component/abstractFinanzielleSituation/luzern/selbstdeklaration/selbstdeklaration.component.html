@@ -328,18 +328,18 @@
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
-            [(model)]="model.selbstdeklaration.abzugFreiweiligeZuwendungPartien"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ZUWENDUNG_PARTEI'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ZUWENDUNG_PARTEI_HELP'"
+            [(model)]="model.selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten"
+            [labelMessageKey]="'FINANZIELLE_SITUATION_SONDERABZUG_ERWERBSTAETIGKEIT_EHEGATTEN'"
+            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SONDERABZUG_ERWERBSTAETIGKEIT_EHEGATTEN_HELP'"
             [inputRequired]="true"
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.abzugFreiweiligeZuwendungPartien"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugFreiweiligeZuwendungPartien : undefined"
+            [neuerWert]="model.selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten"
+            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : undefined"
             [basisjahr]="finanzModel.getBasisjahr()"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugFreiweiligeZuwendungPartien : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugFreiweiligeZuwendungPartien"
-            [korrektur]="model.selbstdeklaration?.abzugFreiweiligeZuwendungPartien">
+            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten"
+            [korrektur]="model.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten">
         </dv-input-label-field>
     </div>
 </div>

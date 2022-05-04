@@ -1938,8 +1938,8 @@ export class EbeguRestUtil {
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
         restSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklaration.abzugKrankheitsUnfallKosten;
-        restSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-            = selbstdeklaration.abzugFreiweiligeZuwendungPartien;
+        restSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+            = selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten;
         restSelbstdeklaration.abzugKinderVorschule = selbstdeklaration.abzugKinderVorschule;
         restSelbstdeklaration.abzugKinderSchule = selbstdeklaration.abzugKinderSchule;
         restSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
@@ -2058,8 +2058,8 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
             tsSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklarationFromServer.abzugKrankheitsUnfallKosten;
-            tsSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-                = selbstdeklarationFromServer.abzugFreiweiligeZuwendungPartien;
+            tsSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+                = selbstdeklarationFromServer.sonderabzugErwerbstaetigkeitEhegatten;
             tsSelbstdeklaration.abzugKinderVorschule = selbstdeklarationFromServer.abzugKinderVorschule;
             tsSelbstdeklaration.abzugKinderSchule = selbstdeklarationFromServer.abzugKinderSchule;
             tsSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
