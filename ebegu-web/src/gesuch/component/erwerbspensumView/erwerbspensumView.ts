@@ -14,9 +14,11 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSErwerbspensum} from '../../../models/TSErwerbspensum';
@@ -53,12 +55,14 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         '$q',
         '$translate',
         '$timeout',
+        'EinstellungRS'
     ];
 
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
     public hasUnbezahlterUrlaub: boolean;
     public hasUnbezahlterUrlaubGS: boolean;
+    private isUnbezahlterUrlaubAktiv: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -71,6 +75,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -144,6 +149,9 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public isUnbezahlterUrlaubVisible(): boolean {
+        if (!this.isUnbezahlterUrlaubAktiv) {
+            return false;
+        }
         return this.model && this.model.erwerbspensumJA
             && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
                 || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
@@ -154,6 +162,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     private initUnbezahlterUrlaub(): void {
+        this.loadEinstellungUnbezahlterUrlaubAktiv();
         this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
             && this.model.erwerbspensumJA.unbezahlterUrlaub);
         this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
@@ -178,5 +187,15 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             });
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
+    }
+
+    private loadEinstellungUnbezahlterUrlaubAktiv(): void {
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.UNBEZAHLTER_URLAUB_AKTIV,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id)
+            .then(unbezahlterUrlaubAktivEinsellung => {
+                this.isUnbezahlterUrlaubAktiv = unbezahlterUrlaubAktivEinsellung.value === 'true';
+            });
     }
 }
