@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="offenePendenzen" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="ungelesendeMitteilung" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> –  <#if offenePendenzen>Offene Pendenzen</#if><#if ungelesendeMitteilung && offenePendenzen> und</#if><#if ungelesendeMitteilung> neue Mitteilungen</#if> (${institutionStammdaten.institution.name}) / <#if offenePendenzen>Confirmation de places en attente</#if><#if ungelesendeMitteilung && offenePendenzen> et</#if><#if ungelesendeMitteilung> nouveau message</#if> (${institutionStammdaten.institution.name})</@base64Header>
@@ -26,13 +27,13 @@ ${templateConfiguration.mailCss}
     <#if offenePendenzen>
 	<p>
 		Wir möchten Sie darüber informieren, dass für Ihre Institution ${institutionStammdaten.institution.name} in kiBon Pendenzen offen sind. <br>
-		Sie können diese <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/pendenzenBetreuungen">hier</a> einsehen.
+		Sie können diese <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/pendenzenBetreuungen">hier</a> einsehen.
 	</p>
     </#if>
     <#if ungelesendeMitteilung>
 	<p>
 		Wir möchten Sie <#if offenePendenzen> ausserdem </#if>darüber informieren, dass Sie für Ihre Institution ${institutionStammdaten.institution.name} ungelesene Nachrichten im Posteingang haben.
-		Sie können diese <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/posteingang">hier</a> einsehen.
+		Sie können diese <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/posteingang">hier</a> einsehen.
 	</p>
 	</#if>
 	<p>
@@ -51,14 +52,14 @@ ${templateConfiguration.mailCss}
 	<p>
 		Nous vous informons que des places sont en attente de confirmation pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
 		Vous pouvez les consulter
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/pendenzenBetreuungen">ici</a>.
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/pendenzenBetreuungen">ici</a>.
 	</p>
 	</#if>
     <#if ungelesendeMitteilung>
 		<p>
 			Nous vous informons<#if offenePendenzen> aussi </#if> qu'il y a des nouveaux messages pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
 			Vous pouvez les consulter
-			<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/posteingang">ici</a>.
+			<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/posteingang">ici</a>.
 		</p>
     </#if>
 	<p>

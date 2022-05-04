@@ -2131,12 +2131,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isSameMandantForEinstellung(@Nonnull Einstellung einstellung) {
-		//Bei Gemeinde-Einstellungen, ist der Mandant nur auf der Gemeinde, aber nicht auf der Einstellung gesetzt
-		if (einstellung.getGemeinde() != null) {
-			return isSameMandant(einstellung.getGemeinde());
-		}
-
-		return isSameMandant(einstellung);
+		return isSameMandant(einstellung.getGesuchsperiode());
 	}
 
 	private boolean isSameMandant(@Nonnull HasMandant entity) {

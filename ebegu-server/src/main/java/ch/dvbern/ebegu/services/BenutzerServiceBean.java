@@ -1526,7 +1526,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		@Nonnull Einladung einladung
 	) {
 		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
-			+ ebeguConfiguration.getHostname()
+			+ ebeguConfiguration.getHostname(eingeladener.getMandant().getMandantIdentifier())
 			+ "/einladung?typ=" + einladung.getEinladungTyp()
 			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();

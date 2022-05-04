@@ -19,6 +19,7 @@ import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -81,7 +82,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         '$timeout',
         'EinstellungRS',
         'UploadRS',
-        'DownloadRS'
+        'DownloadRS',
+        'ApplicationPropertyRS'
     ];
 
     public filesTooBig: File[];
@@ -99,6 +101,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private diplomatenStatusDisabled: boolean;
     public ausweisNachweisRequiredEinstellung: boolean;
     public dvFileUploadError: object;
+    public frenchEnabled: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -116,7 +119,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         $timeout: ITimeoutService,
         private readonly einstellungRS: EinstellungRS,
         private readonly uploadRS: UploadRS,
-        private readonly downloadRS: DownloadRS
+        private readonly downloadRS: DownloadRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -132,6 +136,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         super.$onInit();
         this.initViewmodel();
         this.loadAusweisNachweiseIfNotNewContainer();
+        this.setFrenchEnabled();
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
@@ -477,4 +482,17 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 win.close();
             });
     }
+
+    private setFrenchEnabled(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(properties => properties.frenchEnabled)
+            .then(frenchEnabled => {
+                this.frenchEnabled = frenchEnabled;
+            });
+    }
+
+    public showKorrespondenzsprache(): boolean {
+        return this.gesuchModelManager.getGesuchstellerNumber() === 1 && this.frenchEnabled;
+    }
+
 }

@@ -1869,6 +1869,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
+        restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         return restFinanzielleSituation;
     }
 
@@ -2009,6 +2010,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
+            finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
         }
@@ -4146,6 +4148,12 @@ export class EbeguRestUtil {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
                     this.parseBelegungFerieninselTagList(tage);
             }
+
+            const tageMorgenmodul = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul;
+            if (tageMorgenmodul) {
+                ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegungMorgenmodul =
+                    this.parseBelegungFerieninselTagList(tageMorgenmodul);
+            }
             return ferieninselStammdatenTS;
         }
         return undefined;
@@ -4193,6 +4201,9 @@ export class EbeguRestUtil {
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
             belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
+            belegungFerieninselTS.tageMorgenmodul = this.parseBelegungFerieninselTagList(
+                receivedBelegungFerieninsel.tageMorgenmodul
+            );
             return belegungFerieninselTS;
         }
         return undefined;
@@ -4234,12 +4245,21 @@ export class EbeguRestUtil {
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
             restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
+            restBelegungFerieninsel.tageMorgenmodul = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
                     const tagRest: any = {};
                     this.abstractMutableEntityToRestObject(tagRest, t);
                     tagRest.tag = DateUtil.momentToLocalDate(t.tag);
                     restBelegungFerieninsel.tage.push(tagRest);
+                });
+            }
+            if (Array.isArray(belegungFerieninselTS.tageMorgenmodul)) {
+                belegungFerieninselTS.tageMorgenmodul.forEach(t => {
+                    const tagRest: any = {};
+                    this.abstractMutableEntityToRestObject(tagRest, t);
+                    tagRest.tag = DateUtil.momentToLocalDate(t.tag);
+                    restBelegungFerieninsel.tageMorgenmodul.push(tagRest);
                 });
             }
             return restBelegungFerieninsel;
@@ -4310,6 +4330,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
+        publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
         return publicAppConfigTS;
 
     }

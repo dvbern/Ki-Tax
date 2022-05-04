@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gemeinde" type="ch.dvbern.ebegu.entities.Gemeinde" -->
 <#-- @ftlvariable name="angebotNameFr" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – L'offre ${angebotNameFr} a été activée</@base64Header>
@@ -21,7 +22,7 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>L'offre ${angebotNameFr} a été activée pour la commune ${gemeinde.name}.</p>
-	<p>Veuillez compléter le profile pour ${angebotNameFr} <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gemeinde/edit/${gemeinde.id}/0">ici</a>.</p>
+	<p>Veuillez compléter le profile pour ${angebotNameFr} <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gemeinde/edit/${gemeinde.id}/0">ici</a>.</p>
 </div>
 
 </body>

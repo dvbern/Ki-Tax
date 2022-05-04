@@ -1757,22 +1757,6 @@ export class GesuchModelManager {
     }
 
     /**
-     * gibt true zurueck wenn es keine defaultTagesschule ist oder wenn es eine defaultTagesschule ist aber die
-     * Gesuchsperiode noch keine TagesschulenAnmeldung erlaubt.
-     *
-     * Eine DefaultTagesschule ist eine Tagesschule, die fuer die erste Gescuhsperiode erstellt wurde, damit man
-     * Betreuungen der Art TAGESSCHULE erstellen darf. Jede Betreuung muss mit einer Institution verknuepft sein und
-     * TagesschuleBetreuungen wurden mit der defaultTagesschule verknuepft. Die DefaultTagesschule wird anhand der ID
-     * erkannt.
-     */
-    public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
-        if (instStamm.id === CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE) {
-            return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
-        }
-        return true;
-    }
-
-    /**
      * Ermittelt, ob fuer das Gesuch ein ausserordentlicher Anspruch in Frage kommt
      */
     public showInfoAusserordentlichenAnspruch(): IPromise<boolean> {

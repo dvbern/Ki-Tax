@@ -1576,8 +1576,8 @@ public class JaxBConverter extends AbstractConverter {
 	 * @return TRUE when the Traegerschaft of the institution was updated
 	 */
 	private boolean updateTraegerschaft(@Nonnull JaxInstitutionUpdate update, @Nonnull Institution institution) {
-		if (!getPrincipalBean().isCallerInRole(UserRole.SUPER_ADMIN)) {
-			// only SUPER_ADMIN may change Traegerschaft
+		if (!getPrincipalBean().isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
+			// only SUPER_ADMIN or Mandant may change Traegerschaft
 			return false;
 		}
 
@@ -2801,6 +2801,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
+		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
 		return finanzielleSituation;
 	}
@@ -2864,6 +2865,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
+		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
 		return jaxFinanzielleSituation;
 	}
@@ -5110,6 +5112,7 @@ public class JaxBConverter extends AbstractConverter {
 		belegungFerieninsel.setFerienname(belegungFerieninselJAX.getFerienname());
 		belegungFerieninsel.setNotfallAngaben(belegungFerieninselJAX.getNotfallAngaben());
 		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTage(), belegungFerieninsel.getTage());
+		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTageMorgenmodul(), belegungFerieninsel.getTageMorgenmodul());
 
 		return belegungFerieninsel;
 	}
@@ -5161,6 +5164,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedBelegungFerieninsel, jaxBelegungFerieninsel);
 		jaxBelegungFerieninsel.setFerienname(persistedBelegungFerieninsel.getFerienname());
 		jaxBelegungFerieninsel.setTage(belegungFerieninselTageListToJAX(persistedBelegungFerieninsel.getTage()));
+		jaxBelegungFerieninsel.setTageMorgenmodul(belegungFerieninselTageListToJAX(persistedBelegungFerieninsel.getTageMorgenmodul()));
 		jaxBelegungFerieninsel.setNotfallAngaben(persistedBelegungFerieninsel.getNotfallAngaben());
 		return jaxBelegungFerieninsel;
 	}

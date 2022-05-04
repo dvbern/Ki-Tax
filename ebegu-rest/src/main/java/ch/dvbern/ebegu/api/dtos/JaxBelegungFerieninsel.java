@@ -43,6 +43,9 @@ public class JaxBelegungFerieninsel extends JaxAbstractDTO {
 	@NotNull
 	private List<JaxBelegungFerieninselTag> tage = new ArrayList<>();
 
+	@NotNull
+	private List<JaxBelegungFerieninselTag> tageMorgenmodul = new ArrayList<>();
+
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private String notfallAngaben;
@@ -61,6 +64,14 @@ public class JaxBelegungFerieninsel extends JaxAbstractDTO {
 
 	public void setTage(List<JaxBelegungFerieninselTag> tage) {
 		this.tage = tage;
+	}
+
+	public List<JaxBelegungFerieninselTag> getTageMorgenmodul() {
+		return tageMorgenmodul;
+	}
+
+	public void setTageMorgenmodul(List<JaxBelegungFerieninselTag> tageMorgenmodul) {
+		this.tageMorgenmodul = tageMorgenmodul;
 	}
 
 	@Nullable

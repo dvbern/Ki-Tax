@@ -15,7 +15,10 @@
 
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {KiBonGuidedTourService} from '../../../app/kibonTour/service/KiBonGuidedTourService';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {SupportDialogService} from '../../../app/shared/services/support-dialog.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -33,6 +36,8 @@ export class DvNgHelpDialogComponent {
     public hasRoleGemeinde: boolean = false;
     public hasRoleInstitution: boolean = false;
     public hasRoleMandant: boolean = false;
+    public mandant$: Observable<KiBonMandant>;
+    public mandantTypes = KiBonMandant;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
@@ -40,10 +45,12 @@ export class DvNgHelpDialogComponent {
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly supportDialogService: SupportDialogService,
+        private readonly mandantService: MandantService
     ) {
         this.hasRoleGemeinde = this.isGemeinde();
         this.hasRoleInstitution = this.isInstitution();
         this.hasRoleMandant = this.isMandant();
+        this.mandant$ = this.mandantService.mandant$;
     }
 
     public close(): void {
