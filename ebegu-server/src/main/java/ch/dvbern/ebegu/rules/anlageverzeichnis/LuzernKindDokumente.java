@@ -49,6 +49,8 @@ public class LuzernKindDokumente extends BernKindDokumente {
 			if(kind != null && kind.getPensumFachstelle() != null) {
 				return kind.getPensumFachstelle().getIntegrationTyp() != IntegrationTyp.SPRACHLICHE_INTEGRATION;
 			}
+
+			return false;
 		}
 
 		return super.isDokumentNeeded(dokumentTyp, kind);
