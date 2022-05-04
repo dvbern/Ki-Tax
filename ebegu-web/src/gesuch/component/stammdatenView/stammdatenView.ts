@@ -248,7 +248,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private isAusweisNachweisRequired(): boolean {
-        return this.ausweisNachweisRequiredEinstellung && this.gesuchModelManager.getGesuch().isOnlineGesuch();
+        return this.ausweisNachweisRequiredEinstellung && this.gesuchModelManager.getGesuch()?.isOnlineGesuch();
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {
