@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -62,5 +63,22 @@ public class GesuchstellerAusweisDokument extends FileMetadata {
 
 	public void setTimestampUpload(@Nonnull LocalDateTime timestampUpload) {
 		this.timestampUpload = timestampUpload;
+	}
+
+	public GesuchstellerAusweisDokument copyGesuchstellerAusweisDokument(
+			GesuchstellerAusweisDokument target,
+			AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+		case MUTATION_NEUES_DOSSIER:
+			target.setTimestampUpload(this.getTimestampUpload());
+			this.copyFileMetadata(target, copyType);
+			break;
+		case ERNEUERUNG:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }

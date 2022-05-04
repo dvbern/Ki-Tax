@@ -338,6 +338,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return this.dokumentGrunds.add(dokumentGrund);
 	}
 
+	public boolean addGesuchstellerAusweisDokument(@NotNull final GesuchstellerAusweisDokument ausweisDokument) {
+		ausweisDokument.setGesuch(this);
+
+		if (this.getGesuchstellerAusweisDokumente() == null) {
+			this.setGesuchstellerAusweisDokumente(new HashSet<>());
+		}
+
+		return this.getGesuchstellerAusweisDokumente().add(ausweisDokument);
+	}
+
 	public FinanzDatenDTO getFinanzDatenDTO() {
 		final Familiensituation familiensituation = extractFamiliensituation();
 		if (familiensituation != null
@@ -959,6 +969,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
+			copyGesuchstellerAusweisDokumente(target, copyType);
 
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
@@ -977,6 +988,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
+			copyGesuchstellerAusweisDokumente(target, copyType);
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
@@ -1056,6 +1068,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 						target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
 					}
 				}
+			);
+		}
+	}
+
+	private void copyGesuchstellerAusweisDokumente(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		if (this.getGesuchstellerAusweisDokumente() != null) {
+			target.setGesuchstellerAusweisDokumente(new HashSet<>());
+			this.getGesuchstellerAusweisDokumente().forEach(
+					ausweisDokument -> {
+						target.addGesuchstellerAusweisDokument(ausweisDokument.copyGesuchstellerAusweisDokument(
+								new GesuchstellerAusweisDokument(),
+								copyType));
+					}
 			);
 		}
 	}
