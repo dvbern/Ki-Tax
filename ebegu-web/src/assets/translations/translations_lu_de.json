@@ -32,5 +32,6 @@
 	"KLASSE1": "1. Klasse (kein Anspruch auf Betreuungsgutscheine)",
 	"KLASSE2": "2. Klasse (kein Anspruch auf Betreuungsgutscheine)",
 	"FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER": "Beziehen Sie aktuell wirtschaftliche Sozialhilfe?",
-	"AUSWEIS_NACHWEIS": "Nachweis Identität"
+	"AUSWEIS_NACHWEIS": "Nachweis Identität",
+	"AUSWEIS_NACHWEIS_TOOLTIP": "Laden Sie ein vollständiges offizielles Dokument (ID, Pass, Aufenthaltsbewilligung, etc.) hoch, welches ihre Identität nachweist."
 }
