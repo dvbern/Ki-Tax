@@ -107,16 +107,17 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		mandantBern = TestDataUtil.getMandantKantonBern();
 		mandantLuzern = TestDataUtil.getMandantLuzern();
 
-		setUpTestgesuch(testgesuch, mandantBern);
-		setUpTestgesuch(testgesuchLuzern, mandantLuzern);
+		setUpTestgesuch(testgesuch, mandantBern, FinanzielleSituationTyp.BERN);
+		setUpTestgesuch(testgesuchLuzern, mandantLuzern, FinanzielleSituationTyp.LUZERN);
 	}
 
-	private void setUpTestgesuch(Gesuch gesuch, Mandant mandant) {
+	private void setUpTestgesuch(Gesuch gesuch, Mandant mandant, FinanzielleSituationTyp finanzielleSituationTyp) {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
 		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
 		gesuch.setKindContainers(new HashSet<>());
 		gesuch.setDossier(new Dossier());
+		gesuch.setFinSitTyp(finanzielleSituationTyp);
 
 		Fall fall = new Fall();
 		fall.setMandant(mandant);

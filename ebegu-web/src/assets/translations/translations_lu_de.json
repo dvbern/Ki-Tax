@@ -44,5 +44,8 @@
     "ERWEITERTE_BETREUUNG_BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Antrag auf Betreuungsgutscheine für besondere Situationen",
     "ERWEITERTE_BETREUUNG_BESTAETIGUNG_KITA_PLUS": "KitaPlus Bestätigung",
     "KINDER_ABSAGESCHREIBEN_HORTPLATZ": "Bestätigung von Volksschule (Ablehnung von Hort)",
+    "FINANZIELLESITUATION_NACHWEIS_SOZIALHILFE": "Nachweis über wirtschaftliche Sozialhilfe (ESI/DAF)",
+    "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Veranlagungsprotokoll",
+    "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Lohnausweis oder Lohnabrechnung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
