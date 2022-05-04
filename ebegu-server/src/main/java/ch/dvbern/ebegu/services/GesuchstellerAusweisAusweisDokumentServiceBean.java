@@ -34,12 +34,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument_;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 /**
@@ -62,7 +59,7 @@ public class GesuchstellerAusweisAusweisDokumentServiceBean extends AbstractBase
 	@Override
 	public GesuchstellerAusweisDokument saveDokument(@Nonnull GesuchstellerAusweisDokument gesuchstellerAusweisDokument) {
 		Objects.requireNonNull(gesuchstellerAusweisDokument);
-		authorizer.checkWriteAuthorization(gesuchstellerAusweisDokument.getGesuchstellerContainer());
+		authorizer.checkWriteAuthorization(gesuchstellerAusweisDokument.getGesuch());
 
 		return persistence.merge(gesuchstellerAusweisDokument);
 	}
@@ -72,24 +69,24 @@ public class GesuchstellerAusweisAusweisDokumentServiceBean extends AbstractBase
 	public Optional<GesuchstellerAusweisDokument> findDokument(@Nonnull String dokumentId) {
 		Objects.requireNonNull(dokumentId, ID_MUSS_GESETZT_SEIN);
 		GesuchstellerAusweisDokument dokument = persistence.find(GesuchstellerAusweisDokument.class, dokumentId);
-		authorizer.checkReadAuthorization(dokument.getGesuchstellerContainer());
+		authorizer.checkReadAuthorization(dokument.getGesuch());
 		return Optional.ofNullable(dokument);
 	}
 
 	@Override
 	public void removeDokument(@Nonnull GesuchstellerAusweisDokument dokument) {
-		authorizer.checkWriteAuthorization(dokument.getGesuchstellerContainer());
+		authorizer.checkWriteAuthorization(dokument.getGesuch());
 		persistence.remove(dokument);
 	}
 
 	@Nonnull
 	@Override
-	public List<GesuchstellerAusweisDokument> findDokumente(@Nonnull String gesuchstellerContainerId) {
-		final GesuchstellerContainer container = persistence.find(GesuchstellerContainer.class, gesuchstellerContainerId);
-		if (container == null) {
+	public List<GesuchstellerAusweisDokument> findDokumente(@Nonnull String gesuchId) {
+		final Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
+		if (gesuch == null) {
 			return Collections.emptyList();
 		}
-		authorizer.checkReadAuthorization(container);
+		authorizer.checkReadAuthorization(gesuch);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GesuchstellerAusweisDokument> query = cb.createQuery(GesuchstellerAusweisDokument.class);
@@ -99,12 +96,12 @@ public class GesuchstellerAusweisAusweisDokumentServiceBean extends AbstractBase
 				gesuchstellerContainerIdParam = cb.parameter(String.class, "gesuchstellerContainerId");
 
 		Predicate predicateRueckfoderungFormularId =
-				cb.equal(root.get(GesuchstellerAusweisDokument_.gesuchstellerContainer).get(
+				cb.equal(root.get(GesuchstellerAusweisDokument_.gesuch).get(
 						AbstractEntity_.id), gesuchstellerContainerIdParam);
 		query.where(predicateRueckfoderungFormularId);
 		query.orderBy(cb.asc(root.get(GesuchstellerAusweisDokument_.timestampUpload)));
 		TypedQuery<GesuchstellerAusweisDokument> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(gesuchstellerContainerIdParam, gesuchstellerContainerId);
+		q.setParameter(gesuchstellerContainerIdParam, gesuchId);
 
 		return q.getResultList();
 	}

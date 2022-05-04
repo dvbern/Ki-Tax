@@ -36,5 +36,5 @@ public interface GesuchstellerAusweisDokumentService {
 	void removeDokument(@Nonnull GesuchstellerAusweisDokument dokument);
 
 	@Nonnull
-	List<GesuchstellerAusweisDokument> findDokumente(@Nonnull String gesuchstellerContainerId);
+	List<GesuchstellerAusweisDokument> findDokumente(@Nonnull String gesuch);
 }

@@ -69,9 +69,9 @@ export class GesuchstellerRS {
     }
 
     public getAllGesuchstellerAusweisDokumente(
-        gesuchstellerContainerId: string
+        gesuchId: string
     ): IPromise<TSGesuchstellerAusweisDokument[]> {
-        return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuchstellerContainerId)}/ausweisdokumente/`)
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuchId)}/ausweisdokumente/`)
             .then(
                 response => response.data,
             )

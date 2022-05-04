@@ -264,6 +264,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private Boolean internePendenz = false;
 
+	@Nullable
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuch")
+	private Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente;
+
+
 	public Gesuch() {
 	}
 
@@ -1340,5 +1345,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
+	}
+
+	@Nullable
+	public Set<GesuchstellerAusweisDokument> getGesuchstellerAusweisDokumente() {
+		return gesuchstellerAusweisDokumente;
+	}
+
+	public void setGesuchstellerAusweisDokumente(
+			@Nullable Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente) {
+		this.gesuchstellerAusweisDokumente = gesuchstellerAusweisDokumente;
 	}
 }

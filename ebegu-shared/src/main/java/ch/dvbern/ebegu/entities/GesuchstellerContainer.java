@@ -92,10 +92,6 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuchstellerContainer")
 	private List<GesuchstellerAdresseContainer> adressen = new ArrayList<>();
 
-	@Nullable
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuchstellerContainer")
-	private Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente;
-
 	public GesuchstellerContainer() {
 	}
 
@@ -423,12 +419,4 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		return getWohnadresseAm(stichtag);
 	}
 
-	@Nullable
-	public Set<GesuchstellerAusweisDokument> getGesuchstellerAusweisDokumente() {
-		return gesuchstellerAusweisDokumente;
-	}
-
-	public void setGesuchstellerAusweisDokumente(@Nullable Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokument) {
-		this.gesuchstellerAusweisDokumente = gesuchstellerAusweisDokument;
-	}
 }

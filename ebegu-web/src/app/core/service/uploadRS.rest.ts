@@ -122,11 +122,11 @@ export class UploadRS {
         });
     }
 
-    public uploadGesuchstellerAusweisDokumente(files: any, gesuchstellerContainerId: string):
+    public uploadGesuchstellerAusweisDokumente(files: any, gesuchId: string):
         IPromise<TSGesuchstellerAusweisDokument[]> {
         const names = this.encodeFileNames(files);
         return this.upload.upload({
-            url: `${this.serviceURL}/gesuchstellerausweis/${encodeURIComponent(gesuchstellerContainerId)}`,
+            url: `${this.serviceURL}/gesuchstellerausweis/${encodeURIComponent(gesuchId)}`,
             method: 'POST',
             headers: {
                 'x-filename': names.join(';'),

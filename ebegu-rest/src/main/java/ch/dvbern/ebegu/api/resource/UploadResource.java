@@ -69,7 +69,6 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
@@ -459,14 +458,14 @@ public class UploadResource {
 
 	@ApiOperation(value = "Speichert ein oder mehrere FerienbetreuungDokumente in der Datenbank", response =
 		JaxRueckforderungDokument.class)
-	@Path("/gesuchstellerausweis/{gesuchstellerContainerId}")
+	@Path("/gesuchstellerausweis/{gesuchId}")
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_BG, SACHBEARBEITER_BG, GESUCHSTELLER })
 	public Response uploadGesuchstellerAusweisDokument(
-		@Nonnull @NotNull @PathParam("gesuchstellerContainerId") JaxId gesuchstellerContainerJAXPId,
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo,
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
@@ -483,21 +482,21 @@ public class UploadResource {
 		}
 
 		// Get RueckforderungId from request Parameter
-		String gesuchstellerContainerId = converter.toEntityId(gesuchstellerContainerJAXPId);
+		String gesuchId = converter.toEntityId(gesuchJAXPId);
 
-		GesuchstellerContainer container =
-			gesuchstellerService.findGesuchsteller(gesuchstellerContainerId)
+		Gesuch gesuch =
+			gesuchService.findGesuch(gesuchId)
 				.orElseThrow(() -> new EbeguRuntimeException(
 					"uploadGesuchstellerAusweisDokument",
-					gesuchstellerContainerId));
+					gesuchId));
 
 		// for every file create a new FerienbetreuungDokument linked with the given FerienbetreuungContainer
 		List<JaxGesuchstellerAusweisDokument> jaxGSAusweisDokumente =
-			extractFilesFromInputAndCreateGesuchstellerAusweisDokument(encodedFilenames, input, container);
+			extractFilesFromInputAndCreateGesuchstellerAusweisDokument(encodedFilenames, input, gesuch);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(UploadResource.class)
-			.path('/' + container.getId())
+			.path('/' + gesuch.getId())
 			.build();
 
 		return Response.created(uri).entity(jaxGSAusweisDokumente).build();
@@ -506,7 +505,7 @@ public class UploadResource {
 	private List<JaxGesuchstellerAusweisDokument> extractFilesFromInputAndCreateGesuchstellerAusweisDokument(
 			String[] encodedFilenames,
 			MultipartFormDataInput input,
-			GesuchstellerContainer container) throws MimeTypeParseException, IOException {int filecounter = 0;
+			Gesuch gesuch) throws MimeTypeParseException, IOException {int filecounter = 0;
 		String partrileName = PART_FILE + '[' + filecounter + ']';
 
 		List<JaxGesuchstellerAusweisDokument> jaxFerienbetreuungDokumente = new ArrayList<>();
@@ -518,12 +517,12 @@ public class UploadResource {
 			UploadFileInfo fileInfo = extractFileInfo(inputParts, encodedFilenames[0], partrileName, input);
 
 			// safe File to Filesystem, if we just analyze the input stream tika classifies all files as octet streams
-			fileSaverService.save(fileInfo, container.getId());
+			fileSaverService.save(fileInfo, gesuch.getId());
 			checkFiletypeAllowed(fileInfo);
 
 			// create and add the new file to FerienbetreuungDokument object and persist it
 			GesuchstellerAusweisDokument gesuchstellerAusweisDokument = new GesuchstellerAusweisDokument();
-			gesuchstellerAusweisDokument.setGesuchstellerContainer(container);
+			gesuchstellerAusweisDokument.setGesuch(gesuch);
 			gesuchstellerAusweisDokument.setFilepfad(fileInfo.getPath());
 			gesuchstellerAusweisDokument.setFilename(fileInfo.getFilename());
 			gesuchstellerAusweisDokument.setFilesize(fileInfo.getSizeString());

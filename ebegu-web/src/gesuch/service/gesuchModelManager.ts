@@ -1843,9 +1843,9 @@ export class GesuchModelManager {
     }
 
     public getAllGesuchstellerAusweisDokumente(
-        gesuchstellerContainerId: string
+        gesuchI: string
     ): IPromise<TSGesuchstellerAusweisDokument[]> {
-        return this.gesuchstellerRS.getAllGesuchstellerAusweisDokumente(gesuchstellerContainerId);
+        return this.gesuchstellerRS.getAllGesuchstellerAusweisDokumente(gesuchI);
     }
 
     public removeGesuchstellerAusweisDokument(id: string): IPromise<unknown> {

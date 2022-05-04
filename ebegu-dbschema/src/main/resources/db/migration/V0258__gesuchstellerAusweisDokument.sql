@@ -27,7 +27,7 @@ CREATE TABLE gesuchsteller_ausweis_dokument (
 	filepfad                             text         NOT NULL,
 	filesize                             VARCHAR(255) NOT NULL,
 	timestamp_upload                     DATETIME     NOT NULL,
-	gesuchsteller_container_id			 BINARY(16)   NOT NULL,
+	gesuch_id			 BINARY(16)   NOT NULL,
 	PRIMARY key (id)
 );
 
@@ -44,7 +44,7 @@ CREATE TABLE gesuchsteller_ausweis_dokument_aud (
 	filepfad                             text,
 	filesize                             VARCHAR(255),
 	timestamp_upload                     DATETIME,
-	gesuchsteller_container_id 			 BINARY(16),
+	gesuch_id 			 BINARY(16),
 	PRIMARY key (id, rev)
 );
 
@@ -53,5 +53,5 @@ ALTER TABLE gesuchsteller_ausweis_dokument_aud
 		FOREIGN key (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_ausweis_dokument
-	ADD CONSTRAINT FK_gesuchstellerAusweisDokument_gesuchstellerContainer_id
-	    FOREIGN key (gesuchsteller_container_id) REFERENCES gesuchsteller_container(id);
+	ADD CONSTRAINT FK_gesuchstellerAusweisDokument_gesuch_id
+	    FOREIGN key (gesuch_id) REFERENCES gesuch(id);

@@ -135,10 +135,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
-        if (EbeguUtil.isNullOrUndefined(this.getModel().id)) {
-            return;
-        }
-        this.gesuchModelManager.getAllGesuchstellerAusweisDokumente(this.getModel().id).then(
+        this.gesuchModelManager.getAllGesuchstellerAusweisDokumente(this.gesuchModelManager.getGesuch().id).then(
             dokumente => this.dokumente = dokumente,
         );
     }
@@ -424,7 +421,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             && this.gesuchModelManager.isLastGesuchsteller();
     }
 
-    public async onUpload(event: any): Promise<void> {
+    public onUpload(event: any): void {
         if (EbeguUtil.isNullOrUndefined(event?.target?.files?.length)) {
             return;
         }
@@ -432,10 +429,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (this.checkFilesLength(files as File[])) {
             return;
         }
-        if (EbeguUtil.isNullOrUndefined(this.getModel().id)) {
-            await this.gesuchModelManager.updateGesuchsteller(false);
-        }
-        this.uploadRS.uploadGesuchstellerAusweisDokumente(files, this.getModel().id)
+        this.uploadRS.uploadGesuchstellerAusweisDokumente(files, this.gesuchModelManager.getGesuch().id)
             .then(dokumente => {
                 this.dokumente = this.dokumente.concat(dokumente);
                 this.dvFileUploadError = null;

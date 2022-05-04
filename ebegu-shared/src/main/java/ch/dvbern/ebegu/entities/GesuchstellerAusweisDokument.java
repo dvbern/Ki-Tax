@@ -25,10 +25,8 @@ import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -40,8 +38,8 @@ public class GesuchstellerAusweisDokument extends FileMetadata {
 	@NotNull
 	@Nonnull
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstellerAusweisDokument_gesuchstellerContainer_id"), nullable = false)
-	private GesuchstellerContainer gesuchstellerContainer;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gesuchstellerAusweisDokument_gesuch_id"), nullable = false)
+	private Gesuch gesuch;
 
 	@NotNull
 	@Column(nullable = false)
@@ -49,12 +47,12 @@ public class GesuchstellerAusweisDokument extends FileMetadata {
 	private LocalDateTime timestampUpload;
 
 	@Nonnull
-	public GesuchstellerContainer getGesuchstellerContainer() {
-		return gesuchstellerContainer;
+	public Gesuch getGesuch() {
+		return gesuch;
 	}
 
-	public void setGesuchstellerContainer(@Nonnull GesuchstellerContainer ferienbetreuungAngabenContainer) {
-		this.gesuchstellerContainer = ferienbetreuungAngabenContainer;
+	public void setGesuch(@Nonnull Gesuch gesuch) {
+		this.gesuch = gesuch;
 	}
 
 	@Nonnull
