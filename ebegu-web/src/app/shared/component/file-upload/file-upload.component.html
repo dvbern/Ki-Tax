@@ -28,6 +28,7 @@
                 colspan="2">
                 <input type="file" multiple style="display: none"
 					   #fileInput
+                       [value]="uploadInputValue"
                        [accept]="allowedMimetypes"
                        (change)="onUploadFile($event);$event.stopPropagation()"/>
                 <button mat-raised-button

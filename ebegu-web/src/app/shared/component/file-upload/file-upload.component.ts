@@ -48,6 +48,7 @@ export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit 
     @Output() public readonly delete: EventEmitter<T> = new EventEmitter();
     @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
 
+    public uploadInputValue: any;
     @Input() public files: TSFile[];
 
     public allowedMimetypes: string = '';
@@ -74,6 +75,8 @@ export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit 
 
     public onUploadFile(event: Event): void {
         this.uploadFile.emit(event as HTMLInputEvent);
+        // reset the value of the input field to allow multiple uploads of a file with the same name
+        this.uploadInputValue = null;
     }
 
     public formatDate(timestampUpload: Moment): string {
