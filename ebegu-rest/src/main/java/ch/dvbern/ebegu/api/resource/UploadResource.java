@@ -205,6 +205,7 @@ public class UploadResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@PermitAll
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Response uploadFiles(
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo,
