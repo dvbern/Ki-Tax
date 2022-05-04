@@ -247,8 +247,8 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public showButtonAnmeldungTagesschule(): boolean {
-        return this.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
-            && this.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode()
+        return this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode()
             && this.isAnmeldungenHinzufuegenMoeglich();
     }
 
@@ -256,22 +256,6 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         return this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
             && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode()
             && this.isAnmeldungenHinzufuegenMoeglich();
-    }
-
-    /**
-     * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
-     */
-    private isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
-        if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
-            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
-            return false;
-        }
-        const gemeinde = this.gesuchModelManager.getGemeinde();
-        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        return gemeinde
-            && gemeinde.angebotTS
-            && gesuchsperiode
-            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
     }
 
     /**
@@ -288,15 +272,6 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             && gemeinde.angebotFI
             && gesuchsperiode
             && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.ferieninselanmeldungenStartdatum);
-    }
-
-    /**
-     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Tagesschulen
-     * (aufgrund des Datums) möglich ist.
-     */
-    private isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
-        return this.gesuchModelManager.gemeindeKonfiguration
-            && this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung();
     }
 
     /**
@@ -334,8 +309,9 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         if (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG) {
             return false;
         }
-        const tagesschuleGrundsaetzlichErlaubt = this.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
-            && this.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
+        const tagesschuleGrundsaetzlichErlaubt =
+            this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
         const ferieninselGrundsaetzlichErlaubt = this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
             && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode();
         return tagesschuleGrundsaetzlichErlaubt || ferieninselGrundsaetzlichErlaubt;
