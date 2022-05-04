@@ -154,18 +154,36 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.finSitLuService.calculateMassgebendesEinkommen(this.model);
     }
 
-    public getYearForDeklaration(): number | string {
-        const currentYear = this.getBasisjahrPlus1();
-        const previousYear = this.getBasisjahr();
-        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
-            return previousYear;
+    public getYearForVeranlagung(): number | string {
+        if (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt)) {
+            return this.getBasisjahr();
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
-            return previousYear;
+        if (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagtVorjahr)) {
+            return this.getBasisjahrMinus1();
+        }
+        return '';
+    }
+
+    public getYearForSelbstdeklaration(): number | string {
+        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
+            return this.getBasisjahr();
         }
         if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
-            return currentYear;
+            return this.getBasisjahrPlus1();
+        }
+        if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagtVorjahr)) {
+            return this.getBasisjahr();
+        }
+        return '';
+    }
+
+    public getYearForDeklaration(): number | string {
+        if (this.showSelbstdeklaration()) {
+            return this.getYearForSelbstdeklaration();
+        }
+        if (this.showVeranlagung()) {
+            return this.getYearForVeranlagung();
         }
         return '';
     }
