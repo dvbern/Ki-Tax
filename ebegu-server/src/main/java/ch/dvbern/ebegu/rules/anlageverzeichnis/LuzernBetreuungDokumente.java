@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -25,18 +24,9 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
-/**
- * Dokumente für Betreuungen:
- * <p>
- * Bestätigung über den ausserordentlichen Betreuungsaufwand:
- * Notwendig, wenn die Frage "Hat Ihr Kind besondere Bedürfnisse und einen darin
- * begründeten ausserordentlichen Betreuungsaufwand?" mit Ja beantwortet wird.
- **/
-public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
+public class LuzernBetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 
 	@Override
 	public void getAllDokumente(
@@ -44,41 +34,10 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale
 	) {
-
-		final List<Betreuung> allBetreuungen = gesuch.extractAllBetreuungen();
-
-		if (allBetreuungen.isEmpty()) {
-			return;
-		}
-
-		allBetreuungen.forEach(betreuung ->
-			add(getDokumentBetreuungsaufwand(betreuung), anlageVerzeichnis)
-		);
 	}
 
-	@Nullable
-	private DokumentGrund getDokumentBetreuungsaufwand(@Nonnull Betreuung betreuung) {
-		return getDokument(
-			DokumentTyp.BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND,
-			betreuung,
-			null,
-			DokumentGrundPersonType.KIND,
-			betreuung.getKind().getKindNummer(),
-			DokumentGrundTyp.ERWEITERTE_BETREUUNG);
-	}
-
-	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Betreuung betreuung) {
-		if (betreuung == null) {
-			return false;
-		}
-
-		switch (dokumentTyp) {
-		case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
-			return betreuung.hasErweiterteBetreuung();
-		default:
-			return false;
-		}
+		return false;
 	}
 }

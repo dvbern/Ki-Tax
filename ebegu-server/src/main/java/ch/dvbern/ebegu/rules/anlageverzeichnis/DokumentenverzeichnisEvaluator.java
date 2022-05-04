@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -42,7 +41,7 @@ public class DokumentenverzeichnisEvaluator {
 
 	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
 	private final KindDokumenteVisitor kindDokumenteVisitor = new KindDokumenteVisitor();
-	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
+	private final BetreuungDokumenteVisitor  betreuungDokumenteVisitor = new BetreuungDokumenteVisitor();
 
 	private final FinanzielleSituationDokumenteVisitor
 		finanzielleSituationVisitor = new FinanzielleSituationDokumenteVisitor();
@@ -79,7 +78,9 @@ public class DokumentenverzeichnisEvaluator {
 			einkommenVerschlechterungDokumenteVisitor
 				.getEinkommenVerschlechterungDokumenteForFinSitTyp(gesuch.getFinSitTyp())
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			betreuungDokumenteVisitor
+				.getBetreuungDokumenteForMandant(mandant)
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
 
 		return anlageVerzeichnis;
