@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -41,7 +41,7 @@ public class DokumentenverzeichnisEvaluator {
 	private EinstellungService einstellungService;
 
 	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
-	private final AbstractDokumente<Kind, Object> kindAnlagen = new KindDokumente();
+	private final KindDokumenteVisitor kindDokumenteVisitor = new KindDokumenteVisitor();
 	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
 
 	private final FinanzielleSituationDokumenteVisitor
@@ -62,11 +62,15 @@ public class DokumentenverzeichnisEvaluator {
 		Set<DokumentGrund> anlageVerzeichnis = new HashSet<>();
 
 		if (gesuch != null) {
+			Mandant mandant = gesuch.extractMandant();
+
 			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			kindDokumenteVisitor
+				.getKindDokumenteForMandant(mandant)
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			if (isErwerbpensumDokumenteRequired(gesuch)) {
 				erwerbspensumDokumenteVisitor
-					.getErwerbspensumeDokumenteForMandant(gesuch.extractMandant())
+					.getErwerbspensumeDokumenteForMandant(mandant)
 					.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			}
 			finanzielleSituationVisitor

@@ -56,7 +56,7 @@ import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.BernErwerbspensumDokumente;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.KindDokumente;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.BernKindDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernErwerbspensumDokumente;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -88,7 +88,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	@Mock
 	private EinstellungService einstellungServiceMock;
 
-	private final KindDokumente kindDokumente = new KindDokumente();
+	private final BernKindDokumente kindDokumente = new BernKindDokumente();
 	private final BernErwerbspensumDokumente bernErwerbspensumDokumente = new BernErwerbspensumDokumente();
 	private final LuzernErwerbspensumDokumente luzernErwerbspensumDokumente = new LuzernErwerbspensumDokumente();
 	private Gesuch testgesuch;
