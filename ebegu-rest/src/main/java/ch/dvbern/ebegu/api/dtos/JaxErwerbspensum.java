@@ -42,6 +42,9 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 	@Nullable
 	private JaxUnbezahlterUrlaub unbezahlterUrlaub;
 
+	@Nullable
+	private boolean unregelmaessigeArbeitszeiten;
+
 
 	public Taetigkeit getTaetigkeit() {
 		return taetigkeit;
@@ -67,5 +70,13 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 
 	public void setUnbezahlterUrlaub(@Nullable JaxUnbezahlterUrlaub unbezahlterUrlaub) {
 		this.unbezahlterUrlaub = unbezahlterUrlaub;
+	}
+
+	public boolean isunregelmaessigeArbeitszeiten() {
+		return unregelmaessigeArbeitszeiten;
+	}
+
+	public void setunregelmaessigeArbeitszeiten(boolean unregelmaessigeArbeitszeiten) {
+		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 }

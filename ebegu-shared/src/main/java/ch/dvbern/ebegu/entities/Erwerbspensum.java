@@ -63,6 +63,10 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erwerbspensum_urlaub_id"), nullable = true)
 	private UnbezahlterUrlaub unbezahlterUrlaub;
 
+	@Column(nullable = true)
+	@Nullable
+	private boolean unregelmaessigeArbeitszeiten;
+
 
 	public Erwerbspensum() {
 	}
@@ -92,6 +96,15 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 
 	public void setUnbezahlterUrlaub(@Nullable UnbezahlterUrlaub unbezahlterUrlaub) {
 		this.unbezahlterUrlaub = unbezahlterUrlaub;
+	}
+
+	@Nullable
+	public boolean isunregelmaessigeArbeitszeiten() {
+		return unregelmaessigeArbeitszeiten;
+	}
+
+	public void setunregelmaessigeArbeitszeiten(@Nullable boolean unregelmaessigeArbeitszeiten) {
+		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
