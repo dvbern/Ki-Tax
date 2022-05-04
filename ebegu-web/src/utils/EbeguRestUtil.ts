@@ -1864,6 +1864,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+        restFinanzielleSituation.veranlagtVorjahr = finanzielleSituation.veranlagtVorjahr;
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
@@ -2005,6 +2006,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
             finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+            finanzielleSituationTS.veranlagtVorjahr = finanzielleSituationFromServer.veranlagtVorjahr;
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;

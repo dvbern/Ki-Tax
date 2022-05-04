@@ -515,6 +515,7 @@ public final class FreigabeCopyUtil {
 		gs.setGemeinsameStekVorjahr(ja.getGemeinsameStekVorjahr());
 		gs.setAlleinigeStekVorjahr(ja.getAlleinigeStekVorjahr());
 		gs.setVeranlagt(ja.getVeranlagt());
+		gs.setVeranlagtVorjahr(ja.getVeranlagtVorjahr());
 		gs.setUnterhaltsBeitraege(ja.getUnterhaltsBeitraege());
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
