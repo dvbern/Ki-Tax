@@ -134,10 +134,6 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected abstract showAutomatischePruefungSteuerdatenFrage(): boolean;
 
     public resetAutomatischePruefungSteuerdaten(): void {
-        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
-        if (EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2)) {
-            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
-        }
         this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
     }
 }
