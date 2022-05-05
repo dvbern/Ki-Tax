@@ -16,10 +16,8 @@
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
 import {Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
@@ -30,7 +28,6 @@ import {GesuchstellerRS} from '../../app/core/service/gesuchstellerRS.rest';
 import {InstitutionStammdatenRS} from '../../app/core/service/institutionStammdatenRS.rest';
 import {KindRS} from '../../app/core/service/kindRS.rest';
 import {VerfuegungRS} from '../../app/core/service/verfuegungRS.rest';
-import {MandantService} from '../../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../models/enums/TSAdressetyp';

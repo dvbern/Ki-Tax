@@ -425,6 +425,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
     }
 
+    // tslint:disable-next-line:no-shadowed-variable
     public getKeys(map: { [key: string]: Array<TSAntragDTO> }): Array<string> {
         const keys: Array<string> = [];
         for (const key in map) {
