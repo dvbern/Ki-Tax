@@ -348,7 +348,9 @@ export class DownloadRS {
             });
     }
 
-    public getAccessTokenGesuchstellerAusweisDokument(gesuchstellerAusweisDokumentId: string): IPromise<TSDownloadFile> {
+    public getAccessTokenGesuchstellerAusweisDokument(
+        gesuchstellerAusweisDokumentId: string
+    ): IPromise<TSDownloadFile> {
         return this.http.get(
             `${this.serviceURL}/sozialdienstFallDokument/${encodeURIComponent(gesuchstellerAusweisDokumentId)}`)
             .then((response: any) => {

@@ -17,7 +17,9 @@ import {waitForAsync} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -42,6 +44,8 @@ describe('stammdatenView', () => {
     let $timeout: ITimeoutService;
     let einstellungRS: EinstellungRS;
     let applicationPropertyRS: ApplicationPropertyRS;
+    let uploadRS: UploadRS;
+    let downloadRS: DownloadRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -60,6 +64,8 @@ describe('stammdatenView', () => {
         $timeout = $injector.get('$timeout');
         einstellungRS = $injector.get('EinstellungRS');
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+        uploadRS = $injector.get('UploadRS');
+        downloadRS = $injector.get('DownloadRS');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -75,6 +81,8 @@ describe('stammdatenView', () => {
             ewkRS,
             $timeout,
             einstellungRS,
+            uploadRS,
+            downloadRS,
             applicationPropertyRS);
     })));
 
