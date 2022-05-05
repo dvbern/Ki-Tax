@@ -1361,6 +1361,7 @@ export class EbeguRestUtil {
             restMandant.name = mandant.name;
             restMandant.angebotTS = mandant.angebotTS;
             restMandant.angebotFI = mandant.angebotFI;
+            restMandant.mandantIdentifier = mandant.mandantIdentifier;
             return restMandant;
         }
         return undefined;
@@ -1372,6 +1373,7 @@ export class EbeguRestUtil {
             mandantTS.name = mandantFromServer.name;
             mandantTS.angebotTS = mandantFromServer.angebotTS;
             mandantTS.angebotFI = mandantFromServer.angebotFI;
+            mandantTS.mandantIdentifier = mandantFromServer.mandantIdentifier;
             return mandantTS;
         }
         return undefined;
@@ -1899,6 +1901,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
+        restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         return restFinanzielleSituation;
     }
 
@@ -2050,6 +2053,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
+            finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
         }
@@ -2267,6 +2271,7 @@ export class EbeguRestUtil {
         restKind.ausAsylwesen = kind.ausAsylwesen;
         restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
+        restKind.keinPlatzInSchulhort = kind.keinPlatzInSchulhort;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
@@ -2341,6 +2346,7 @@ export class EbeguRestUtil {
             kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
             kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
+            kindTS.keinPlatzInSchulhort = kindFromServer.keinPlatzInSchulhort;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
@@ -4194,6 +4200,12 @@ export class EbeguRestUtil {
                 ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegung =
                     this.parseBelegungFerieninselTagList(tage);
             }
+
+            const tageMorgenmodul = receivedFerieninselStammdaten.potenzielleFerieninselTageFuerBelegungMorgenmodul;
+            if (tageMorgenmodul) {
+                ferieninselStammdatenTS.potenzielleFerieninselTageFuerBelegungMorgenmodul =
+                    this.parseBelegungFerieninselTagList(tageMorgenmodul);
+            }
             return ferieninselStammdatenTS;
         }
         return undefined;
@@ -4241,6 +4253,9 @@ export class EbeguRestUtil {
             belegungFerieninselTS.ferienname = receivedBelegungFerieninsel.ferienname;
             belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
+            belegungFerieninselTS.tageMorgenmodul = this.parseBelegungFerieninselTagList(
+                receivedBelegungFerieninsel.tageMorgenmodul
+            );
             return belegungFerieninselTS;
         }
         return undefined;
@@ -4282,12 +4297,21 @@ export class EbeguRestUtil {
             restBelegungFerieninsel.ferienname = belegungFerieninselTS.ferienname;
             restBelegungFerieninsel.notfallAngaben = belegungFerieninselTS.notfallAngaben;
             restBelegungFerieninsel.tage = [];
+            restBelegungFerieninsel.tageMorgenmodul = [];
             if (Array.isArray(belegungFerieninselTS.tage)) {
                 belegungFerieninselTS.tage.forEach(t => {
                     const tagRest: any = {};
                     this.abstractMutableEntityToRestObject(tagRest, t);
                     tagRest.tag = DateUtil.momentToLocalDate(t.tag);
                     restBelegungFerieninsel.tage.push(tagRest);
+                });
+            }
+            if (Array.isArray(belegungFerieninselTS.tageMorgenmodul)) {
+                belegungFerieninselTS.tageMorgenmodul.forEach(t => {
+                    const tagRest: any = {};
+                    this.abstractMutableEntityToRestObject(tagRest, t);
+                    tagRest.tag = DateUtil.momentToLocalDate(t.tag);
+                    restBelegungFerieninsel.tageMorgenmodul.push(tagRest);
                 });
             }
             return restBelegungFerieninsel;
@@ -4358,6 +4382,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
+        publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
         return publicAppConfigTS;
 
     }

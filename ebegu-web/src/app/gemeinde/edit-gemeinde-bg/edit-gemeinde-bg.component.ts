@@ -454,9 +454,14 @@ export class EditGemeindeComponentBG implements OnInit {
             config.initProperties();
             this.einstellungRS.getAllEinstellungenBySystemCached(config.gesuchsperiode.id)
                 .then(einstellungen => {
-                    const einstellung = einstellungen
+                    const einstellungFKJVTexte = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
-                    config.isTextForFKJV = einstellung.getValueAsBoolean();
+                    config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
+
+                    const einstellungAnspruchUnabhaengigBeschaeftigung = einstellungen
+                        .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+                    config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
+                        einstellungAnspruchUnabhaengigBeschaeftigung.getValueAsBoolean();
                 });
         });
     }

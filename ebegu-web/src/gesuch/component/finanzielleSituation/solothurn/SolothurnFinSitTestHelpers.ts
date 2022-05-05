@@ -73,7 +73,8 @@ export class SolothurnFinSitTestHelpers {
                 'isKorrekturModusJugendamt',
                 'setGesuchstellerNumber',
                 'areThereOnlySchulamtAngebote',
-                'getBasisjahrMinus'
+                'getBasisjahrMinus',
+                'getFamiliensituation'
             ]);
     }
 

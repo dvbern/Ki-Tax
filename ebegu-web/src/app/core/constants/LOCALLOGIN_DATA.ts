@@ -49,7 +49,7 @@ export const LOCALLOGIN_DATA = {
     LU: {
         mandant: {
             id: '485d7483-30a2-11ec-a86f-b89a2ae4a038',
-            name: 'Kanton Luzern',
+            name: 'Stadt Luzern',
         },
         traegerschaft: {
             id: '31bf2433-30a3-11ec-a86f-b89a2ae4a038',

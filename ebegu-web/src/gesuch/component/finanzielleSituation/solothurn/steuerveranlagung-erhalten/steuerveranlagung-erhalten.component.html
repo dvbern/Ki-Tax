@@ -1,7 +1,35 @@
 <div class="row">
+    <div class="col-xs-12 dv-input-container-question">
+        <div class="form-group">
+            <span class="ebegu-h1 required">{{'MOMENTAN_SELBSTSTAENDIG' | translate}}</span>
+            <dv-input-container-x [verticalAlign]="true">
+                <dv-radio-container-x>
+                    <mat-radio-group
+                        aria-labelledby="selbststaendig_id"
+                        name="selbststaendig"
+                        id="selbststaendig_id"
+                        required
+                        #selbststaendig="ngModel"
+                        dvEnableElement
+                        [enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()"
+                        [(ngModel)]="model.finanzielleSituationJA.momentanSelbststaendig">
+                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                    </mat-radio-group>
+                </dv-radio-container-x>
+                <dv-error-messages
+                    [errorObject]="selbststaendig.errors"
+                    inputId="selbststaendig_id">
+                </dv-error-messages>
+            </dv-input-container-x>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="showVeranlagungErhalten()">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
-			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
+			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === false" class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
+			<span *ngIf="model.finanzielleSituationJA.momentanSelbststaendig === true"  class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), basisjahrPlus: gesuchModelManager.getBasisjahrPlus(1), basisjahrMinus: gesuchModelManager.getBasisjahrMinus(1)} }}</span>
             <dv-input-container-x [verticalAlign]="true">
 				<dv-radio-container-x>
 					<mat-radio-group

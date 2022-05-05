@@ -206,5 +206,7 @@ export function getGemeindspezifischeBGConfigKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
         TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
         TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+        TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
+        TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD
     ];
 }

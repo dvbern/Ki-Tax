@@ -72,6 +72,9 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private EinschulungTyp einschulungTyp;
 
 	@Nullable
+	private Boolean keinPlatzInSchulhort;
+
+	@Nullable
 	private JaxPensumFachstelle pensumFachstelle;
 
 	@Nullable
@@ -257,5 +260,14 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setInPruefung(@Nonnull Boolean inPruefung) {
 		this.inPruefung = inPruefung;
+	}
+
+	@Nullable
+	public Boolean getKeinPlatzInSchulhort() {
+		return keinPlatzInSchulhort;
+	}
+
+	public void setKeinPlatzInSchulhort(@Nullable Boolean keinPlatzInSchulhort) {
+		this.keinPlatzInSchulhort = keinPlatzInSchulhort;
 	}
 }

@@ -59,6 +59,12 @@ public interface MitteilungService {
 	Mitteilung setMitteilungErledigt(@Nonnull String mitteilungsId);
 
 	/**
+	 * Setzt die Mitteilung mit der uebergebenen ID als neu
+	 */
+	@Nonnull
+	Mitteilung setMitteilungUngelesen(@Nonnull String mitteilungsId);
+
+	/**
 	 * Sucht die Mitteilung mit der uebergebenen ID
 	 */
 	@Nonnull

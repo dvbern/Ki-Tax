@@ -167,9 +167,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	private void initGemeindeNummerAndMandant(@Nonnull Gemeinde gemeinde) {
-		if (gemeinde.getMandant() == null) {
-			gemeinde.setMandant(requireNonNull(principalBean.getMandant()));
-		}
+		gemeinde.setMandant(requireNonNull(principalBean.getMandant()));
+
 		if (gemeinde.getGemeindeNummer() == 0) {
 			gemeinde.setGemeindeNummer(getNextGemeindeNummer());
 		}
