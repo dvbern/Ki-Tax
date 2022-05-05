@@ -16,22 +16,19 @@
  */
 
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import {TSAbstractEntity} from './TSAbstractEntity';
+import {TSAbstractGemeindeStammdaten} from './TSAbstractGemeindeStammdaten';
 import {TSAdresse} from './TSAdresse';
 import {TSBenutzer} from './TSBenutzer';
 import {TSGemeinde} from './TSGemeinde';
-import {TSGemeindeKonfiguration} from './TSGemeindeKonfiguration';
-import {TSGesuchsperiode} from './TSGesuchsperiode';
 import {TSTextRessource} from './TSTextRessource';
 
-export class TSGemeindeStammdaten extends TSAbstractEntity {
+export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
     public administratoren: string; // read only
     public sachbearbeiter: string; // read only
     public defaultBenutzerBG: TSBenutzer;
     public defaultBenutzerTS: TSBenutzer;
     public defaultBenutzer: TSBenutzer;
     public gemeinde: TSGemeinde;
-    public adresse: TSAdresse;
     public bgAdresse: TSAdresse;
     public bgTelefon: string;
     public bgEmail: string;
@@ -39,11 +36,6 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public tsTelefon: string;
     public tsEmail: string;
     public beschwerdeAdresse: TSAdresse;
-    public mail: string;
-    public telefon: string;
-    public webseite: string;
-    public korrespondenzspracheDe: boolean;
-    public korrespondenzspracheFr: boolean;
     public benutzerListeBG: TSBenutzer[]; // read only
     public benutzerListeTS: TSBenutzer[]; // read only
     public kontoinhaber: string;
@@ -60,26 +52,13 @@ export class TSGemeindeStammdaten extends TSAbstractEntity {
     public standardDokUnterschriftTitel2: string;
     public standardDokUnterschriftName2: string;
     public tsVerantwortlicherNachVerfuegungBenachrichtigen: boolean;
-    public altGemeindeKontaktText: string;
-    public hasAltGemeindeKontakt: boolean;
     public zusatzText: string;
     public hasZusatzText: boolean;
-    // ---------- Konfiguration ----------
-    public konfigurationsListe: TSGemeindeKonfiguration[];
     public externalClients: string[];
     public usernameScolaris: string;
     public emailBeiGesuchsperiodeOeffnung: boolean;
     public gutscheinSelberAusgestellt: boolean;
     public gemeindeAusgabestelle: TSGemeinde;
-
-    public getGemeindeKonfigurationForGesuchsperiode(gesuchsperiode: TSGesuchsperiode): TSGemeindeKonfiguration {
-        for (const konfigurationsListeElement of this.konfigurationsListe) {
-            if (konfigurationsListeElement.gesuchsperiode.id === gesuchsperiode.id) {
-                return konfigurationsListeElement;
-            }
-        }
-        return undefined;
-    }
 
     /**
      * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist

@@ -30,6 +30,7 @@ import {TSExternalClientAssignment} from '../../models/TSExternalClientAssignmen
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeRegistrierung} from '../../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -160,6 +161,11 @@ export class GemeindeRS implements IEntityRS {
     public getGemeindeStammdaten(gemeindeId: string): IPromise<TSGemeindeStammdaten> {
         return this.$http.get(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`)
             .then(response => this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data));
+    }
+
+    public getGemeindeStammdatenLite(gemeindeId: string): IPromise<TSGemeindeStammdatenLite> {
+        return this.$http.get(`${this.serviceURL}/stammdaten/lite/${encodeURIComponent(gemeindeId)}`)
+            .then(response => this.ebeguRestUtil.parseGemeindeStammdatenLite(new TSGemeindeStammdatenLite(), response.data));
     }
 
     public saveGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): IPromise<TSGemeindeStammdaten> {
