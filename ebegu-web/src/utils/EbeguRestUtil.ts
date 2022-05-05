@@ -2221,6 +2221,7 @@ export class EbeguRestUtil {
         restKind.ausAsylwesen = kind.ausAsylwesen;
         restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
+        restKind.keinPlatzInSchulhort = kind.keinPlatzInSchulhort;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
@@ -2295,6 +2296,7 @@ export class EbeguRestUtil {
             kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
             kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
+            kindTS.keinPlatzInSchulhort = kindFromServer.keinPlatzInSchulhort;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;

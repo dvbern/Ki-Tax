@@ -110,6 +110,10 @@ public class Kind extends AbstractPersonEntity {
 	@Enumerated(EnumType.STRING)
 	private EinschulungTyp einschulungTyp;
 
+	@Column(nullable = false)
+	@Nonnull
+	private Boolean keinPlatzInSchulhort = false;
+
 	@Valid
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -426,5 +430,14 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setZukunftigeGeburtsdatum(Boolean zukunftigeGeburtsdatum) {
 		this.zukunftigeGeburtsdatum = zukunftigeGeburtsdatum;
+	}
+
+	@Nonnull
+	public Boolean hasKeinPlatzInSchulhort() {
+		return keinPlatzInSchulhort;
+	}
+
+	public void setKeinPlatzInSchulhort(@Nonnull Boolean keinPlatzInSchulhort) {
+		this.keinPlatzInSchulhort = keinPlatzInSchulhort;
 	}
 }
