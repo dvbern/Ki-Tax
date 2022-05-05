@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -262,17 +263,17 @@ public final class EbeguUtil {
 				return false;
 			}
 			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-							== EnumFamilienstatus.VERHEIRATET) {
+				requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+					== EnumFamilienstatus.VERHEIRATET) {
 				// finsit is gemeinsam for verheiratet in Luzern
 				return true;
 			}
 			if (gesuch.getGesuchsteller2() != null &&
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
-				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
-				&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())))
+					(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
+						&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+						.getFinanzielleSituationContainer()
+						.getFinanzielleSituationJA(), gesuch.getFinSitTyp())))
 			) {
 				return false;
 			}
@@ -301,7 +302,7 @@ public final class EbeguUtil {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
 					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
 					return false;
@@ -314,7 +315,7 @@ public final class EbeguUtil {
 				}
 				if (gesuch.getGesuchsteller2() != null
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
-					&& !isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+					&& !isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
 					.getEinkommensverschlechterungContainer()
 					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())
 				) {
@@ -331,14 +332,14 @@ public final class EbeguUtil {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
+				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
 					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp())) {
 					return false;
 				}
 				if (gesuch.getGesuchsteller2() != null
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-					return isAbstractFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
+					return isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
 						.getEinkommensverschlechterungContainer()
 						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp());
 				}
@@ -349,9 +350,21 @@ public final class EbeguUtil {
 	}
 
 	private static boolean isFinanzielleSituationVollstaendig(
-			@Nonnull FinanzielleSituation finanzielleSituation,
-			FinanzielleSituationTyp finSitTyp) {
-		final boolean valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp);
+		@Nonnull FinanzielleSituation finanzielleSituation,
+		FinanzielleSituationTyp finSitTyp) {
+		boolean valid = false;
+		// Solothurn hat nur einen Teil von seiner Feldern in der Abstract Methode so wir muessen
+		if (finSitTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
+			valid =
+				(finanzielleSituation.getBruttoLohn() != null && finanzielleSituation.getSteuerbaresVermoegen() != null)
+					|| (finanzielleSituation.getNettolohn() != null
+					&& finanzielleSituation.getUnterhaltsBeitraege() != null
+					&& finanzielleSituation.getAbzuegeKinderAusbildung() != null
+					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
+		} else {
+			valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp);
+		}
+
 		if (!valid) {
 			return false;
 		}
@@ -366,9 +379,23 @@ public final class EbeguUtil {
 		return true;
 	}
 
+	private static boolean isEinkommensverschlechterungVollstaendig(
+		@Nonnull Einkommensverschlechterung einkommensverschlechterung,
+		FinanzielleSituationTyp finSitTyp) {
+		if (finSitTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
+			return einkommensverschlechterung.getBruttolohnAbrechnung1() != null
+				&& einkommensverschlechterung.getBruttolohnAbrechnung2() != null
+				&& einkommensverschlechterung.getBruttolohnAbrechnung3() != null
+				&& einkommensverschlechterung.getExtraLohn() != null
+				&& einkommensverschlechterung.getNettoVermoegen() != null;
+		}
+
+		return isAbstractFinanzielleSituationVollstaendig(einkommensverschlechterung, finSitTyp);
+	}
+
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
-			@Nonnull AbstractFinanzielleSituation finanzielleSituation,
-			FinanzielleSituationTyp finSitTyp) {
+		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
+		FinanzielleSituationTyp finSitTyp) {
 		return finanzielleSituation.isVollstaendig(finSitTyp);
 	}
 
@@ -567,7 +594,7 @@ public final class EbeguUtil {
 	public static String getUserMandantString(PrincipalBean principalBean) {
 		String benutzerId = principalBean.getPrincipal().getName();
 		if (Objects.equals(benutzerId, Constants.ANONYMOUS_USER_USERNAME) ||
-				Objects.equals(benutzerId, Constants.LOGINCONNECTOR_USER_USERNAME)) {
+			Objects.equals(benutzerId, Constants.LOGINCONNECTOR_USER_USERNAME)) {
 			return benutzerId;
 		}
 		return principalBean.getBenutzer().getUsername() + ":" + principalBean.getBenutzer().getMandant().getName();

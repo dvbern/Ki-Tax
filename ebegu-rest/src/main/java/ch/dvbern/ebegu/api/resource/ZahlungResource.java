@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -163,7 +164,13 @@ public class ZahlungResource {
 		@Nonnull @QueryParam("pageSize") String pageSizeParam
 	) {
 
+		JaxPaginationDTO<JaxZahlungsauftrag> jaxPaginationDTO = new JaxPaginationDTO<>();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+
+		if(CollectionUtils.isEmpty(allowedInst)) {
+			return jaxPaginationDTO;
+		}
+
 		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO = toZahlungenSearchParamsDTO(
 			filterGemeinde,
 			sortPredicate,
@@ -180,7 +187,6 @@ public class ZahlungResource {
 
 		Long count = zahlungService.countAllZahlungsauftraege(zahlungenSearchParamsDTO);
 
-		JaxPaginationDTO<JaxZahlungsauftrag> jaxPaginationDTO = new JaxPaginationDTO<>();
 		jaxPaginationDTO.setResultList(zahlungenList);
 		jaxPaginationDTO.setTotalCount(count);
 		return jaxPaginationDTO;

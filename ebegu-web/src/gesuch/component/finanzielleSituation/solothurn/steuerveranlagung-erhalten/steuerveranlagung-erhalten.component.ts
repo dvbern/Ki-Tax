@@ -1,6 +1,7 @@
-import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -26,5 +27,9 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     public setSteuerveranlagungErhalten(value: any): void {
         this.model.finanzielleSituationJA.steuerveranlagungErhalten = value;
         this.steuerveranlagungErhaltenChange.emit(value);
+    }
+
+    public showVeranlagungErhalten(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationJA.momentanSelbststaendig);
     }
 }

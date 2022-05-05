@@ -652,13 +652,13 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
 		Assert.assertEquals(8, dokumentGrundGS1.size());
 
-		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2016", 1);
-		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2017", 1);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, null, 1);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, null, 1);
 
 		dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
 		Assert.assertEquals(8, dokumentGrundGS2.size());
-		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2016", 2);
-		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2017", 2);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, null, 2);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, null, 2);
 	}
 
 	private void assertTypeForNachweisLohnausweis(Set<DokumentGrund> dokumentGrunds, String year, int gsNumber) {

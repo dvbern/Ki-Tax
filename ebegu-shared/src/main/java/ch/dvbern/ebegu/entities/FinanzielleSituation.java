@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -101,6 +100,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal bruttoLohn;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean momentanSelbststaendig;
 
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
@@ -236,6 +239,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.automatischePruefungErlaubt = automatischePruefungErlaubt;
 	}
 
+	@Nullable
+	public Boolean getMomentanSelbststaendig() {
+		return momentanSelbststaendig;
+	}
+
+	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
+		this.momentanSelbststaendig = momentanSelbststaendig;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -249,14 +261,14 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
 			target.setGemeinsameStekVorjahr(this.getGemeinsameStekVorjahr());
 			target.setAlleinigeStekVorjahr(this.getAlleinigeStekVorjahr());
-			target.setQuellenbesteuert(this.quellenbesteuert);
+			target.setQuellenbesteuert(this.getQuellenbesteuert());
 			target.setVeranlagt(this.getVeranlagt());
 			target.setUnterhaltsBeitraege(this.getUnterhaltsBeitraege());
 			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
 			target.setBruttoLohn(this.getBruttoLohn());
-			if (this.getSelbstdeklaration() != null) {
-				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
-			}
+			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
+			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
+			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -294,7 +306,8 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration()) &&
 			MathUtil.isSame(getBruttoLohn(), otherFinSit.getBruttoLohn()) &&
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
-			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege());
+			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
+			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig());
 	}
 
 	@Nullable

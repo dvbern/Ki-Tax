@@ -17,11 +17,15 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
+import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -66,9 +70,12 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
+
+const LOG = LogFactory.createLog('BetreuungViewController');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -87,7 +94,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         '$state',
         'GesuchModelManager',
         'EbeguUtil',
-        'CONSTANTS',
         '$scope',
         'BerechnungsManager',
         'ErrorService',
@@ -101,7 +107,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'GlobalCacheService',
         '$timeout',
         '$translate',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'MandantService',
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -141,12 +148,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
     public showAbrechungDerGutscheineFrage: boolean = false;
+    private mandant: KiBonMandant;
 
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
         private readonly ebeguUtil: EbeguUtil,
-        private readonly CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         private readonly errorService: ErrorService,
@@ -161,10 +168,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $timeout: ITimeoutService,
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly mandantService: MandantService,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
         this.$translate = $translate;
+        this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
+                this.mandant = mandant;
+            }, err => LOG.error(err));
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -318,6 +329,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+
+        tsBetreuung.auszahlungAnEltern = false;
 
         return tsBetreuung;
     }
@@ -496,6 +509,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public direktAnmeldenSchulamt(): boolean {
         // Eigentlich immer ausser in Bearbeitung GS
         return !(this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
             || this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG));
     }
 
@@ -1286,7 +1300,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStamm = new TSInstitutionStammdatenSummary();
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
             this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
@@ -1313,8 +1327,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && EbeguUtil.isNotNullAndTrue(this.getErweiterteBetreuungJA().kitaPlusZuschlag);
     }
 
-    public isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
+    private isBesondereBeduerfnisseAufwandKonfigurierbar(): boolean {
         return this.besondereBeduerfnisseAufwandKonfigurierbar;
+    }
+
+    public isBesondereBeduerfnisseAufwandVisible(): boolean {
+        if (!this.isBesondereBeduerfnisseAufwandKonfigurierbar()) {
+            return false;
+        }
+        // für Institutionen und Trägerschaften ist der Betrag readonly. Deshalb soll er erst sichtbar sein,
+        // wenn er durch die Gemeinde ausgefüllt wurde
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return EbeguUtil.isNotNullOrUndefined(this.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag);
+        }
+        return true;
     }
 
     public isBetreuungInGemeindeRequired(): boolean {
@@ -1367,11 +1393,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // tslint:disable:prefer-conditional-expression
         this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+            this.instStamm.id = CONSTANTS.getUnknowTFOIdForMandant(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
         } else {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
+            this.instStamm.id = CONSTANTS.getUnknowKitaIdForMandant(this.mandant);
         }
     }
 

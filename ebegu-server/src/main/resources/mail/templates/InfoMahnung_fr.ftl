@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Documents incomplets</@base64Header>
@@ -29,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Vous avez déposé une demande <#if isSozialdienst>pour ${gesuchsteller.fullName}</#if> via kiBon le ${gesuch.getEingangsdatumFormated()}.
 		Malheureusement, le dossier est incomplet. Vous voudrez bien nous faire parvenir les documents manquants.
 		Notre lettre peut être consultée
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>

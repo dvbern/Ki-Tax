@@ -21,6 +21,8 @@ import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
@@ -33,7 +35,7 @@ describe('SelbstdeklarationComponent', () => {
     let fixture: ComponentFixture<SelbstdeklarationComponent>;
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch', 'getBasisjahr']);
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
@@ -54,6 +56,8 @@ describe('SelbstdeklarationComponent', () => {
         fixture = TestBed.createComponent(SelbstdeklarationComponent);
         component = fixture.componentInstance;
         component.model = new TSFinanzielleSituation();
+        component.finanzModel = new TSFinanzModel(0, false, 1);
+        component.finanzModel.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
         fixture.detectChanges();
     });
 

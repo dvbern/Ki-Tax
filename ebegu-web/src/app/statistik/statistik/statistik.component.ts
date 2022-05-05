@@ -474,6 +474,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS])) {
             return;
         }
+        if (!this.lastenausgleichActive) {
+            return;
+        }
+
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             this.showKantonStatistik = true;
             return;

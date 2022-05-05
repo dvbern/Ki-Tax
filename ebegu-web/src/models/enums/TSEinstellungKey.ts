@@ -105,6 +105,7 @@ export enum TSEinstellungKey {
     DIPLOMATENSTATUS_DEAKTIVIERT = 'DIPLOMATENSTATUS_DEAKTIVIERT' as any,
     SPRACHE_AMTSPRACHE_DISABLED = 'SPRACHE_AMTSPRACHE_DISABLED' as any,
     ZEMIS_DISABLED = 'ZEMIS_DISABLED' as any,
+    FREIGABE_QUITTUNG_EINLESEN_REQUIRED = 'FREIGABE_QUITTUNG_EINLESEN_REQUIRED' as any,
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -188,7 +189,8 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.FKJV_TEXTE,
         TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
         TSEinstellungKey.ZEMIS_DISABLED,
-        TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED
+        TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED,
+        TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED
     ];
 }
 
@@ -204,5 +206,7 @@ export function getGemeindspezifischeBGConfigKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
         TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
         TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
+        TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
+        TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD
     ];
 }
