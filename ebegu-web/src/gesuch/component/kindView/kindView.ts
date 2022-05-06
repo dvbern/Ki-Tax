@@ -162,11 +162,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
-        this.loadEinstellungAnspruchUnabhaengig();
-        this.loadEinstellungKinderabzugTyp();
-        this.loadEinstellungMaxAusserordentlicherAnspruch();
-        this.loadEinstellungSpracheAmtsprache();
-        this.loadEinstellungZemisDisabled();
+        this.loadEinstellungen();
     }
 
     public $postLink(): void {
@@ -247,15 +243,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private resetGruendeZusatzleistung(): void {
         this.model.extractPensumFachstelle().gruendeZusatzleistung = undefined;
-    }
-
-    private loadEinstellungAnspruchUnabhaengig(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
-                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
-            });
     }
 
     private initAusserordentlicherAnspruch(): void {
@@ -528,24 +515,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
     }
 
-    private loadEinstellungKinderabzugTyp(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
-                this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
-            });
-    }
-
-    private loadEinstellungMaxAusserordentlicherAnspruch(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
-                this.maxPensumAusserordentlicherAnspruch = einstellung.value;
-            });
-    }
-
     public gruendeZusatzleistungRequired(): boolean {
         return this.getModel().pensumFachstelle.integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
@@ -555,24 +524,47 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
     }
 
-    private loadEinstellungSpracheAmtsprache(): void {
+    private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
-                this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
-                if (this.isSpracheAmtspracheDisabled) {
-                   this.getModel().sprichtAmtssprache = true;
-                }
+                this.loadEinstellungZemisDisabled(einstellungen);
+                this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
+                this.loadEinstellungKinderabzugTyp(einstellungen);
+                this.loadEinstellungAnspruchUnabhaengig(einstellungen);
+                this.loadEinstellungSpracheAmtsprache(einstellungen);
             });
     }
 
-    private loadEinstellungZemisDisabled(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
-                this.isZemisDeaktiviert = einstellung.value === 'true';
-            });
+    private loadEinstellungSpracheAmtsprache(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
+        this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
+        if (this.isSpracheAmtspracheDisabled) {
+            this.getModel().sprichtAmtssprache = true;
+        }
+    }
+
+    private loadEinstellungZemisDisabled(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
+        this.isZemisDeaktiviert = einstellung.value === 'true';
+    }
+
+    private loadEinstellungMaxAusserordentlicherAnspruch(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
+        this.maxPensumAusserordentlicherAnspruch = einstellung.value;
+    }
+
+    private loadEinstellungKinderabzugTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
+        this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
+    }
+
+    private loadEinstellungAnspruchUnabhaengig(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+        this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
     }
 }
