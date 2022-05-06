@@ -62,7 +62,7 @@
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS1_GS()?.bruttovermoegen"
                                 [korrektur]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
-                            >
+                                [allowNegative]="true">
                             </dv-input-label-field>
                         </dv-input-container>
                         <div>
@@ -89,8 +89,8 @@
                                 [basisjahr]="model.getBasisjahr()"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.bruttovermoegen"
-                                [korrektur]="getEinkommensverschlechterungGS2_JA().bruttovermoegen">
-                                >
+                                [korrektur]="getEinkommensverschlechterungGS2_JA().bruttovermoegen"
+                                [allowNegative]="true">
                             </dv-input-label-field>
                         </div>
                     </div>
@@ -114,7 +114,8 @@
                                 [basisjahr]="model.getBasisjahr()"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS1_GS()?.schulden"
-                                [korrektur]="getEinkommensverschlechterungGS1_JA().schulden">
+                                [korrektur]="getEinkommensverschlechterungGS1_JA().schulden"
+                                [allowNegative]="true">
                             </dv-input-label-field>
                         </div>
                     </div>
@@ -138,7 +139,7 @@
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.schulden"
                                 [korrektur]="getEinkommensverschlechterungGS2_JA().schulden"
-                            >
+                                [allowNegative]="true">
                             </dv-input-label-field>
                         </div>
                     </div>

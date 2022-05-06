@@ -41,6 +41,7 @@
                 [aufteilung]="aufteilungDTO.nettoertraegeErbengemeinschaft"
                 [groupName]="'nettoertraegeErbengemeinschaft'"
                 [label]="'FINANZIELLE_SITUATION_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN'"
+                [allowNegative]="true"
             ></dv-aufteilung>
             <dv-aufteilung
                 [aufteilung]="aufteilungDTO.abzugSchuldzinsen"
@@ -61,6 +62,7 @@
                 [aufteilung]="aufteilungDTO.nettovermoegen"
                 [groupName]="'nettovermoegen'"
                 [label]="'FINANZIELLE_SITUATION_NETTOVERMOEGEN_TITLE'"
+                [allowNegative]="true"
             ></dv-aufteilung>
         </ng-container>
     </form>
