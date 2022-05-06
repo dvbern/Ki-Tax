@@ -15,16 +15,14 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
@@ -55,8 +53,6 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-
-const LOG = LogFactory.createLog('KindViewController');
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -103,9 +99,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
     private kinderabzugTyp: TSKinderabzugTyp;
+    private fachstellenTyp: TSFachstellenTyp;
     public maxPensumAusserordentlicherAnspruch: string;
-    // When migrating to ng, use observable in template
-    private isLuzern: boolean;
     public submitted: boolean = false;
     private isSpracheAmtspracheDisabled: boolean;
     private isZemisDeaktiviert: boolean = false;
@@ -144,16 +139,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
-            this.initViewModel();
-        }, err => LOG.error(err));
+        this.initViewModel();
     }
 
     private initViewModel(): void {
-        this.integrationTypes = this.isLuzern ?
-            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
-            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
@@ -524,6 +513,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
     }
 
+    public isFachstellenTypLuzern(): boolean {
+        return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
     private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .then(einstellungen => {
@@ -532,6 +525,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 this.loadEinstellungKinderabzugTyp(einstellungen);
                 this.loadEinstellungAnspruchUnabhaengig(einstellungen);
                 this.loadEinstellungSpracheAmtsprache(einstellungen);
+                this.loadEinstellungFachstellenTyp(einstellungen);
             });
     }
 
@@ -566,5 +560,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         const einstellung = einstellungen
             .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
         this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
+    }
+
+    private loadEinstellungFachstellenTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.FACHSTELLEN_TYP);
+        this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+
+        this.integrationTypes = this.fachstellenTyp === TSFachstellenTyp.LUZERN ?
+            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
+            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
     }
 }
