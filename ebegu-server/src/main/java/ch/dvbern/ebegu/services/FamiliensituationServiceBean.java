@@ -110,15 +110,10 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			newFamiliensituation.setGemeinsameSteuererklaerung(false);
 		}
 
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-				oldFamiliensituation != null &&
-				(oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT
-						|| oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND) &&
-				mergedFamiliensituationContainer.getFamiliensituationJA() != null &&
-				mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-						== EnumFamilienstatus.VERHEIRATET) {
-			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
+			changeFamSitLuzern(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
+
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
@@ -129,6 +124,51 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+	private void changeFamSitLuzern(
+		@Nonnull Gesuch gesuch,
+		FamiliensituationContainer mergedFamiliensituationContainer,
+		Familiensituation oldFamiliensituation) {
+
+		if (oldFamiliensituation == null
+			|| mergedFamiliensituationContainer.getFamiliensituationJA() == null
+			|| gesuch.getGesuchsteller1() == null) {
+			return;
+		}
+
+		boolean isKonkubinat = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT
+			|| oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND;
+
+		// KONKUBINAT => VERHEIRATET: beide Container löschen
+		if (isKonkubinat
+			&& mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.VERHEIRATET
+			&& gesuch.getGesuchsteller2() != null) {
+			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
+			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
+		}
+
+		// ALLEINERZIEHEND => VERHEIRATET: Container GS1 löschen
+		boolean isAlleinerziehend = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
+		if (isAlleinerziehend && mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+			== EnumFamilienstatus.VERHEIRATET
+			&& gesuch.getGesuchsteller1() != null) {
+			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
+		}
+
+		// VERHEIRATET => KONKUBINAT: Container GS1 löschen
+		// VERHEIRATET => ALLEINERZIEHEND: Container GS1 löschen
+		boolean oldIsVerheiratet = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
+		boolean newIsKonkubinatOrAlleinerziehend = mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+			== EnumFamilienstatus.KONKUBINAT
+			|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+			== EnumFamilienstatus.KONKUBINAT_KEIN_KIND
+			|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+			== EnumFamilienstatus.ALLEINERZIEHEND;
+
+		if (oldIsVerheiratet && newIsKonkubinatOrAlleinerziehend) {
+			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
+		}
 	}
 
 	private void resetFragenKinderabzugAndSetToUeberpruefen(Gesuch gesuch) {
