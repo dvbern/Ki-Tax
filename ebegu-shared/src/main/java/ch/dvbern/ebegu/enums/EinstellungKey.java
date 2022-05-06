@@ -274,7 +274,11 @@ public enum EinstellungKey {
 	FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
 
 	// Unbezahlter Urlaub kann mit dieser Einstellung aktivert oder deaktiviert werden
-	UNBEZAHLTER_URLAUB_AKTIV;
+	UNBEZAHLTER_URLAUB_AKTIV,
+
+	// Fachstellen Typ (KIBON-2360)
+	// BERN oder LUZERN
+	FACHSTELLEN_TYP;
 
 
 	private EinstellungTyp typ;

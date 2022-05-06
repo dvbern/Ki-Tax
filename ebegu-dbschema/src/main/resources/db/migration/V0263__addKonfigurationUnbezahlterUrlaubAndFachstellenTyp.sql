@@ -38,3 +38,22 @@ UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = 
 SET value = 'false'
 WHERE einstellung_key = 'UNBEZAHLTER_URLAUB_AKTIV' AND mandant_identifier = 'LUZERN';
 
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gesuchsperiode_id)
+	(
+		SELECT UNHEX(REPLACE(UUID(), '-', '')) AS id,
+			NOW() AS timestamp_erstellt,
+			NOW() AS timestamp_muiert,
+			'ebegu' AS user_erstellt,
+			'ebegu' AS user_mutiert,
+			'0' AS version,
+			'FACHSTELLEN_TYP' AS einstellungkey,
+			'BERN' AS value,
+			id AS gesuchsperiode_id
+		FROM gesuchsperiode
+	);
+
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+SET value = 'LUZERN'
+WHERE einstellung_key = 'FACHSTELLEN_TYP' AND mandant_identifier = 'LUZERN';
