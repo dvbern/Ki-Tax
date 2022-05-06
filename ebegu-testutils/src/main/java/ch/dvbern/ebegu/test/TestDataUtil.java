@@ -171,6 +171,7 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
@@ -1358,13 +1359,13 @@ public final class TestDataUtil {
 		} else {
 			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
-		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.setFinanzielleSituationJA(new FinanzielleSituation());
 		if (zweiGesuchsteller) {
-			gesuch.setGesuchsteller2(new GesuchstellerContainer());
+			gesuch.setGesuchsteller2(TestDataUtil.createDefaultGesuchstellerContainer());
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 			gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer()
@@ -2636,6 +2637,12 @@ public final class TestDataUtil {
 	}
 
 	public static Fall addSozialdienstToFall(Persistence persistence, FallService fallService, Fall fall) {
+		SozialdienstStammdaten sozialdienstStammdaten = createDefaultSozialdienstStammdaten(fall);
+		persistence.persist(sozialdienstStammdaten);
+		return fallService.saveFall(fall);
+	}
+
+	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@NonNull Fall fall) {
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
 		sozialdienstFall.setName("SozialName");
 		sozialdienstFall.setVorname("SozialVorname");
@@ -2661,12 +2668,22 @@ public final class TestDataUtil {
 		sozialdienstStammdaten.setMail("sozialmail@mailbucket.dvbern.ch");
 		sozialdienstStammdaten.setTelefon("078 818 82 84");
 		sozialdienstStammdaten.setWebseite("");
-		persistence.persist(sozialdienstStammdaten);
-		return fallService.saveFall(fall);
+		return sozialdienstStammdaten;
 	}
 
 	public static void persistFachstelle(@Nonnull Persistence persistence, @Nonnull Fachstelle fachstelle) {
 		saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		persistence.persist(fachstelle);
+	}
+
+	public static void addSecondGesuchsteller(@NonNull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		final GesuchstellerContainer gs2 = TestDataUtil.createDefaultGesuchstellerContainer();
+		final FinanzielleSituationContainer finsitGs2 = new FinanzielleSituationContainer();
+		gs2.setFinanzielleSituationContainer(finsitGs2);
+		finsitGs2.setFinanzielleSituationJA(new FinanzielleSituation());
+		gesuch.setGesuchsteller2(gs2);
 	}
 }
