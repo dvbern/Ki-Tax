@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <!-- Traegerschaft -->
-                    <div class="col-sm-6" *ngIf="isSuperAdmin()">
+                    <div class="col-sm-6" *ngIf="isMandant()">
                         <div class="form-group">
                             <h3 translate for="traegerschaft_id">TRAEGERSCHAFT</h3>
                             <mat-select [(ngModel)]="stammdaten.institution.traegerschaft"
@@ -368,6 +368,12 @@
                                 <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
                                 <p><a href="{{ebeguUtil.formatHrefUrl(stammdaten.webseite)}}"
                                       target="tah">{{stammdaten.webseite}}</a></p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="stammdaten.institution.traegerschaft">
+                            <div class="form-group">
+                                <h3 translate>TRAEGERSCHAFT</h3>
+                                <p>{{stammdaten.institution.traegerschaft.name}}</p>
                             </div>
                         </div>
                     </div>

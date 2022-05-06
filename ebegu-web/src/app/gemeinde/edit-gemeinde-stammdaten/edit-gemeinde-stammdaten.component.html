@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <!-- Korrespondenzsprache -->
-                <div class="col-sm-6">
+                <div class="col-sm-6" *ngIf="frenchEnabled">
                     <div class="form-group">
                         <h3 class="required" translate for="korrespondenzsprache_id">KORRESPONDENZSPRACHE</h3>
                         <div class="form-group" id="korrespondenzsprache_id">
@@ -349,7 +349,7 @@
                     </div>
                 </div>
                 <!-- Korrespondenzsprache -->
-                <div class="col-sm-6">
+                <div class="col-sm-6" *ngIf="frenchEnabled">
                     <div class="form-group">
                         <h3 translate>KORRESPONDENZSPRACHE</h3>
                         <p>{{korrespondenzsprache}}</p>

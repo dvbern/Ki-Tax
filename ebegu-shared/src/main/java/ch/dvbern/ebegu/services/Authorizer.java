@@ -16,15 +16,18 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -298,4 +301,8 @@ public interface Authorizer {
 	void checkReadAuthorization(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
 
 	void checkWriteAuthorization(@Nonnull GemeindeKennzahlen gemeindeKennzahlen);
+
+	void checkWriteAuthorization(@Nonnull Einstellung einstellung);
+
+	void checkWriteAuthorization(@Nonnull ApplicationProperty property);
 }

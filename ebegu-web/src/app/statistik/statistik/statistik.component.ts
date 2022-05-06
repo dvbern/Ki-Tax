@@ -126,7 +126,6 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.cd.markForCheck();
             });
         this.updateShowMahlzeitenStatistik();
-        this.updateShowKantonStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
 
@@ -134,6 +133,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.ferienbetreuungActive = res.ferienbetreuungAktiv;
             this.lastenausgleichActive = res.lastenausgleichAktiv;
             this.lastenausgleichTagesschulenActive = res.lastenausgleichTagesschulenAktiv;
+            this.updateShowKantonStatistik();
         });
 
         this.authServiceRS.principal$.subscribe(benutzer => {
@@ -474,6 +474,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS])) {
             return;
         }
+        if (!this.lastenausgleichActive) {
+            return;
+        }
+
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             this.showKantonStatistik = true;
             return;

@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class SolothurnFinanzielleSituationDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>   {
 
@@ -43,14 +42,14 @@ public class SolothurnFinanzielleSituationDokumente extends AbstractDokumente<Ab
 		@Nonnull Locale locale) {
 
 		if (isGemeinsameSteuererklaerung(gesuch))  {
-			addDokumenteGemeinsam(gesuch, anlageVerzeichnis, locale);
+			addDokumenteGemeinsam(gesuch, anlageVerzeichnis);
 		} else {
-			addDokumenteGS1(gesuch, anlageVerzeichnis, locale);
-			addDokumenteGS2(gesuch, anlageVerzeichnis, locale);
+			addDokumenteGS1(gesuch, anlageVerzeichnis);
+			addDokumenteGS2(gesuch, anlageVerzeichnis);
 		}
 	}
 
-	private void addDokumenteGemeinsam(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis, Locale locale) {
+	private void addDokumenteGemeinsam(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 
 		if (gesuchsteller1 == null || gesuchsteller1.getFinanzielleSituationContainer() == null) {
@@ -60,24 +59,24 @@ public class SolothurnFinanzielleSituationDokumente extends AbstractDokumente<Ab
 		final FinanzielleSituation finanzielleSituationGS1JA = gesuchsteller1.getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
 		if (finanzielleSituationGS1JA.getSteuerveranlagungErhalten() != null && finanzielleSituationGS1JA.getSteuerveranlagungErhalten()) {
-			addDokumentVeranlagung(gesuch, anlageVerzeichnis, 0, finanzielleSituationGS1JA, locale);
+			addDokumentVeranlagung(anlageVerzeichnis, 0, finanzielleSituationGS1JA);
 		} else {
-			addDokumenteGS1(gesuch, anlageVerzeichnis, locale);
-			addDokumenteGS2(gesuch, anlageVerzeichnis, locale);
+			addDokumenteGS1(gesuch, anlageVerzeichnis);
+			addDokumenteGS2(gesuch, anlageVerzeichnis);
 		}
 	}
 
-	private void addDokumenteGS1(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis, Locale locale) {
+	private void addDokumenteGS1(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		addDokumenteGesuchsteller(gesuchsteller1, 1, gesuch, anlageVerzeichnis, locale);
+		addDokumenteGesuchsteller(gesuchsteller1, 1, gesuch, anlageVerzeichnis);
 	}
 
-	private void addDokumenteGS2(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis, Locale locale) {
+	private void addDokumenteGS2(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-		addDokumenteGesuchsteller(gesuchsteller2, 2, gesuch, anlageVerzeichnis, locale);
+		addDokumenteGesuchsteller(gesuchsteller2, 2, gesuch, anlageVerzeichnis);
 	}
 
-	private void addDokumenteGesuchsteller(GesuchstellerContainer gesuchsteller, int gesuchstellerNumber, Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis, Locale locale) {
+	private void addDokumenteGesuchsteller(GesuchstellerContainer gesuchsteller, int gesuchstellerNumber, Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		if (gesuchsteller == null || gesuchsteller.getFinanzielleSituationContainer() == null) {
 			return;
 		}
@@ -85,7 +84,7 @@ public class SolothurnFinanzielleSituationDokumente extends AbstractDokumente<Ab
 		final FinanzielleSituation finanzielleSituationJA = gesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
 		if (finanzielleSituationJA.getSteuerveranlagungErhalten() != null && finanzielleSituationJA.getSteuerveranlagungErhalten()) {
-			addDokumentVeranlagung(gesuch, anlageVerzeichnis, gesuchstellerNumber, finanzielleSituationJA, locale);
+			addDokumentVeranlagung(anlageVerzeichnis, gesuchstellerNumber, finanzielleSituationJA);
 		} else {
 			addDokument(DokumentTyp.NACHWEIS_VERMOEGEN, gesuch, anlageVerzeichnis, gesuchstellerNumber, finanzielleSituationJA);
 			addDokument(DokumentTyp.NACHWEIS_BRUTTOLOHN, gesuch, anlageVerzeichnis, gesuchstellerNumber, finanzielleSituationJA);
@@ -93,33 +92,18 @@ public class SolothurnFinanzielleSituationDokumente extends AbstractDokumente<Ab
 	}
 
 	private void addDokumentVeranlagung(
-		Gesuch gesuch,
 		Set<DokumentGrund> anlageVerzeichnis,
 		int gesuchstellerNumber,
-		FinanzielleSituation finanzielleSituationJA,
-		Locale locale) {
-
-		final String documentTag = getDokuementTagForVeranlagung(gesuch, locale);
+		FinanzielleSituation finanzielleSituationJA) {
 
 		add(getDokument(
 				DokumentTyp.STEUERVERANLAGUNG,
 				finanzielleSituationJA,
-				documentTag,
+				null,
 				DokumentGrundPersonType.GESUCHSTELLER,
 				gesuchstellerNumber,
 				DokumentGrundTyp.FINANZIELLESITUATION),
 			anlageVerzeichnis);
-	}
-
-	private String getDokuementTagForVeranlagung(Gesuch gesuch, Locale locale) {
-		final int basisJahr = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear();
-		final int basisJahrPlus1 = basisJahr + 1;
-		return ServerMessageUtil.getMessage(
-			"DOKUMENTE_TAG_BASISJAHR_ODER_PLUS_EINS",
-			locale,
-			gesuch.extractMandant(),
-			String.valueOf(basisJahr),
-			String.valueOf(basisJahrPlus1));
 	}
 
 	private void addDokument(

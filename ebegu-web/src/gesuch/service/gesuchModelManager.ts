@@ -72,7 +72,7 @@ import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationCont
 import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../models/TSGemeindeKonfiguration';
-import {TSGemeindeStammdaten} from '../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../../models/TSGesuchsteller';
@@ -111,7 +111,7 @@ export class GesuchModelManager {
     private fachstellenAnspruchList: Array<TSFachstelle>;
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
-    public gemeindeStammdaten: TSGemeindeStammdaten;
+    public gemeindeStammdaten: TSGemeindeStammdatenLite;
     public gemeindeKonfiguration: TSGemeindeKonfiguration;
     public numberInternePendenzen: number;
     public hasAbgelaufenePendenz: boolean;
@@ -330,11 +330,11 @@ export class GesuchModelManager {
      * Loads the Stammdaten of the gemiende of the current Dossier so we can access them
      * while filling out the Gesuch, wihtout having to load it from server again and again
      */
-    private loadGemeindeStammdaten(): IPromise<TSGemeindeStammdaten> {
+    private loadGemeindeStammdaten(): IPromise<TSGemeindeStammdatenLite> {
         if (!(this.getDossier() && this.getDossier().gemeinde)) {
             return Promise.resolve(undefined);
         }
-        return this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id);
+        return this.gemeindeRS.getGemeindeStammdatenLite(this.getDossier().gemeinde.id);
     }
 
     /**
@@ -1753,22 +1753,6 @@ export class GesuchModelManager {
      */
     public isFinanzielleSituationRequired(): boolean {
         return EbeguUtil.isFinanzielleSituationRequiredForGesuch(this.getGesuch());
-    }
-
-    /**
-     * gibt true zurueck wenn es keine defaultTagesschule ist oder wenn es eine defaultTagesschule ist aber die
-     * Gesuchsperiode noch keine TagesschulenAnmeldung erlaubt.
-     *
-     * Eine DefaultTagesschule ist eine Tagesschule, die fuer die erste Gescuhsperiode erstellt wurde, damit man
-     * Betreuungen der Art TAGESSCHULE erstellen darf. Jede Betreuung muss mit einer Institution verknuepft sein und
-     * TagesschuleBetreuungen wurden mit der defaultTagesschule verknuepft. Die DefaultTagesschule wird anhand der ID
-     * erkannt.
-     */
-    public isDefaultTagesschuleAllowed(instStamm: TSInstitutionStammdaten): boolean {
-        if (instStamm.id === CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE) {
-            return !(this.gemeindeKonfiguration.hasTagesschulenAnmeldung());
-        }
-        return true;
     }
 
     /**

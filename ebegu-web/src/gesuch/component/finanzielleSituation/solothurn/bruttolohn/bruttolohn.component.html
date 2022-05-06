@@ -1,31 +1,33 @@
 <fieldset [disabled]="gesuchModelManager.isGesuchReadonly()">
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="form-group">
-				<dv-input-label-field
-						[name]="'bruttoLohn'"
-						[(model)]="model.finanzielleSituationJA.bruttoLohn"
-                        [dvOnBlur]="dvValueChange"
-						[labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
-						[inputRequired]="true"></dv-input-label-field>
-				<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
-							 [korrektur]="model.finanzielleSituationJA.bruttoLohn"
-							 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <dv-input-label-field
+                    [name]="'bruttoLohn'"
+                    [(model)]="model.finanzielleSituationJA.bruttoLohn"
+                    [dvOnBlur]="dvValueChange"
+                    [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
+                    [inputRequired]="true"
+                    [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)"
+                    [deklaration]="model.finanzielleSituationGS?.bruttoLohn"
+                    [korrektur]="model.finanzielleSituationJA.bruttoLohn">
+                </dv-input-label-field>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-6">
             <div class="form-group">
                 <dv-input-label-field
                     [name]="'steuerbaresVermoegen'"
                     [(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
-					[dvOnBlur]="dvValueChange"
+                    [dvOnBlur]="dvValueChange"
                     [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-                    [inputRequired]="true"></dv-input-label-field>
-                <dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
-                             [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
-                             [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+                    [inputRequired]="true"
+                    [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
+                    [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
+                    [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                </dv-input-label-field>
             </div>
         </div>
     </div>

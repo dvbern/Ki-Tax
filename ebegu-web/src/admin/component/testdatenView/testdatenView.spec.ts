@@ -82,7 +82,8 @@ describe('testdatenView', () => {
             frenchEnabled: true,
             geresEnabledForMandant: true,
             ebeguKibonAnfrageTestGuiEnabled: false,
-            steuerschnittstelleAktivAb: moment('2020-01-01')
+            steuerschnittstelleAktivAb: moment('2020-01-01'),
+            zusatzinformationenInstitution: true,
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

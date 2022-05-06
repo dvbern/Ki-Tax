@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FachstelleName;
@@ -225,6 +226,22 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 		final DokumentGrund dokumentGrund = getDokumentGrund();
 		Assert.assertEquals(DokumentTyp.FACHSTELLENBESTAETIGUNG, dokumentGrund.getDokumentTyp());
+	}
+
+	@Test
+	public void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
+		setUpEinstellungMock(testgesuch, "false");
+
+		clearKinder(testgesuch);
+		final String kindName = "Jan";
+		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, null);
+		kind.setKeinPlatzInSchulhort(true);
+		kind.setEinschulungTyp(EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
+
+		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.ABSAGESCHREIBEN_HORTPLATZ, kind));
+
+		final DokumentGrund dokumentGrund = getDokumentGrund();
+		Assert.assertEquals(DokumentTyp.ABSAGESCHREIBEN_HORTPLATZ, dokumentGrund.getDokumentTyp());
 	}
 
 	private DokumentGrund getDokumentGrund() {
@@ -635,13 +652,13 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
 		Assert.assertEquals(8, dokumentGrundGS1.size());
 
-		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2016", 1);
-		assertTypeForNachweisLohnausweis(dokumentGrundGS1, "2017", 1);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, null, 1);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS1, null, 1);
 
 		dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
 		Assert.assertEquals(8, dokumentGrundGS2.size());
-		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2016", 2);
-		assertTypeForNachweisLohnausweis(dokumentGrundGS2, "2017", 2);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, null, 2);
+		assertTypeForNachweisLohnausweis(dokumentGrundGS2, null, 2);
 	}
 
 	private void assertTypeForNachweisLohnausweis(Set<DokumentGrund> dokumentGrunds, String year, int gsNumber) {

@@ -147,6 +147,15 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
+	public Optional<Einstellung> getEinstellungByMandant(
+		@Nonnull EinstellungKey einstellungKey,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		Einstellung mockParameter = this.dummyObjects.get(einstellungKey);
+		return Optional.of(mockParameter);
+	}
+
+	@Nonnull
+	@Override
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
@@ -155,6 +164,13 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		paramsForGesuchsperiode.stream().forEach(ebeguParameter -> result.put(ebeguParameter.getKey(),
 			ebeguParameter));
 		return result;
+	}
+
+	@Nonnull
+	@Override
+	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenOnlyAsMap(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		return getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 	}
 
 	@Override

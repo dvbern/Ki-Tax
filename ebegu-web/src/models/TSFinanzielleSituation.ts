@@ -30,6 +30,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _abzuegeKinderAusbildung: number;
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
+    private _momentanSelbststaendig: boolean;
 
     public constructor() {
         super();
@@ -128,6 +129,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set bruttoLohn(value: number) {
         this._bruttoLohn = value;
+    }
+
+    public get momentanSelbststaendig(): boolean {
+        return this._momentanSelbststaendig;
+    }
+
+    public set momentanSelbststaendig(value: boolean) {
+        this._momentanSelbststaendig = value;
     }
 
     public get automatischePruefungErlaubt(): boolean {
