@@ -3037,7 +3037,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
-		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.isUnregelmaessigeArbeitszeiten());
+		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
 		return jaxErwerbspensum;
 	}
 

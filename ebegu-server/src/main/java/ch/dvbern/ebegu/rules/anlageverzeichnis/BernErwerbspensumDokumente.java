@@ -192,7 +192,7 @@ public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum,
 		case NACHWEIS_FREIWILLIGENARBEIT:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.FREIWILLIGENARBEIT;
 		case NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG:
-			return EbeguUtil.isNotNullAndTrue(erwerbspensum.isUnregelmaessigeArbeitszeiten());
+			return EbeguUtil.isNotNullAndTrue(erwerbspensum.getUnregelmaessigeArbeitszeiten());
 		default:
 			return false;
 		}
