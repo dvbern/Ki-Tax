@@ -33,6 +33,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSEinstellungenFerieninsel} from '../../../models/TSEinstellungenFerieninsel';
 import {TSFerieninselStammdaten} from '../../../models/TSFerieninselStammdaten';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -86,6 +87,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         'ApplicationPropertyRS',
         'FerieninselStammdatenRS',
         'MandantService',
+        'EbeguRestUtil'
     ];
 
     public betreuung: TSBetreuung;
@@ -118,6 +120,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         applicationPropertyRS: ApplicationPropertyRS,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
         mandantService: MandantService,
+        ebeguRestUtil: EbeguRestUtil,
     ) {
         super($state,
             gesuchModelManager,
@@ -136,7 +139,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             $timeout,
             $translate,
             applicationPropertyRS,
-            mandantService);
+            mandantService,
+            ebeguRestUtil);
     }
 
     public $onInit(): void {
