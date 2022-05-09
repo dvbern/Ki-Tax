@@ -192,7 +192,7 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		case NACHWEIS_FREIWILLIGENARBEIT:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.FREIWILLIGENARBEIT;
 		case NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG:
-			return EbeguUtil.isNotNullAndTrue(erwerbspensum.isunregelmaessigeArbeitszeiten());
+			return EbeguUtil.isNotNullAndTrue(erwerbspensum.isUnregelmaessigeArbeitszeiten());
 		default:
 			return false;
 		}

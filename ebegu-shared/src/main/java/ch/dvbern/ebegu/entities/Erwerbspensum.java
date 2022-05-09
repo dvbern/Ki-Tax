@@ -99,11 +99,11 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	}
 
 	@Nullable
-	public boolean isunregelmaessigeArbeitszeiten() {
+	public boolean isUnregelmaessigeArbeitszeiten() {
 		return unregelmaessigeArbeitszeiten;
 	}
 
-	public void setunregelmaessigeArbeitszeiten(@Nullable boolean unregelmaessigeArbeitszeiten) {
+	public void setUnregelmaessigeArbeitszeiten(@Nullable boolean unregelmaessigeArbeitszeiten) {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 

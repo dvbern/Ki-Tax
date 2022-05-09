@@ -72,11 +72,11 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 		this.unbezahlterUrlaub = unbezahlterUrlaub;
 	}
 
-	public boolean isunregelmaessigeArbeitszeiten() {
+	public boolean isUnregelmaessigeArbeitszeiten() {
 		return unregelmaessigeArbeitszeiten;
 	}
 
-	public void setunregelmaessigeArbeitszeiten(boolean unregelmaessigeArbeitszeiten) {
+	public void setUnregelmaessigeArbeitszeiten(boolean unregelmaessigeArbeitszeiten) {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 }
