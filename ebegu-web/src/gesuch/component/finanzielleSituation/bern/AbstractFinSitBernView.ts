@@ -136,4 +136,8 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     public resetAutomatischePruefungSteuerdaten(): void {
         this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
     }
+
+    public einkommenInVereinfachtemVerfarenClicked(): void {
+        this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+    }
 }
