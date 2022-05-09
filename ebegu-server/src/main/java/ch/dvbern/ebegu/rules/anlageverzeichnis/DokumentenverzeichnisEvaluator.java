@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -25,12 +24,10 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -43,14 +40,15 @@ public class DokumentenverzeichnisEvaluator {
 	private EinstellungService einstellungService;
 
 	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
-	private final AbstractDokumente<Kind, Object> kindAnlagen = new KindDokumente();
-	private final AbstractDokumente<Erwerbspensum, LocalDate> erwerbspensumDokumente = new ErwerbspensumDokumente();
-	private final AbstractDokumente<Betreuung, Object>  betreuungDokumente = new BetreuungDokumente();
+	private final KindDokumenteVisitor kindDokumenteVisitor = new KindDokumenteVisitor();
+	private final BetreuungDokumenteVisitor  betreuungDokumenteVisitor = new BetreuungDokumenteVisitor();
 
 	private final FinanzielleSituationDokumenteVisitor
 		finanzielleSituationVisitor = new FinanzielleSituationDokumenteVisitor();
 	private final EinkommenVerschlechterungDokumenteVisitor
 		einkommenVerschlechterungDokumenteVisitor = new EinkommenVerschlechterungDokumenteVisitor();
+	private final ErwerbspensumDokumenteVisitor
+		erwerbspensumDokumenteVisitor = new ErwerbspensumDokumenteVisitor();
 
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
@@ -63,10 +61,16 @@ public class DokumentenverzeichnisEvaluator {
 		Set<DokumentGrund> anlageVerzeichnis = new HashSet<>();
 
 		if (gesuch != null) {
+			Mandant mandant = gesuch.extractMandant();
+
 			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			kindDokumenteVisitor
+				.getKindDokumenteForMandant(mandant)
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			if (isErwerbpensumDokumenteRequired(gesuch)) {
-				erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+				erwerbspensumDokumenteVisitor
+					.getErwerbspensumeDokumenteForMandant(mandant)
+					.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			}
 			finanzielleSituationVisitor
 				.getFinanzielleSituationDokumenteForFinSitTyp(gesuch.getFinSitTyp())
@@ -74,7 +78,9 @@ public class DokumentenverzeichnisEvaluator {
 			einkommenVerschlechterungDokumenteVisitor
 				.getEinkommenVerschlechterungDokumenteForFinSitTyp(gesuch.getFinSitTyp())
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
-			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			betreuungDokumenteVisitor
+				.getBetreuungDokumenteForMandant(mandant)
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
 
 		return anlageVerzeichnis;
