@@ -55,6 +55,7 @@ import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
 import {TSAbstractFinanzielleSituation} from '../models/TSAbstractFinanzielleSituation';
+import {TSAbstractGemeindeStammdaten} from '../models/TSAbstractGemeindeStammdaten';
 import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import {TSAbstractPersonEntity} from '../models/TSAbstractPersonEntity';
@@ -123,6 +124,7 @@ import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
@@ -1058,7 +1060,7 @@ export class EbeguRestUtil {
         stammdatenFromServer: any,
     ): TSGemeindeStammdaten {
         if (stammdatenFromServer) {
-            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            this.parseAbstractGemeindeStammdaten(stammdatenTS, stammdatenFromServer);
 
             stammdatenTS.administratoren = stammdatenFromServer.administratoren;
             stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
@@ -1107,8 +1109,6 @@ export class EbeguRestUtil {
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
-            stammdatenTS.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
-            stammdatenTS.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
             stammdatenTS.zusatzText = stammdatenFromServer.zusatzText;
             stammdatenTS.hasZusatzText = stammdatenFromServer.hasZusatzText;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
@@ -1118,6 +1118,35 @@ export class EbeguRestUtil {
             return stammdatenTS;
         }
         return undefined;
+    }
+
+    public parseGemeindeStammdatenLite(
+        tsGemeindeStammdatenLite: TSGemeindeStammdatenLite,
+        stammdatenFromServer: any,
+    ): TSGemeindeStammdatenLite {
+        if (stammdatenFromServer) {
+            this.parseAbstractGemeindeStammdaten(tsGemeindeStammdatenLite, stammdatenFromServer);
+            tsGemeindeStammdatenLite.gemeindeName = stammdatenFromServer.gemeindeName;
+            return tsGemeindeStammdatenLite;
+        }
+        return undefined;
+    }
+
+    private parseAbstractGemeindeStammdaten(
+        tsAbstractGemeindeStammdaten: TSAbstractGemeindeStammdaten,
+        stammdatenFromServer: any,
+    ): void {
+        this.parseAbstractEntity(tsAbstractGemeindeStammdaten, stammdatenFromServer);
+        tsAbstractGemeindeStammdaten.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+        tsAbstractGemeindeStammdaten.konfigurationsListe =
+            this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
+        tsAbstractGemeindeStammdaten.mail = stammdatenFromServer.mail;
+        tsAbstractGemeindeStammdaten.telefon = stammdatenFromServer.telefon;
+        tsAbstractGemeindeStammdaten.webseite = stammdatenFromServer.webseite;
+        tsAbstractGemeindeStammdaten.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
+        tsAbstractGemeindeStammdaten.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
+        tsAbstractGemeindeStammdaten.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
+        tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
     }
 
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
@@ -2244,6 +2273,7 @@ export class EbeguRestUtil {
         restKind.ausAsylwesen = kind.ausAsylwesen;
         restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
+        restKind.keinPlatzInSchulhort = kind.keinPlatzInSchulhort;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
@@ -2318,6 +2348,7 @@ export class EbeguRestUtil {
             kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
             kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
+            kindTS.keinPlatzInSchulhort = kindFromServer.keinPlatzInSchulhort;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;

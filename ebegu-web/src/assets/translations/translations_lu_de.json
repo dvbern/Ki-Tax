@@ -40,5 +40,9 @@
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
     "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
     "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
+    "FREIWILLIGER_KINDERGARTEN": "Freiwilliger Kindergarten",
+    "OBLIGATORISCHER_KINDERGARTEN": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
+    "PRIMAR_SEKUNDAR_STUFE": "Primar- / Sekundarstufe (kein Anspruch auf Betreuungsgutscheine)",
+    "KEIN_PLATZ_IN_SCHULHORT": "Mein Kind hat kein Platz im Schulhort",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

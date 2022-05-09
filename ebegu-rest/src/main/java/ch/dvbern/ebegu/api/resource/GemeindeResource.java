@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
@@ -310,6 +311,29 @@ public class GemeindeResource {
 			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
 			.orElse(null);
 	}
+
+	@ApiOperation(value = "Returns the lite version of the GemeindeStammdaten with the given GemeindeId.",
+		response = JaxGemeindeStammdaten.class)
+	@Nullable
+	@GET
+	@Path("/stammdaten/lite/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGemeindeStammdatenLite getGemeindeStammdatenLite(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+
+		Optional<GemeindeStammdaten> stammdatenFromDB = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (!stammdatenFromDB.isPresent()) {
+			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
+		}
+		return stammdatenFromDB
+			.map(stammdaten -> converter.gemeindeStammdatenLiteToJAX(stammdaten))
+			.orElse(null);
+	}
+
 
 	private Optional<GemeindeStammdaten> initGemeindeStammdaten(String gemeindeId) {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();

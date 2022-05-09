@@ -91,7 +91,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		Einstellung schulstufeEinstellung = findSchulstufeEinstellungFor(EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, gemeinde, gesuchsperiode);
 		var maxEinschulungTyp= convertEinstellungToEinschulungTyp(schulstufeEinstellung);
 		Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp());
-		if (maxEinschulungTyp.ordinal() >= kindContainer.getKindJA().getEinschulungTyp().ordinal()) {
+		if (maxEinschulungTyp.getOrdinalitaet() >= kindContainer.getKindJA().getEinschulungTyp().getOrdinalitaet()) {
 			return true;
 		}
 		createConstraintViolation("invalid_fachstellen_sozial", maxEinschulungTyp, context, mandant);

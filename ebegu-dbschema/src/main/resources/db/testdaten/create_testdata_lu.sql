@@ -1,30 +1,4 @@
 # GESUCHSPERIODE 20/21
-INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-							vorgaenger_id, gueltig_ab, gueltig_bis, status,
-							datum_aktiviert, mandant_id)
-VALUES (UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00',
-		'flyway', 'flyway', 0, NULL, '2020-08-01', '2021-07-31', 'ENTWURF', NULL, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
-
-# Default system einstellungen for lu GS
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, 0,
-	einstellung_key, value, NULL, UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', '')), NULL
-FROM einstellung
-WHERE mandant_id IS NULL AND gesuchsperiode_id = UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')) AND NOT EXISTS(
-		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', ''))
-				and e1.mandant_id IS NULL AND e1.einstellung_key = einstellung.einstellung_key AND e1.gemeinde_id IS NULL
-	);
-
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, 0,
-	einstellung_key, value, NULL, UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-FROM einstellung
-WHERE mandant_id = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')) AND gesuchsperiode_id = UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')) AND NOT EXISTS(
-		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  UNHEX(REPLACE('1670d04a-30a9-11ec-a86f-b89a2ae4a038', '-', ''))
-				and e1.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')) AND e1.einstellung_key = einstellung.einstellung_key
-	) AND gemeinde_id IS NULL;
 
 UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
 UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));

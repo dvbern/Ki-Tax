@@ -75,7 +75,7 @@ public class GeschwisterbonusCalcRule extends AbstractCalcRule {
 		if (kind.getEinschulungTyp() == null) {
 			return false;
 		}
-		return kind.getEinschulungTyp().ordinal() <= this.einstellungBgAusstellenBisStufe.ordinal();
+		return kind.getEinschulungTyp().getOrdinalitaet() <= this.einstellungBgAusstellenBisStufe.getOrdinalitaet();
 	}
 
 	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung) {

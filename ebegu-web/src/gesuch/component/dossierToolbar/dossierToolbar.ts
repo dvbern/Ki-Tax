@@ -41,7 +41,7 @@ import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFall
 import {TSSozialdienstStammdaten} from '../../../models/sozialdienst/TSSozialdienstStammdaten';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSDossier} from '../../../models/TSDossier';
-import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
@@ -141,7 +141,6 @@ export class DossierToolbarController implements IDVFocusableController {
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
     public amountNewMitteilungenGS: number = 0;
-    private $kontaktLoaded: IPromise<boolean>;
 
     public constructor(private readonly ebeguUtil: EbeguUtil,
                        private readonly gesuchRS: GesuchRS,
@@ -296,9 +295,14 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.updateGemeindeStammdaten();
 
                 if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((stammdaten => {
-                        this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
-                    }));
+                    if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
+                        this.gemeindeInstitutionKontakteHtml =
+                            this.gemeindeStammdatenToHtml(this.gesuchModelManager.gemeindeStammdaten);
+                    } else {
+                        this.gemeindeRS.getGemeindeStammdatenLite(this.gemeindeId).then((stammdaten => {
+                            this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
+                        }));
+                    }
                 }
 
                 if (this.dossier.fall.sozialdienstFall) {
@@ -359,13 +363,17 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private updateGemeindeStammdaten(): void {
-        this.$kontaktLoaded = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(gemeindeDaten);
-            return true;
+        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
+            this.kontaktdatenGemeindeAsHtml = this.getKontaktdatenHtml(this.gesuchModelManager.gemeindeStammdaten);
+            return;
+        }
+        this.gemeindeRS.getGemeindeStammdatenLite(this.gemeindeId).then((stammdaten => {
+            this.kontaktdatenGemeindeAsHtml = this.gemeindeStammdatenToHtml(stammdaten);
         }));
+
     }
 
-    private getKontaktdatenHtml(gemeindeDaten: TSGemeindeStammdaten): string {
+    private getKontaktdatenHtml(gemeindeDaten: TSGemeindeStammdatenLite): string {
         if (gemeindeDaten.hasAltGemeindeKontakt) {
             return this.sanitizeHtml(gemeindeDaten.altGemeindeKontaktText);
         }
@@ -735,17 +743,20 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        this.$kontaktLoaded.then(() => {
-            this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
-                title: '',
-                text: this.kontaktdatenGemeindeAsHtml,
-                parentController: this,
-            });
+        if (EbeguUtil.isNullOrUndefined(this.kontaktdatenGemeindeAsHtml)) {
+            this.updateGemeindeStammdaten();
+        }
+        if (!EbeguUtil.isNotNullOrUndefined(this.kontaktdatenGemeindeAsHtml)) {
+            return;
+        }
+        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
+            title: '',
+            text: this.kontaktdatenGemeindeAsHtml,
+            parentController: this,
         });
-
     }
 
-    private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
+    private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdatenLite): string {
         const htmlIntro = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) ?
             `<h3 class="margin-top-20">${this.$translate.instant('BEI_FRAGEN_GEMEINDE_KONTAKTIEREN')}</h3>
             <span>` :
@@ -756,11 +767,10 @@ export class DossierToolbarController implements IDVFocusableController {
                    <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
                    <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>`;
         } else {
-            html = htmlIntro;
-            html += `${stammdaten.adresse.organisation ?
+            html = htmlIntro + `${stammdaten.adresse.organisation ?
                 stammdaten.adresse.organisation :
                 ''}
-                          ${stammdaten.gemeinde.name}</span><br>
+                          ${stammdaten.gemeindeName}</span><br>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
                     <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;

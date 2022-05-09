@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "gemeindeStammdaten")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxGemeindeStammdaten extends JaxAbstractDTO {
+public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 
 	private static final long serialVersionUID = -1893677816323618626L;
 	@Nullable
@@ -49,24 +49,12 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private JaxBenutzer defaultBenutzerTS;
 	@NotNull
 	private JaxGemeinde gemeinde;
-	@NotNull
-	private JaxAdresse adresse;
 	@Nullable
 	private JaxAdresse bgAdresse;
 	@Nullable
 	private JaxAdresse tsAdresse;
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
-	@NotNull
-	private String mail;
-	@Nullable
-	private String telefon;
-	@Nullable
-	private String webseite;
-	@NotNull
-	private boolean korrespondenzspracheDe;
-	@NotNull
-	private boolean korrespondenzspracheFr;
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
@@ -118,17 +106,9 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private JaxGemeinde gemeindeAusgabestelle;
 	@Nonnull
-	private Boolean hasAltGemeindeKontakt;
-	@Nullable
-	private String altGemeindeKontaktText;
-	@Nonnull
 	private Boolean hasZusatzText;
 	@Nullable
 	private String zusatzText;
-
-	// ---------- Konfiguration ----------
-	@NotNull
-	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
 
 	public JaxGemeindeStammdaten() {
 	}
@@ -177,14 +157,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.gemeinde = gemeinde;
 	}
 
-	public JaxAdresse getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(JaxAdresse adresse) {
-		this.adresse = adresse;
-	}
-
 	@Nullable
 	public JaxAdresse getBeschwerdeAdresse() {
 		return beschwerdeAdresse;
@@ -192,48 +164,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setBeschwerdeAdresse(@Nullable JaxAdresse beschwerdeAdresse) {
 		this.beschwerdeAdresse = beschwerdeAdresse;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-
-	@Nullable
-	public String getTelefon() {
-		return telefon;
-	}
-
-	public void setTelefon(@Nullable String telefon) {
-		this.telefon = telefon;
-	}
-
-	@Nullable
-	public String getWebseite() {
-		return webseite;
-	}
-
-	public void setWebseite(@Nullable String webseite) {
-		this.webseite = webseite;
-	}
-
-	public boolean isKorrespondenzspracheDe() {
-		return korrespondenzspracheDe;
-	}
-
-	public void setKorrespondenzspracheDe(boolean korrespondenzspracheDe) {
-		this.korrespondenzspracheDe = korrespondenzspracheDe;
-	}
-
-	public boolean isKorrespondenzspracheFr() {
-		return korrespondenzspracheFr;
-	}
-
-	public void setKorrespondenzspracheFr(boolean korrespondenzspracheFr) {
-		this.korrespondenzspracheFr = korrespondenzspracheFr;
 	}
 
 	@Nullable
@@ -252,14 +182,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setBenutzerListeTS(@Nullable List<JaxBenutzer> benutzerListeTS) {
 		this.benutzerListeTS = benutzerListeTS;
-	}
-
-	public List<JaxGemeindeKonfiguration> getKonfigurationsListe() {
-		return konfigurationsListe;
-	}
-
-	public void setKonfigurationsListe(List<JaxGemeindeKonfiguration> konfigurationsListe) {
-		this.konfigurationsListe = konfigurationsListe;
 	}
 
 	@Nullable
@@ -492,24 +414,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setGemeindeAusgabestelle(@Nullable JaxGemeinde gemeindeAusgabestelle) {
 		this.gemeindeAusgabestelle = gemeindeAusgabestelle;
-	}
-
-	@Nullable
-	public String getAltGemeindeKontaktText() {
-		return altGemeindeKontaktText;
-	}
-
-	public void setAltGemeindeKontaktText(@Nullable String altGemeindeKontaktText) {
-		this.altGemeindeKontaktText = altGemeindeKontaktText;
-	}
-
-	@Nonnull
-	public Boolean getHasAltGemeindeKontakt() {
-		return hasAltGemeindeKontakt;
-	}
-
-	public void setHasAltGemeindeKontakt(@Nonnull Boolean hasAltGemeindeKontakt) {
-		this.hasAltGemeindeKontakt = hasAltGemeindeKontakt;
 	}
 
 	@Nonnull
