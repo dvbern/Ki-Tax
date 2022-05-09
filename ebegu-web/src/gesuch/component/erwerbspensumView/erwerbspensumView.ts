@@ -14,8 +14,12 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
+import {map} from 'rxjs/operators';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSTaetigkeit, getTSTaetigkeitWithFreiwilligenarbeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -31,6 +35,8 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('ErwerbspensumViewController');
 
 export class ErwerbspensumViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -52,6 +58,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         'WizardStepManager',
         '$q',
         '$translate',
+        'MandantService',
         '$timeout',
     ];
 
@@ -59,6 +66,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public patternPercentage: string;
     public hasUnbezahlterUrlaub: boolean;
     public hasUnbezahlterUrlaubGS: boolean;
+    public isLuzern: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -70,6 +78,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         wizardStepManager: WizardStepManager,
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
+        private readonly mandantService: MandantService,
         $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager,
@@ -94,6 +103,9 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             console.log('kein gesuchsteller gefunden');
         }
         this.initUnbezahlterUrlaub();
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+        }, err => LOG.error(err));
     }
 
     public getTaetigkeitenList(): Array<TSTaetigkeit> {

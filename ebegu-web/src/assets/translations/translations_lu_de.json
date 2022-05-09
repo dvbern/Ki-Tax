@@ -51,5 +51,9 @@
     "FINANZIELLESITUATION_NACHWEIS_SOZIALHILFE": "Nachweis über wirtschaftliche Sozialhilfe (ESI/DAF)",
     "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Veranlagungsprotokoll",
     "FINANZIELLESITUATION_NACHWEIS_BRUTTOLOHN": "Lohnausweis oder Lohnabrechnung",
+    "UNREGELMAESSIGE_ARBEITSZEITEN": "Unregelmässige Arbeitszeiten",
+    "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
+    "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
+    "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -555,6 +555,7 @@ export class EbeguRestUtil {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
+            erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
             return erwerbspensum;
@@ -567,6 +568,7 @@ export class EbeguRestUtil {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
+            restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
             return restErwerbspensum;
@@ -1965,8 +1967,8 @@ export class EbeguRestUtil {
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
         restSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklaration.abzugKrankheitsUnfallKosten;
-        restSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-            = selbstdeklaration.abzugFreiweiligeZuwendungPartien;
+        restSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+            = selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten;
         restSelbstdeklaration.abzugKinderVorschule = selbstdeklaration.abzugKinderVorschule;
         restSelbstdeklaration.abzugKinderSchule = selbstdeklaration.abzugKinderSchule;
         restSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
@@ -2085,8 +2087,8 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
             tsSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklarationFromServer.abzugKrankheitsUnfallKosten;
-            tsSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-                = selbstdeklarationFromServer.abzugFreiweiligeZuwendungPartien;
+            tsSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+                = selbstdeklarationFromServer.sonderabzugErwerbstaetigkeitEhegatten;
             tsSelbstdeklaration.abzugKinderVorschule = selbstdeklarationFromServer.abzugKinderVorschule;
             tsSelbstdeklaration.abzugKinderSchule = selbstdeklarationFromServer.abzugKinderSchule;
             tsSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
@@ -4254,7 +4256,7 @@ export class EbeguRestUtil {
             belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             belegungFerieninselTS.tageMorgenmodul = this.parseBelegungFerieninselTagList(
-                receivedBelegungFerieninsel.tageMorgenmodul
+                receivedBelegungFerieninsel.tageMorgenmodul,
             );
             return belegungFerieninselTS;
         }

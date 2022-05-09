@@ -298,7 +298,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 		deklaration.setAbzugSaeule3A(new BigDecimal("2358.00"));
 		deklaration.setAbzugVersicherungspraemien(new BigDecimal("4521.00"));
 		deklaration.setAbzugKrankheitsUnfallKosten(new BigDecimal("1061.00"));
-		deklaration.setAbzugFreiweiligeZuwendungPartien(new BigDecimal("1929.00"));
+		deklaration.setSonderabzugErwerbstaetigkeitEhegatten(new BigDecimal("1929.00"));
 		deklaration.setAbzugKinderVorschule(new BigDecimal("2684.00"));
 		deklaration.setAbzugKinderSchule(new BigDecimal("1381.00"));
 		deklaration.setAbzugKinderAuswaertigerAufenthalt(new BigDecimal("3041.00"));
