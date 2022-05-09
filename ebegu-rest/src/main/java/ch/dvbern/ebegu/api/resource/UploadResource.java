@@ -194,9 +194,6 @@ public class UploadResource {
 	private FallService fallService;
 
 	@Inject
-	private GesuchstellerService gesuchstellerService;
-
-	@Inject
 	private PrincipalBean principal;
 
 	private static final String PART_FILE = "file";
