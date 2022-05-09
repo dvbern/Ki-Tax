@@ -91,7 +91,7 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		case FACHSTELLENBESTAETIGUNG:
 			return kind != null && kind.getPensumFachstelle() != null;
 		case ABSAGESCHREIBEN_HORTPLATZ:
-			return kind != null && kind.hasKeinPlatzInSchulhort();
+			return kind != null && kind.getKeinPlatzInSchulhort();
 		default:
 			return false;
 		}

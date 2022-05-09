@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE kind ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT NOT NULL DEFAULT 0;
-ALTER TABLE kind_aud ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT NOT NULL DEFAULT 0;
+import {TSAbstractGemeindeStammdaten} from './TSAbstractGemeindeStammdaten';
 
+export class TSGemeindeStammdatenLite extends TSAbstractGemeindeStammdaten {
+    public gemeindeName: string;
+}
