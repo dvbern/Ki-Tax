@@ -2145,13 +2145,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkWriteAuthorization(gesuch);
 	}
 
-	private Gesuch extractGesuchFromGSContainer(GesuchstellerContainer gesuchstellerContainer) {
-		Gesuch gesuch = gesuchService.findGesuch(Objects.requireNonNull(gesuchstellerContainer.getOwningGesuchId()))
-				.orElseThrow(() -> new EbeguEntityNotFoundException("checkWriteAuthorization",
-						gesuchstellerContainer));
-		return gesuch;
-	}
-
 	@Override
 	public void checkReadAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
 		Gesuch gesuch = extractGesuch(gesuchstellerContainer);
