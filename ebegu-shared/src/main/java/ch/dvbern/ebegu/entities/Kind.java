@@ -433,7 +433,7 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nonnull
-	public Boolean hasKeinPlatzInSchulhort() {
+	public Boolean getKeinPlatzInSchulhort() {
 		return keinPlatzInSchulhort;
 	}
 

@@ -2372,7 +2372,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
-		jaxKind.setKeinPlatzInSchulhort(persistedKind.hasKeinPlatzInSchulhort());
+		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));

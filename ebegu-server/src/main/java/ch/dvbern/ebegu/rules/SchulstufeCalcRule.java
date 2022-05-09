@@ -88,7 +88,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 	 * ist, hat das Kind Anspruch
 	 */
 	private boolean hasKeinPlatzInSchulhort(Kind kindJA) {
-		return kindJA.hasKeinPlatzInSchulhort();
+		return kindJA.getKeinPlatzInSchulhort();
 	}
 
 	private MsgKey getMsgKey() {
