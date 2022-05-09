@@ -23,17 +23,20 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FachstellenTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
-public class FachstelleLuzernCalcRule extends AbstractCalcRule {
+public class FachstelleLuzernCalcRule extends AbstractFachstellenCalcRule {
 
 	public FachstelleLuzernCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
@@ -49,12 +52,23 @@ public class FachstelleLuzernCalcRule extends AbstractCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull BGCalculationInput inputData
 	) {
+		int pensumFachstelle = inputData.getFachstellenpensum();
+		Betreuung betreuung = (Betreuung) platz;
+
+		if(pensumFachstelle > 0) {
+			int beteruungspensumIntValue = MathUtil.GANZZAHL.from(pensumFachstelle).intValue();
+
+			inputData.setAnspruchspensumProzent(beteruungspensumIntValue);
+			inputData.addBemerkung(
+				MsgKey.FACHSTELLE_MSG,
+				getLocale(),
+				getIndikation(betreuung),
+				getFachstelle(betreuung));
+		}
 	}
 
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung fachstellenTypEinstellung = einstellungMap.get(EinstellungKey.FACHSTELLEN_TYP);
-		FachstellenTyp fachstellenTyp = FachstellenTyp.valueOf(fachstellenTypEinstellung.getValue());
-		return fachstellenTyp == FachstellenTyp.LUZERN;
+		return getFachstellenTypFromEinstellungen(einstellungMap) == FachstellenTyp.LUZERN;
 	}
 }

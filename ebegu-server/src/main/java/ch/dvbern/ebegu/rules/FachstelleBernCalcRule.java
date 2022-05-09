@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -27,15 +26,12 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FachstellenTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -48,7 +44,7 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  * - Falls Kind eine Fachstelle hat, gilt das Pensum der Fachstelle, sofern dieses höher ist als der Anspruch aus sonstigen Regeln
  * Verweis 16.9.3
  */
-public class FachstelleBernCalcRule extends AbstractCalcRule {
+public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 
 	public FachstelleBernCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
@@ -100,30 +96,8 @@ public class FachstelleBernCalcRule extends AbstractCalcRule {
 		}
 	}
 
-	private String getIndikation(@Nonnull Betreuung betreuung) {
-		if (betreuung.getKind().getKindJA().getPensumFachstelle() == null) {
-			return "";
-		}
-		// we cannot translate the Enum directly because we need another translation specific for this Bemerkung
-		final Mandant mandant = Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant());
-
-		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp().getIndikationMessage(getLocale(), mandant);
-	}
-
-	private String getFachstelle(@Nonnull Betreuung betreuung) {
-		PensumFachstelle pensumFachstelle = betreuung.getKind().getKindJA().getPensumFachstelle();
-		if (pensumFachstelle == null || pensumFachstelle.getFachstelle() == null) {
-			return "";
-		}
-		return ServerMessageUtil.translateEnumValue(
-			pensumFachstelle.getFachstelle().getName(),
-			getLocale(), Objects.requireNonNull(betreuung.extractGemeinde().getMandant()));
-	}
-
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung fachstellenTypEinstellung = einstellungMap.get(EinstellungKey.FACHSTELLEN_TYP);
-		FachstellenTyp fachstellenTyp = FachstellenTyp.valueOf(fachstellenTypEinstellung.getValue());
-		return fachstellenTyp == FachstellenTyp.BERN;
+		return super.getFachstellenTypFromEinstellungen(einstellungMap) == FachstellenTyp.BERN;
 	}
 }
