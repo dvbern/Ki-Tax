@@ -212,6 +212,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.model.extractPensumFachstelle()) {
             return;
         }
+        if (this.isFachstellenTypLuzern()) {
+            this.model.extractPensumFachstelle().pensum = 100;
+        }
         if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
