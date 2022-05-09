@@ -292,8 +292,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     }
                 });
             response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
-                .forEach(value => {
-                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(value);
+                .forEach(einstellung => {
+                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
                 });
         });
 
