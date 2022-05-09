@@ -46,7 +46,7 @@
             </div>
 
 			<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
-                                                [antragStellerNummer]="getAntragstellerNummer()"
+                                                [hideSozialhilfeQuestion]="!isGS1()"
 												[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
                                                 (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
             </dv-finanzielle-situation-require-x>

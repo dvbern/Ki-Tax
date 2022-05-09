@@ -58,7 +58,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     public areThereAnyBgBetreuungen: boolean;
 
     @Input()
-    public antragStellerNummer: number;
+    public hideSozialhilfeQuestion: boolean = false;
 
     private maxMassgebendesEinkommen: number;
     private isFinSitTypFkjv: boolean = false;
@@ -132,8 +132,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     }
 
     public showSozialhilfeQuestion(): boolean {
-        // Frage ob Sozialhilfebezüger soll nur bei GS1 angezegit werden
-        return this.antragStellerNummer === 1;
+        return !this.hideSozialhilfeQuestion;
     }
 
     public getMaxMassgebendesEinkommen(): string {

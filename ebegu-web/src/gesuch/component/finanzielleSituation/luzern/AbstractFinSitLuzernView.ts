@@ -228,6 +228,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return '';
     }
 
+    public isGS1(): boolean {
+        return this.getAntragstellerNummer() === 1;
+    }
+
     public getModel(): TSFinanzielleSituationContainer {
         return this.model.getFiSiConToWorkWith();
     }
