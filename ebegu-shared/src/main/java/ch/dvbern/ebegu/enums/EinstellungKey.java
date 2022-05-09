@@ -185,6 +185,10 @@ public enum EinstellungKey {
 	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
 	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
 
+	// "Alle: Sprachliche Integration bis und mit Schulstufe"
+	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
+	SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,
+
 	// "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein"
 	// Siehe KIBON-2093. Falls true wird die Pauschale nur ausbezahlt, wenn auch ein Anspruch auf einen Gutschein besteht
 	FKJV_PAUSCHALE_BEI_ANSPRUCH,

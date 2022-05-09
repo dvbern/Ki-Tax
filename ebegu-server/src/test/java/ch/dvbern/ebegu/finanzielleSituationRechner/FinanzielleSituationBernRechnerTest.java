@@ -310,6 +310,18 @@ public class FinanzielleSituationBernRechnerTest {
 		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, null);
 		Assert.assertEquals(new BigDecimal(50), total);
 
+		// FinSit GS1 Normal GS2 null Nettovermoegen Neg
+		finSitGS1.setNettoVermoegen(new BigDecimal(-2000));
+		finSitGS1.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, null);
+		Assert.assertEquals(new BigDecimal(50), total);
+
+		// FinSit GS1 Steuerzugriff GS2 Null Nettovermoegen Neg
+		finSitGS1.setSteuerdatenZugriff(true);
+		finSitGS1.setSteuerdatenAbfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, null);
+		Assert.assertEquals(new BigDecimal(0), total);
+
 		// FinSit GS1 Steuerzugriff GS2 null
 		finSitGS1.setNettoVermoegen(new BigDecimal(2000));
 		finSitGS1.setSteuerdatenZugriff(true);
@@ -342,5 +354,12 @@ public class FinanzielleSituationBernRechnerTest {
 		finSitGS2.setSteuerdatenZugriff(true);
 		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
 		Assert.assertEquals(new BigDecimal(300), total);
+
+		// FinSit GS1 SteuerZugriff, GS2 Steuerzugriff Nettovermoegen neg und pos
+		finSitGS1.setNettoVermoegen(new BigDecimal(-500));
+		finSitGS2.setNettoVermoegen(new BigDecimal(2500));
+		finSitGS2.setSteuerdatenZugriff(true);
+		total = AbstractFinanzielleSituationRechner.calcVermoegen5Prozent(finSitGS1, finSitGS2);
+		Assert.assertEquals(new BigDecimal(100), total);
 	}
 }

@@ -20,7 +20,11 @@ import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypValues,
+    getTSEinschulungTypValuesLuzern,
+    TSEinschulungTyp,
+} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -53,6 +57,8 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('KindViewController');
 
 export class KindViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -101,6 +107,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private kinderabzugTyp: TSKinderabzugTyp;
     private fachstellenTyp: TSFachstellenTyp;
     public maxPensumAusserordentlicherAnspruch: string;
+    // When migrating to ng, use observable in template
+    private isLuzern: boolean;
     public submitted: boolean = false;
     private isSpracheAmtspracheDisabled: boolean;
     private isZemisDeaktiviert: boolean = false;
@@ -139,14 +147,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.initViewModel();
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+            this.initViewModel();
+        }, err => LOG.error(err));
     }
 
     private initViewModel(): void {
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        this.einschulungTypValues = this.isLuzern ? getTSEinschulungTypValuesLuzern() : getTSEinschulungTypValues();
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
@@ -573,5 +584,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.integrationTypes = this.fachstellenTyp === TSFachstellenTyp.LUZERN ?
             [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
             [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
+    }
+
+    public isEinschulungTypObligatorischerKindergarten(): boolean {
+        return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
+    }
+
+    public einschulungTypChanged(): void {
+        if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
+            this.getModel().keinPlatzInSchulhort = false;
+        }
     }
 }
