@@ -33,7 +33,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			'ebegu' as user_mutiert,
 			'0' as version,
 			'SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE' as einstellungkey,
-			'VORSCHULALTER' as value,
+			'OBLIGATORISCHER_KINDERGARTEN' as value,
             id as gesuchsperiode_id
 		FROM gesuchsperiode
 	);
