@@ -24,6 +24,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
@@ -5823,6 +5824,13 @@ export class EbeguRestUtil {
             return typ as TSKinderabzugTyp;
         }
         throw new Error(`TSKinderabzugTyp ${typ} not defined`);
+    }
+
+    public parseFachstellenTyp(typ: any): TSFachstellenTyp {
+        if (Object.values(TSFachstellenTyp).includes(typ)) {
+            return typ as TSFachstellenTyp;
+        }
+        throw new Error(`TSFachstellenTyp ${typ} not defined`);
     }
 
     public parseSteuerdatenResponse(

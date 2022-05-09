@@ -275,7 +275,14 @@ public enum EinstellungKey {
 
 	// falls diese Einstellung disabled ist, dann wechselt der Status des Antrags nach der Freigabe durch den Antragstellenden
 	// direkt auf Freigegeben. "Freigabequittung ausstehend" wird übersprungen.
-	FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
+	FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+
+	// Unbezahlter Urlaub kann mit dieser Einstellung aktivert oder deaktiviert werden
+	UNBEZAHLTER_URLAUB_AKTIV,
+
+	// Fachstellen Typ (KIBON-2360)
+	// BERN oder LUZERN
+	FACHSTELLEN_TYP;
 
 
 	private EinstellungTyp typ;
