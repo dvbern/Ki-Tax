@@ -65,7 +65,7 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 
 	@Column(nullable = true)
 	@Nullable
-	private boolean unregelmaessigeArbeitszeiten;
+	private Boolean unregelmaessigeArbeitszeiten;
 
 
 	public Erwerbspensum() {
@@ -99,11 +99,11 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	}
 
 	@Nullable
-	public boolean isUnregelmaessigeArbeitszeiten() {
+	public Boolean isUnregelmaessigeArbeitszeiten() {
 		return unregelmaessigeArbeitszeiten;
 	}
 
-	public void setUnregelmaessigeArbeitszeiten(@Nullable boolean unregelmaessigeArbeitszeiten) {
+	public void setUnregelmaessigeArbeitszeiten(@Nullable Boolean unregelmaessigeArbeitszeiten) {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 
