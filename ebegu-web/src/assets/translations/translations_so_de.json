@@ -29,5 +29,7 @@
     "TESTLOGIN_REDIRECT_WARNING_CONTENT": "<br>(<b>Achtung:</b> die Ansicht der Testumgebung des Logins sieht genau gleich aus wie das \"echte\" Login - die beiden Umgebungen sind aber <b>nicht</b> miteinander verbunden)<br><br>Falls Sie noch kein Test-Login erstellt haben, müssen Sie folgendes wissen:<br>Sie müssen ein <b>neues Login in dieser Testumgebung erstellen</b> &rArr; Neu registrieren.<br><br>Für die Erstellung des BE-Logins müssen sie die E-Mailadresse verwenden, mit welcher Sie für die Testumgebung eingeladen worden sind.<br>",
     "ONBOARDING_BG_LOGIN_REQUIRED": "Login benötigt",
     "ONBOARDING_BE_LOGIN_DESCRIPTION": "Sie benötigen ein Login für kiBon. Über \"Anmelden\" gelangen Sie auf das Loginportal, wo Sie sich entweder mit einem bestehenden Konto anmelden oder sich registrieren können. Nach der Anmeldung werden Sie wieder auf kiBon zurückgeleitet.",
+    "ONBOARDING_GS_ANGABEN_TITLE": "Login Daten",
+    "BE_LOGIN_DATEN": "BE-Login Daten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

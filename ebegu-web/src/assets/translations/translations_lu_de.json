@@ -40,5 +40,7 @@
     "FREIWILLIGER_KINDERGARTEN": "Freiwilliger Kindergarten",
     "OBLIGATORISCHER_KINDERGARTEN": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
     "PRIMAR_SEKUNDAR_STUFE": "Primar- / Sekundarstufe (kein Anspruch auf Betreuungsgutscheine)",
+    "ONBOARDING_GS_ANGABEN_TITLE": "Login Daten",
+    "BE_LOGIN_DATEN": "BE-Login Daten",
     "KEIN_PLATZ_IN_SCHULHORT": "Mein Kind hat kein Platz im Schulhort"
 }
