@@ -38,5 +38,9 @@
     "ONBOARDING_BE_LOGIN_DESCRIPTION": "Sie benötigen ein Login für kiBon. Über \"Anmelden\" gelangen Sie auf das Loginportal, wo Sie sich entweder mit einem bestehenden Konto anmelden oder sich registrieren können. Nach der Anmeldung werden Sie wieder auf kiBon zurückgeleitet.",
 	"AUSWEIS_NACHWEIS": "Nachweis Identität",
 	"AUSWEIS_NACHWEIS_TOOLTIP": "Laden Sie ein vollständiges offizielles Dokument (ID, Pass, Aufenthaltsbewilligung, etc.) hoch, welches ihre Identität nachweist.",
-	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+    "FREIWILLIGER_KINDERGARTEN": "Freiwilliger Kindergarten",
+    "OBLIGATORISCHER_KINDERGARTEN": "Obligatorischer Kindergarten (kein Anspruch auf Betreuungsgutscheine)",
+    "PRIMAR_SEKUNDAR_STUFE": "Primar- / Sekundarstufe (kein Anspruch auf Betreuungsgutscheine)",
+    "KEIN_PLATZ_IN_SCHULHORT": "Mein Kind hat kein Platz im Schulhort",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

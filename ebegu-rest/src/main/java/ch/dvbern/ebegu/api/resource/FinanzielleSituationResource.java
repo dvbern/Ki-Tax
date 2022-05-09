@@ -662,7 +662,7 @@ public class FinanzielleSituationResource {
 		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
 		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
-		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
+		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
 		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null) {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
@@ -684,7 +684,7 @@ public class FinanzielleSituationResource {
 		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
 		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
-		finSit.setNettoertraegeErbengemeinschaft(getPositvValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
+		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
 
 		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null) {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
@@ -719,24 +719,26 @@ public class FinanzielleSituationResource {
 
 		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(
 			bruttertraegeVermogenTotal,
-			anzahlGesuchsteller));
+			anzahlGesuchsteller, false));
 		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(
 			steuerdatenResponse.getSchuldzinsen(),
-			anzahlGesuchsteller));
-		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller));
+			anzahlGesuchsteller, false));
+		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller, false));
 		finSit.setGeleisteteAlimente(divideByAnzahlGesuchsteller(
 			steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(),
-			anzahlGesuchsteller));
+			anzahlGesuchsteller, false));
 		finSit.setNettoVermoegen(divideByAnzahlGesuchsteller(
-			getPositvValueOrZero(steuerdatenResponse.getNettovermoegen()),
-			anzahlGesuchsteller));
+			steuerdatenResponse.getNettovermoegen(),
+			anzahlGesuchsteller, true));
 	}
 
 	private BigDecimal divideByAnzahlGesuchsteller(
 		@Nullable BigDecimal value,
-		@NotNull BigDecimal anzahlGesuchsteller) {
+		@NotNull BigDecimal anzahlGesuchsteller,
+		@NotNull boolean allowNegative) {
 		assert anzahlGesuchsteller.compareTo(BigDecimal.ZERO) != 0;
-		return GANZZAHL.divide(getPositvValueOrZero(value), anzahlGesuchsteller);
+		return GANZZAHL.divide(allowNegative ? getValueOrZero(value) : getPositvValueOrZero(value), anzahlGesuchsteller);
+
 	}
 
 	private BigDecimal getPositvValueOrZero(@Nullable BigDecimal value) {
@@ -744,6 +746,13 @@ public class FinanzielleSituationResource {
 			return BigDecimal.ZERO;
 		}
 
+		return value;
+	}
+
+	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
 		return value;
 	}
 

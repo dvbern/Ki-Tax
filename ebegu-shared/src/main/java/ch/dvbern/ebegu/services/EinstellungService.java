@@ -94,15 +94,24 @@ public interface EinstellungService {
 	@Nonnull
 	Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode);
 
-	/**
-	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der
-	 * zurueckgegebenen Map ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
-	 * die Gemeinde. z.B. Key A als Gemeindeeinstellung, Key B als System Default, Key C als Mandanteinstellung
-	 */
+	@Nonnull
+	Optional<Einstellung> getEinstellungByMandant(@Nonnull EinstellungKey einstellungKey, @Nonnull Gesuchsperiode gesuchsperiode);
+		/**
+		 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der
+		 * zurueckgegebenen Map ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
+		 * die Gemeinde. z.B. Key A als Gemeindeeinstellung, Key B als System Default, Key C als Mandanteinstellung
+		 */
 	@Nonnull
 	Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode);
+
+
+	@Nonnull
+	Map<EinstellungKey, Einstellung> getGemeindeEinstellungenOnlyAsMap(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode);
+
 
 	/**
 	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode. Es werden sowohl Gemeinde-, Mandant-, wie auch

@@ -213,6 +213,7 @@ public class UploadResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@PermitAll
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public Response uploadFiles(
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo,
@@ -275,6 +276,11 @@ public class UploadResource {
 			if (existingDokumentGrundOptional.isPresent()) {
 				dokumentGrundToMerge = existingDokumentGrundOptional.get();
 				jaxDokumentGrund = converter.dokumentGrundToJax(dokumentGrundToMerge);
+				if (!dokumentGrundToMerge.getGesuch().getId().equals(gesuchId)) {
+					final String problemString = "Gesuch zu ueberschreiben ist nicht erlaubt";
+					LOG.error(problemString);
+					return Response.serverError().entity(problemString).build();
+				}
 			}
 		}
 

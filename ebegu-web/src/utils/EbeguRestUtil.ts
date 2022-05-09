@@ -55,6 +55,7 @@ import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
 import {TSAbstractFinanzielleSituation} from '../models/TSAbstractFinanzielleSituation';
+import {TSAbstractGemeindeStammdaten} from '../models/TSAbstractGemeindeStammdaten';
 import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import {TSAbstractPersonEntity} from '../models/TSAbstractPersonEntity';
@@ -123,6 +124,7 @@ import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../models/TSGesuchsteller';
@@ -606,7 +608,8 @@ export class EbeguRestUtil {
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
             restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
             restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
-            restFamiliensituation.abweichendeZahlungsadresseMahlzeiten = familiensituation.abweichendeZahlungsadresseMahlzeiten;
+            restFamiliensituation.abweichendeZahlungsadresseMahlzeiten =
+                familiensituation.abweichendeZahlungsadresseMahlzeiten;
             restFamiliensituation.zahlungsadresseMahlzeiten =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresseMahlzeiten);
             restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
@@ -694,7 +697,8 @@ export class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseMahlzeiten);
             familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
             familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
-            familiensituation.abweichendeZahlungsadresseInfoma = familiensituationFromServer.abweichendeZahlungsadresseInfoma;
+            familiensituation.abweichendeZahlungsadresseInfoma =
+                familiensituationFromServer.abweichendeZahlungsadresseInfoma;
             familiensituation.zahlungsadresseInfoma =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
             familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
@@ -704,7 +708,8 @@ export class EbeguRestUtil {
             familiensituation.minDauerKonkubinat = familiensituationFromServer.minDauerKonkubinat;
             familiensituation.geteilteObhut = familiensituationFromServer.geteilteObhut;
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
-            familiensituation.unterhaltsvereinbarungBemerkung = familiensituationFromServer.unterhaltsvereinbarungBemerkung;
+            familiensituation.unterhaltsvereinbarungBemerkung =
+                familiensituationFromServer.unterhaltsvereinbarungBemerkung;
             return familiensituation;
         }
         return undefined;
@@ -1054,7 +1059,7 @@ export class EbeguRestUtil {
         stammdatenFromServer: any,
     ): TSGemeindeStammdaten {
         if (stammdatenFromServer) {
-            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            this.parseAbstractGemeindeStammdaten(stammdatenTS, stammdatenFromServer);
 
             stammdatenTS.administratoren = stammdatenFromServer.administratoren;
             stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
@@ -1103,8 +1108,6 @@ export class EbeguRestUtil {
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
-            stammdatenTS.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
-            stammdatenTS.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
             stammdatenTS.zusatzText = stammdatenFromServer.zusatzText;
             stammdatenTS.hasZusatzText = stammdatenFromServer.hasZusatzText;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
@@ -1114,6 +1117,35 @@ export class EbeguRestUtil {
             return stammdatenTS;
         }
         return undefined;
+    }
+
+    public parseGemeindeStammdatenLite(
+        tsGemeindeStammdatenLite: TSGemeindeStammdatenLite,
+        stammdatenFromServer: any,
+    ): TSGemeindeStammdatenLite {
+        if (stammdatenFromServer) {
+            this.parseAbstractGemeindeStammdaten(tsGemeindeStammdatenLite, stammdatenFromServer);
+            tsGemeindeStammdatenLite.gemeindeName = stammdatenFromServer.gemeindeName;
+            return tsGemeindeStammdatenLite;
+        }
+        return undefined;
+    }
+
+    private parseAbstractGemeindeStammdaten(
+        tsAbstractGemeindeStammdaten: TSAbstractGemeindeStammdaten,
+        stammdatenFromServer: any,
+    ): void {
+        this.parseAbstractEntity(tsAbstractGemeindeStammdaten, stammdatenFromServer);
+        tsAbstractGemeindeStammdaten.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+        tsAbstractGemeindeStammdaten.konfigurationsListe =
+            this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
+        tsAbstractGemeindeStammdaten.mail = stammdatenFromServer.mail;
+        tsAbstractGemeindeStammdaten.telefon = stammdatenFromServer.telefon;
+        tsAbstractGemeindeStammdaten.webseite = stammdatenFromServer.webseite;
+        tsAbstractGemeindeStammdaten.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
+        tsAbstractGemeindeStammdaten.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
+        tsAbstractGemeindeStammdaten.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
+        tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
     }
 
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
@@ -1229,7 +1261,8 @@ export class EbeguRestUtil {
             restProperties.abweichendeZahlungsadresse =
                 gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresseMahlzeiten;
             restProperties.zahlungsadresse =
-                this.adresseToRestObject({}, gesuch.familiensituationContainer.familiensituationJA.zahlungsadresseMahlzeiten);
+                this.adresseToRestObject({},
+                    gesuch.familiensituationContainer.familiensituationJA.zahlungsadresseMahlzeiten);
         }
 
         return restProperties;
@@ -1894,14 +1927,19 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
 
         restAbstractFinanzielleSituation.gewinnungskosten = abstractFinanzielleSituation.gewinnungskosten;
-        restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
-        restAbstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = abstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet =
+            abstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet;
+        restAbstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
+            abstractFinanzielleSituation.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
         restAbstractFinanzielleSituation.nettoVermoegen = abstractFinanzielleSituation.nettoVermoegen;
-        restAbstractFinanzielleSituation.nettoertraegeErbengemeinschaft = abstractFinanzielleSituation.nettoertraegeErbengemeinschaft;
+        restAbstractFinanzielleSituation.nettoertraegeErbengemeinschaft =
+            abstractFinanzielleSituation.nettoertraegeErbengemeinschaft;
         restAbstractFinanzielleSituation.abzugSchuldzinsen = abstractFinanzielleSituation.abzugSchuldzinsen;
         restAbstractFinanzielleSituation.bruttoertraegeVermoegen = abstractFinanzielleSituation.bruttoertraegeVermoegen;
         if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.selbstdeklaration)) {
-            restAbstractFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject({}, abstractFinanzielleSituation.selbstdeklaration);
+            restAbstractFinanzielleSituation.selbstdeklaration = this.finanzielleSituationSelbstdeklarationToRestObject(
+                {},
+                abstractFinanzielleSituation.selbstdeklaration);
         }
         return restAbstractFinanzielleSituation;
     }
@@ -1916,7 +1954,8 @@ export class EbeguRestUtil {
         restSelbstdeklaration.einkunftVersicherung = selbstdeklaration.einkunftVersicherung;
         restSelbstdeklaration.einkunftAusgleichskassen = selbstdeklaration.einkunftAusgleichskassen;
         restSelbstdeklaration.einkunftWertschriften = selbstdeklaration.einkunftWertschriften;
-        restSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige = selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige;
+        restSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige =
+            selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige;
         restSelbstdeklaration.einkunftUnterhaltsbeitragKinder = selbstdeklaration.einkunftUnterhaltsbeitragKinder;
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
@@ -1970,17 +2009,21 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.abzuegeLiegenschaft;
             abstractFinanzielleSituationTS.einkaeufeVorsorge = abstractFinanzielleSituationFromServer.einkaeufeVorsorge;
             abstractFinanzielleSituationTS.abzugSchuldzinsen = abstractFinanzielleSituationFromServer.abzugSchuldzinsen;
-            abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft = abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
+            abstractFinanzielleSituationTS.nettoertraegeErbengemeinschaft =
+                abstractFinanzielleSituationFromServer.nettoertraegeErbengemeinschaft;
             abstractFinanzielleSituationTS.nettoVermoegen = abstractFinanzielleSituationFromServer.nettoVermoegen;
             abstractFinanzielleSituationTS.einkommenInVereinfachtemVerfahrenAbgerechnet =
                 abstractFinanzielleSituationFromServer.einkommenInVereinfachtemVerfahrenAbgerechnet;
             abstractFinanzielleSituationTS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet =
                 abstractFinanzielleSituationFromServer.amountEinkommenInVereinfachtemVerfahrenAbgerechnet;
             abstractFinanzielleSituationTS.gewinnungskosten = abstractFinanzielleSituationFromServer.gewinnungskosten;
-            abstractFinanzielleSituationTS.bruttoertraegeVermoegen = abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
-            abstractFinanzielleSituationTS.steuerdatenAbfrageStatus = abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
-            abstractFinanzielleSituationTS.selbstdeklaration = this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
-                abstractFinanzielleSituationFromServer.selbstdeklaration);
+            abstractFinanzielleSituationTS.bruttoertraegeVermoegen =
+                abstractFinanzielleSituationFromServer.bruttoertraegeVermoegen;
+            abstractFinanzielleSituationTS.steuerdatenAbfrageStatus =
+                abstractFinanzielleSituationFromServer.steuerdatenAbfrageStatus;
+            abstractFinanzielleSituationTS.selbstdeklaration =
+                this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
+                    abstractFinanzielleSituationFromServer.selbstdeklaration);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2009,7 +2052,8 @@ export class EbeguRestUtil {
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
-            finanzielleSituationTS.automatischePruefungErlaubt = finanzielleSituationFromServer.automatischePruefungErlaubt;
+            finanzielleSituationTS.automatischePruefungErlaubt =
+                finanzielleSituationFromServer.automatischePruefungErlaubt;
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
@@ -2019,7 +2063,8 @@ export class EbeguRestUtil {
 
     private parseFinanzielleSituationSelbstdeklaration(
         tsSelbstdeklaration: TSFinanzielleSituationSelbstdeklaration,
-        selbstdeklarationFromServer: any): TSFinanzielleSituationSelbstdeklaration {
+        selbstdeklarationFromServer: any,
+    ): TSFinanzielleSituationSelbstdeklaration {
 
         if (selbstdeklarationFromServer) {
             this.parseAbstractMutableEntity(tsSelbstdeklaration, selbstdeklarationFromServer);
@@ -2027,12 +2072,15 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.einkunftVersicherung = selbstdeklarationFromServer.einkunftVersicherung;
             tsSelbstdeklaration.einkunftAusgleichskassen = selbstdeklarationFromServer.einkunftAusgleichskassen;
             tsSelbstdeklaration.einkunftWertschriften = selbstdeklarationFromServer.einkunftWertschriften;
-            tsSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige = selbstdeklarationFromServer.einkunftUnterhaltsbeitragSteuerpflichtige;
-            tsSelbstdeklaration.einkunftUnterhaltsbeitragKinder = selbstdeklarationFromServer.einkunftUnterhaltsbeitragKinder;
+            tsSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige =
+                selbstdeklarationFromServer.einkunftUnterhaltsbeitragSteuerpflichtige;
+            tsSelbstdeklaration.einkunftUnterhaltsbeitragKinder =
+                selbstdeklarationFromServer.einkunftUnterhaltsbeitragKinder;
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
-            tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
+            tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner =
+                selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
             tsSelbstdeklaration.abzugRentenleistungen = selbstdeklarationFromServer.abzugRentenleistungen;
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
@@ -2085,8 +2133,10 @@ export class EbeguRestUtil {
             finanzielleSituationResultateDTO.einkommenGS2 = finanzielleSituationResultateFromServer.einkommenGS2;
             finanzielleSituationResultateDTO.abzuegeGS1 = finanzielleSituationResultateFromServer.abzuegeGS1;
             finanzielleSituationResultateDTO.abzuegeGS2 = finanzielleSituationResultateFromServer.abzuegeGS2;
-            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS1 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS1;
-            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS2 = finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS2;
+            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS1 =
+                finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS1;
+            finanzielleSituationResultateDTO.vermoegenXPercentAnrechenbarGS2 =
+                finanzielleSituationResultateFromServer.vermoegenXPercentAnrechenbarGS2;
             finanzielleSituationResultateDTO.bruttolohnJahrGS1 =
                 finanzielleSituationResultateFromServer.bruttolohnJahrGS1;
             finanzielleSituationResultateDTO.bruttolohnJahrGS2 =
@@ -2222,6 +2272,7 @@ export class EbeguRestUtil {
         restKind.ausAsylwesen = kind.ausAsylwesen;
         restKind.zemisNummer = kind.zemisNummerStandardFormat;
         restKind.einschulungTyp = kind.einschulungTyp;
+        restKind.keinPlatzInSchulhort = kind.keinPlatzInSchulhort;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
@@ -2296,6 +2347,7 @@ export class EbeguRestUtil {
             kindTS.ausAsylwesen = kindFromServer.ausAsylwesen;
             kindTS.zemisNummer = kindFromServer.zemisNummer;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
+            kindTS.keinPlatzInSchulhort = kindFromServer.keinPlatzInSchulhort;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
@@ -2806,7 +2858,8 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.kitaPlusZuschlagBestaetigt = erweiterteBetreuungFromServer.kitaPlusZuschlagBestaetigt;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
-            erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag = erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
+            erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag =
+                erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);

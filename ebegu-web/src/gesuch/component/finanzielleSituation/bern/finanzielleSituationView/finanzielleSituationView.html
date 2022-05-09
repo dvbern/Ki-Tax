@@ -423,6 +423,7 @@
                                                        ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element"
+                                                       allow-negative="true"
                                                        required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
@@ -451,6 +452,7 @@
                                                         input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                         ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
                                                         ng-required="true"
+                                                        ng-click="vm.einkommenInVereinfachtemVerfarenClicked()"
                                                         true-option-label="{{ 'LABEL_JA' | translate}}"
                                                         false-option-label="{{'LABEL_NEIN' | translate}}"
                                                         aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
