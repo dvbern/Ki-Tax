@@ -394,9 +394,10 @@
                                                     input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                     ng-model="vm.model.getEkvToWorkWith().einkommenInVereinfachtemVerfahrenAbgerechnet"
                                                     ng-required="true"
+                                                    ng-click="vm.einkommenInVereinfachtemVerfarenClicked()"
                                                     true-option-label="{{ 'LABEL_JA' | translate}}"
                                                     false-option-label="{{'LABEL_NEIN' | translate}}"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN' |translate}}"
                                                     aria-described-by="einkommenInVereinfachtemVerfahrenAbgerechnet1-error">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
