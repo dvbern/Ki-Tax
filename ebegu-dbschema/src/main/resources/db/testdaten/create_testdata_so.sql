@@ -59,18 +59,6 @@ VALUES (UNHEX(REPLACE('b5171d87-537a-11ec-98e8-f4390979fa3e', '-', '')), '2018-1
         'solothurn@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.solothurn.ch', null, 'DE', null, 'BIC', 'CH2089144969768441935',
         'Solothurn Kontoinhaber', true, true, true, true, false);
 
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('09399d46-537b-11ec-98e8-f4390979fa3e', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'FALL_NUMMER', # sequence_type
-	100, # current_value
-	@mandant_id_solothurn);
-
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
 	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Solothurn', true);
@@ -278,5 +266,3 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		'flyway', 'flyway', 0, NULL, 'sozialdienst-so@mailbucket.dvbern.ch', '078 898 98 98', 'http://sodialdienst-so.dvbern.ch',
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('1b1b4208-5394-11ec-98e8-f4390979fa3e', '-', '')));
-
-UPDATE (einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id) SET value = 'SOLOTHURN' WHERE einstellung_key = 'FINANZIELLE_SITUATION_TYP' AND gesuchsperiode.mandant_id = @mandant_id_solothurn;

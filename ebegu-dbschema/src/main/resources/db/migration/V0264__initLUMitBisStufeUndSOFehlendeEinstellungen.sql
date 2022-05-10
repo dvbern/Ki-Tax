@@ -62,7 +62,6 @@ SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, u
 	einstellung_key, value, NULL, UNHEX(REPLACE('6dc45fb0-5378-11ec-98e8-f4390979fa3e', '-', '')), @mandant_id_solothurn
 FROM einstellung
 WHERE mandant_id = @mandant_id_bern AND gesuchsperiode_id = @gesuchsperiode_bern_id AND NOT EXISTS(
-		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  @gesuchperiode_20_id
+		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  UNHEX(REPLACE('6dc45fb0-5378-11ec-98e8-f4390979fa3e', '-', ''))
 				and e1.mandant_id = @mandant_id_solothurn AND e1.einstellung_key = einstellung.einstellung_key
 	) AND gemeinde_id IS NULL;
-
