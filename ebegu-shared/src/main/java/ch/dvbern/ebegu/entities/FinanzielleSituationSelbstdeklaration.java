@@ -96,7 +96,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal abzugFreiweiligeZuwendungPartien;
+	private BigDecimal sonderabzugErwerbstaetigkeitEhegatten;
 
 	@Nullable
 	@Column(nullable = true)
@@ -271,12 +271,12 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	}
 
 	@Nullable
-	public BigDecimal getAbzugFreiweiligeZuwendungPartien() {
-		return abzugFreiweiligeZuwendungPartien;
+	public BigDecimal getSonderabzugErwerbstaetigkeitEhegatten() {
+		return sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
-	public void setAbzugFreiweiligeZuwendungPartien(@Nullable BigDecimal abzugFreiweiligeZuwendungPartien) {
-		this.abzugFreiweiligeZuwendungPartien = abzugFreiweiligeZuwendungPartien;
+	public void setSonderabzugErwerbstaetigkeitEhegatten(@Nullable BigDecimal sonderabzugErwerbstaetigkeitEhegatten) {
+		this.sonderabzugErwerbstaetigkeitEhegatten = sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
 	@Nullable
@@ -390,7 +390,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			MathUtil.isSame(getAbzugSaeule3A(), otherSelbstdeklaration.getAbzugSaeule3A()) &&
 			MathUtil.isSame(getAbzugVersicherungspraemien(), otherSelbstdeklaration.getAbzugVersicherungspraemien()) &&
 			MathUtil.isSame(getAbzugKrankheitsUnfallKosten(), otherSelbstdeklaration.getAbzugKrankheitsUnfallKosten()) &&
-			MathUtil.isSame(getAbzugFreiweiligeZuwendungPartien(), otherSelbstdeklaration.getAbzugFreiweiligeZuwendungPartien()) &&
+			MathUtil.isSame(getSonderabzugErwerbstaetigkeitEhegatten(), otherSelbstdeklaration.getSonderabzugErwerbstaetigkeitEhegatten()) &&
 			MathUtil.isSame(getAbzugKinderVorschule(), otherSelbstdeklaration.getAbzugKinderVorschule()) &&
 			MathUtil.isSame(getAbzugKinderSchule(), otherSelbstdeklaration.getAbzugKinderSchule()) &&
 			MathUtil.isSame(getAbzugKinderAuswaertigerAufenthalt(), otherSelbstdeklaration.getAbzugKinderAuswaertigerAufenthalt()) &&
@@ -423,7 +423,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			target.setAbzugSaeule3A(this.getAbzugSaeule3A());
 			target.setAbzugVersicherungspraemien(this.getAbzugVersicherungspraemien());
 			target.setAbzugKrankheitsUnfallKosten(this.getAbzugKrankheitsUnfallKosten());
-			target.setAbzugFreiweiligeZuwendungPartien(this.getAbzugFreiweiligeZuwendungPartien());
+			target.setSonderabzugErwerbstaetigkeitEhegatten(this.getSonderabzugErwerbstaetigkeitEhegatten());
 			target.setAbzugKinderVorschule(this.getAbzugKinderVorschule());
 			target.setAbzugKinderSchule(this.getAbzugKinderSchule());
 			target.setAbzugKinderAuswaertigerAufenthalt(this.getAbzugKinderAuswaertigerAufenthalt());
@@ -468,7 +468,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			abzugSaeule3A,
 			abzugVersicherungspraemien,
 			abzugKrankheitsUnfallKosten,
-			abzugFreiweiligeZuwendungPartien,
+			sonderabzugErwerbstaetigkeitEhegatten,
 			abzugKinderVorschule,
 			abzugKinderSchule,
 			abzugKinderAuswaertigerAufenthalt,
@@ -508,7 +508,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			&& abzugSaeule3A != null
 			&& abzugVersicherungspraemien != null
 			&& abzugKrankheitsUnfallKosten != null
-			&& abzugFreiweiligeZuwendungPartien != null
+			&& sonderabzugErwerbstaetigkeitEhegatten != null
 			&& abzugKinderVorschule != null
 			&& abzugKinderSchule != null
 			&& abzugKinderAuswaertigerAufenthalt != null

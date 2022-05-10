@@ -15,11 +15,11 @@
   -->
 
 <!-- sozialhilfeBezueger -->
-<div class="row">
+<div class="row" *ngIf="showSozialhilfeQuestion()">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebegu-h1 required">
-                <span>{{'FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER' | translate:{basisjahr: gesuchModelManager.getBasisjahr()} }}</span>
+                <span [innerHTML]="'FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER' | translate:{basisjahr: gesuchModelManager.getBasisjahr()}"></span>
             </span>
             <dv-input-container-x [verticalAlign]="true">
                 <dv-radio-container-x>

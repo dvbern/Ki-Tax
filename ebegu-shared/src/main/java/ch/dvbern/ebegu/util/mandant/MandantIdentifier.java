@@ -24,11 +24,21 @@ public enum MandantIdentifier {
 		public <T> T accept(MandantVisitor<T> visitor) {
 			return visitor.visitBern();
 		}
+
+		@Override
+		public String getUrlCode() {
+			return "be";
+		}
 	},
 	LUZERN {
 		@Override
 		public <T> T accept(MandantVisitor<T> visitor) {
 			return visitor.visitLuzern();
+		}
+
+		@Override
+		public String getUrlCode() {
+			return "lu";
 		}
 	},
 	SOLOTHURN {
@@ -36,8 +46,14 @@ public enum MandantIdentifier {
 		public <T> T accept(MandantVisitor<T> visitor) {
 			return visitor.visitSolothurn();
 		}
+
+		@Override
+		public String getUrlCode() {
+			return "so";
+		}
 	};
 
 	public abstract <T> T accept(MandantVisitor<T> visitor);
+	public abstract String getUrlCode();
 };
 

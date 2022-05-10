@@ -18,11 +18,10 @@ import {IComponentControllerService, IHttpBackendService, IScope} from 'angular'
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSDossier} from '../../../models/TSDossier';
-import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {ErwerbspensumListViewController} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
@@ -31,7 +30,7 @@ describe('erwerbspensumListView', () => {
 
     const gemeindeTelefon = '915445152';
     const gemeindeMail = 'mail@mail.com';
-    const gemeindeStammdaten = new TSGemeindeStammdaten();
+    const gemeindeStammdaten = new TSGemeindeStammdatenLite();
     gemeindeStammdaten.telefon = gemeindeTelefon;
     gemeindeStammdaten.mail = gemeindeMail;
 
@@ -45,7 +44,6 @@ describe('erwerbspensumListView', () => {
     let scope: IScope;
     let $componentController: IComponentControllerService;
     let gesuchModelManager: GesuchModelManager;
-    let gemeindeRS: GemeindeRS;
     let $q: angular.IQService;
     let dossier: TSDossier;
     let gesuchsperiode: TSGesuchsperiode;
@@ -56,7 +54,6 @@ describe('erwerbspensumListView', () => {
         prepareGesuchsperiode();
 
         gesuchModelManager = $injector.get('GesuchModelManager');
-        gemeindeRS = $injector.get('GemeindeRS');
         $componentController = $injector.get('$componentController');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
@@ -65,7 +62,7 @@ describe('erwerbspensumListView', () => {
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
-        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.resolve(gemeindeStammdaten));
+        gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         $httpBackend.when('GET', '/ebegu/api/v1/erwerbspensen/required/').respond({});

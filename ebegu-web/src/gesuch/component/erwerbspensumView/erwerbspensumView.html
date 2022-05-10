@@ -210,6 +210,23 @@
                         </div>
                     </div>
 
+                    <div class="row" ng-if="vm.isLuzern">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten" name="unregelmaessigeArbeitszeiten" id="unregelmaessigeArbeitszeiten"
+                                             aria-label="{{'UNREGELMAESSIGE_ARBEITSZEITEN'|translate}}"
+                                             ng-disabled="vm.isGesuchReadonly()">
+                                    <span data-translate="UNREGELMAESSIGE_ARBEITSZEITEN"></span>
+                                </md-checkbox>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unregelmaessigeArbeitszeiten"
+                                           ja="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                <dv-error-messages for="vm.form.unregelmaessigeArbeitszeiten.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
                 </fieldset>
 
                 <!--Buttons-->

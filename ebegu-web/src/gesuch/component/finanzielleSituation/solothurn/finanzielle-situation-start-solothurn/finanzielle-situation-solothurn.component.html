@@ -27,11 +27,10 @@
 		</div>
 	</div>
 	<form #form="ngForm">
-		<dv-finanzielle-situation-require-x [(verguenstigungGewuenscht)]="model.verguenstigungGewuenscht"
-											[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
-                                            [areThereAnyBgBetreuungen]="!gesuchModelManager.areThereOnlySchulamtAngebote()"
-											[finanzielleSituationRequired]="finanzielleSituationRequired"
-											(finanzielleSituationRequiredChange)="finanzielleSituationRequiredChange($event)"></dv-finanzielle-situation-require-x>
+		<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
+                                            [(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                            (sozialhilfeBezuegerChange)="onSozialhilfeBezuegerChange($event)">
+        </dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">
 			<dv-steuerveranlagung-erhalten [model]="getModel()" (steuerveranlagungErhaltenChange)="steuerveranlagungErhaltenChange($event)"></dv-steuerveranlagung-erhalten>
 			<dv-veranlagung-solothurn *ngIf="hasSteuerveranlagungErhalten()"
@@ -42,8 +41,9 @@
                            [model]="getModel()"
 						   [dvValueChange]="onValueChangeFunction"></dv-bruttolohn>
             <dv-massgebendes-einkommen
-                [isGemeinsam]="isGemeinsam()"
                 [nameGS1]="extractFullNameGS1()"
+                [nameGS2]="extractFullNameGS2()"
+                [isGemeinsam]="isGemeinsam()"
                 [antragstellerNummer]="getAntragstellerNummer()">
             </dv-massgebendes-einkommen>
 		</div>

@@ -116,10 +116,10 @@ export class ErwerbspensumListViewController
             });
         }
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
-        this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
-            this.gemeindeTelefon = gemeindeDaten.telefon;
-            this.gemeindeEmail = gemeindeDaten.mail;
-        });
+        if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.gemeindeStammdaten)) {
+            this.gemeindeTelefon = this.gesuchModelManager.gemeindeStammdaten.telefon;
+            this.gemeindeEmail = this.gesuchModelManager.gemeindeStammdaten.mail;
+        }
         this.loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig();
     }
 
@@ -244,7 +244,7 @@ export class ErwerbspensumListViewController
             undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
         }
         return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
-            undFerieninseln: undFerieninselnTxt
+            undFerieninseln: undFerieninselnTxt,
         });
     }
 

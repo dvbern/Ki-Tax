@@ -45,6 +45,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.easymock.EasyMock.expect;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 
 /**
  * Tests fuer {@link CheckFachstellenValidator}
@@ -61,7 +63,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkKindWithoutFachstelleIsValid() {
 		var kindContainer = createKindContainer(false, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, "KINDERGARTEN2");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2");
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
@@ -70,7 +72,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkMaxFachstelleEinstellungOk() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, "KINDERGARTEN2");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2");
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
@@ -79,7 +81,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkMaxFachstelleEinstellungNotOk() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, "KINDERGARTEN1");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1");
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertFalse(isValid);
@@ -88,7 +90,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test()
 	public void checkWrongEinstellung() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, "wrong");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,"wrong");
 		replayAll();
 		Assertions.assertThrows(EbeguRuntimeException.class, () -> {
 			validator.isValid(kindContainer, null);
@@ -98,6 +100,8 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test()
 	public void sprachlicheIntegrationVorschulalterValid() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.VORSCHULALTER, IntegrationTyp.SPRACHLICHE_INTEGRATION);
+		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER");
+		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
 	}
@@ -105,19 +109,21 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test()
 	public void sprachlicheIntegrationVorschulalterNotValid() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN1, IntegrationTyp.SPRACHLICHE_INTEGRATION);
+		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER");
+		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertFalse(isValid);
 	}
 
-	private void createEinstellungMock(KindContainer kindContainer, String stufe) {
+	private void createEinstellungMock(KindContainer kindContainer, EinstellungKey key, String stufe) {
 		expect(einstellungServiceMock.findEinstellung(
-			EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
+			key,
 			kindContainer.getGesuch().extractGemeinde(),
 			kindContainer.getGesuch().getGesuchsperiode(),
 			null
 		))
 			.andReturn(new Einstellung(
-				EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
+				key,
 				stufe,
 				kindContainer.getGesuch().getGesuchsperiode()
 			));

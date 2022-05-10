@@ -15,6 +15,22 @@
 
 <mat-dialog-content role="document" tabindex="-1" id="dialogContent">
 
+    <ng-container [ngSwitch]="mandant$ | async">
+        <ng-container *ngSwitchCase="mandantTypes.BE" [ngTemplateOutlet]="be"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.LU" [ngTemplateOutlet]="lu"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.SO" [ngTemplateOutlet]="so"></ng-container>
+        <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
+    </ng-container>
+</mat-dialog-content>
+
+<mat-dialog-actions class="margin-top-40" layout-align="center center">
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+    </div>
+</mat-dialog-actions>
+
+
+<ng-template #be>
     <div class="margin-top-10">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
@@ -67,11 +83,41 @@
             </a>
         </p>
     </div>
+</ng-template>
 
-</mat-dialog-content>
-
-<mat-dialog-actions class="margin-top-40" layout-align="center center">
-    <div class="dv-dialog-actions">
-        <button class="dv-btn" (click)="close()" [textContent]="'SCHLIESSEN' | translate"></button>
+<ng-template #so>
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
+        <p><a href="tel:+41 31 328 19 19">+41 31 328 19 19</a></p>
+        <p><a href="mailto:info@vseg.ch">info@vseg.ch</a></p>
     </div>
-</mat-dialog-actions>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a href="" (click)="startTour()">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
+</ng-template>
+
+<ng-template #lu>
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p [innerHTML]="'MANDANT_DIREKTION_BG' | translate"></p>
+        <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
+        <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>
+        <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a href="" (click)="startTour()">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
+</ng-template>

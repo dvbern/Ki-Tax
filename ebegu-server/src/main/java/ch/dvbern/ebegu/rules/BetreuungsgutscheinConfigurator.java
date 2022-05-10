@@ -41,6 +41,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEF
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
@@ -135,7 +136,8 @@ public class BetreuungsgutscheinConfigurator {
 			AUSSERORDENTLICHER_ANSPRUCH_RULE,
 			DAUER_BABYTARIF,
 			KINDERABZUG_TYP,
-			FKJV_TEXTE
+			FKJV_TEXTE,
+			FACHSTELLEN_TYP
 		);
 	}
 
@@ -328,8 +330,10 @@ public class BetreuungsgutscheinConfigurator {
 		}
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
-		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(fachstelleCalcRule, einstellungMap);
+		FachstelleBernCalcRule fachstelleBernCalcRule = new FachstelleBernCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(fachstelleBernCalcRule, einstellungMap);
+		FachstelleLuzernCalcRule fachstelleLuzrnCalcRule = new FachstelleLuzernCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(fachstelleLuzrnCalcRule, einstellungMap);
 
 		KitaPlusZuschlagCalcRule kitaPlusZuschlagCalcRule = new KitaPlusZuschlagCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kitaPlusZuschlagCalcRule, einstellungMap);
