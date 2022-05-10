@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-UPDATE EINSTELLUNG SET VALUE='KLASSE9' WHERE einstellung_key='SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE';
+UPDATE einstellung SET VALUE='KLASSE9' WHERE einstellung_key='SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE';
 
 /* we need to reset all the einstellung that were settet before the GP creation */
 
@@ -27,7 +27,7 @@ UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = 
 	SET value = 'true'
 WHERE einstellung_key = 'DIPLOMATENSTATUS_DEAKTIVIERT' AND mandant_identifier = 'LUZERN';
 
-UPDATE EINSTELLUNG INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 	SET value = 'true'
 WHERE einstellung_key = 'SPRACHE_AMTSPRACHE_DISABLED' AND mandant_identifier = 'LUZERN';
 
