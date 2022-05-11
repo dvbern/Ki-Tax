@@ -282,7 +282,10 @@ public enum EinstellungKey {
 
 	// Fachstellen Typ (KIBON-2360)
 	// BERN oder LUZERN
-	FACHSTELLEN_TYP;
+	FACHSTELLEN_TYP,
+
+	// Eingabe des Betreuungspensums in Tagen erlauben (KIBON-2404)
+	BETREUUNGSPENSUM_IN_DAYS;
 
 
 	private EinstellungTyp typ;
