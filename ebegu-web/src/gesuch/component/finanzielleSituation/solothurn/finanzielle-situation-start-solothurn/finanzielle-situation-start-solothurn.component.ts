@@ -21,7 +21,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public sozialhilfeBezueger: boolean;
-    public finanzielleSituationRequired: boolean = true;
+    public finanzielleSituationRequired: boolean = false;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -39,7 +39,10 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
 
         if (EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger)) {
             this.model.verguenstigungGewuenscht = false;
-            this.finanzielleSituationRequired = false;
+        }
+
+        if (EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger)) {
+            this.finanzielleSituationRequired = true;
         }
     }
 
