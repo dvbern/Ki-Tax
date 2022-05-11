@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.util.EbeguUtil;
 
 import static ch.dvbern.ebegu.enums.DokumentTyp.BESTAETIGUNG_ARZT;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_AUSBILDUNG;
@@ -44,7 +43,6 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_FREIWILLIGENARBEIT;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_RAV;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG;
 
 /**
  * Dokumente für Erwerbspensum:
@@ -134,8 +132,6 @@ public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum,
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT, locale, mandant));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
 					locale, mandant));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG,
-					locale, mandant));
 			});
 	}
 
@@ -191,8 +187,6 @@ public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum,
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 		case NACHWEIS_FREIWILLIGENARBEIT:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.FREIWILLIGENARBEIT;
-		case NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG:
-			return EbeguUtil.isNotNullAndTrue(erwerbspensum.getUnregelmaessigeArbeitszeiten());
 		default:
 			return false;
 		}

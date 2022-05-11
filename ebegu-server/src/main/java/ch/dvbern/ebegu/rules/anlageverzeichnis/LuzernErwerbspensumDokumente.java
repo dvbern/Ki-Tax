@@ -33,7 +33,10 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.collections.CollectionUtils;
+
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG;
 
 public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
@@ -45,7 +48,7 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 	) {
 		addAllDokumenteForGesuchsteller(anlageVerzeichnis, gesuch, gesuch.getGesuchsteller1(), 1, locale);
 
-		if(gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			addAllDokumenteForGesuchsteller(anlageVerzeichnis, gesuch, gesuch.getGesuchsteller2(), 2, locale);
 		}
 	}
@@ -68,6 +71,8 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.SELBSTAENDIG;
 		case NACHWEIS_GESUNDHEITLICHE_INDIKATION:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
+		case NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG:
+			return EbeguUtil.isNotNullAndTrue(erwerbspensum.getUnregelmaessigeArbeitszeiten());
 		default:
 			return false;
 		}
@@ -80,7 +85,7 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 		@Nonnull Integer gesuchstellerNumber,
 		@Nonnull Locale local) {
 
-		if(gesuchsteller == null || CollectionUtils.isEmpty(gesuchsteller.getErwerbspensenContainers())) {
+		if (gesuchsteller == null || CollectionUtils.isEmpty(gesuchsteller.getErwerbspensenContainers())) {
 			return;
 		}
 
@@ -91,10 +96,29 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 			.map(ErwerbspensumContainer::getErwerbspensumJA)
 			.filter(Objects::nonNull)
 			.forEach(erwerbspensum -> {
-				add(getDokument(gesuchstellerNumber, erwerbspensum, DokumentTyp.NACHWEIS_ARBEITSSUCHEND, local, mandant), anlageVerzeichnis);
-				add(getDokument(gesuchstellerNumber, erwerbspensum, DokumentTyp.NACHWEIS_AUSBILDUNG, local, mandant), anlageVerzeichnis);
-				add(getDokument(gesuchstellerNumber, erwerbspensum, DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, local, mandant), anlageVerzeichnis);
-				add(getDokument(gesuchstellerNumber, erwerbspensum, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, local, mandant), anlageVerzeichnis);
+				add(getDokument(
+					gesuchstellerNumber,
+					erwerbspensum,
+					DokumentTyp.NACHWEIS_ARBEITSSUCHEND,
+					local,
+					mandant), anlageVerzeichnis);
+				add(
+					getDokument(gesuchstellerNumber, erwerbspensum, DokumentTyp.NACHWEIS_AUSBILDUNG, local, mandant),
+					anlageVerzeichnis);
+				add(getDokument(
+					gesuchstellerNumber,
+					erwerbspensum,
+					DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION,
+					local,
+					mandant), anlageVerzeichnis);
+				add(getDokument(
+					gesuchstellerNumber,
+					erwerbspensum,
+					DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT,
+					local,
+					mandant), anlageVerzeichnis);
+				add(getDokument(gesuchstellerNumber, erwerbspensum, NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG,
+					local, mandant), anlageVerzeichnis);
 			});
 	}
 
