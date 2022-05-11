@@ -17,10 +17,12 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
 import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
 
 @Component({
@@ -35,6 +37,7 @@ export class WelcomeMainComponent {
         private readonly authServiceRs: AuthServiceRS,
         private readonly $state: StateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
     }
@@ -53,5 +56,13 @@ export class WelcomeMainComponent {
 
     public isNotSozialdienstRole(): boolean {
         return !this.authServiceRs.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+    }
+
+    public getLogoUrl(): Observable<string> {
+        const promise = this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(res => {
+                return `url("assets/images/${res.logoFileName}")`;
+            });
+        return from(promise);
     }
 }
