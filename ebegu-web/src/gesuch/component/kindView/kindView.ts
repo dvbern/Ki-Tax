@@ -23,8 +23,13 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypValues,
+    getTSEinschulungTypValuesLuzern,
+    TSEinschulungTyp,
+} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
@@ -103,6 +108,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
     private kinderabzugTyp: TSKinderabzugTyp;
+    private fachstellenTyp: TSFachstellenTyp;
     public maxPensumAusserordentlicherAnspruch: string;
     // When migrating to ng, use observable in template
     private isLuzern: boolean;
@@ -151,22 +157,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initViewModel(): void {
-        this.integrationTypes = this.isLuzern ?
-            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
-            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        this.einschulungTypValues = this.isLuzern ? getTSEinschulungTypValuesLuzern() : getTSEinschulungTypValues();
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
-        this.loadEinstellungAnspruchUnabhaengig();
-        this.loadEinstellungKinderabzugTyp();
-        this.loadEinstellungMaxAusserordentlicherAnspruch();
-        this.loadEinstellungSpracheAmtsprache();
-        this.loadEinstellungZemisDisabled();
+        this.loadEinstellungen();
     }
 
     public $postLink(): void {
@@ -227,6 +226,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.model.extractPensumFachstelle()) {
             return;
         }
+        if (this.isFachstellenTypLuzern()) {
+            this.model.extractPensumFachstelle().pensum = 100;
+        }
         if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
@@ -247,15 +249,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private resetGruendeZusatzleistung(): void {
         this.model.extractPensumFachstelle().gruendeZusatzleistung = undefined;
-    }
-
-    private loadEinstellungAnspruchUnabhaengig(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
-                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
-            });
     }
 
     private initAusserordentlicherAnspruch(): void {
@@ -528,24 +521,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
     }
 
-    private loadEinstellungKinderabzugTyp(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
-                this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
-            });
-    }
-
-    private loadEinstellungMaxAusserordentlicherAnspruch(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
-                this.maxPensumAusserordentlicherAnspruch = einstellung.value;
-            });
-    }
-
     public gruendeZusatzleistungRequired(): boolean {
         return this.getModel().pensumFachstelle.integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
@@ -555,24 +530,72 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
     }
 
-    private loadEinstellungSpracheAmtsprache(): void {
+    public isFachstellenTypLuzern(): boolean {
+        return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
+    private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
-                this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
-                if (this.isSpracheAmtspracheDisabled) {
-                   this.getModel().sprichtAmtssprache = true;
-                }
+                this.loadEinstellungZemisDisabled(einstellungen);
+                this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
+                this.loadEinstellungKinderabzugTyp(einstellungen);
+                this.loadEinstellungAnspruchUnabhaengig(einstellungen);
+                this.loadEinstellungSpracheAmtsprache(einstellungen);
+                this.loadEinstellungFachstellenTyp(einstellungen);
             });
     }
 
-    private loadEinstellungZemisDisabled(): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
-                this.isZemisDeaktiviert = einstellung.value === 'true';
-            });
+    private loadEinstellungSpracheAmtsprache(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED);
+        this.isSpracheAmtspracheDisabled = einstellung.value === 'true';
+        if (this.isSpracheAmtspracheDisabled) {
+            this.getModel().sprichtAmtssprache = true;
+        }
+    }
+
+    private loadEinstellungZemisDisabled(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.ZEMIS_DISABLED);
+        this.isZemisDeaktiviert = einstellung.value === 'true';
+    }
+
+    private loadEinstellungMaxAusserordentlicherAnspruch(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH);
+        this.maxPensumAusserordentlicherAnspruch = einstellung.value;
+    }
+
+    private loadEinstellungKinderabzugTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.KINDERABZUG_TYP);
+        this.kinderabzugTyp = this.ebeguRestUtil.parseKinderabzugTyp(einstellung.value);
+    }
+
+    private loadEinstellungAnspruchUnabhaengig(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+        this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
+    }
+
+    private loadEinstellungFachstellenTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.FACHSTELLEN_TYP);
+        this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+
+        this.integrationTypes = this.fachstellenTyp === TSFachstellenTyp.LUZERN ?
+            [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
+            [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
+    }
+
+    public isEinschulungTypObligatorischerKindergarten(): boolean {
+        return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
+    }
+
+    public einschulungTypChanged(): void {
+        if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
+            this.getModel().keinPlatzInSchulhort = false;
+        }
     }
 }

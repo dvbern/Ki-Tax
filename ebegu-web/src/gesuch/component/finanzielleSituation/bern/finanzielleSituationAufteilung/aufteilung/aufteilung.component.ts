@@ -40,6 +40,8 @@ export class AufteilungComponent implements OnInit {
     @Input()
     public label: string;
 
+    @Input() public allowNegative: boolean = false;
+
     public readonly = false;
 
     public gs1Name: string;

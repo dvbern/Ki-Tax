@@ -208,4 +208,8 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
+
+    public einkommenInVereinfachtemVerfarenClicked(): void {
+        this.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+    }
 }

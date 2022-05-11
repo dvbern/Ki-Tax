@@ -51,6 +51,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean veranlagt;
 
 	@Nullable
+	private Boolean veranlagtVorjahr;
+
+	@Nullable
 	private Boolean steuerdatenZugriff;
 
 	@Nullable
@@ -154,6 +157,15 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setVeranlagt(@Nullable Boolean veranlagt) {
 		this.veranlagt = veranlagt;
+	}
+
+	@Nullable
+	public Boolean getVeranlagtVorjahr() {
+		return veranlagtVorjahr;
+	}
+
+	public void setVeranlagtVorjahr(@Nullable Boolean veranlagtVorjahr) {
+		this.veranlagtVorjahr = veranlagtVorjahr;
 	}
 
 	@Nullable
