@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -96,16 +97,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
-	private static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
-	private static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
+	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
+	protected static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
 	private static final String NICHT_EINTRETEN_CONTENT_5_FKJV = "PdfGeneration_NichtEintreten_Content_5_FKJV";
 	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
-	private static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
+	protected static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
-	private static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
+	protected static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN_FKJV = "PdfGeneration_NichtEintreten_Fusszeile2_FKJV";
 	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
@@ -169,8 +170,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	@SuppressWarnings("PMD.NcssMethodCount")
 	public void createContent(
 		@Nonnull final Document document,
-		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
-		List<Element> gruesseElements = Lists.newArrayList();
+		@Nonnull PdfGenerator generator) throws DocumentException {
+
 		Kind kind = betreuung.getKind().getKindJA();
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
@@ -220,36 +221,57 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			document.add(paragraphWithSupertext);
 			break;
 		case NICHT_EINTRETTEN:
-			createFusszeileNichtEintreten(generator.getDirectContent());
-			document.add(PdfUtil.createParagraph(translate(
-				NICHT_EINTRETEN_CONTENT_1,
-				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-				Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
-				kind.getFullName(),
-				betreuung.getInstitutionStammdaten().getInstitution().getName(),
-				betreuung.getBGNummer())));
-			document.add(PdfUtil.createParagraph(translate(
-				NICHT_EINTRETEN_CONTENT_2,
-				Constants.DATE_FORMATTER.format(eingangsdatum))));
-			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_3)));
-			paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
-			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(getContent5NichtEintreten()));
-			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
-			paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
-			document.add(paragraphWithSupertext);
-			document.newPage();
-			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
-			document.add(PdfUtil.createBoldParagraph(translate(
-				NICHT_EINTRETEN_CONTENT_8,
-				Constants.DATE_FORMATTER.format(eingangsdatum)), 2));
-			addZusatzTextIfAvailable(document);
+			createDokumentNichtEintretten(document, generator);
 			break;
 		}
-		gruesseElements.add(createParagraphGruss());
-		gruesseElements.add(createParagraphSignatur());
+		List<Element> gruesseElements = Lists.newArrayList();
+		addGruesseElements(gruesseElements);
 		document.add(PdfUtil.createKeepTogetherTable(gruesseElements, 2, 0));
 		document.add(createRechtsmittelBelehrung());
+	}
+
+	protected abstract void addGruesseElements(@Nonnull List<Element> gruesseElements);
+
+	protected abstract void createDokumentNichtEintretten(@Nonnull final Document document, @Nonnull PdfGenerator generator);
+
+
+	protected void createDokumentNichtEintrettenDefault(@Nonnull final Document document, @Nonnull PdfGenerator generator) {
+		createFusszeileNichtEintreten(generator.getDirectContent());
+		document.add(createNichtEingetretenParagraph1());
+		document.add(createAntragEingereichtAmParagraph());
+		document.add(createNichtEintretenUnterlagenUnvollstaendigParagraph());
+
+		Paragraph paragraphWithSupertext;
+		paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(getContent5NichtEintreten()));
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+		paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
+		document.add(paragraphWithSupertext);
+
+		document.newPage();
+		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
+		document.add(createAntragNichtEintreten());
+		addZusatzTextIfAvailable(document);
+	}
+
+	protected Element createAntragNichtEintreten() {
+		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		return PdfUtil.createBoldParagraph(translate(
+			NICHT_EINTRETEN_CONTENT_8,
+			Constants.DATE_FORMATTER.format(eingangsdatum)), 2);
+	}
+
+	protected Element createNichtEintretenUnterlagenUnvollstaendigParagraph() {
+		return PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_3));
+	}
+
+	protected Element createAntragEingereichtAmParagraph() {
+		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+
+		return PdfUtil.createParagraph(translate(
+			NICHT_EINTRETEN_CONTENT_2,
+			Constants.DATE_FORMATTER.format(eingangsdatum)));
 	}
 
 	private String getContent5NichtEintreten() {
@@ -275,7 +297,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addBemerkungenIfAvailable(document, true);
 	}
 
-	private void addZusatzTextIfAvailable(Document document) {
+	protected void addZusatzTextIfAvailable(Document document) {
 		if (getGemeindeStammdaten().getHasZusatzText()) {
 			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzText())));
 		}
@@ -597,6 +619,19 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		innerTable.addCell(PdfUtil.createParagraph(rechtsmittelbelehrung));
 		table.addCell(innerTable);
 		return table;
+	}
+
+	protected Element createNichtEingetretenParagraph1() {
+		Kind kind = betreuung.getKind().getKindJA();
+		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
+
+		return PdfUtil.createParagraph(translate(
+			NICHT_EINTRETEN_CONTENT_1,
+			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
+			kind.getFullName(),
+			betreuung.getInstitutionStammdaten().getInstitution().getName(),
+			betreuung.getBGNummer()));
 	}
 
 	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {

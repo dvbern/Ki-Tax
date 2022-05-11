@@ -321,6 +321,8 @@
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
+                                    <dv-tooltip ng-if="('ERWEITERTE_BEDUERFNISSE_HINT' | translate).length > 0"
+                                              text="'ERWEITERTE_BEDUERFNISSE_HINT' | translate"></dv-tooltip>
                                 </span>
 
                                 <dv-radio-container name="erweiterteBeduerfnisse" class="input-element"
