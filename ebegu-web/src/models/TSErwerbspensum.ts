@@ -28,6 +28,8 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _unbezahlterUrlaub: TSUnbezahlterUrlaub;
 
+    private _unregelmaessigeArbeitszeiten: boolean;
+
     public constructor() {
         super();
     }
@@ -54,5 +56,13 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set unbezahlterUrlaub(value: TSUnbezahlterUrlaub) {
         this._unbezahlterUrlaub = value;
+    }
+
+    public get unregelmaessigeArbeitszeiten(): boolean {
+        return this._unregelmaessigeArbeitszeiten;
+    }
+
+    public set unregelmaessigeArbeitszeiten(value: boolean) {
+        this._unregelmaessigeArbeitszeiten = value;
     }
 }

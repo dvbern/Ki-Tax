@@ -24,6 +24,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
@@ -555,6 +556,7 @@ export class EbeguRestUtil {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
+            erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
                 new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
             return erwerbspensum;
@@ -567,6 +569,7 @@ export class EbeguRestUtil {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
+            restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
                 {}, erwerbspensum.unbezahlterUrlaub);
             return restErwerbspensum;
@@ -1897,6 +1900,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
+        restFinanzielleSituation.veranlagtVorjahr = finanzielleSituation.veranlagtVorjahr;
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
         restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
@@ -1965,8 +1969,8 @@ export class EbeguRestUtil {
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
         restSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklaration.abzugKrankheitsUnfallKosten;
-        restSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-            = selbstdeklaration.abzugFreiweiligeZuwendungPartien;
+        restSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+            = selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten;
         restSelbstdeklaration.abzugKinderVorschule = selbstdeklaration.abzugKinderVorschule;
         restSelbstdeklaration.abzugKinderSchule = selbstdeklaration.abzugKinderSchule;
         restSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
@@ -2048,6 +2052,7 @@ export class EbeguRestUtil {
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
             finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
+            finanzielleSituationTS.veranlagtVorjahr = finanzielleSituationFromServer.veranlagtVorjahr;
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
             finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
@@ -2085,8 +2090,8 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
             tsSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklarationFromServer.abzugKrankheitsUnfallKosten;
-            tsSelbstdeklaration.abzugFreiweiligeZuwendungPartien
-                = selbstdeklarationFromServer.abzugFreiweiligeZuwendungPartien;
+            tsSelbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten
+                = selbstdeklarationFromServer.sonderabzugErwerbstaetigkeitEhegatten;
             tsSelbstdeklaration.abzugKinderVorschule = selbstdeklarationFromServer.abzugKinderVorschule;
             tsSelbstdeklaration.abzugKinderSchule = selbstdeklarationFromServer.abzugKinderSchule;
             tsSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
@@ -4254,7 +4259,7 @@ export class EbeguRestUtil {
             belegungFerieninselTS.notfallAngaben = receivedBelegungFerieninsel.notfallAngaben;
             belegungFerieninselTS.tage = this.parseBelegungFerieninselTagList(receivedBelegungFerieninsel.tage);
             belegungFerieninselTS.tageMorgenmodul = this.parseBelegungFerieninselTagList(
-                receivedBelegungFerieninsel.tageMorgenmodul
+                receivedBelegungFerieninsel.tageMorgenmodul,
             );
             return belegungFerieninselTS;
         }
@@ -5819,6 +5824,13 @@ export class EbeguRestUtil {
             return typ as TSKinderabzugTyp;
         }
         throw new Error(`TSKinderabzugTyp ${typ} not defined`);
+    }
+
+    public parseFachstellenTyp(typ: any): TSFachstellenTyp {
+        if (Object.values(TSFachstellenTyp).includes(typ)) {
+            return typ as TSFachstellenTyp;
+        }
+        throw new Error(`TSFachstellenTyp ${typ} not defined`);
     }
 
     public parseSteuerdatenResponse(

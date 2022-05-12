@@ -17,10 +17,15 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
@@ -33,6 +38,19 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		boolean isFKJVTexte
 	) {
 		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
+	}
+
+	@Override
+	protected void addGruesseElements(@Nonnull List<Element> gruesseElements) {
+		gruesseElements.add(createParagraphGruss());
+		gruesseElements.add(createParagraphSignatur());
+	}
+
+	@Override
+	protected void createDokumentNichtEintretten(
+		@Nonnull Document document,
+		@Nonnull PdfGenerator generator) {
+		createDokumentNichtEintrettenDefault(document, generator);
 	}
 
 	@Override

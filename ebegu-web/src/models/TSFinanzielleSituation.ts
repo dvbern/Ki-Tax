@@ -27,6 +27,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
     private _veranlagt: boolean;
+    private _veranlagtVorjahr: boolean;
     private _abzuegeKinderAusbildung: number;
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
@@ -98,6 +99,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set veranlagt(value: boolean) {
         this._veranlagt = value;
+    }
+
+    public get veranlagtVorjahr(): boolean {
+        return this._veranlagtVorjahr;
+    }
+
+    public set veranlagtVorjahr(value: boolean) {
+        this._veranlagtVorjahr = value;
     }
 
     public get quellenbesteuert(): boolean {

@@ -91,6 +91,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
+	private Boolean veranlagtVorjahr;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal unterhaltsBeitraege;
 
 	@Nullable
@@ -195,6 +199,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
+	public Boolean getVeranlagtVorjahr() {
+		return veranlagtVorjahr;
+	}
+
+	public void setVeranlagtVorjahr(@Nullable Boolean veranlagtVorjahr) {
+		this.veranlagtVorjahr = veranlagtVorjahr;
+	}
+
+	@Nullable
 	public BigDecimal getUnterhaltsBeitraege() {
 		return unterhaltsBeitraege;
 	}
@@ -263,6 +276,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAlleinigeStekVorjahr(this.getAlleinigeStekVorjahr());
 			target.setQuellenbesteuert(this.getQuellenbesteuert());
 			target.setVeranlagt(this.getVeranlagt());
+			target.setVeranlagtVorjahr(this.getVeranlagtVorjahr());
 			target.setUnterhaltsBeitraege(this.getUnterhaltsBeitraege());
 			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
 			target.setBruttoLohn(this.getBruttoLohn());
@@ -303,6 +317,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&
 			Objects.equals(getQuellenbesteuert(), otherFinSit.getQuellenbesteuert()) &&
 			Objects.equals(getVeranlagt(), otherFinSit.getVeranlagt()) &&
+			Objects.equals(getVeranlagtVorjahr(), otherFinSit.getVeranlagtVorjahr()) &&
 			Objects.equals(getSelbstdeklaration(), otherFinSit.getSelbstdeklaration()) &&
 			MathUtil.isSame(getBruttoLohn(), otherFinSit.getBruttoLohn()) &&
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&

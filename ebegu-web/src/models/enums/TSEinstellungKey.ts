@@ -106,6 +106,8 @@ export enum TSEinstellungKey {
     SPRACHE_AMTSPRACHE_DISABLED = 'SPRACHE_AMTSPRACHE_DISABLED' as any,
     ZEMIS_DISABLED = 'ZEMIS_DISABLED' as any,
     FREIGABE_QUITTUNG_EINLESEN_REQUIRED = 'FREIGABE_QUITTUNG_EINLESEN_REQUIRED' as any,
+    UNBEZAHLTER_URLAUB_AKTIV = 'UNBEZAHLTER_URLAUB_AKTIV' as any,
+    FACHSTELLEN_TYP = 'FACHSTELLEN_TYP' as any
 }
 
 export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
@@ -190,7 +192,9 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
         TSEinstellungKey.ZEMIS_DISABLED,
         TSEinstellungKey.SPRACHE_AMTSPRACHE_DISABLED,
-        TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED
+        TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+        TSEinstellungKey.UNBEZAHLTER_URLAUB_AKTIV,
+        TSEinstellungKey.FACHSTELLEN_TYP
     ];
 }
 

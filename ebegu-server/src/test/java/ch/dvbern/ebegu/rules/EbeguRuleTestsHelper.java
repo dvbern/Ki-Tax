@@ -54,6 +54,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEF
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
@@ -302,6 +303,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);
 		einstellungenMap.addEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
 		// LU
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
@@ -339,6 +341,7 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB, DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG, DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()), gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_TAGESSCHULE_TAGIS_ENABLED, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
 		// Zusaetzlicher Gutschein der Gemeinde
 		einstellungenMap.addEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA, "0.00", gesuchsperiode);

@@ -62,11 +62,12 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.quellenbesteuert)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)
-            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
+            || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagtVorjahr);
     }
 
     public showVeranlagung(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt);
+        return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt)
+            || EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagtVorjahr);
     }
 
     public showResultat(): boolean {
@@ -86,11 +87,25 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             || EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr);
     }
 
+    public veranlagtVorjahrVisible(): boolean {
+        return EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
+    }
+
+    public sozialhilfeBezuegerChange(): void {
+        this.getModel().finanzielleSituationJA.quellenbesteuert = undefined;
+        this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
+        this.getModel().finanzielleSituationJA.veranlagt = undefined;
+        this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
+        this.initOrResetDekarationen();
+    }
+
     public quellenBesteuertChange(newQuellenBesteuert: MatRadioChange): void {
         if (newQuellenBesteuert.value === true) {
             this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr = undefined;
             this.getModel().finanzielleSituationJA.alleinigeStekVorjahr = undefined;
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
+            this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
         this.initOrResetDekarationen();
     }
@@ -98,6 +113,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
         if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
+            this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
         this.initOrResetDekarationen();
     }
@@ -105,11 +121,17 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
         if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
+            this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
         this.initOrResetDekarationen();
     }
 
     public veranlagtChange(): void {
+        this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
+        this.initOrResetDekarationen();
+    }
+
+    public veranlagtVorjahrChange(): void {
         this.initOrResetDekarationen();
     }
 
@@ -132,18 +154,36 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.finSitLuService.calculateMassgebendesEinkommen(this.model);
     }
 
-    public getYearForDeklaration(): number | string {
-        const currentYear = this.getBasisjahrPlus1();
-        const previousYear = this.getBasisjahr();
-        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
-            return previousYear;
+    public getYearForVeranlagung(): number | string {
+        if (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagt)) {
+            return this.getBasisjahr();
         }
-        if (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.veranlagt)) {
-            return previousYear;
+        if (EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.veranlagtVorjahr)) {
+            return this.getBasisjahrMinus1();
+        }
+        return '';
+    }
+
+    public getYearForSelbstdeklaration(): number | string {
+        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
+            return this.getBasisjahr();
         }
         if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
-            return currentYear;
+            return this.getBasisjahrPlus1();
+        }
+        if (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagtVorjahr)) {
+            return this.getBasisjahr();
+        }
+        return '';
+    }
+
+    public getYearForDeklaration(): number | string {
+        if (this.showSelbstdeklaration()) {
+            return this.getYearForSelbstdeklaration();
+        }
+        if (this.showVeranlagung()) {
+            return this.getYearForVeranlagung();
         }
         return '';
     }
@@ -186,6 +226,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             }
         }
         return '';
+    }
+
+    public isGS1(): boolean {
+        return this.getAntragstellerNummer() === 1;
     }
 
     public getModel(): TSFinanzielleSituationContainer {

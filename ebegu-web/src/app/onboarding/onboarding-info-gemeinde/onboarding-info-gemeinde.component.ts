@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable} from 'rxjs';
@@ -23,6 +23,7 @@ import {map} from 'rxjs/operators';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBfsGemeinde} from '../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
@@ -43,16 +44,23 @@ export class OnboardingInfoGemeindeComponent implements OnInit {
     public testZugangBeantragen: boolean;
     public gemeinden$: Observable<TSBfsGemeinde[]>;
     public gemeinde?: TSBfsGemeinde;
+    public isTSEnabled: boolean;
 
     public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
                        private readonly translate: TranslateService,
                        private readonly gemeindeRS: GemeindeRS,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS,
+                       private readonly cd: ChangeDetectorRef
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAllBfsGemeinden())
             .pipe(map(bfsGemeinden => {
             bfsGemeinden.sort(EbeguUtil.compareByName);
             return bfsGemeinden;
         }));
+        this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
+            this.isTSEnabled = properties.angebotTSActivated;
+            this.cd.markForCheck();
+        });
     }
 
     public ngOnInit(): void {

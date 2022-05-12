@@ -15,6 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE kind ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT DEFAULT FALSE;
-ALTER TABLE kind_aud ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT DEFAULT FALSE;
+ALTER TABLE kind ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT NOT NULL DEFAULT 0;
+ALTER TABLE kind_aud ADD COLUMN IF NOT EXISTS `kein_platz_in_schulhort` BIT NOT NULL DEFAULT 0;
 

@@ -72,7 +72,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'EwkRS',
         '$timeout',
         'EinstellungRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -102,7 +102,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly ewkRS: EwkRS,
         $timeout: ITimeoutService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -175,7 +175,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
 
         if (this.areEmailTelefonEditable() && this.isGesuchReadonly()) {
-            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({}, this.gesuchModelManager.getGesuch());
+            const properties = this.ebeguRestUtil.alwaysEditablePropertiesToRestObject({},
+                this.gesuchModelManager.getGesuch());
             if (this.gesuchstellerNumber === 2) {
                 properties.mailGS2 = this.getModelJA().mail;
                 properties.mobileGS2 = this.getModelJA().mobile;
@@ -193,7 +194,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 return this.$q.when(this.model);
             }
 
-            return this.gesuchModelManager.updateAlwaysEditableProperties(properties).then( g => {
+            return this.gesuchModelManager.updateAlwaysEditableProperties(properties).then(g => {
                 if (this.gesuchstellerNumber === 2) {
                     return g.gesuchsteller2;
                 }
@@ -359,7 +360,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public showRechnungsadresseCheckbox(): boolean {
-        return this.gesuchstellerNumber === 1;
+        return this.gesuchstellerNumber === 1
+            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
     }
 
     // Email is not required for Papiergesuche and Sozialdienst Gesuche

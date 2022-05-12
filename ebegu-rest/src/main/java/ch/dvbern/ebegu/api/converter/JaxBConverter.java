@@ -2372,7 +2372,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setAusAsylwesen(persistedKind.getAusAsylwesen());
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
-		jaxKind.setKeinPlatzInSchulhort(persistedKind.hasKeinPlatzInSchulhort());
+		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
@@ -2803,6 +2803,7 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setBruttoLohn(finanzielleSituationJAXP.getBruttoLohn());
 		finanzielleSituation.setAutomatischePruefungErlaubt(finanzielleSituationJAXP.getAutomatischePruefungErlaubt());
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
+		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
 		return finanzielleSituation;
@@ -2828,7 +2829,7 @@ public class JaxBConverter extends AbstractConverter {
 		selbstdeklaration.setAbzugSaeule3A(jaxSelbstdeklaration.getAbzugSaeule3A());
 		selbstdeklaration.setAbzugVersicherungspraemien(jaxSelbstdeklaration.getAbzugVersicherungspraemien());
 		selbstdeklaration.setAbzugKrankheitsUnfallKosten(jaxSelbstdeklaration.getAbzugKrankheitsUnfallKosten());
-		selbstdeklaration.setAbzugFreiweiligeZuwendungPartien(jaxSelbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
+		selbstdeklaration.setSonderabzugErwerbstaetigkeitEhegatten(jaxSelbstdeklaration.getSonderabzugErwerbstaetigkeitEhegatten());
 		selbstdeklaration.setAbzugKinderVorschule(jaxSelbstdeklaration.getAbzugKinderVorschule());
 		selbstdeklaration.setAbzugKinderSchule(jaxSelbstdeklaration.getAbzugKinderSchule());
 		selbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(jaxSelbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
@@ -2861,6 +2862,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
 		jaxFinanzielleSituation.setAlleinigeStekVorjahr(persistedFinanzielleSituation.getAlleinigeStekVorjahr());
 		jaxFinanzielleSituation.setVeranlagt(persistedFinanzielleSituation.getVeranlagt());
+		jaxFinanzielleSituation.setVeranlagtVorjahr(persistedFinanzielleSituation.getVeranlagtVorjahr());
 
 		jaxFinanzielleSituation.setAbzuegeKinderAusbildung(persistedFinanzielleSituation.getAbzuegeKinderAusbildung());
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
@@ -2896,7 +2898,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setAbzugSaeule3A(persistedSelbstdeklaration.getAbzugSaeule3A());
 		jaxSelbstdeklaration.setAbzugVersicherungspraemien(persistedSelbstdeklaration.getAbzugVersicherungspraemien());
 		jaxSelbstdeklaration.setAbzugKrankheitsUnfallKosten(persistedSelbstdeklaration.getAbzugKrankheitsUnfallKosten());
-		jaxSelbstdeklaration.setAbzugFreiweiligeZuwendungPartien(persistedSelbstdeklaration.getAbzugFreiweiligeZuwendungPartien());
+		jaxSelbstdeklaration.setSonderabzugErwerbstaetigkeitEhegatten(persistedSelbstdeklaration.getSonderabzugErwerbstaetigkeitEhegatten());
 		jaxSelbstdeklaration.setAbzugKinderVorschule(persistedSelbstdeklaration.getAbzugKinderVorschule());
 		jaxSelbstdeklaration.setAbzugKinderSchule(persistedSelbstdeklaration.getAbzugKinderSchule());
 		jaxSelbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(persistedSelbstdeklaration.getAbzugKinderAuswaertigerAufenthalt());
@@ -3006,6 +3008,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPensumFieldsToEntity(jaxErwerbspensum, erwerbspensum);
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
+		erwerbspensum.setUnregelmaessigeArbeitszeiten(jaxErwerbspensum.isUnregelmaessigeArbeitszeiten());
 
 		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
 			UnbezahlterUrlaub existingUrlaub = new UnbezahlterUrlaub();
@@ -3034,6 +3037,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
+		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
 		return jaxErwerbspensum;
 	}
 
