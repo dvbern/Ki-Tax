@@ -97,10 +97,6 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         }
     }
 
-    public isSelbststaendigErwerbendAnswered(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
-    }
-
     public steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
