@@ -150,7 +150,6 @@ describe('betreuungView', async () => {
                         mandantService,
                         ebeguRestUtil,
                     );
-                    console.log('henlo')
                     await betreuungView.$onInit();
                     $rootScope.$apply();
                     betreuungView.model = betreuung;
