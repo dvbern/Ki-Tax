@@ -41,10 +41,6 @@ UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = 
 WHERE einstellung_key = 'MIN_MASSGEBENDES_EINKOMMEN' AND mandant_identifier = 'SOLOTHURN';
 
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
-	SET value = '7'
-WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_SCHULE_PRO_STD' AND mandant_identifier = 'SOLOTHURN';
-
-UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 	SET value = '70'
 WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_SCHULE_PRO_TG' AND mandant_identifier = 'SOLOTHURN';
 
