@@ -28,6 +28,8 @@ import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 export class TSFinanzModel {
     private _gemeinsameSteuererklaerung: boolean;
     private _sozialhilfeBezueger: boolean;
+    private _zustaendigeAmtsstelle: string;
+    private _nameBetreuer: string;
     private _verguenstigungGewuenscht: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
@@ -71,6 +73,22 @@ export class TSFinanzModel {
 
     public set sozialhilfeBezueger(value: boolean) {
         this._sozialhilfeBezueger = value;
+    }
+
+    public get zustaendigeAmtsstelle(): string {
+        return this._zustaendigeAmtsstelle;
+    }
+
+    public set zustaendigeAmtsstelle(value: string) {
+        this._zustaendigeAmtsstelle = value;
+    }
+
+    public get nameBetreuer(): string {
+        return this._nameBetreuer;
+    }
+
+    public set nameBetreuer(value: string) {
+        this._nameBetreuer = value;
     }
 
     public get verguenstigungGewuenscht(): boolean {
@@ -121,6 +139,9 @@ export class TSFinanzModel {
             this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
         this.sozialhilfeBezueger =
             this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
+        this.zustaendigeAmtsstelle = gesuch.extractFamiliensituation().zustaendigeAmtsstelle;
+        this.nameBetreuer = gesuch.extractFamiliensituation().nameBetreuer;
+
         this.verguenstigungGewuenscht =
             this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
         this.finanzielleSituationContainerGS1 = angular.copy(gesuch.gesuchsteller1.finanzielleSituationContainer);
