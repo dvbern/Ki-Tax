@@ -147,6 +147,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+    public isSwitchBetreuungspensumEnabled: boolean;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -294,6 +295,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
                 .forEach(einstellung => {
                     this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+                });
+            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
+                .forEach(einstellung => {
+                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
                 });
         });
 

@@ -556,7 +556,8 @@
                                     <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
                                                         input-id="betreuungspensum-{{$index}}"
                                                         betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                        is-disabled="!vm.isPensumEditable()">
+                                                        is-disabled="!vm.isPensumEditable()"
+                                                        show-betreuung-input-switch="vm.isSwitchBetreuungspensumEnabled">
                                     </dv-betreuung-input>
                                     <!--Monatliche Betreuungskosten-->
                                     <div class="row">
