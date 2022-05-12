@@ -24,7 +24,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			'ebegu' AS user_erstellt,
 			'ebegu' AS user_mutiert,
 			'0' AS version,
-			'BETREUUNGSPENSUM_IN_DAYS' AS einstellungkey,
+			'BETREUUNG_INPUT_SWITCH_ENABLED' AS einstellungkey,
 			'true' AS value,
 			id AS gesuchsperiode_id
 		FROM gesuchsperiode
@@ -32,4 +32,4 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'false'
-WHERE einstellung_key = 'BETREUUNGSPENSUM_IN_DAYS' AND mandant_identifier = 'LUZERN';
+WHERE einstellung_key = 'BETREUUNG_INPUT_SWITCH_ENABLED' AND mandant_identifier = 'LUZERN';

@@ -284,8 +284,8 @@ public enum EinstellungKey {
 	// BERN oder LUZERN
 	FACHSTELLEN_TYP,
 
-	// Eingabe des Betreuungspensums in Tagen erlauben (KIBON-2404)
-	BETREUUNGSPENSUM_IN_DAYS;
+	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
+	BETREUUNG_INPUT_SWITCH_ENABLED;
 
 
 	private EinstellungTyp typ;
