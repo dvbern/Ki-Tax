@@ -94,8 +94,10 @@ export class BetreuungInputComponent implements IController {
                 const oeffnungstageKita = parseInt(res[0].value, 10);
                 const oeffnungstageTFO = parseInt(res[1].value, 10);
                 const oeffnungsstundenTFO = parseInt(res[2].value, 10);
-                // 100% = 20 days => 1% = 0.2 days
+                // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
                 this.multiplierKita = oeffnungstageKita / 12 / 100;
+                // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
+                // 100% = 220 stunden => 1% = 2.2 stunden
                 this.multiplierTFO = oeffnungstageTFO * oeffnungsstundenTFO / 12 / 100;
             });
     }
