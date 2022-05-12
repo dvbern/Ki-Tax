@@ -29,23 +29,39 @@ import ch.dvbern.ebegu.entities.Adresse;
 
 public class FinanzielleSituationStartDTO {
 
-	final private @Nonnull Boolean sozialhilfeBezueger;
-	final private @Nullable Boolean gemeinsameSteuererklaerung;
+	final private @Nonnull
+	Boolean sozialhilfeBezueger;
+	final private @Nullable
+	String zustaendigeAmtsstelle;
+	final private @Nullable
+	String nameBetreuer;
+	final private @Nullable
+	Boolean gemeinsameSteuererklaerung;
 	final private Boolean verguenstigungGewuenscht;
 	final private boolean keineMahlzeitenverguenstigungGewuenscht;
-	final private @Nullable String iban;
-	final private @Nullable String kontoinhaber;
+	final private @Nullable
+	String iban;
+	final private @Nullable
+	String kontoinhaber;
 	final private boolean abweichendeZahlungsadresse;
-	final private @Nullable Adresse zahlungsadresse;
-	final private @Nullable String ibanInfoma;
-	final private @Nullable String kontoinhaberInfoma;
+	final private @Nullable
+	Adresse zahlungsadresse;
+	final private @Nullable
+	String ibanInfoma;
+	final private @Nullable
+	String kontoinhaberInfoma;
 	final private boolean abweichendeZahlungsadresseInfoma;
-	final private @Nullable Adresse zahlungsadresseInfoma;
-	final private @Nullable String infomaKreditorennummer;
-	final private @Nullable String infomaBankcode;
+	final private @Nullable
+	Adresse zahlungsadresseInfoma;
+	final private @Nullable
+	String infomaKreditorennummer;
+	final private @Nullable
+	String infomaBankcode;
 
 	public FinanzielleSituationStartDTO(
 		@Nonnull Boolean sozialhilfeBezueger,
+		@Nullable String zustaendigeAmtsstelle,
+		@Nullable String nameBetreuer,
 		@Nullable Boolean gemeinsameSteuererklaerung,
 		Boolean verguenstigungGewuenscht,
 		boolean keineMahlzeitenverguenstigungGewuenscht,
@@ -61,6 +77,8 @@ public class FinanzielleSituationStartDTO {
 		@Nullable String infomaBankcode
 	) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+		this.zustaendigeAmtsstelle = zustaendigeAmtsstelle;
+		this.nameBetreuer = nameBetreuer;
 		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 		this.keineMahlzeitenverguenstigungGewuenscht = keineMahlzeitenverguenstigungGewuenscht;

@@ -133,6 +133,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		}
 
 		familiensituation.setSozialhilfeBezueger(finSitStartDTO.getSozialhilfeBezueger());
+		familiensituation.setZustaendigeAmtsstelle(finSitStartDTO.getSozialhilfeBezueger());
+		familiensituation.setNameBetreuer(finSitStartDTO.getSozialhilfeBezueger());
 		if (familiensituation.getSozialhilfeBezueger() == null || !familiensituation.getSozialhilfeBezueger()) {
 			familiensituationContainer.getSozialhilfeZeitraumContainers().clear();
 		}

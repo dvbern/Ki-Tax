@@ -273,6 +273,8 @@ public class FinanzielleSituationResource {
 
 		FinanzielleSituationStartDTO finSitStartDTO = new FinanzielleSituationStartDTO(
 			sozialhilfeBezueger,
+			familiensituationJA.getZustaendigeAmtsstelle(),
+			familiensituationJA.getNameBetreuer(),
 			gemeinsameSteuererklaerung,
 			verguenstigungGewuenscht,
 			familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt(),
