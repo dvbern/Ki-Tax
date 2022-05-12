@@ -19,6 +19,7 @@ import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -36,6 +37,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -56,6 +58,7 @@ import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
@@ -70,7 +73,6 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
@@ -109,6 +111,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         '$translate',
         'ApplicationPropertyRS',
         'MandantService',
+        'EbeguRestUtil'
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -142,6 +145,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private eingewoehnungAktiviert: boolean = false;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
+    private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
@@ -169,6 +173,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
+        private readonly ebeguRestUtil: EbeguRestUtil,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -286,7 +291,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.besondereBeduerfnisseAufwandKonfigurierbar = true;
                     }
                 });
-
+            response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
+                .forEach(einstellung => {
+                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+                });
         });
 
         this.einstellungRS.findEinstellung(
@@ -1540,5 +1548,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showAbrechnungGutscheine(): boolean {
         return !this.isSavingData &&
             (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
+    }
+
+    public isFachstellenTypLuzern(): boolean {
+        return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
     }
 }

@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  * Es gibt nur ein Dokument, egal ob es soziale Integration oder sprachliche Integration ist.
  * </p>
  **/
-public class KindDokumente extends AbstractDokumente<Kind, Object> {
+public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 
 	@Override
 	public void getAllDokumente(

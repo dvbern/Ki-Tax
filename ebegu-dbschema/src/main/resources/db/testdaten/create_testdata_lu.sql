@@ -33,18 +33,6 @@ VALUES (UNHEX(REPLACE('fd91477c-3263-11ec-a17e-b89a2ae4a038', '-', '')), '2018-1
         'luzern@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.luzern.ch', null, 'DE', null, 'BIC', 'CH93 0077 2011 6238 5295 7',
         'Luzern Kontoinhaber', true, true, true, true, false);
 
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('9f413fb6-3262-11ec-a17e-b89a2ae4a038', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'FALL_NUMMER', # sequence_type
-	100, # current_value
-	UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
-
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
 	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
@@ -322,5 +310,3 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		'flyway', 'flyway', 0, NULL, 'test-lu@mailbucket.dvbern.ch', '078 898 98 98', 'http://test.dvbern.ch',
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')));
-
-UPDATE (einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id) SET value = 'LUZERN' WHERE einstellung_key = 'FINANZIELLE_SITUATION_TYP' AND gesuchsperiode.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));

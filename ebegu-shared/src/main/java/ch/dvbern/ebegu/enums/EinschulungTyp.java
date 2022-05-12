@@ -73,7 +73,7 @@ public enum EinschulungTyp {
 	}
 
 	public boolean isEingeschult() {
-		return this != VORSCHULALTER;
+		return this != VORSCHULALTER && this != FREIWILLIGER_KINDERGARTEN;
 	}
 
 	public boolean isKindergarten() {

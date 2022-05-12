@@ -102,6 +102,7 @@ export class GesuchModelManager {
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'FamiliensituationRS',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
         'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'InternePendenzenRS', 'EinstellungRS',
+        'MandantService',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -1824,6 +1825,31 @@ export class GesuchModelManager {
 
     public $onDestroy(): void {
         this.subscription?.unsubscribe();
+    }
+
+    /**
+     * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
+     */
+    public isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
+        if (!this.isTagesschulangebotEnabled()) {
+            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
+            return false;
+        }
+        const gemeinde = this.getGemeinde();
+        const gesuchsperiode = this.getGesuchsperiode();
+        return gemeinde
+            && gemeinde.angebotTS
+            && gesuchsperiode
+            && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
+    }
+
+    /**
+     * Entscheidet, ob für die aktuelle Gesuchsperiode und Gemeinde die Anmeldung für Tagesschulen
+     * (aufgrund des Datums) möglich ist.
+     */
+    public isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
+        return this.gemeindeKonfiguration
+            && this.gemeindeKonfiguration.hasTagesschulenAnmeldung();
     }
 
     public getAllGesuchstellerAusweisDokumente(

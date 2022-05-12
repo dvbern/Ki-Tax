@@ -74,7 +74,7 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	private BigDecimal abzugKrankheitsUnfallKosten;
 
 	@Nullable
-	private BigDecimal abzugFreiweiligeZuwendungPartien;
+	private BigDecimal sonderabzugErwerbstaetigkeitEhegatten;
 
 	@Nullable
 	private BigDecimal abzugKinderVorschule;
@@ -240,12 +240,12 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getAbzugFreiweiligeZuwendungPartien() {
-		return abzugFreiweiligeZuwendungPartien;
+	public BigDecimal getSonderabzugErwerbstaetigkeitEhegatten() {
+		return sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
-	public void setAbzugFreiweiligeZuwendungPartien(@Nullable BigDecimal abzugFreiweiligeZuwendungPartien) {
-		this.abzugFreiweiligeZuwendungPartien = abzugFreiweiligeZuwendungPartien;
+	public void setSonderabzugErwerbstaetigkeitEhegatten(@Nullable BigDecimal sonderabzugErwerbstaetigkeitEhegatten) {
+		this.sonderabzugErwerbstaetigkeitEhegatten = sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
 	@Nullable

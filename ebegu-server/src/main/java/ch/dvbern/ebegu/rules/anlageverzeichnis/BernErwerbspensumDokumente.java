@@ -63,7 +63,7 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
  * Bestätigung (ärztliche Indikation):
  * Notwendig, wenn Frage nach GS Gesundheitliche Einschränkung mit Ja beantwortet wird (gesundheitliche Einschränkung)
  **/
-public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
+public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
 	@Override
 	public void getAllDokumente(

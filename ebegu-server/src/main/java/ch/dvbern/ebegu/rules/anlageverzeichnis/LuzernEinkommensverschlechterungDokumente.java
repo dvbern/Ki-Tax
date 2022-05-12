@@ -25,11 +25,8 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
 public class LuzernEinkommensverschlechterungDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
@@ -39,63 +36,13 @@ public class LuzernEinkommensverschlechterungDokumente extends AbstractDokumente
 		@Nonnull Gesuch gesuch,
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale) {
-
-		final EinkommensverschlechterungInfo einkommensverschlechterungInfo =
-			gesuch.extractEinkommensverschlechterungInfo();
-
-		if(einkommensverschlechterungInfo == null) {
-			return;
-		}
-
-		if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus1())  {
-			final int basisJahrPlus1 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 1;
-			addDokuemnteEKV(basisJahrPlus1, gesuch, anlageVerzeichnis);
-		}
-
-		if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
-			final int basisJahrPlus2 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 2;
-			addDokuemnteEKV(basisJahrPlus2, gesuch, anlageVerzeichnis);
-		}
+		//Bei Einkommensänderung werden bei Luzern keine Dokumete verlangt
 	}
-
-	private void addDokuemnteEKV(int basisJahr, Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
-		addDokuemnteEKV(basisJahr, 1, anlageVerzeichnis);
-
-		if(gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
-			addDokuemnteEKV(basisJahr, 2, anlageVerzeichnis);
-		}
-	}
-
-	private void addDokuemnteEKV(
-		int basisJahr,
-		int personNumber,
-		Set<DokumentGrund> anlageVerzeichnis) {
-
-		add(getDokument
-			(DokumentTyp.NACHWEIS_VERMOEGEN,
-			null,
-			String.valueOf(basisJahr),
-			DokumentGrundPersonType.GESUCHSTELLER,
-			personNumber,
-			DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
-			anlageVerzeichnis);
-
-		add(getDokument(
-			DokumentTyp.JAHRESLOHNAUSWEISE,
-			null,
-			String.valueOf(basisJahr),
-			DokumentGrundPersonType.GESUCHSTELLER,
-			personNumber,
-			DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
-			anlageVerzeichnis);
-	}
-
-
 
 	@Override
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation dataForDocument) {
-		return true;
+		return false;
 	}
 }

@@ -16,10 +16,13 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {StateService} from '@uirouter/core';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {WelcomeMainComponent} from './welcome-main.component';
@@ -34,6 +37,8 @@ describe('WelcomeMainComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const applicationPropertyRSSpy = jasmine
+        .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
 
     beforeEach(waitForAsync(() => {
 
@@ -46,6 +51,7 @@ describe('WelcomeMainComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
             declarations: [
                 WelcomeMainComponent
@@ -56,6 +62,7 @@ describe('WelcomeMainComponent', () => {
     }));
 
     beforeEach(waitForAsync(() => {
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
         fixture = TestBed.createComponent(WelcomeMainComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

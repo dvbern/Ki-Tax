@@ -19,6 +19,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -45,10 +46,12 @@ describe('erwerbspensumListView', () => {
     let gesuchModelManager: GesuchModelManager;
     let $q: angular.IQService;
     let dossier: TSDossier;
+    let gesuchsperiode: TSGesuchsperiode;
     let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         prepareDossier();
+        prepareGesuchsperiode();
 
         gesuchModelManager = $injector.get('GesuchModelManager');
         $componentController = $injector.get('$componentController');
@@ -58,6 +61,7 @@ describe('erwerbspensumListView', () => {
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
@@ -86,5 +90,10 @@ describe('erwerbspensumListView', () => {
     function prepareDossier(): void {
         dossier = new TSDossier();
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
+    }
+
+    function prepareGesuchsperiode(): void {
+        gesuchsperiode = new TSGesuchsperiode();
+        gesuchsperiode.id = '123';
     }
 });
