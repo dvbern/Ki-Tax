@@ -29,7 +29,7 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 const LOG = LogFactory.createLog('ResultatComponent');
 
 @Component({
-    selector: 'dv-massgebendes-einkommen',
+    selector: ' dv-massgebendes-einkommen',
     templateUrl: './massgebendes-einkommen.component.html',
     styleUrls: ['./massgebendes-einkommen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,

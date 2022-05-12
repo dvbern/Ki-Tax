@@ -37,7 +37,7 @@
 	"FACHLICHE_HILFE_BG": "Fachliche Hilfe",
     "IMPRESSUM_TEXT": "<h1>Impressum</h1><h2>Gesamtverantwortung</h2>Stadt Luzern<br>Kinder Jugend Familie<br>Kasernenplatz 3, Postfach<br>6000 Luzern 7<br><br><h2>Betrieb & Technik</h2>DV Bern<br>Nussbaumstrasse 21<br>CH-3000 Bern 22 · Schweiz",
     "TESTLOGIN_REDIRECT_WARNING_TITLE": "Sie werden jetzt auf das <b>TEST-LOGIN</b> weitergeleitet",
-    "TESTLOGIN_REDIRECT_WARNING_CONTENT": "<br>(<b>Achtung:</b> die Ansicht der Testumgebung des Logins sieht genau gleich aus wie das \"echte\" Login - die beiden Umgebungen sind aber <b>nicht</b> miteinander verbunden)<br><br>Falls Sie noch kein Test-Login erstellt haben, müssen Sie folgendes wissen:<br>Sie müssen ein <b>neues Login in dieser Testumgebung erstellen</b> &rArr; Neu registrieren.<br><br>Für die Erstellung des BE-Logins müssen sie die E-Mailadresse verwenden, mit welcher Sie für die Testumgebung eingeladen worden sind.<br>",
+    "TESTLOGIN_REDIRECT_WARNING_CONTENT": "<br>(<b>Achtung:</b> die Ansicht der Testumgebung des Logins sieht genau gleich aus wie das \"echte\" Login - die beiden Umgebungen sind aber <b>nicht</b> miteinander verbunden)<br><br>Falls Sie noch kein Test-Login erstellt haben, müssen Sie folgendes wissen:<br>Sie müssen ein <b>neues Login in dieser Testumgebung erstellen</b> &rArr; Neu registrieren.<br><br>Für die Erstellung des Logins müssen sie die E-Mailadresse verwenden, mit welcher Sie für die Testumgebung eingeladen worden sind.<br>",
     "ONBOARDING_BG_LOGIN_REQUIRED": "Login benötigt",
     "ONBOARDING_BE_LOGIN_DESCRIPTION": "Sie benötigen ein Login für kiBon. Über \"Anmelden\" gelangen Sie auf das Loginportal, wo Sie sich entweder mit einem bestehenden Konto anmelden oder sich registrieren können. Nach der Anmeldung werden Sie wieder auf kiBon zurückgeleitet.",
     "QUELLENBESTEUERT": "Sind Sie quellsteuerpflichtig?",
@@ -68,5 +68,13 @@
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
     "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
     "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
-    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+    "ONBOARDING_KIBON_BGTS_BEANTRAGEN": "Beantragen Sie jetzt Ihren Betreuungs\u00ADgutschein",
+    "ONBOARDING_MAIN_DESC1": "<strong>Das Portal für Eltern</strong> zur Beantragung von Betreuungsgutscheinen",
+    "ONBOARDING_MAIN_DESC2": "<strong>Die Fachanwendung für Gemeinden</strong> zur Gutscheinadministration",
+    "ONBOARDING_MAIN_DESC3": "<strong>Kompletter, vollautomatisierter Prozess</strong> über alle Instanzen (Eltern, Kitas, Tageseltern, Gemeinden)",
+    "ONBOARDING_MAIN_DESC4": "<strong>Ein Antrag</strong> für sämtliche Angebote (Kita & Tageseltern)",
+    "ONBOARDING_SUBTITLE": "Die Lösung für Betreuungsgutscheine",
+	"ONBOARDING_GS_ANGABEN_TITLE": "Login Daten",
+	"BE_LOGIN_DATEN": "Login Daten",
+	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
