@@ -16,9 +16,10 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/constants/CONSTANTS';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -38,7 +39,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate', 'GesuchModelManager'];
+    public static $inject = ['$translate', 'GesuchModelManager', 'EinstellungRS'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
@@ -51,19 +52,52 @@ export class BetreuungInputComponent implements IController {
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
+    private multiplierKita: number;
+    private multiplierTFO: number;
 
     private pensumValue: number;
 
     public constructor(private readonly translate: ITranslateService,
-                       public readonly gesuchModelManager: GesuchModelManager) {
+                       public readonly gesuchModelManager: GesuchModelManager,
+                       public readonly einstellungRS: EinstellungRS
+    ) {
     }
 
     public $onInit(): void {
         this.LOG.debug(this.betreuungsangebotTyp);
+        this.loadKonfigurationen()
+            .then(() => {
+                this.setAngebotDependingVariables();
+                this.parseToPensumUnit();
+                this.toggle();
+            });
+    }
 
-        this.setAngebotDependingVariables();
-        this.parseToPensumUnit();
-        this.toggle();
+    public loadKonfigurationen(): Promise<void> {
+        const p1 = this.einstellungRS.findEinstellung(
+            TSEinstellungKey.OEFFNUNGSTAGE_KITA,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        );
+        const p2 = this.einstellungRS.findEinstellung(
+            TSEinstellungKey.OEFFNUNGSTAGE_TFO,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        );
+        const p3 = this.einstellungRS.findEinstellung(
+            TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        );
+        return Promise.all([p1, p2, p3])
+            .then(res => {
+                const oeffnungstageKita = parseInt(res[0].value, 10);
+                const oeffnungstageTFO = parseInt(res[1].value, 10);
+                const oeffnungsstundenTFO = parseInt(res[2].value, 10);
+                // 100% = 20 days => 1% = 0.2 days
+                this.multiplierKita = oeffnungstageKita / 12 / 100;
+                this.multiplierTFO = oeffnungstageTFO * oeffnungsstundenTFO / 12 / 100;
+            });
     }
 
     public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
@@ -91,10 +125,10 @@ export class BetreuungInputComponent implements IController {
     public setAngebotDependingVariables(): void {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-            this.multiplier = MULTIPLIER_TAGESFAMILIEN;
+            this.multiplier = this.multiplierTFO;
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-            this.multiplier = MULTIPLIER_KITA;
+            this.multiplier = this.multiplierKita;
         }
     }
 
