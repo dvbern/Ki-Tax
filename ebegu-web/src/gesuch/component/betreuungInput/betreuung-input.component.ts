@@ -16,10 +16,8 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -32,6 +30,8 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         isDisabled: '<',
         id: '@inputId',
         betreuungsangebotTyp: '<',
+        multiplierKita: '<',
+        multiplierTfo: '<',
     };
     public controller = BetreuungInputComponent;
     public controllerAs = 'vm';
@@ -39,7 +39,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate', 'GesuchModelManager', 'EinstellungRS'];
+    public static $inject = ['$translate', 'GesuchModelManager'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
@@ -53,53 +53,20 @@ export class BetreuungInputComponent implements IController {
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
     private multiplierKita: number;
-    private multiplierTFO: number;
+    private multiplierTfo: number;
 
     private pensumValue: number;
 
     public constructor(private readonly translate: ITranslateService,
-                       public readonly gesuchModelManager: GesuchModelManager,
-                       public readonly einstellungRS: EinstellungRS
-    ) {
+                       public readonly gesuchModelManager: GesuchModelManager) {
     }
 
     public $onInit(): void {
         this.LOG.debug(this.betreuungsangebotTyp);
-        this.loadKonfigurationen()
-            .then(() => {
-                this.setAngebotDependingVariables();
-                this.parseToPensumUnit();
-                this.toggle();
-            });
-    }
 
-    public loadKonfigurationen(): Promise<void> {
-        const p1 = this.einstellungRS.findEinstellung(
-            TSEinstellungKey.OEFFNUNGSTAGE_KITA,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
-        );
-        const p2 = this.einstellungRS.findEinstellung(
-            TSEinstellungKey.OEFFNUNGSTAGE_TFO,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
-        );
-        const p3 = this.einstellungRS.findEinstellung(
-            TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
-        );
-        return Promise.all([p1, p2, p3])
-            .then(res => {
-                const oeffnungstageKita = parseInt(res[0].value, 10);
-                const oeffnungstageTFO = parseInt(res[1].value, 10);
-                const oeffnungsstundenTFO = parseInt(res[2].value, 10);
-                // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
-                this.multiplierKita = oeffnungstageKita / 12 / 100;
-                // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
-                // 100% = 220 stunden => 1% = 2.2 stunden
-                this.multiplierTFO = oeffnungstageTFO * oeffnungsstundenTFO / 12 / 100;
-            });
+        this.setAngebotDependingVariables();
+        this.parseToPensumUnit();
+        this.toggle();
     }
 
     public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
@@ -127,7 +94,7 @@ export class BetreuungInputComponent implements IController {
     public setAngebotDependingVariables(): void {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-            this.multiplier = this.multiplierTFO;
+            this.multiplier = this.multiplierTfo;
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
             this.multiplier = this.multiplierKita;
