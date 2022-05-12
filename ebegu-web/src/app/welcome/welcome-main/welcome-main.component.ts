@@ -32,7 +32,7 @@ import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourSer
 })
 export class WelcomeMainComponent implements OnInit {
 
-    private logoUrl: string;
+    public logoUrl: string;
 
     public constructor(
         private readonly authServiceRs: AuthServiceRS,
