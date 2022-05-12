@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
+import {applicationPropertyRSProvider} from '../../../app/core/upgraded-providers';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -45,7 +46,7 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
 
 // tslint:disable:no-big-function no-commented-code max-line-length
-describe('betreuungView', () => {
+describe('betreuungView', async () => {
     const betreuungenState = 'gesuch.betreuungen';
 
     let betreuungView: BetreuungViewController;
@@ -72,84 +73,96 @@ describe('betreuungView', () => {
 
     beforeEach(angular.mock.module(translationsMock));
 
-    beforeEach(angular.mock.inject($injector => {
-        gesuchModelManager = $injector.get('GesuchModelManager');
-        $state = $injector.get('$state');
-        ebeguUtil = $injector.get('EbeguUtil');
-        $httpBackend = $injector.get('$httpBackend');
-        $q = $injector.get('$q');
-        $stateParams = $injector.get('$stateParams');
-        $timeout = $injector.get('$timeout');
-        einstellungRS = $injector.get('EinstellungRS');
-        institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
-        mandantService = $injector.get('MandantService');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
+    beforeEach(async () => {
+        return new Promise((resolve, reject) => {
+            try {
+                angular.mock.inject(async $injector => {
+                    gesuchModelManager = $injector.get('GesuchModelManager');
+                    $state = $injector.get('$state');
+                    ebeguUtil = $injector.get('EbeguUtil');
+                    $httpBackend = $injector.get('$httpBackend');
+                    $q = $injector.get('$q');
+                    $stateParams = $injector.get('$stateParams');
+                    $timeout = $injector.get('$timeout');
+                    einstellungRS = $injector.get('EinstellungRS');
+                    institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
+                    mandantService = $injector.get('MandantService');
+                    ebeguRestUtil = $injector.get('EbeguRestUtil');
 
-        // they always need to be mocked
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-        TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
+                    const applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+                    // they always need to be mocked
+                    TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
-        betreuung = new TSBetreuung();
-        betreuung.timestampErstellt = DateUtil.today();
-        betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
-        const erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
-        erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
-        erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = true;
-        betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+                    TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
+                    betreuung = new TSBetreuung();
+                    betreuung.timestampErstellt = DateUtil.today();
+                    betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+                    const erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+                    erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
+                    erweiterteBetreuungContainer.erweiterteBetreuungJA.keineKesbPlatzierung = true;
 
-        kind = new TSKindContainer();
-        $stateParams = $injector.get('$stateParams');
-        spyOn(gesuchModelManager, 'getKindToWorkWith').and.returnValue(kind);
-        spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
-        spyOn(gesuchModelManager, 'isNeuestesGesuch').and.returnValue(true);
-        // model = betreuung;
-        spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() => {
-            // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
-            // constructor der view und geben betreuung zurueck
-            return betreuungView ? betreuungView.model : betreuung;
+                    betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+                    kind = new TSKindContainer();
+                    $stateParams = $injector.get('$stateParams');
+                    spyOn(gesuchModelManager, 'getKindToWorkWith').and.returnValue(kind);
+                    spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
+                    spyOn(gesuchModelManager, 'isNeuestesGesuch').and.returnValue(true);
+                    // model = betreuung;
+                    spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() => {
+                        // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
+                        // constructor der view und geben betreuung zurueck
+                        return betreuungView ? betreuungView.model : betreuung;
+                    });
+                    const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+                    gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
+                    spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
+                    spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeParis());
+                    gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
+                    $rootScope = $injector.get('$rootScope');
+                    authServiceRS = $injector.get('AuthServiceRS');
+                    spyOn(authServiceRS, 'isRole').and.returnValue(true);
+                    spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+                    spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
+                    spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
+                    spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.returnValue($q.resolve({}));
+                    spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
+
+                    spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
+                        .and.returnValue($q.resolve([]));
+                    wizardStepManager = $injector.get('WizardStepManager');
+                    betreuungView = new BetreuungViewController($state,
+                        gesuchModelManager,
+                        ebeguUtil,
+                        $rootScope,
+                        $injector.get('BerechnungsManager'),
+                        $injector.get('ErrorService'),
+                        authServiceRS,
+                        wizardStepManager,
+                        $stateParams,
+                        $injector.get('MitteilungRS'),
+                        $injector.get('DvDialog'),
+                        $injector.get('$log'),
+                        einstellungRS,
+                        $injector.get('GlobalCacheService'),
+                        $timeout,
+                        undefined,
+                        applicationPropertyRS,
+                        mandantService,
+                        ebeguRestUtil,
+                    );
+                    console.log('henlo')
+                    await betreuungView.$onInit();
+                    $rootScope.$apply();
+                    betreuungView.model = betreuung;
+
+                    betreuungView.form = TestDataUtil.createDummyForm();
+                    resolve();
+                });
+            } catch (e) {
+                reject(e);
+            }
         });
-        const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-        gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
-        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
-        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(TestDataUtil.createGemeindeParis());
-        gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
-        $rootScope = $injector.get('$rootScope');
-        authServiceRS = $injector.get('AuthServiceRS');
-        spyOn(authServiceRS, 'isRole').and.returnValue(true);
-        spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
-        spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
-        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
-        spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
-            .and.returnValue($q.resolve([]));
-
-        wizardStepManager = $injector.get('WizardStepManager');
-        betreuungView = new BetreuungViewController($state,
-            gesuchModelManager,
-            ebeguUtil,
-            $rootScope,
-            $injector.get('BerechnungsManager'),
-            $injector.get('ErrorService'),
-            authServiceRS,
-            wizardStepManager,
-            $stateParams,
-            $injector.get('MitteilungRS'),
-            $injector.get('DvDialog'),
-            $injector.get('$log'),
-            einstellungRS,
-            $injector.get('GlobalCacheService'),
-            $timeout,
-            undefined,
-            $injector.get('ApplicationPropertyRS'),
-            mandantService,
-            ebeguRestUtil,
-        );
-        betreuungView.$onInit();
-        $rootScope.$apply();
-        betreuungView.model = betreuung;
-
-        betreuungView.form = TestDataUtil.createDummyForm();
-    }));
+    });
 
     describe('API Usage', () => {
 

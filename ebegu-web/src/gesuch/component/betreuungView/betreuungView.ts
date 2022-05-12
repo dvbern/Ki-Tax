@@ -151,7 +151,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public showAbrechungDerGutscheineFrage: boolean = false;
+    public infomaZahlungen: boolean = false;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -184,12 +184,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public $onInit(): void {
+    public async $onInit(): Promise<void> {
         super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+
+        await this.loadInfomaZahlungenActive();
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -312,10 +314,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+    }
 
-        this.applicationPropertyRS.getPublicPropertiesCached()
+    private async loadInfomaZahlungenActive(): Promise<void> {
+        return this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+                this.infomaZahlungen = response.infomaZahlungen;
             });
     }
 
@@ -338,7 +342,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        tsBetreuung.auszahlungAnEltern = false;
+        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
+        if (EbeguUtil.isNotNullAndTrue(this.infomaZahlungen)) {
+            tsBetreuung.auszahlungAnEltern = true;
+        }
 
         return tsBetreuung;
     }
