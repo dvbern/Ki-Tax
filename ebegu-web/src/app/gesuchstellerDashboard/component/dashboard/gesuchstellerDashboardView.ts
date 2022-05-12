@@ -21,7 +21,7 @@ import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {SearchRS} from '../../../../gesuch/service/searchRS.rest';
 import {
     IN_BEARBEITUNG_BASE_NAME,
-    isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt,
+    isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen,
     isAnyStatusOfVerfuegt,
     TSAntragStatus,
 } from '../../../../models/enums/TSAntragStatus';
@@ -296,7 +296,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 // Noch nicht freigegeben -> Text BEARBEITEN
                 return this.$translate.instant('GS_BEARBEITEN');
             }
-            if (!isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(antrag.status) || antrag.beschwerdeHaengig) {
+            if (!isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(antrag.status) || antrag.beschwerdeHaengig) {
                 // Alles ausser verfuegt und InBearbeitung -> Text DOKUMENTE HOCHLADEN
                 return this.$translate.instant('GS_DOKUMENTE_HOCHLADEN');
             }
