@@ -52,8 +52,8 @@ export class BetreuungInputComponent implements IController {
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
-    private multiplierKita: number;
-    private multiplierTfo: number;
+    private readonly multiplierKita: number;
+    private readonly multiplierTfo: number;
 
     private pensumValue: number;
 
