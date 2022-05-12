@@ -18,6 +18,8 @@
 
 UPDATE gesuchsperiode set vorgaenger_id = null where vorgaenger_id is not NULL;
 
+UPDATE mandant set ebegu.mandant.activated = true where ebegu.mandant.mandant_identifier='SOLOTHURN';
+
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 	SET value = 'false'
 WHERE einstellung_key = 'FREIGABE_QUITTUNG_EINLESEN_REQUIRED' AND mandant_identifier = 'SOLOTHURN';
