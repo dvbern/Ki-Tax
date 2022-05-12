@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -31,15 +31,26 @@ import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourSer
     styleUrls: ['./welcome-main.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeMainComponent {
+export class WelcomeMainComponent implements OnInit {
+
+    private logoUrl: string;
 
     public constructor(
         private readonly authServiceRs: AuthServiceRS,
         private readonly $state: StateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cd: ChangeDetectorRef
     ) {
 
+    }
+
+    public ngOnInit(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(res => {
+                this.logoUrl = `url("assets/images/${res.logoFileName}")`;
+                this.cd.markForCheck();
+            });
     }
 
     public navigateToStartPage(): void {
@@ -56,13 +67,5 @@ export class WelcomeMainComponent {
 
     public isNotSozialdienstRole(): boolean {
         return !this.authServiceRs.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
-    }
-
-    public getLogoUrl(): Observable<string> {
-        const promise = this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(res => {
-                return `url("assets/images/${res.logoFileName}")`;
-            });
-        return from(promise);
     }
 }
