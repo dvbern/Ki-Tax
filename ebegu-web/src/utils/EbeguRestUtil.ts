@@ -689,6 +689,8 @@ export class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
+            familiensituation.zustaendigeAmtsstelle = familiensituationFromServer.zustaendigeAmtsstelle;
+            familiensituation.nameBetreuer = familiensituationFromServer.nameBetreuer;
             familiensituation.verguenstigungGewuenscht =
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =

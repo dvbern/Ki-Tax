@@ -829,6 +829,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
+		jaxFamiliensituation.setNameBetreuer(persistedFamiliensituation.getNameBetreuer());
+		jaxFamiliensituation.setZustaendigeAmtsstelle(persistedFamiliensituation.getZustaendigeAmtsstelle());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
 		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());

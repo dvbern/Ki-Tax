@@ -76,5 +76,7 @@
     "ONBOARDING_SUBTITLE": "Die Lösung für Betreuungsgutscheine",
 	"ONBOARDING_GS_ANGABEN_TITLE": "Login Daten",
 	"BE_LOGIN_DATEN": "Login Daten",
+    "ZUSTAENDIGE_AMTSSTELLE": "Zuständige Amtsstelle",
+    "NAME_BETREUUER": "Name der Betreuerin oder des Betreuers",
 	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

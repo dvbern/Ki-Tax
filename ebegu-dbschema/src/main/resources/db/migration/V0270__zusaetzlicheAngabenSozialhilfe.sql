@@ -16,8 +16,8 @@
  */
 
 ALTER TABLE familiensituation ADD zustaendige_amtsstelle VARCHAR(255);
-ALTER TABLE familiensituation ADD name_betreuuer VARCHAR(255);
+ALTER TABLE familiensituation ADD name_betreuer VARCHAR(255);
 
 ALTER TABLE familiensituation_aud ADD zustaendige_amtsstelle VARCHAR(255);
-ALTER TABLE familiensituation_aud ADD name_betreuuer VARCHAR(255);
+ALTER TABLE familiensituation_aud ADD name_betreuer VARCHAR(255);
 

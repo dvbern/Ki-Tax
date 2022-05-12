@@ -223,6 +223,8 @@ export class TSFinanzModel {
         }
         familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
         familiensituation.sozialhilfeBezueger = this.sozialhilfeBezueger;
+        familiensituation.nameBetreuer = this.nameBetreuer;
+        familiensituation.zustaendigeAmtsstelle = this.zustaendigeAmtsstelle;
         familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {

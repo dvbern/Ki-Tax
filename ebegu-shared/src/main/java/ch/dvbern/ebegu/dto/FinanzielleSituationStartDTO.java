@@ -100,6 +100,16 @@ public class FinanzielleSituationStartDTO {
 	}
 
 	@Nullable
+	public String getZustaendigeAmtsstelle() {
+		return zustaendigeAmtsstelle;
+	}
+
+	@Nullable
+	public String getNameBetreuer() {
+		return nameBetreuer;
+	}
+
+	@Nullable
 	public Boolean getGemeinsameSteuererklaerung() {
 		return gemeinsameSteuererklaerung;
 	}
