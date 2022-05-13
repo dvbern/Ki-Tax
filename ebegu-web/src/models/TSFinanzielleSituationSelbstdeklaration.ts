@@ -20,23 +20,18 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableEntity {
     private _einkunftErwerb: number;
     private _einkunftVersicherung: number;
-    private _einkunftAusgleichskassen: number;
     private _einkunftWertschriften: number;
-    private _einkunftUnterhaltsbeitragSteuerpflichtige: number;
     private _einkunftUnterhaltsbeitragKinder: number;
     private _einkunftUeberige: number;
     private _einkunftLiegenschaften: number;
     private _abzugBerufsauslagen: number;
-    private _abzugUnterhaltsbeitragEhepartner: number;
     private _abzugUnterhaltsbeitragKinder: number;
-    private _abzugRentenleistungen: number;
     private _abzugSaeule3A: number;
     private _abzugVersicherungspraemien: number;
     private _abzugKrankheitsUnfallKosten: number;
     private _sonderabzugErwerbstaetigkeitEhegatten: number;
     private _abzugKinderVorschule: number;
     private _abzugKinderSchule: number;
-    private _abzugKinderAuswaertigerAufenthalt: number;
     private _abzugEigenbetreuung: number;
     private _abzugFremdbetreuung: number;
     private _abzugErwerbsunfaehigePersonen: number;
@@ -60,28 +55,12 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
         this._einkunftVersicherung = value;
     }
 
-    public get einkunftAusgleichskassen(): number {
-        return this._einkunftAusgleichskassen;
-    }
-
-    public set einkunftAusgleichskassen(value: number) {
-        this._einkunftAusgleichskassen = value;
-    }
-
     public get einkunftWertschriften(): number {
         return this._einkunftWertschriften;
     }
 
     public set einkunftWertschriften(value: number) {
         this._einkunftWertschriften = value;
-    }
-
-    public get einkunftUnterhaltsbeitragSteuerpflichtige(): number {
-        return this._einkunftUnterhaltsbeitragSteuerpflichtige;
-    }
-
-    public set einkunftUnterhaltsbeitragSteuerpflichtige(value: number) {
-        this._einkunftUnterhaltsbeitragSteuerpflichtige = value;
     }
 
     public get einkunftUnterhaltsbeitragKinder(): number {
@@ -116,28 +95,12 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
         this._abzugBerufsauslagen = value;
     }
 
-    public get abzugUnterhaltsbeitragEhepartner(): number {
-        return this._abzugUnterhaltsbeitragEhepartner;
-    }
-
-    public set abzugUnterhaltsbeitragEhepartner(value: number) {
-        this._abzugUnterhaltsbeitragEhepartner = value;
-    }
-
     public get abzugUnterhaltsbeitragKinder(): number {
         return this._abzugUnterhaltsbeitragKinder;
     }
 
     public set abzugUnterhaltsbeitragKinder(value: number) {
         this._abzugUnterhaltsbeitragKinder = value;
-    }
-
-    public get abzugRentenleistungen(): number {
-        return this._abzugRentenleistungen;
-    }
-
-    public set abzugRentenleistungen(value: number) {
-        this._abzugRentenleistungen = value;
     }
 
     public get abzugSaeule3A(): number {
@@ -186,14 +149,6 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
 
     public set abzugKinderSchule(value: number) {
         this._abzugKinderSchule = value;
-    }
-
-    public get abzugKinderAuswaertigerAufenthalt(): number {
-        return this._abzugKinderAuswaertigerAufenthalt;
-    }
-
-    public set abzugKinderAuswaertigerAufenthalt(value: number) {
-        this._abzugKinderAuswaertigerAufenthalt = value;
     }
 
     public get abzugEigenbetreuung(): number {
