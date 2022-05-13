@@ -153,7 +153,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 alleDokumente.dokumentGruende
                     .filter(tsDokument => tsDokument.dokumentGrundTyp === TSDokumentGrundTyp.FAMILIENSITUATION)
                     .filter(tsDokument => tsDokument.dokumentTyp === TSDokumentTyp.AUSWEIS_ID)
-                    .map(tsDokument =>
+                    .forEach(tsDokument =>
                         this.dokumentGrund = tsDokument);
             });
     }
