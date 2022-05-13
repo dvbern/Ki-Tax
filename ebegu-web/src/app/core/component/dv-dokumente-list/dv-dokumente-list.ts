@@ -19,7 +19,7 @@ import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogCont
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
-import {isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDokument} from '../../../../models/TSDokument';
@@ -251,7 +251,7 @@ export class DVDokumenteListController implements IController {
         // gleichbedeutend mit readonly auf dem Gesuch
         // Jedoch darf der Gesuchsteller nach der Verfuegung und in Bearbeitung Gemeinde/JA nichts mehr hochladen
         const gsAndVerfuegt = this.gesuchModelManager.getGesuch()
-            && isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
+            && isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(this.gesuchModelManager.getGesuch().status)
             && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
     }

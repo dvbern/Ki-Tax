@@ -18,7 +18,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -34,21 +33,12 @@ export class FinanzielleSituationSolothurnService {
     }
 
     public static finSitIsGemeinsam(gesuchModelManager: GesuchModelManager): boolean {
-        // TODO finsit Luzern: get this from server or improve
-        const familiensituation = gesuchModelManager.getFamiliensituation().familienstatus;
-        return familiensituation === TSFamilienstatus.VERHEIRATET
-            || familiensituation === TSFamilienstatus.KONKUBINAT
-            || (familiensituation === TSFamilienstatus.KONKUBINAT_KEIN_KIND && this.startKonkubinatMoreThan5YearsAgo());
+        return gesuchModelManager.getFamiliensituation()
+            .hasSecondGesuchsteller(gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis);
     }
 
     public static finSitNeedsTwoAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
-        // TODO finsit Luzern: get this from server or improve
         return this.finSitIsGemeinsam(gesuchModelManager) && gesuchModelManager.getFamiliensituation().verguenstigungGewuenscht;
-    }
-
-    private static startKonkubinatMoreThan5YearsAgo(): boolean {
-        // TODO finsit Luzern: migrate once Konkubinat time is in configuration
-        return true;
     }
 
     public massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {

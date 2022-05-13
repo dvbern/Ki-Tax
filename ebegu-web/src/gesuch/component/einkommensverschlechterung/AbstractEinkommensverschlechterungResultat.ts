@@ -29,6 +29,7 @@ import {EKVViewUtil} from './EKVViewUtil';
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
+    private readonly grenze: number = 25;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -91,6 +92,14 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         return this.model.getBasisJahrPlus() === 2 ?
             this.berechnungsManager.einkommensverschlechterungResultateBjP2 :
             this.berechnungsManager.einkommensverschlechterungResultateBjP1;
+    }
+
+    public ekvAkzeptiert(): boolean {
+        if (EbeguUtil.isNotNullOrUndefined(this.resultatProzent) && (Number(this.resultatProzent) >= this.grenze ||
+            Number(this.resultatProzent) <= -this.grenze)) {
+            return true;
+        }
+        return false;
     }
 
     public hasSecondAntragstellende(): boolean {

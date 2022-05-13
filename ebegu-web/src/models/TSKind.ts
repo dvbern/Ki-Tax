@@ -35,6 +35,7 @@ export class TSKind extends TSAbstractPersonEntity {
     private _familienErgaenzendeBetreuung: boolean;
     private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
+    private _keinPlatzInSchulhort: boolean;
     private _pensumFachstelle: TSPensumFachstelle;
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
     private _ausAsylwesen: boolean;
@@ -206,5 +207,13 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set zukunftigeGeburtsdatum(value: boolean) {
         this._zukunftigeGeburtsdatum = value;
+    }
+
+    public get keinPlatzInSchulhort(): boolean {
+        return this._keinPlatzInSchulhort;
+    }
+
+    public set keinPlatzInSchulhort(value: boolean) {
+        this._keinPlatzInSchulhort = value;
     }
 }

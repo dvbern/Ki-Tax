@@ -19,6 +19,7 @@ import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -41,6 +42,9 @@ describe('erwerbspensumView', () => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
+
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(new TSGemeinde());
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
     }));
 
     beforeEach(waitForAsync(() => {

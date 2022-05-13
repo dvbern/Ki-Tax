@@ -390,7 +390,7 @@ public final class FreigabeCopyUtil {
 		gs.setEinkommenInVereinfachtemVerfahrenAbgerechnet(ja.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		gs.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(ja.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		gs.setGewinnungskosten(ja.getGewinnungskosten());
-		gs.setAbzuegeLiegenschaft(ja.getAbzuegeLiegenschaft());
+		gs.setAbzugSchuldzinsen(ja.getAbzugSchuldzinsen());
 		copyFinanzielleSituationSelbstdeklaration(gs, ja);
 
 	}
@@ -419,7 +419,7 @@ public final class FreigabeCopyUtil {
 		gs.getSelbstdeklaration().setAbzugSaeule3A(ja.getSelbstdeklaration().getAbzugSaeule3A());
 		gs.getSelbstdeklaration().setAbzugVersicherungspraemien(ja.getSelbstdeklaration().getAbzugVersicherungspraemien());
 		gs.getSelbstdeklaration().setAbzugKrankheitsUnfallKosten(ja.getSelbstdeklaration().getAbzugKrankheitsUnfallKosten());
-		gs.getSelbstdeklaration().setAbzugFreiweiligeZuwendungPartien(ja.getSelbstdeklaration().getAbzugFreiweiligeZuwendungPartien());
+		gs.getSelbstdeklaration().setSonderabzugErwerbstaetigkeitEhegatten(ja.getSelbstdeklaration().getSonderabzugErwerbstaetigkeitEhegatten());
 		gs.getSelbstdeklaration().setAbzugKinderVorschule(ja.getSelbstdeklaration().getAbzugKinderVorschule());
 		gs.getSelbstdeklaration().setAbzugKinderSchule(ja.getSelbstdeklaration().getAbzugKinderSchule());
 		gs.getSelbstdeklaration().setAbzugKinderAuswaertigerAufenthalt(ja.getSelbstdeklaration().getAbzugKinderAuswaertigerAufenthalt());
@@ -515,9 +515,11 @@ public final class FreigabeCopyUtil {
 		gs.setGemeinsameStekVorjahr(ja.getGemeinsameStekVorjahr());
 		gs.setAlleinigeStekVorjahr(ja.getAlleinigeStekVorjahr());
 		gs.setVeranlagt(ja.getVeranlagt());
+		gs.setVeranlagtVorjahr(ja.getVeranlagtVorjahr());
 		gs.setUnterhaltsBeitraege(ja.getUnterhaltsBeitraege());
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
+		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
 
 	}
 

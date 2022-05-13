@@ -269,9 +269,13 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		) {
 			return false;
 		}
+		boolean veranlagtOrVeranlagtVorjahr = finanzielleSituation.getVeranlagt();
+		if (finanzielleSituation.getVeranlagtVorjahr() != null) {
+			veranlagtOrVeranlagtVorjahr = veranlagtOrVeranlagtVorjahr || finanzielleSituation.getVeranlagtVorjahr();
+		}
 		return !finanzielleSituation.getQuellenbesteuert()
 			&& isSameVeranlagungAsVorjahr(finanzielleSituation)
-			&& finanzielleSituation.getVeranlagt();
+			&& veranlagtOrVeranlagtVorjahr;
 	}
 
 	@Override

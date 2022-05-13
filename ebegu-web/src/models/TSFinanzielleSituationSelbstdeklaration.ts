@@ -33,7 +33,7 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
     private _abzugSaeule3A: number;
     private _abzugVersicherungspraemien: number;
     private _abzugKrankheitsUnfallKosten: number;
-    private _abzugFreiweiligeZuwendungPartien: number;
+    private _sonderabzugErwerbstaetigkeitEhegatten: number;
     private _abzugKinderVorschule: number;
     private _abzugKinderSchule: number;
     private _abzugKinderAuswaertigerAufenthalt: number;
@@ -164,12 +164,12 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
         this._abzugKrankheitsUnfallKosten = value;
     }
 
-    public get abzugFreiweiligeZuwendungPartien(): number {
-        return this._abzugFreiweiligeZuwendungPartien;
+    public get sonderabzugErwerbstaetigkeitEhegatten(): number {
+        return this._sonderabzugErwerbstaetigkeitEhegatten;
     }
 
-    public set abzugFreiweiligeZuwendungPartien(value: number) {
-        this._abzugFreiweiligeZuwendungPartien = value;
+    public set sonderabzugErwerbstaetigkeitEhegatten(value: number) {
+        this._sonderabzugErwerbstaetigkeitEhegatten = value;
     }
 
     public get abzugKinderVorschule(): number {

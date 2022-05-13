@@ -32,7 +32,7 @@
             <br/>
             <br/>
         </p>
-        <p class="onboarding-info-action">
+        <p class="onboarding-info-action" *ngIf="isTSEnabled">
             <a target="_blank" rel="noopener noreferrer" href="{{'ONBOARDING_GEMEINDE_LINK_TS' | translate}}">
                 <button class="dv-btn onboarding-big-red-button">
                     <span translate>ONBOARDING_ZULASSUNG_TS</span>

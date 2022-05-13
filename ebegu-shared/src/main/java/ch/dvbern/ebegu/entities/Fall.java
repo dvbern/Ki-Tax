@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -122,7 +123,7 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 		this.nextNumberKind = nextNumberKind;
 	}
 
-	@Override
+	@Override @Nonnull
 	public Mandant getMandant() {
 		return mandant;
 	}

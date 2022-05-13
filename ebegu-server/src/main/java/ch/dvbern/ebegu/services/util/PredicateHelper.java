@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.services.util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -96,10 +95,7 @@ public final class PredicateHelper<V> {
 	 */
 	public static Predicate excludeUnknownInstitutionStammdatenPredicate(Root<? extends AbstractEntity> root) {
 		return root.get(AbstractEntity_.id)
-			.in(Arrays.asList(
-				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA,
-				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE,
-				Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE))
+			.in(Constants.ALL_UNKNOWN_INSTITUTION_IDS)
 			.not();
 	}
 
