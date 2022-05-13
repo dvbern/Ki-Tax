@@ -367,6 +367,7 @@ public final class FreigabeCopyUtil {
 		gs.setOrganisation(ja.getOrganisation());
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // FalsePositive: Die Methode ist benutzt
 	private static void copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation gs,
 		@Nonnull AbstractFinanzielleSituation ja) {
