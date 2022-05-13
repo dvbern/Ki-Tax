@@ -17,11 +17,16 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
+import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -32,6 +37,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -52,6 +58,7 @@ import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
@@ -70,6 +77,8 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 
+const LOG = LogFactory.createLog('BetreuungViewController');
+
 export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public template = require('./betreuungView.html');
@@ -87,7 +96,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         '$state',
         'GesuchModelManager',
         'EbeguUtil',
-        'CONSTANTS',
         '$scope',
         'BerechnungsManager',
         'ErrorService',
@@ -101,7 +109,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'GlobalCacheService',
         '$timeout',
         '$translate',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'MandantService',
+        'EbeguRestUtil'
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -135,18 +145,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private eingewoehnungAktiviert: boolean = false;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
+    private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+
+    private oeffnungstageKita: number;
+    private oeffnungstageTFO: number;
+    private oeffnungsstundenTFO: number;
+
+    private multiplierKita: number;
+    private multiplierTFO: number;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
     public showAbrechungDerGutscheineFrage: boolean = false;
+    private mandant: KiBonMandant;
 
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
         private readonly ebeguUtil: EbeguUtil,
-        private readonly CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         private readonly errorService: ErrorService,
@@ -161,10 +179,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $timeout: ITimeoutService,
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly mandantService: MandantService,
+        private readonly ebeguRestUtil: EbeguRestUtil,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
         this.$translate = $translate;
+        this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
+                this.mandant = mandant;
+            }, err => LOG.error(err));
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -275,7 +298,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.besondereBeduerfnisseAufwandKonfigurierbar = true;
                     }
                 });
+            response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
+                .forEach(einstellung => {
+                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+                });
 
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA)
+                .forEach(einstellung => {
+                    this.oeffnungstageKita = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungstageTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
         });
 
         this.einstellungRS.findEinstellung(
@@ -318,6 +357,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
+
+        tsBetreuung.auszahlungAnEltern = false;
 
         return tsBetreuung;
     }
@@ -496,6 +537,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public direktAnmeldenSchulamt(): boolean {
         // Eigentlich immer ausser in Bearbeitung GS
         return !(this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS)
+            || this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)
             || this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG));
     }
 
@@ -1286,7 +1328,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStamm = new TSInstitutionStammdatenSummary();
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
             this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
@@ -1379,11 +1421,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // tslint:disable:prefer-conditional-expression
         this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+            this.instStamm.id = CONSTANTS.getUnknowTFOIdForMandant(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESSCHULE;
+            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
         } else {
-            this.instStamm.id = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
+            this.instStamm.id = CONSTANTS.getUnknowKitaIdForMandant(this.mandant);
         }
     }
 
@@ -1526,5 +1568,36 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showAbrechnungGutscheine(): boolean {
         return !this.isSavingData &&
             (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
+    }
+
+    public isFachstellenTypLuzern(): boolean {
+        return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
+    public getMultiplierKita(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierKita)) {
+            this.calculateMuliplyerKita();
+        }
+
+        return this.multiplierKita;
+    }
+
+    public getMultiplierTFO(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierTFO)) {
+            this.calculateMultiplierTFO();
+        }
+
+        return this.multiplierTFO;
+    }
+
+    private calculateMuliplyerKita(): void {
+        // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
+        this.multiplierKita = this.oeffnungstageKita / 12 / 100;
+    }
+
+    private calculateMultiplierTFO(): void {
+        // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
+        // 100% = 220 stunden => 1% = 2.2 stunden
+        this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
     }
 }

@@ -357,6 +357,7 @@ public class FinanzielleSituationResource {
 				converter.finanzielleSituationContainerToEntity(
 					jaxFinSitModel.getFinanzielleSituationContainerGS1(),
 					new FinanzielleSituationContainer()));
+			setFinSitAbfrageStatus(gesuch.getGesuchsteller1(), jaxFinSitModel.getFinanzielleSituationContainerGS1());
 		}
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS2() != null) {
 			gesuch.setGesuchsteller2(new GesuchstellerContainer());
@@ -365,6 +366,7 @@ public class FinanzielleSituationResource {
 				converter.finanzielleSituationContainerToEntity(
 					jaxFinSitModel.getFinanzielleSituationContainerGS2(),
 					new FinanzielleSituationContainer()));
+			setFinSitAbfrageStatus(gesuch.getGesuchsteller2(), jaxFinSitModel.getFinanzielleSituationContainerGS2());
 		}
 
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTO =
@@ -372,6 +374,16 @@ public class FinanzielleSituationResource {
 		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden
 		context.setRollbackOnly();
 		return Response.ok(finanzielleSituationResultateDTO).build();
+	}
+
+	private void setFinSitAbfrageStatus(@Nonnull GesuchstellerContainer gesuchstellerContainer, @Nonnull JaxFinanzielleSituationContainer finanzielleSituationContainer) {
+		if(finanzielleSituationContainer.getId() != null) {
+		   Optional<FinanzielleSituationContainer> finSitCont = finanzielleSituationService.findFinanzielleSituation(finanzielleSituationContainer.getId());
+		   if(finSitCont.isPresent()) {
+			   assert gesuchstellerContainer.getFinanzielleSituationContainer() != null;
+			   gesuchstellerContainer.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(finSitCont.get().getFinanzielleSituationJA().getSteuerdatenAbfrageStatus());
+		   }
+		}
 	}
 
 	@ApiOperation(value = "Sucht die FinanzielleSituation mit der uebergebenen Id in der Datenbank",
@@ -646,15 +658,17 @@ public class FinanzielleSituationResource {
 	}
 
 	private void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
-		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
-		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
-		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
-		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
+		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
+		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
+		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
+		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
 		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
 
-		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
-		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
-		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null) {
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
 		setBerechneteFelder(finSit, steuerdatenResponse, BIG_DECIMAL_TWO);
@@ -666,16 +680,17 @@ public class FinanzielleSituationResource {
 		BigDecimal anzahlGesuchsteller) {
 
 		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
-		finSit.setNettolohn(getValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
-		finSit.setFamilienzulage(getValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
-		finSit.setErsatzeinkommen(getValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
-		finSit.setErhalteneAlimente(getValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
+		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
+		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
+		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
+		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
 		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
 
-		// Die Geschaeftsgewinn Feldern muessen unbedingt null bleiben wenn null wegen die Berechnung
-		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
-		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
-		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null) {
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		}
 
 		setVeranlagungsstand(finSit, steuerdatenResponse);
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
@@ -695,39 +710,35 @@ public class FinanzielleSituationResource {
 		// Berechnete Feldern - diese können null bleiben als Sie sind editierbar im Formular
 		BigDecimal bruttertraegeVermogenTotal =
 			GANZZAHL.addNullSafe(
-				getValueOrZero(steuerdatenResponse.getBruttoertraegeAusLiegenschaften()),
+				getPositvValueOrZero(steuerdatenResponse.getBruttoertraegeAusLiegenschaften()),
 				steuerdatenResponse.getBruttoertraegeAusVermoegenOhneLiegenschaftenUndOhneEgme());
 		BigDecimal gewinnungskostenTotal =
 			GANZZAHL.addNullSafe(
-				getValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
+				getPositvValueOrZero(steuerdatenResponse.getGewinnungskostenBeweglichesVermoegen()),
 				steuerdatenResponse.getLiegenschaftsAbzuege());
 
-		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(bruttertraegeVermogenTotal,
-			anzahlGesuchsteller));
-		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(steuerdatenResponse.getSchuldzinsen(),
-			anzahlGesuchsteller));
-		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller));
+		finSit.setBruttoertraegeVermoegen(divideByAnzahlGesuchsteller(
+			bruttertraegeVermogenTotal,
+			anzahlGesuchsteller, false));
+		finSit.setAbzugSchuldzinsen(divideByAnzahlGesuchsteller(
+			steuerdatenResponse.getSchuldzinsen(),
+			anzahlGesuchsteller, false));
+		finSit.setGewinnungskosten(divideByAnzahlGesuchsteller(gewinnungskostenTotal, anzahlGesuchsteller, false));
 		finSit.setGeleisteteAlimente(divideByAnzahlGesuchsteller(
 			steuerdatenResponse.getGeleisteteUnterhaltsbeitraege(),
-			anzahlGesuchsteller));
+			anzahlGesuchsteller, false));
 		finSit.setNettoVermoegen(divideByAnzahlGesuchsteller(
-			getPositvValueOrZero(steuerdatenResponse.getNettovermoegen()),
-			anzahlGesuchsteller));
+			steuerdatenResponse.getNettovermoegen(),
+			anzahlGesuchsteller, true));
 	}
 
 	private BigDecimal divideByAnzahlGesuchsteller(
 		@Nullable BigDecimal value,
-		@NotNull BigDecimal anzahlGesuchsteller) {
+		@NotNull BigDecimal anzahlGesuchsteller,
+		@NotNull boolean allowNegative) {
 		assert anzahlGesuchsteller.compareTo(BigDecimal.ZERO) != 0;
-		return GANZZAHL.divide(getValueOrZero(value), anzahlGesuchsteller);
-	}
+		return GANZZAHL.divide(allowNegative ? getValueOrZero(value) : getPositvValueOrZero(value), anzahlGesuchsteller);
 
-	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
-		if (value == null) {
-			return BigDecimal.ZERO;
-		}
-
-		return value;
 	}
 
 	private BigDecimal getPositvValueOrZero(@Nullable BigDecimal value) {
@@ -735,6 +746,13 @@ public class FinanzielleSituationResource {
 			return BigDecimal.ZERO;
 		}
 
+		return value;
+	}
+
+	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
 		return value;
 	}
 
@@ -786,7 +804,8 @@ public class FinanzielleSituationResource {
 			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
 			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
-			finSitGS2.getFinanzielleSituationJA().setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
+			finSitGS2.getFinanzielleSituationJA()
+				.setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(finSitGS2);
 		}
 
@@ -885,7 +904,8 @@ public class FinanzielleSituationResource {
 		return Response.ok().build();
 	}
 
-	private GesuchstellerContainer findGesuchstellerById(@Nonnull String gesuchstellerId,
+	private GesuchstellerContainer findGesuchstellerById(
+		@Nonnull String gesuchstellerId,
 		@Nonnull String methodeName) {
 		return gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
 			-> new EbeguEntityNotFoundException(

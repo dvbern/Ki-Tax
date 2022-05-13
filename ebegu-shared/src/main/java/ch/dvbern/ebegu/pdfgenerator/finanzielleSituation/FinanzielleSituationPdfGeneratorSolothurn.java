@@ -22,13 +22,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -37,9 +38,9 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -65,7 +66,13 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	@Nullable
 	private FinanzielleSituationContainer basisJahrGS2;
 	@Nullable
-	private FinanzielleSituationResultateDTO finanzDatenDTO;
+	protected Einkommensverschlechterung ekv1GS1;
+	@Nullable
+	protected Einkommensverschlechterung ekv1GS2;
+	@Nullable
+	protected Einkommensverschlechterung ekv2GS1;
+	@Nullable
+	protected Einkommensverschlechterung ekv2GS2;
 
 	private final List<String> footers = new ArrayList<>();
 
@@ -101,7 +108,31 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		}
 
 		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGS);
+		initialzeEkv();
+	}
 
+	@Override
+	protected void initialzeEkv() {
+		super.initialzeEkv();
+
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		EinkommensverschlechterungContainer ekvContainerGS1 =
+			gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
+		if (ekvContainerGS1 != null) {
+			ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+			ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		}
+
+		if(hasSecondGesuchsteller) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			EinkommensverschlechterungContainer ekvContainerGS2 =
+				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer();
+
+			if(ekvContainerGS2 != null) {
+				ekv1GS2 = ekvContainerGS2.getEkvJABasisJahrPlus1();
+				ekv2GS2 = ekvContainerGS2.getEkvJABasisJahrPlus2();
+			}
+		}
 	}
 
 	protected void createPageBasisJahr(
@@ -197,17 +228,17 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 				false);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(EIKOMMEN_TITLE, mandant), gesuchstellerName);
+			translate(EIKOMMEN_TITLE), gesuchstellerName);
 
 		FinanzielleSituationRow nettolohn = createRow(
-			translate(NETTOLOHN, mandant),
+			translate(NETTOLOHN),
 			FinanzielleSituation::getNettolohn,
 			finSit,
 			finSitUrsprunglich
 		);
 
 		FinanzielleSituationRow unterhaltsbeitraege = createRow(
-			translate(ERH_UNTERHALTSBEITRAEGE, mandant),
+			translate(ERH_UNTERHALTSBEITRAEGE),
 			FinanzielleSituation::getUnterhaltsBeitraege,
 			finSit,
 			finSitUrsprunglich
@@ -231,10 +262,10 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 				false);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(ABZUEGE, mandant), "");
+			translate(ABZUEGE), "");
 
 		FinanzielleSituationRow abzuegeKinder = createRow(
-			translate(KINDER_IN_AUSBILDUNG, mandant),
+			translate(KINDER_IN_AUSBILDUNG),
 			FinanzielleSituation::getAbzuegeKinderAusbildung,
 			finSit,
 			finSitUrsprunglich
@@ -259,10 +290,10 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 				true);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(VERMOEGEN, mandant), "");
+			translate(VERMOEGEN), "");
 
 		FinanzielleSituationRow nettovermoegen = createRow(
-			translate(STEUERBARES_VERMOEGEN, mandant),
+			translate(STEUERBARES_VERMOEGEN),
 			FinanzielleSituation::getSteuerbaresVermoegen,
 			finSit,
 			finSitUrsprunglich
@@ -271,7 +302,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		addFooter(nettovermoegen, FOOTER_STEUERBARES_VERMOEGEN);
 
 		FinanzielleSituationRow massgEinkommen = new FinanzielleSituationRow(
-			translate(MASSG_EINK, mandant),
+			translate(MASSG_EINK),
 			massgebendesEinkommen
 		);
 		vermoegenTable.addRow(title);
@@ -296,10 +327,10 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 				false);
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
-			translate(EIKOMMEN_TITLE, mandant), gesuchstellerName);
+			translate(EIKOMMEN_TITLE), gesuchstellerName);
 
 		FinanzielleSituationRow bruttolohn = createRow(
-			translate(BRUTTOLOHN, mandant),
+			translate(BRUTTOLOHN),
 			FinanzielleSituation::getBruttoLohn,
 			finanzielleSituationJA,
 			finanzielleSituationGS
@@ -321,22 +352,6 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		row.setSupertext(" " + supertext);
 	}
 
-
-	protected final FinanzielleSituationRow createRow(
-		String message,
-		Function<FinanzielleSituation, BigDecimal> getter,
-		@Nullable FinanzielleSituation gs1,
-		@Nullable FinanzielleSituation gs1Urspruenglich
-	) {
-		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
-		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
-		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
-		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
-		}
-		return row;
-	}
-
 	private void addSpacing(@Nonnull Document document) {
 		Paragraph p = new Paragraph();
 		p.setSpacingAfter(15);
@@ -345,11 +360,57 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 
 	@Override
 	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		// TODO: implement
+		Objects.requireNonNull(ekvBasisJahrPlus1);
+		Objects.requireNonNull(ekv1GS1);
+		createPageEkv(ekvBasisJahrPlus1, ekv1GS1, ekv1GS2, gesuch.getGesuchsperiode().getBasisJahrPlus1(), document, true);
 	}
 
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-		// TODO: implement
+		Objects.requireNonNull(ekvBasisJahrPlus2);
+		Objects.requireNonNull(ekv2GS1);
+		createPageEkv(ekvBasisJahrPlus2, ekv2GS1, ekv2GS2, gesuch.getGesuchsperiode().getBasisJahrPlus2(), document, isEkv2PrintOnNewPage());
+	}
+
+	private boolean isEkv2PrintOnNewPage() {
+		//EKV2 only needs to be printed on new page if there is no ekv1
+		return ekvBasisJahrPlus1 == null;
+	}
+
+	private void createPageEkv(
+		FinanzielleSituationResultateDTO ekvBasisJahr,
+		Einkommensverschlechterung ekvGS1,
+		@Nullable Einkommensverschlechterung ekvGS2,
+		int basisJahr,
+		Document document,
+		boolean isPrintOnNewPage) {
+
+		if(isPrintOnNewPage) {
+			document.newPage();
+			document.add(createTitleEkv(null));
+			document.add(createIntroEkv());
+		} else {
+			addSpacing(document);
+		}
+
+		document.add(createTableEkv(ekvBasisJahr, ekvGS1, ekvGS2, basisJahr));
+	}
+
+	private Element createTableEkv(
+		FinanzielleSituationResultateDTO ekvBasisJahr,
+		Einkommensverschlechterung ekvGS1,
+		@Nullable Einkommensverschlechterung ekvGS2,
+		int basisJahr) {
+		FinanzielleSituationRow title = createTableTitleForEkv(basisJahr);
+		FinanzielleSituationTable table = createFinSitTable(hasSecondGesuchsteller);
+		table.addRow(title);
+
+		table.addRow(createRow(BRUTTOLOHN, ekvBasisJahr.getBruttolohnJahrGS1(), hasSecondGesuchsteller, ekvBasisJahr.getBruttolohnJahrGS2()));
+
+		BigDecimal nettovermoegenGS2 = ekvGS2 != null ? ekvGS2.getNettoVermoegen() : null;
+		table.addRow(createRow(NETTOVERMOEGEN, ekvGS1.getNettoVermoegen(), hasSecondGesuchsteller, nettovermoegenGS2));
+
+		table.addRow(createRow(MASSG_EINK, ekvBasisJahr.getMassgebendesEinkVorAbzFamGrGS1(), hasSecondGesuchsteller, ekvBasisJahr.getMassgebendesEinkVorAbzFamGrGS2()));
+		return table.createTable();
 	}
 }

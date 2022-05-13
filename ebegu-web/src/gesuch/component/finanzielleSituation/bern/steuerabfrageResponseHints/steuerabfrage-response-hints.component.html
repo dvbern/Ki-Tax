@@ -47,7 +47,7 @@
 <div *ngIf="showZugriffKeineZpvNummer()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV' | translate:{email: getEmailLoggedIn()}"></p>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV' | translate:{email: getEmailBesitzende()}"></p>
     <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 

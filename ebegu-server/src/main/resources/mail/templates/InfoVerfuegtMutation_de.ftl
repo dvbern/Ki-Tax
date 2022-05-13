@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Die Mutation für den Antrag von ${gesuchsteller.fullName}<#else>Ihre Mutation</#if> wurde bearbeitet</@base64Header>
@@ -28,7 +29,7 @@ ${templateConfiguration.mailCss}
 	<p>
 		Am ${gesuch.getEingangsdatumFormated()} haben Sie via kiBon eine Mutation eingereicht.
 		Wir haben die Mutation <#if isSozialdienst>für den Antrag von ${gesuchsteller.fullName}</#if> bearbeitet und Sie können das Ergebnis
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
         einsehen.
 	</p>
 	<p>

@@ -218,4 +218,46 @@ public class FinanzielleSituationResultateDTO {
 	public void setVermoegenXPercentAnrechenbarGS2(@Nullable BigDecimal vermoegenXPercentAnrechenbarGS2) {
 		this.vermoegenXPercentAnrechenbarGS2 = vermoegenXPercentAnrechenbarGS2;
 	}
+
+	@Nullable
+	public BigDecimal getGeschaeftsgewinnDuchnitt(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getGeschaeftsgewinnDurchschnittGesuchsteller1() :
+			getGeschaeftsgewinnDurchschnittGesuchsteller2();
+	}
+
+	@Nullable
+	public BigDecimal getMassgebendesEinkVorAbzFamGr(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getMassgebendesEinkVorAbzFamGrGS1() :
+			getMassgebendesEinkVorAbzFamGrGS2();
+	}
+
+	@Nullable
+	public BigDecimal getBruttolohnJahr(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getBruttolohnJahrGS1() :
+			getBruttolohnJahrGS2();
+	}
+
+	@Nullable
+	public BigDecimal getEinkommen(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getEinkommenGS1() :
+			getEinkommenGS2();
+	}
+
+	@Nullable
+	public BigDecimal getAbzuege(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getAbzuegeGS1() :
+			getAbzuegeGS2();
+	}
+
+	@Nullable
+	public BigDecimal getVermoegenXPercentAnrechenbar(int gesuchstellerNumber) {
+		return gesuchstellerNumber == 1 ?
+			getVermoegenXPercentAnrechenbarGS1() :
+			getVermoegenXPercentAnrechenbarGS2();
+	}
 }

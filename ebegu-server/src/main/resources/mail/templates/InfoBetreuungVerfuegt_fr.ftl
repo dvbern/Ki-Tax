@@ -7,6 +7,7 @@
 <#-- @ftlvariable name="birthday" type="java.lang.String" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${institution.name}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Décision de prise en charge rendue</@base64Header>
@@ -56,8 +57,7 @@ ${templateConfiguration.mailCss}
 	</table>
 	<br/>
 	<p>
-		Pour plus de détails, cliquez <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration
-	.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
+		Pour plus de détails, cliquez <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>

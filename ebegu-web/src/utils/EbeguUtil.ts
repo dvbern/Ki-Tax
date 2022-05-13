@@ -21,13 +21,13 @@ import {Displayable} from '../app/shared/interfaces/displayable';
 import {TSBetreuungsnummerParts} from '../models/dto/TSBetreuungsnummerParts';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSAbstractEntity} from '../models/TSAbstractEntity';
+import {TSAbstractGemeindeStammdaten} from '../models/TSAbstractGemeindeStammdaten';
 import {TSAdresse} from '../models/TSAdresse';
 import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 import {TSBetreuung} from '../models/TSBetreuung';
 import {TSDossier} from '../models/TSDossier';
 import {TSFall} from '../models/TSFall';
 import {TSGemeinde} from '../models/TSGemeinde';
-import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -310,7 +310,7 @@ export class EbeguUtil {
     }
 
     public static getAmtsspracheAsString(
-        gemeindeStammdaten: TSGemeindeStammdaten,
+        gemeindeStammdaten: TSAbstractGemeindeStammdaten,
         translate: ITranslateService,
     ): string {
 

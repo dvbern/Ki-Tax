@@ -82,6 +82,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
@@ -100,6 +101,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
@@ -165,9 +167,11 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
@@ -610,6 +614,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode);
 		saveEinstellung(FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM, "100", gesuchsperiode);
 		saveEinstellung(FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "VORSCHULALTER", gesuchsperiode);
+		saveEinstellung(SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, "VORSCHULALTER", gesuchsperiode);
 		saveEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode);
 		saveEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		saveEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
@@ -634,6 +639,9 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(DIPLOMATENSTATUS_DEAKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(ZEMIS_DISABLED, "false", gesuchsperiode);
 		saveEinstellung(SPRACHE_AMTSPRACHE_DISABLED, "false", gesuchsperiode);
+		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode);
+		saveEinstellung(UNBEZAHLTER_URLAUB_AKTIV, "true", gesuchsperiode);
+		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

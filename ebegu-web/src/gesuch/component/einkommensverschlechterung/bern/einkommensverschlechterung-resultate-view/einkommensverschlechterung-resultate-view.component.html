@@ -61,8 +61,7 @@
                                 [basisjahr]="model.getBasisjahr()"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS1_GS()?.bruttovermoegen"
-                                [korrektur]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
-                            >
+                                [korrektur]="getEinkommensverschlechterungGS1_JA().bruttovermoegen">
                             </dv-input-label-field>
                         </dv-input-container>
                         <div>
@@ -90,7 +89,6 @@
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.bruttovermoegen"
                                 [korrektur]="getEinkommensverschlechterungGS2_JA().bruttovermoegen">
-                                >
                             </dv-input-label-field>
                         </div>
                     </div>
@@ -137,8 +135,7 @@
                                 [basisjahr]="model.getBasisjahr()"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.schulden"
-                                [korrektur]="getEinkommensverschlechterungGS2_JA().schulden"
-                            >
+                                [korrektur]="getEinkommensverschlechterungGS2_JA().schulden">
                             </dv-input-label-field>
                         </div>
                     </div>
@@ -151,7 +148,8 @@
                             [model]="getResultate()?.nettovermoegenFuenfProzent"
                             [labelMessageKey]="'FINANZIELLE_SITUATION_NETTOVERMOEGEN'"
                             [labelMessageKeyArgs]=""
-                            [inputDisabled]="true">
+                            [inputDisabled]="true"
+                            [allowNegative]="true">
                         </dv-input-label-field>
                     </div>
                 </div>

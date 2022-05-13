@@ -33,39 +33,14 @@ public class FinanzielleSituationServiceBeanUnitTest {
 	@Test
 	public void testUpdateFinSitFromAufteilung() {
 
-		var dto = new JaxFinanzielleSituationAufteilungDTO();
-		dto.setBruttoertraegeVermoegenGS1(BigDecimal.valueOf(1000));
-		dto.setBruttoertraegeVermoegenGS2(BigDecimal.valueOf(2000));
-
-		dto.setGeleisteteAlimenteGS1(BigDecimal.valueOf(500));
-		dto.setGeleisteteAlimenteGS2(BigDecimal.valueOf(700));
-
-		dto.setAbzugSchuldzinsenGS1(BigDecimal.valueOf(1));
-		dto.setAbzugSchuldzinsenGS2(BigDecimal.valueOf(1));
-
-		dto.setGewinnungskostenGS1(BigDecimal.valueOf(1));
-		dto.setGewinnungskostenGS2(BigDecimal.valueOf(1));
-
-		dto.setNettoertraegeErbengemeinschaftGS1(BigDecimal.valueOf(1));
-		dto.setNettoertraegeErbengemeinschaftGS2(BigDecimal.valueOf(1));
-
-		dto.setNettovermoegenGS1(BigDecimal.valueOf(1));
-		dto.setNettovermoegenGS2(BigDecimal.valueOf(1));
-
-		var finSitGS1 = new FinanzielleSituation();
-		var finSitGS2 = new FinanzielleSituation();
-
-		finSitGS1.setBruttoertraegeVermoegen(BigDecimal.valueOf(1500));
-		finSitGS2.setBruttoertraegeVermoegen(BigDecimal.valueOf(1500));
-
-		finSitGS1.setGeleisteteAlimente(BigDecimal.valueOf(600));
-		finSitGS2.setGeleisteteAlimente(BigDecimal.valueOf(600));
+		var dto = createAufteilungDTO();
+		var finSitGS1 = createFinSit();
+		var finSitGS2 = createFinSit();
 
 		finSitGS1.setAbzugSchuldzinsen(BigDecimal.valueOf(2));
 		finSitGS1.setGewinnungskosten(BigDecimal.valueOf(2));
 		finSitGS1.setNettoertraegeErbengemeinschaft(BigDecimal.valueOf(2));
 		finSitGS1.setNettoVermoegen(BigDecimal.valueOf(2));
-
 		finSitGS2.setAbzugSchuldzinsen(BigDecimal.ZERO);
 		finSitGS2.setGewinnungskosten(BigDecimal.ZERO);
 		finSitGS2.setNettoertraegeErbengemeinschaft(BigDecimal.ZERO);
@@ -103,5 +78,73 @@ public class FinanzielleSituationServiceBeanUnitTest {
 		finSitGS2.setBruttoertraegeVermoegen(BigDecimal.valueOf(1499));
 
 		finanzielleSituationService.setValuesFromAufteilungDTO(finSitGS1, finSitGS2, dto);
+	}
+
+	@Test
+	public void testAufteilungNegSum() {
+		var dto = createAufteilungDTO();
+		dto.setNettoertraegeErbengemeinschaftGS1(BigDecimal.valueOf(-1000));
+		dto.setNettoertraegeErbengemeinschaftGS2(BigDecimal.valueOf(-2000));
+
+		var finSitGS1 = createFinSit();
+		var finSitGS2 = createFinSit();
+
+		finSitGS1.setNettoertraegeErbengemeinschaft(BigDecimal.valueOf(-1500));
+		finSitGS2.setNettoertraegeErbengemeinschaft(BigDecimal.valueOf(-1500));
+
+		finanzielleSituationService.setValuesFromAufteilungDTO(finSitGS1, finSitGS2, dto);
+
+		Assert.assertEquals(BigDecimal.valueOf(-1000), finSitGS1.getNettoertraegeErbengemeinschaft());
+		Assert.assertEquals(BigDecimal.valueOf(-2000), finSitGS2.getNettoertraegeErbengemeinschaft());
+	}
+
+	@Test(expected = EbeguRuntimeException.class)
+	public void testAufteilungWrongNegSum() {
+		var dto = createAufteilungDTO();
+		dto.setNettoertraegeErbengemeinschaftGS1(BigDecimal.valueOf(-1000));
+		dto.setNettoertraegeErbengemeinschaftGS2(BigDecimal.valueOf(-2000));
+
+		var finSitGS1 = createFinSit();
+		var finSitGS2 = createFinSit();
+
+		finSitGS1.setBruttoertraegeVermoegen(BigDecimal.valueOf(-1500));
+		finSitGS2.setBruttoertraegeVermoegen(BigDecimal.valueOf(-1499));
+
+		finanzielleSituationService.setValuesFromAufteilungDTO(finSitGS1, finSitGS2, dto);
+	}
+
+	private JaxFinanzielleSituationAufteilungDTO createAufteilungDTO() {
+		JaxFinanzielleSituationAufteilungDTO dto = new JaxFinanzielleSituationAufteilungDTO();
+		dto.setBruttoertraegeVermoegenGS1(BigDecimal.valueOf(1000));
+		dto.setBruttoertraegeVermoegenGS2(BigDecimal.valueOf(2000));
+
+		dto.setGeleisteteAlimenteGS1(BigDecimal.valueOf(500));
+		dto.setGeleisteteAlimenteGS2(BigDecimal.valueOf(700));
+
+		dto.setAbzugSchuldzinsenGS1(BigDecimal.valueOf(1));
+		dto.setAbzugSchuldzinsenGS2(BigDecimal.valueOf(1));
+
+		dto.setGewinnungskostenGS1(BigDecimal.valueOf(1));
+		dto.setGewinnungskostenGS2(BigDecimal.valueOf(1));
+
+		dto.setNettoertraegeErbengemeinschaftGS1(BigDecimal.valueOf(1));
+		dto.setNettoertraegeErbengemeinschaftGS2(BigDecimal.valueOf(1));
+
+		dto.setNettovermoegenGS1(BigDecimal.valueOf(1));
+		dto.setNettovermoegenGS2(BigDecimal.valueOf(1));
+		return dto;
+	}
+
+	private FinanzielleSituation createFinSit() {
+		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
+		finanzielleSituation.setBruttoertraegeVermoegen(BigDecimal.valueOf(1500));
+
+		finanzielleSituation.setGeleisteteAlimente(BigDecimal.valueOf(600));
+
+		finanzielleSituation.setAbzugSchuldzinsen(BigDecimal.valueOf(1));
+		finanzielleSituation.setGewinnungskosten(BigDecimal.valueOf(1));
+		finanzielleSituation.setNettoertraegeErbengemeinschaft(BigDecimal.valueOf(1));
+		finanzielleSituation.setNettoVermoegen(BigDecimal.valueOf(1));
+		return finanzielleSituation;
 	}
 }

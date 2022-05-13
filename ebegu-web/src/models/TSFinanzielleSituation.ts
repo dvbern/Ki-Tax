@@ -27,9 +27,11 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
     private _veranlagt: boolean;
+    private _veranlagtVorjahr: boolean;
     private _abzuegeKinderAusbildung: number;
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
+    private _momentanSelbststaendig: boolean;
 
     public constructor() {
         super();
@@ -99,6 +101,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._veranlagt = value;
     }
 
+    public get veranlagtVorjahr(): boolean {
+        return this._veranlagtVorjahr;
+    }
+
+    public set veranlagtVorjahr(value: boolean) {
+        this._veranlagtVorjahr = value;
+    }
+
     public get quellenbesteuert(): boolean {
         return this._quellenbesteuert;
     }
@@ -128,6 +138,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set bruttoLohn(value: number) {
         this._bruttoLohn = value;
+    }
+
+    public get momentanSelbststaendig(): boolean {
+        return this._momentanSelbststaendig;
+    }
+
+    public set momentanSelbststaendig(value: boolean) {
+        this._momentanSelbststaendig = value;
     }
 
     public get automatischePruefungErlaubt(): boolean {

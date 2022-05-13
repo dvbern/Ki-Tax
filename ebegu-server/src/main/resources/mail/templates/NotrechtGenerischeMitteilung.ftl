@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="betreff" type="java.lang.String" -->
 <#-- @ftlvariable name="inhalt" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaenger}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> –
@@ -26,7 +27,7 @@ ${inhalt}
     </p>
     <p>
 		Den aktuellen Stand Ihrer Rückforderungsformulare finden Sie unter <a
-                href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/corona-finanzierung/list">https://kibon.ch/corona-finanzierung/list</a>
+                href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list">https://kibon.ch/corona-finanzierung/list</a>
     </p>
     <p>
         <#if configuration.isDevmode>

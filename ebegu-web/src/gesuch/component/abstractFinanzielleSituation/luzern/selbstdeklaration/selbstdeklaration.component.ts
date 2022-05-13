@@ -21,6 +21,7 @@ import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFi
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 
@@ -57,6 +58,9 @@ export class SelbstdeklarationComponent implements OnInit {
 
     @Input()
     public finanzModel: TSFinanzModel;
+
+    @Input()
+    public isKorrekturModusJungendamtOrFreigegeben: boolean;
 
     public resultate: TSFinanzielleSituationResultateDTO;
 
@@ -133,5 +137,10 @@ export class SelbstdeklarationComponent implements OnInit {
             return this.resultate.vermoegenXPercentAnrechenbarGS2;
         }
         return null;
+    }
+
+    public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
+        return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
+            && this.isKorrekturModusJungendamtOrFreigegeben;
     }
 }

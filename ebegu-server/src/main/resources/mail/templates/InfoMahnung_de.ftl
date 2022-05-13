@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Unvollständige Unterlagen</@base64Header>
@@ -29,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Am ${gesuch.getEingangsdatumFormated()} haben Sie einen Antrag <#if isSozialdienst>für ${gesuchsteller.fullName}</#if> via kiBon eingereicht.
 		Leider sind die eingereichten Unterlagen unvollständig. Die fehlenden Dokumente
 		müssen nachgereicht werden. Unser Schreiben kann
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		eingesehen werden.
 	</p>
 	<p>

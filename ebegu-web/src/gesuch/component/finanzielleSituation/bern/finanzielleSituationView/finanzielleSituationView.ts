@@ -64,7 +64,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         'EinstellungRS',
         'DvDialog',
         'AuthServiceRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
     ];
 
     public showSelbstaendig: boolean;
@@ -86,7 +86,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         einstellungRS: EinstellungRS,
         dvDialog: DvDialog,
         protected readonly authServiceRS: AuthServiceRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -156,10 +156,11 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
         // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
         }
-        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
+        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
+        // nicht
         if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
@@ -184,7 +185,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung;
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung
+            && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
@@ -263,7 +265,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // bei einem Papiergesuch ebenfalls
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht

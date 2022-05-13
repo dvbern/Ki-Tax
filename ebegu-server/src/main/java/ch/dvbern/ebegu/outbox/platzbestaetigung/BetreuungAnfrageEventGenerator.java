@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
@@ -60,6 +61,9 @@ public class BetreuungAnfrageEventGenerator {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	/**
 	 * This is a job starting every night, there must be no more need for this job after the first execution
@@ -100,7 +104,9 @@ public class BetreuungAnfrageEventGenerator {
 		List<Betreuung> betreuungs = persistence.getEntityManager().createQuery(query)
 			.getResultList();
 
-		betreuungs.forEach(betreuung -> {
+		betreuungs.stream()
+		.filter(betreuung -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(betreuung.extractGesuch().extractMandant()))
+		.forEach(betreuung -> {
 			event.fire(betreuungAnfrageEventConverter.of(betreuung));
 			betreuung.setEventPublished(true);
 			persistence.merge(betreuung);

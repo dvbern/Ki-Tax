@@ -51,6 +51,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean veranlagt;
 
 	@Nullable
+	private Boolean veranlagtVorjahr;
+
+	@Nullable
 	private Boolean steuerdatenZugriff;
 
 	@Nullable
@@ -73,6 +76,9 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
+
+	@Nullable
+	private Boolean momentanSelbststaendig;
 
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
@@ -154,6 +160,15 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	}
 
 	@Nullable
+	public Boolean getVeranlagtVorjahr() {
+		return veranlagtVorjahr;
+	}
+
+	public void setVeranlagtVorjahr(@Nullable Boolean veranlagtVorjahr) {
+		this.veranlagtVorjahr = veranlagtVorjahr;
+	}
+
+	@Nullable
 	public BigDecimal getUnterhaltsBeitraege() {
 		return unterhaltsBeitraege;
 	}
@@ -196,5 +211,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setAutomatischePruefungErlaubt(@Nullable Boolean automatischePruefungErlaubt) {
 		this.automatischePruefungErlaubt = automatischePruefungErlaubt;
+	}
+
+	@Nullable
+	public Boolean getMomentanSelbststaendig() {
+		return momentanSelbststaendig;
+	}
+
+	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
+		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 }

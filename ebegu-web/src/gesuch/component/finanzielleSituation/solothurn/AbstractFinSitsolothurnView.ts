@@ -35,7 +35,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public readonly: boolean = false;
     public finanzielleSituationResultate?: TSFinanzielleSituationResultateDTO;
 
-    public constructor(
+    protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected readonly finSitSoService: FinanzielleSituationSolothurnService,
@@ -200,6 +200,9 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     private isStartOk(): boolean {
         const finanzielleSituationJA = this.getModel().finanzielleSituationJA;
+        if (this.model.sozialhilfeBezueger) {
+            return true;
+        }
         const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten ?
             EbeguUtil.areAllNotNullOrUndefined(
                 finanzielleSituationJA.nettolohn,
@@ -265,4 +268,8 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
+
+    public isSelbststaendigErwerbendAnswered(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
+    }
 }

@@ -310,6 +310,7 @@ export class TestDataUtil {
         TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
         mandant.angebotTS = false;
         mandant.angebotFI = false;
+        mandant.mandantIdentifier = 'BERN';
         return mandant;
     }
 
