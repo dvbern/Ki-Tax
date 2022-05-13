@@ -593,6 +593,7 @@
     "VERTRAG": "Ich habe einen Vertrag mit der Institution",
     "KEIN_VERTRAG": "Die Institution ist noch unbekannt",
     "ERWEITERTE_BEDUERFNISSE": "Hat das Kind besondere Bedürfnisse und einen darin begründeten ausserordentlichen Betreuungsaufwand?",
+    "ERWEITERTE_BEDUERFNISSE_HINT": "",
     "KEINE_KESB_PLATZIERUNG": "Erfolgt die Betreuung aufgrund einer Platzierung durch die Kindes- und Erwachsenenschutzbehörde (KESB)?",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Bei einer Platzierung durch die Kindes- und Erwachsenenschutzbehörde (KESB) wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.",
     "BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Möchten Sie die Betreuung trotzdem speichern?",

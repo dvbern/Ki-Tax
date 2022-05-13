@@ -15,12 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
 import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
 
 @Component({
@@ -29,14 +30,26 @@ import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourSer
     styleUrls: ['./welcome-main.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeMainComponent {
+export class WelcomeMainComponent implements OnInit {
+
+    public logoUrl: string;
 
     public constructor(
         private readonly authServiceRs: AuthServiceRS,
         private readonly $state: StateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly cd: ChangeDetectorRef
     ) {
 
+    }
+
+    public ngOnInit(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(res => {
+                this.logoUrl = `url("assets/images/${res.logoFileName}")`;
+                this.cd.markForCheck();
+            });
     }
 
     public navigateToStartPage(): void {
