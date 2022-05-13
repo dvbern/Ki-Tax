@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/1
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/1
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall01_WaeltiDagmar extends AbstractTestfall {
 
 	static final int VERMOEGEN = 12147;

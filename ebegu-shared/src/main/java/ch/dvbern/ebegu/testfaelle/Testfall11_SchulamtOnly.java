@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/11
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/11
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Schmid";
