@@ -81,6 +81,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -2044,7 +2045,21 @@ public final class TestDataUtil {
 		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
 		stammdaten.setBic("BIC123");
 		stammdaten.setKontoinhaber("Inhaber");
+		stammdaten.setGemeindeStammdatenKorrespondenz(createGemeindeStammdatenKorrespondenz());
 		return stammdaten;
+	}
+
+	public static GemeindeStammdatenKorrespondenz createGemeindeStammdatenKorrespondenz() {
+		GemeindeStammdatenKorrespondenz config = new GemeindeStammdatenKorrespondenz();
+		config.setSenderAddressSpacingLeft(20);
+		config.setSenderAddressSpacingTop(47);
+		config.setReceiverAddressSpacingLeft(123);
+		config.setReceiverAddressSpacingTop(47);
+		config.setLogoContent(new byte[0]);
+		config.setLogoWidth(null);
+		config.setLogoSpacingLeft(20);
+		config.setLogoSpacingTop(15);
+		return config;
 	}
 
 	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde, @Nonnull Persistence persistence) {
