@@ -254,11 +254,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             EbeguUtil.selectFirstInvalid();
         }
 
-        if (this.isAusweisNachweisRequired() && this.dokumentGrund.dokumente.length === 0) {
+        if (this.isAusweisNachweisRequired() && (EbeguUtil.isNullOrUndefined(this.dokumentGrund)
+            || this.dokumentGrund?.dokumente.length === 0)) {
             this.dvFileUploadError = {required: true};
         }
 
-        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumentGrund.dokumente.length > 0);
+        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumentGrund?.dokumente.length > 0);
     }
 
     private isAusweisNachweisRequired(): boolean {
