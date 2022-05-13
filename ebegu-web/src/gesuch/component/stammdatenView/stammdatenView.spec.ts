@@ -28,6 +28,7 @@ import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {IStammdatenStateParams} from '../../gesuch.route';
+import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {StammdatenViewController} from './stammdatenView';
@@ -46,6 +47,7 @@ describe('stammdatenView', () => {
     let applicationPropertyRS: ApplicationPropertyRS;
     let uploadRS: UploadRS;
     let downloadRS: DownloadRS;
+    let dokumentRS: DokumenteRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -66,6 +68,7 @@ describe('stammdatenView', () => {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         uploadRS = $injector.get('UploadRS');
         downloadRS = $injector.get('DownloadRS');
+        dokumentRS = $injector.get('DokumenteRS');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -83,7 +86,8 @@ describe('stammdatenView', () => {
             einstellungRS,
             uploadRS,
             downloadRS,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            dokumentRS);
     })));
 
     describe('disableWohnadresseFor2GS', () => {
