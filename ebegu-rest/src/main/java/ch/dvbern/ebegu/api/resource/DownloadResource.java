@@ -55,7 +55,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
@@ -73,7 +72,6 @@ import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.ExportService;
 import ch.dvbern.ebegu.services.GeneratedDokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.GesuchstellerAusweisDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungDokumentService;
 import ch.dvbern.ebegu.services.RueckforderungFormularService;
 import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
@@ -172,9 +170,6 @@ public class DownloadResource {
 
 	@Inject
 	private SozialdienstFallDokumentService sozialdienstFallDokumentService;
-
-	@Inject
-	private GesuchstellerAusweisDokumentService ausweisDokumentService;
 
 	@SuppressWarnings("ConstantConditions")
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
@@ -796,28 +791,6 @@ public class DownloadResource {
 
 		final FileMetadata dokument = sozialdienstFallDokumentService.findDokument(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenSozialdienstFallDokument",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
-
-		return getFileDownloadResponse(uriInfo, ip, dokument);
-	}
-
-	@ApiOperation("Erstellt ein Token f&uuml;r den Download eines Dokumentes.")
-	@Nonnull
-	@GET
-	@Path("sozialdienstFallDokument/{dokumentId}")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getDokumentAccessTokenGesuchstellerAusweisDokument(
-		@Nonnull @Valid @PathParam("dokumentId") JaxId jaxId,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
-
-		String ip = getIP(request);
-
-		requireNonNull(jaxId.getId());
-		String id = converter.toEntityId(jaxId);
-
-		final FileMetadata dokument = ausweisDokumentService.findDokument(id)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumentAccessTokenGesuchstellerAusweisDokument",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, id));
 
 		return getFileDownloadResponse(uriInfo, ip, dokument);

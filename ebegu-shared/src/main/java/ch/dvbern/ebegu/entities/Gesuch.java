@@ -264,10 +264,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private Boolean internePendenz = false;
 
-	@Nullable
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuch")
-	private Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente;
-
 
 	public Gesuch() {
 	}
@@ -336,16 +332,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 
 		return this.dokumentGrunds.add(dokumentGrund);
-	}
-
-	public boolean addGesuchstellerAusweisDokument(@NotNull final GesuchstellerAusweisDokument ausweisDokument) {
-		ausweisDokument.setGesuch(this);
-
-		if (this.getGesuchstellerAusweisDokumente() == null) {
-			this.setGesuchstellerAusweisDokumente(new HashSet<>());
-		}
-
-		return this.getGesuchstellerAusweisDokumente().add(ausweisDokument);
 	}
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
@@ -969,8 +955,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
-			copyGesuchstellerAusweisDokumente(target, copyType);
-
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
@@ -988,7 +972,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
-			copyGesuchstellerAusweisDokumente(target, copyType);
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
@@ -1068,19 +1051,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 						target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
 					}
 				}
-			);
-		}
-	}
-
-	private void copyGesuchstellerAusweisDokumente(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		if (this.getGesuchstellerAusweisDokumente() != null) {
-			target.setGesuchstellerAusweisDokumente(new HashSet<>());
-			this.getGesuchstellerAusweisDokumente().forEach(
-					ausweisDokument -> {
-						target.addGesuchstellerAusweisDokument(ausweisDokument.copyGesuchstellerAusweisDokument(
-								new GesuchstellerAusweisDokument(),
-								copyType));
-					}
 			);
 		}
 	}
@@ -1370,15 +1340,5 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
-	}
-
-	@Nullable
-	public Set<GesuchstellerAusweisDokument> getGesuchstellerAusweisDokumente() {
-		return gesuchstellerAusweisDokumente;
-	}
-
-	public void setGesuchstellerAusweisDokumente(
-			@Nullable Set<GesuchstellerAusweisDokument> gesuchstellerAusweisDokumente) {
-		this.gesuchstellerAusweisDokumente = gesuchstellerAusweisDokumente;
 	}
 }

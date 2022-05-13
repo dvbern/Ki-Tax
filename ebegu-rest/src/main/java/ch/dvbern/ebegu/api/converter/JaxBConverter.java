@@ -104,7 +104,6 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
-import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionExternalClient;
@@ -209,7 +208,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.GesuchstellerAusweisDokument;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
@@ -6535,18 +6533,5 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungMonitoring.setRefNummer(betreuungMonitoring.getRefNummer());
 		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
 		return jaxBetreuungMonitoring;
-	}
-
-	public JaxGesuchstellerAusweisDokument gesuchstellerAusweisDokumentToJax(GesuchstellerAusweisDokument documentFromDB) {
-		final JaxGesuchstellerAusweisDokument jaxGesuchstellerAusweisDokument = new JaxGesuchstellerAusweisDokument();
-		convertAbstractFieldsToJAX(documentFromDB, jaxGesuchstellerAusweisDokument);
-		convertFileToJax(documentFromDB, jaxGesuchstellerAusweisDokument);
-		jaxGesuchstellerAusweisDokument.setTimestampUpload(documentFromDB.getTimestampUpload());
-
-		return jaxGesuchstellerAusweisDokument;
-	}
-
-	public List<JaxGesuchstellerAusweisDokument> gesuchstellerAusweisDokumenteToJax(List<GesuchstellerAusweisDokument> ausweisDokumente) {
-		return ausweisDokumente.stream().map(this::gesuchstellerAusweisDokumentToJax).collect(Collectors.toList());
 	}
 }

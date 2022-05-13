@@ -355,7 +355,7 @@
                                     [tooltip-text]="'AUSWEIS_NACHWEIS_TOOLTIP' | translate"
                                     (delete)="vm.onDeleteFile($event)"
                                     (upload-file)="vm.onUpload($event)"
-                                    [files]="vm.dokumente"
+                                    [files]="vm.dokumentGrund.dokumente"
                                     [read-only]="vm.isGesuchReadonly()"
                                     [read-only-delete]="vm.isGesuchReadonly()"
                             >

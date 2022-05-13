@@ -19,7 +19,6 @@ import {TSRueckforderungDokumentTyp} from '../../../models/enums/TSRueckforderun
 import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSFerienbetreuungDokument} from '../../../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
-import {TSGesuchstellerAusweisDokument} from '../../../models/TSGesuchstellerAusweisDokument';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
@@ -114,28 +113,6 @@ export class UploadRS {
             },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseFerienbetreuungDokumente(response.data);
-        }, (response: any) => {
-            console.log(this.NOT_SUCCESS);
-            return this.q.reject(response);
-        }, (evt: any) => {
-            this.notifyCallbackByUpload(evt);
-        });
-    }
-
-    public uploadGesuchstellerAusweisDokumente(files: any, gesuchId: string):
-        IPromise<TSGesuchstellerAusweisDokument[]> {
-        const names = this.encodeFileNames(files);
-        return this.upload.upload({
-            url: `${this.serviceURL}/gesuchstellerausweis/${encodeURIComponent(gesuchId)}`,
-            method: 'POST',
-            headers: {
-                'x-filename': names.join(';'),
-            },
-            data: {
-                file: files,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseGesuchstellerAusweisDokumente(response.data);
         }, (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);

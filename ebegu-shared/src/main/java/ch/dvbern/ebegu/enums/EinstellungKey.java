@@ -285,7 +285,7 @@ public enum EinstellungKey {
 	FACHSTELLEN_TYP,
 
 	// LU: falls diese Einstellung aktiviert ist, wird bei den Gesuchstellenden ein Ausweisnachweis verlangt
-	// Siehe KIBON-3210
+	// Siehe KIBON-2310
 	AUSWEIS_NACHWEIS_REQUIRED;
 
 

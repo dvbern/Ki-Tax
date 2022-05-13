@@ -18,12 +18,15 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -34,9 +37,10 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
 import {TSAdresse} from '../../../models/TSAdresse';
 import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
+import {TSDokument} from '../../../models/TSDokument';
+import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
-import {TSGesuchstellerAusweisDokument} from '../../../models/TSGesuchstellerAusweisDokument';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -44,6 +48,7 @@ import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
+import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
@@ -83,12 +88,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'EinstellungRS',
         'UploadRS',
         'DownloadRS',
-        'ApplicationPropertyRS'
         'ApplicationPropertyRS',
+        'DokumenteRS',
     ];
 
     public filesTooBig: File[];
-    public dokumente: TSGesuchstellerAusweisDokument[] = [];
+    public dokumentGrund: TSDokumentGrund;
 
     public readonly CONSTANTS: any = CONSTANTS;
     public geschlechter: Array<string>;
@@ -122,6 +127,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly uploadRS: UploadRS,
         private readonly downloadRS: DownloadRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly dokumenteRS: DokumenteRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -141,9 +147,15 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
-        this.gesuchModelManager.getAllGesuchstellerAusweisDokumente(this.gesuchModelManager.getGesuch().id).then(
-            dokumente => this.dokumente = dokumente,
-        );
+        this.berechnungsManager
+            .getDokumente(this.gesuchModelManager.getGesuch())
+            .then((alleDokumente: TSDokumenteDTO) => {
+                alleDokumente.dokumentGruende
+                    .filter(tsDokument => tsDokument.dokumentGrundTyp === TSDokumentGrundTyp.FAMILIENSITUATION)
+                    .filter(tsDokument => tsDokument.dokumentTyp === TSDokumentTyp.AUSWEIS_ID)
+                    .map(tsDokument =>
+                        this.dokumentGrund = tsDokument);
+            });
     }
 
     private initViewmodel(): void {
@@ -242,11 +254,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             EbeguUtil.selectFirstInvalid();
         }
 
-        if (this.isAusweisNachweisRequired() && this.dokumente.length === 0) {
+        if (this.isAusweisNachweisRequired() && this.dokumentGrund.dokumente.length === 0) {
             this.dvFileUploadError = {required: true};
         }
 
-        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumente.length > 0);
+        return this.form.$valid && (!this.isAusweisNachweisRequired() || this.dokumentGrund.dokumente.length > 0);
     }
 
     private isAusweisNachweisRequired(): boolean {
@@ -439,16 +451,16 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (this.checkFilesLength(files as File[])) {
             return;
         }
-        this.uploadRS.uploadGesuchstellerAusweisDokumente(files, this.gesuchModelManager.getGesuch().id)
-            .then(dokumente => {
-                this.dokumente = this.dokumente.concat(dokumente);
+        if (EbeguUtil.isNullOrUndefined(this.dokumentGrund)) {
+            this.dokumentGrund = new TSDokumentGrund();
+            this.dokumentGrund.dokumentTyp = TSDokumentTyp.AUSWEIS_ID;
+            this.dokumentGrund.dokumentGrundTyp = TSDokumentGrundTyp.FAMILIENSITUATION;
+        }
+        this.uploadRS.uploadFile(files, this.dokumentGrund, this.gesuchModelManager.getGesuch().id)
+            .then(dokumentGrund => {
+                this.dokumentGrund = dokumentGrund;
                 this.dvFileUploadError = null;
-            })
-            .catch(err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(this.$translate.instant('ERROR_UNEXPECTED'));
             });
-
     }
 
     /**
@@ -464,22 +476,27 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return this.filesTooBig.length > 0;
     }
 
-    public onDeleteFile(dokument: TSSozialdienstFallDokument): void {
-        this.gesuchModelManager.removeGesuchstellerAusweisDokument(dokument.id)
-            .then(() => {
-                this.dokumente = this.dokumente.filter(d => d.id !== dokument.id);
-                if (this.dokumente.length === 0) {
-                    this.dvFileUploadError = { required: true };
-                }
-            }).catch(err => {
-                LOG.error(err);
-                this.errorService.addMesageAsError(err);
+    public onDeleteFile(dokument: TSDokument): void {
+        const index = EbeguUtil.getIndexOfElementwithID(dokument, this.dokumentGrund.dokumente);
+
+        if (index > -1) {
+            this.dokumentGrund.dokumente.splice(index, 1);
+        }
+
+        this.dokumenteRS.removeDokument(dokument).then(() => {
+            this.dokumentGrund.dokumente = this.dokumentGrund.dokumente.filter(d => d.id !== dokument.id);
+            if (this.dokumentGrund.dokumente.length === 0) {
+                this.dvFileUploadError = {required: true};
+            }
+        }).catch(err => {
+            LOG.error(err);
+            this.errorService.addMesageAsError(err);
         });
     }
 
     public downloadAusweisDokument(dokument: TSSozialdienstFallDokument, attachment: boolean): void {
         const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenGesuchstellerAusweisDokument(dokument.id)
+        this.downloadRS.getAccessTokenDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
             })

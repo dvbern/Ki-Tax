@@ -76,7 +76,6 @@ import {TSGemeindeStammdatenLite} from '../../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../../models/TSGesuchsteller';
-import {TSGesuchstellerAusweisDokument} from '../../models/TSGesuchstellerAusweisDokument';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {TSInstitutionStammdaten} from '../../models/TSInstitutionStammdaten';
 import {TSKindContainer} from '../../models/TSKindContainer';
@@ -1850,15 +1849,5 @@ export class GesuchModelManager {
     public isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
         return this.gemeindeKonfiguration
             && this.gemeindeKonfiguration.hasTagesschulenAnmeldung();
-    }
-
-    public getAllGesuchstellerAusweisDokumente(
-        gesuchI: string
-    ): IPromise<TSGesuchstellerAusweisDokument[]> {
-        return this.gesuchstellerRS.getAllGesuchstellerAusweisDokumente(gesuchI);
-    }
-
-    public removeGesuchstellerAusweisDokument(id: string): IPromise<unknown> {
-        return this.gesuchstellerRS.removeGesuchstellerAusweisDokument(id);
     }
 }
