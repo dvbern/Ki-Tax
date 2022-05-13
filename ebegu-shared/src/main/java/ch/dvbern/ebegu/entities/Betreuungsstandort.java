@@ -120,15 +120,13 @@ public class Betreuungsstandort extends AbstractMutableEntity implements Kontakt
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Betreuungsstandort)) {
 			return false;
 		}
 		final Betreuungsstandort otherBetreuungsstandort = (Betreuungsstandort) other;

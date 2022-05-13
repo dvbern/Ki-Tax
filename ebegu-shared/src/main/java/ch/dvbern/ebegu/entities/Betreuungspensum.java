@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -95,6 +94,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -104,9 +104,6 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Betreuungspensum)) {
 			return false;
 		}
 		final Betreuungspensum otherBetreuungspensum = (Betreuungspensum) other;

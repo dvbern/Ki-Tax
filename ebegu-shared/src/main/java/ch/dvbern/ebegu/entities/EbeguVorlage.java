@@ -100,6 +100,7 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -109,9 +110,6 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof EbeguVorlage)) {
 			return false;
 		}
 		final EbeguVorlage otherEbeguVorlage = (EbeguVorlage) other;

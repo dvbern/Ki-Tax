@@ -319,15 +319,13 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof KindContainer)) {
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;

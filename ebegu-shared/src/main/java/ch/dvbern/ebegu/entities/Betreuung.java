@@ -285,6 +285,7 @@ public class Betreuung extends AbstractPlatz {
 		return this.isSame(other, false, false);
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other, boolean inklAbwesenheiten, boolean inklStatus) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -294,9 +295,6 @@ public class Betreuung extends AbstractPlatz {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Betreuung)) {
 			return false;
 		}
 		final Betreuung otherBetreuung = (Betreuung) other;

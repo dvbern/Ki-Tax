@@ -150,8 +150,8 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		return target;
 	}
 
-	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -161,9 +161,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Einkommensverschlechterung)) {
 			return false;
 		}
 		final Einkommensverschlechterung otherEinkommensverschlechterung = (Einkommensverschlechterung) other;

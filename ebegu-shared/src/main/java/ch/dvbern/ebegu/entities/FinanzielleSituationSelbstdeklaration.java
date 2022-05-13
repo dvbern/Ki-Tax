@@ -361,6 +361,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -369,11 +370,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-
-		if (!(other instanceof FinanzielleSituationSelbstdeklaration)) {
-			return false;
-		}
-
 		final FinanzielleSituationSelbstdeklaration otherSelbstdeklaration = (FinanzielleSituationSelbstdeklaration) other;
 		return MathUtil.isSame(getEinkunftErwerb(), otherSelbstdeklaration.getEinkunftErwerb()) &&
 			MathUtil.isSame(getEinkunftVersicherung(), otherSelbstdeklaration.getEinkunftVersicherung()) &&

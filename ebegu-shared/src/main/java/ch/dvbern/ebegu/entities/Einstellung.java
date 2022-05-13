@@ -178,15 +178,13 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Einstellung)) {
 			return false;
 		}
 		final Einstellung otherEinstellung = (Einstellung) other;

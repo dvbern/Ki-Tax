@@ -107,14 +107,12 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof GemeindeStammdatenGesuchsperiodeFerieninsel)) {
 			return false;
 		}
 		// TODO: Ferieninsel. Validator schreiben

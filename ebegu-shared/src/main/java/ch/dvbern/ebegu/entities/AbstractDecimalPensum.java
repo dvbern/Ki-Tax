@@ -68,15 +68,13 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof AbstractDecimalPensum)) {
 			return false;
 		}
 		final AbstractDecimalPensum otherAbstDateRangedEntity = (AbstractDecimalPensum) other;

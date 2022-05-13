@@ -45,6 +45,7 @@ public class SozialhilfeZeitraum extends AbstractDateRangedEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -55,9 +56,6 @@ public class SozialhilfeZeitraum extends AbstractDateRangedEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof SozialhilfeZeitraum)) {
 			return false;
 		}
 		final SozialhilfeZeitraum otherSozialhilfeZeitraum = (SozialhilfeZeitraum) other;

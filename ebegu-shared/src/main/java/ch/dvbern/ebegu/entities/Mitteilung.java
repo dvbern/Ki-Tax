@@ -199,17 +199,14 @@ public class Mitteilung extends AbstractMutableEntity {
 		this.sentDatum = sentDatum;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({"OverlyComplexBooleanExpression", "OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Mitteilung)) {
 			return false;
 		}
 		final Mitteilung otherMitteilung = (Mitteilung) other;

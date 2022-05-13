@@ -122,6 +122,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -131,9 +132,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof AnmeldungTagesschule)) {
 			return false;
 		}
 		final AnmeldungTagesschule otherBetreuung = (AnmeldungTagesschule) other;

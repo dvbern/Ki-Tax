@@ -111,15 +111,13 @@ public class AntragStatusHistory extends AbstractMutableEntity implements Compar
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof AntragStatusHistory)) {
 			return false;
 		}
 		final AntragStatusHistory otherAntragStatusHistory = (AntragStatusHistory) other;

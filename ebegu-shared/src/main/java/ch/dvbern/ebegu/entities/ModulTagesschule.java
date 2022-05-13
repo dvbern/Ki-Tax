@@ -69,15 +69,13 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof ModulTagesschule)) {
 			return false;
 		}
 		final ModulTagesschule otherModulTagesschule = (ModulTagesschule) other;

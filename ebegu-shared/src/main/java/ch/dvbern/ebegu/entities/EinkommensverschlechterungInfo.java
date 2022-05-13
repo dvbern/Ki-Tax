@@ -130,17 +130,14 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 		return target;
 	}
 
-	@SuppressWarnings("OverlyComplexMethod")
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof EinkommensverschlechterungInfo)) {
 			return false;
 		}
 		final EinkommensverschlechterungInfo otherEKVInfo = (EinkommensverschlechterungInfo) other;

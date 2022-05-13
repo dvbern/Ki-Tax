@@ -78,16 +78,13 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	private boolean keineKesbPlatzierung;
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		//noinspection RedundantIfStatement
-		if (!(other instanceof BelegungTagesschule)) {
 			return false;
 		}
 		return true;

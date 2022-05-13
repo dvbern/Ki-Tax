@@ -122,6 +122,7 @@ public class TSCalculationResult extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
 			return true;

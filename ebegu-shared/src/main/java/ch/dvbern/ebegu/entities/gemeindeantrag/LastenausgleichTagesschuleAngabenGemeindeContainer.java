@@ -183,6 +183,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

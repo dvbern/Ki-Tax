@@ -92,6 +92,7 @@ public class SteuerdatenRequest extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -100,10 +101,6 @@ public class SteuerdatenRequest extends AbstractEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof SteuerdatenRequest)) {
-			return false;
-		}
-
 		SteuerdatenRequest otherRequest = (SteuerdatenRequest) other;
 		return this.geburtsdatumAntragsteller.equals(otherRequest.geburtsdatumAntragsteller) &&
 			StringUtils.equals(this.antragId, otherRequest.antragId) &&

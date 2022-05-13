@@ -108,15 +108,13 @@ public class RueckforderungMitteilung extends AbstractEntity implements Comparab
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof RueckforderungMitteilung)) {
 			return false;
 		}
 		final RueckforderungMitteilung otherRueckforderungMitteilung = (RueckforderungMitteilung) other;

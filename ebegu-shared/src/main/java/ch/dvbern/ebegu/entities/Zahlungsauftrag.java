@@ -34,7 +34,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -196,6 +195,7 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMand
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -205,9 +205,6 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMand
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Zahlungsauftrag)) {
 			return false;
 		}
 		final Zahlungsauftrag otherZahlungsauftrag = (Zahlungsauftrag) other;

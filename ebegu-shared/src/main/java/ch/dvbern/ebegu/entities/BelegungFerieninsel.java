@@ -94,16 +94,13 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 	private String notfallAngaben;
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		//noinspection RedundantIfStatement
-		if (!(other instanceof BelegungFerieninsel)) {
 			return false;
 		}
 		BelegungFerieninsel that = (BelegungFerieninsel) other;

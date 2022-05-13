@@ -128,15 +128,13 @@ public class Mahnung extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Mahnung)) {
 			return false;
 		}
 		final Mahnung otherMahnung = (Mahnung) other;

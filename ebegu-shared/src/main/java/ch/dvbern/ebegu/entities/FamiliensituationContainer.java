@@ -161,15 +161,13 @@ public class FamiliensituationContainer extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof FamiliensituationContainer)) {
 			return false;
 		}
 		final FamiliensituationContainer otherFamSitContainer = (FamiliensituationContainer) other;

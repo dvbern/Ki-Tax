@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.entities.sozialdienst;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -30,7 +29,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -44,7 +42,6 @@ import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
 @Audited
 @Entity
@@ -156,6 +153,7 @@ public class SozialdienstFall extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

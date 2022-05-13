@@ -95,6 +95,7 @@ public class Sozialdienst extends AbstractEntity implements Displayable, HasMand
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

@@ -121,6 +121,7 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -129,11 +130,6 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-
-		if (!(other instanceof SteuerdatenAnfrageLog)) {
-			return false;
-		}
-
 		final SteuerdatenAnfrageLog otherAnfrage = (SteuerdatenAnfrageLog) other;
 		return StringUtils.equals(this.faultReceived, otherAnfrage.faultReceived) &&
 			this.timestampSent.equals(otherAnfrage.timestampSent) &&

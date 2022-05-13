@@ -924,6 +924,7 @@ public class BGCalculationInput {
 			this.geschwisternBonusKind3== other.geschwisternBonusKind3;
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

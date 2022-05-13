@@ -66,6 +66,7 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -76,9 +77,6 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof PensumAusserordentlicherAnspruch)) {
 			return false;
 		}
 		final PensumAusserordentlicherAnspruch otherPensumFachstelle = (PensumAusserordentlicherAnspruch) other;

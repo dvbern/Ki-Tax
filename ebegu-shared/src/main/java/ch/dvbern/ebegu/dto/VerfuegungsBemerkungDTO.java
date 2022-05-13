@@ -48,6 +48,7 @@ public class VerfuegungsBemerkungDTO {
 	@Nullable
 	private DateRange gueltigkeit;
 
+	@SuppressWarnings("PMD.ArrayIsStoredDirectly")
 	public VerfuegungsBemerkungDTO(@Nonnull RuleValidity ruleValidity, @Nonnull MsgKey msgKey, @Nonnull Locale sprache, @Nullable Object... args) {
 		this.ruleValidity = ruleValidity;
 		this.msgKey = msgKey;

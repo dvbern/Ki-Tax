@@ -59,12 +59,13 @@ public class AbstractDateRangedEntity extends AbstractMutableEntity implements G
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
-		if (other == null || !getClass().equals(other.getClass())) {
+		if (other == null) {
 			return false;
 		}
 		if (!(other instanceof AbstractDateRangedEntity)) {

@@ -292,6 +292,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -301,9 +302,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof FinanzielleSituation)) {
 			return false;
 		}
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;

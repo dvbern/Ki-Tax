@@ -426,15 +426,13 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(@Nullable AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Familiensituation)) {
 			return false;
 		}
 		final Familiensituation otherFamiliensituation = (Familiensituation) other;

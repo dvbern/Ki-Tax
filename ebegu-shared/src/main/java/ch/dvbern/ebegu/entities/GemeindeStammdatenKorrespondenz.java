@@ -94,6 +94,7 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	private Integer logoSpacingTop;
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

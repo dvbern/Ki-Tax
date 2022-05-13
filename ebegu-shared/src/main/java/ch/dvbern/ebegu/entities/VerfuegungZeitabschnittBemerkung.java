@@ -67,8 +67,8 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 		this.setGueltigkeit(gueltig);
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod", "PMD.CompareObjectsWithEquals" })
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

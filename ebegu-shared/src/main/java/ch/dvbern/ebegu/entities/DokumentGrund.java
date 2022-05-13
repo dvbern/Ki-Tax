@@ -259,15 +259,13 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof DokumentGrund)) {
 			return false;
 		}
 		final DokumentGrund otherDokumentGrund = (DokumentGrund) other;

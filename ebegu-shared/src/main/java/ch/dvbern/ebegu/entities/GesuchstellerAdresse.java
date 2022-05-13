@@ -64,8 +64,8 @@ public class GesuchstellerAdresse extends Adresse {
 		this.nichtInGemeinde = nichtInGemeinde;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
+	@SuppressWarnings({"OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals"})
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -75,9 +75,6 @@ public class GesuchstellerAdresse extends Adresse {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof GesuchstellerAdresse)) {
 			return false;
 		}
 		final GesuchstellerAdresse otherAdr = (GesuchstellerAdresse) other;

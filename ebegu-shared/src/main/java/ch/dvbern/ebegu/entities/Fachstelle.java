@@ -84,15 +84,13 @@ public class Fachstelle extends AbstractDateRangedEntity implements HasMandant {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Fachstelle)) {
 			return false;
 		}
 		final Fachstelle otherGesuchsteller = (Fachstelle) other;

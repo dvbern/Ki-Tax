@@ -682,9 +682,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return sb;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
-		"OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
+		"OverlyComplexMethod", "PMD.CompareObjectsWithEquals" })
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -709,6 +709,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(verfuegungZeitabschnittBemerkungList, otherVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList);
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

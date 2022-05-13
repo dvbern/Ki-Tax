@@ -123,15 +123,13 @@ public class FinanzielleSituationContainer extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof FinanzielleSituationContainer)) {
 			return false;
 		}
 		final FinanzielleSituationContainer otherFinSitContainer = (FinanzielleSituationContainer) other;

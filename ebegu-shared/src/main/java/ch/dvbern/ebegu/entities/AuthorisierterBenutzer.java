@@ -199,17 +199,14 @@ public class AuthorisierterBenutzer extends AbstractMutableEntity {
 			.toString();
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({"OverlyComplexBooleanExpression", "OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof AuthorisierterBenutzer)) {
 			return false;
 		}
 		final AuthorisierterBenutzer otherAuthorisierterBenutzer = (AuthorisierterBenutzer) other;

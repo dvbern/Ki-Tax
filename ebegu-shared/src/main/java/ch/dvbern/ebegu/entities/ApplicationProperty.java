@@ -24,7 +24,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -32,7 +31,6 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import org.hibernate.envers.Audited;
-import org.jetbrains.annotations.Nullable;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -79,15 +77,13 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof ApplicationProperty)) {
 			return false;
 		}
 		final ApplicationProperty otherApplicationProperty = (ApplicationProperty) other;

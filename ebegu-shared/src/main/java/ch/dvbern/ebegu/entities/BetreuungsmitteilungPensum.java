@@ -80,6 +80,7 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -89,9 +90,6 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof BetreuungsmitteilungPensum)) {
 			return false;
 		}
 		final BetreuungsmitteilungPensum otherBetreuungsmitteilungPensum = (BetreuungsmitteilungPensum) other;

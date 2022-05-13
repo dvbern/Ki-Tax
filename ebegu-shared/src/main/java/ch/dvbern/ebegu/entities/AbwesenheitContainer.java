@@ -92,7 +92,7 @@ public class AbwesenheitContainer extends AbstractMutableEntity implements Compa
 	 * that the Abwesenheit "this" and "other" belong to the same Betreuung. To that porpouse we compare the
 	 * Betreuungen just by the BetreuungNummer.
 	 */
-	@SuppressWarnings("OverlyComplexMethod")
+	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -100,9 +100,6 @@ public class AbwesenheitContainer extends AbstractMutableEntity implements Compa
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof AbwesenheitContainer)) {
 			return false;
 		}
 		final AbwesenheitContainer otherAbwesenheitContainer = (AbwesenheitContainer) other;

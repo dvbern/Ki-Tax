@@ -174,7 +174,7 @@ public class Adresse extends AbstractDateRangedEntity {
 		this.organisation = organisation;
 	}
 
-	@SuppressWarnings("OverlyComplexMethod")
+	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -185,9 +185,6 @@ public class Adresse extends AbstractDateRangedEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Adresse)) {
 			return false;
 		}
 		final Adresse otherAdr = (Adresse) other;

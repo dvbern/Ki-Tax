@@ -60,15 +60,13 @@ public class InstitutionStammdatenTagesschule extends AbstractEntity implements 
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof InstitutionStammdatenTagesschule)) {
 			return false;
 		}
 		return true;

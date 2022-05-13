@@ -394,6 +394,7 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -403,9 +404,6 @@ public class Kind extends AbstractPersonEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Kind)) {
 			return false;
 		}
 		final Kind otherKind = (Kind) other;

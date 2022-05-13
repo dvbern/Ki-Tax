@@ -44,6 +44,7 @@ public class UnbezahlterUrlaub extends AbstractDateRangedEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -54,9 +55,6 @@ public class UnbezahlterUrlaub extends AbstractDateRangedEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof UnbezahlterUrlaub)) {
 			return false;
 		}
 		final UnbezahlterUrlaub otherUrlaub = (UnbezahlterUrlaub) other;

@@ -125,15 +125,13 @@ public class ModulTagesschuleGroup extends AbstractEntity implements Comparable<
 	private Set<ModulTagesschule> module = new TreeSet<>();
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof ModulTagesschuleGroup)) {
 			return false;
 		}
 		final ModulTagesschuleGroup otherModulTagesschule = (ModulTagesschuleGroup) other;

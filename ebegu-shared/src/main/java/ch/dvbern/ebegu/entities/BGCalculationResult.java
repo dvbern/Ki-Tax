@@ -281,15 +281,13 @@ public class BGCalculationResult extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(@Nullable AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof BGCalculationResult)) {
 			return false;
 		}
 		final BGCalculationResult otherResult = (BGCalculationResult) other;

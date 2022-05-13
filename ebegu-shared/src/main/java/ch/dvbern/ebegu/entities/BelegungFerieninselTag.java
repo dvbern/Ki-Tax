@@ -50,14 +50,12 @@ public class BelegungFerieninselTag extends AbstractMutableEntity implements Com
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof BelegungFerieninselTag)) {
 			return false;
 		}
 		BelegungFerieninselTag that = (BelegungFerieninselTag) other;

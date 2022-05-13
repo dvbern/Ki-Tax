@@ -107,8 +107,8 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -118,9 +118,6 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Erwerbspensum)) {
 			return false;
 		}
 		final Erwerbspensum otherErwerbspensum = (Erwerbspensum) other;

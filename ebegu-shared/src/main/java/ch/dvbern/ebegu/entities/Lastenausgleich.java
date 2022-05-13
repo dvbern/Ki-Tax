@@ -107,15 +107,13 @@ public class Lastenausgleich extends AbstractEntity implements HasMandant {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(@Nullable AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Lastenausgleich)) {
 			return false;
 		}
 		final Lastenausgleich otherLastenausgleich = (Lastenausgleich) other;

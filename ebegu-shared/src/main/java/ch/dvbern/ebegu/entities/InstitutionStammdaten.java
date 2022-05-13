@@ -248,6 +248,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -257,9 +258,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof InstitutionStammdaten)) {
 			return false;
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;

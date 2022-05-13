@@ -113,6 +113,7 @@ public class Dossier extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

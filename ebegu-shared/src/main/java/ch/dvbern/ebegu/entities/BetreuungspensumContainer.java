@@ -102,7 +102,7 @@ public class BetreuungspensumContainer extends AbstractMutableEntity
 		betreuungspensumJA.setGueltigkeit(gueltigkeit);
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -110,9 +110,6 @@ public class BetreuungspensumContainer extends AbstractMutableEntity
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof BetreuungspensumContainer)) {
 			return false;
 		}
 		final BetreuungspensumContainer otherBetreuungspensumContainer = (BetreuungspensumContainer) other;

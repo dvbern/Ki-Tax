@@ -52,6 +52,7 @@ public class VerfuegungsBemerkungDTOList {
 	@Nonnull
 	private final Set<VerfuegungsBemerkungDTO> bemerkungenList = new HashSet<>();
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(@Nullable VerfuegungsBemerkungDTOList other) {
 		//noinspection ObjectEquality
 		if (this == other) {
