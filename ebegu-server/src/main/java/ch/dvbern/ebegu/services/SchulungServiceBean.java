@@ -345,8 +345,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 		try {
 			final InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png");
+			Objects.requireNonNull(logo);
 			final byte[] gemeindeLogo = IOUtils.toByteArray(logo);
-			stammdaten.setLogoContent(gemeindeLogo);
+			stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
 		} catch (IOException e) {
 			LOG.info("Logo for Tutorial couldnot be added to Gemeinde");
 		}

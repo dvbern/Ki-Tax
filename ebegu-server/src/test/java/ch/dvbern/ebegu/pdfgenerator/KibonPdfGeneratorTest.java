@@ -97,7 +97,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		assertNotNull(inputStream);
 		final byte[] gemeindeLogo = IOUtils.toByteArray(inputStream);
 		stammdaten = TestDataUtil.createGemeindeWithStammdaten();
-		stammdaten.setLogoContent(gemeindeLogo);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
 		Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
 		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());

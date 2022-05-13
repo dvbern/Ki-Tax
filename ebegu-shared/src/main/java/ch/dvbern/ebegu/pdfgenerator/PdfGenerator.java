@@ -23,6 +23,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.lib.invoicegenerator.BaseGenerator;
 import ch.dvbern.lib.invoicegenerator.OnPageHandler;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
@@ -33,12 +34,18 @@ import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
-	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, @Nullable final PhraseRenderer footer,@Nonnull boolean isKanton) {
-		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(gemeindeLogo, absenderHeader, isKanton);
+	public static PdfGenerator create(
+		@NonNull GemeindeStammdatenKorrespondenz config,
+		@Nonnull final List<String> absenderHeader,
+		@Nullable final PhraseRenderer footer,
+		boolean isKanton
+	) {
+		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(config, absenderHeader, isKanton);
 		layoutConfiguration.setFooter(footer);
 		layoutConfiguration.getStaticComponents().stream()
 			.map(ComponentRenderer::getComponentConfiguration)
@@ -55,10 +62,11 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
 	public static PdfGenerator create(
-		@Nonnull final byte[] gemeindeLogo,
+		@Nonnull final GemeindeStammdatenKorrespondenz config,
 		@Nonnull final List<String> absenderHeader,
-		@Nonnull boolean isKanton) {
-		return create(gemeindeLogo, absenderHeader, null, isKanton);
+		boolean isKanton
+	) {
+		return create(config, absenderHeader, null, isKanton);
 	}
 
 	public PdfGenerator(@Nonnull PdfLayoutConfiguration configuration) {

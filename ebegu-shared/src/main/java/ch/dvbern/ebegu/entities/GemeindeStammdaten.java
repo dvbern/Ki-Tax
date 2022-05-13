@@ -17,14 +17,12 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -34,7 +32,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -53,11 +50,12 @@ import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.enums.ExternalClientType.GEMEINDE_SCOLARIS_SERVICE;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 
 @Audited
 @Entity
@@ -67,7 +65,8 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id"),
 		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id"),
 		@UniqueConstraint(columnNames = "bg_adresse_id", name = "UK_gemeinde_stammdaten_bg_adresse_id"),
-		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id")
+		@UniqueConstraint(columnNames = "ts_adresse_id", name = "UK_gemeinde_stammdaten_ts_adresse_id"),
+		@UniqueConstraint(columnNames = "gemeinde_stammdaten_korrespondenz_id", name = "UK_gemeinde_stammdaten_korrespondenz_id")
 	}
 )
 @CheckKontodatenGemeinde
@@ -116,6 +115,11 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = true)
 	private Adresse beschwerdeAdresse;
 
+	@NonNull
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_stammdatenkorrespondenz_id"), nullable = false)
+	private GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
+
 	@NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
@@ -136,19 +140,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
-
-	@Nullable
-	@Column(nullable = true, length = ONE_MB) // 1 megabytes
-	@Lob
-	private byte[] logoContent;
-
-	@Nullable
-	@Column(nullable = true)
-	private String logoName;
-
-	@Nullable
-	@Column(nullable = true)
-	private String logoType;
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -327,6 +318,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.beschwerdeAdresse = beschwerdeAdresse;
 	}
 
+	@NonNull
+	public GemeindeStammdatenKorrespondenz getGemeindeStammdatenKorrespondenz() {
+		return gemeindeStammdatenKorrespondenz;
+	}
+
+	public void setGemeindeStammdatenKorrespondenz(@NonNull GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
+		this.gemeindeStammdatenKorrespondenz = gemeindeStammdatenKorrespondenz;
+	}
+
 	public String getMail() {
 		return mail;
 	}
@@ -360,40 +360,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setKorrespondenzsprache(@Nonnull KorrespondenzSpracheTyp korrespondenzsprache) {
 		this.korrespondenzsprache = korrespondenzsprache;
-	}
-
-	@Nonnull
-	public byte[] getLogoContent() {
-		if (logoContent == null) {
-			return EMPTY_BYTE_ARRAY;
-		}
-		return Arrays.copyOf(logoContent, logoContent.length);
-	}
-
-	public void setLogoContent(@Nullable byte[] logoContent) {
-		if (logoContent == null) {
-			this.logoContent = null;
-		} else {
-			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
-		}
-	}
-
-	@Nullable
-	public String getLogoName() {
-		return logoName;
-	}
-
-	public void setLogoName(@Nullable String logoName) {
-		this.logoName = logoName;
-	}
-
-	@Nullable
-	public String getLogoType() {
-		return logoType;
-	}
-
-	public void setLogoType(@Nullable String logoType) {
-		this.logoType = logoType;
 	}
 
 	@Nullable
@@ -529,6 +495,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	 * Fuer *reine* TS-Angebote verwenden wir die TS Telefonnummer (falls gesetzt), sonst die allgemeinen Angaben
 	 * In allen anderen Faellen (inkl. gar keine Kinder oder Betreuungen) die allgemeinen Angaben
 	 */
+	@Nullable
 	public String getTelefonForGesuch(Gesuch gesuch) {
 		if (bgTelefon != null && !bgTelefon.equals("") && gesuch.hasOnlyBetreuungenOfJugendamt()) {
 			return bgTelefon;

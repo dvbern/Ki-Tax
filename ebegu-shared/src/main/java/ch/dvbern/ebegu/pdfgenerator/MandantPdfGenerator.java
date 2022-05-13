@@ -18,14 +18,17 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
@@ -68,8 +71,9 @@ public abstract class MandantPdfGenerator {
 	public MandantPdfGenerator(Sprache sprache, Mandant mandant) {
 		byte[] mandantLogo = new byte[0];
 		try {
-			mandantLogo = IOUtils.toByteArray(MandantPdfGenerator.class.getResourceAsStream(
-				"/pdfgenerator/KantonBernLogo.png"));
+			final InputStream inputStream = MandantPdfGenerator.class.getResourceAsStream("/pdfgenerator/KantonBernLogo.png");
+			Objects.requireNonNull(inputStream);
+			mandantLogo = IOUtils.toByteArray(inputStream);
 		}
 		catch (IOException e) {
 			LOG.error("KantonBernLogo.png koennte nicht geladen werden: {}", e.getMessage());
@@ -79,9 +83,9 @@ public abstract class MandantPdfGenerator {
 		this.mandant = mandant;
 	}
 
-	private void initSprache(Sprache sprache){
-		if(sprache != null) {
-			this.sprache = sprache.getLocale();
+	private void initSprache(Sprache spracheToSet){
+		if(spracheToSet != null) {
+			this.sprache = spracheToSet.getLocale();
 		} else{
 			this.sprache = Sprache.DEUTSCH.getLocale();
 		}
@@ -111,7 +115,20 @@ public abstract class MandantPdfGenerator {
 	}
 
 	private void initGenerator(@Nonnull final byte[] mandantLogo, Mandant mandant) {
-		this.pdfGenerator = PdfGenerator.create(mandantLogo, getAbsenderAdresse(mandant), true);
+		this.pdfGenerator = PdfGenerator.create(getDefaultKorrespondenzConfig(mandantLogo), getAbsenderAdresse(mandant), true);
+	}
+
+	private static GemeindeStammdatenKorrespondenz getDefaultKorrespondenzConfig(final byte[] logo) {
+		GemeindeStammdatenKorrespondenz config = new GemeindeStammdatenKorrespondenz();
+		config.setSenderAddressSpacingLeft(20);
+		config.setSenderAddressSpacingTop(47);
+		config.setReceiverAddressSpacingLeft(123);
+		config.setReceiverAddressSpacingTop(47);
+		config.setLogoContent(logo);
+		config.setLogoWidth(null);
+		config.setLogoSpacingLeft(20);
+		config.setLogoSpacingTop(15);
+		return config;
 	}
 
 	@Nonnull

@@ -571,10 +571,10 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				String name = stammdaten.get().getLogoName();
-				String type = stammdaten.get().getLogoType();
+				String name = stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoName();
+				String type = stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoType();
 				return RestUtil.buildDownloadResponse(false, name == null ? "logo" : name,
-					type == null ? "image/*" : type, stammdaten.get().getLogoContent());
+					type == null ? "image/*" : type, stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
