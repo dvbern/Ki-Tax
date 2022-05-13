@@ -181,6 +181,11 @@ public enum ApplicationPropertyKey {
 	/*
 	 * Bestimmte Informationen bei den Institutionen sind nicht zwingend nötig für alle Mandanten
 	 */
-	ZUSATZINFORMATIONEN_INSTITUTION
+	ZUSATZINFORMATIONEN_INSTITUTION,
+	/**
+	 * Wenn TRUE koennen die Schnittstelle events z.B. AnmeldungTagesschuleEvent, BetreuungAnfrageAddedEvent
+	 * werden veröffentlicht
+	 */
+	SCHNITTSTELLE_EVENTS_AKTIVIERT
 
 }

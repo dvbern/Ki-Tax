@@ -84,11 +84,6 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Column(nullable = false) // Verwendet in Statistik "Gesuche nach Zeitraum", siehe orm.xml
 	private @NotNull boolean kategorieNichtEintreten = false;
 
-	/**
-	 * @deprecated used to convert all Verfuegungen from the database to VerfuegungVerfuegtEvents and publish them to
-	 * Kafka. Thus, only required for one deployment.
-	 */
-	@Deprecated
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
 
