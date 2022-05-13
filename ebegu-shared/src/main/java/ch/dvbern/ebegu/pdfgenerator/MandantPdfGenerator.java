@@ -70,12 +70,11 @@ public abstract class MandantPdfGenerator {
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
 	public MandantPdfGenerator(Sprache sprache, Mandant mandant) {
 		byte[] mandantLogo = new byte[0];
-		try {
-			final InputStream inputStream = MandantPdfGenerator.class.getResourceAsStream("/pdfgenerator/KantonBernLogo.png");
+		try (InputStream inputStream = MandantPdfGenerator.class
+				.getResourceAsStream("/pdfgenerator/KantonBernLogo.png")) {
 			Objects.requireNonNull(inputStream);
 			mandantLogo = IOUtils.toByteArray(inputStream);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOG.error("KantonBernLogo.png koennte nicht geladen werden: {}", e.getMessage());
 		}
 		initSprache(sprache);

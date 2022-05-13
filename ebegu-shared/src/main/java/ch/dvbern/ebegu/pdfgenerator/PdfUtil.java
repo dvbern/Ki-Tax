@@ -351,29 +351,32 @@ public final class PdfUtil {
 		java.util.List<InputStream> pdfToMergeList, OutputStream outputStream, boolean addOddPages
 	) throws DocumentException, IOException {
 
-		Document document = new Document();
-		PdfWriter writer = PdfWriter.getInstance(document, outputStream);
-		document.open();
-		PdfContentByte cb = writer.getDirectContent();
+		try (outputStream; Document document = new Document()) {
+			PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+			document.open();
+			PdfContentByte cb = writer.getDirectContent();
 
-		for (InputStream in : pdfToMergeList) {
-			PdfReader reader = new PdfReader(in);
-			for (int i = 1; i <= reader.getNumberOfPages(); i++) {
-				//import the page from source pdf
-				PdfImportedPage page = writer.getImportedPage(reader, i);
-				//add the page to the destination pdf
-				document.setPageSize(page.getBoundingBox());
-				document.newPage();
-				cb.addTemplate(page, 0, 0);
+			for (InputStream in : pdfToMergeList) {
+				try (in) {
+					try (PdfReader reader = new PdfReader(in)) {
+						for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+							//import the page from source pdf
+							PdfImportedPage page = writer.getImportedPage(reader, i);
+							//add the page to the destination pdf
+							document.setPageSize(page.getBoundingBox());
+							document.newPage();
+							cb.addTemplate(page, 0, 0);
+						}
+						if (addOddPages && !MathUtil.isEven(writer.getPageNumber())) {
+							document.newPage();
+							// Use this method to make sure a page is added, even if it's empty.
+							writer.setPageEmpty(false);
+						}
+					}
+				}
 			}
-			if (addOddPages && !MathUtil.isEven(writer.getPageNumber())) {
-				document.newPage();
-				writer.setPageEmpty(false); // Use this method to make sure a page is added, even if it's empty.
-			}
+			outputStream.flush();
 		}
-		outputStream.flush();
-		document.close();
-		outputStream.close();
 	}
 
 	/**
