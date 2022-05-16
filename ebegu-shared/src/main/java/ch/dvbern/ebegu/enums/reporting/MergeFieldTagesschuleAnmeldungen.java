@@ -27,6 +27,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -47,6 +48,8 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
+	abweichungTitle(new SimpleMergeField<>("abweichungTitle", STRING_CONVERTER)),
+	bemerkungTitle(new SimpleMergeField<>("bemerkungTitle", STRING_CONVERTER)),
 	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
 	wochentagDi(new SimpleMergeField<>("wochentagDi", STRING_CONVERTER)),
 	wochentagMi(new SimpleMergeField<>("wochentagMi", STRING_CONVERTER)),
@@ -83,6 +86,9 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
+
+	abweichung(new SimpleMergeField<>("isAbweichung", BOOLEAN_X_CONVERTER)),
+	bemerkung(new SimpleMergeField<>("bemerkung", STRING_CONVERTER)),
 
 	repeatCol1(new RepeatColMergeField<>("repeatCol1", STRING_CONVERTER)),
 	repeatCol2(new RepeatColMergeField<>("repeatCol2", STRING_CONVERTER)),
