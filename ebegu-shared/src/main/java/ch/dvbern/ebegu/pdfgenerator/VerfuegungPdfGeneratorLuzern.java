@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.awt.Color;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -27,8 +29,11 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPTable;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
+
+	private final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110 };
 
 	public VerfuegungPdfGeneratorLuzern(
 		@Nonnull Betreuung betreuung,
@@ -54,6 +59,11 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return COLUMN_WIDTHS;
+	}
+
+	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelleBold;
 	}
@@ -67,5 +77,55 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	protected String getTextGutschein() {
 		String messageKey =  betreuung.isAuszahlungAnEltern() ? GUTSCHEIN_AN_ELTERN : GUTSCHEIN_AN_INSTITUTION;
 		return translate(messageKey);
+	}
+
+	@Override
+	protected void addRefNrBerechneterGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addRefNrBetreuungsGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addRefNrElternBeitrag(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addRefNrUeberweiesenerBetrag(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+	}
+
+	@Override
+	protected void addTitleBerechneterGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addTitleBetreuungsGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addTitleNrElternBeitrag(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBetreuungsGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
 	}
 }

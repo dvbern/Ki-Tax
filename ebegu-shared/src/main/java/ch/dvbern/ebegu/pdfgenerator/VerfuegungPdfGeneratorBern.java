@@ -52,6 +52,11 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 	}
 
 	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
+	}
+
+	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
 	}

@@ -81,6 +81,11 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		addZusatzTextIfAvailable(document);
 	}
 
+	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
+	}
+
 	private Element createParagraphErwaegungenNichtEintretten() {
 		Paragraph paragraph = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 		paragraph.add(PdfUtil.createSuperTextInText("1"));
