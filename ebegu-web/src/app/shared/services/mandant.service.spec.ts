@@ -85,8 +85,8 @@ describe('MandantService', () => {
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
             });
 
-            it('should parse local-kibon url with lu. sudomain to LU', () => {
-                mockWindow.location.hostname = 'local-kibon-lu.dvbern.ch';
+            it('should parse local-kibon url with stadtluzern. sudomain to LU', () => {
+                mockWindow.location.hostname = 'local-kibon-stadtluzern.dvbern.ch';
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
             });
         });
@@ -107,8 +107,8 @@ describe('MandantService', () => {
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
             });
 
-            it('should parse dev-kibon url with lu. sudomain to LU', () => {
-                mockWindow.location.hostname = 'dev-kibon-lu.dvbern.ch';
+            it('should parse dev-kibon url with stadtluzern. sudomain to LU', () => {
+                mockWindow.location.hostname = 'dev-kibon-stadtluzern.dvbern.ch';
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
             });
         });
@@ -129,8 +129,8 @@ describe('MandantService', () => {
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
             });
 
-            it('should parse uat-kibon url with lu. sudomain to LU', () => {
-                mockWindow.location.hostname = 'dev-kibon-lu.dvbern.ch';
+            it('should parse uat-kibon url with stadtluzern. sudomain to LU', () => {
+                mockWindow.location.hostname = 'dev-kibon-stadtluzern.dvbern.ch';
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
             });
         });
@@ -151,8 +151,8 @@ describe('MandantService', () => {
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
             });
 
-            it('should parse kibon url with lu. sudomain to LU', () => {
-                mockWindow.location.hostname = 'lu.kibon.ch';
+            it('should parse kibon url with stadtluzern. sudomain to LU', () => {
+                mockWindow.location.hostname = 'stadtluzern.kibon.ch';
                 expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
             });
         });
@@ -171,8 +171,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'local-kibon-be.dvbern.ch:4200';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernLocalDomain);
             });
-            it('should strip lu from local-kibon-lu.dvbern.ch:4200', () => {
-                mockWindow.location.host = 'local-kibon-lu.dvbern.ch:4200';
+            it('should strip lu from local-kibon-stadtluzern.dvbern.ch:4200', () => {
+                mockWindow.location.host = 'local-kibon-stadtluzern.dvbern.ch:4200';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernLocalDomain);
             });
         });
@@ -187,8 +187,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'dev-kibon-be.dvbern.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernDomain);
             });
-            it('should strip dev-kibon-lu from dev-kibon-lu.dvbern.ch', () => {
-                mockWindow.location.host = 'dev-kibon-lu.dvbern.ch';
+            it('should strip dev-kibon-stadtluzern from dev-kibon-stadtluzern.dvbern.ch', () => {
+                mockWindow.location.host = 'dev-kibon-stadtluzern.dvbern.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernDomain);
             });
         });
@@ -203,8 +203,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'uat-kibon-be.dvbern.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernDomain);
             });
-            it('should strip uat-kibon-lu from uat-kibon-lu.dvbern.ch', () => {
-                mockWindow.location.host = 'uat-kibon-lu.dvbern.ch';
+            it('should strip uat-kibon-stadtluzern from uat-kibon-stadtluzern.dvbern.ch', () => {
+                mockWindow.location.host = 'uat-kibon-stadtluzern.dvbern.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual(dvBernDomain);
             });
         });
@@ -219,8 +219,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'be.kibon.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual('kibon.ch');
             });
-            it('should strip lu from lu.kibon.ch:', () => {
-                mockWindow.location.host = 'lu.kibon.ch';
+            it('should strip lu from stadtluzern.kibon.ch:', () => {
+                mockWindow.location.host = 'stadtluzern.kibon.ch';
                 expect(service.removeMandantEnvironmentFromCompleteHost()).toEqual('kibon.ch');
             });
         });
@@ -238,8 +238,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'local-kibon-be.dvbern.ch:4200';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(dvBernLocalDomain);
             });
-            it('should get environment local-kibon from local-kibon-lu.dvbern.ch:4200', () => {
-                mockWindow.location.host = 'local-kibon-lu.dvbern.ch:4200';
+            it('should get environment local-kibon from local-kibon-stadtluzern.dvbern.ch:4200', () => {
+                mockWindow.location.host = 'local-kibon-stadtluzern.dvbern.ch:4200';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(dvBernLocalDomain);
             });
         });
@@ -255,8 +255,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'dev-kibon-be.dvbern.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(devEnvironment);
             });
-            it('should get environment dev-kibon from dev-kibon-lu.dvbern.ch', () => {
-                mockWindow.location.host = 'dev-kibon-lu.dvbern.ch';
+            it('should get environment dev-kibon from dev-kibon-stadtluzern.dvbern.ch', () => {
+                mockWindow.location.host = 'dev-kibon-stadtluzern.dvbern.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(devEnvironment);
             });
         });
@@ -272,8 +272,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'uat-kibon-be.dvbern.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(uatEnvironment);
             });
-            it('should get environment uat-kibon from uat-kibon-lu.dvbern.ch', () => {
-                mockWindow.location.host = 'uat-kibon-lu.dvbern.ch';
+            it('should get environment uat-kibon from uat-kibon-stadtluzern.dvbern.ch', () => {
+                mockWindow.location.host = 'uat-kibon-stadtluzern.dvbern.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual(uatEnvironment);
             });
         });
@@ -288,8 +288,8 @@ describe('MandantService', () => {
                 mockWindow.location.host = 'be.kibon.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual('');
             });
-            it('should get nothing from lu.kibon.ch:', () => {
-                mockWindow.location.host = 'lu.kibon.ch';
+            it('should get nothing from stadtluzern.kibon.ch:', () => {
+                mockWindow.location.host = 'stadtluzern.kibon.ch';
                 expect(service.getEnvironmentFromCompleteHost()).toEqual('');
             });
         });
