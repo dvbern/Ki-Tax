@@ -795,6 +795,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit =
                 this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
+
+        if (this.isTFOKostenBerechnungStuendlich
+            && this.betreuungsangebot
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
+            // TFO Kosten stündlich eingegeben werden
+            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
+            tsBetreuungspensum.pensum = 0;
+        }
+
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
