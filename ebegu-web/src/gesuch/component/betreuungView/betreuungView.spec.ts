@@ -17,7 +17,6 @@ import {StateService} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
-import {applicationPropertyRSProvider} from '../../../app/core/upgraded-providers';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -124,7 +123,7 @@ describe('betreuungView', async () => {
                     spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
                     spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
                     spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
-                    spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.returnValue($q.resolve({}));
+                    spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.resolveTo(({}));
                     spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
 
                     spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
