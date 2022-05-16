@@ -147,6 +147,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
@@ -314,6 +315,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.STUENDLICHE_VOLLKOSTEN_BEI_TFO)
+                .forEach(einstellung => {
+                    if (EbeguUtil.isNotNullAndTrue(einstellung.getValueAsBoolean())) {
+                        this.isTFOKostenBerechnungStuendlich = true;
+                    }
                 });
         });
 
@@ -1599,5 +1606,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
         // 100% = 220 stunden => 1% = 2.2 stunden
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+    }
+
+    public showBetreuungsKostenAndPensumInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return true;
+        }
+
+        return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    private isBetreuungsangebotTagesfamilie(): boolean {
+        return this.betreuungsangebot
+        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 }

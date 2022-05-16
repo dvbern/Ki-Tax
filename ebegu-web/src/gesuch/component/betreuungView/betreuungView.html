@@ -553,15 +553,17 @@
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                     <!--Betreuungspensum-->
-                                    <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
-                                                        input-id="betreuungspensum-{{$index}}"
-                                                        betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                        is-disabled="!vm.isPensumEditable()"
-                                                        multiplier-kita="vm.getMultiplierKita()"
-                                                        multiplier-tfo="vm.getMultiplierTFO()">
-                                    </dv-betreuung-input>
+                                    <div ng-if="vm.showBetreuungsKostenAndPensumInput()">
+                                        <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                            input-id="betreuungspensum-{{$index}}"
+                                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                            is-disabled="!vm.isPensumEditable()"
+                                                            multiplier-kita="vm.getMultiplierKita()"
+                                                            multiplier-tfo="vm.getMultiplierTFO()">
+                                        </dv-betreuung-input>
+                                    </div>
                                     <!--Monatliche Betreuungskosten-->
-                                    <div class="row">
+                                    <div class="row" ng-if="vm.showBetreuungsKostenAndPensumInput()">
                                         <div class="col-sm-12 dv-input-container-medium">
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
