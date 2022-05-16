@@ -387,6 +387,7 @@ export class EbeguRestUtil {
         restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
         restObj.pensum = betreuungspensumEntity.pensum;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
+        restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
     }
 
     private parseAbstractPensumEntity(
@@ -405,6 +406,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
+        betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
     }
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
