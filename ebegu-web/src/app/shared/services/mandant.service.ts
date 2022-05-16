@@ -42,11 +42,11 @@ export class MandantService {
 
     private static hostnameToMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
-            case 'be':
+            case KiBonMandant.BE:
                 return KiBonMandant.BE;
-            case 'stadtluzern':
+            case KiBonMandant.LU:
                 return KiBonMandant.LU;
-            case 'so':
+            case KiBonMandant.SO:
                 return KiBonMandant.SO;
             default:
                 return KiBonMandant.NONE;
