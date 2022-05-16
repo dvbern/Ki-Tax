@@ -372,17 +372,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);
 
 		// Referenznummern
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
-
-		addRefNrBerechneterGutschein(table);
-		addRefNrBetreuungsGutschein(table);
-		addRefNrElternBeitrag(table);
-		addRefNrUeberweiesenerBetrag(table);
+		addReferenzNummerCells(table);
 
 		// Spaltentitel, Row 1
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, fontTabelle, 2, 1));
@@ -458,19 +448,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return table;
 	}
 
-	protected void addRefNrBerechneterGutschein(PdfPTable table) {
+	protected void addReferenzNummerCells(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
-	}
-
-	protected void addRefNrBetreuungsGutschein(PdfPTable table) {
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-	}
-
-	protected void addRefNrElternBeitrag(PdfPTable table) {
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-	}
-
-	protected void addRefNrUeberweiesenerBetrag(PdfPTable table) {
 		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 	}
 

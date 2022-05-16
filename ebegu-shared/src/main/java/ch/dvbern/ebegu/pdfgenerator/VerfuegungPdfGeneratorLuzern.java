@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -80,23 +79,8 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
-	protected void addRefNrBerechneterGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
-	}
-
-	@Override
-	protected void addRefNrBetreuungsGutschein(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
-	}
-
-	@Override
-	protected void addRefNrElternBeitrag(PdfPTable table) {
-		//no-op die Spalte soll in Luzern nicht angezeigt werden
-	}
-
-	@Override
-	protected void addRefNrUeberweiesenerBetrag(PdfPTable table) {
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+	protected void addReferenzNummerCells(PdfPTable table) {
+		//no-op die Zeile mit den RefernzNummern soll in Luzern nicht angezeigt werden
 	}
 
 	@Override
