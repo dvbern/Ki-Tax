@@ -167,6 +167,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.STUENDLICHE_VOLLKOSTEN_BEI_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
@@ -642,6 +643,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode);
 		saveEinstellung(UNBEZAHLTER_URLAUB_AKTIV, "true", gesuchsperiode);
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
+		saveEinstellung(STUENDLICHE_VOLLKOSTEN_BEI_TFO, "false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

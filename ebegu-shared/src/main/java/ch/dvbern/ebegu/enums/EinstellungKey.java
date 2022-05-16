@@ -282,7 +282,10 @@ public enum EinstellungKey {
 
 	// Fachstellen Typ (KIBON-2360)
 	// BERN oder LUZERN
-	FACHSTELLEN_TYP;
+	FACHSTELLEN_TYP,
+
+	// Werden die Kosten der TFOs stündlich angegben (KIBON-2271)
+	STUENDLICHE_VOLLKOSTEN_BEI_TFO;
 
 
 	private EinstellungTyp typ;
