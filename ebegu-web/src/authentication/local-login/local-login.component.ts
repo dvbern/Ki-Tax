@@ -155,7 +155,7 @@ export class LocalLoginComponent {
             case 'be':
                 datum = LOCALLOGIN_DATA.BE;
                 break;
-            case'lu':
+            case 'stadtluzern':
                 datum = LOCALLOGIN_DATA.LU;
                 break;
             case 'so':

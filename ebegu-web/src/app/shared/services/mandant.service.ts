@@ -44,7 +44,7 @@ export class MandantService {
         switch (hostname.toLocaleLowerCase()) {
             case 'be':
                 return KiBonMandant.BE;
-            case 'lu':
+            case 'stadtluzern':
                 return KiBonMandant.LU;
             case 'so':
                 return KiBonMandant.SO;
@@ -141,7 +141,7 @@ export class MandantService {
     }
 
     public parseHostnameForMandant(): KiBonMandant {
-        const regex = /(be|so|lu)(?=.(dvbern|kibon))/g;
+        const regex = /(be|so|stadtluzern)(?=.(dvbern|kibon))/g;
         const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
         if (matches === null) {
             return KiBonMandant.NONE;
