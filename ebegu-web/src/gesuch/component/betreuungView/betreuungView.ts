@@ -1626,6 +1626,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return !this.isTFOKostenBerechnungStuendlich;
     }
 
+    public showStuendlicheKostenInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return false;
+        }
+
+        return this.isTFOKostenBerechnungStuendlich;
+    }
+
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
         && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;

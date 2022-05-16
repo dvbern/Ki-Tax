@@ -590,6 +590,32 @@
                                         </div>
                                     </div>
 
+                                    <!--Stündliche Vollkosten (TFO)-->
+                                    <div class="row" ng-if="vm.showStuendlicheKostenInput()">
+                                        <div class="col-sm-12 dv-input-container-medium">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="stuendlicheKosten-{{$index}}">
+                                                    <span data-translate="STUENDLICHE_VOLLKOSTEN"></span>
+                                                </label>
+                                                <div class="dv-input-container-medium-label">
+                                                    <input
+                                                        aria-describedby="stuendlicheKosten-{{$index}}-error"
+                                                        id="stuendlicheKosten-{{$index}}" type="number"
+                                                        name="stuendlicheKosten-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.stuendlicheVollkosten"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        ng-required="true"
+                                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                                    <dv-error-messages input-id="stuendlicheKosten-{{$index}}"
+                                                                       for="vm.form['stuendlicheKosten-' + $index].$error"></dv-error-messages>
+                                                </div>
+
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
                                     <div ng-if="vm.isMahlzeitenverguenstigungActive()">
                                         <div class="row">
                                             <!-- monatlicheHauptmahlzeiten -->
