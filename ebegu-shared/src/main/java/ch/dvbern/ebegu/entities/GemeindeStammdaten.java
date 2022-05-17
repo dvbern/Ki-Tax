@@ -292,6 +292,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.defaultBenutzerTS = defaultBenutzerTS;
 	}
 
+	@NonNull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
 	}

@@ -1065,12 +1065,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	) {
 
 		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException(
-				"searchMitteilungen",
-				"mandant not found for principal " + principalBean.getPrincipal().getName());
-		}
-
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 

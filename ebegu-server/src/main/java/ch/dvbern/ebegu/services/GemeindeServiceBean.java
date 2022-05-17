@@ -177,9 +177,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAktiveGemeinden() {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getAktiveGemeinden", "Mandant not defined");
-		}
 		return getAktiveGemeinden(principalBean.getMandant());
 	}
 

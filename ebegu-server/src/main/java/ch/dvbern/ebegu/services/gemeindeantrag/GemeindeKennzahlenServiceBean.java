@@ -204,10 +204,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			@Nullable String timestampMutiert) {
 
 		Mandant mandant = principal.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getGemeindeKennzahlen", "mandant not found for principal " + principal.getPrincipal().getName());
-		}
-
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
 		Set<Predicate> predicates = new HashSet<>();
