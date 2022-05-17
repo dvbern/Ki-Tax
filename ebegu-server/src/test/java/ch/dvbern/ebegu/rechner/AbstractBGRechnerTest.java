@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
@@ -95,6 +96,7 @@ public abstract class AbstractBGRechnerTest {
 	protected Gesuchsperiode gesuchsperiodeOfEvaluator = TestDataUtil.createGesuchsperiode1718();
 
 
+	@Before
 	@BeforeEach
 	public void setUpCalcuator() {
 		evaluator = createEvaluator(gesuchsperiodeOfEvaluator, gemeindeOfEvaluator);
