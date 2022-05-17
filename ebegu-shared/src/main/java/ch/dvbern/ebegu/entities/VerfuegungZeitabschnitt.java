@@ -609,6 +609,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
 	}
 
+	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
+		this.getBgCalculationInputAsiv().setStuendlicheVollkosten(stuendlicheVollkosten);
+		this.getBgCalculationInputGemeinde().setStuendlicheVollkosten(stuendlicheVollkosten);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

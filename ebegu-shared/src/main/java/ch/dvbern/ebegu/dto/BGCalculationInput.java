@@ -183,6 +183,9 @@ public class BGCalculationInput {
 
 	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
 
+	//für TFO Luzern
+	private BigDecimal stuendlicheVollkosten;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -245,6 +248,7 @@ public class BGCalculationInput {
 		this.geschwisternBonusKind2 = toCopy.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
+		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
 	}
 
 	@Nonnull
@@ -798,6 +802,13 @@ public class BGCalculationInput {
 			}
 			this.setFamGroesse(other.getFamGroesse());
 		}
+		// Die stündlichen Vollkosten für TFOs können nicht linaer addiert werden, daher darf es keine Überschneidungen geben
+		if (other.getStuendlicheVollkosten() != null) {
+			if(this.getStuendlicheVollkosten() != null && !MathUtil.isSame(this.getStuendlicheVollkosten(), other.getStuendlicheVollkosten())) {
+				throw new IllegalArgumentException("Familiengoressen kann nicht gemerged werden");
+			}
+			this.setStuendlicheVollkosten(other.getStuendlicheVollkosten());
+		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
@@ -921,7 +932,8 @@ public class BGCalculationInput {
 			this.kitaPlusZuschlag == other.kitaPlusZuschlag &&
 			this.isKesbPlatzierung == other.isKesbPlatzierung &&
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
-			this.geschwisternBonusKind3== other.geschwisternBonusKind3;
+			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
+			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten);
 	}
 
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
@@ -1055,5 +1067,13 @@ public class BGCalculationInput {
 
 	public void setGeschwisternBonusKind2(boolean geschwisternBonusKind2) {
 		this.geschwisternBonusKind2 = geschwisternBonusKind2;
+	}
+
+	public BigDecimal getStuendlicheVollkosten() {
+		return stuendlicheVollkosten;
+	}
+
+	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
+		this.stuendlicheVollkosten = stuendlicheVollkosten;
 	}
 }
