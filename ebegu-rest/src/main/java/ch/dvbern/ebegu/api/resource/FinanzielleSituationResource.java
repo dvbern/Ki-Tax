@@ -376,13 +376,20 @@ public class FinanzielleSituationResource {
 		return Response.ok(finanzielleSituationResultateDTO).build();
 	}
 
-	private void setFinSitAbfrageStatus(@Nonnull GesuchstellerContainer gesuchstellerContainer, @Nonnull JaxFinanzielleSituationContainer finanzielleSituationContainer) {
-		if(finanzielleSituationContainer.getId() != null) {
-		   Optional<FinanzielleSituationContainer> finSitCont = finanzielleSituationService.findFinanzielleSituation(finanzielleSituationContainer.getId());
-		   if(finSitCont.isPresent()) {
-			   assert gesuchstellerContainer.getFinanzielleSituationContainer() != null;
-			   gesuchstellerContainer.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(finSitCont.get().getFinanzielleSituationJA().getSteuerdatenAbfrageStatus());
-		   }
+	private void setFinSitAbfrageStatus(
+		@Nonnull GesuchstellerContainer gesuchstellerContainer,
+		@Nonnull JaxFinanzielleSituationContainer finanzielleSituationContainer) {
+		if (finanzielleSituationContainer.getId() != null) {
+			Optional<FinanzielleSituationContainer> finSitCont =
+				finanzielleSituationService.findFinanzielleSituation(finanzielleSituationContainer.getId());
+			if (finSitCont.isPresent()) {
+				assert gesuchstellerContainer.getFinanzielleSituationContainer() != null;
+				gesuchstellerContainer.getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA()
+					.setSteuerdatenAbfrageStatus(finSitCont.get()
+						.getFinanzielleSituationJA()
+						.getSteuerdatenAbfrageStatus());
+			}
 		}
 	}
 
@@ -591,6 +598,18 @@ public class FinanzielleSituationResource {
 				convertedFinSitCont,
 				finSitGS2,
 				SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
+		} else if (steuerdatenResponse.getVeraendertePartnerschaft() != null
+			&& steuerdatenResponse.getVeraendertePartnerschaft()) {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+				convertedFinSitCont,
+				finSitGS2,
+				SteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT);
+		} else if (steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung() != null
+			&& steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung()) {
+			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
+				convertedFinSitCont,
+				finSitGS2,
+				SteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT);
 		} else if (steuerdatenResponse.getZpvNrPartner() == null) {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusFailed(
 				convertedFinSitCont,
@@ -604,6 +623,7 @@ public class FinanzielleSituationResource {
 		} else {
 			updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(convertedFinSitCont, finSitGS2, steuerdatenResponse);
 		}
+
 	}
 
 	private boolean isGebrutsdatumGS2CorrectInResponse(
@@ -737,7 +757,9 @@ public class FinanzielleSituationResource {
 		@NotNull BigDecimal anzahlGesuchsteller,
 		@NotNull boolean allowNegative) {
 		assert anzahlGesuchsteller.compareTo(BigDecimal.ZERO) != 0;
-		return GANZZAHL.divide(allowNegative ? getValueOrZero(value) : getPositvValueOrZero(value), anzahlGesuchsteller);
+		return GANZZAHL.divide(
+			allowNegative ? getValueOrZero(value) : getPositvValueOrZero(value),
+			anzahlGesuchsteller);
 
 	}
 
