@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
@@ -68,7 +67,6 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
@@ -328,10 +326,20 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		setErweitereBeduerfnisseBestaetigt(ctx);
+		setEingewoehnungPhase(ctx);
 		setBetreuungInGemeinde(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx);
 
 		return ctx.isReadyForBestaetigen();
+	}
+
+	private void setEingewoehnungPhase(@Nonnull ProcessingContext ctx) {
+		Betreuung b = ctx.getBetreuung();
+
+		// Der Wert aus dem DTO wird nur berücksichtigt, wenn der 'true' ist
+		if (ctx.getDto().getEingewoehnungInPeriode()) {
+			b.setEingewoehnung(true);
+		}
 	}
 
 	private void setErweitereBeduerfnisseBestaetigt(@Nonnull ProcessingContext ctx) {

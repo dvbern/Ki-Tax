@@ -2138,6 +2138,18 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return principalBean.getMandant().equals(entity.getMandant());
 	}
 
+	@Override
+	public void checkWriteAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
+		Gesuch gesuch = extractGesuch(gesuchstellerContainer);
+		checkWriteAuthorization(gesuch);
+	}
+
+	@Override
+	public void checkReadAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
+		Gesuch gesuch = extractGesuch(gesuchstellerContainer);
+		checkReadAuthorization(gesuch);
+	}
+
 	private boolean isAllowedAdminOrSachbearbeiter(Sozialdienst sozialdienst) {
 		return principalBean.belongsToSozialdienst(sozialdienst);
 	}

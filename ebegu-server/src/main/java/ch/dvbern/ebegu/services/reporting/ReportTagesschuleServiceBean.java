@@ -269,7 +269,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 		BelegungTagesschule belegung = anmeldungTagesschule.getBelegungTagesschule();
 		if (belegung != null) {
+			tdr.setAbweichung(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester());
 			tdr.setEintrittsdatum(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
+			tdr.setBemerkung(anmeldungTagesschule.getBelegungTagesschule().getBemerkung());
 		}
 
 		return tdr;

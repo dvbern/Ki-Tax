@@ -18,6 +18,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
+import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
@@ -98,7 +99,6 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
 
             return;
         }
-
         this.berechnungsManager
             .getDokumente(this.gesuchModelManager.getGesuch())
             .then((alleDokumente: TSDokumenteDTO) => {
@@ -115,6 +115,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 this.searchDokumente(alleDokumente,
                     this.dokumenteFreigabequittung,
                     TSDokumentGrundTyp.FREIGABEQUITTUNG);
+                this.dokumenteFamSit =
+                    this.dokumenteFamSit.filter(dokumentGrund => dokumentGrund.dokumentTyp !== TSDokumentTyp.AUSWEIS_ID);
             });
 
         this.gesuchRS.getMassenversandTexteForGesuch(this.gesuchModelManager.getGesuch().id).then((response: any) => {

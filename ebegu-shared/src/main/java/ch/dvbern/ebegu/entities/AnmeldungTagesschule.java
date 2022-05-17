@@ -69,6 +69,9 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
+	@Column(nullable = false)
+	private boolean eventPublished = true;
+
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
@@ -198,5 +201,13 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			}
 		}
 		return false;
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 }

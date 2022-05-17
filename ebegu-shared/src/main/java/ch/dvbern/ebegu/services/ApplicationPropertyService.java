@@ -125,4 +125,10 @@ public interface ApplicationPropertyService {
 	@Nonnull
 	Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant);
 
+	/**
+	 * Wenn TRUE sind die schnittstelle events publisht
+	 */
+	@Nonnull
+	Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant);
+
 }
