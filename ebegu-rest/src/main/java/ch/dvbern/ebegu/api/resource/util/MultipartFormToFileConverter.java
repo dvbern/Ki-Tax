@@ -64,10 +64,11 @@ public final class MultipartFormToFileConverter {
 
 	@Nonnull
 	private static TransferFile toBlobData(@Nonnull InputPart part) {
-		try {
-			String fileName = parseFileName(part).orElseThrow(() -> new IllegalArgumentException("filename must be given"));
-			MediaType mediaType = part.getMediaType();
+		String fileName = parseFileName(part).orElseThrow(() -> new IllegalArgumentException("filename must be given"));
+		MediaType mediaType = part.getMediaType();
+		try (
 			InputStream inputStream = part.getBody(InputStream.class, null);
+		) {
 			byte[] bytes = IOUtils.toByteArray(inputStream);
 			return new TransferFile(fileName, mediaType.toString(), bytes);
 		} catch (IOException e) {

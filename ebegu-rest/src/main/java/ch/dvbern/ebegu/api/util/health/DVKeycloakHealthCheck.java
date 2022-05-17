@@ -76,12 +76,12 @@ public class DVKeycloakHealthCheck implements HealthCheck {
 		}
 
 		HealthCheckResponseBuilder builder = HealthCheckResponse.named(NAME).up();
-		try {
-			String authServer = getAuthServerURL(keycloackAuthServer);
+		String authServer = getAuthServerURL(keycloackAuthServer);
+		try (
 			Response response = client.target(authServer + OPENID_CONFIGURATION_API)
 				.request(MediaType.APPLICATION_JSON)
 				.get();
-
+		) {
 			boolean state = response.getStatus() == Status.OK.getStatusCode();
 
 			return builder.state(state)

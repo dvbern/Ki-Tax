@@ -48,13 +48,13 @@ public class VersionInfoBean {
 
 	@Nullable
 	private VersionInfo readVersionInfo() {
-		InputStream is = context.getResourceAsStream("META-INF/MANIFEST.MF");
-		if (is == null) {
-			LOG.warn("Could not read versionInfo. InputStream is NULL.");
-			return null;
-		}
-
-		try {
+		try (
+			InputStream is = context.getResourceAsStream("META-INF/MANIFEST.MF");
+		) {
+			if (is == null) {
+				LOG.warn("Could not read versionInfo. InputStream is NULL.");
+				return null;
+			}
 			return VersionInfo.fromManifest(new Manifest(is));
 		} catch (IOException e) {
 			LOG.warn("Could not read versionInfo", e);
