@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,6 @@ import java.util.Optional;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -56,8 +57,11 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static ch.dvbern.ebegu.util.MonitoringUtil.monitor;
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractReportServiceBean extends AbstractBaseService {
 
@@ -208,5 +212,9 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 		return gueltigeGesuch.getKindContainers().stream()
 			.filter(kindContainer -> kindContainer.getKindNummer().equals(kindNummer))
 			.findFirst();
+	}
+
+	protected Workbook createWorkbook(@Nullable InputStream is, @NonNull ReportVorlage reportVorlage) {
+		return ExcelMerger.createWorkbookFromTemplate(requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN));
 	}
 }
