@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.dbschema;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,12 +96,11 @@ public class InstitutionenKitaxMappingCreator {
 	@SuppressWarnings("Duplicates")
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
-			try {
-				File output = new File(OUTPUT_FILE);
-				FileOutputStream fos = new FileOutputStream(output.getAbsolutePath());
+			File output = new File(OUTPUT_FILE);
+			try (FileOutputStream fos = new FileOutputStream(output.getAbsolutePath())) {
 				printWriter = new PrintWriter(fos);
 				LOG.info("File generiert: {}", output.getAbsolutePath());
-			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
 				LOG.error("Konnte Outputfile nicht erstellen", e);
 			}
 		}
