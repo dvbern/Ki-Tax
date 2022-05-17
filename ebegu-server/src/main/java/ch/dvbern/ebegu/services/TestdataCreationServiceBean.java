@@ -78,6 +78,7 @@ import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED;
@@ -643,6 +644,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode);
 		saveEinstellung(UNBEZAHLTER_URLAUB_AKTIV, "true", gesuchsperiode);
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
+		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode);
 		saveEinstellung(BETREUUNG_INPUT_SWITCH_ENABLED, "true", gesuchsperiode);
 	}
 

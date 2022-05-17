@@ -21,7 +21,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public sozialhilfeBezueger: boolean;
-    public finanzielleSituationRequired: boolean = true;
+    public finanzielleSituationRequired: boolean = false;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -35,11 +35,10 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
 
     public ngOnInit(): void {
         // verguenstigungGewunscht ist alway true for Solothurn, expect when sozialhilfeempfaenger is true
-        this.model.verguenstigungGewuenscht = true;
+        this.model.verguenstigungGewuenscht = !EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
 
-        if (EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger)) {
-            this.model.verguenstigungGewuenscht = false;
-            this.finanzielleSituationRequired = false;
+        if (EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger)) {
+            this.finanzielleSituationRequired = true;
         }
     }
 

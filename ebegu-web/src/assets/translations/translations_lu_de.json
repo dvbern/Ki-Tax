@@ -68,7 +68,15 @@
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
     "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
     "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
+    "ONBOARDING_KIBON_BGTS_BEANTRAGEN": "Beantragen Sie jetzt Ihren Betreuungs\u00ADgutschein",
+    "ONBOARDING_MAIN_DESC1": "<strong>Das Portal für Eltern</strong> zur Beantragung von Betreuungsgutscheinen",
+    "ONBOARDING_MAIN_DESC2": "<strong>Die Fachanwendung für Gemeinden</strong> zur Gutscheinadministration",
+    "ONBOARDING_MAIN_DESC3": "<strong>Kompletter, vollautomatisierter Prozess</strong> über alle Instanzen (Eltern, Kitas, Tageseltern, Gemeinden)",
+    "ONBOARDING_MAIN_DESC4": "<strong>Ein Antrag</strong> für sämtliche Angebote (Kita & Tageseltern)",
+    "ONBOARDING_SUBTITLE": "Die Lösung für Betreuungsgutscheine",
 	"ONBOARDING_GS_ANGABEN_TITLE": "Login Daten",
 	"BE_LOGIN_DATEN": "Login Daten",
-	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+	"AUSWEIS_NACHWEIS": "Nachweis Identität",
+	"AUSWEIS_NACHWEIS_TOOLTIP": "Aus Sicherheitsgründen muss ein Foto Ihres Ausweises hochgeladen werden (Personal ID, Pass, Fahrausweis).",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
