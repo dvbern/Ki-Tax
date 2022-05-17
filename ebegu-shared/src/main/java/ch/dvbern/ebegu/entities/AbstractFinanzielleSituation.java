@@ -390,8 +390,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		return target;
 	}
 
-	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	@Override
+	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
 			return true;

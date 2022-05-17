@@ -286,6 +286,7 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other, boolean inklAbwesenheiten, boolean inklStatus) {
 		//noinspection ObjectEquality
 		if (this == other) {

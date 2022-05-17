@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.listener.BenutzerChangedEntityListener;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -232,6 +233,7 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

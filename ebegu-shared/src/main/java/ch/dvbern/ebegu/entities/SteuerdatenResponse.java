@@ -524,6 +524,7 @@ public class SteuerdatenResponse extends AbstractEntity {
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -532,10 +533,6 @@ public class SteuerdatenResponse extends AbstractEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof SteuerdatenResponse)) {
-			return false;
-		}
-
 		SteuerdatenResponse o = (SteuerdatenResponse) other;
 		return Objects.equals(this.zpvNrAntragsteller, o.zpvNrAntragsteller) &&
 			Objects.equals(this.geburtsdatumAntragsteller, o.geburtsdatumAntragsteller) &&

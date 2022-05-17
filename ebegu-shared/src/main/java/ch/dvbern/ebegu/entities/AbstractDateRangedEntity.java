@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -60,6 +61,7 @@ public class AbstractDateRangedEntity extends AbstractMutableEntity implements G
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

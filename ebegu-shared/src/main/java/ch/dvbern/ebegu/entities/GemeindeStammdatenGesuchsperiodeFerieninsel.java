@@ -38,6 +38,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.validators.CheckFerieninselStammdatenDatesOverlapping;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 
@@ -108,6 +109,7 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		if (this == other) {
 			return true;

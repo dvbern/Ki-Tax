@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.listener.BerechtigungChangedEntityListener;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeinde;
 import ch.dvbern.ebegu.validators.CheckBerechtigungInstitutionTraegerschaft;
 import ch.dvbern.ebegu.validators.CheckBerechtigungSozialdienst;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -155,6 +156,7 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

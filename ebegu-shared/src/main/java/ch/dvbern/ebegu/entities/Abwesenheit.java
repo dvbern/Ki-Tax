@@ -22,6 +22,7 @@ import javax.persistence.OneToOne;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -65,6 +66,7 @@ public class Abwesenheit extends AbstractDateRangedEntity implements Comparable<
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

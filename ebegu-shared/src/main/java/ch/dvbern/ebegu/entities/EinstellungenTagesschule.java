@@ -37,6 +37,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.ModulTagesschuleTyp;
 import ch.dvbern.ebegu.util.Constants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -86,6 +87,7 @@ public class EinstellungenTagesschule extends AbstractEntity implements Comparab
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

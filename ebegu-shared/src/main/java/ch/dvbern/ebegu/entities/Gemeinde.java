@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckGemeindeAtLeastOneAngebot;
 import com.google.common.base.Strings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -216,6 +217,7 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

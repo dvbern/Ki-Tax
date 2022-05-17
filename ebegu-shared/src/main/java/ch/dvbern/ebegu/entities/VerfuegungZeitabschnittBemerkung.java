@@ -31,6 +31,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
@@ -69,6 +70,7 @@ public class VerfuegungZeitabschnittBemerkung extends AbstractDateRangedEntity {
 
 	@Override
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod", "PMD.CompareObjectsWithEquals" })
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

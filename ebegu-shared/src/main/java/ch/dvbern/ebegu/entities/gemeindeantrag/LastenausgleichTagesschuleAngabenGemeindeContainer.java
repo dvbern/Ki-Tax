@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenIns
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -184,6 +185,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
@@ -174,8 +175,9 @@ public class Adresse extends AbstractDateRangedEntity {
 		this.organisation = organisation;
 	}
 
-	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
 	@Override
+	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {

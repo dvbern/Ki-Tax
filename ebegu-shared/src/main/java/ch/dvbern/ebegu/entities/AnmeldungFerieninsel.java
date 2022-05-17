@@ -35,6 +35,7 @@ import javax.persistence.UniqueConstraint;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.envers.Audited;
 
@@ -101,6 +102,7 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
