@@ -174,6 +174,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
@@ -2005,6 +2006,7 @@ public final class TestDataUtil {
 		saveEinstellung(FREIGABE_QUITTUNG_EINLESEN_REQUIRED, "true", gesuchsperiode, persistence);
 		saveEinstellung(UNBEZAHLTER_URLAUB_AKTIV, "true", gesuchsperiode, persistence);
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode, persistence);
+		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
