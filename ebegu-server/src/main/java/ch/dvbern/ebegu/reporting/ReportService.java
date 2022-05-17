@@ -108,15 +108,15 @@ public interface ReportService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportZahlungAuftrag(@Nonnull String auftragId, @Nonnull Locale locale)
-		throws ExcelMergeException;
+		throws ExcelMergeException, IOException;
 
 	@Nonnull
 	UploadFileInfo generateExcelReportZahlung(@Nonnull String zahlungId, @Nonnull Locale locale)
-		throws ExcelMergeException;
+		throws ExcelMergeException, IOException;
 
 	@Nonnull
 	UploadFileInfo generateExcelReportZahlungPeriode(@Nonnull String gesuchsperiodeId, @Nonnull Locale locale)
-		throws ExcelMergeException;
+			throws ExcelMergeException, IOException;
 
 	// Gesuchsteller / Kinder / Betreuung
 	@Nonnull
@@ -150,15 +150,16 @@ public interface ReportService {
 		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant)
+		throws ExcelMergeException, IOException;
 
 	@Nonnull
 	List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant);
 
 	@Nonnull
-	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException, IOException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale) throws ExcelMergeException, IOException;
 
 }

@@ -155,6 +155,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	private void  doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress, @Nonnull MandantIdentifier mandantIdentifier) throws MailException {
 		final SMTPClient client = new SMTPClient("UTF-8");
+		Writer writer = null;
 		try {
 			client.setDefaultTimeout(CONNECTION_TIMEOUT);
 			client.connect(configuration.getSMTPHost(), configuration.getSMTPPort());
@@ -166,7 +167,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			assertPositiveCompletion(client);
 			client.addRecipient(mailadress);
 			assertPositiveCompletion(client);
-			final Writer writer = client.sendMessageData();
+			writer = client.sendMessageData();
 			writer.write(messageBody);
 			writer.close();
 			assertPositiveIntermediate(client);
@@ -179,6 +180,12 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 					client.disconnect();
 				} catch (final IOException e) {
 					LOG.error("Could not disconnetct client", e);
+				}
+			}
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException ignore) {
 				}
 			}
 		}

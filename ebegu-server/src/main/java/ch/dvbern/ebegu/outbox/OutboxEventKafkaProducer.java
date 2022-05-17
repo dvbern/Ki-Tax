@@ -82,6 +82,7 @@ public class OutboxEventKafkaProducer {
 			return;
 		}
 
+		Producer<String, GenericRecord> producer = null;
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
@@ -108,17 +109,19 @@ public class OutboxEventKafkaProducer {
 			props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
 			props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 
-			Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
+			producer = new KafkaProducer<>(props);
 			Consumer<OutboxEvent> outboxEventConsumer = sendBlocking(producer);
 
 			events.forEach(outboxEventConsumer);
-
-			producer.close();
 
 		} catch (RuntimeException e) {
 			// When a timer fails, it's called again sometime later. If that timer fails as well, the schedule is
 			// cancelled: https://stackoverflow.com/a/10598938
 			LOG.error("Kafka export failed", e);
+		} finally {
+			if (producer != null) {
+				producer.close();
+			}
 		}
 	}
 

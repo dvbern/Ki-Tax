@@ -34,13 +34,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
-import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -237,7 +236,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	private UploadFileInfo generateReportMassenversand(
 		@Nonnull LocalDate dateFrom, @Nonnull LocalDate dateTo, @Nonnull String gesuchPeriodeId, @Nonnull Locale locale
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 		boolean inklBgGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
 		boolean inklMischGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
 		boolean inklTsGesuche = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
@@ -257,7 +256,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		return uploadFileInfo;
 	}
 
-	private UploadFileInfo generateReportNotrecht() throws ExcelMergeException {
+	private UploadFileInfo generateReportNotrecht() throws ExcelMergeException, IOException {
 		boolean zahlungenAusloesen = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 		return this.reportNotrechtService.generateExcelReportNotrecht(zahlungenAusloesen);
 	}

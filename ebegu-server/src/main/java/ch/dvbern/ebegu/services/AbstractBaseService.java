@@ -71,13 +71,17 @@ public abstract class AbstractBaseService {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void updateLuceneIndex(Class<? extends AbstractEntity> clazz, String id) {
 		// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
-		Session session = persistence.getEntityManager().unwrap(Session.class);
-		FullTextSession fullTextSession = Search.getFullTextSession(session);
-		// Den Index loeschen...
-		fullTextSession.purge(clazz, id);
-		// ... und neu erstellen
-		Object customer = fullTextSession.load(clazz, id);
-		fullTextSession.index(customer);
+		try (
+			Session session = persistence.getEntityManager().unwrap(Session.class);
+			FullTextSession fullTextSession = Search.getFullTextSession(session))
+		{
+			Objects.requireNonNull(fullTextSession);
+			// Den Index loeschen...
+			fullTextSession.purge(clazz, id);
+			// ... und neu erstellen
+			Object customer = fullTextSession.load(clazz, id);
+			fullTextSession.index(customer);
+		}
 	}
 
 	@Nonnull

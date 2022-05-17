@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +37,7 @@ public interface ReportMahlzeitenService {
 		@Nonnull LocalDate datumBis,
 		@Nonnull Locale locale,
 		@Nonnull String gemeindeId
-	) throws ExcelMergeException;
+	) throws ExcelMergeException, IOException;
 
 	@Nonnull
 	List<MahlzeitenverguenstigungDataRow> getReportMahlzeitenverguenstigung(

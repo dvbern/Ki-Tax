@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -79,7 +80,6 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -122,50 +122,53 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	public UploadFileInfo generateExcelReportTagesschuleAnmeldungen(
 		@Nonnull String stammdatenID,
 		@Nonnull String gesuchsperiodeID,
-		@Nonnull Locale locale) throws ExcelMergeException {
+		@Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 
 		requireNonNull(stammdatenID, "stammdatenID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 		requireNonNull(gesuchsperiodeID, "gesuchsperiodeID" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
 		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportTagesschuleAnmeldungen",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeID));
+			Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"generateExcelReportTagesschuleAnmeldungen",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					gesuchsperiodeID));
 
-		InstitutionStammdaten institutionStammdaten =
-			institutionStammdatenService.findInstitutionStammdaten(stammdatenID)
-				.orElseThrow(() -> new EbeguRuntimeException(
-					"generateExcelReportTagesschuleAnmeldungen", NO_STAMMDATEN_FOUND));
+			InstitutionStammdaten institutionStammdaten =
+				institutionStammdatenService.findInstitutionStammdaten(stammdatenID)
+					.orElseThrow(() -> new EbeguRuntimeException(
+						"generateExcelReportTagesschuleAnmeldungen", NO_STAMMDATEN_FOUND));
 
-		EinstellungenTagesschule einstellungenTagesschule =
-			findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
-		requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
+			EinstellungenTagesschule einstellungenTagesschule =
+				findEinstellungenTagesschuleByPeriode(institutionStammdaten, gesuchsperiode.getId());
+			requireNonNull(einstellungenTagesschule, "EinstellungenTagesschule" + VALIDIERUNG_DARF_NICHT_NULL_SEIN);
 
-		List<TagesschuleAnmeldungenDataRow> reportData =
-			getReportDataTagesschuleAnmeldungen(stammdatenID, gesuchsperiodeID);
+			List<TagesschuleAnmeldungenDataRow> reportData =
+				getReportDataTagesschuleAnmeldungen(stammdatenID, gesuchsperiodeID);
 
-		ExcelMergerDTO excelMergerDTO =
-			tagesschuleAnmeldungenExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode,
-				einstellungenTagesschule, institutionStammdaten.getInstitution().getName());
+			ExcelMergerDTO excelMergerDTO =
+				tagesschuleAnmeldungenExcelConverter.toExcelMergerDTO(reportData, locale, gesuchsperiode,
+					einstellungenTagesschule, institutionStammdaten.getInstitution().getName());
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		tagesschuleAnmeldungenExcelConverter.applyAutoSize(sheet);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			tagesschuleAnmeldungenExcelConverter.applyAutoSize(sheet);
 
-		byte[] bytes = createWorkbook(workbook);
+			byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull
@@ -303,33 +306,34 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(@Nonnull Locale locale)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(@Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			LocalDate stichtag = LocalDate.now();
+			final List<TagesschuleRechnungsstellungDataRow> reportData =
+				getReportDataTagesschuleRechnungsstellung(stichtag);
 
-		LocalDate stichtag = LocalDate.now();
-		final List<TagesschuleRechnungsstellungDataRow> reportData =
-			getReportDataTagesschuleRechnungsstellung(stichtag);
+			ExcelMergerDTO excelMergerDTO =
+				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
+						requireNonNull(principalBean.getMandant()));
 
-		ExcelMergerDTO excelMergerDTO =
-			tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
-					requireNonNull(principalBean.getMandant()));
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -166,7 +167,6 @@ import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
@@ -332,7 +332,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
@@ -340,25 +340,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			? ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_FR
 			: ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_DE;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID, mandant);
+			ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
 
-		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID, mandant);
-		ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			gesuchStichtagExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		gesuchStichtagExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, mandant),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, mandant),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -419,7 +420,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		validateDateParams(dateVon, dateBis);
 		validateDateParams(dateVon, dateBis);
@@ -428,25 +429,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			? ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
 			: ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID, mandant);
+			ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
-		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID, mandant);
-		ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			gesuchZeitraumExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		gesuchZeitraumExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, mandant),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, mandant),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull
@@ -606,32 +608,33 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable BigDecimal kantonSelbstbehalt,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_KANTON;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale, mandant);
 
-		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale, mandant);
+			final XSSFSheet xsslSheet =
+				(XSSFSheet) kantonExcelConverter.mergeHeaderFieldsStichtag(
+					reportData,
+					sheet,
+					locale,
+					datumVon,
+					datumBis,
+					kantonSelbstbehalt,
+					requireNonNull(principalBean.getMandant()));
 
-		final XSSFSheet xsslSheet =
-			(XSSFSheet) kantonExcelConverter.mergeHeaderFieldsStichtag(
-				reportData,
-				sheet,
-				locale,
-				datumVon,
-				datumBis,
-				kantonSelbstbehalt,
-				requireNonNull(principalBean.getMandant()));
-
-		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);
-		return saveExcelDokument(reportVorlage, rowFiller, locale, principalBean.getMandant());
+			final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);
+			return saveExcelDokument(reportVorlage, rowFiller, locale, principalBean.getMandant());
+		}
 	}
 
 	// MitarbeterInnen
@@ -847,33 +850,34 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumBis,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MITARBEITERINNEN;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis, mandant);
+			ExcelMergerDTO excelMergerDTO =
+				mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
+						requireNonNull(principalBean.getMandant()));
 
-		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis, mandant);
-		ExcelMergerDTO excelMergerDTO =
-			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
-					requireNonNull(principalBean.getMandant()));
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, principalBean.getMandant()),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, principalBean.getMandant()),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull
@@ -888,7 +892,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportZahlungAuftrag(
 		@Nonnull String auftragId,
 		@Nonnull Locale locale
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		Zahlungsauftrag zahlungsauftrag = zahlungService.findZahlungsauftrag(auftragId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -934,7 +938,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportZahlung(
 		@Nonnull String zahlungId,
 		@Nonnull Locale locale
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		List<ZahlungDataRow> reportData = new ArrayList<>();
 
@@ -978,62 +982,63 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumFaellig,
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Locale locale
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			final UserRole userRole = principalBean.discoverMostPrivilegedRole();
+			Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
+			List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
+				.filter(zahlungDataRow -> {
+					// Filtere nur die erlaubten Instituionsdaten
+					// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
+					return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
+						allowedInst.stream()
+							.anyMatch(institution -> institution.getId()
+								.equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
+				}).collect(Collectors.toList());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		final UserRole userRole = principalBean.discoverMostPrivilegedRole();
-		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
-		List<ZahlungDataRow> zahlungenBerechtigt = reportData.stream()
-			.filter(zahlungDataRow -> {
-				// Filtere nur die erlaubten Instituionsdaten
-				// User mit der Rolle Institution oder Traegerschaft dürfen nur "Ihre" Institutionsdaten sehen.
-				return !EnumUtil.isOneOf(userRole, UserRole.getInstitutionTraegerschaftRoles()) ||
-					allowedInst.stream()
-						.anyMatch(institution -> institution.getId()
-							.equals(zahlungDataRow.getZahlung().getEmpfaengerId()));
-			}).collect(Collectors.toList());
+			// Blatt Details
+			Sheet sheetDetails = workbook.getSheet(reportVorlage.getDataSheetName());
+			ExcelMergerDTO excelMergerDTO = zahlungAuftragDetailsExcelConverter.toExcelMergerDTO(
+				zahlungenBerechtigt,
+				locale,
+				ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale,
+						requireNonNull(gemeinde.getMandant()), bezeichnung),
+				datumGeneriert,
+				datumFaellig,
+				gemeinde
+			);
+			mergeData(sheetDetails, excelMergerDTO, reportVorlage.getMergeFields());
+			zahlungAuftragDetailsExcelConverter.applyAutoSize(sheetDetails);
 
-		// Blatt Details
-		Sheet sheetDetails = workbook.getSheet(reportVorlage.getDataSheetName());
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragDetailsExcelConverter.toExcelMergerDTO(
-			zahlungenBerechtigt,
-			locale,
-			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale,
-					requireNonNull(gemeinde.getMandant()), bezeichnung),
-			datumGeneriert,
-			datumFaellig,
-			gemeinde
-		);
-		mergeData(sheetDetails, excelMergerDTO, reportVorlage.getMergeFields());
-		zahlungAuftragDetailsExcelConverter.applyAutoSize(sheetDetails);
+			// Blatt Totals
+			Sheet sheetTotals = workbook.getSheet("Totals");
+			ExcelMergerDTO excelMergerTotalsDTO = zahlungAuftragTotalsExcelConverter.toExcelMergerDTO(
+				zahlungenBerechtigt,
+				locale,
+				ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale,
+						requireNonNull(gemeinde.getMandant()), bezeichnung),
+				datumGeneriert,
+				datumFaellig,
+				gemeinde
+			);
+			mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
+			zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
+			zahlungAuftragTotalsExcelConverter.hideAntragstellerColumnsIfNecessary(sheetTotals, zahlungenBerechtigt);
 
-		// Blatt Totals
-		Sheet sheetTotals = workbook.getSheet("Totals");
-		ExcelMergerDTO excelMergerTotalsDTO = zahlungAuftragTotalsExcelConverter.toExcelMergerDTO(
-			zahlungenBerechtigt,
-			locale,
-			ServerMessageUtil.getMessage("Reports_totalZahlungenTitle", locale,
-					requireNonNull(gemeinde.getMandant()), bezeichnung),
-			datumGeneriert,
-			datumFaellig,
-			gemeinde
-		);
-		mergeData(sheetTotals, excelMergerTotalsDTO, reportVorlage.getMergeFields());
-		zahlungAuftragTotalsExcelConverter.applyAutoSize(sheetTotals);
-		zahlungAuftragTotalsExcelConverter.hideAntragstellerColumnsIfNecessary(sheetTotals, zahlungenBerechtigt);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			excelFileName + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				excelFileName + ".xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Override
@@ -1043,7 +1048,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportZahlungPeriode(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Locale locale
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -1057,32 +1062,33 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			final List<Zahlung> allZahlungen = zahlungsauftraegeInPeriode.stream()
+				.flatMap(zahlungsauftrag -> zahlungsauftrag.getZahlungen().stream())
+				.collect(Collectors.toList());
 
-		final List<Zahlung> allZahlungen = zahlungsauftraegeInPeriode.stream()
-			.flatMap(zahlungsauftrag -> zahlungsauftrag.getZahlungen().stream())
-			.collect(Collectors.toList());
+			ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
+				allZahlungen,
+				gesuchsperiode.getGesuchsperiodeString(),
+				locale,
+				requireNonNull(gesuchsperiode.getMandant()));
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
-			allZahlungen,
-			gesuchsperiode.getGesuchsperiodeString(),
-			locale,
-			requireNonNull(gesuchsperiode.getMandant()));
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, gesuchsperiode.getMandant()),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, gesuchsperiode.getMandant()),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull
@@ -1526,43 +1532,44 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable String gesuchPeriodeId,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportResource.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportResource);
+		) {
+			Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
-
-		Gesuchsperiode gesuchsperiode = null;
-		if (gesuchPeriodeId != null) {
-			Optional<Gesuchsperiode> gesuchsperiodeOptional =
-				gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
-			if (gesuchsperiodeOptional.isPresent()) {
-				gesuchsperiode = gesuchsperiodeOptional.get();
+			Gesuchsperiode gesuchsperiode = null;
+			if (gesuchPeriodeId != null) {
+				Optional<Gesuchsperiode> gesuchsperiodeOptional =
+					gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
+				if (gesuchsperiodeOptional.isPresent()) {
+					gesuchsperiode = gesuchsperiodeOptional.get();
+				}
 			}
+
+			List<GesuchstellerKinderBetreuungDataRow> reportData =
+				getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode, locale, mandant);
+
+			final XSSFSheet xsslSheet =
+				(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
+					reportData,
+					sheet,
+					datumVon,
+					datumBis,
+					gesuchsperiode,
+					locale,
+					requireNonNull(principalBean.getMandant()));
+
+			final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
+
+			return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 		}
-
-		List<GesuchstellerKinderBetreuungDataRow> reportData =
-			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode, locale, mandant);
-
-		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
-				reportData,
-				sheet,
-				datumVon,
-				datumBis,
-				gesuchsperiode,
-				locale,
-				requireNonNull(principalBean.getMandant()));
-
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
-
-		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
@@ -1793,43 +1800,44 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable String gesuchPeriodeId,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_KINDER;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportResource.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportResource);
+		) {
+			Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
-
-		Gesuchsperiode gesuchsperiode = null;
-		if (gesuchPeriodeId != null) {
-			Optional<Gesuchsperiode> gesuchsperiodeOptional =
-				gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
-			if (gesuchsperiodeOptional.isPresent()) {
-				gesuchsperiode = gesuchsperiodeOptional.get();
+			Gesuchsperiode gesuchsperiode = null;
+			if (gesuchPeriodeId != null) {
+				Optional<Gesuchsperiode> gesuchsperiodeOptional =
+					gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
+				if (gesuchsperiodeOptional.isPresent()) {
+					gesuchsperiode = gesuchsperiodeOptional.get();
+				}
 			}
+
+			List<GesuchstellerKinderBetreuungDataRow> reportData =
+				getReportDataKinder(datumVon, datumBis, gesuchsperiode, locale, mandant);
+
+			final XSSFSheet xsslSheet =
+				(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
+					reportData,
+					sheet,
+					datumVon,
+					datumBis,
+					gesuchsperiode,
+					locale,
+					requireNonNull(principalBean.getMandant()));
+
+			final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
+
+			return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 		}
-
-		List<GesuchstellerKinderBetreuungDataRow> reportData =
-			getReportDataKinder(datumVon, datumBis, gesuchsperiode, locale, mandant);
-
-		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
-				reportData,
-				sheet,
-				datumVon,
-				datumBis,
-				gesuchsperiode,
-				locale,
-				requireNonNull(principalBean.getMandant()));
-
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
-
-		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
@@ -1908,34 +1916,39 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale, @Nonnull Mandant mandant)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportGesuchsteller(
+		@Nonnull LocalDate stichtag,
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
+	) throws ExcelMergeException, IOException {
 		validateStichtagParam(stichtag);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportResource.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportResource.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportResource);
+		) {
+			Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
+			List<GesuchstellerKinderBetreuungDataRow> reportData =
+				getReportDataGesuchsteller(stichtag, locale, mandant);
 
-		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale, mandant);
+			if (reportData.stream().noneMatch(row -> row.getMzvBeantragt())) {
+				sheet.setColumnWidth(48, 0);
+			}
 
-		if (reportData.stream().noneMatch(row -> row.getMzvBeantragt())) {
-			sheet.setColumnWidth(48, 0);
+			final XSSFSheet xsslSheet =
+				(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(
+					reportData,
+					sheet,
+					stichtag,
+					locale,
+					requireNonNull(principalBean.getMandant()));
+
+			final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
+			return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 		}
-
-		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(
-				reportData,
-				sheet,
-				stichtag,
-				locale,
-				requireNonNull(principalBean.getMandant()));
-
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
-		return saveExcelDokument(reportResource, rowFiller, locale, principalBean.getMandant());
 	}
 
 	/**
@@ -2073,29 +2086,31 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale, @Nonnull Mandant mandant
+	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_BENUTZER;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<BenutzerDataRow> reportData = getReportDataBenutzer(locale, mandant);
 
-		List<BenutzerDataRow> reportData = getReportDataBenutzer(locale, mandant);
+			ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
 
-		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale, mandant);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			benutzerExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		benutzerExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, mandant),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, mandant),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Override
@@ -2217,30 +2232,32 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_INSTITUTIONEN;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<InstitutionenDataRow> reportData = getReportDataInstitutionen(locale);
 
-		List<InstitutionenDataRow> reportData = getReportDataInstitutionen(locale);
-
-		ExcelMergerDTO excelMergerDTO = institutionenExcelConverter.toExcelMergerDTO(reportData, locale,
+			ExcelMergerDTO excelMergerDTO = institutionenExcelConverter.toExcelMergerDTO(reportData, locale,
 				requireNonNull(principalBean.getMandant()));
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		institutionenExcelConverter.applyAutoSize(sheet);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			institutionenExcelConverter.applyAutoSize(sheet);
 
-		byte[] bytes = createWorkbook(workbook);
+			byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, principalBean.getMandant()),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, principalBean.getMandant()),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<InstitutionenDataRow> getReportDataInstitutionen(@Nonnull Locale locale) {
@@ -2397,30 +2414,33 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportFerienbetreuung(@Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_FERIENBETREUUNG;
 
-		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<FerienbetreuungDataRow> reportData = getReportDataFerienbetreuung();
 
-		List<FerienbetreuungDataRow> reportData = getReportDataFerienbetreuung();
-
-		ExcelMergerDTO excelMergerDTO = ferienbetreuungExcelConverter.toExcelMergerDTO(reportData,
+			ExcelMergerDTO excelMergerDTO = ferienbetreuungExcelConverter.toExcelMergerDTO(
+				reportData,
 				requireNonNull(principalBean.getMandant()));
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		ferienbetreuungExcelConverter.applyAutoSize(sheet);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			ferienbetreuungExcelConverter.applyAutoSize(sheet);
 
-		byte[] bytes = createWorkbook(workbook);
+			byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(
-			bytes,
-			getFileName(reportVorlage, locale, principalBean.getMandant()),
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				getFileName(reportVorlage, locale, principalBean.getMandant()),
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<FerienbetreuungDataRow> getReportDataFerienbetreuung() {

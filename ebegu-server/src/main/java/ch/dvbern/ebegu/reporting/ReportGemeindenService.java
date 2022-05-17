@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -31,5 +32,5 @@ public interface ReportGemeindenService {
 	UploadFileInfo generateExcelReportGemeinden(
 			@Nonnull Locale locale,
 			@Nonnull Mandant mandant
-	) throws ExcelMergeException;
+	) throws ExcelMergeException, IOException;
 }

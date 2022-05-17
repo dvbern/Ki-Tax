@@ -343,8 +343,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		stammdaten.setTelefon("0789256896");
 		stammdaten.setWebseite("www.tutorialgemeinde.ch");
 
-		try {
-			final InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png");
+		try (
+			InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png")
+		) {
 			Objects.requireNonNull(logo);
 			final byte[] gemeindeLogo = IOUtils.toByteArray(logo);
 			stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
