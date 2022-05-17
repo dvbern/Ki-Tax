@@ -144,6 +144,29 @@
                             </div>
                         </div>
                     </div>
+                </fieldset>
+                    <div class="row" ng-if="vm.isAusweisNachweisRequired()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <dv-input-container class="form-group">
+                                <dv-file-upload
+                                    (download)="vm.downloadAusweisDokument($event[0],$event[1])"
+                                    [title]="'AUSWEIS_NACHWEIS'"
+                                    [tooltip-text]="'AUSWEIS_NACHWEIS_TOOLTIP' | translate"
+                                    (delete)="vm.onDeleteFile($event)"
+                                    (upload-file)="vm.onUpload($event)"
+                                    [files]="vm.dokumentGrund.dokumente"
+                                    [read-only]="vm.isGesuchReadonly()"
+                                    [read-only-delete]="vm.isGesuchReadonly()"
+                                >
+                                </dv-file-upload>
+                                <dv-error-messages input-id="ausweis_nachweis" for="vm.dvFileUploadError" class="error file-upload-error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                <fieldset dv-enable-element
+                          dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                          dv-enable-expression="!vm.isGesuchReadonly()">
 
                     <!-- Adresse. Bei Mutationen nicht editierbar-->
                     <fieldset ng-if="vm.showWohnadresse()" ng-disabled="vm.disableWohnadresseFor2GS()" class="dv-adresse__fieldset">

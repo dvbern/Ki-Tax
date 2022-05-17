@@ -47,18 +47,21 @@
                                    for="pensumForm[vm.id].$error"
                                    step="vm.step"></dv-error-messages>
             </div>
-            <div class="betreuung-input-switch">
-                <dv-switch
-                    (switch-value-change)="vm.toggle()"
-                    [switch-option-left]="vm.switchOptions[0]"
-                    [switch-option-right]="vm.switchOptions[1]"
-                    [(switch-value)]="vm.pensumContainer.betreuungspensumJA.unitForDisplay"
-                    [disabled]="vm.isDisabled"
-                >
-                </dv-switch>
-            </div>
-            <div>
-                <span class="dv-betreuung-input-info-label" ng-bind="vm.label"></span>
+            <div ng-if="vm.showBetreuungInputSwitch">
+                <div class="betreuung-input-switch">
+
+                    <dv-switch
+                        (switch-value-change)="vm.toggle()"
+                        [switch-option-left]="vm.switchOptions[0]"
+                        [switch-option-right]="vm.switchOptions[1]"
+                        [(switch-value)]="vm.pensumContainer.betreuungspensumJA.unitForDisplay"
+                        [disabled]="vm.isDisabled"
+                    >
+                    </dv-switch>
+                </div>
+                <div>
+                    <span class="dv-betreuung-input-info-label" ng-bind="vm.label"></span>
+                </div>
             </div>
         </dv-input-container>
     </div>

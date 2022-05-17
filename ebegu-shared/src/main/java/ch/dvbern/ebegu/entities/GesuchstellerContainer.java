@@ -28,6 +28,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
@@ -417,4 +418,5 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		}
 		return getWohnadresseAm(stichtag);
 	}
+
 }
