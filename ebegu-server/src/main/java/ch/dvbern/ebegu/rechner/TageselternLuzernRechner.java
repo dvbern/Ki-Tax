@@ -76,11 +76,6 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal pensum, BigDecimal anteilMonat) {
-		return null;
-	}
-
-	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
 		BigDecimal tageProMonat = EXACT.divide(getInputParameter().getOeffnungstageTFO(), BigDecimal.valueOf(12));
 		return EXACT.multiply(getInputParameter().getOeffnungsstundenTFO(), tageProMonat);
