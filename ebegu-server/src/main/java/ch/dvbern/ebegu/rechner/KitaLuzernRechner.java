@@ -79,6 +79,11 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
+	protected BigDecimal calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal pensum, BigDecimal anteilMonat) {
+		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), pensum, anteilMonat);
+	}
+
+	@Override
 	protected BigDecimal getAnzahlZeiteinheitenProMonat() {
 		return EXACT.divide(getInputParameter().getOeffnungstageKita(), BigDecimal.valueOf(12));
 	}
