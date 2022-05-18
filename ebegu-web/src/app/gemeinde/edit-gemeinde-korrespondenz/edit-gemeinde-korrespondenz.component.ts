@@ -19,9 +19,6 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
-import {LogFactory} from '../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('EditGemeindeComponentKorrespondenz');
 
 @Component({
     selector: 'dv-edit-gemeinde-korrespondenz',
