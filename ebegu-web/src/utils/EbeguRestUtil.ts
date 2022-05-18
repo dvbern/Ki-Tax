@@ -1014,7 +1014,9 @@ export class EbeguRestUtil {
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }
-            restStammdaten.gemeindeStammdatenKorrespondenz = this.gemeindeStammdatenKorrespondenzToRestObject({}, stammdaten.gemeindeStammdatenKorrespondenz);
+            restStammdaten.gemeindeStammdatenKorrespondenz = this.gemeindeStammdatenKorrespondenzToRestObject(
+                {},
+                stammdaten.gemeindeStammdatenKorrespondenz);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -1073,7 +1075,9 @@ export class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
-            stammdatenTS.gemeindeStammdatenKorrespondenz = this.parseGemeindeStammdatenKorrespondenz(new TSGemeindeStammdatenKorrespondenz(), stammdatenFromServer.gemeindeStammdatenKorrespondenz);
+            stammdatenTS.gemeindeStammdatenKorrespondenz = this.parseGemeindeStammdatenKorrespondenz(
+                new TSGemeindeStammdatenKorrespondenz(),
+                stammdatenFromServer.gemeindeStammdatenKorrespondenz);
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;
@@ -1153,7 +1157,10 @@ export class EbeguRestUtil {
         tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
     }
 
-    public gemeindeStammdatenKorrespondenzToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdatenKorrespondenz): TSGemeindeStammdatenKorrespondenz {
+    public gemeindeStammdatenKorrespondenzToRestObject(
+        restStammdaten: any,
+        stammdaten: TSGemeindeStammdatenKorrespondenz
+    ): TSGemeindeStammdatenKorrespondenz {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
             restStammdaten.senderAddressSpacingLeft = stammdaten.senderAddressSpacingLeft;
