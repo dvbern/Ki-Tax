@@ -22,6 +22,7 @@ import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponentBG} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
 import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
+import {EditGemeindeComponentKorrespondenz} from './edit-gemeinde-korrespondenz/edit-gemeinde-korrespondenz.component';
 import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
 import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
@@ -50,6 +51,7 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         EditGemeindeComponentFI,
         EditGemeindeComponentStammdaten,
         EditGemeindeComponentTS,
+        EditGemeindeComponentKorrespondenz,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
         OverlappingZeitraumDirective
