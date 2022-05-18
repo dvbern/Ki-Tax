@@ -84,11 +84,11 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
 
-	private String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
+	private final String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
 
-	private boolean stadtBernAsivConfiguered = false;
+	private static final boolean STADT_BERN_ASIV_CONFIGUERED = false;
 
-	private TagesschuleBernRechner rechner = new TagesschuleBernRechner();
+	private final TagesschuleBernRechner rechner = new TagesschuleBernRechner();
 
 
 	@BeforeEach
@@ -121,7 +121,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		// Verzeichnis pro Mandant erstellen
 		FileUtils.forceMkdir(new File(pfad));
 		for (MandantIdentifier mandant : MandantIdentifier.values()) {
-			FileUtils.forceMkdir(new File(pfad + "/" + mandant.name()));
+			FileUtils.forceMkdir(new File(pfad + '/' + mandant.name()));
 		}
 
 		gesuch_tagesschule = TestDataUtil.createTestfall11_SchulamtOnly();
@@ -144,6 +144,17 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void musterPdfTest(@Nonnull MandantIdentifier mandant) throws IOException, InvoiceGeneratorException {
+		createMusterPdf(mandant);
+	}
+
+	public void createMusterPdf(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		assertNotNull(gesuch_alleinstehend.getGesuchsteller1());
+		final MusterPdfGenerator generator = new MusterPdfGenerator(gesuch_alleinstehend, stammdaten);
+		generateTestDocument(generator, mandant, "MusterPdf");
+	}
 
 	@ParameterizedTest
 	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
@@ -180,7 +191,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
+			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
@@ -198,7 +209,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
+			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
@@ -217,7 +228,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
+			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
