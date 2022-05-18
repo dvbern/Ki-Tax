@@ -2910,5 +2910,7 @@
     "KORRESPONDENZ_LOGO_WIDTH_HELP": "Cette indication est facultative. Si vous n'indiquez pas de largeur, celle-ci sera calculée automatiquement sur la base de l'image téléchargée.",
     "KORRESPONDENZ_LOGO_SPACING_LEFT":  "Distance du logo à gauche",
     "KORRESPONDENZ_LOGO_SPACING_TOP": "Distance du logo en haut",
+    "KORRESPONDENZ_MUSTERDOKUMENT_LINK": "Télécharger un document type pour vérifier les paramètres",
+    "KORRESPONDENZ_MUSTERDOKUMENT": "Modèle de document.pdf",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

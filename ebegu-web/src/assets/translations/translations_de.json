@@ -2911,5 +2911,7 @@
     "KORRESPONDENZ_LOGO_WIDTH_HELP": "Diese Angabe ist optional. Wenn Sie keine Breite angeben, wird die Breite aufgrund des hochgeladenen Bildes automatisch berechnet",
     "KORRESPONDENZ_LOGO_SPACING_LEFT":  "Abstand Logo links",
     "KORRESPONDENZ_LOGO_SPACING_TOP": "Abstand Logo oben",
+    "KORRESPONDENZ_MUSTERDOKUMENT_LINK": "Musterdokument herunterladen, um die Einstellungen zu überprüfen",
+    "KORRESPONDENZ_MUSTERDOKUMENT": "Musterdokument.pdf",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

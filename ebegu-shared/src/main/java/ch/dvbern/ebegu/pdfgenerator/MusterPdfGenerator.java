@@ -33,10 +33,11 @@ public class MusterPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String BEGLEITSCHREIBEN_TITLE = "PdfGeneration_Muster_Title";
 
 	public MusterPdfGenerator(
-		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten);
+		// Fuer das MusterPDF wird kein Gesuch benoetigt. Da es in der Superklasse zwingend ist, geben wir
+		// einfach ein leeres Gesuch mit
+		super(new Gesuch(), stammdaten);
 	}
 
 	@Nonnull

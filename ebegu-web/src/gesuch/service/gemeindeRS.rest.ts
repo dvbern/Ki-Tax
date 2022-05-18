@@ -301,4 +301,12 @@ export class GemeindeRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/next-vollksschule-bfsnummer`)
             .then(response => response.data as number);
     }
+
+    public downloadMusterDokument(gemeindeId: string): IPromise<BlobPart> {
+        return this.$http.get(`${this.serviceURL}/musterdokument/${encodeURIComponent(gemeindeId)}`,
+            {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
 }

@@ -163,6 +163,12 @@
                             {{stammdaten.gemeindeStammdatenKorrespondenz.logoWidth}}</p>
                     </div>
                 </div>
+
+                <div class="col-sm-12">
+                    <a role="button"
+                       (click)="downloadMusterdokument(stammdaten.gemeinde.id);$event.stopPropagation()">
+                        {{'KORRESPONDENZ_MUSTERDOKUMENT_LINK' | translate}}</a>
+                </div>
             </div>
         </fieldset>
     </ng-template>

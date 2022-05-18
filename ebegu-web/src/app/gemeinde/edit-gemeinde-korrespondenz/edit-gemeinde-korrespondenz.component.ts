@@ -17,8 +17,12 @@
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
+import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 
 @Component({
     selector: 'dv-edit-gemeinde-korrespondenz',
@@ -32,6 +36,20 @@ export class EditGemeindeComponentKorrespondenz  {
     @Input() public editMode: boolean;
 
     public constructor(
+        public gesuchModelManager: GesuchModelManager,
+        public gemeindeRS: GemeindeRS,
+        public downloadRS: DownloadRS,
+        public $translate: TranslateService
     ) {
+    }
+
+    public downloadMusterdokument(gemeindeId: string): void {
+        this.gemeindeRS.downloadMusterDokument(gemeindeId).then(
+            response => {
+                let file;
+                file = new Blob([response], {type: 'application/pdf'});
+                const filename = this.$translate.instant('KORRESPONDENZ_MUSTERDOKUMENT');
+                this.downloadRS.openDownload(file, filename);
+            });
     }
 }

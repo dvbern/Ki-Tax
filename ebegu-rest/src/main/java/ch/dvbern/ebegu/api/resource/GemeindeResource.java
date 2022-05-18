@@ -90,6 +90,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.ExternalClientService;
@@ -97,6 +98,7 @@ import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PDFService;
 import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.Image;
 import io.swagger.annotations.Api;
@@ -150,6 +152,9 @@ public class GemeindeResource {
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
+
+	@Inject
+	private PDFService pdfService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -971,5 +976,31 @@ public class GemeindeResource {
 	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT} ) // Oeffentliche Daten
 	public Long getNextBfsnummer() {
 		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
+	}
+
+	@ApiOperation("Erstellt ein Musterdokument, damit die Korrespondenz-Einstellungen geprueft werden koennen")
+	@GET
+	@Path("/musterdokument/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response downloadMusterDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId
+	) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"GemeindeStammdaten",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		try {
+			final byte[] content = pdfService.generateMusterdokument(gemeindeStammdaten);
+			if (content.length > 0) {
+				return RestUtil.buildDownloadResponse(true, "Musterdokument.pdf",
+						"application/octet-stream", content);
+			}
+		} catch (IOException | MergeDocException e) {
+			return Response.status(Status.NOT_FOUND).entity("Musterdokument kann nicht gelesen werden").build();
+		}
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

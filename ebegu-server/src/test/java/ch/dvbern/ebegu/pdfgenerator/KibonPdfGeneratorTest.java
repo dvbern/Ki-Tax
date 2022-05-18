@@ -152,7 +152,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	public void createMusterPdf(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
 		assertNotNull(gesuch_alleinstehend.getGesuchsteller1());
-		final MusterPdfGenerator generator = new MusterPdfGenerator(gesuch_alleinstehend, stammdaten);
+		final MusterPdfGenerator generator = new MusterPdfGenerator(stammdaten);
 		generateTestDocument(generator, mandant, "MusterPdf");
 	}
 
