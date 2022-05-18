@@ -101,6 +101,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -5287,6 +5288,8 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
+		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
+
 		return stammdaten;
 	}
 
@@ -5378,6 +5381,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (stammdaten.getGemeindeAusgabestelle() != null) {
 			jaxStammdaten.setGemeindeAusgabestelle(gemeindeToJAX(stammdaten.getGemeindeAusgabestelle()));
 		}
+
+		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
 
 		return jaxStammdaten;
 	}

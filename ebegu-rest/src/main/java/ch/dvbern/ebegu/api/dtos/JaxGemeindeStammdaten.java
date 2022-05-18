@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -27,6 +26,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Created by imanol on 17.03.16.
@@ -55,6 +56,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	private JaxAdresse tsAdresse;
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
+	@NonNull
+	private JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
@@ -164,6 +167,15 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 
 	public void setBeschwerdeAdresse(@Nullable JaxAdresse beschwerdeAdresse) {
 		this.beschwerdeAdresse = beschwerdeAdresse;
+	}
+
+	@NonNull
+	public JaxGemeindeStammdatenKorrespondenz getGemeindeStammdatenKorrespondenz() {
+		return gemeindeStammdatenKorrespondenz;
+	}
+
+	public void setGemeindeStammdatenKorrespondenz(@NonNull JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
+		this.gemeindeStammdatenKorrespondenz = gemeindeStammdatenKorrespondenz;
 	}
 
 	@Nullable
