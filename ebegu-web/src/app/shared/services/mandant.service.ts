@@ -42,11 +42,11 @@ export class MandantService {
 
     private static hostnameToMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
-            case 'be':
+            case KiBonMandant.BE:
                 return KiBonMandant.BE;
-            case 'lu':
+            case KiBonMandant.LU:
                 return KiBonMandant.LU;
-            case 'so':
+            case KiBonMandant.SO:
                 return KiBonMandant.SO;
             default:
                 return KiBonMandant.NONE;
@@ -141,7 +141,7 @@ export class MandantService {
     }
 
     public parseHostnameForMandant(): KiBonMandant {
-        const regex = /(be|so|lu)(?=.(dvbern|kibon))/g;
+        const regex = /(be|so|stadtluzern)(?=.(dvbern|kibon))/g;
         const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
         if (matches === null) {
             return KiBonMandant.NONE;
@@ -188,7 +188,7 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /([a-z]*-(kibon))?(?=(-[a-z]{2})?\.(dvbern|kibon))/;
+        const environmentRegex = /([a-z]*-(kibon))?(?=(-(be|so|stadtluzern))?\.(dvbern|kibon))/;
         const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
         if (matches === null) {
             return '';
