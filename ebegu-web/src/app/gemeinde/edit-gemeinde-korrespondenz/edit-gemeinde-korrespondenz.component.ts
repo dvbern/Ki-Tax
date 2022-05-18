@@ -20,7 +20,6 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {GesuchModelManager} from '../../../gesuch/service/gesuchModelManager';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 
@@ -36,7 +35,6 @@ export class EditGemeindeComponentKorrespondenz  {
     @Input() public editMode: boolean;
 
     public constructor(
-        public gesuchModelManager: GesuchModelManager,
         public gemeindeRS: GemeindeRS,
         public downloadRS: DownloadRS,
         public $translate: TranslateService

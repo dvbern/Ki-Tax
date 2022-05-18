@@ -17,7 +17,10 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {TranslateService} from '@ngx-translate/core';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeModule} from '../gemeinde.module';
@@ -28,6 +31,13 @@ describe('EditGemeindeComponentKorrespondenz', () => {
     let component: EditGemeindeComponentKorrespondenz;
     let fixture: ComponentFixture<EditGemeindeComponentKorrespondenz>;
 
+    const gemeindeRSSpy = jasmine
+        .createSpyObj<GemeindeRS>(GemeindeRS.name, ['downloadMusterDokument']);
+    const downloadRSSpy = jasmine
+        .createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
+    const translateRSSpy = jasmine
+        .createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -37,6 +47,11 @@ describe('EditGemeindeComponentKorrespondenz', () => {
                 GemeindeModule,
             ],
             schemas: [],
+            providers: [
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: TranslateService, useValue: translateRSSpy},
+            ],
             declarations: [
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
