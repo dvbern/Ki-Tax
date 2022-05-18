@@ -2899,5 +2899,6 @@
     "PORTAL_WECHSELN": "Portal wechseln",
     "FREIGABE_QUITTUNG_EINLESEN_REQUIRED": "Solothurn: Einlesen Freigabequittung aktiviert",
     "ZUSATZINFORMATIONEN_INSTITUTION": "Zusatzinformationen Institution",
+    "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsgutschein wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

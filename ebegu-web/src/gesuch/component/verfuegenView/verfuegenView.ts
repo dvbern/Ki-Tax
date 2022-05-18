@@ -568,6 +568,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
+    public isAuszahlungAnEltern(): boolean {
+        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern;
+    }
+
     public showVerfuegungPdfLink(): boolean {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
