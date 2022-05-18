@@ -36,7 +36,7 @@ describe('EditGemeindeComponentKorrespondenz', () => {
     const downloadRSSpy = jasmine
         .createSpyObj<DownloadRS>(DownloadRS.name, ['openDownload']);
     const translateRSSpy = jasmine
-        .createSpyObj<TranslateService>(TranslateService.name, ['instant']);
+        .createSpyObj<TranslateService>(TranslateService.name, ['instant', 'setDefaultLang', 'use']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
