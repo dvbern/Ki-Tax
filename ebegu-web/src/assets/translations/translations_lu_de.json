@@ -78,5 +78,7 @@
 	"BE_LOGIN_DATEN": "Login Daten",
     "ZUSTAENDIGE_AMTSSTELLE": "Zuständige Amtsstelle",
     "NAME_BETREUUER": "Name der Betreuerin oder des Betreuers",
-	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+	"AUSWEIS_NACHWEIS": "Nachweis Identität",
+	"AUSWEIS_NACHWEIS_TOOLTIP": "Aus Sicherheitsgründen muss ein Foto Ihres Ausweises hochgeladen werden (Personal ID, Pass, Fahrausweis).",
+    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -248,4 +248,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant) {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, mandant, false);
 	}
+
+	@Override
+	@Nonnull
+	public Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.SCHNITTSTELLE_EVENTS_AKTIVIERT, mandant, true);
+	}
 }
