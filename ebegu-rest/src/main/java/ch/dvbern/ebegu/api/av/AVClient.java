@@ -46,6 +46,7 @@ import xyz.capybara.clamav.commands.scan.result.ScanResult.VirusFound;
 public class AVClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AVClient.class);
+	private static final String METHOD_NAME = "scan";
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
@@ -62,7 +63,6 @@ public class AVClient {
 		}
 	}
 
-	@SuppressWarnings("PMD.PreserveStackTrace")
 	public void scan (@NonNull FileMetadata fileMetadata) {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
@@ -73,11 +73,11 @@ public class AVClient {
 
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, fileMetadata);
-				throw new EbeguMailiciousContentException("scan", ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
 			}
 		} catch (FileNotFoundException e) {
-			throw new EbeguEntityNotFoundException("scan",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fileMetadata.getId());
+			throw new EbeguEntityNotFoundException(METHOD_NAME,
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, e, fileMetadata.getId());
 		}
 	}
 
@@ -91,11 +91,12 @@ public class AVClient {
 			ScanResult result = client.scan(inputStream);
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, info);
-				throw new EbeguMailiciousContentException("scan", ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, info);
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, info);
 			}
 		} catch (IOException e) {
-			throw new EbeguEntityNotFoundException("scan",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, info);
+			throw new EbeguEntityNotFoundException(
+				METHOD_NAME,
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, e, info);
 		}
 	}
 
