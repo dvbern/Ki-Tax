@@ -38,7 +38,7 @@ public enum MandantIdentifier {
 
 		@Override
 		public String getUrlCode() {
-			return "lu";
+			return "stadtluzern";
 		}
 	},
 	SOLOTHURN {

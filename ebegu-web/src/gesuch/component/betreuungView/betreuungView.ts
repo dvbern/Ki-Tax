@@ -147,6 +147,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+    public isSwitchBetreuungspensumEnabled: boolean;
 
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
@@ -314,6 +315,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
+                .forEach(einstellung => {
+                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
                 });
         });
 

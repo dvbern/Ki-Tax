@@ -845,7 +845,8 @@ public class FinanzielleSituationResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST, ADMIN_MANDANT,
+		SACHBEARBEITER_MANDANT })
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public boolean doesGeburtsdatumMatchSteuerabfrage(
 		@Nonnull @NotNull @PathParam("containerId") JaxId jaxContainerId,

@@ -134,7 +134,7 @@ export const GESUCH_JS_MODULE =
         .directive('dvFileUpload',
             downgradeComponent({
                 component: FileUploadComponent,
-                inputs: ['title', 'files', 'readOnly', 'readOnlyDelete'],
+                inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
                 outputs: ['download', 'delete', 'uploadFile'],
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
