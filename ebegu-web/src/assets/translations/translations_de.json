@@ -2896,7 +2896,7 @@
     "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
     "SELECT_PORTAL": "Wählen Sie Ihr Portal aus",
     "PORTAL_OEFFNEN": "Portal öffnen",
-    "PORTAL_WECHSELN": "Portal wechseln",
+    "PORTAL_WECHSELN": "Sie sind nicht aus Bern? Klicken Sie hier um das Portal zu wechseln.",
     "FREIGABE_QUITTUNG_EINLESEN_REQUIRED": "Solothurn: Einlesen Freigabequittung aktiviert",
     "ZUSATZINFORMATIONEN_INSTITUTION": "Zusatzinformationen Institution",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
