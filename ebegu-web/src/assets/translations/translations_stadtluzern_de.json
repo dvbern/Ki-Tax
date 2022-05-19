@@ -78,5 +78,6 @@
 	"BE_LOGIN_DATEN": "Login Daten",
 	"AUSWEIS_NACHWEIS": "Nachweis Identität",
 	"AUSWEIS_NACHWEIS_TOOLTIP": "Aus Sicherheitsgründen muss ein Foto Ihres Ausweises hochgeladen werden (Personal ID, Pass, Fahrausweis).",
-    "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
+    "PORTAL_WECHSELN": "Sie sind nicht aus Luzern? Klicken Sie hier um das Portal zu wechseln.",
+	"THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
