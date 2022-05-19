@@ -54,6 +54,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(testValues.anspruchsPensum);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBetreuungspensumProzent(testValues.betreuungsPensum);
 		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setBesondereBeduerfnisseZuschlag(testValues.besondereBeduerfnisseZuschlag);
+		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setStuendlicheVollkosten(testValues.stuendlicheVollkosten);
 		verfuegungZeitabschnitt.setBabyTarifForAsivAndGemeinde(geburtstag.plusYears(1)
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		return verfuegung.getZeitabschnitte().get(0);
@@ -77,9 +78,9 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 			"Verguenstigung not equal",
 			testValues.expectedVerguenstigung.stripTrailingZeros(),
 			result.getVerguenstigung().stripTrailingZeros());
-		Assert.assertEquals("Betreuungstage not equal", testValues.expectedBetreuungsTage.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
-		Assert.assertEquals("Anspruchstage not equal", testValues.expectedAnspruchsTage.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
-		Assert.assertEquals("BGTage not equal", testValues.expectedBgTage.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("Betreuungszeiteinheit not equal", testValues.expectedBetreuungsZeiteinheit.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("Anspruchszeiteinheit not equal", testValues.expectedAnspruchsZeiteinheit.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
+		Assert.assertEquals("BGZeiteinheit not equal", testValues.expectedBgZeiteinheit.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
 		BigDecimal bgPensum =  testValues.betreuungsPensum.min(BigDecimal.valueOf(testValues.anspruchsPensum));
 		Assert.assertEquals("BGPensum not equal", bgPensum.stripTrailingZeros(), result.getBgPensumProzent().stripTrailingZeros());
 	}
@@ -91,6 +92,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal einkommen = BigDecimal.ZERO;
 		protected BigDecimal besondereBeduerfnisseZuschlag = BigDecimal.ZERO;
 		protected boolean isBaby = false;
+		protected BigDecimal stuendlicheVollkosten = BigDecimal.ZERO;
 
 		protected BigDecimal expectedVollkosten = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.ZERO;
@@ -98,9 +100,10 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal expectedVerguenstigung = BigDecimal.ZERO;
 		protected BigDecimal expectedElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedMinimalerElternbeitrag = BigDecimal.ZERO;
-		protected BigDecimal expectedBetreuungsTage = BigDecimal.ZERO;
-		protected BigDecimal expectedAnspruchsTage = BigDecimal.ZERO;
-		protected BigDecimal expectedBgTage = BigDecimal.ZERO;
+		//Zeiteinheit = Tage bei Kitas, Stunden bei TFOs
+		protected BigDecimal expectedBetreuungsZeiteinheit = BigDecimal.ZERO;
+		protected BigDecimal expectedAnspruchsZeiteinheit = BigDecimal.ZERO;
+		protected BigDecimal expectedBgZeiteinheit = BigDecimal.ZERO;
 
 		protected DateRange gueltigkeit = new DateRange(
 			LocalDate.of(2019, Month.AUGUST, 1),

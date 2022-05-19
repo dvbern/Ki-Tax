@@ -33,8 +33,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	@Test
 	public void testBaby() {
 		TestValues testValues = new TestValues();
-		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(2200);
-		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(60);
+		testValues.stuendlicheVollkosten = MathUtil.DEFAULT.fromNullSafe(10);
 		testValues.anspruchsPensum = 60;
 		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(48000);
 		testValues.isBaby = true;
@@ -45,36 +44,9 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(2105.3);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(5.4);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.7);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(135.3);
-		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(135.3);
-		testValues.expectedBgTage =  BigDecimal.valueOf(135.3);
-
-		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
-		rechner.calculate(zeitabschnitt, defaultParameterDTO);
-
-		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
-		assertCalculationResultResult(result, testValues);
-	}
-
-	@Test
-	public void testKind() {
-		TestValues testValues = new TestValues();
-		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1200);
-		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(60);
-		testValues.anspruchsPensum = 80;
-		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(55000);
-		testValues.isBaby = false;
-
-		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1200);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1200);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1439.1);
-		testValues.expectedVerguenstigung = BigDecimal.valueOf(1105.3);
-		testValues.expectedElternbeitrag = BigDecimal.valueOf(333.8);
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(94.70);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(135.3);
-		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(180.4);
-		testValues.expectedBgTage =  BigDecimal.valueOf(135.3);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(135.3);
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(135.3);
+		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(135.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
@@ -99,9 +71,9 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(31.55);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(90.2);
-		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(45.1);
-		testValues.expectedBgTage =  BigDecimal.valueOf(45.1);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(90.2);
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(45.1);
+		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(45.1);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
@@ -126,9 +98,9 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(31.55);
-		testValues.expectedBetreuungsTage = BigDecimal.valueOf(90.2);
-		testValues.expectedAnspruchsTage =  BigDecimal.valueOf(45.1);
-		testValues.expectedBgTage =  BigDecimal.valueOf(45.1);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(90.2);
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(45.1);
+		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(45.1);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
