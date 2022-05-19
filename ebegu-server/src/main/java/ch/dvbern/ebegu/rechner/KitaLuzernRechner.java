@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 
 public class KitaLuzernRechner extends AbstractLuzernRechner {
 
@@ -75,7 +76,8 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal calculateBGProTagByEinkommen() {
-		return isBaby? calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+		BigDecimal bgProTag = isBaby ? calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+		return MathUtil.maximum(bgProTag, getMaximalWertBGProTagAufgrundEinkommen());
 	}
 
 	@Override

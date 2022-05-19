@@ -222,6 +222,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return getMinBetreuungsgutschein();
 	}
 
+	protected BigDecimal getMaximalWertBGProTagAufgrundEinkommen() {
+		return EXACT.subtract(getVollkostenTarif(), getMinimalTarif());
+	}
+
 	private BigDecimal calculateZuschlagProMonat() {
 		BigDecimal zuschlagProTag = inputZuschlagErhoeterBeterungsbedarf;
 		BigDecimal zuschlagKitaPlus = inputIsKitaPlusZuschlag ? getKitaPlusZuschlag() : BigDecimal.ZERO;
