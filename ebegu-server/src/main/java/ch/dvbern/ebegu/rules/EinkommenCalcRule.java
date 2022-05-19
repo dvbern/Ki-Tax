@@ -197,7 +197,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus1),
-						finanzDatenDTO.getMinEKV(),
+						String.valueOf(finanzDatenDTO.getMinEKV()),
 						String.valueOf(basisjahr));
 				}
 			} else {
@@ -214,7 +214,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus1),
-						finanzDatenDTO.getMinEKV(),
+						String.valueOf(finanzDatenDTO.getMinEKV()),
 						String.valueOf(basisjahr));
 				}
 			}
@@ -230,7 +230,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus2),
-						finanzDatenDTO.getMinEKV(),
+						String.valueOf(finanzDatenDTO.getMinEKV()),
 						String.valueOf(basisjahr));
 				}
 			} else {
@@ -246,7 +246,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
 						String.valueOf(basisjahrPlus2),
-						finanzDatenDTO.getMinEKV(),
+						String.valueOf(finanzDatenDTO.getMinEKV()),
 						String.valueOf(basisjahr));
 				}
 			}
