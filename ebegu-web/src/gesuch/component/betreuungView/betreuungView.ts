@@ -316,12 +316,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
                 });
-            response.filter(r => r.key === TSEinstellungKey.STUENDLICHE_VOLLKOSTEN_BEI_TFO)
-                .forEach(einstellung => {
-                    if (EbeguUtil.isNotNullAndTrue(einstellung.getValueAsBoolean())) {
-                        this.isTFOKostenBerechnungStuendlich = true;
-                    }
-                });
         });
 
         this.einstellungRS.findEinstellung(
@@ -344,6 +338,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .then((response: TSPublicAppConfig) => {
                 this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
             });
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
     }
 
     /**
