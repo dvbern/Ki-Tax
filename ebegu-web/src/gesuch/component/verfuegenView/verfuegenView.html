@@ -369,6 +369,9 @@
                                 <td ng-if="!vm.isLuzern" class="result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
+                                <td ng-if="vm.showGutscheinProStunde()" class="result">
+                                    <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
+                                </td>
                                 <td class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
@@ -396,6 +399,7 @@
                                 <th ng-if="!vm.isLuzern" class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th ng-if="!vm.isLuzern" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
+                                <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
                                 <th ng-if="!vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
@@ -447,6 +451,9 @@
                                 <!-- Minimaler Elternbeitrag -->
                                 <td  ng-if="!vm.isLuzern" class="result"
                                     ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
+                                <!-- Gutschein pro Stunde -->
+                               <td ng-if="vm.showGutscheinProStunde()" class="result"
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-
                                 <!-- An Kita überwiesen (Gutschein) -->
                                 <td class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>

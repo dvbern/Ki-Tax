@@ -729,6 +729,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.getBetreuung().auszahlungAnEltern;
     }
 
+    public showGutscheinProStunde(): boolean {
+        return this.isLuzern && this.getBetreuung().isAngebotTagesfamilien();
+    }
+
     public showMahlzeitenverguenstigung(): boolean {
         return this.isMahlzeitenverguenstigungEnabled()
             && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());

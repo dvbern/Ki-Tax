@@ -383,6 +383,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
+		addTitleGutscheinProStunde(table);
 		addTitleNrUeberweiesenerBetrag(table);
 
 		// Spaltentitel, Row 2
@@ -443,6 +444,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
+			addValueGutscheinProStunde(table, abschnitt.getVerguenstigungProZeiteinheit());
 			addValueUeberweiesenerBetrag(table, abschnitt.getVerguenstigung());
 		}
 		return table;
@@ -471,6 +473,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			2,
 			1));
 	}
+
+	protected abstract void addTitleGutscheinProStunde(PdfPTable table);
 
 	protected void addTitleBetreuungsGutschein(PdfPTable table) {
 		table.addCell(createCell(
@@ -525,6 +529,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1,
 			1));
 	}
+
+	protected abstract void addValueGutscheinProStunde(PdfPTable table, @Nullable BigDecimal verguenstigungProZeiteinheit);
 
 	protected void addValueUeberweiesenerBetrag(PdfPTable table, BigDecimal verguenstigung) {
 		table.addCell(createCell(

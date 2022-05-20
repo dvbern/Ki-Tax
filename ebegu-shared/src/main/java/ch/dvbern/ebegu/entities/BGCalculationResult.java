@@ -88,7 +88,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal verguenstigungProZeiteinheit; // Punkt VIII auf der Verfuegung bei TFOs Luzern
+	private BigDecimal verguenstigungProZeiteinheit; // Punkt Gutschein Pro Stunde auf der Verfuegung bei TFOs Luzern
 
 	@NotNull @Nonnull
 	@Enumerated(EnumType.STRING)
