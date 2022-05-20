@@ -282,7 +282,14 @@ public enum EinstellungKey {
 
 	// Fachstellen Typ (KIBON-2360)
 	// BERN oder LUZERN
-	FACHSTELLEN_TYP;
+	FACHSTELLEN_TYP,
+
+	// LU: falls diese Einstellung aktiviert ist, wird bei den Gesuchstellenden ein Ausweisnachweis verlangt
+	// Siehe KIBON-2310
+	AUSWEIS_NACHWEIS_REQUIRED,
+
+	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
+	BETREUUNG_INPUT_SWITCH_ENABLED;
 
 
 	private EinstellungTyp typ;

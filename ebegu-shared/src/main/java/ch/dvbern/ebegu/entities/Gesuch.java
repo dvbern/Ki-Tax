@@ -266,6 +266,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private Boolean internePendenz = false;
 
+
 	public Gesuch() {
 	}
 
@@ -978,7 +979,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
-
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
