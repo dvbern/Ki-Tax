@@ -172,6 +172,7 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
@@ -2009,6 +2010,7 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode, persistence);
 		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BETREUUNG_INPUT_SWITCH_ENABLED, "true", gesuchsperiode, persistence);
+		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
