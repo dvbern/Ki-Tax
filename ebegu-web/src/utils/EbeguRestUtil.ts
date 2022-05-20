@@ -3376,6 +3376,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
+            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit = zeitabschnittFromServer.verguenstigungProZeiteinheit;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
                 zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =

@@ -78,6 +78,15 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 			"Verguenstigung not equal",
 			testValues.expectedVerguenstigung.stripTrailingZeros(),
 			result.getVerguenstigung().stripTrailingZeros());
+
+		if (testValues.expectedVerguenstigungProZeiteinheit != null) {
+			Assert.assertNotNull("Verguentstigung pro Zeiteinheit is null", result.getVerguenstigungProZeiteinheit());
+			Assert.assertEquals(
+				"Verguentstigung pro Zeiteinheit not equal",
+				testValues.expectedVerguenstigungProZeiteinheit.stripTrailingZeros(),
+				result.getVerguenstigungProZeiteinheit().stripTrailingZeros());
+		}
+
 		Assert.assertEquals("Betreuungszeiteinheit not equal", testValues.expectedBetreuungsZeiteinheit.stripTrailingZeros(), result.getBetreuungspensumZeiteinheit().stripTrailingZeros());
 		Assert.assertEquals("Anspruchszeiteinheit not equal", testValues.expectedAnspruchsZeiteinheit.stripTrailingZeros(), result.getAnspruchspensumZeiteinheit().stripTrailingZeros());
 		Assert.assertEquals("BGZeiteinheit not equal", testValues.expectedBgZeiteinheit.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
@@ -98,6 +107,7 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
 		protected BigDecimal expectedVerguenstigung = BigDecimal.ZERO;
+		protected BigDecimal expectedVerguenstigungProZeiteinheit;
 		protected BigDecimal expectedElternbeitrag = BigDecimal.ZERO;
 		protected BigDecimal expectedMinimalerElternbeitrag = BigDecimal.ZERO;
 		//Zeiteinheit = Tage bei Kitas, Stunden bei TFOs

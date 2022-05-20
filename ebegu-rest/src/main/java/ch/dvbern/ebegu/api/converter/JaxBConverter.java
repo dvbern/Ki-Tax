@@ -3897,6 +3897,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		jaxZeitabschn.setVerguenstigung(zeitabschnitt.getVerguenstigung());
+		jaxZeitabschn.setVerguenstigungProZeiteinheit(zeitabschnitt.getVerguenstigungProZeiteinheit());
 		jaxZeitabschn.setMinimalerElternbeitrag(zeitabschnitt.getMinimalerElternbeitrag());
 		jaxZeitabschn.setMinimalerElternbeitragGekuerzt(zeitabschnitt.getMinimalerElternbeitragGekuerzt());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());

@@ -93,6 +93,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinProMonatVorAbzugSelbstbehalt
 			= EXACT.add(gutscheinProMonatVorZuschlagUndSelbstbehalt, zuschlagProMonat);
 		BigDecimal gutscheinProMonat =  EXACT.subtract(gutscheinProMonatVorAbzugSelbstbehalt, selbstbehaltDerEltern);
+		BigDecimal gutscheinProZeiteinheit = calculateGutscheinProZeiteinheit(gutscheinProMonat);
 
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
@@ -108,10 +109,19 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		result.setBetreuungspensumZeiteinheit(betreuungsZeiteinheiten);
 		result.setBgPensumZeiteinheit(verfuegteZeiteinheit);
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
+		result.setVerguenstigungProZeiteinheit(gutscheinProZeiteinheit);
 
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private BigDecimal calculateGutscheinProZeiteinheit(BigDecimal gutscheinProMonat) {
+		if (gutscheinProMonat.compareTo(BigDecimal.ZERO) <= 0) {
+			return BigDecimal.ZERO;
+		}
+
+		return EXACT.divide(gutscheinProMonat, this.verfuegteZeiteinheit);
 	}
 
 	protected BigDecimal calculateGutscheinProMonatGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinProMonatVorZuschlagUndSelbstbehalt) {

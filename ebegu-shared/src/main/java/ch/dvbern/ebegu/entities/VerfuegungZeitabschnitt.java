@@ -273,6 +273,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().getVerguenstigung();
 	}
 
+	@Nullable
+	public BigDecimal getVerguenstigungProZeiteinheit() {
+		return getRelevantBgCalculationResult().getVerguenstigungProZeiteinheit();
+	}
+
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
 		return getRelevantBgCalculationResult().getMinimalerElternbeitrag();
