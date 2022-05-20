@@ -805,7 +805,7 @@ public class BGCalculationInput {
 		// Die stündlichen Vollkosten für TFOs können nicht linaer addiert werden, daher darf es keine Überschneidungen geben
 		if (other.getStuendlicheVollkosten() != null) {
 			if(this.getStuendlicheVollkosten() != null && !MathUtil.isSame(this.getStuendlicheVollkosten(), other.getStuendlicheVollkosten())) {
-				throw new IllegalArgumentException("Familiengoressen kann nicht gemerged werden");
+				throw new IllegalArgumentException("Stuendliche Vollkosten können nicht gemerged werden");
 			}
 			this.setStuendlicheVollkosten(other.getStuendlicheVollkosten());
 		}
