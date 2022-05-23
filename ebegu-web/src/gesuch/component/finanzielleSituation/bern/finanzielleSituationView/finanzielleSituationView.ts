@@ -335,7 +335,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) &&
+            this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
             !this.model.gemeinsameSteuererklaerung &&
             this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
             EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff);

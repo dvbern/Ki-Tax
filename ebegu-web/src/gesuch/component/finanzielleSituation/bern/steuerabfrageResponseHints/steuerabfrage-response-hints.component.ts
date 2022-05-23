@@ -123,6 +123,14 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
     }
 
+    public showWarningVeraendertePartnerschaft(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT;
+    }
+
+    public showWarningUnregelmaessigkeit(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT;
+    }
+
     public showRetry(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.RETRY;
     }

@@ -152,13 +152,13 @@ export class LocalLoginComponent {
     private static getLocalloginDatum(mandant: KiBonMandant): LocalloginDatum {
         let datum: LocalloginDatum;
         switch (mandant) {
-            case 'be':
+            case KiBonMandant.BE:
                 datum = LOCALLOGIN_DATA.BE;
                 break;
-            case'lu':
+            case KiBonMandant.LU:
                 datum = LOCALLOGIN_DATA.LU;
                 break;
-            case 'so':
+            case KiBonMandant.SO:
                 datum = LOCALLOGIN_DATA.SO;
                 break;
             default:

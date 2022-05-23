@@ -249,6 +249,9 @@ export class ErwerbspensumListViewController
     }
 
     public showErwerbspensumGS2(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
+            return false;
+        }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
         const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()

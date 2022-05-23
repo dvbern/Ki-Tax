@@ -2898,5 +2898,7 @@
     "ZUSATZINFORMATIONEN_INSTITUTION": "Zusatzinformationen Institution",
     "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
     "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
