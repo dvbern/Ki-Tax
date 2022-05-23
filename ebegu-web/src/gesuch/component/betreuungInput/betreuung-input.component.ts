@@ -32,6 +32,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
+        showBetreuungInputSwitch: '<',
     };
     public controller = BetreuungInputComponent;
     public controllerAs = 'vm';
@@ -48,12 +49,13 @@ export class BetreuungInputComponent implements IController {
     public isDisabled: boolean = false;
     public id: string;
     public step: number = 0.01;
+    public showBetreuungInputSwitch: boolean = true;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
-    private readonly multiplierKita: number;
-    private readonly multiplierTfo: number;
+    private readonly multiplierKita: number = 1;
+    private readonly multiplierTfo: number = 1;
 
     private pensumValue: number;
 

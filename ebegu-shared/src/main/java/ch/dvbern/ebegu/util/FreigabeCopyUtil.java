@@ -406,23 +406,18 @@ public final class FreigabeCopyUtil {
 
 		gs.getSelbstdeklaration().setEinkunftErwerb(ja.getSelbstdeklaration().getEinkunftErwerb());
 		gs.getSelbstdeklaration().setEinkunftVersicherung(ja.getSelbstdeklaration().getEinkunftVersicherung());
-		gs.getSelbstdeklaration().setEinkunftAusgleichskassen(ja.getSelbstdeklaration().getEinkunftAusgleichskassen());
 		gs.getSelbstdeklaration().setEinkunftWertschriften(ja.getSelbstdeklaration().getEinkunftWertschriften());
-		gs.getSelbstdeklaration().setEinkunftUnterhaltsbeitragSteuerpflichtige(ja.getSelbstdeklaration().getEinkunftUnterhaltsbeitragSteuerpflichtige());
 		gs.getSelbstdeklaration().setEinkunftUnterhaltsbeitragKinder(ja.getSelbstdeklaration().getEinkunftUnterhaltsbeitragKinder());
 		gs.getSelbstdeklaration().setEinkunftUeberige(ja.getSelbstdeklaration().getEinkunftUeberige());
 		gs.getSelbstdeklaration().setEinkunftLiegenschaften(ja.getSelbstdeklaration().getEinkunftLiegenschaften());
 		gs.getSelbstdeklaration().setAbzugBerufsauslagen(ja.getSelbstdeklaration().getAbzugBerufsauslagen());
-		gs.getSelbstdeklaration().setAbzugUnterhaltsbeitragEhepartner(ja.getSelbstdeklaration().getAbzugUnterhaltsbeitragEhepartner());
 		gs.getSelbstdeklaration().setAbzugUnterhaltsbeitragKinder(ja.getSelbstdeklaration().getAbzugUnterhaltsbeitragKinder());
-		gs.getSelbstdeklaration().setAbzugRentenleistungen(ja.getSelbstdeklaration().getAbzugRentenleistungen());
 		gs.getSelbstdeklaration().setAbzugSaeule3A(ja.getSelbstdeklaration().getAbzugSaeule3A());
 		gs.getSelbstdeklaration().setAbzugVersicherungspraemien(ja.getSelbstdeklaration().getAbzugVersicherungspraemien());
 		gs.getSelbstdeklaration().setAbzugKrankheitsUnfallKosten(ja.getSelbstdeklaration().getAbzugKrankheitsUnfallKosten());
 		gs.getSelbstdeklaration().setSonderabzugErwerbstaetigkeitEhegatten(ja.getSelbstdeklaration().getSonderabzugErwerbstaetigkeitEhegatten());
 		gs.getSelbstdeklaration().setAbzugKinderVorschule(ja.getSelbstdeklaration().getAbzugKinderVorschule());
 		gs.getSelbstdeklaration().setAbzugKinderSchule(ja.getSelbstdeklaration().getAbzugKinderSchule());
-		gs.getSelbstdeklaration().setAbzugKinderAuswaertigerAufenthalt(ja.getSelbstdeklaration().getAbzugKinderAuswaertigerAufenthalt());
 		gs.getSelbstdeklaration().setAbzugEigenbetreuung(ja.getSelbstdeklaration().getAbzugEigenbetreuung());
 		gs.getSelbstdeklaration().setAbzugFremdbetreuung(ja.getSelbstdeklaration().getAbzugFremdbetreuung());
 		gs.getSelbstdeklaration().setAbzugErwerbsunfaehigePersonen(ja.getSelbstdeklaration().getAbzugErwerbsunfaehigePersonen());

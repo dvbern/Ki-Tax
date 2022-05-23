@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Corresponds with URL
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'stadtluzern',
-    SO = 'so',
-    NONE = ''
-}
-
-// Corresponds with name in DB
-export enum KiBonMandantFull {
-    BE = 'Kanton Bern',
-    LU = 'Stadt Luzern',
-    SO = 'Kanton Solothurn',
-    NONE = ''
-}
+ALTER TABLE steuerdaten_response ADD COLUMN veraenderte_partnerschaft BIT;
+ALTER TABLE steuerdaten_response ADD COLUMN unregelmaessigkeit_in_der_veranlagung BIT;

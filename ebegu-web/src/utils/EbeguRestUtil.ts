@@ -1957,17 +1957,12 @@ export class EbeguRestUtil {
         this.abstractMutableEntityToRestObject(restSelbstdeklaration, selbstdeklaration);
         restSelbstdeklaration.einkunftErwerb = selbstdeklaration.einkunftErwerb;
         restSelbstdeklaration.einkunftVersicherung = selbstdeklaration.einkunftVersicherung;
-        restSelbstdeklaration.einkunftAusgleichskassen = selbstdeklaration.einkunftAusgleichskassen;
         restSelbstdeklaration.einkunftWertschriften = selbstdeklaration.einkunftWertschriften;
-        restSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige =
-            selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige;
         restSelbstdeklaration.einkunftUnterhaltsbeitragKinder = selbstdeklaration.einkunftUnterhaltsbeitragKinder;
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
         restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
-        restSelbstdeklaration.abzugUnterhaltsbeitragEhepartner = selbstdeklaration.abzugUnterhaltsbeitragEhepartner;
         restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
-        restSelbstdeklaration.abzugRentenleistungen = selbstdeklaration.abzugRentenleistungen;
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
         restSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklaration.abzugKrankheitsUnfallKosten;
@@ -1975,8 +1970,6 @@ export class EbeguRestUtil {
             = selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten;
         restSelbstdeklaration.abzugKinderVorschule = selbstdeklaration.abzugKinderVorschule;
         restSelbstdeklaration.abzugKinderSchule = selbstdeklaration.abzugKinderSchule;
-        restSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
-            = selbstdeklaration.abzugKinderAuswaertigerAufenthalt;
         restSelbstdeklaration.abzugEigenbetreuung = selbstdeklaration.abzugEigenbetreuung;
         restSelbstdeklaration.abzugFremdbetreuung = selbstdeklaration.abzugFremdbetreuung;
         restSelbstdeklaration.abzugErwerbsunfaehigePersonen
@@ -2076,19 +2069,13 @@ export class EbeguRestUtil {
             this.parseAbstractMutableEntity(tsSelbstdeklaration, selbstdeklarationFromServer);
             tsSelbstdeklaration.einkunftErwerb = selbstdeklarationFromServer.einkunftErwerb;
             tsSelbstdeklaration.einkunftVersicherung = selbstdeklarationFromServer.einkunftVersicherung;
-            tsSelbstdeklaration.einkunftAusgleichskassen = selbstdeklarationFromServer.einkunftAusgleichskassen;
             tsSelbstdeklaration.einkunftWertschriften = selbstdeklarationFromServer.einkunftWertschriften;
-            tsSelbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige =
-                selbstdeklarationFromServer.einkunftUnterhaltsbeitragSteuerpflichtige;
             tsSelbstdeklaration.einkunftUnterhaltsbeitragKinder =
                 selbstdeklarationFromServer.einkunftUnterhaltsbeitragKinder;
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
-            tsSelbstdeklaration.abzugUnterhaltsbeitragEhepartner =
-                selbstdeklarationFromServer.abzugUnterhaltsbeitragEhepartner;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
-            tsSelbstdeklaration.abzugRentenleistungen = selbstdeklarationFromServer.abzugRentenleistungen;
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
             tsSelbstdeklaration.abzugKrankheitsUnfallKosten = selbstdeklarationFromServer.abzugKrankheitsUnfallKosten;
@@ -2096,8 +2083,6 @@ export class EbeguRestUtil {
                 = selbstdeklarationFromServer.sonderabzugErwerbstaetigkeitEhegatten;
             tsSelbstdeklaration.abzugKinderVorschule = selbstdeklarationFromServer.abzugKinderVorschule;
             tsSelbstdeklaration.abzugKinderSchule = selbstdeklarationFromServer.abzugKinderSchule;
-            tsSelbstdeklaration.abzugKinderAuswaertigerAufenthalt
-                = selbstdeklarationFromServer.abzugKinderAuswaertigerAufenthalt;
             tsSelbstdeklaration.abzugEigenbetreuung = selbstdeklarationFromServer.abzugEigenbetreuung;
             tsSelbstdeklaration.abzugFremdbetreuung = selbstdeklarationFromServer.abzugFremdbetreuung;
             tsSelbstdeklaration.abzugErwerbsunfaehigePersonen
