@@ -134,5 +134,8 @@
     "VERFUEGUNG_EINGESCHRIEBEN": "BG Bestätigung eingeschrieben versenden",
     "VERFUEGUNG_EINGESCHRIEBEN_HELP": "<b>Müssen die BG Bestätigungen eingeschrieben verschickt werden?</b><br>In einem allfälligen Beschwerdeverfahren muss die Gemeinde für die Berechnung der Beschwerdefrist die Zustellung belegen können. Gelingt ihr das nicht (weil die BG Bestätigung nicht eingeschrieben verschickt wurde), wird auf die Angaben der Beschwerdeführenden abgestellt. Es empfiehlt sich daher, mindestens in Fällen, die beschwerdegefährdet sind (Abweisungen der Anträge, Kürzungen der Gutscheine) diese eingeschrieben zu verschicken.",
     "BESTAETIGT": "Platz bestätigt",
+    "STUENDLICHE_VOLLKOSTEN": "Stündliche Vollkosten",
+    "GUTSCHEIN_PRO_STUNDE_HELP": "Gutschein pro Stunde",
+    "GUTSCHEIN_PRO_STUNDE": "Gutschein pro Stunde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
