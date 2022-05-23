@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ChangeDetectorRef} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
@@ -151,7 +152,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public infomaZahlungen: boolean = false;
+    public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -173,7 +174,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -184,14 +185,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public async $onInit(): Promise<void> {
+    public $onInit(): void {
         super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
 
-        await this.loadInfomaZahlungenActive();
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -268,6 +268,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         }
 
+        this.loadInfomaZahlungenActive();
+
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
@@ -316,8 +318,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         });
     }
 
-    private async loadInfomaZahlungenActive(): Promise<void> {
-        return this.applicationPropertyRS.getPublicPropertiesCached()
+    private loadInfomaZahlungenActive(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.infomaZahlungen)) {
+            // properties wurden bereits geladen
+            return;
+        }
+
+        this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
                 this.infomaZahlungen = response.infomaZahlungen;
             });
@@ -343,9 +350,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
         // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
-        if (EbeguUtil.isNotNullAndTrue(this.infomaZahlungen)) {
-            tsBetreuung.auszahlungAnEltern = true;
-        }
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.infomaZahlungen = response.infomaZahlungen;
+                tsBetreuung.auszahlungAnEltern = response.infomaZahlungen;
+            });
 
         return tsBetreuung;
     }
