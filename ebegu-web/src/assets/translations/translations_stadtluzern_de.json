@@ -136,5 +136,8 @@
     "BESTAETIGT": "Platz bestätigt",
     "ZUSTAENDIGE_AMTSSTELLE": "Zuständige Amtsstelle",
     "NAME_BETREUUER": "Name der Betreuerin oder des Betreuers",
+    "STUENDLICHE_VOLLKOSTEN": "Stündliche Vollkosten",
+    "GUTSCHEIN_PRO_STUNDE_HELP": "Gutschein pro Stunde",
+    "GUTSCHEIN_PRO_STUNDE": "Gutschein pro Stunde",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

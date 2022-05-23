@@ -273,6 +273,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().getVerguenstigung();
 	}
 
+	@Nullable
+	public BigDecimal getVerguenstigungProZeiteinheit() {
+		return getRelevantBgCalculationResult().getVerguenstigungProZeiteinheit();
+	}
+
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitrag() {
 		return getRelevantBgCalculationResult().getMinimalerElternbeitrag();
@@ -607,6 +612,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
 		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
 		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
+	}
+
+	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
+		this.getBgCalculationInputAsiv().setStuendlicheVollkosten(stuendlicheVollkosten);
+		this.getBgCalculationInputGemeinde().setStuendlicheVollkosten(stuendlicheVollkosten);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */

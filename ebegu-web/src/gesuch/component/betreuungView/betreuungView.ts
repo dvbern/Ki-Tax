@@ -148,6 +148,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
     public isSwitchBetreuungspensumEnabled: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
@@ -342,6 +343,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .then((response: TSPublicAppConfig) => {
                 this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
             });
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
     }
 
     /**
@@ -793,6 +798,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit =
                 this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
+
+        if (this.isTFOKostenBerechnungStuendlich
+            && this.betreuungsangebot
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
+            // TFO Kosten stündlich eingegeben werden
+            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
+            tsBetreuungspensum.pensum = 0;
+        }
+
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
@@ -1604,5 +1619,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
         // 100% = 220 stunden => 1% = 2.2 stunden
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+    }
+
+    public showBetreuungsKostenAndPensumInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return true;
+        }
+
+        return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    public showStuendlicheKostenInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return false;
+        }
+
+        return this.isTFOKostenBerechnungStuendlich;
+    }
+
+    private isBetreuungsangebotTagesfamilie(): boolean {
+        return this.betreuungsangebot
+        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 }
