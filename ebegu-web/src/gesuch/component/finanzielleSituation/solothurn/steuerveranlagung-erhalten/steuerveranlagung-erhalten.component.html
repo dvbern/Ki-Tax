@@ -16,11 +16,12 @@
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
+                    <dv-error-messages
+                        *ngIf="selbststaendig.touched"
+                        [errorObject]="selbststaendig.errors"
+                        inputId="selbststaendig_id">
+                    </dv-error-messages>
                 </dv-radio-container-x>
-                <dv-error-messages
-                    [errorObject]="selbststaendig.errors"
-                    inputId="selbststaendig_id">
-                </dv-error-messages>
             </dv-input-container-x>
         </div>
     </div>
@@ -47,6 +48,7 @@
 					</mat-radio-group>
 				</dv-radio-container-x>
 				<dv-error-messages
+                        *ngIf="selbststaendig.touched"
 						[errorObject]="steuerveranlagungErhalten.errors"
 						inputId="steuerveranlagungErhalten_id">
 				</dv-error-messages>

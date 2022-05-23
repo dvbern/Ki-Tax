@@ -66,6 +66,20 @@
     <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
+<div *ngIf="showWarningVeraendertePartnerschaft()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT' | translate"
+    ></p>
+</div>
+
+<div *ngIf="showWarningUnregelmaessigkeit()"
+     class="well well-status-warten minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT' | translate"
+    ></p>
+</div>
+
 <div *ngIf="showRetry()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"

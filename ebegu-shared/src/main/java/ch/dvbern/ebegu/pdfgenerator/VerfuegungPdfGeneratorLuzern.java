@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.awt.Color;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -27,8 +29,17 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPTable;
+import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
+
+	private final float[] COLUMN_WIDTHS_DEFAULT = { 90, 100, 88, 88, 88, 100, 110 };
+	private final float[] COLUMN_WIDTHS_TFO = { 90, 100, 88, 88, 88, 100, 110, 110 };
+
+	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
+
+	private boolean isBetreuungTagesfamilie = false;
 
 	public VerfuegungPdfGeneratorLuzern(
 		@Nonnull Betreuung betreuung,
@@ -38,6 +49,7 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 		boolean isFKJVTexte
 	) {
 		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
+		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
 	}
 
 	@Override
@@ -54,6 +66,11 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return this.isBetreuungTagesfamilie ? COLUMN_WIDTHS_TFO : COLUMN_WIDTHS_DEFAULT;
+	}
+
+	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelleBold;
 	}
@@ -67,5 +84,70 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	protected String getTextGutschein() {
 		String messageKey =  betreuung.isAuszahlungAnEltern() ? GUTSCHEIN_AN_ELTERN : GUTSCHEIN_AN_INSTITUTION;
 		return translate(messageKey);
+	}
+
+	@Override
+	protected void addTitleGutscheinProStunde(PdfPTable table) {
+		if (isBetreuungTagesfamilie) {
+			table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(GUTSCHEIN_PRO_STUNDE),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
+		}
+	}
+
+	@Override
+	protected void addReferenzNummerCells(PdfPTable table) {
+		//no-op die Zeile mit den RefernzNummern soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addTitleBerechneterGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addTitleBetreuungsGutschein(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addTitleNrElternBeitrag(PdfPTable table) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueBetreuungsGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
+		//no-op die Spalte soll in Luzern nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueGutscheinProStunde(
+		PdfPTable table,
+		@Nullable BigDecimal verguenstigungProZeiteinheit) {
+		if (this.isBetreuungTagesfamilie) {
+			table.addCell(createCell(
+				false,
+				Element.ALIGN_RIGHT,
+				PdfUtil.printBigDecimal(verguenstigungProZeiteinheit),
+				Color.LIGHT_GRAY,
+				getBgColorForUeberwiesenerBetragCell(),
+				1,
+				1));
+		}
 	}
 }

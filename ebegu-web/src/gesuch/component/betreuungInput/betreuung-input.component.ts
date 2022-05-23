@@ -16,7 +16,6 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../../../app/core/constants/CONSTANTS';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
@@ -31,6 +30,9 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         isDisabled: '<',
         id: '@inputId',
         betreuungsangebotTyp: '<',
+        multiplierKita: '<',
+        multiplierTfo: '<',
+        showBetreuungInputSwitch: '<',
     };
     public controller = BetreuungInputComponent;
     public controllerAs = 'vm';
@@ -47,10 +49,13 @@ export class BetreuungInputComponent implements IController {
     public isDisabled: boolean = false;
     public id: string;
     public step: number = 0.01;
+    public showBetreuungInputSwitch: boolean = true;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
+    private readonly multiplierKita: number = 1;
+    private readonly multiplierTfo: number = 1;
 
     private pensumValue: number;
 
@@ -91,10 +96,10 @@ export class BetreuungInputComponent implements IController {
     public setAngebotDependingVariables(): void {
         if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-            this.multiplier = MULTIPLIER_TAGESFAMILIEN;
+            this.multiplier = this.multiplierTfo;
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-            this.multiplier = MULTIPLIER_KITA;
+            this.multiplier = this.multiplierKita;
         }
     }
 

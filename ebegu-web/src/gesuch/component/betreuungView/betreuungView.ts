@@ -147,6 +147,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+    public isSwitchBetreuungspensumEnabled: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
+
+    private oeffnungstageKita: number;
+    private oeffnungstageTFO: number;
+    private oeffnungsstundenTFO: number;
+
+    private multiplierKita: number;
+    private multiplierTFO: number;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -298,6 +307,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
                 });
+
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA)
+                .forEach(einstellung => {
+                    this.oeffnungstageKita = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungstageTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
+                .forEach(einstellung => {
+                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
+                });
         });
 
         this.einstellungRS.findEinstellung(
@@ -327,6 +353,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .then((response: TSPublicAppConfig) => {
                 this.infomaZahlungen = response.infomaZahlungen;
             });
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
     }
 
     /**
@@ -783,6 +813,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit =
                 this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
+
+        if (this.isTFOKostenBerechnungStuendlich
+            && this.betreuungsangebot
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
+            // TFO Kosten stündlich eingegeben werden
+            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
+            tsBetreuungspensum.pensum = 0;
+        }
+
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
@@ -1567,5 +1607,53 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isFachstellenTypLuzern(): boolean {
         return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
+    public getMultiplierKita(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierKita)) {
+            this.calculateMuliplyerKita();
+        }
+
+        return this.multiplierKita;
+    }
+
+    public getMultiplierTFO(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierTFO)) {
+            this.calculateMultiplierTFO();
+        }
+
+        return this.multiplierTFO;
+    }
+
+    private calculateMuliplyerKita(): void {
+        // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
+        this.multiplierKita = this.oeffnungstageKita / 12 / 100;
+    }
+
+    private calculateMultiplierTFO(): void {
+        // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
+        // 100% = 220 stunden => 1% = 2.2 stunden
+        this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+    }
+
+    public showBetreuungsKostenAndPensumInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return true;
+        }
+
+        return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    public showStuendlicheKostenInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return false;
+        }
+
+        return this.isTFOKostenBerechnungStuendlich;
+    }
+
+    private isBetreuungsangebotTagesfamilie(): boolean {
+        return this.betreuungsangebot
+        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 }

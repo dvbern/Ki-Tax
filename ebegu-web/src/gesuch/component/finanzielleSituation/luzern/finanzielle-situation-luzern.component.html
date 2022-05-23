@@ -51,6 +51,49 @@
                                                 (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
             </dv-finanzielle-situation-require-x>
 
+            <div *ngIf="model.sozialhilfeBezueger">
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="required long-label" for="zustaendige_amtsstelle_id">
+                                {{'ZUSTAENDIGE_AMTSSTELLE' | translate}}</label>
+                            <input id="zustaendige_amtsstelle_id" type="text"
+                                   name="zustaendigeAmtsstelle"
+                                   #zustaendigeAmtsstelle="ngModel"
+                                   [(ngModel)]="model.zustaendigeAmtsstelle"
+                                   class="form-control"
+                                   [maxlength]="255"
+                                   [disabled]="readonly"
+                                   required>
+                            <dv-error-messages
+                                [errorObject]="zustaendigeAmtsstelle.errors"
+                                inputId="iban_id">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="required long-label" for="nameBetreuer_id">
+                                {{'NAME_BETREUUER' | translate}}</label>
+                            <input id="nameBetreuer_id" type="text"
+                                   name="nameBetreuer"
+                                   #nameBetreuer="ngModel"
+                                   [(ngModel)]="model.nameBetreuer"
+                                   class="form-control"
+                                   [maxlength]="255"
+                                   [disabled]="readonly"
+                                   required>
+                            <dv-error-messages
+                                [errorObject]="nameBetreuer.errors"
+                                inputId="iban_id">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 			<div *ngIf="isNotSozialhilfeBezueger()">
 				<div class="form-group">
 					<dv-radio-container-x>

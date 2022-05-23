@@ -18,7 +18,7 @@
 // Corresponds with URL
 export enum KiBonMandant {
     BE = 'be',
-    LU = 'lu',
+    LU = 'stadtluzern',
     SO = 'so',
     NONE = ''
 }

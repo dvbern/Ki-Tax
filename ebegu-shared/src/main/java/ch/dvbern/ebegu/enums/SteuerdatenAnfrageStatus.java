@@ -29,7 +29,9 @@ public enum SteuerdatenAnfrageStatus {
 	FAILED_UNTERJAEHRIGER_FALL,
 	FAILED_KEINE_ZPV_NUMMER,
 	FAILED_KEINE_ZPV_NUMMER_GS2,
-	RETRY;
+	RETRY,
+	FAILED_VERAENDERTE_PARTNERSCHAFT,
+	FAILED_UNREGELMAESSIGKEIT;
 
 	public boolean isSteuerdatenAbfrageErfolgreich() {
 		return this == OFFEN

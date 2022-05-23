@@ -497,6 +497,7 @@ public class Betreuung extends AbstractPlatz {
 				abweichung.addNebenmahlzeiten(pensum.getMonatlicheNebenmahlzeiten().multiply(anteil));
 				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
 				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
+				abweichung.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 			}
 		}
 		return abweichung;

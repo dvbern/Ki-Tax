@@ -256,7 +256,8 @@ describe('EbeguRestUtil', () => {
                     0,
                     0,
                     0,
-                    new TSDateRange(DateUtil.today(), DateUtil.today())
+                    new TSDateRange(DateUtil.today(), DateUtil.today()),
+                    0
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
 
@@ -269,7 +270,8 @@ describe('EbeguRestUtil', () => {
                     0,
                     0,
                     0,
-                    new TSDateRange(DateUtil.today(), DateUtil.today())
+                    new TSDateRange(DateUtil.today(), DateUtil.today()),
+                    0
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
 
@@ -346,7 +348,8 @@ describe('EbeguRestUtil', () => {
                     0,
                     0,
                     0,
-                    new TSDateRange(DateUtil.today(), DateUtil.today())
+                    new TSDateRange(DateUtil.today(), DateUtil.today()),
+                    0
                 );
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 
@@ -630,11 +633,13 @@ describe('EbeguRestUtil', () => {
                                     nebenmahlzeiten: number,
                                     tarifProHauptmahlzeit: number,
                                     tarifProNebenmahlzeit: number,
-                                    gueltigkeit: TSDateRange): TSBetreuungspensum {
+                                    gueltigkeit: TSDateRange,
+                                    stuendlicheVollkosten: number): TSBetreuungspensum {
         const tsBetreuungspensum = new TSBetreuungspensum();
         tsBetreuungspensum.unitForDisplay = unitForDisplay;
         tsBetreuungspensum.nichtEingetreten = nichtEingetreten;
         tsBetreuungspensum.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+        tsBetreuungspensum.stuendlicheVollkosten = stuendlicheVollkosten;
         tsBetreuungspensum.pensum = pensum;
         tsBetreuungspensum.monatlicheHauptmahlzeiten = hauptmahlzeiten;
         tsBetreuungspensum.monatlicheNebenmahlzeiten = nebenmahlzeiten;

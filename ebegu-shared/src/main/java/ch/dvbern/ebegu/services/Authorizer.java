@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InternePendenz;
@@ -305,4 +306,8 @@ public interface Authorizer {
 	void checkWriteAuthorization(@Nonnull Einstellung einstellung);
 
 	void checkWriteAuthorization(@Nonnull ApplicationProperty property);
+
+	void checkWriteAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer);
+
+	void checkReadAuthorization(@Nonnull GesuchstellerContainer gesuchstellerContainer);
 }
