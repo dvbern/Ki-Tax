@@ -84,7 +84,7 @@ public class AVClient {
 			return;
 		}
 		try (
-			final ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
 		) {
 			ScanResult result = client.scan(inputStream);
 			if (result instanceof ScanResult.VirusFound) {
