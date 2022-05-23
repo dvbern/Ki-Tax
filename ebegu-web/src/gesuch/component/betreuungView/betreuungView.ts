@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectorRef} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
