@@ -37,6 +37,7 @@ public class FinanzDatenDTO implements Serializable {
 	private boolean ekv2Erfasst = false;
 
 	// 'accepted' bedeutet, dass die EKV mehr als den Grenzwert erreicht, z.B. > 20%
+	private BigDecimal minEKV = BigDecimal.ZERO;
 	private boolean ekv1Accepted = false;
 	private boolean ekv2Accepted = false;
 
@@ -45,6 +46,9 @@ public class FinanzDatenDTO implements Serializable {
 	private boolean ekv1Annulliert = false;
 	private boolean ekv2Annulliert = false;
 
+	public FinanzDatenDTO(BigDecimal minEKV) {
+		this.minEKV = minEKV;
+	}
 
 	public BigDecimal getMassgebendesEinkBjVorAbzFamGr() {
 		return massgebendesEinkBjVorAbzFamGr;
@@ -84,6 +88,14 @@ public class FinanzDatenDTO implements Serializable {
 
 	public void setEkv2Erfasst(boolean ekv2Erfasst) {
 		this.ekv2Erfasst = ekv2Erfasst;
+	}
+
+	public BigDecimal getMinEKV() {
+		return minEKV;
+	}
+
+	public void setMinEKV(BigDecimal minEKV) {
+		this.minEKV = minEKV;
 	}
 
 	public boolean isEkv1Accepted() {
