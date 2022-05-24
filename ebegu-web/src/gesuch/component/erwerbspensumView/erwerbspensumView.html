@@ -218,6 +218,7 @@
                                              ng-disabled="vm.isGesuchReadonly()">
                                     <span data-translate="UNREGELMAESSIGE_ARBEITSZEITEN"></span>
                                 </md-checkbox>
+                                <dv-tooltip text="'UNREGELMAESSIGE_ARBEITSZEITEN_HINT' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.unregelmaessigeArbeitszeiten"
                                            ja="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
                                            show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
