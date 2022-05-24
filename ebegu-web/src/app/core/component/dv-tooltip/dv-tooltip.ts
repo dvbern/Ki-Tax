@@ -16,7 +16,6 @@
 import {IComponentOptions} from 'angular';
 import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
-import {testFaelleRSProvider} from '../../upgraded-providers';
 import {IDVFocusableController} from '../IDVFocusableController';
 
 const showTooltipTemplate = require('../../../../gesuch/dialog/showTooltipTemplate.html');
