@@ -147,5 +147,6 @@
     "STUENDLICHE_VOLLKOSTEN": "Stündliche Vollkosten",
     "GUTSCHEIN_PRO_STUNDE_HELP": "Gutschein pro Stunde",
     "GUTSCHEIN_PRO_STUNDE": "Gutschein pro Stunde",
+    "WARNUNG_INSTITUTIONEN_100_TAGE": "Die Stammdaten der Institutionen müssen regelmässig überprüft werden. Bitte navigieren Sie auf die Institutionliste, um die Stammdaten Ihrer Institution(en) zu überprüfen.<br>Bitte melden Sie uns an <a href='mailto:betreuungsgutscheine@stadtluzern.ch'>betreuungsgutscheine@stadtluzern.ch</a> Anpassungen des Tarifreglements oder wenn Sie Änderungen vornehmen, welche die Zulassungskriterien zum Gutscheinsystem tangieren.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
