@@ -23,7 +23,6 @@ import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzie
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDossier} from '../../../models/TSDossier';
-import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -86,8 +85,8 @@ describe('verfuegenListViewTest', () => {
             .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung')
           .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
-        spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.resolve(new TSEinstellung()));
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached')
+            .and.returnValue($q.resolve([]));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         verfuegenListView = new VerfuegenListViewController($state,
