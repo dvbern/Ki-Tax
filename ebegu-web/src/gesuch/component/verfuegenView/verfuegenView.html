@@ -320,7 +320,7 @@
                 </div>
 
                 <!-- Tabelle -->
-                <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung() && !vm.isAuszahlungAnEltern()">
+                <div class="row" ng-if="vm.showVerfuegungsDetails() && !vm.isTagesschuleVerfuegung() && !vm.isAuszahlungAnElternAndInstitutionRole()">
                     <div class="col-md-12 table-responsive">
                         <table st-table="displayedCollection" st-safe-src="vm.getVerfuegungZeitabschnitte()"
                                class="table verfuegung-table">
@@ -473,7 +473,7 @@
                         </table>
                     </div>
                 </div>
-                <div ng-if="!vm.isTagesschuleVerfuegung() && !vm.isAuszahlungAnEltern()">
+                <div ng-if="!vm.isTagesschuleVerfuegung() && !vm.isAuszahlungAnElternAndInstitutionRole()">
                     <!--bemerkungen-->
                     <div class="row margin-top-20" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtRoles()"
@@ -567,7 +567,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="well well-status-warten margin-top-20" ng-if="vm.isAuszahlungAnEltern()">
+                <div class="well well-status-warten margin-top-20" ng-if="vm.isAuszahlungAnElternAndInstitutionRole()">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span translate>AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE</span>
                 </div>
