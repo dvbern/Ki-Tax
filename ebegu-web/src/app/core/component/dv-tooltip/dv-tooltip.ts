@@ -16,6 +16,7 @@
 import {IComponentOptions} from 'angular';
 import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {testFaelleRSProvider} from '../../upgraded-providers';
 import {IDVFocusableController} from '../IDVFocusableController';
 
 const showTooltipTemplate = require('../../../../gesuch/dialog/showTooltipTemplate.html');
@@ -46,6 +47,10 @@ export class DvTooltipController implements IDVFocusableController {
             text: info,
             parentController: this,
         });
+    }
+
+    public isTextEmpty(text: string): boolean {
+        return !text || text.length === 0;
     }
 
     /**

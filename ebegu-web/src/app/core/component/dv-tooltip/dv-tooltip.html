@@ -20,4 +20,5 @@
    aria-hidden="false"
    aria-describedby="{{vm.inputId}}"
    id="{{vm.inputId}}"
+   ng-if="!vm.isTextEmpty(vm.text)"
    ng-click="vm.showTooltip(vm.text)"></i>
