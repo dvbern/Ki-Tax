@@ -25,7 +25,7 @@
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
+            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="!vm.isLuzern"></p>
         </div>
     </div>
     <div class="row">

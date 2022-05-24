@@ -70,7 +70,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
-	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -135,7 +135,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final boolean isFKJVTexte;
 
 	@Nonnull
-	private final Art art;
+	protected final Art art;
 
 	public AbstractVerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,

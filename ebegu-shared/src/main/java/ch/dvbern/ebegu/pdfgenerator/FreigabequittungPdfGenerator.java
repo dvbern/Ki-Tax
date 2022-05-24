@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
@@ -49,6 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createBoldParagraph;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createParagraph;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
@@ -58,12 +61,15 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	private static final String BETREUUNGSANGEBOTE = "PdfGeneration_Betreuungsangebote";
 	private static final String BETREUUNG_KIND = "PdfGeneration_Kind";
 	private static final String BENOETIGTE_UNTERLAGEN = "PdfGeneration_BenoetigteUnterlagen";
+	private static final String BENOETIGTE_UNTERLAGEN_INFO = "PdfGeneration_BenoetigteUnterlagen_Info";
 	private static final String EINWILLIGUNG_STEUERDATEN_TITLE = "PdfGeneration_EinwilligungSteuerdaten_Title";
 	private static final String EINWILLIGUNG_STEUERDATEN_CONTENT = "PdfGeneration_EinwilligungSteuerdaten_Content";
 	private static final String VOLLSTAENDIGKEIT_TITLE = "PdfGeneration_Vollstaendigkeit_Title";
 	private static final String VOLLSTAENDIGKEIT_CONTENT = "PdfGeneration_Vollstaendigkeit_Content";
 	private static final String EINGEREICHT = "PdfGeneration_Eingereicht";
 	private static final String UNTERSCHRIFTEN_ORT_DATUM = "PdfGeneration_UnterschriftenOrtDatum";
+	private static final String BITTE_AUSDRUCKEN = "PdfGeneration_BitteAusdrucken";
+	private static final String BITTE_SOFORT_EINREICHEN = "PdfGeneration_BitteSofortEinreichen";
 
 	private static final Logger LOG = LoggerFactory.getLogger(FreigabequittungPdfGenerator.class);
 
@@ -92,10 +98,17 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
+			final boolean isMandantLu = MandantIdentifier.LUZERN == gesuch.getFall().getMandant().getMandantIdentifier();
+			if (isMandantLu) {
+				document.add(createParagraph(translate(BITTE_AUSDRUCKEN)));
+			}
 			document.add(createGesuchstellerTable());
 			document.add(PdfUtil.createSubTitle(translate(BETREUUNGSANGEBOTE)));
 			document.add(createBetreuungsangeboteTable());
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
+			if (isMandantLu) {
+				document.add(createParagraph(translate(BENOETIGTE_UNTERLAGEN_INFO)));
+			}
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
@@ -108,6 +121,9 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			seite2Paragraphs.add(new Paragraph());
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(VOLLSTAENDIGKEIT_TITLE)));
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(VOLLSTAENDIGKEIT_CONTENT)));
+			if (isMandantLu) {
+				seite2Paragraphs.add(createBoldParagraph(translate(BITTE_SOFORT_EINREICHEN), 1));
+			}
 			seite2Paragraphs.add(createUnterschriftenTable());
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
