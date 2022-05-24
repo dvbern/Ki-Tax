@@ -51,6 +51,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.converter.JaxSozialdienstConverter;
@@ -118,7 +119,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
@@ -185,6 +185,9 @@ public class UploadResource {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private AVClient avClient;
 
 	@Inject
 	private PrincipalBean principal;
@@ -288,6 +291,10 @@ public class UploadResource {
 
 		DokumentGrund convertedDokumentGrund = converter.dokumentGrundToEntity(jaxDokumentGrund, dokumentGrundToMerge);
 		convertedDokumentGrund.setGesuch(gesuch.get());
+
+		// Bereits beim Upload auf Viren scannen
+		convertedDokumentGrund.getDokumente()
+			.forEach(dokument -> avClient.scan(dokument));
 
 		// save modified Dokument to DB
 		DokumentGrund persistedDokumentGrund = dokumentGrundService.saveDokumentGrund(convertedDokumentGrund);
@@ -466,9 +473,16 @@ public class UploadResource {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, UPLOAD_WARNING);
+		final TransferFile transferFile = fileList.get(0);
 
-		gesuchsperiodeService.uploadGesuchsperiodeDokument(periodeId, sprache, dokumentTyp,
-			fileList.get(0).getContent());
+		// Bereits beim Upload auf Viren scannen
+		avClient.scan(transferFile.getContent(), transferFile.getFilename());
+
+		gesuchsperiodeService.uploadGesuchsperiodeDokument(
+			periodeId,
+			sprache,
+			dokumentTyp,
+			transferFile.getContent());
 
 		return Response.ok().build();
 	}
@@ -493,8 +507,10 @@ public class UploadResource {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJAXPId);
-
 		TransferFile file = fileList.get(0);
+
+		// Bereits beim Upload auf Viren scannen
+		avClient.scan(file.getContent(), file.getFilename());
 
 		gemeindeService.uploadGemeindeGesuchsperiodeDokument(
 			gemeindeId,
@@ -521,6 +537,9 @@ public class UploadResource {
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 		Validate.notEmpty(fileList, UPLOAD_WARNING);
 		TransferFile file = fileList.get(0);
+
+		// Bereits beim Upload auf Viren scannen
+		avClient.scan(file.getContent(), file.getFilename());
 
 		reportKinderMitZemisNummerService.setFlagAndSaveZemisExcel(file.getContent());
 
@@ -595,6 +614,9 @@ public class UploadResource {
 			rueckforderungDokument.setFilename(fileInfo.getFilename());
 			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
 
+			// Bereits beim Upload auf Viren scannen
+			avClient.scan(rueckforderungDokument);
+
 			// when uploading a new document we check the flag so we know that something has been uploaded
 			if (rueckforderungFormular.getStatus() == RueckforderungStatus.IN_PRUEFUNG_KANTON_STUFE_2 ||
 				rueckforderungFormular.getStatus() == RueckforderungStatus.VERFUEGT_PROVISORISCH) {
@@ -640,6 +662,9 @@ public class UploadResource {
 			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
 			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
 
+			// Bereits beim Upload auf Viren scannen
+			avClient.scan(sozialdienstFallDokument);
+
 			SozialdienstFallDokument documentFromDB =
 				sozialdienstFallDokumentService.saveVollmachtDokument(sozialdienstFallDokument);
 
@@ -677,6 +702,9 @@ public class UploadResource {
 			ferienbetreuungDokument.setFilename(fileInfo.getFilename());
 			ferienbetreuungDokument.setFilesize(fileInfo.getSizeString());
 			ferienbetreuungDokument.setTimestampUpload(LocalDateTime.now());
+
+			// Bereits beim Upload auf Viren scannen
+			avClient.scan(ferienbetreuungDokument);
 
 			FerienbetreuungDokument documentFromDB =
 				ferienbetreuungDokumentService.saveDokument(ferienbetreuungDokument);

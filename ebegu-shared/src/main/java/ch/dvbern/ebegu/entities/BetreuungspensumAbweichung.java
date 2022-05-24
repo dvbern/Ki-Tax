@@ -236,6 +236,7 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		// Tarif is immutable at this point and we just copy the old value
 		mitteilungPensum.setTarifProHauptmahlzeit(vertraglicherTarifHauptmahlzeit);
 		mitteilungPensum.setTarifProNebenmahlzeit(vertraglicherTarifNebenmahlzeit);
+		mitteilungPensum.setStuendlicheVollkosten(getStuendlicheVollkosten());
 
 		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
 		// attach it to the BetreuungsmitteilungPensum

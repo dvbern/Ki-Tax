@@ -248,6 +248,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		setFinSitTyp(gesuchToPersist);
+		setMinDauerKonkubiat(gesuchToPersist);
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
@@ -261,6 +262,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void setMinDauerKonkubiat(Gesuch gesuch) {
+		if (gesuch.getFamiliensituationContainer() == null
+		|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			return;
+		}
+
+		Einstellung minimalDauerKonkubinat = einstellungService.findEinstellung(
+			EinstellungKey.MINIMALDAUER_KONKUBINAT,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode()
+		);
+
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setMinDauerKonkubinat(minimalDauerKonkubinat.getValueAsInteger());
 	}
 
 	private void setFinSitTyp(Gesuch gesuchToCreate) {

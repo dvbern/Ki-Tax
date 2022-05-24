@@ -51,7 +51,7 @@ export class OnboardingNeuBenutzerComponent {
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
@@ -85,7 +85,7 @@ export class OnboardingNeuBenutzerComponent {
         });
         this.stateService.go(this.nextState, {
             gemeindeBGId: this.gemeinde !== undefined ? this.gemeinde.id : null,
-            gemeindenId: listIds
+            gemeindenId: listIds,
         });
     }
 
@@ -108,5 +108,9 @@ export class OnboardingNeuBenutzerComponent {
 
     public resetBgGemeinde(): void {
         this.gemeinde = undefined;
+    }
+
+    public isNotNullAndNotEmpty(tsGemeindes: TSGemeinde[]): boolean {
+        return tsGemeindes !== null && tsGemeindes.length > 0;
     }
 }

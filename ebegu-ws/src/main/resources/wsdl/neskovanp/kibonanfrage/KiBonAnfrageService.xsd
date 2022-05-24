@@ -184,6 +184,23 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="UnregelmaessigkeitInDerVeranlagung" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ist true, wenn es sich nicht um eine Standard-Deklaration handelt. Falls aus den beiden Vorjahren
+                        Geschaeftsertraege resultieren, werden diese in die Ermittlung des Flags ebenfalls einbezogen.
+                        Dies führt dann dazu, dass keine Veranlagungsdaten zu Einkommen und Vermögen übertragen werden.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="VeraendertePartnerschaft" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="de">
+                        Ist true, wenn es über die Zeitspanne der beiden Vorperioden eine Veränderung der
+                        Haushalt-beteiligten Partner gab (Heirat / Trennung) gemaess VANP Register.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="ErwerbseinkommenUnselbstaendigkeitDossiertraeger" type="xs:long" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation xml:lang="de">
@@ -346,6 +363,7 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+
         </xs:sequence>
     </xs:complexType>
 

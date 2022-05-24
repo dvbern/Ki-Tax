@@ -148,6 +148,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
     public isSwitchBetreuungspensumEnabled: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
@@ -159,7 +160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public showAbrechungDerGutscheineFrage: boolean = false;
+    public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -181,7 +182,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -198,6 +199,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -274,6 +276,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         }
 
+        this.loadInfomaZahlungenActive();
+
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
@@ -337,11 +341,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+    }
+
+    private loadInfomaZahlungenActive(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.infomaZahlungen)) {
+            // properties wurden bereits geladen
+            return;
+        }
 
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+                this.infomaZahlungen = response.infomaZahlungen;
             });
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
     }
 
     /**
@@ -363,7 +378,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        tsBetreuung.auszahlungAnEltern = false;
+        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.infomaZahlungen = response.infomaZahlungen;
+                tsBetreuung.auszahlungAnEltern = response.infomaZahlungen;
+            });
 
         return tsBetreuung;
     }
@@ -793,6 +813,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit =
                 this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
+
+        if (this.isTFOKostenBerechnungStuendlich
+            && this.betreuungsangebot
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
+            // TFO Kosten stündlich eingegeben werden
+            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
+            tsBetreuungspensum.pensum = 0;
+        }
+
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
@@ -1604,5 +1634,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
         // 100% = 220 stunden => 1% = 2.2 stunden
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+    }
+
+    public showBetreuungsKostenAndPensumInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return true;
+        }
+
+        return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    public showStuendlicheKostenInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return false;
+        }
+
+        return this.isTFOKostenBerechnungStuendlich;
+    }
+
+    private isBetreuungsangebotTagesfamilie(): boolean {
+        return this.betreuungsangebot
+        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 }
