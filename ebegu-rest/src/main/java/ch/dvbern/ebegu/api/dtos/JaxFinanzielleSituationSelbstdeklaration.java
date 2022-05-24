@@ -35,13 +35,7 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	private BigDecimal einkunftVersicherung;
 
 	@Nullable
-	private BigDecimal einkunftAusgleichskassen;
-
-	@Nullable
 	private BigDecimal einkunftWertschriften;
-
-	@Nullable
-	private BigDecimal einkunftUnterhaltsbeitragSteuerpflichtige;
 
 	@Nullable
 	private BigDecimal einkunftUnterhaltsbeitragKinder;
@@ -56,13 +50,7 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	private BigDecimal abzugBerufsauslagen;
 
 	@Nullable
-	private BigDecimal abzugUnterhaltsbeitragEhepartner;
-
-	@Nullable
 	private BigDecimal abzugUnterhaltsbeitragKinder;
-
-	@Nullable
-	private BigDecimal abzugRentenleistungen;
 
 	@Nullable
 	private BigDecimal abzugSaeule3A;
@@ -74,16 +62,13 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	private BigDecimal abzugKrankheitsUnfallKosten;
 
 	@Nullable
-	private BigDecimal abzugFreiweiligeZuwendungPartien;
+	private BigDecimal sonderabzugErwerbstaetigkeitEhegatten;
 
 	@Nullable
 	private BigDecimal abzugKinderVorschule;
 
 	@Nullable
 	private BigDecimal abzugKinderSchule;
-
-	@Nullable
-	private BigDecimal abzugKinderAuswaertigerAufenthalt;
 
 	@Nullable
 	private BigDecimal abzugEigenbetreuung;
@@ -122,31 +107,12 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getEinkunftAusgleichskassen() {
-		return einkunftAusgleichskassen;
-	}
-
-	public void setEinkunftAusgleichskassen(@Nullable BigDecimal einkunftAusgleichskassen) {
-		this.einkunftAusgleichskassen = einkunftAusgleichskassen;
-	}
-
-	@Nullable
 	public BigDecimal getEinkunftWertschriften() {
 		return einkunftWertschriften;
 	}
 
 	public void setEinkunftWertschriften(@Nullable BigDecimal einkunftWertschriften) {
 		this.einkunftWertschriften = einkunftWertschriften;
-	}
-
-	@Nullable
-	public BigDecimal getEinkunftUnterhaltsbeitragSteuerpflichtige() {
-		return einkunftUnterhaltsbeitragSteuerpflichtige;
-	}
-
-	public void setEinkunftUnterhaltsbeitragSteuerpflichtige(
-		@Nullable BigDecimal einkunftUnterhaltsbeitragSteuerpflichtige) {
-		this.einkunftUnterhaltsbeitragSteuerpflichtige = einkunftUnterhaltsbeitragSteuerpflichtige;
 	}
 
 	@Nullable
@@ -186,30 +152,12 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getAbzugUnterhaltsbeitragEhepartner() {
-		return abzugUnterhaltsbeitragEhepartner;
-	}
-
-	public void setAbzugUnterhaltsbeitragEhepartner(@Nullable BigDecimal abzugUnterhaltsbeitragEhepartner) {
-		this.abzugUnterhaltsbeitragEhepartner = abzugUnterhaltsbeitragEhepartner;
-	}
-
-	@Nullable
 	public BigDecimal getAbzugUnterhaltsbeitragKinder() {
 		return abzugUnterhaltsbeitragKinder;
 	}
 
 	public void setAbzugUnterhaltsbeitragKinder(@Nullable BigDecimal abzugUnterhaltsbeitragKinder) {
 		this.abzugUnterhaltsbeitragKinder = abzugUnterhaltsbeitragKinder;
-	}
-
-	@Nullable
-	public BigDecimal getAbzugRentenleistungen() {
-		return abzugRentenleistungen;
-	}
-
-	public void setAbzugRentenleistungen(@Nullable BigDecimal abzugRentenleistungen) {
-		this.abzugRentenleistungen = abzugRentenleistungen;
 	}
 
 	@Nullable
@@ -240,12 +188,12 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public BigDecimal getAbzugFreiweiligeZuwendungPartien() {
-		return abzugFreiweiligeZuwendungPartien;
+	public BigDecimal getSonderabzugErwerbstaetigkeitEhegatten() {
+		return sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
-	public void setAbzugFreiweiligeZuwendungPartien(@Nullable BigDecimal abzugFreiweiligeZuwendungPartien) {
-		this.abzugFreiweiligeZuwendungPartien = abzugFreiweiligeZuwendungPartien;
+	public void setSonderabzugErwerbstaetigkeitEhegatten(@Nullable BigDecimal sonderabzugErwerbstaetigkeitEhegatten) {
+		this.sonderabzugErwerbstaetigkeitEhegatten = sonderabzugErwerbstaetigkeitEhegatten;
 	}
 
 	@Nullable
@@ -264,15 +212,6 @@ public class JaxFinanzielleSituationSelbstdeklaration extends JaxAbstractDTO {
 
 	public void setAbzugKinderSchule(@Nullable BigDecimal abzugKinderSchule) {
 		this.abzugKinderSchule = abzugKinderSchule;
-	}
-
-	@Nullable
-	public BigDecimal getAbzugKinderAuswaertigerAufenthalt() {
-		return abzugKinderAuswaertigerAufenthalt;
-	}
-
-	public void setAbzugKinderAuswaertigerAufenthalt(@Nullable BigDecimal abzugKinderAuswaertigerAufenthalt) {
-		this.abzugKinderAuswaertigerAufenthalt = abzugKinderAuswaertigerAufenthalt;
 	}
 
 	@Nullable

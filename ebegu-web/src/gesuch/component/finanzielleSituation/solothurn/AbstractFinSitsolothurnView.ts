@@ -268,4 +268,8 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
+
+    public isSelbststaendigErwerbendAnswered(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
+    }
 }

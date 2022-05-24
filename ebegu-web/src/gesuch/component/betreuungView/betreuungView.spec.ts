@@ -36,6 +36,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../../../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -63,6 +64,7 @@ describe('betreuungView', () => {
     let einstellungRS: EinstellungRS;
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let mandantService: MandantService;
+    let ebeguRestUtil: EbeguRestUtil;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -81,8 +83,10 @@ describe('betreuungView', () => {
         einstellungRS = $injector.get('EinstellungRS');
         institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
         mandantService = $injector.get('MandantService');
-
+        ebeguRestUtil = $injector.get('EbeguRestUtil');
+        const applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         // they always need to be mocked
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
 
@@ -116,6 +120,7 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
+        spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.resolveTo(({}));
         spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
@@ -139,6 +144,7 @@ describe('betreuungView', () => {
             undefined,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
+            ebeguRestUtil,
         );
         betreuungView.$onInit();
         $rootScope.$apply();
@@ -168,7 +174,8 @@ describe('betreuungView', () => {
                     $timeout,
                     undefined,
                     undefined,
-                    mandantService);
+                    mandantService,
+                    ebeguRestUtil);
                 myBetreuungView.model = betreuung;
                 expect(myBetreuungView.getBetreuungspensen()).toBeDefined();
                 expect(myBetreuungView.getBetreuungspensen().length).toEqual(0);

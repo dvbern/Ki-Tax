@@ -65,24 +65,6 @@
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
-            [(model)]="model.selbstdeklaration.einkunftAusgleichskassen"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_AUSGLEICHSKASSEN'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_AUSGLEICHSKASSEN_HELP'"
-            [inputRequired]="true"
-            [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.einkunftAusgleichskassen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftAusgleichskassen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
-            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftAusgleichskassen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftAusgleichskassen"
-            [korrektur]="model.selbstdeklaration?.einkunftAusgleichskassen">
-        </dv-input-label-field>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <dv-input-label-field
             [(model)]="model.selbstdeklaration.einkunftWertschriften"
             [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_WERTSCHRIFTEN'"
             [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_WERTSCHRIFTEN_HELP'"
@@ -95,24 +77,6 @@
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftWertschriften : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftWertschriften"
             [korrektur]="model.selbstdeklaration?.einkunftWertschriften">
-        </dv-input-label-field>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <dv-input-label-field
-            [(model)]="model.selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_EINKUFT_UNTERHALT_STEUERPFLITIGE'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_EINKUFT_UNTERHALT_STEUERPFLITIGE_HELP'"
-            [inputRequired]="true"
-            [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.einkunftUnterhaltsbeitragSteuerpflichtige"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftUnterhaltsbeitragSteuerpflichtige : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
-            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftUnterhaltsbeitragSteuerpflichtige : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftUnterhaltsbeitragSteuerpflichtige"
-            [korrektur]="model.selbstdeklaration?.einkunftUnterhaltsbeitragSteuerpflichtige">
         </dv-input-label-field>
     </div>
 </div>
@@ -220,24 +184,6 @@
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
-            [(model)]="model.selbstdeklaration.abzugUnterhaltsbeitragEhepartner"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_UNTERHALT_EHEPARTNER'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_UNTERHALT_EHEPARTNER_HELP'"
-            [inputRequired]="true"
-            [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.abzugUnterhaltsbeitragEhepartner"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugUnterhaltsbeitragEhepartner : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
-            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugUnterhaltsbeitragEhepartner : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugUnterhaltsbeitragEhepartner"
-            [korrektur]="model.selbstdeklaration?.abzugUnterhaltsbeitragEhepartner">
-        </dv-input-label-field>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <dv-input-label-field
             [(model)]="model.selbstdeklaration.abzugUnterhaltsbeitragKinder"
             [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_UNTERHALT_KINDER'"
             [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_UNTERHALT_KINDER_HELP'"
@@ -250,24 +196,6 @@
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugUnterhaltsbeitragKinder : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugUnterhaltsbeitragKinder"
             [korrektur]="model.selbstdeklaration?.abzugUnterhaltsbeitragKinder">
-        </dv-input-label-field>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <dv-input-label-field
-            [(model)]="model.selbstdeklaration.abzugRentenleistungen"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_RENTENLEISTUNGEN'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_RENTENLEISTUNGEN_HELP'"
-            [inputRequired]="true"
-            [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.abzugRentenleistungen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugRentenleistungen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
-            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugRentenleistungen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugRentenleistungen"
-            [korrektur]="model.selbstdeklaration?.abzugRentenleistungen">
         </dv-input-label-field>
     </div>
 </div>
@@ -328,18 +256,18 @@
 <div class="row">
     <div class="col-sm-6">
         <dv-input-label-field
-            [(model)]="model.selbstdeklaration.abzugFreiweiligeZuwendungPartien"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ZUWENDUNG_PARTEI'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ZUWENDUNG_PARTEI_HELP'"
+            [(model)]="model.selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten"
+            [labelMessageKey]="'FINANZIELLE_SITUATION_SONDERABZUG_ERWERBSTAETIGKEIT_EHEGATTEN'"
+            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SONDERABZUG_ERWERBSTAETIGKEIT_EHEGATTEN_HELP'"
             [inputRequired]="true"
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.abzugFreiweiligeZuwendungPartien"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugFreiweiligeZuwendungPartien : undefined"
+            [neuerWert]="model.selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten"
+            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : undefined"
             [basisjahr]="finanzModel.getBasisjahr()"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugFreiweiligeZuwendungPartien : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugFreiweiligeZuwendungPartien"
-            [korrektur]="model.selbstdeklaration?.abzugFreiweiligeZuwendungPartien">
+            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten"
+            [korrektur]="model.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten">
         </dv-input-label-field>
     </div>
 </div>
@@ -376,24 +304,6 @@
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugKinderSchule : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugKinderSchule"
             [korrektur]="model.selbstdeklaration?.abzugKinderSchule">
-        </dv-input-label-field>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-6">
-        <dv-input-label-field
-            [(model)]="model.selbstdeklaration.abzugKinderAuswaertigerAufenthalt"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_KINDER_AUSWAERTIG'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_SELBSTDEKLARATION_ABZUG_KINDER_AUSWAERTIG_HELP'"
-            [inputRequired]="true"
-            [dvOnBlur]="onValueChangeFunction"
-            [inputDisabled]="readOnly"
-            [neuerWert]="model.selbstdeklaration.abzugKinderAuswaertigerAufenthalt"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKinderAuswaertigerAufenthalt : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
-            [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
-            [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugKinderAuswaertigerAufenthalt : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugKinderAuswaertigerAufenthalt"
-            [korrektur]="model.selbstdeklaration?.abzugKinderAuswaertigerAufenthalt">
         </dv-input-label-field>
     </div>
 </div>

@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
@@ -33,6 +34,7 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.ONE;
 
 	private boolean isBaby = false;
+	private BigDecimal stuendlicherVorllkostenTarif;
 
 	@Override
 	public void calculate(
@@ -40,7 +42,13 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		isBaby = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
+		stuendlicherVorllkostenTarif = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getStuendlicheVollkosten();
 		super.calculate(verfuegungZeitabschnitt, parameterDTO);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten(BigDecimal verfuegteZeiteinheiten) {
+		return EXACT.multiply(stuendlicherVorllkostenTarif, verfuegteZeiteinheiten);
 	}
 
 	@Override
@@ -71,8 +79,9 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateBGProTagByEinkommen() {
-		return calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel();
+	protected BigDecimal calculateBGProZeiteinheitByEinkommen() {
+		BigDecimal bgProStunde = calculateBetreuungsgutscheinProZeiteinheitAufgrundEinkommenGemaessFormel();
+		return MathUtil.maximum(bgProStunde, getMaximalWertBGProTagAufgrundEinkommen());
 	}
 
 	@Override

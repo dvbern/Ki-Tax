@@ -15,7 +15,7 @@
   -->
 
 <!-- sozialhilfeBezueger -->
-<div class="row">
+<div class="row" *ngIf="showSozialhilfeQuestion()">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebegu-h1 required">
@@ -28,6 +28,7 @@
                             name="sozialhilfeBezueger"
                             required
                             dvEnableElement
+                            #sozialhilfebezueger="ngModel"
                             [allowedRoles]="allowedRoles"
                             [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
                             [(ngModel)]="sozialhilfeBezueger"
@@ -35,6 +36,11 @@
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
+                    <dv-error-messages
+                        *ngIf="sozialhilfebezueger.touched"
+                        [errorObject]="sozialhilfebezueger.errors"
+                        inputId="selbststaendig_id">
+                    </dv-error-messages>
                 </dv-radio-container-x>
             </dv-input-container-x>
         </div>
@@ -57,6 +63,7 @@
                             name="verguenstigungGewuenscht"
                             required
                             dvEnableElement
+                            #verguenstigunggewuenscht="ngModel"
                             [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
                             [(ngModel)]="verguenstigungGewuenscht"
                             (ngModelChange)="updateVerguenstigungGewuenscht($event)">
@@ -66,6 +73,11 @@
                             <ng-container *ngIf="gesuchModelManager.isFKJVTexte">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV' | translate }}</ng-container>
                         </mat-radio-button>
                     </mat-radio-group>
+                    <dv-error-messages
+                        *ngIf="verguenstigunggewuenscht.touched"
+                        [errorObject]="verguenstigunggewuenscht.errors"
+                        inputId="selbststaendig_id">
+                    </dv-error-messages>
                 </dv-radio-container-x>
             </dv-input-container-x>
         </div>

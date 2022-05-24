@@ -15,29 +15,28 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
 /**
- * Dokumente für Kinder:
+ * Dokumente für Betreuungen:
  * <p>
- * Fachstellenbestätigung:
- * Notwendig, wenn Frage nach Kind Fachstelle involviert mit Ja beantwortet
- * Es gibt nur ein Dokument, egal ob es soziale Integration oder sprachliche Integration ist.
- * </p>
+ * Bestätigung über den ausserordentlichen Betreuungsaufwand:
+ * Notwendig, wenn die Frage "Hat Ihr Kind besondere Bedürfnisse und einen darin
+ * begründeten ausserordentlichen Betreuungsaufwand?" mit Ja beantwortet wird.
  **/
-public class KindDokumente extends AbstractDokumente<Kind, Object> {
+public class BernBetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 
 	@Override
 	public void getAllDokumente(
@@ -45,34 +44,41 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale
 	) {
-		final Set<KindContainer> kindContainers = gesuch.getKindContainers();
-		if (kindContainers == null || kindContainers.isEmpty()) {
+
+		final List<Betreuung> allBetreuungen = gesuch.extractAllBetreuungen();
+
+		if (allBetreuungen.isEmpty()) {
 			return;
 		}
 
-		for (KindContainer kindContainer : kindContainers) {
-			final Kind kindJA = kindContainer.getKindJA();
-
-			add(getDokument(kindContainer, kindJA), anlageVerzeichnis);
-		}
+		allBetreuungen.forEach(betreuung ->
+			add(getDokumentBetreuungsaufwand(betreuung), anlageVerzeichnis)
+		);
 	}
 
 	@Nullable
-	private DokumentGrund getDokument(KindContainer kindContainer, @Nonnull Kind kindJA) {
+	private DokumentGrund getDokumentBetreuungsaufwand(@Nonnull Betreuung betreuung) {
 		return getDokument(
-			DokumentTyp.FACHSTELLENBESTAETIGUNG,
-			kindJA,
-			kindJA.getFullName(),
+			DokumentTyp.BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND,
+			betreuung,
 			null,
 			DokumentGrundPersonType.KIND,
-			kindContainer.getKindNummer(),
-			DokumentGrundTyp.KINDER,
-			null);
+			betreuung.getKind().getKindNummer(),
+			DokumentGrundTyp.ERWEITERTE_BETREUUNG);
 	}
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
-	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
-		return kind != null && kind.getPensumFachstelle() != null;
+	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Betreuung betreuung) {
+		if (betreuung == null) {
+			return false;
+		}
+
+		switch (dokumentTyp) {
+		case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
+			return betreuung.hasErweiterteBetreuung();
+		default:
+			return false;
+		}
 	}
 }

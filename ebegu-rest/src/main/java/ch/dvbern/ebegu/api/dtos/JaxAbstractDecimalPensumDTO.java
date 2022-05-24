@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -50,6 +51,9 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private BigDecimal monatlicheBetreuungskosten;
 
+	@Nullable
+	private BigDecimal stuendlicheVollkosten;
+
 	public PensumUnits getUnitForDisplay() {
 		return unitForDisplay;
 	}
@@ -74,5 +78,14 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 
 	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+	}
+
+	@Nullable
+	public BigDecimal getStuendlicheVollkosten() {
+		return stuendlicheVollkosten;
+	}
+
+	public void setStuendlicheVollkosten(@Nullable BigDecimal stuendlicheVollkosten) {
+		this.stuendlicheVollkosten = stuendlicheVollkosten;
 	}
 }

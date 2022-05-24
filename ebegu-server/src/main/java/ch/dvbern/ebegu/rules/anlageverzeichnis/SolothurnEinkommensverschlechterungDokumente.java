@@ -51,7 +51,8 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 			addDokuemnteEKV(gesuch, anlageVerzeichnis);
 		}
 
-		if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
+		if (!einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus1()
+				&& einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
 			addDokuemnteEKV(gesuch, anlageVerzeichnis);
 		}
 	}

@@ -59,6 +59,10 @@ public class TagesschuleAnmeldungenDataRow {
 	@Nullable
 	private String referenznummer;
 	@Nullable
+	private String bemerkung;
+	@Nonnull
+	private boolean isAbweichung;
+	@Nullable
 	private LocalDate eintrittsdatum;
 	@Nonnull
 	private Betreuungsstatus status;
@@ -226,4 +230,22 @@ public class TagesschuleAnmeldungenDataRow {
 	public void setTelefonAntragsteller2(@Nullable String telefonAntragsteller2) {
 		this.telefonAntragsteller2 = telefonAntragsteller2;
 	}
+
+	@Nullable
+	public String getBemerkung() {
+		return bemerkung;
+	}
+
+	@Nullable
+	public void setBemerkung(@Nullable String bemerkung) {
+		this.bemerkung = bemerkung;
+	}
+
+	@Nonnull
+	public boolean getAbweichung() {
+		return isAbweichung;
+	}
+
+	@Nonnull
+	public void setAbweichung(@Nonnull boolean isAbweichung) { this.isAbweichung = isAbweichung; }
 }

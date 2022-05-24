@@ -27,7 +27,6 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBelegungTagesschuleModulIntervallValues,
     TSBelegungTagesschuleModulIntervall,
@@ -45,6 +44,7 @@ import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagessc
 import {TSMandant} from '../../../models/TSMandant';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -108,7 +108,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'DownloadRS',
         'GemeindeRS',
         'I18nServiceRSRest',
-        'MandantService'
+        'MandantService',
+        'EbeguRestUtil'
     ];
 
     public onSave: () => void;
@@ -151,6 +152,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
         mandantService: MandantService,
+        ebeguRestUtil: EbeguRestUtil,
     ) {
 
         super($state,
@@ -170,7 +172,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             $timeout,
             $translate,
             applicationPropertyRS,
-            mandantService);
+            mandantService,
+            ebeguRestUtil);
 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
@@ -576,7 +579,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
-            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
     }
 

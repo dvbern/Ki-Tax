@@ -16,17 +16,22 @@
  */
 
 import {StateService} from '@uirouter/angular';
+import * as moment from 'moment';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
+import {TSGesuchsperiodeStatus} from '../../../../models/enums/TSGesuchsperiodeStatus';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from '../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../models/TSGesuchstellerContainer';
+import {TSDateRange} from '../../../../models/types/TSDateRange';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -108,6 +113,9 @@ export class SolothurnFinSitTestHelpers {
         gesuch.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA = new TSFinanzielleSituation();
         gesuch.familiensituationContainer = new TSFamiliensituationContainer();
         gesuch.familiensituationContainer.familiensituationJA = new TSFamiliensituation();
+        gesuch.gesuchsperiode =
+            new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(moment(), moment().add(1)));
+        gesuch.familiensituationContainer.familiensituationJA.familienstatus = TSFamilienstatus.VERHEIRATET;
         return gesuch;
     }
 

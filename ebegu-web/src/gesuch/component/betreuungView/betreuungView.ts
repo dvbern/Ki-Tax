@@ -19,6 +19,7 @@ import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -36,6 +37,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -56,6 +58,7 @@ import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
@@ -70,7 +73,6 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
@@ -109,6 +111,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         '$translate',
         'ApplicationPropertyRS',
         'MandantService',
+        'EbeguRestUtil'
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
@@ -142,12 +145,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private eingewoehnungAktiviert: boolean = false;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
+    private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
+    public isSwitchBetreuungspensumEnabled: boolean;
+    public isTFOKostenBerechnungStuendlich: boolean = false;
+
+    private oeffnungstageKita: number;
+    private oeffnungstageTFO: number;
+    private oeffnungsstundenTFO: number;
+
+    private multiplierKita: number;
+    private multiplierTFO: number;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public showAbrechungDerGutscheineFrage: boolean = false;
+    public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -169,6 +182,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -185,6 +199,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -261,6 +276,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         }
 
+        this.loadInfomaZahlungenActive();
+
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
@@ -286,7 +303,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         this.besondereBeduerfnisseAufwandKonfigurierbar = true;
                     }
                 });
+            response.filter(r => r.key === TSEinstellungKey.FACHSTELLEN_TYP)
+                .forEach(einstellung => {
+                    this.fachstellenTyp = this.ebeguRestUtil.parseFachstellenTyp(einstellung.value);
+                });
 
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_KITA)
+                .forEach(einstellung => {
+                    this.oeffnungstageKita = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSTAGE_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungstageTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
+                .forEach(einstellung => {
+                    this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
+                .forEach(einstellung => {
+                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
+                });
         });
 
         this.einstellungRS.findEinstellung(
@@ -304,11 +341,22 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+    }
+
+    private loadInfomaZahlungenActive(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.infomaZahlungen)) {
+            // properties wurden bereits geladen
+            return;
+        }
 
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+                this.infomaZahlungen = response.infomaZahlungen;
             });
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
     }
 
     /**
@@ -330,7 +378,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        tsBetreuung.auszahlungAnEltern = true;
+        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.infomaZahlungen = response.infomaZahlungen;
+                tsBetreuung.auszahlungAnEltern = response.infomaZahlungen;
+            });
 
         return tsBetreuung;
     }
@@ -760,6 +813,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             tsBetreuungspensum.tarifProNebenmahlzeit =
                 this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
         }
+
+        if (this.isTFOKostenBerechnungStuendlich
+            && this.betreuungsangebot
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
+            // TFO Kosten stündlich eingegeben werden
+            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
+            tsBetreuungspensum.pensum = 0;
+        }
+
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
     }
@@ -1540,5 +1603,57 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public showAbrechnungGutscheine(): boolean {
         return !this.isSavingData &&
             (this.isBetreuungsstatusWarten() || this.isBetreuungsstatus(TSBetreuungsstatus.AUSSTEHEND));
+    }
+
+    public isFachstellenTypLuzern(): boolean {
+        return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
+    public getMultiplierKita(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierKita)) {
+            this.calculateMuliplyerKita();
+        }
+
+        return this.multiplierKita;
+    }
+
+    public getMultiplierTFO(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierTFO)) {
+            this.calculateMultiplierTFO();
+        }
+
+        return this.multiplierTFO;
+    }
+
+    private calculateMuliplyerKita(): void {
+        // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
+        this.multiplierKita = this.oeffnungstageKita / 12 / 100;
+    }
+
+    private calculateMultiplierTFO(): void {
+        // Beispiel: 240 Tage Pro Jahr, 11 Stunden pro Tag: 240 * 11 / 12 = 220 Stunden Pro Monat.
+        // 100% = 220 stunden => 1% = 2.2 stunden
+        this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
+    }
+
+    public showBetreuungsKostenAndPensumInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return true;
+        }
+
+        return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    public showStuendlicheKostenInput(): boolean {
+        if (!this.isBetreuungsangebotTagesfamilie()) {
+            return false;
+        }
+
+        return this.isTFOKostenBerechnungStuendlich;
+    }
+
+    private isBetreuungsangebotTagesfamilie(): boolean {
+        return this.betreuungsangebot
+        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 }
