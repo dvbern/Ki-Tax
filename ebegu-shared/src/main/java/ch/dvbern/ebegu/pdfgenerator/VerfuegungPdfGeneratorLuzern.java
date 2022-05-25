@@ -41,6 +41,8 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 
 	private boolean isBetreuungTagesfamilie = false;
 
+	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
+
 	public VerfuegungPdfGeneratorLuzern(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
@@ -53,6 +55,14 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
+	protected String getDocumentTitle() {
+		if (art == Art.NICHT_EINTRETTEN) {
+			return translate(VERFUEGUNG_NICHT_EINTRETEN_TITLE);
+		}
+		return translate(VERFUEGUNG_TITLE);
+	}
+
+	@Override
 	protected void addGruesseElements(@Nonnull List<Element> gruesseElements) {
 		gruesseElements.add(createParagraphGruss());
 		gruesseElements.add(createParagraphSignatur());
@@ -62,6 +72,7 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	protected void createDokumentNichtEintretten(
 		@Nonnull Document document,
 		@Nonnull PdfGenerator generator) {
+
 		createDokumentNichtEintrettenDefault(document, generator);
 	}
 

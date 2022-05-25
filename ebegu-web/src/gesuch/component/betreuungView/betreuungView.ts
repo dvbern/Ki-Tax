@@ -1656,4 +1656,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.betreuungsangebot
         && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
+
+    private showHintUntermonatlich(): boolean {
+        return this.getBetreuungspensen().length > 0 && this.mandant !== KiBonMandant.LU;
+    }
+
+    private showHintEingewoehnung(): boolean {
+        return this.mandant === KiBonMandant.LU;
+    }
 }

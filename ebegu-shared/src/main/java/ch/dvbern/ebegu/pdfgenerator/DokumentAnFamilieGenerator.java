@@ -38,6 +38,7 @@ import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
@@ -172,10 +173,13 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
 		Font fontWithSize = PdfUtil.createFontWithSize(defaultFont, 8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtil.createFontWithSize(defaultFont, 6));
-			chunk.setTextRise(2);
-			fz.addText(chunk);
-			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));
+			final String text = content.get(i);
+			if (StringUtils.isNotEmpty(text)) {
+				Chunk chunk = new Chunk((i + 1) + " ", PdfUtil.createFontWithSize(defaultFont, 6));
+				chunk.setTextRise(2);
+				fz.addText(chunk);
+				fz.addText(new Phrase(text + '\n', fontWithSize));
+			}
 		}
 		fz.go();
 	}

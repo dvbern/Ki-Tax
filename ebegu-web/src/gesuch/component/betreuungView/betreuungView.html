@@ -548,7 +548,12 @@
                                       dv-enable-expression="vm.isPensumEditable()">
 
                                 <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
-                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
+                                        ng-show="vm.showHintUntermonatlich()"></p>
+
+                                <p class="inline-hint" ng-show="vm.showHintEingewoehnung()">
+                                    <span translate>BETREUUNG_HINT_EINGEWOEHNUNG</span>
+                                    <dv-tooltip text="'BETREUUNG_HINT_EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
+                                </p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
