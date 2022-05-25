@@ -2902,5 +2902,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
     "SUPPORT_MAIL": "support@kibon.ch",
+    "ONBARDING_HILFE": "Benötigen Sie Hilfe?",
+    "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Benötigen Sie Hilfe?</b><br><br>Haben Sie Fragen oder benötigen Sie Hilfe? Als Antragsteller/in oder Unterstützungsdienst melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten. Der Support für Antragsteller/innen und Unterstützungsdienste wird von der zuständigen Gemeinde durchgeführt.<br>",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

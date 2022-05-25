@@ -148,5 +148,6 @@
     "GUTSCHEIN_PRO_STUNDE_HELP": "Gutschein pro Stunde",
     "GUTSCHEIN_PRO_STUNDE": "Gutschein pro Stunde",
     "WARNUNG_INSTITUTIONEN_100_TAGE": "Die Stammdaten der Institutionen müssen regelmässig überprüft werden. Bitte navigieren Sie auf die Institutionliste, um die Stammdaten Ihrer Institution(en) zu überprüfen.<br>Bitte melden Sie uns an <a href='mailto:betreuungsgutscheine@stadtluzern.ch'>betreuungsgutscheine@stadtluzern.ch</a> Anpassungen des Tarifreglements oder wenn Sie Änderungen vornehmen, welche die Zulassungskriterien zum Gutscheinsystem tangieren.",
+    "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Benötigen Sie Hilfe?</b><br><br>Stadt Luzern <br/>Kinder Jugend Familie <br/>Kasernenplatz 3, Postfach <br/> 6000 Luzern 7<br><a href=\"tel:+41 41 208 81 90\">+41 41 208 81 90</a><br><a href=\"mailto:betreuungsgutscheine@stadtluzern.ch\">betreuungsgutscheine@stadtluzern.ch</a><br><a href=\"https://www.kinderbetreuung.stadtluzern.ch\">www.kinderbetreuung.stadtluzern.ch</a><br>",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
