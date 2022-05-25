@@ -2380,8 +2380,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
 		}
 		if (gemeinde != null) {
-			row.setGemeinde(gemeinde.getName());
+			row.setTraegergemeinde(gemeinde.getName());
 			row.setBfsGemeinde(gemeinde.getBfsNummer());
+		}
+
+		if (institutionStammdaten.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
+			&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+			row.setStandortgemeinde(institutionStammdaten.getAdresse().getGemeinde());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
@@ -2389,7 +2394,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		zuletztGeandert = zuletztGeandertList.stream().max(LocalDateTime::compareTo).get();
 		row.setZuletztGeaendert(zuletztGeandert);
-
 		return row;
 	}
 

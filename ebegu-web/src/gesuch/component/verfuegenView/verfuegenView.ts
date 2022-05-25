@@ -15,8 +15,8 @@
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
-import {map} from 'rxjs/operators';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
+import {map} from 'rxjs/operators';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -41,6 +41,7 @@ import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -577,6 +578,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public showVerfuegungsDetails(): boolean {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
+    }
+
+    public isAuszahlungAnElternAndInstitutionRole(): boolean {
+        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern
+        && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
     }
 
     public showVerfuegungPdfLink(): boolean {

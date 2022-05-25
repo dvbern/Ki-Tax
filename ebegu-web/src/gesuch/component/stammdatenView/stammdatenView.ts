@@ -14,14 +14,17 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
@@ -90,6 +93,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'DownloadRS',
         'ApplicationPropertyRS',
         'DokumenteRS',
+        'MandantService',
     ];
 
     public filesTooBig: File[];
@@ -108,6 +112,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public ausweisNachweisRequiredEinstellung: boolean;
     public dvFileUploadError: object;
     public frenchEnabled: boolean;
+    private isLuzern: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -128,6 +133,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly downloadRS: DownloadRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dokumenteRS: DokumenteRS,
+        private readonly mandantService: MandantService
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -137,6 +143,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             $timeout);
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+        }, err => LOG.error(err));
     }
 
     public $onInit(): void {
@@ -518,4 +527,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return this.gesuchModelManager.getGesuchstellerNumber() === 1 && this.frenchEnabled;
     }
 
+    public showHintMandatoryFields(): boolean {
+        return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
+    }
 }

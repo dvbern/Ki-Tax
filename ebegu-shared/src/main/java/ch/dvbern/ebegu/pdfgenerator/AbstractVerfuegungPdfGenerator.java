@@ -60,6 +60,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
-	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -135,7 +136,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final boolean isFKJVTexte;
 
 	@Nonnull
-	private final Art art;
+	protected final Art art;
 
 	public AbstractVerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
@@ -245,10 +246,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		document.add(createNichtEintretenUnterlagenUnvollstaendigParagraph());
 
 		Paragraph paragraphWithSupertext;
-		paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-		paragraphWithSupertext.add(new Chunk(getContent5NichtEintreten()));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+		final String textWithFussnote1 = translate(NICHT_EINTRETEN_CONTENT_4);
+		paragraphWithSupertext = PdfUtil.createParagraph(textWithFussnote1);
+		if (StringUtils.isNotEmpty(textWithFussnote1)) {
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		}
+		final String textWithFussnote2 = getContent5NichtEintreten();
+		paragraphWithSupertext.add(new Chunk(textWithFussnote2));
+		if (StringUtils.isNotEmpty(textWithFussnote2)) {
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+		}
 		paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 		document.add(paragraphWithSupertext);
 

@@ -160,7 +160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public showAbrechungDerGutscheineFrage: boolean = false;
+    public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
 
     public constructor(
@@ -182,7 +182,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly mandantService: MandantService,
-        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.dvDialog = dvDialog;
@@ -199,6 +199,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
+
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -275,6 +280,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         }
 
+        this.loadInfomaZahlungenActive();
+
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
         ).then((response: TSEinstellung[]) => {
@@ -338,15 +345,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
+    }
+
+    private loadInfomaZahlungenActive(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.infomaZahlungen)) {
+            // properties wurden bereits geladen
+            return;
+        }
 
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.showAbrechungDerGutscheineFrage = response.infomaZahlungen;
+                this.infomaZahlungen = response.infomaZahlungen;
             });
-
-        if (this.mandant === KiBonMandant.LU) {
-            this.isTFOKostenBerechnungStuendlich = true;
-        }
     }
 
     /**
@@ -368,7 +378,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        tsBetreuung.auszahlungAnEltern = false;
+        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.infomaZahlungen = response.infomaZahlungen;
+                tsBetreuung.auszahlungAnEltern = response.infomaZahlungen;
+            });
 
         return tsBetreuung;
     }
@@ -1640,5 +1655,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
         && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+    }
+
+    private showHintUntermonatlich(): boolean {
+        return this.getBetreuungspensen().length > 0 && this.mandant !== KiBonMandant.LU;
+    }
+
+    private showHintEingewoehnung(): boolean {
+        return this.mandant === KiBonMandant.LU;
     }
 }

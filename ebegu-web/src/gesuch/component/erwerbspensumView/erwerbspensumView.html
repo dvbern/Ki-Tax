@@ -24,7 +24,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
 
             <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
+            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="!vm.isLuzern"></p>
         </div>
     </div>
     <div class="row">
@@ -40,10 +40,11 @@
                                 <label class="md-no-float" data-translate="TAETIGKEIT" for="bezeichnung"></label>
                                 <input id="bezeichnung" type="text" name="bezeichnung"
                                        ng-model="vm.model.erwerbspensumJA.bezeichnung"
-                                       dv-max-length class="form-control" ng-required="false"
+                                       dv-max-length class="form-control"
                                        ng-disabled="vm.erwerbspensumDisabled()"
                                        aria-describedby="bezeichnung-error"
                                        ng-attr-placeholder="{{'TAETIGKEIT_PLACEHOLDER' | translate}}"
+                                       ng-required="vm.isLuzern"
                                 >
                                 <dv-bisher gs="vm.model.erwerbspensumGS.bezeichnung"
                                            ja="vm.model.erwerbspensumJA.bezeichnung"
