@@ -284,7 +284,11 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EMAIL" for="email_ID">
+                                <label class="md-no-float required">
+                                       <span data-translate="EMAIL"
+                                             for="email_ID"></span>
+                                       <dv-tooltip input-id="email_ID"
+                                                   text="'EMAIL_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <input aria-describedby="email_ID-error"
                                        id="email_ID"

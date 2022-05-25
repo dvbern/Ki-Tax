@@ -291,6 +291,9 @@ public enum EinstellungKey {
 	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
 	BETREUUNG_INPUT_SWITCH_ENABLED,
 
+	// Aktiviert die Checkbox, um die Verfügung eingschrieben zu versenden
+	VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
+
 	// Erlaubt Abwesenheit zu erfassen in einer Mutation
 	ABWESENHEIT_AKTIV;
 

@@ -48,6 +48,10 @@ export class DvTooltipController implements IDVFocusableController {
         });
     }
 
+    public isTextEmpty(text: string): boolean {
+        return !text || text.length === 0;
+    }
+
     /**
      * Sets the focus back to the tooltip icon.
      */
