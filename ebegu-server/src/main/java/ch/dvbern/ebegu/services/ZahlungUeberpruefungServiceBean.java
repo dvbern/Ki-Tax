@@ -40,7 +40,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -64,7 +63,6 @@ import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.services.util.ZahlungslaufUtil;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -410,7 +408,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Join<Zahlungsposition, Zahlung> joinZahlung = root.join(Zahlungsposition_.zahlung);
 		Join<Zahlung, Zahlungsauftrag> joinZahlungsauftrag = joinZahlung.join(Zahlung_.zahlungsauftrag);
 		Join<Zahlungsposition, VerfuegungZeitabschnitt> joinZeitabschnitt = root.join(Zahlungsposition_.verfuegungZeitabschnitt);
-		final Path<DateRange> rangePath = joinZeitabschnitt.get(AbstractDateRangedEntity_.gueltigkeit);
 
 		Predicate predicateGemeinde = cb.equal(joinZahlungsauftrag.get(Zahlungsauftrag_.gemeinde), gemeinde);
 		Predicate predicateAuftragTyp = cb.equal(joinZahlungsauftrag.get(Zahlungsauftrag_.zahlungslaufTyp), zahlungslaufHelper.getZahlungslaufTyp());
