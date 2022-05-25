@@ -1218,8 +1218,8 @@
     "UMZUG_HINT": "Planen Sie einen Umzug? Bitte geben Sie allfällige Adressänderungen ein.",
     "ERWERBSPENSUM_HINT": "Bitte geben Sie allfällige Änderungen Ihrer Beschäftigungspensen an.",
     "ABWESENHEIT": "Abwesenheit",
-    "ABWESENHEIT_HINT": "Hier müssen Sie erfassen, wenn ein Kind mehr als 30 Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als 30 Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem 31. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (ASIV Art. 34u).",
-    "ABWESENHEIT_HINT_FKJV": "Hier müssen Sie erfassen, wenn ein Kind mehr als 30 Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als 30 Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem 31. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (FKJV Art. 71 und 72).",
+    "ABWESENHEIT_HINT": "Hier müssen Sie erfassen, wenn ein Kind mehr als {{tage}} Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als {{tage}} Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem {{tagePlus1}}. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (ASIV Art. 34u).",
+    "ABWESENHEIT_HINT_FKJV": "Hier müssen Sie erfassen, wenn ein Kind mehr als {{tage}} Tage am Stück innerhalb einer Gutscheinperiode abwesend ist.  Wenn das Kind mehr als {{tage}} Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem {{tagePlus1}}. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden (FKJV Art. 71 und 72).",
     "ABWESENHEIT_ENTFERNEN": "Abwesenheit löschen",
     "ABWESENHEIT_ERFASSEN": "Abwesenheit erfassen",
     "ABWESENHEIT_FUER_WELCHES_KIND": "Für welches Kind gilt die Abwesenheit?",
@@ -2903,5 +2903,8 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
     "ABWESENHEIT_AKTIV": "Wizardstep Abwesenheit sichtbar",
+    "SUPPORT_MAIL": "support@kibon.ch",
+    "ONBARDING_HILFE": "Benötigen Sie Hilfe?",
+    "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Benötigen Sie Hilfe?</b><br><br>Haben Sie Fragen oder benötigen Sie Hilfe? Als Antragsteller/in oder Unterstützungsdienst melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten. Der Support für Antragsteller/innen und Unterstützungsdienste wird von der zuständigen Gemeinde durchgeführt.<br>",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

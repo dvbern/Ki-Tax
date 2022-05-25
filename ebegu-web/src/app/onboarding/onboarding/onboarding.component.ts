@@ -16,9 +16,11 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, from, Observable} from 'rxjs';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboarding-help-dialog.component';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
@@ -42,6 +44,7 @@ export class OnboardingComponent implements OnInit {
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
         private readonly translate: TranslateService,
+        private readonly dialog: MatDialog
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
         this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());
@@ -68,5 +71,11 @@ export class OnboardingComponent implements OnInit {
 
     public isGerman$(): Observable<boolean> {
         return this.currentLangDe$.asObservable();
+    }
+
+    public openHelp($event: MouseEvent): void {
+        $event.preventDefault();
+        const dialogConfig = new MatDialogConfig();
+        this.dialog.open(OnboardingHelpDialogComponent, dialogConfig);
     }
 }

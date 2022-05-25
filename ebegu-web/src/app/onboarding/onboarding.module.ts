@@ -15,17 +15,18 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
-import {OnboardingComponent} from './onboarding/onboarding.component';
+import {InitZpvNrComponent} from './init-zpv-nr/init-zpv-nr.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
+import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
+import {OnboardingHelpDialogComponent} from './onboarding-help-dialog/onboarding-help-dialog.component';
+import {OnboardingInfoGemeindeComponent} from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
+import {OnboardingInfoInstitutionComponent} from './onboarding-info-institution/onboarding-info-institution.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
+import {OnboardingNeuBenutzerComponent} from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';
-import { OnboardingNeuBenutzerComponent } from './onboarding-neu-benutzer/onboarding-neu-benutzer.component';
-import { OnboardingInfoGemeindeComponent } from './onboarding-info-gemeinde/onboarding-info-gemeinde.component';
-import { OnboardingInfoInstitutionComponent } from './onboarding-info-institution/onboarding-info-institution.component';
-import { InitZpvNrComponent } from './init-zpv-nr/init-zpv-nr.component';
-import { ZpvNrSuccessComponent } from './zpv-nr-success/zpv-nr-success.component';
-import { PortalSelectionComponent } from './portal-selection/portal-selection.component';
+import {OnboardingComponent} from './onboarding/onboarding.component';
+import {PortalSelectionComponent} from './portal-selection/portal-selection.component';
+import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 
 @NgModule({
     imports: [
@@ -42,7 +43,8 @@ import { PortalSelectionComponent } from './portal-selection/portal-selection.co
         OnboardingInfoInstitutionComponent,
         InitZpvNrComponent,
         ZpvNrSuccessComponent,
-        PortalSelectionComponent
+        PortalSelectionComponent,
+        OnboardingHelpDialogComponent
     ],
 })
 class OnboardingModule {
