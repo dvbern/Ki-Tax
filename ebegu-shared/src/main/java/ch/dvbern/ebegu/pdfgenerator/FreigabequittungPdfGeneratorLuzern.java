@@ -24,8 +24,17 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createBoldParagraph;
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createParagraph;
 
 public class FreigabequittungPdfGeneratorLuzern extends AbstractFreigabequittungPdfGenerator {
+
+	private static final String BITTE_AUSDRUCKEN = "PdfGeneration_BitteAusdrucken";
+	private static final String BITTE_SOFORT_EINREICHEN = "PdfGeneration_BitteSofortEinreichen";
+	private static final String BENOETIGTE_UNTERLAGEN_INFO = "PdfGeneration_BenoetigteUnterlagen_Info";
 
 	public FreigabequittungPdfGeneratorLuzern(
 		@Nonnull Gesuch gesuch,
@@ -33,4 +42,20 @@ public class FreigabequittungPdfGeneratorLuzern extends AbstractFreigabequittung
 		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
 		super(gesuch, stammdaten, benoetigteUnterlagen);
 	}
+
+	@Override
+	protected void createParagraphBitteAusdrucken(Document document) {
+		document.add(createParagraph(translate(BITTE_AUSDRUCKEN)));
+	}
+
+	@Override
+	protected void createParagraphBenoetigteUnterlagenInfo(Document document) {
+		document.add(createParagraph(translate(BENOETIGTE_UNTERLAGEN_INFO)));
+	}
+
+	@Override
+	protected void createParagraphSofortEinrichten(List<Element> paragraphlist) {
+		paragraphlist.add(createBoldParagraph(translate(BITTE_SOFORT_EINREICHEN), 1));
+	}
+
 }

@@ -24,6 +24,8 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 
 public class FreigabequittungPdfGeneratorBern extends AbstractFreigabequittungPdfGenerator{
 
@@ -32,5 +34,20 @@ public class FreigabequittungPdfGeneratorBern extends AbstractFreigabequittungPd
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
 		super(gesuch, stammdaten, benoetigteUnterlagen);
+	}
+
+	@Override
+	protected void createParagraphBitteAusdrucken(Document document) {
+		//no-op dieser Paragraph soll für Bern nicht angezeigt werden
+	}
+
+	@Override
+	protected void createParagraphBenoetigteUnterlagenInfo(Document document) {
+		//no-op dieser Paragraph soll für Bern nicht angezeigt werden
+	}
+
+	@Override
+	protected void createParagraphSofortEinrichten(List<Element> paragraphlist) {
+		//no-op dieser Paragraph soll für Bern nicht angezeigt werden
 	}
 }
