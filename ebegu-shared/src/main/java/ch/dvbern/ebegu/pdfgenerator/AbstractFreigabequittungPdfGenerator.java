@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
-public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
+public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 	private static final String FREIGABEQUITTUNG_TITLE = "PdfGeneration_Freigabequittung_Title";
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
@@ -65,12 +65,12 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	private static final String EINGEREICHT = "PdfGeneration_Eingereicht";
 	private static final String UNTERSCHRIFTEN_ORT_DATUM = "PdfGeneration_UnterschriftenOrtDatum";
 
-	private static final Logger LOG = LoggerFactory.getLogger(FreigabequittungPdfGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractFreigabequittungPdfGenerator.class);
 
 	@Nonnull
 	private final List<DokumentGrund> benoetigteUnterlagen;
 
-	public FreigabequittungPdfGenerator(
+	protected AbstractFreigabequittungPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
@@ -92,10 +92,12 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
+			createParagraphBitteAusdrucken(document);
 			document.add(createGesuchstellerTable());
 			document.add(PdfUtil.createSubTitle(translate(BETREUUNGSANGEBOTE)));
 			document.add(createBetreuungsangeboteTable());
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
+			createParagraphBenoetigteUnterlagenInfo(document);
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
@@ -108,6 +110,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			seite2Paragraphs.add(new Paragraph());
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(VOLLSTAENDIGKEIT_TITLE)));
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(VOLLSTAENDIGKEIT_CONTENT)));
+			createParagraphSofortEinrichten(seite2Paragraphs);
 			seite2Paragraphs.add(createUnterschriftenTable());
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
@@ -189,6 +192,11 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		table.setSpacingAfter(2 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return table;
 	}
+
+	protected abstract void createParagraphBitteAusdrucken(Document document);
+	protected abstract void createParagraphBenoetigteUnterlagenInfo(Document document);
+	protected abstract void createParagraphSofortEinrichten(List<Element> paragraphlist);
+
 
 	private void addGesuchstellerToUnterschriften(@Nonnull PdfPTable table,
 		@Nonnull GesuchstellerContainer gesuchsteller) {

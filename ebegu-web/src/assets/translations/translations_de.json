@@ -2899,6 +2899,7 @@
     "PORTAL_WECHSELN": "Sie sind nicht aus Bern? Klicken Sie hier um das Portal zu wechseln.",
     "FREIGABE_QUITTUNG_EINLESEN_REQUIRED": "Solothurn: Einlesen Freigabequittung aktiviert",
     "ZUSATZINFORMATIONEN_INSTITUTION": "Zusatzinformationen Institution",
+    "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsgutschein wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
     "ABWESENHEIT_AKTIV": "Abwesenheit aktivieren",

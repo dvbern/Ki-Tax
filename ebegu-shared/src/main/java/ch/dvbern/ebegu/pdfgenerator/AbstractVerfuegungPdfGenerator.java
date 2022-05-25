@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,6 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -59,6 +60,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +71,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
-	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
+	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
 	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
@@ -120,6 +122,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected final Font fontTabelleBold = PdfUtil.createFontWithSize(getPageConfiguration().getFonts().getFontBold(), 8.0f);
 	private final Font fontRed = PdfUtil.createFontWithColor(getPageConfiguration().getFonts().getFont(), Color.RED);
 
+	protected final float[] DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE = { 90, 100, 88, 88, 88, 100, 100, 100, 108, 110 };
+
 	public enum Art {
 		NORMAL,
 		KEIN_ANSPRUCH,
@@ -132,7 +136,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final boolean isFKJVTexte;
 
 	@Nonnull
-	private final Art art;
+	protected final Art art;
 
 	public AbstractVerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
@@ -242,10 +246,16 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		document.add(createNichtEintretenUnterlagenUnvollstaendigParagraph());
 
 		Paragraph paragraphWithSupertext;
-		paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-		paragraphWithSupertext.add(new Chunk(getContent5NichtEintreten()));
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+		final String textWithFussnote1 = translate(NICHT_EINTRETEN_CONTENT_4);
+		paragraphWithSupertext = PdfUtil.createParagraph(textWithFussnote1);
+		if (StringUtils.isNotEmpty(textWithFussnote1)) {
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		}
+		final String textWithFussnote2 = getContent5NichtEintreten();
+		paragraphWithSupertext.add(new Chunk(textWithFussnote2));
+		if (StringUtils.isNotEmpty(textWithFussnote2)) {
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+		}
 		paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 		document.add(paragraphWithSupertext);
 
@@ -359,10 +369,9 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private PdfPTable createVerfuegungTable() {
 
 		// Tabelle initialisieren
-		float[] columnWidths = { 90, 100, 88, 88, 88, 100, 100, 100, 108, 110 };
-		PdfPTable table = new PdfPTable(columnWidths.length);
+		PdfPTable table = new PdfPTable(getVerfuegungColumnWidths().length);
 		try {
-			table.setWidths(columnWidths);
+			table.setWidths(getVerfuegungColumnWidths());
 		} catch (DocumentException e) {
 			LOG.error("Failed to set the width: {}", e.getMessage(), e);
 		}
@@ -370,48 +379,19 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);
 
 		// Referenznummern
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		addReferenzNummerCells(table);
 
 		// Spaltentitel, Row 1
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, fontTabelle, 2, 1));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
-		table.addCell(createCell(
-			true,
-			Element.ALIGN_RIGHT,
-			translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN),
-			null,
-			fontTabelle,
-			2,
-			1));
-		table.addCell(createCell(
-			true,
-			Element.ALIGN_RIGHT,
-			translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG),
-			Color.LIGHT_GRAY,
-			fontTabelle,
-			2,
-			1));
-		table.addCell(createCell(
-			true,
-			Element.ALIGN_RIGHT,
-			translate(ELTERNBEITRAG),
-			Color.LIGHT_GRAY,
-			fontTabelle,
-			2,
-			1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, getTextGutschein(), Color.LIGHT_GRAY, fontTabelle, 2,
-			1));
+
+		addTitleBerechneterGutschein(table);
+		addTitleBetreuungsGutschein(table);
+		addTitleNrElternBeitrag(table);
+		addTitleGutscheinProStunde(table);
+		addTitleNrUeberweiesenerBetrag(table);
 
 		// Spaltentitel, Row 2
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BETREUUNG), null, fontTabelle, 1, 1));
@@ -468,43 +448,111 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten()),
-				null,
-				fontTabelle,
-				1,
-				1));
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()),
-				Color.LIGHT_GRAY,
-				getBgColorForBetreuungsgutscheinCell(),
-				1,
-				1));
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()),
-				Color.LIGHT_GRAY,
-				fontTabelle,
-				1,
-				1));
-			table.addCell(createCell(
-				false,
-				Element.ALIGN_RIGHT,
-				PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()),
-				Color.LIGHT_GRAY,
-				getBgColorForUeberwiesenerBetragCell(),
-				1,
-				1));
+			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
+			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
+			addValueGutscheinProStunde(table, abschnitt.getVerguenstigungProZeiteinheit());
+			addValueUeberweiesenerBetrag(table, abschnitt.getVerguenstigung());
 		}
 		return table;
 	}
 
-	private PdfPCell createCell(
+	protected void addReferenzNummerCells(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+	}
+
+	protected void addTitleBerechneterGutschein(PdfPTable table) {
+		table.addCell(createCell(
+			true,
+			Element.ALIGN_RIGHT,
+			translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN),
+			null,
+			fontTabelle,
+			2,
+			1));
+	}
+
+	protected abstract void addTitleGutscheinProStunde(PdfPTable table);
+
+	protected void addTitleBetreuungsGutschein(PdfPTable table) {
+		table.addCell(createCell(
+			true,
+			Element.ALIGN_RIGHT,
+			translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG),
+			Color.LIGHT_GRAY,
+			fontTabelle,
+			2,
+			1));
+	}
+
+	protected void addTitleNrElternBeitrag(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(ELTERNBEITRAG), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+	}
+
+	protected void addTitleNrUeberweiesenerBetrag(PdfPTable table) {
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, getTextGutschein(), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+	}
+
+	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
+		table.addCell(createCell(
+			false,
+			Element.ALIGN_RIGHT,
+			PdfUtil.printBigDecimal(verguenstigungOhneBeruecksichtigungVollkosten),
+			null,
+			fontTabelle,
+			1,
+			1));
+	}
+
+	protected void addValueBetreuungsGutschein(
+		PdfPTable table,
+		BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		table.addCell(createCell(
+			false,
+			Element.ALIGN_RIGHT,
+			PdfUtil.printBigDecimal(verguenstigungOhneBeruecksichtigungMinimalbeitrag),
+			Color.LIGHT_GRAY,
+			getBgColorForBetreuungsgutscheinCell(),
+			1,
+			1));
+		}
+
+	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
+		table.addCell(createCell(
+			false,
+			Element.ALIGN_RIGHT,
+			PdfUtil.printBigDecimal(minimalerElternbeitragGekuerzt),
+			Color.LIGHT_GRAY,
+			fontTabelle,
+			1,
+			1));
+	}
+
+	protected abstract void addValueGutscheinProStunde(PdfPTable table, @Nullable BigDecimal verguenstigungProZeiteinheit);
+
+	protected void addValueUeberweiesenerBetrag(PdfPTable table, BigDecimal verguenstigung) {
+		table.addCell(createCell(
+			false,
+			Element.ALIGN_RIGHT,
+			PdfUtil.printBigDecimal(verguenstigung),
+			Color.LIGHT_GRAY,
+			getBgColorForUeberwiesenerBetragCell(),
+			1,
+			1));
+	}
+
+	protected abstract float[] getVerfuegungColumnWidths();
+
+	protected PdfPCell createCell(
 		boolean isHeaderRow,
 		int alignment,
 		String value,

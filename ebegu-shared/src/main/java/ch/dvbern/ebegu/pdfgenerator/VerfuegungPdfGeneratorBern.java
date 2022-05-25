@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -27,6 +28,8 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPTable;
+import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 
@@ -49,6 +52,23 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 		@Nonnull Document document,
 		@Nonnull PdfGenerator generator) {
 		createDokumentNichtEintrettenDefault(document, generator);
+	}
+
+	@Override
+	protected void addTitleGutscheinProStunde(PdfPTable table) {
+		//defualt no-op: wird nur in Luzern angezeigt
+	}
+
+	@Override
+	protected void addValueGutscheinProStunde(
+		PdfPTable table,
+		@Nullable BigDecimal verguenstigungProZeiteinheit) {
+		//defualt no-op: wird nur in Luzern angezeigt
+	}
+
+	@Override
+	protected float[] getVerfuegungColumnWidths() {
+		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
 	}
 
 	@Override

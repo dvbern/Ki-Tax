@@ -460,7 +460,7 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-if="vm.showAbrechungDerGutscheineFrage">
+                    <div class="row" ng-if="vm.infomaZahlungen">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                  <span class="ebegu-h1 required">
@@ -548,21 +548,28 @@
                                       dv-enable-expression="vm.isPensumEditable()">
 
                                 <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
-                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
+                                        ng-show="vm.showHintUntermonatlich()"></p>
+
+                                <p class="inline-hint margin-bottom-20" ng-show="vm.showHintEingewoehnung()">
+                                    <span translate>BETREUUNG_HINT_EINGEWOEHNUNG</span>
+                                    <dv-tooltip text="'BETREUUNG_HINT_EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
+                                </p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                     <!--Betreuungspensum-->
-                                    <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                    <div ng-if="vm.showBetreuungsKostenAndPensumInput()">
+                                        <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
                                                         input-id="betreuungspensum-{{$index}}"
                                                         betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
                                                         is-disabled="!vm.isPensumEditable()"
                                                         multiplier-kita="vm.getMultiplierKita()"
                                                         multiplier-tfo="vm.getMultiplierTFO()"
                                                         show-betreuung-input-switch="vm.isSwitchBetreuungspensumEnabled">
-                                    </dv-betreuung-input>
+                                        </dv-betreuung-input>
+                                    </div>
                                     <!--Monatliche Betreuungskosten-->
-                                    <div class="row">
+                                    <div class="row" ng-if="vm.showBetreuungsKostenAndPensumInput()">
                                         <div class="col-sm-12 dv-input-container-medium">
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
@@ -583,6 +590,32 @@
                                                         ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                                     <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"
                                                                        for="vm.form['monatlicheBetreuungskosten-' + $index].$error"></dv-error-messages>
+                                                </div>
+
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
+                                    <!--Stündliche Vollkosten (TFO)-->
+                                    <div class="row" ng-if="vm.showStuendlicheKostenInput()">
+                                        <div class="col-sm-12 dv-input-container-medium">
+                                            <dv-input-container class="form-group">
+                                                <label class="md-no-float"
+                                                       for="stuendlicheKosten-{{$index}}">
+                                                    <span data-translate="STUENDLICHE_VOLLKOSTEN"></span>
+                                                </label>
+                                                <div class="dv-input-container-medium-label">
+                                                    <input
+                                                        aria-describedby="stuendlicheKosten-{{$index}}-error"
+                                                        id="stuendlicheKosten-{{$index}}" type="number"
+                                                        name="stuendlicheKosten-{{$index}}"
+                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.stuendlicheVollkosten"
+                                                        dv-max-length class="form-control"
+                                                        ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                        ng-required="true"
+                                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                                    <dv-error-messages input-id="stuendlicheKosten-{{$index}}"
+                                                                       for="vm.form['stuendlicheKosten-' + $index].$error"></dv-error-messages>
                                                 </div>
 
                                             </dv-input-container>

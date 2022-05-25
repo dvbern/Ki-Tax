@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -67,6 +68,10 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Column(nullable = false)
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal stuendlicheVollkosten;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -83,7 +88,8 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		return super.isSame(otherAbstDateRangedEntity)
 			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay()
-			&& this.getMonatlicheBetreuungskosten().compareTo(((AbstractDecimalPensum) other).monatlicheBetreuungskosten) == 0;
+			&& this.getMonatlicheBetreuungskosten().compareTo(((AbstractDecimalPensum) other).monatlicheBetreuungskosten) == 0
+			&& MathUtil.isSame(this.getStuendlicheVollkosten(), ((AbstractDecimalPensum) other).getStuendlicheVollkosten());
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
@@ -94,6 +100,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setPensum(this.getPensum());
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
+		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
 	}
 
 	public void applyPensumFromDays(@Nonnull BigDecimal days) {
@@ -145,5 +152,14 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Nonnull
 	public BigDecimal getPensumRounded(){
 		return MathUtil.DEFAULT.from(pensum);
+	}
+
+	@Nullable
+	public BigDecimal getStuendlicheVollkosten() {
+		return stuendlicheVollkosten;
+	}
+
+	public void setStuendlicheVollkosten(@Nullable BigDecimal tfoStuendlichVollkosten) {
+		this.stuendlicheVollkosten = tfoStuendlichVollkosten;
 	}
 }

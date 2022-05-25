@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 
 public class KitaLuzernRechner extends AbstractLuzernRechner {
 
@@ -46,6 +47,20 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		this.isBaby = bgCalculationInput.isBabyTarif();
 
 		super.calculate(verfuegungZeitabschnitt, parameterDTO);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten(BigDecimal verfuegteZeiteinheiten) {
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
+		BigDecimal anspruchsPensum = BigDecimal.valueOf(input.getAnspruchspensumProzent());
+
+		//wenn anspruchspensum < betreuungspensum, dann anspruchspensum/betreuungspensum * monatlicheBetreuungskosten
+		if(anspruchsPensum.compareTo(betreuungspensum) < 0) {
+			BigDecimal anspruchsPensumDevidedByBetreuungspensum = EXACT.divide(anspruchsPensum, betreuungspensum);
+			return EXACT.multiply(anspruchsPensumDevidedByBetreuungspensum, input.getMonatlicheBetreuungskosten());
+		}
+
+		return input.getMonatlicheBetreuungskosten();
 	}
 
 	@Override
@@ -74,8 +89,9 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateBGProTagByEinkommen() {
-		return isBaby? calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+	protected BigDecimal calculateBGProZeiteinheitByEinkommen() {
+		BigDecimal bgProTag = isBaby ? calculateBetreuungsgutscheinProZeiteinheitAufgrundEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+		return MathUtil.maximum(bgProTag, getMaximalWertBGProTagAufgrundEinkommen());
 	}
 
 	@Override

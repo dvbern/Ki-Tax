@@ -387,6 +387,7 @@ export class EbeguRestUtil {
         restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
         restObj.pensum = betreuungspensumEntity.pensum;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
+        restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
     }
 
     private parseAbstractPensumEntity(
@@ -405,6 +406,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
+        betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
     }
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
@@ -604,6 +606,8 @@ export class EbeguRestUtil {
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
+            restFamiliensituation.zustaendigeAmtsstelle = familiensituation.zustaendigeAmtsstelle;
+            restFamiliensituation.nameBetreuer = familiensituation.nameBetreuer;
             restFamiliensituation.verguenstigungGewuenscht =
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
@@ -687,6 +691,8 @@ export class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
+            familiensituation.zustaendigeAmtsstelle = familiensituationFromServer.zustaendigeAmtsstelle;
+            familiensituation.nameBetreuer = familiensituationFromServer.nameBetreuer;
             familiensituation.verguenstigungGewuenscht =
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
@@ -3359,6 +3365,7 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
+            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit = zeitabschnittFromServer.verguenstigungProZeiteinheit;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
                 zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =

@@ -109,7 +109,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1916.00"));
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1476.00"));
 	}
 
 	@Test
@@ -122,8 +122,8 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		// 1916 + 32 * 12 = 2300
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("2300.00"));
+		// 1476 + 32 * 12 = 1860
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1860.00"));
 	}
 
 	@Test
@@ -136,8 +136,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("false");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		// 1916 + 32 * 12 = 2300
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1916.00"));
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1476.00"));
 	}
 
 	@Test
