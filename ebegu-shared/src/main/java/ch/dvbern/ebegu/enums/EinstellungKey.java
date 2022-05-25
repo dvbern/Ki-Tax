@@ -289,7 +289,10 @@ public enum EinstellungKey {
 	AUSWEIS_NACHWEIS_REQUIRED,
 
 	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
-	BETREUUNG_INPUT_SWITCH_ENABLED;
+	BETREUUNG_INPUT_SWITCH_ENABLED,
+
+	// Erlaubt Abwesenheit zu erfassen in einer Mutation
+	ABWESENHEIT_AKTIV;
 
 
 	private EinstellungTyp typ;

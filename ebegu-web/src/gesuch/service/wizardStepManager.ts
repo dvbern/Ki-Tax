@@ -14,12 +14,14 @@
  */
 
 import {IPromise, IQService} from 'angular';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegtOrKeinKontingent} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../models/enums/TSRole';
 import {getTSWizardStepNameValues, TSWizardStepName} from '../../models/enums/TSWizardStepName';
@@ -34,7 +36,13 @@ const LOG = LogFactory.createLog('WizardStepManager');
 
 export class WizardStepManager {
 
-    public static $inject = ['AuthServiceRS', 'WizardStepRS', '$q', 'AuthLifeCycleService'];
+    public static $inject = [
+        'AuthServiceRS',
+        'WizardStepRS',
+        '$q',
+        'AuthLifeCycleService',
+        'EinstellungRS',
+    ];
 
     private allowedSteps: Array<TSWizardStepName> = [];
     private readonly hiddenSteps: Array<TSWizardStepName> = []; // alle Steps die obwohl allowed, ausgeblendet werden
@@ -52,8 +60,8 @@ export class WizardStepManager {
         private readonly wizardStepRS: WizardStepRS,
         private readonly $q: IQService,
         private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
-
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(
@@ -514,8 +522,18 @@ export class WizardStepManager {
         } else {
             this.hideStep(TSWizardStepName.FREIGABE);
         }
-        if (gesuch.isMutation()) {
-            this.unhideStep(TSWizardStepName.ABWESENHEIT);
+        if (gesuch.isMutation() && EbeguUtil.isNotNullOrUndefined(gesuch.gesuchsperiode)
+            && EbeguUtil.isNotNullOrUndefined(gesuch.dossier)) {
+            this.einstellungRS.findEinstellung(TSEinstellungKey.ABWESENHEIT_AKTIV,
+                gesuch.dossier.gemeinde.id,
+                gesuch.gesuchsperiode.id)
+                .then(abwesenheitAktiv => {
+                    if (abwesenheitAktiv.value === 'false') {
+                        this.hideStep(TSWizardStepName.ABWESENHEIT);
+                        return;
+                    }
+                    this.unhideStep(TSWizardStepName.ABWESENHEIT);
+                });
         } else {
             this.hideStep(TSWizardStepName.ABWESENHEIT);
         }

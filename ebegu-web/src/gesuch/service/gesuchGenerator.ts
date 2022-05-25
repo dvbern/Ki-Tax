@@ -162,7 +162,7 @@ export class GesuchGenerator {
             sozialdienst);
         gesuch.status = getStartAntragStatusFromEingangsart(eingangsart, (EbeguUtil.isNotNullOrUndefined(sozialdienst)
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle())));
-
+        this.wizardStepManager.setHiddenSteps(gesuch);
         if (gesuchsperiodeId) {
             return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
                 gesuch.gesuchsperiode = periode;
@@ -237,6 +237,7 @@ export class GesuchGenerator {
                 gesuch.status = getStartAntragStatusFromEingangsart(eingangsart,
                     EbeguUtil.isNotNullOrUndefined(currentFall.sozialdienstFall));
                 gesuch.emptyCopy = true;
+                this.wizardStepManager.setHiddenSteps(gesuch);
                 return gesuch;
             });
         });
@@ -261,7 +262,6 @@ export class GesuchGenerator {
             gesuch.dossier.fall.sozialdienstFall = new TSSozialdienstFall();
             gesuch.dossier.fall.sozialdienstFall.sozialdienst = sozialdienst;
         }
-        this.wizardStepManager.setHiddenSteps(gesuch);
         this.wizardStepManager.initWizardSteps(isNewFallNeeded(creationAction));
         this.setCurrentUserAsFallVerantwortlicher(gesuch);
 
