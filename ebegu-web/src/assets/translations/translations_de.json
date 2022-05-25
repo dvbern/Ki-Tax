@@ -2902,6 +2902,6 @@
     "AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE": "Der Betreuungsgutschein wird für diese Betreuung an die Eltern ausbezahlt. Die Institution hat deshalb keine Einsicht in die Verfügung",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT": "Abweichender Partner. Die Daten müssen manuell ausgefüllt werden.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
-    "ABWESENHEIT_AKTIV": "Abwesenheit aktivieren",
+    "ABWESENHEIT_AKTIV": "Wizardstep Abwesenheit sichtbar",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

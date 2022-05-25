@@ -33,7 +33,3 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 	SET value = 'false'
 WHERE einstellung_key = 'ABWESENHEIT_AKTIV' AND mandant_identifier = 'LUZERN';
-
-UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
-	SET value = 'false'
-WHERE einstellung_key = 'ABWESENHEIT_AKTIV' AND mandant_identifier = 'SOLOTHURN';
