@@ -76,7 +76,6 @@ export class OnboardingComponent implements OnInit {
     public openHelp($event: MouseEvent): void {
         $event.preventDefault();
         const dialogConfig = new MatDialogConfig();
-        this.dialog.open(OnboardingHelpDialogComponent, dialogConfig)
-            .afterClosed().subscribe(() => console.log('closed'));
+        this.dialog.open(OnboardingHelpDialogComponent, dialogConfig);
     }
 }
