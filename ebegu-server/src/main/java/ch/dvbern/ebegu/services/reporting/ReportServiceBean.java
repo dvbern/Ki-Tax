@@ -2384,7 +2384,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setBfsGemeinde(gemeinde.getBfsNummer());
 		}
 
-		if (institutionStammdaten.getBetreuungsangebotTyp().isKita() || institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien() && institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
+		if (institutionStammdaten.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
+			&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			row.setStandortgemeinde(institutionStammdaten.getAdresse().getGemeinde());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());

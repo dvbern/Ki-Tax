@@ -296,8 +296,8 @@ public class InstitutionenDataRow {
 		return standortgemeinde;
 	}
 
-	public void setStandortgemeinde(@Nullable String _gemeinde) {
-		this.standortgemeinde = _gemeinde;
+	public void setStandortgemeinde(@Nullable String gemeinde) {
+		this.standortgemeinde = gemeinde;
 	}
 
 	@Nullable
