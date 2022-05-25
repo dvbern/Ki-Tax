@@ -54,7 +54,7 @@ import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createBoldParagraph;
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.createParagraph;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
-public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
+public class AbstractFreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 	private static final String FREIGABEQUITTUNG_TITLE = "PdfGeneration_Freigabequittung_Title";
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
@@ -71,12 +71,12 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	private static final String BITTE_AUSDRUCKEN = "PdfGeneration_BitteAusdrucken";
 	private static final String BITTE_SOFORT_EINREICHEN = "PdfGeneration_BitteSofortEinreichen";
 
-	private static final Logger LOG = LoggerFactory.getLogger(FreigabequittungPdfGenerator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractFreigabequittungPdfGenerator.class);
 
 	@Nonnull
 	private final List<DokumentGrund> benoetigteUnterlagen;
 
-	public FreigabequittungPdfGenerator(
+	public AbstractFreigabequittungPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
