@@ -295,7 +295,13 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				if (gueltigeBetreuungOptional.isPresent()) {
 					betreuung = gueltigeBetreuungOptional.get();
 				} else {
-					potentielleFehlerList.add("Keine gueltige Betreuung gefunden fuer BG " + betreuung.getBGNummer());
+					if (betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+						LOGGER.warn("ZAHLUNGSUEBERPRUEFUNG: Die Betreuung war neu im letzten Antrag, wurde aber ohne Verfuegung geschlossen: {}",
+							betreuung.getBGNummer());
+					} else {
+						potentielleFehlerList.add("Keine gueltige Betreuung gefunden fuer BG "
+							+ betreuung.getBGNummer());
+					}
 				}
 			}
 			// Jetzt kann es immer noch sein, dass es zwar die gueltige Verfuegung, aber mit NICHT_EINTRETEN ist
