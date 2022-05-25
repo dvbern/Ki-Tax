@@ -69,6 +69,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
+	private Authorizer authorizer;
+
+	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 	private static final String NAME_MISSING_MSG = "name muss gesetzt sein";
 
@@ -82,6 +85,7 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		Objects.requireNonNull(value);
 		Optional<ApplicationProperty> property = readApplicationProperty(key, mandant);
 		if (property.isPresent()) {
+			authorizer.checkWriteAuthorization(property.get());
 			property.get().setValue(value);
 			final ApplicationProperty mergedProperty = persistence.merge(property.get());
 			// Falls es sich um die Einschaltung der ASIV Regeln fuer Bern handelt, muss
@@ -92,7 +96,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			}
 			return mergedProperty;
 		}
-		return persistence.persist(new ApplicationProperty(key, value, mandant));
+		final ApplicationProperty newProperty = new ApplicationProperty(key, value, mandant);
+		authorizer.checkWriteAuthorization(newProperty);
+		return persistence.persist(newProperty);
 	}
 
 	private void createMutationForEachClosedAntragForBern() {
@@ -241,5 +247,11 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Nonnull
 	public Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant) {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, mandant, false);
+	}
+
+	@Override
+	@Nonnull
+	public Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.SCHNITTSTELLE_EVENTS_AKTIVIERT, mandant, true);
 	}
 }

@@ -162,6 +162,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BetreuungMonitoringService betreuungMonitoringService;
 	@Inject
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -180,15 +182,14 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Betreuung mergedBetreuung = persistence.merge(betreuung);
 
+		Mandant mandant = betreuung.extractGemeinde().getMandant();
+
 		// if isNew or not published and Jugendamt -> generate Event for Kafka when API enabled and institution bekannt
 		if (exportBetreuung(isNew, mergedBetreuung)) {
 			if (ebeguConfiguration.isBetreuungAnfrageApiEnabled()
-				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA)
-				&& !betreuung.getInstitutionStammdaten()
-				.getId()
-				.equals(Constants.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE)) {
+				&& applicationPropertyService.isPublishSchnittstelleEventsAktiviert(Objects.requireNonNull(mandant))
+				&& !Constants.ALL_UNKNOWN_INSTITUTION_IDS.contains(betreuung.getInstitutionStammdaten()
+				.getId())) {
 				BetreuungAnfrageAddedEvent betreuungAnfrageAddedEvent =
 					betreuungAnfrageEventConverter.of(mergedBetreuung);
 				this.event.fire(betreuungAnfrageAddedEvent);
@@ -294,8 +295,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
-		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
+		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled() &&
+			applicationPropertyService.isPublishSchnittstelleEventsAktiviert(Objects.requireNonNull(
+			anmeldungTagesschule.extractGemeinde().getMandant()))) {
 			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
+			anmeldungTagesschule.setEventPublished(true);
+		} else {
+			anmeldungTagesschule.setEventPublished(false);
 		}
 	}
 

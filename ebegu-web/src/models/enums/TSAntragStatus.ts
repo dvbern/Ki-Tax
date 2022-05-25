@@ -201,11 +201,12 @@ export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
-export function isAnyStatusOfGeprueftVerfuegenVerfuegtButSchulamt(status: TSAntragStatus): boolean {
+export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(status: TSAntragStatus): boolean {
     return isAnyStatusOfVerfuegtButSchulamt(status)
         || status === TSAntragStatus.IN_BEARBEITUNG_JA
         || status === TSAntragStatus.GEPRUEFT
-        || status === TSAntragStatus.VERFUEGEN;
+        || status === TSAntragStatus.VERFUEGEN
+        || status === TSAntragStatus.NUR_SCHULAMT;
 }
 
 /**

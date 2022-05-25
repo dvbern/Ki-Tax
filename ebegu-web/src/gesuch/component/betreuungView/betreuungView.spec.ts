@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
@@ -35,6 +36,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenBetreuungsgutscheine} from '../../../models/TSInstitutionStammdatenBetreuungsgutscheine';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -61,6 +63,8 @@ describe('betreuungView', () => {
     let $timeout: angular.ITimeoutService;
     let einstellungRS: EinstellungRS;
     let institutionStammdatenRS: InstitutionStammdatenRS;
+    let mandantService: MandantService;
+    let ebeguRestUtil: EbeguRestUtil;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -78,8 +82,11 @@ describe('betreuungView', () => {
         $timeout = $injector.get('$timeout');
         einstellungRS = $injector.get('EinstellungRS');
         institutionStammdatenRS = $injector.get('InstitutionStammdatenRS');
-
+        mandantService = $injector.get('MandantService');
+        ebeguRestUtil = $injector.get('EbeguRestUtil');
+        const applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         // they always need to be mocked
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
 
@@ -113,14 +120,15 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
+        spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.resolveTo(({}));
         spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
+
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
             gesuchModelManager,
             ebeguUtil,
-            $injector.get('CONSTANTS'),
             $rootScope,
             $injector.get('BerechnungsManager'),
             $injector.get('ErrorService'),
@@ -134,7 +142,10 @@ describe('betreuungView', () => {
             $injector.get('GlobalCacheService'),
             $timeout,
             undefined,
-            $injector.get('ApplicationPropertyRS'));
+            $injector.get('ApplicationPropertyRS'),
+            mandantService,
+            ebeguRestUtil,
+        );
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
@@ -149,7 +160,6 @@ describe('betreuungView', () => {
                 const myBetreuungView = new BetreuungViewController($state,
                     gesuchModelManager,
                     ebeguUtil,
-                    null,
                     $rootScope,
                     null,
                     null,
@@ -163,7 +173,9 @@ describe('betreuungView', () => {
                     undefined,
                     $timeout,
                     undefined,
-                    undefined);
+                    undefined,
+                    mandantService,
+                    ebeguRestUtil);
                 myBetreuungView.model = betreuung;
                 expect(myBetreuungView.getBetreuungspensen()).toBeDefined();
                 expect(myBetreuungView.getBetreuungspensen().length).toEqual(0);
@@ -427,7 +439,8 @@ describe('betreuungView', () => {
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
         spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.callFake(b => b);
-        spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {});
+        spyOn(gesuchModelManager, 'updateVerguenstigungGewuenschtFlag').and.callFake(() => {
+        });
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // tslint:disable-next-line:no-unbound-method

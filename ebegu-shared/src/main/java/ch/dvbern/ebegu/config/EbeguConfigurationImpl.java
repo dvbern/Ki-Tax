@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -168,8 +169,9 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public String getHostname() {
-		return getString(EBEGU_HOSTNAME, null);
+	public String getHostname(MandantIdentifier mandantIdentifier) {
+		String hostnameWithPlaceHolder =  getString(EBEGU_HOSTNAME, null);
+		return hostnameWithPlaceHolder.replace("{mandantUrlCode}", mandantIdentifier.getUrlCode());
 	}
 
 	@Override

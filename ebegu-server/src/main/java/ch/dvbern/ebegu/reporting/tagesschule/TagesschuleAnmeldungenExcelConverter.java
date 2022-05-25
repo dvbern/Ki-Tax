@@ -119,6 +119,9 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatum, dataRow.getEintrittsdatum());
 			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.status, ServerMessageUtil.translateEnumValue(dataRow.getStatus(), locale, gesuchsperiode.getMandant()));
 
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.abweichung, dataRow.getAbweichung());
+			excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.bemerkung, dataRow.getBemerkung());
+
 			setAnmeldungenForModule(dataRow, repeatColGroupList, excelRowGroup);
 		});
 		// wenn das Gesuch noch nicht freigegeben wurde, soll das Kind anonym erscheinen
@@ -183,6 +186,9 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			"Reports_bgNummerTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale, mandant));
+
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.abweichungTitle, ServerMessageUtil.getMessage("Reports_abweichungTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.bemerkungTitle, ServerMessageUtil.getMessage("Reports_bemerkungTitle", locale, mandant));
 
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagMo, ServerMessageUtil.getMessage("Reports_MontagShort", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.wochentagDi, ServerMessageUtil.getMessage("Reports_DienstagShort", locale, mandant));

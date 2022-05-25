@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {fromEvent, Observable} from 'rxjs';
 import {map, startWith, throttleTime} from 'rxjs/operators';
@@ -48,7 +48,7 @@ export class PortalSelectionComponent implements OnInit {
 
     public ngOnInit(): void {
         this.mandantService.getAll().subscribe(mandants => {
-            this.mandants = mandants;
+            this.mandants = this.orderByTimestampErstellt(mandants);
             this.cd.markForCheck();
         }, error => LOG.error(error));
 
@@ -61,6 +61,11 @@ export class PortalSelectionComponent implements OnInit {
             throttleTime(this.THROTTLE_TIME),
             map(checkScreenSize));
 
+    }
+
+    private orderByTimestampErstellt(mandants: TSMandant[]): TSMandant[] {
+        return mandants.sort((a, b) =>
+            a.timestampErstellt.diff(b.timestampErstellt));
     }
 
     public selectMandant(mandant: TSMandant): void {

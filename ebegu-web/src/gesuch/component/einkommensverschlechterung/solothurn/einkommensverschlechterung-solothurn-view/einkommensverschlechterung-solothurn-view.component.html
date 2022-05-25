@@ -25,7 +25,7 @@
             </h2>
             <hr class="header"/>
             <!-- Infotext -->
-            <p class="inline-hint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
+            <p class="inline-hint">{{ 'EKV_SOLOTHURN_HINT' | translate }}</p>
         </div>
     </div>
     <div class="row">
@@ -43,7 +43,11 @@
                                         [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_1'"
                                         [inputDisabled]="readOnly"
                                         [dvOnBlur]="onBruttoLohnChange"
-                                        [inputRequired]="true">
+                                        [inputRequired]="true"
+                                        [showBisher]="showBisher(model.getEkvToWorkWith_GS())"
+                                        [deklaration]="model.getEkvToWorkWith_GS()?.bruttolohnAbrechnung1"
+                                        [korrektur]="model.getEkvToWorkWith().bruttolohnAbrechnung1"
+                                >
                                 </dv-input-label-field>
                             </div>
                         </div>
@@ -57,7 +61,10 @@
                                         [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_2'"
                                         [inputDisabled]="readOnly"
                                         [dvOnBlur]="onBruttoLohnChange"
-                                        [inputRequired]="true">
+                                        [inputRequired]="true"
+                                        [showBisher]="showBisher(model.getEkvToWorkWith_GS())"
+                                        [deklaration]="model.getEkvToWorkWith_GS()?.bruttolohnAbrechnung2"
+                                        [korrektur]="model.getEkvToWorkWith().bruttolohnAbrechnung2">
                                 </dv-input-label-field>
                             </div>
                         </div>
@@ -71,7 +78,10 @@
                                         [labelMessageKey]="'BRUTTOLOHNE_ABRECHNUNG_3'"
                                         [inputDisabled]="readOnly"
                                         [dvOnBlur]="onBruttoLohnChange"
-                                        [inputRequired]="true">
+                                        [inputRequired]="true"
+                                        [showBisher]="showBisher(model.getEkvToWorkWith_GS())"
+                                        [deklaration]="model.getEkvToWorkWith_GS()?.bruttolohnAbrechnung3"
+                                        [korrektur]="model.getEkvToWorkWith().bruttolohnAbrechnung3">
                                 </dv-input-label-field>
                             </div>
                         </div>
@@ -95,6 +105,11 @@
                                         <mat-radio-button [value]="false">{{'LABEL_12' | translate }}</mat-radio-button>
                                         <mat-radio-button [value]="true">{{'LABEL_13' | translate }}</mat-radio-button>
                                     </mat-radio-group>
+                                    <dv-bisher-x [showBisher]="showBisher(model.getEkvToWorkWith_GS())"
+                                                 [deklaration]="model.getEkvToWorkWith_GS()?.extraLohn"
+                                                 [korrektur]="model.getEkvToWorkWith().extraLohn"
+                                                 [specificBisherText]="getLabelExtralohn() | translate">
+                                    </dv-bisher-x>
                                     <dv-error-messages *ngIf="form.submitted"
                                                        [errorObject]="extraLohn.errors"
                                                        inputId="extraLohn_id">
@@ -110,6 +125,7 @@
                         <dv-input-label-field
                             [model]="getBruttolohnJahr()"
                             [labelMessageKey]="'EVK_BRUTTOLOHN_JAHR'"
+                            [tooltipMessageKey]="'EVK_BRUTTOLOHN_JAHR_HINT'"
                             [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"
                             [inputDisabled]="true">
                         </dv-input-label-field>
@@ -124,9 +140,13 @@
                                 [(model)]="model.getEkvToWorkWith().nettoVermoegen"
                                 [labelMessageKey]="'NETTO_VERMOEGEN_STAND'"
                                 [labelMessageKeyArgs]="{year: getBasisjahr()}"
+                                [tooltipMessageKey]="'NETTO_VERMOEGEN_STAND_HINT'"
                                 [inputDisabled]="readOnly"
                                 [dvOnBlur]="onValueChangeFunction"
-                                [inputRequired]="true">
+                                [inputRequired]="true"
+                                [showBisher]="showBisher(model.getEkvToWorkWith_GS())"
+                                [deklaration]="model.getEkvToWorkWith_GS()?.nettoVermoegen"
+                                [korrektur]="model.getEkvToWorkWith().nettoVermoegen">
                             </dv-input-label-field>
                         </div>
                     </div>

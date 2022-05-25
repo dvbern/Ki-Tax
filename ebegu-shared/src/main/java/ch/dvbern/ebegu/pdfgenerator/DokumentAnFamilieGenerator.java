@@ -28,9 +28,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
@@ -38,10 +38,10 @@ import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.Element;
+import org.apache.commons.lang.StringUtils;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
@@ -50,7 +50,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	protected static final String ANREDE_FRAU = "PdfGeneration_AnredeFrau";
 	protected static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
 
-	private static final String GRUSS = "PdfGeneration_Gruss";
+	protected static final String GRUSS = "PdfGeneration_Gruss";
 	private static final String SIGNIERT = "PdfGeneration_Signiert";
 
 	protected DokumentAnFamilieGenerator(
@@ -173,10 +173,13 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
 		Font fontWithSize = PdfUtil.createFontWithSize(defaultFont, 8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtil.createFontWithSize(defaultFont, 6));
-			chunk.setTextRise(2);
-			fz.addText(chunk);
-			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));
+			final String text = content.get(i);
+			if (StringUtils.isNotEmpty(text)) {
+				Chunk chunk = new Chunk((i + 1) + " ", PdfUtil.createFontWithSize(defaultFont, 6));
+				chunk.setTextRise(2);
+				fz.addText(chunk);
+				fz.addText(new Phrase(text + '\n', fontWithSize));
+			}
 		}
 		fz.go();
 	}

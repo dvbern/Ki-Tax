@@ -16,7 +16,11 @@
 import {waitForAsync} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -25,6 +29,7 @@ import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {IStammdatenStateParams} from '../../gesuch.route';
+import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {StammdatenViewController} from './stammdatenView';
@@ -40,6 +45,11 @@ describe('stammdatenView', () => {
     let ewkRS: EwkRS;
     let $timeout: ITimeoutService;
     let einstellungRS: EinstellungRS;
+    let applicationPropertyRS: ApplicationPropertyRS;
+    let uploadRS: UploadRS;
+    let downloadRS: DownloadRS;
+    let dokumentRS: DokumenteRS;
+    let mandantService: MandantService;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -57,6 +67,11 @@ describe('stammdatenView', () => {
         $scope = $rootScope.$new();
         $timeout = $injector.get('$timeout');
         einstellungRS = $injector.get('EinstellungRS');
+        applicationPropertyRS = $injector.get('ApplicationPropertyRS');
+        uploadRS = $injector.get('UploadRS');
+        downloadRS = $injector.get('DownloadRS');
+        dokumentRS = $injector.get('DokumenteRS');
+        mandantService = $injector.get('MandantService');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -71,7 +86,12 @@ describe('stammdatenView', () => {
             $rootScope,
             ewkRS,
             $timeout,
-            einstellungRS);
+            einstellungRS,
+            uploadRS,
+            downloadRS,
+            applicationPropertyRS,
+            dokumentRS,
+            mandantService);
     })));
 
     describe('disableWohnadresseFor2GS', () => {

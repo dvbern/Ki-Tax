@@ -2,6 +2,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${mitteilung.empfaenger.fullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> - Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</@base64Header>
@@ -24,7 +25,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Votre commune vous a envoyé un
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/mitteilungen/${mitteilung.dossier.fall.id}/${mitteilung.dossier.id}/">message</a>.
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/mitteilungen/${mitteilung.dossier.fall.id}/${mitteilung.dossier.id}/">message</a>.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>

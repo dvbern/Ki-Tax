@@ -23,10 +23,10 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
-import {isVerfuegtOrSTV} from '../../../models/enums/TSAntragStatus';
 import {
     getTSBelegungTagesschuleModulIntervallValues,
     TSBelegungTagesschuleModulIntervall,
@@ -44,6 +44,7 @@ import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagessc
 import {TSMandant} from '../../../models/TSMandant';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -90,7 +91,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         '$state',
         'GesuchModelManager',
         'EbeguUtil',
-        'CONSTANTS',
         '$scope',
         'BerechnungsManager',
         'ErrorService',
@@ -107,7 +107,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'ApplicationPropertyRS',
         'DownloadRS',
         'GemeindeRS',
-        'I18nServiceRSRest'
+        'I18nServiceRSRest',
+        'MandantService',
+        'EbeguRestUtil'
     ];
 
     public onSave: () => void;
@@ -132,7 +134,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         $state: StateService,
         gesuchModelManager: GesuchModelManager,
         ebeguUtil: EbeguUtil,
-        CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         errorService: ErrorService,
@@ -150,12 +151,13 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         private readonly downloadRS: DownloadRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
+        mandantService: MandantService,
+        ebeguRestUtil: EbeguRestUtil,
     ) {
 
         super($state,
             gesuchModelManager,
             ebeguUtil,
-            CONSTANTS,
             $scope,
             berechnungsManager,
             errorService,
@@ -169,7 +171,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             globalCacheService,
             $timeout,
             $translate,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            mandantService,
+            ebeguRestUtil);
 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;
@@ -575,7 +579,6 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle());
         return !this.isSavingData
-            && (this.gesuchModelManager.getGesuch() && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status))
             && (gesuchsteller || gemeindeUser);
     }
 

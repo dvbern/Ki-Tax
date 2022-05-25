@@ -69,6 +69,7 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
+    public isAnspruchUnabhaengingVonBeschaeftigungsPensum: boolean;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum

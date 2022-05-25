@@ -167,6 +167,10 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation famSit = betreuung.extractGesuch().extractFamiliensituation();
 		boolean verguenstigungBeantrag = famSit != null && !famSit.isKeineMahlzeitenverguenstigungBeantragt();
 		zeitabschnitt.setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(verguenstigungBeantrag);
+		//TFO Stuendliche Vollkosten übernehmen
+		if (betreuungspensum.getStuendlicheVollkosten() != null) {
+			zeitabschnitt.setStuendlicheVollkosten(betreuungspensum.getStuendlicheVollkosten());
+		}
 
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();

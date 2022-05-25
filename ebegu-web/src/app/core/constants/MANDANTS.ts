@@ -18,7 +18,7 @@
 // Corresponds with URL
 export enum KiBonMandant {
     BE = 'be',
-    LU = 'lu',
+    LU = 'stadtluzern',
     SO = 'so',
     NONE = ''
 }
@@ -26,7 +26,7 @@ export enum KiBonMandant {
 // Corresponds with name in DB
 export enum KiBonMandantFull {
     BE = 'Kanton Bern',
-    LU = 'Kanton Luzern',
+    LU = 'Stadt Luzern',
     SO = 'Kanton Solothurn',
     NONE = ''
 }

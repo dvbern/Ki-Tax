@@ -185,6 +185,10 @@ public enum EinstellungKey {
 	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
 	FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,
 
+	// "Alle: Sprachliche Integration bis und mit Schulstufe"
+	// Siehe KIBON-2081. Definiert bis zu welcher Schulstufe die soziale Integration ausbezahlt wird.
+	SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,
+
 	// "FKJV: Pauschale nur möglich, wenn Anspruch auf Gutschein"
 	// Siehe KIBON-2093. Falls true wird die Pauschale nur ausbezahlt, wenn auch ein Anspruch auf einen Gutschein besteht
 	FKJV_PAUSCHALE_BEI_ANSPRUCH,
@@ -271,7 +275,24 @@ public enum EinstellungKey {
 
 	// falls diese Einstellung disabled ist, dann wechselt der Status des Antrags nach der Freigabe durch den Antragstellenden
 	// direkt auf Freigegeben. "Freigabequittung ausstehend" wird übersprungen.
-	FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
+	FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+
+	// Unbezahlter Urlaub kann mit dieser Einstellung aktivert oder deaktiviert werden
+	UNBEZAHLTER_URLAUB_AKTIV,
+
+	// Fachstellen Typ (KIBON-2360)
+	// BERN oder LUZERN
+	FACHSTELLEN_TYP,
+
+	// LU: falls diese Einstellung aktiviert ist, wird bei den Gesuchstellenden ein Ausweisnachweis verlangt
+	// Siehe KIBON-2310
+	AUSWEIS_NACHWEIS_REQUIRED,
+
+	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
+	BETREUUNG_INPUT_SWITCH_ENABLED,
+
+	// Erlaubt Abwesenheit zu erfassen in einer Mutation
+	ABWESENHEIT_AKTIV;
 
 
 	private EinstellungTyp typ;

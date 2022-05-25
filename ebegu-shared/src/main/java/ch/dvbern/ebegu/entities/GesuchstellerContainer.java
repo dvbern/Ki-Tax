@@ -28,6 +28,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckGesuchstellerContainerComplete;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -220,6 +222,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Namen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@NonNull
 	public String extractNachname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getNachname();
@@ -230,6 +233,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Vornamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@NonNull
 	public String extractVorname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getVorname();
@@ -240,6 +244,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den FullNamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@NonNull
 	public String extractFullName() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getFullName();
@@ -417,4 +422,5 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		}
 		return getWohnadresseAm(stichtag);
 	}
+
 }

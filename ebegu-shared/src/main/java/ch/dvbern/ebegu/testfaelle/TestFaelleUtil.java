@@ -33,24 +33,19 @@ public final class TestFaelleUtil {
 
 		selbstdeklaration.setEinkunftErwerb(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setEinkunftVersicherung(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setEinkunftAusgleichskassen(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setEinkunftWertschriften(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setEinkunftUnterhaltsbeitragSteuerpflichtige(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setEinkunftUnterhaltsbeitragKinder(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setEinkunftUeberige(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setEinkunftLiegenschaften(MathUtil.DEFAULT.from(0));
 
 		selbstdeklaration.setAbzugBerufsauslagen(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setAbzugUnterhaltsbeitragEhepartner(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setAbzugRentenleistungen(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugSaeule3A(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugVersicherungspraemien(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugKrankheitsUnfallKosten(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setAbzugFreiweiligeZuwendungPartien(MathUtil.DEFAULT.from(0));
+		selbstdeklaration.setSonderabzugErwerbstaetigkeitEhegatten(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugKinderSchule(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugKinderVorschule(MathUtil.DEFAULT.from(0));
-		selbstdeklaration.setAbzugKinderAuswaertigerAufenthalt(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugEigenbetreuung(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugFremdbetreuung(MathUtil.DEFAULT.from(0));
 		selbstdeklaration.setAbzugErwerbsunfaehigePersonen(MathUtil.DEFAULT.from(0));

@@ -45,8 +45,8 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * @param gesuch das Gesuch dessen finazDatenDTO gesetzt werden soll
 	 */
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch, BigDecimal minimumEKV) {
-		FinanzDatenDTO finanzDatenDTOAlleine = new FinanzDatenDTO();
-		FinanzDatenDTO finanzDatenDTOZuZweit = new FinanzDatenDTO();
+		FinanzDatenDTO finanzDatenDTOAlleine = new FinanzDatenDTO(minimumEKV);
+		FinanzDatenDTO finanzDatenDTOZuZweit = new FinanzDatenDTO(minimumEKV);
 
 		// Finanzielle Situation berechnen
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOAlleine =
@@ -384,14 +384,16 @@ public abstract class AbstractFinanzielleSituationRechner {
 		BigDecimal totalBruttovermoegen = BigDecimal.ZERO;
 		BigDecimal totalSchulden = BigDecimal.ZERO;
 		BigDecimal nettovermoegen = BigDecimal.ZERO;
-		if(gs1 != null && Boolean.TRUE.equals(gs1.getSteuerdatenZugriff())) {
+		if(gs1 != null && Boolean.TRUE.equals(gs1.getSteuerdatenZugriff()) &&
+			gs1.getSteuerdatenAbfrageStatus() != null && gs1.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
 			nettovermoegen = gs1.getNettoVermoegen();
 		}
 		else {
 			totalBruttovermoegen = gs1 != null ? gs1.getBruttovermoegen() : BigDecimal.ZERO;
 			totalSchulden = gs1 != null ? gs1.getSchulden() : BigDecimal.ZERO;
 		}
-		if(gs2 != null && Boolean.TRUE.equals(gs2.getSteuerdatenZugriff())) {
+		if(gs2 != null && Boolean.TRUE.equals(gs2.getSteuerdatenZugriff()) &&
+			gs2.getSteuerdatenAbfrageStatus() != null && gs2.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
 			nettovermoegen = add(nettovermoegen, gs2.getNettoVermoegen());
 		}
 		else {

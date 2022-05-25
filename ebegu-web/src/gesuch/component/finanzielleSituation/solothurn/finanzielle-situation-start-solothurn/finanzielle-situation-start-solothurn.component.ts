@@ -21,8 +21,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public sozialhilfeBezueger: boolean;
-    public finanzielleSituationRequired: boolean;
-    public verguenstigungGewuenscht: boolean;
+    public finanzielleSituationRequired: boolean = false;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -35,6 +34,12 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public ngOnInit(): void {
+        // verguenstigungGewunscht ist alway true for Solothurn, expect when sozialhilfeempfaenger is true
+        this.model.verguenstigungGewuenscht = !EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
+
+        if (EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger)) {
+            this.finanzielleSituationRequired = true;
+        }
     }
 
     public getAntragstellerNummer(): number {
@@ -82,10 +87,11 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.getGesuch().familiensituationContainer.familiensituationJA;
     }
 
-    public finanzielleSituationRequiredChange(finanzielleSituationRequired: boolean): void {
-        this.finanzielleSituationRequired = finanzielleSituationRequired;
-        // tslint:disable-next-line:early-exit
-        if (EbeguUtil.isNotNullAndFalse(finanzielleSituationRequired)) {
+    public onSozialhilfeBezuegerChange(isSozialhilfebezueger: boolean): void {
+        this.model.verguenstigungGewuenscht = !isSozialhilfebezueger;
+        this.finanzielleSituationRequired = !isSozialhilfebezueger;
+
+        if (EbeguUtil.isNotNullAndFalse(isSozialhilfebezueger)) {
             this.resetVeranlagungSolothurn();
             this.resetBruttoLohn();
         }

@@ -7,11 +7,13 @@
 					[name]="'nettoEinkommen'"
 					[(model)]="model.finanzielleSituationJA.nettolohn"
 					[labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
+					[tooltipMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'"
                     [dvOnBlur]="dvValueChange"
-					[inputRequired]="true"></dv-input-label-field>
-					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.nettolohn"
-								 [korrektur]="model.finanzielleSituationJA.nettolohn"
-								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+                        [inputRequired]="true"
+                        [deklaration]="model.finanzielleSituationGS?.nettolohn"
+                        [korrektur]="model.finanzielleSituationJA.nettolohn"
+                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                    </dv-input-label-field>
 				</div>
 			</div>
 		</div>
@@ -22,11 +24,13 @@
 							[name]="'unterhaltsBeitraege'"
 							[(model)]="model.finanzielleSituationJA.unterhaltsBeitraege"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE'"
-                            [dvOnBlur]="dvValueChange"
-							[inputRequired]="true"></dv-input-label-field>
-					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
-								 [korrektur]="model.finanzielleSituationJA.unterhaltsBeitraege"
-								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+							[tooltipMessageKey]="'FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT'"
+                        [dvOnBlur]="dvValueChange"
+                        [inputRequired]="true"
+                        [deklaration]="model.finanzielleSituationGS?.unterhaltsBeitraege"
+                        [korrektur]="model.finanzielleSituationJA.unterhaltsBeitraege"
+                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                    </dv-input-label-field>
 				</div>
 			</div>
 		</div>
@@ -37,11 +41,13 @@
 							[name]="'abzuegeKinderAusbildung'"
 							[(model)]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER'"
-                            [dvOnBlur]="dvValueChange"
-							[inputRequired]="true"></dv-input-label-field>
-					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
-								 [korrektur]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
-								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
+							[tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_AUSBILDUNG_KINDER_HINT'"
+                        [dvOnBlur]="dvValueChange"
+                        [inputRequired]="true"
+                        [deklaration]="model.finanzielleSituationGS?.abzuegeKinderAusbildung"
+                        [korrektur]="model.finanzielleSituationJA.abzuegeKinderAusbildung"
+                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                    </dv-input-label-field>
 				</div>
 			</div>
 		</div>
@@ -52,13 +58,15 @@
 							[name]="'steuerbaresVermoegen'"
 							[(model)]="model.finanzielleSituationJA.steuerbaresVermoegen"
 							[labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-                            [dvOnBlur]="dvValueChange"
-							[inputRequired]="true"></dv-input-label-field>
-					<dv-bisher-x [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
-								 [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
-								 [showIfBisherNone]="isNotNullOrUndefined(model.finanzielleSituationGS)"></dv-bisher-x>
-				</div>
-			</div>
-		</div>
-	</div>
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT'"
+                        [dvOnBlur]="dvValueChange"
+                        [inputRequired]="true"
+                        [deklaration]="model.finanzielleSituationGS?.steuerbaresVermoegen"
+                        [korrektur]="model.finanzielleSituationJA.steuerbaresVermoegen"
+                        [showBisher]="isNotNullOrUndefined(model.finanzielleSituationGS)">
+                    </dv-input-label-field>
+                </div>
+            </div>
+        </div>
+    </div>
 </fieldset>

@@ -26,7 +26,8 @@
                     [labelMessageKey]="gs1Name"
                     [inputRequired]="true"
                     (keyup)="updateRest()"
-                    [inputDisabled]="readonly">
+                    [inputDisabled]="readonly"
+                    [allowNegative]="allowNegative">
                 </dv-input-label-field>
             </div>
             <div>
@@ -35,7 +36,8 @@
                     [labelMessageKey]="gs2Name"
                     [inputRequired]="true"
                     (keyup)="updateRest()"
-                    [inputDisabled]="readonly">
+                    [inputDisabled]="readonly"
+                    [allowNegative]="allowNegative">
                 </dv-input-label-field>
             </div>
             <div class="rest">

@@ -363,6 +363,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty steuerschnittstelleAktivAb =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB, mandant)
 						.orElseThrow(() -> notFound);
+		ApplicationProperty zusatzinformationenInstitution =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION, mandant)
+						.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -412,7 +415,8 @@ public class ApplicationPropertyResource {
 			stringToBool(frenchEnabled.getValue()),
 			stringToBool(geresEnabledForMandant.getValue()),
 			isEbeguKibonAnfrageTestGuiEnabled,
-			steuerschnittstelleAktivAb.getValue()
+			steuerschnittstelleAktivAb.getValue(),
+			stringToBool(zusatzinformationenInstitution.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}
