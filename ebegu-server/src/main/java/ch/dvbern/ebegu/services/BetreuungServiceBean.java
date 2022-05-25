@@ -34,10 +34,12 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.ConstraintViolation;
@@ -114,6 +116,7 @@ import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections4.CollectionUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -730,6 +733,62 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
+	public Optional<Betreuung> findSameBetreuungInDifferentGesuchsperiode(
+		@NonNull Gesuchsperiode gesuchsperiode,
+		@NonNull Dossier dossier,
+		int betreuungNummer,
+		int kindNummer
+	) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
+		Root<Betreuung> root = query.from(Betreuung.class);
+		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch, JoinType.LEFT);
+		final Join<Gesuch, Dossier> joinGesuchDossier = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
+
+		ParameterExpression<Fall> fallParam = cb.parameter(Fall.class, "fall");
+		ParameterExpression<Gemeinde> gemeindeParam = cb.parameter(Gemeinde.class, "gemeinde");
+		ParameterExpression<Integer> betreuungNummerParam = cb.parameter(Integer.class, "betreuungNummer");
+		ParameterExpression<Integer> kindNummerParam = cb.parameter(Integer.class, "kindNummer");
+		ParameterExpression<Gesuchsperiode> gesuchsperiodeParam = cb.parameter(Gesuchsperiode.class, "gesuchsperiode");
+
+		Predicate predFallNummer = cb.equal(joinGesuchDossier.get(Dossier_.fall), fallParam);
+		Predicate predGemeinde = cb.equal(joinGesuchDossier.get(Dossier_.gemeinde), gemeindeParam);
+		Predicate predGueltig = cb.isTrue(root.get(Betreuung_.gueltig));
+		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummerParam);
+		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummerParam);
+		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiodeParam);
+
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(predFallNummer);
+		predicates.add(predGemeinde);
+		predicates.add(predGueltig);
+		predicates.add(predGesuchsperiode);
+		predicates.add(predKindNummer);
+		predicates.add(predBetreuungNummer);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		TypedQuery<Betreuung> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(fallParam, dossier.getFall());
+		q.setParameter(gemeindeParam, dossier.getGemeinde());
+		q.setParameter(betreuungNummerParam, betreuungNummer);
+		q.setParameter(kindNummerParam, kindNummer);
+		q.setParameter(gesuchsperiodeParam, gesuchsperiode);
+
+		// Leider gibt getSingleResult eine Exception, falls es keines gibt.
+		final List<Betreuung> resultList = q.getResultList();
+		if (CollectionUtils.isNotEmpty(resultList)) {
+			if (resultList.size() == 1) {
+				return Optional.of(resultList.get(0));
+			}
+			throw new EbeguRuntimeException("findBetreuungByBGNummer", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	@Nonnull
 	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
@@ -769,7 +828,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicates.add(predKindNummer);
 		predicates.add(predBetreuungNummer);
 		predicates.add(predGemeinde);
-
 		if (onlyGueltig) {
 			Predicate predGueltig = cb.equal(root.get(Betreuung_.gueltig), Boolean.TRUE);
 			predicates.add(predGueltig);

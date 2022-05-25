@@ -40,6 +40,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -131,6 +132,7 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1339,6 +1341,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;
+	}
+
+	@Override
+	@Nonnull
+	public Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@NonNull Gemeinde gemeinde
+	) {
+		final Query nativeQuery = persistence.getEntityManager().createNativeQuery(
+			"select g.* "
+				+ "from gesuch g "
+				+ "inner join dossier d on g.dossier_id = d.id "
+				+ "inner join fall f on d.fall_id = f.id "
+				+ "inner join gesuchsperiode gp on g.gesuchsperiode_id = gp.id "
+				+ "inner join gemeinde gem on d.gemeinde_id = gem.id "
+				+ "where g.timestamp_verfuegt is not null and g.gueltig is true "
+				+ "and gem.id = UNHEX(REPLACE(?1, '-','')) "
+				+ "and gp.id = UNHEX(REPLACE(?2, '-',''));", Gesuch.class
+		);
+		nativeQuery.setParameter(1, gemeinde.getId());
+		nativeQuery.setParameter(2, gesuchsperiode.getId());
+		final List<Gesuch> resultList = nativeQuery.getResultList();
+		return resultList;
 	}
 
 	@Override
