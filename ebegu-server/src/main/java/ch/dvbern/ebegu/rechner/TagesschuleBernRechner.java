@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -27,11 +28,15 @@ import ch.dvbern.ebegu.dto.TSCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class TagesschuleBernRechner extends AbstractBernRechner {
 
-	public TagesschuleBernRechner() {
+	private final List<RechnerRule> rechnerRulesForGemeinde;
+
+	public TagesschuleBernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
 	}
 
 
@@ -40,6 +45,9 @@ public class TagesschuleBernRechner extends AbstractBernRechner {
 	protected Optional<BGCalculationResult> calculateGemeinde(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		// Fuer Gemeinde die richtigen Werte setzen
+		prepareRechnerParameterForGemeinde(input, parameterDTO);
 
 		if (input.getParent().isHasGemeindeSpezifischeBerechnung()) {
 			return Optional.of(calculateAsiv(input, parameterDTO));
@@ -182,5 +190,19 @@ public class TagesschuleBernRechner extends AbstractBernRechner {
 		BigDecimal totalKostenProWoche = MathUtil.DEFAULT.addNullSafe(kostenProWoche, verpflegungsKostenEffektiv);
 
 		return totalKostenProWoche;
+	}
+
+	private void prepareRechnerParameterForGemeinde(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
+			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
+				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, new RechnerRuleParameterDTO());
+				}
+			}
+		}
 	}
 }

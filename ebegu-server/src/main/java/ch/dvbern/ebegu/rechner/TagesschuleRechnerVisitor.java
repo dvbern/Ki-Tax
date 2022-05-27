@@ -17,10 +17,19 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.util.List;
+
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
 public class TagesschuleRechnerVisitor implements MandantVisitor<AbstractRechner> {
+
+	private final List<RechnerRule> rechnerRulesForGemeinde;
+
+	public TagesschuleRechnerVisitor(List<RechnerRule> rechnerRulesForGemeinde) {
+		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
+	}
 
 	public AbstractRechner getTagesschuleRechnerForMandant(Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);
@@ -28,16 +37,16 @@ public class TagesschuleRechnerVisitor implements MandantVisitor<AbstractRechner
 
 	@Override
 	public AbstractRechner visitBern() {
-		return new TagesschuleBernRechner();
+		return new TagesschuleBernRechner(rechnerRulesForGemeinde);
 	}
 
 	@Override
 	public AbstractRechner visitLuzern() {
-		return new TagesschuleBernRechner();
+		return new TagesschuleBernRechner(rechnerRulesForGemeinde);
 	}
 
 	@Override
 	public AbstractRechner visitSolothurn() {
-		return new TagesschuleBernRechner();
+		return new TagesschuleBernRechner(rechnerRulesForGemeinde);
 	}
 }

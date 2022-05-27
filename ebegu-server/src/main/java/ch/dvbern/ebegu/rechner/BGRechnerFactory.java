@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -51,7 +52,7 @@ public final class BGRechnerFactory {
 			return new TageselternRechnerVisitor(rechnerRulesForGemeinde).getTageselternRechnerForMandant(mandant);
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
-			return new TagesschuleRechnerVisitor().getTagesschuleRechnerForMandant(mandant);
+			return new TagesschuleRechnerVisitor(rechnerRulesForGemeinde).getTagesschuleRechnerForMandant(mandant);
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;
@@ -74,7 +75,7 @@ public final class BGRechnerFactory {
 		}
 		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
 			// Tagesschulen werden von Anfang an mit dem ASIV-Rechner berechnet
-			return new TagesschuleBernRechner();
+			return new TagesschuleBernRechner(Collections.emptyList());
 		}
 		// Alle anderen Angebotstypen werden nicht berechnet
 		return null;

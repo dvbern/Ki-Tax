@@ -236,7 +236,7 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
-		if(!inputGemeinde.getBetreuungsangebotTyp().isKita() && !inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()){
+		if(!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()){
 			return false;
 		}
 
