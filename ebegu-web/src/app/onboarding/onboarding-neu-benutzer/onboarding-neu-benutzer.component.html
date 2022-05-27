@@ -108,11 +108,17 @@
         <br/>
         <br/>
         <div style="text-align: center">
-        <a href=""
-           uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
-        <br/>
-        <a href=""
-           uiSref="onboarding.infoinstitution" translate>ONBOARDING_INFO_INSTITUTION_LINK</a>
+            <ng-container>
+                <span class="fa fa-question-circle"></span>
+                <a href="" (click)="openHelp($event)" translate>ONBARDING_HILFE</a>
+                <br/>
+                <br/>
+            </ng-container>
+            <a href=""
+               uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
+            <br/>
+            <a href=""
+               uiSref="onboarding.infoinstitution" translate>ONBOARDING_INFO_INSTITUTION_LINK</a>
         </div>
     </div>
 </div>

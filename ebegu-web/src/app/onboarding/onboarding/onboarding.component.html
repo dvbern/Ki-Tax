@@ -34,6 +34,17 @@
             </button>
         </div>
         <br/>
+        <ng-container>
+            <span class="fa fa-question-circle"></span>
+            <a href="" (click)="openHelp($event)" translate>ONBARDING_HILFE</a>
+            <br/>
+            <br/>
+        </ng-container>
+        <ng-container *ngIf="isMultimandantEnabled$ | async">
+            <a href="" uiSref="onboarding.mandant" translate>PORTAL_WECHSELN</a>
+            <br/>
+            <br/>
+        </ng-container>
         <a href=""
            uiSref="onboarding.infogemeinde" translate>ONBOARDING_INFO_GEMEINDE_LINK</a>
         <br/>
@@ -43,11 +54,6 @@
             <br/>
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
-        </ng-container>
-        <ng-container *ngIf="isMultimandantEnabled$ | async">
-            <br/>
-            <br/>
-            <a href="" uiSref="onboarding.mandant" translate>PORTAL_WECHSELN</a>
         </ng-container>
         <div class="onboarding-iframe-tutorial">
             <iframe *ngIf="isGerman$() | async"

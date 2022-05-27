@@ -97,9 +97,12 @@
 			<div *ngIf="isNotSozialhilfeBezueger()">
 				<div class="form-group">
 					<dv-radio-container-x>
-						<label for="quellenbesteuert_id" class="required ebegu-h1">
-							{{'QUELLENBESTEUERT' | translate}}
-						</label>
+                          <span>
+                             <label for="quellenbesteuert_id" class="required ebegu-h1">
+							        {{'QUELLENBESTEUERT' | translate}}
+						     </label>
+                              <dv-tooltip text="'QUELLENBESTEUERT_HINT' | translate"></dv-tooltip>
+                          </span>
 						<mat-radio-group
 								(change)="quellenBesteuertChange($event)"
 								[(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"

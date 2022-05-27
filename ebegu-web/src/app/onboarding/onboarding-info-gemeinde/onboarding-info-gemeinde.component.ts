@@ -74,7 +74,8 @@ export class OnboardingInfoGemeindeComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        const mailto = 'mailto:support@kibon.ch?subject=';
+        const supportMail = this.translate.instant('SUPPORT_MAIL');
+        const mailto = `mailto:${supportMail}?subject=`;
         const emailBody = '&body=';
         const zeilenUmbruch = '%0D%0A%0D%0A';
         const body: string = this.translate.instant(this.emailBody, {gemeinde: this.gemeinde.name});

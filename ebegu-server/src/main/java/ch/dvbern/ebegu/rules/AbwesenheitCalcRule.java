@@ -41,8 +41,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class AbwesenheitCalcRule extends AbstractCalcRule {
 
-	public AbwesenheitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	private Integer abwesenheitMaxDaysValue;
+
+	public AbwesenheitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, @Nonnull Integer abwesenheitMaxDaysValue) {
 		super(RuleKey.ABWESENHEIT, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+		this.abwesenheitMaxDaysValue = abwesenheitMaxDaysValue;
 	}
 
 	@Override
@@ -57,7 +60,7 @@ public class AbwesenheitCalcRule extends AbstractCalcRule {
 		requireNonNull(platz.getBetreuungsangebotTyp());
 		if (inputData.isLongAbwesenheit()) {
 			inputData.setBezahltVollkosten(true);
-			inputData.addBemerkung(MsgKey.ABWESENHEIT_MSG, getLocale());
+			inputData.addBemerkung(MsgKey.ABWESENHEIT_MSG, getLocale(), abwesenheitMaxDaysValue);
 		}
 	}
 }

@@ -65,7 +65,8 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldInstitutionen.strasse, dataRow.getStrasse());
 			excelRowGroup.addValue(MergeFieldInstitutionen.plz, dataRow.getPlz());
 			excelRowGroup.addValue(MergeFieldInstitutionen.ort, dataRow.getOrt());
-			excelRowGroup.addValue(MergeFieldInstitutionen.gemeinde, dataRow.getGemeinde());
+			excelRowGroup.addValue(MergeFieldInstitutionen.standortgemeinde, dataRow.getStandortgemeinde());
+			excelRowGroup.addValue(MergeFieldInstitutionen.traegergemeinde, dataRow.getTraegergemeinde());
 			excelRowGroup.addValue(MergeFieldInstitutionen.bfsGemeinde, dataRow.getBfsGemeinde());
 			excelRowGroup.addValue(MergeFieldInstitutionen.telefon, dataRow.getTelefon());
 			excelRowGroup.addValue(MergeFieldInstitutionen.url, dataRow.getUrl());
@@ -125,7 +126,8 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			ServerMessageUtil.getMessage("Reports_strasseTitle", locale, mandant));
 		mergerDTO.addValue(MergeFieldInstitutionen.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle", locale, mandant));
 		mergerDTO.addValue(MergeFieldInstitutionen.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale, mandant));
-		mergerDTO.addValue(MergeFieldInstitutionen.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.traegergemeindeTitle, ServerMessageUtil.getMessage("Reports_traegergemeindeTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.standortgemeindeTitle, ServerMessageUtil.getMessage("Reports_stadortgemeindeTitle", locale, mandant));
 		mergerDTO.addValue(MergeFieldInstitutionen.bfsGemeindeTitle, ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.telefonTitle,

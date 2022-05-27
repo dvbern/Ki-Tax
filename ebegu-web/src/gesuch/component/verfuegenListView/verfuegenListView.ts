@@ -31,6 +31,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFall} from '../../../models/TSFall';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
@@ -91,6 +92,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public finSitStatus: Array<string>;
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
+    private isVerfuegungEingeschriebenSendenAktiv: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -158,14 +160,18 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         // Die Einstellung bezueglich Kontingentierung lesen
         // tslint:disable-next-line:early-exit
         if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
-            this.einstellungRS.findEinstellung(
-                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-                this.gesuchModelManager.getDossier().gemeinde.id,
+            this.einstellungRS.getAllEinstellungenBySystemCached(
                 this.gesuchModelManager.getGesuchsperiode().id,
-            )
-                .then(response => {
-                    this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+            ).then((response: TSEinstellung[]) => {
+                response.filter(r => r.key === TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED)
+                    .forEach(einstellung => {
+                        this.kontingentierungEnabled = JSON.parse(einstellung.value);
+                    });
+                response.filter(r => r.key === TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT)
+                    .forEach(einstellung => {
+                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(einstellung.value);
+                    });
+            });
         }
     }
 
@@ -423,6 +429,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 this.gesuchModelManager.setGesuch(gesuch);
             });
         });
+    }
+
+    public showVerfuegungEingeschriebenSenden(): boolean {
+        return this.isVerfuegungEingeschriebenSendenAktiv && this.showVerfuegenStarten();
     }
 
     public showSendToSteuerverwaltung(): boolean {
