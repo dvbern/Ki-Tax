@@ -155,8 +155,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (this.model.gemeinsameSteuererklaerung) {
             return false;
         }
-        // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+        // wenn die Steuerdatenzugriff Frage nicht anezeigt wird, muss die veranlagungsfrage angezeigt werden
+        if (!this.showZugriffAufSteuerdaten()) {
             return true;
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
@@ -182,6 +182,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public showZugriffAufSteuerdaten(): boolean {
         if (!this.steuerSchnittstelleAktivForPeriode) {
+            return false;
+        }
+
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
             return false;
         }
 
@@ -266,6 +270,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
         // bei einem Papiergesuch ebenfalls
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+            return true;
+        }
+        // wenn es sich um ein sozialdienstfall handelt ebenfalls
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
