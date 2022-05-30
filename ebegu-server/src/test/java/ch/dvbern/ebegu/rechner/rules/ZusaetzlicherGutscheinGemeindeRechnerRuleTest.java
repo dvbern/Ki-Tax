@@ -72,7 +72,7 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 		Assert.assertTrue(rule.isRelevantForVerfuegung(prepareInput(VORSCHULALTER, KITA), parisDTO));
 	}
 
-	@Test (expected = IllegalArgumentException.class)
+	@Test
 	public void isRelevantForVerfuegungUngueltigesAngebot() {
 		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(VORSCHULALTER, TAGESSCHULE), parisDTO));
 	}
