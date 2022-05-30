@@ -1662,6 +1662,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintEingewoehnung(): boolean {
-        return this.mandant === KiBonMandant.LU;
+        return this.mandant === KiBonMandant.LU
+        && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 }
