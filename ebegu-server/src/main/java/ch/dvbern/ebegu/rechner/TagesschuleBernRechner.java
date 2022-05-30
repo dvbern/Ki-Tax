@@ -197,11 +197,8 @@ public class TagesschuleBernRechner extends AbstractBernRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
-			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
-			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
-				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
-					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, new RechnerRuleParameterDTO());
-				}
+			if (rechnerRule.isConfigueredForGemeinde(parameterDTO) && rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+				rechnerRule.prepareParameter(inputGemeinde, parameterDTO, new RechnerRuleParameterDTO());
 			}
 		}
 	}
