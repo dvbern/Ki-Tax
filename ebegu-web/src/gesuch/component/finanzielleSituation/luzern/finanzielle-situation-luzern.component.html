@@ -101,7 +101,7 @@
                              <label for="quellenbesteuert_id" class="required ebegu-h1">
 							        {{'QUELLENBESTEUERT' | translate}}
 						     </label>
-                              <dv-tooltip text="'QUELLENBESTEUERT_HINT' | translate"></dv-tooltip>
+                              <dv-tooltip [text]="'QUELLENBESTEUERT_HINT' | translate"></dv-tooltip>
                           </span>
 						<mat-radio-group
 								(change)="quellenBesteuertChange($event)"
