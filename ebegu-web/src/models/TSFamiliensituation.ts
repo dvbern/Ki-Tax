@@ -270,6 +270,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             same = this.startKonkubinat.isSame(other.startKonkubinat);
         }
+        if (same && this.fkjvFamSit) {
+            same = this.geteilteObhut === other.geteilteObhut
+                && this.unterhaltsvereinbarung === other.unterhaltsvereinbarung
+                && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
+        }
         return same;
     }
 
