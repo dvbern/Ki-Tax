@@ -46,6 +46,7 @@ public class FreigabequittungPdfGeneratorLuzern extends AbstractFreigabequittung
 	@Override
 	protected void createParagraphBitteAusdrucken(Document document) {
 		document.add(createParagraph(translate(BITTE_AUSDRUCKEN)));
+		document.add(createParagraph(""));
 	}
 
 	@Override

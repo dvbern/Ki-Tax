@@ -259,8 +259,13 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 		document.add(paragraphWithSupertext);
 
+		var eingangsdatum = getEingangsdatum();
+
 		document.newPage();
-		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
+		document.add(PdfUtil.createParagraph(translate(
+			NICHT_EINTRETEN_CONTENT_7,
+			Constants.DATE_FORMATTER.format(eingangsdatum)
+		)));
 		document.add(createAntragNichtEintreten());
 		addZusatzTextIfAvailable(document);
 	}
@@ -277,11 +282,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected Element createAntragEingereichtAmParagraph() {
-		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
-
+		var eingangsdatum = getEingangsdatum();
 		return PdfUtil.createParagraph(translate(
 			NICHT_EINTRETEN_CONTENT_2,
 			Constants.DATE_FORMATTER.format(eingangsdatum)));
+	}
+
+	private LocalDate getEingangsdatum() {
+		return gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 	}
 
 	private String getContent5NichtEintreten() {
