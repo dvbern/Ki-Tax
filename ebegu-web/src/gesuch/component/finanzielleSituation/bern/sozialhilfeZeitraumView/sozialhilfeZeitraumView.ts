@@ -16,8 +16,12 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
+import {map} from 'rxjs/operators';
+import {KiBonMandant} from '../../../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {SozialhilfeZeitraumRS} from '../../../../../app/core/service/sozialhilfeZeitraumRS.rest';
+import {MandantService} from '../../../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
@@ -31,6 +35,8 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
+
+const LOG = LogFactory.createLog('SozialhilfeZeitraumViewController');
 
 export class SozialhilfeZeitraumViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -54,9 +60,11 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         '$translate',
         '$timeout',
         'SozialhilfeZeitraumRS',
+        'MandantService'
     ];
 
     public familiensituation: TSFamiliensituationContainer;
+    private isLuzern: boolean;
 
     public constructor(
         $stateParams: ISozialhilfeZeitraumStateParams,
@@ -70,6 +78,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
         private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS,
+        private readonly mandantService: MandantService
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -90,6 +99,9 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         } else {
             errorService.addMesageAsError('Unerwarteter Zustand: Familiensituation unbekannt');
         }
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+        }, err => LOG.error(err));
     }
 
     public save(): IPromise<any> {

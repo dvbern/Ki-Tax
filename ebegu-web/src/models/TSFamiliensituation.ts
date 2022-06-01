@@ -28,6 +28,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _aenderungPer: moment.Moment;
     private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
+    private _zustaendigeAmtsstelle: string;
+    private _nameBetreuer: string;
     private _verguenstigungGewuenscht: boolean;
     private _keineMahlzeitenverguenstigungBeantragt: boolean;
     private _ibanMahlzeiten: string;
@@ -90,6 +92,22 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set sozialhilfeBezueger(value: boolean) {
         this._sozialhilfeBezueger = value;
+    }
+
+    public get zustaendigeAmtsstelle(): string {
+        return this._zustaendigeAmtsstelle;
+    }
+
+    public set zustaendigeAmtsstelle(value: string) {
+        this._zustaendigeAmtsstelle = value;
+    }
+
+    public get nameBetreuer(): string {
+        return this._nameBetreuer;
+    }
+
+    public set nameBetreuer(value: string) {
+        this._nameBetreuer = value;
     }
 
     public get verguenstigungGewuenscht(): boolean {
@@ -251,6 +269,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         let same = this.familienstatus === other.familienstatus;
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             same = this.startKonkubinat.isSame(other.startKonkubinat);
+        }
+        if (same && this.fkjvFamSit) {
+            same = this.geteilteObhut === other.geteilteObhut
+                && this.unterhaltsvereinbarung === other.unterhaltsvereinbarung
+                && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
         }
         return same;
     }

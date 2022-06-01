@@ -44,10 +44,12 @@ export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit 
     @Input() public title: string;
     @Input() public readOnly: boolean;
     @Input() public readOnlyDelete: boolean;
+    @Input() public tooltipText: string;
     @Output() public readonly download: EventEmitter<[T, boolean]> = new EventEmitter();
     @Output() public readonly delete: EventEmitter<T> = new EventEmitter();
     @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
 
+    public uploadInputValue: string = '';
     @Input() public files: TSFile[];
 
     public allowedMimetypes: string = '';
@@ -74,6 +76,8 @@ export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit 
 
     public onUploadFile(event: Event): void {
         this.uploadFile.emit(event as HTMLInputEvent);
+        // reset the value of the input field to allow multiple uploads of a file with the same name
+        this.uploadInputValue = null;
     }
 
     public formatDate(timestampUpload: Moment): string {

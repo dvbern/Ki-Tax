@@ -53,6 +53,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -68,6 +69,8 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
+import com.google.common.base.Strings;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -263,6 +266,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@NotNull
 	@Column(nullable = false)
 	private Boolean internePendenz = false;
+
 
 	public Gesuch() {
 	}
@@ -714,14 +718,36 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return null;
 	}
 
+	@Transient
+	public String extractFamiliennamenString() {
+		// Sobald der GS 1 bekannt ist, verwenden wir den Namen des GS1
+		if (gesuchsteller1 != null) {
+			return extractFamiliennamenNichtSozialdienstfallString(gesuchsteller1);
+		}
+		if (status == AntragStatus.IN_BEARBEITUNG_SOZIALDIENST && getFall().getSozialdienstFall() != null) {
+			return extractFamiliennamenSozialdienstfallString(getFall().getSozialdienstFall());
+		}
+		return "";
+	}
+
 	/**
 	 * @return Den Familiennamen beider Gesuchsteller falls es 2 gibt, sonst Familiennamen von GS1
 	 */
 	@Transient
-	public String extractFamiliennamenString() {
-		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractNachname() :
-			"");
-		bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractNachname() : "";
+	private String extractFamiliennamenNichtSozialdienstfallString(@Nonnull GesuchstellerContainer gs1) {
+		String bothFamiliennamen = gs1.extractNachname();
+		bothFamiliennamen += this.getGesuchsteller2() != null
+			? ", " + this.getGesuchsteller2().extractNachname()
+			: "";
+		return bothFamiliennamen;
+	}
+
+	@Transient
+	private String extractFamiliennamenSozialdienstfallString(@NonNull SozialdienstFall sozialdienstFall) {
+		String bothFamiliennamen = sozialdienstFall.getName();
+		bothFamiliennamen +=  !Strings.isNullOrEmpty(sozialdienstFall.getNameGs2())
+			? ", " + sozialdienstFall.getNameGs2()
+			: "";
 		return bothFamiliennamen;
 	}
 
@@ -954,7 +980,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
-
 			if (getFamiliensituationContainer() != null
 				&& getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& Boolean.FALSE.equals(getFamiliensituationContainer().getFamiliensituationJA()
@@ -1192,6 +1217,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Optional<Gesuchsteller> extractGesuchsteller1() {
 		return Optional.ofNullable(this.gesuchsteller1)
+			.map(GesuchstellerContainer::getGesuchstellerJA);
+	}
+
+	@Nonnull
+	public Optional<Gesuchsteller> extractGesuchsteller2() {
+		return Optional.ofNullable(this.gesuchsteller2)
 			.map(GesuchstellerContainer::getGesuchstellerJA);
 	}
 

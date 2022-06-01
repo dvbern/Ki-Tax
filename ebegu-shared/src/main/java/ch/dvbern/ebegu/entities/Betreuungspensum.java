@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -56,6 +55,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setMonatlicheNebenmahlzeiten(betPensumMitteilung.getMonatlicheNebenmahlzeiten());
 		this.setTarifProHauptmahlzeit(betPensumMitteilung.getTarifProHauptmahlzeit());
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
+		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {

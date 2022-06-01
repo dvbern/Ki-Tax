@@ -14,9 +14,11 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSAbwesenheitContainer} from '../../../models/TSAbwesenheitContainer';
@@ -70,9 +72,11 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         'ErrorService',
         '$scope',
         '$timeout',
+        'EinstellungRS'
     ];
 
     public betreuungList: Array<KindBetreuungUI>;
+    public maxTageAbwesenheit: number;
     private removed: boolean;
     private readonly changedBetreuungen: Array<TSBetreuung> = [];
 
@@ -86,6 +90,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         private readonly errorService: ErrorService,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private readonly einstellungRS: EinstellungRS
     ) {
 
         super(gesuchModelManager,
@@ -104,6 +109,13 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             TSWizardStepStatus.OK);
         this.setBetreuungList();
         this.initAbwesenheitList();
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).then(einstellung => {
+            this.maxTageAbwesenheit = parseInt(einstellung.value, 10);
+        });
     }
 
     /**

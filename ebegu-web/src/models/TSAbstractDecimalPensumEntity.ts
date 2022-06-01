@@ -23,6 +23,7 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _unitForDisplay: TSPensumUnits;
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
+    private _stuendlicheVollkosten: number;
 
     public constructor() {
         super();
@@ -50,5 +51,13 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set monatlicheBetreuungskosten(value: number) {
         this._monatlicheBetreuungskosten = value;
+    }
+
+    public get stuendlicheVollkosten(): number {
+        return this._stuendlicheVollkosten;
+    }
+
+    public set stuendlicheVollkosten(value: number) {
+        this._stuendlicheVollkosten = value;
     }
 }

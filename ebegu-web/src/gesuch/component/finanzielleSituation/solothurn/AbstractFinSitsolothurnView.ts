@@ -270,6 +270,10 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public abstract steuerveranlagungErhaltenChange(steuerveranlagungErhalten: boolean): void;
 
     public isSelbststaendigErwerbendAnswered(): boolean {
+        if (this.gesuchstellerNumber === 2 && this.isSteuerveranlagungGemeinsam()) {
+            // this is only saved on the primary GS for Solothurn
+            return EbeguUtil.isNotNullOrUndefined(this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.momentanSelbststaendig);
+        }
         return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
     }
 }

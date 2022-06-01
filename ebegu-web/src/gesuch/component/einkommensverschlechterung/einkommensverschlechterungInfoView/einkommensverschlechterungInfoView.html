@@ -54,6 +54,9 @@
                                 <span class="ebegu-h1 required">
                                     <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
                                           data-translate-values="{{vm.basisJahrUndPeriode}}"></span>
+                                    <dv-tooltip input-id="eingeschrieben-tooltip"
+                                               text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT' | translate"></dv-tooltip>
+
                                 </span>
                                     <dv-radio-container name="einkommensverschlechterung"
                                                         ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
