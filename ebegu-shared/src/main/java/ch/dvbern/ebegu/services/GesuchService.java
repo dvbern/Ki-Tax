@@ -36,7 +36,6 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Service zum Verwalten von Gesuche
@@ -160,7 +159,7 @@ public interface GesuchService {
 	@Nonnull
 	Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@NonNull Gemeinde gemeinde
+		@Nonnull Gemeinde gemeinde
 	);
 
 	/**

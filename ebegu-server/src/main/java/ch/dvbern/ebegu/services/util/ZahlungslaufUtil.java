@@ -4,21 +4,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class ZahlungslaufUtil {
 
 	private ZahlungslaufUtil() {
 	}
 
-	@NonNull
+	@Nonnull
 	public static List<Gesuchsperiode> findGesuchsperiodenContainedInZahlungsauftrag(
-		@NonNull Collection<Gesuchsperiode> allGesuchsperioden,
-		@NonNull Zahlungsauftrag zahlungsauftrag
+		@Nonnull Collection<Gesuchsperiode> allGesuchsperioden,
+		@Nonnull Zahlungsauftrag zahlungsauftrag
 	) {
 		List<Gesuchsperiode> containedGesuchsperioden = new ArrayList<>();
 		for (Gesuchsperiode currentGP : allGesuchsperioden) {
@@ -31,8 +32,8 @@ public final class ZahlungslaufUtil {
 	}
 
 	private static boolean isGesuchsperiodeContainedInZahlungsauftrag(
-		@NonNull Gesuchsperiode currentGP,
-		@NonNull Zahlungsauftrag zahlungsauftrag
+		@Nonnull Gesuchsperiode currentGP,
+		@Nonnull Zahlungsauftrag zahlungsauftrag
 	) {
 		final List<Zahlung> zahlungen = zahlungsauftrag.getZahlungen();
 		for (Zahlung zahlung : zahlungen) {

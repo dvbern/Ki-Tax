@@ -72,7 +72,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +112,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Inject
 	private ZahlungService zahlungService;
 
-	@NonNull
+	@Nonnull
 	private ZahlungslaufHelper zahlungslaufHelper;
 
 	private List<String> potentielleFehlerList = new ArrayList<>();
@@ -128,7 +127,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull String zahlungsauftragId,
 		@Nonnull LocalDateTime datumLetzteZahlung,
-		@NonNull String beschrieb
+		@Nonnull String beschrieb
 	) {
 		StopWatch stopWatch = logAndStartTimer(String.format(
 			"Starte Zahlungsüberprüfung für %s",
@@ -159,9 +158,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void ermittleIstAndSollAndCheckFuerGPs(
-		@NonNull Gemeinde gemeinde,
-		@NonNull Collection<Gesuchsperiode> gesuchesperiodenToCheck,
-		@NonNull LocalDateTime datumLetzteZahlung
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Collection<Gesuchsperiode> gesuchesperiodenToCheck,
+		@Nonnull LocalDateTime datumLetzteZahlung
 	) {
 		for (Gesuchsperiode gesuchsperiode : gesuchesperiodenToCheck) {
 			final String step = String.format(
@@ -175,7 +174,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 	}
 
-	private void sendeMail(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId, @NonNull String beschrieb) {
+	private void sendeMail(@Nonnull Gemeinde gemeinde, @Nonnull String zahlungsauftragId, @Nonnull String beschrieb) {
 		Objects.requireNonNull(gemeinde);
 		LOGGER.info("ZAHLUNGSUEBERPRUEFUNG: Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
@@ -234,7 +233,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull LocalDateTime datumLetzteZahlung,
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
 		Objects.requireNonNull(gesuchsperiode);
 		Objects.requireNonNull(gemeinde);
@@ -256,7 +255,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private void pruefeZahlungenSollFuerGesuch(
 		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDateTime datumLetzteZahlung,
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(datumLetzteZahlung);
@@ -280,7 +279,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private void pruefeZahlungenSollFuerBetreuung(
 		@Nonnull Betreuung betreuung,
 		@Nonnull LocalDate dateAusbezahltBis,
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
 		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA oder TAGESFAMILIEN ist
 		if (betreuung.isAngebotAuszuzahlen()) {
@@ -308,7 +307,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private void vergleicheSollIst(
 		@Nonnull Betreuung betreuung,
 		@Nonnull LocalDate dateAusbezahltBis,
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
 		BigDecimal betragSoll = getBetragSoll(betreuung, dateAusbezahltBis);
 		BigDecimal betragIst = getBetragIst(betreuung, zahlungenIstMap);
@@ -321,10 +320,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	private void logPossibleError(
 		@Nonnull Betreuung betreuung,
-		@NonNull List<VerfuegungZeitabschnitt> ausbezahlteAbschnitte,
-		@NonNull BigDecimal betragSoll,
-		@NonNull BigDecimal betragIst,
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap
+		@Nonnull List<VerfuegungZeitabschnitt> ausbezahlteAbschnitte,
+		@Nonnull BigDecimal betragSoll,
+		@Nonnull BigDecimal betragIst,
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
 		StringBuilder sb = new StringBuilder();
 		BigDecimal differenz = DEFAULT.subtract(betragIst, betragSoll);
@@ -357,7 +356,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		LOGGER.warn("ZAHLUNGSUEBERPRUEFUNG: " + sb.toString());
 	}
 
-	@NonNull
+	@Nonnull
 	private List<VerfuegungZeitabschnitt> getAusbezahlteZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
 		List<VerfuegungZeitabschnitt> ausbezahlteAbschnitte = new ArrayList<>();
 		if (betreuung.getVerfuegung() != null) {
@@ -371,7 +370,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		return ausbezahlteAbschnitte;
 	}
 
-	@NonNull
+	@Nonnull
 	private BigDecimal getBetragSoll(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
 		BigDecimal betragSoll = BigDecimal.ZERO;
 		if (betreuung.getVerfuegung() != null) {
@@ -385,8 +384,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		return betragSoll;
 	}
 
-	@NonNull
-	private BigDecimal getBetragIst(@Nonnull Betreuung betreuung, @NonNull Map<String, List<Zahlungsposition>> zahlungenIstMap) {
+	@Nonnull
+	private BigDecimal getBetragIst(@Nonnull Betreuung betreuung, @Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap) {
 		BigDecimal betragIst = BigDecimal.ZERO;
 		if (zahlungenIstMap.containsKey(betreuung.getBGNummer())) {
 			List<Zahlungsposition> zahlungspositionList = zahlungenIstMap.get(betreuung.getBGNummer());
@@ -397,8 +396,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		return betragIst;
 	}
 
-	@NonNull
-	private Map<String, List<Zahlungsposition>> pruefeZahlungenIst(@Nonnull Gemeinde gemeinde, @NonNull Gesuchsperiode gesuchsperiode) {
+	@Nonnull
+	private Map<String, List<Zahlungsposition>> pruefeZahlungenIst(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<String, List<Zahlungsposition>> zahlungenIst = new HashMap<>();
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -429,8 +428,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void addToZahlungenList(
-		@NonNull Map<String, List<Zahlungsposition>> zahlungenIst,
-		@NonNull Zahlungsposition zahlungsposition
+		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIst,
+		@Nonnull Zahlungsposition zahlungsposition
 	) {
 		Objects.requireNonNull(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung());
 		String key = zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer();
@@ -445,13 +444,13 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		this.potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	}
 
-	@NonNull
-	private StopWatch logAndStartTimer(@NonNull String info) {
+	@Nonnull
+	private StopWatch logAndStartTimer(@Nonnull String info) {
 		LOGGER.info("ZAHLUNGSUEBERPRUEFUNG: Starting Step '{}'", info);
 		return StopWatch.createStarted();
 	}
 
-	private void logAndStopTimer(@NonNull StopWatch stopWatch, @NonNull String info) {
+	private void logAndStopTimer(@Nonnull StopWatch stopWatch, @Nonnull String info) {
 		stopWatch.stop();
 		final long millis = stopWatch.getTime(TimeUnit.MILLISECONDS);
 		String timeInHHMMSS = DurationFormatUtils.formatDuration(millis, "HH:mm:ss.SSS", true);

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,7 +34,6 @@ import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.envers.Audited;
 
 /**

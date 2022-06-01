@@ -171,7 +171,6 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
@@ -2657,7 +2656,7 @@ public final class TestDataUtil {
 		return fallService.saveFall(fall);
 	}
 
-	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@NonNull Fall fall) {
+	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@Nonnull Fall fall) {
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
 		sozialdienstFall.setName("SozialName");
 		sozialdienstFall.setVorname("SozialVorname");
@@ -2691,7 +2690,7 @@ public final class TestDataUtil {
 		persistence.persist(fachstelle);
 	}
 
-	public static void addSecondGesuchsteller(@NonNull Gesuch gesuch) {
+	public static void addSecondGesuchsteller(@Nonnull Gesuch gesuch) {
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);

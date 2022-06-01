@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.types.DateRange;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -146,8 +145,8 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	Optional<Betreuung> findSameBetreuungInDifferentGesuchsperiode(
-		@NonNull Gesuchsperiode gesuchsperiode,
-		@NonNull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Dossier dossier,
 		int betreuungNummer,
 		int kindNummer);
 

@@ -116,7 +116,6 @@ import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections4.CollectionUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -734,8 +733,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@Nonnull
 	public Optional<Betreuung> findSameBetreuungInDifferentGesuchsperiode(
-		@NonNull Gesuchsperiode gesuchsperiode,
-		@NonNull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Dossier dossier,
 		int betreuungNummer,
 		int kindNummer
 	) {
