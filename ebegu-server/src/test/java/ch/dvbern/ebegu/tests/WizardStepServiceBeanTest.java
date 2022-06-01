@@ -116,6 +116,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createWizardStepListForGesuchTest() {
 		final Gesuch myGesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		TestDataUtil.prepareParameters(myGesuch.getGesuchsperiode(), persistence);
 		final List<WizardStep> wizardStepList = wizardStepService.createWizardStepList(myGesuch);
 		Assert.assertNotNull(wizardStepList);
 		Assert.assertEquals(13, wizardStepList.size());
@@ -134,6 +135,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createWizardStepListForLuzernTest() {
 		final Gesuch myGesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		TestDataUtil.prepareParameters(myGesuch.getGesuchsperiode(), persistence);
 		myGesuch.setFinSitTyp(FinanzielleSituationTyp.LUZERN);
 		final List<WizardStep> wizardStepList = wizardStepService.createWizardStepList(myGesuch);
 		Assert.assertNotNull(wizardStepList);
@@ -154,6 +156,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createWizardStepListForSolothurnTest() {
 		final Gesuch myGesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		TestDataUtil.prepareParameters(myGesuch.getGesuchsperiode(), persistence);
 		myGesuch.setFinSitTyp(FinanzielleSituationTyp.SOLOTHURN);
 		final List<WizardStep> wizardStepList = wizardStepService.createWizardStepList(myGesuch);
 		Assert.assertNotNull(wizardStepList);

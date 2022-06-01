@@ -421,6 +421,7 @@
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
                                     <span data-translate="BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG"></span>
+                                    <dv-tooltip text="'BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG_HINT' | translate"></dv-tooltip>
                                 </span>
 
                                 <dv-radio-container name="kitaPlusZuschlag" class="input-element"
@@ -548,7 +549,12 @@
                                       dv-enable-expression="vm.isPensumEditable()">
 
                                 <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
-                                        ng-show="vm.getBetreuungspensen().length > 0"></p>
+                                        ng-show="vm.showHintUntermonatlich()"></p>
+
+                                <p class="inline-hint eingewoehnung-hint" ng-show="vm.showHintEingewoehnung()">
+                                    <span translate>BETREUUNG_HINT_EINGEWOEHNUNG</span>
+                                    <dv-tooltip text="'BETREUUNG_HINT_EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
+                                </p>
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
@@ -728,7 +734,7 @@
                                         <div class="col-sm-12 dv-input-container-small">
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
-                                                       data-translate="VON"
+                                                       data-translate="VON_BETREUUNG"
                                                        for="datumAb-{{$index}}">
                                                 </label>
                                                 <dv-datepicker input-id="datumAb-{{$index}}" name="datumAb-{{$index}}"
@@ -745,7 +751,7 @@
                                         <div class="col-sm-12 dv-input-container-small">
                                             <dv-input-container class="form-group">
                                                 <label class="md-no-float"
-                                                       data-translate="BIS"
+                                                       data-translate="BIS_BETREUUNG"
                                                        for="datumBis-{{$index}}">
                                                 </label>
                                                 <dv-datepicker input-id="datumBis-{{$index}}" name="datumBis-{{$index}}"

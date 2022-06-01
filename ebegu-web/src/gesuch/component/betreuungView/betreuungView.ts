@@ -200,6 +200,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
 
+        if (this.mandant === KiBonMandant.LU) {
+            this.isTFOKostenBerechnungStuendlich = true;
+        }
+
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -353,10 +357,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .then((response: TSPublicAppConfig) => {
                 this.infomaZahlungen = response.infomaZahlungen;
             });
-
-        if (this.mandant === KiBonMandant.LU) {
-            this.isTFOKostenBerechnungStuendlich = true;
-        }
     }
 
     /**
@@ -1655,5 +1655,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
         && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+    }
+
+    private showHintUntermonatlich(): boolean {
+        return this.getBetreuungspensen().length > 0 && this.mandant !== KiBonMandant.LU;
+    }
+
+    private showHintEingewoehnung(): boolean {
+        return this.mandant === KiBonMandant.LU
+        && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 }

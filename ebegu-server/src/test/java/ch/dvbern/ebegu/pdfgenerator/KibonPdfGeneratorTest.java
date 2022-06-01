@@ -118,7 +118,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private void createFreigabequittung(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws InvoiceGeneratorException, IOException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FreigabequittungPdfGenerator generator = new FreigabequittungPdfGenerator(gesuch, stammdaten, benoetigteUnterlagen);
+		final AbstractFreigabequittungPdfGenerator
+				generator = new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 

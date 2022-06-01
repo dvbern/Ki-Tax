@@ -24,12 +24,12 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			'ebegu' AS user_erstellt,
 			'ebegu' AS user_mutiert,
 			'0' AS version,
-			'AUSWEIS_NACHWEIS_REQUIRED' AS einstellungkey,
-			'false' AS value,
+			'ABWESENHEIT_AKTIV' AS einstellungkey,
+			'true' AS value,
 			id AS gesuchsperiode_id
 		FROM gesuchsperiode
 	);
 
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
-SET value = 'true'
-WHERE einstellung_key = 'AUSWEIS_NACHWEIS_REQUIRED' AND mandant_identifier = 'LUZERN';
+	SET value = 'false'
+WHERE einstellung_key = 'ABWESENHEIT_AKTIV' AND mandant_identifier = 'LUZERN';
