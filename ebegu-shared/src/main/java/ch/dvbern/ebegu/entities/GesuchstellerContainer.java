@@ -222,6 +222,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Namen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractNachname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getNachname();
@@ -232,6 +233,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Vornamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractVorname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getVorname();
@@ -242,6 +244,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den FullNamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractFullName() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getFullName();

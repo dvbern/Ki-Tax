@@ -45,8 +45,8 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * @param gesuch das Gesuch dessen finazDatenDTO gesetzt werden soll
 	 */
 	public void calculateFinanzDaten(@Nonnull Gesuch gesuch, BigDecimal minimumEKV) {
-		FinanzDatenDTO finanzDatenDTOAlleine = new FinanzDatenDTO();
-		FinanzDatenDTO finanzDatenDTOZuZweit = new FinanzDatenDTO();
+		FinanzDatenDTO finanzDatenDTOAlleine = new FinanzDatenDTO(minimumEKV);
+		FinanzDatenDTO finanzDatenDTOZuZweit = new FinanzDatenDTO(minimumEKV);
 
 		// Finanzielle Situation berechnen
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOAlleine =

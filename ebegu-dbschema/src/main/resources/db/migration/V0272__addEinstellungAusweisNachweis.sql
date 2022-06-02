@@ -30,10 +30,6 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 		FROM gesuchsperiode
 	);
 
-UPDATE einstellung
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'true'
-WHERE einstellung_key = 'AUSWEIS_NACHWEIS_REQUIRED' AND
-		gesuchsperiode_id = (SELECT id
-							 FROM gesuchsperiode
-							 WHERE gesuchsperiode.mandant_id =
-								   (SELECT id FROM mandant WHERE mandant_identifier = 'LUZERN'));
+WHERE einstellung_key = 'AUSWEIS_NACHWEIS_REQUIRED' AND mandant_identifier = 'LUZERN';

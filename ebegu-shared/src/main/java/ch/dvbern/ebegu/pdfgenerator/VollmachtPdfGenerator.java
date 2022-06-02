@@ -154,11 +154,16 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 				PdfUtil.DEFAULT_FONT);
 		paragraph1.setSpacingAfter(15);
 		document.add(paragraph1);
-		Paragraph paragraph2 = PdfUtil.createParagraph(translate(VOLLMACHT_PARAGRAPH_2A), 2, PdfUtil.DEFAULT_FONT);
-		paragraph2.add(PdfUtil.createSuperTextInText("1", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
+		final String paragraph2Text = translate(VOLLMACHT_PARAGRAPH_2A);
+		Paragraph paragraph2 = PdfUtil.createParagraph(paragraph2Text, 2, PdfUtil.DEFAULT_FONT);
+		if (StringUtils.isNotEmpty(paragraph2Text)) {
+			// Die Fussnoten-Referenz nur anzeigen, wenn etwas im Text steht
+			paragraph2.add(PdfUtil.createSuperTextInText("1", SUPER_TEXT_SIZE, SUPER_TEXT_RISE));
+		}
 		paragraph2.add(new Chunk(translate(VOLLMACHT_PARAGRAPH_2B)));
 		paragraph2.setSpacingAfter(15);
 		document.add(paragraph2);
+
 		Paragraph bemerkung = PdfUtil.createParagraph(translate(VOLLMACHT_BEMERKUNG), 2, PdfUtil.DEFAULT_FONT);
 		bemerkung.setSpacingAfter(45);
 		document.add(bemerkung);
@@ -176,11 +181,13 @@ public class VollmachtPdfGenerator extends BaseGenerator<VollmachtPdfLayoutConfi
 			unterschrift.setSpacingAfter(5);
 			document.add(unterschriftZeile2);
 		}
-		createFusszeile(
-			dirPdfContentByte,
-			Lists.newArrayList(translate(VOLLMACHT_FUSSZEILE_1)),
-			0, 0
-		);
+		if (StringUtils.isNotEmpty(paragraph2Text)) {
+			createFusszeile(
+				dirPdfContentByte,
+				Lists.newArrayList(translate(VOLLMACHT_FUSSZEILE_1)),
+				0, 0
+			);
+		}
 	}
 
 	private void placeAbsender(

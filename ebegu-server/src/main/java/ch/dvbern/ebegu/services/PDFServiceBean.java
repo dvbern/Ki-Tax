@@ -57,7 +57,7 @@ import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
-import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
@@ -185,9 +185,11 @@ public class PDFServiceBean implements PDFService {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch, locale);
 
-		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten,
+		Mandant mandant = stammdaten.getGemeinde().getMandant();
+
+		FreigabequittungPdfQuittungVisitor pdfGeneratorVisitor = new FreigabequittungPdfQuittungVisitor(gesuch, stammdaten,
 			benoetigteUnterlagen);
-		return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
+		return generateDokument(pdfGeneratorVisitor.getFreigabequittungPdfGeneratorForMandant(mandant), !writeProtected, locale, mandant);
 	}
 
 	@Override

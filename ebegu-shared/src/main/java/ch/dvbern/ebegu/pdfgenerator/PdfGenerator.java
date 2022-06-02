@@ -34,13 +34,12 @@ import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
 	public static PdfGenerator create(
-		@NonNull GemeindeStammdatenKorrespondenz config,
+		@Nonnull GemeindeStammdatenKorrespondenz config,
 		@Nonnull final List<String> absenderHeader,
 		@Nullable final PhraseRenderer footer,
 		boolean isKanton

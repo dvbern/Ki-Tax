@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -26,6 +27,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
@@ -138,5 +140,14 @@ public class Zahlungsposition extends AbstractMutableEntity implements Comparabl
 			Objects.equals(getStatus(), otherZahlungsposition.getStatus()) &&
 			MathUtil.isSame(getBetrag(), otherZahlungsposition.getBetrag()) &&
 			Objects.equals(isIgnoriert(), otherZahlungsposition.isIgnoriert());
+	}
+
+	@Transient
+	@Nullable
+	public Gesuchsperiode extractGesuchsperiode() {
+		if (verfuegungZeitabschnitt.getVerfuegung().getBetreuung() != null) {
+			return verfuegungZeitabschnitt.getVerfuegung().getBetreuung().getKind().getGesuch().getGesuchsperiode();
+		}
+		return null;
 	}
 }

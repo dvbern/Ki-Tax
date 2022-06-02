@@ -15,10 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-CREATE FUNCTION BIN_TO_UUID(b BINARY(16))
+CREATE FUNCTION IF NOT EXISTS BIN_TO_UUID(b BINARY(16))
 	RETURNS CHAR(36)
 BEGIN
-	DECLARE hexStr CHAR(32);
+	DECLARE hexStr CHAR(36);
 	SET hexStr = HEX(b);
 	RETURN LOWER(CONCAT(
 			SUBSTR(hexStr, 1, 8), '-',

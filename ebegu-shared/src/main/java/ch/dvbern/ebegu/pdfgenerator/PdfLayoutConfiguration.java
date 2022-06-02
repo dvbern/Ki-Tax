@@ -20,6 +20,9 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.lib.invoicegenerator.dto.BaseLayoutConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
@@ -29,8 +32,6 @@ import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Utilities;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfLayoutConfiguration.class);
 
 	public PdfLayoutConfiguration(
-		@NonNull GemeindeStammdatenKorrespondenz stammdaten,
+		@Nonnull GemeindeStammdatenKorrespondenz stammdaten,
 		@Nullable final List<String> absenderHeader,
 		boolean isKanton
 	) {
@@ -96,7 +97,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 		}
 	}
 
-	private float getImageWidthDefault(@NonNull Image image, boolean isKanton) {
+	private float getImageWidthDefault(@Nonnull Image image, boolean isKanton) {
 		final float imageWidthInMm = Utilities.pointsToMillimeters(image.getWidth()); // 20
 		final float imageHeightInMm = Utilities.pointsToMillimeters(image.getHeight());
 		float widthInMm = Math.min(isKanton ? LOGO_KANTON_MAX_WIDTH_IN_MM : LOGO_MAX_WIDTH_IN_MM, imageWidthInMm);

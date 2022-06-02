@@ -40,6 +40,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -248,6 +249,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		setFinSitTyp(gesuchToPersist);
+		setMinDauerKonkubiat(gesuchToPersist);
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
@@ -261,6 +263,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void setMinDauerKonkubiat(Gesuch gesuch) {
+		if (gesuch.getFamiliensituationContainer() == null
+		|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			return;
+		}
+
+		Einstellung minimalDauerKonkubinat = einstellungService.findEinstellung(
+			EinstellungKey.MINIMALDAUER_KONKUBINAT,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode()
+		);
+
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setMinDauerKonkubinat(minimalDauerKonkubinat.getValueAsInteger());
 	}
 
 	private void setFinSitTyp(Gesuch gesuchToCreate) {
@@ -1323,6 +1340,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;
+	}
+
+	@Override
+	@Nonnull
+	public Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde
+	) {
+		final Query nativeQuery = persistence.getEntityManager().createNativeQuery(
+			"select g.* "
+				+ "from gesuch g "
+				+ "inner join dossier d on g.dossier_id = d.id "
+				+ "inner join fall f on d.fall_id = f.id "
+				+ "inner join gesuchsperiode gp on g.gesuchsperiode_id = gp.id "
+				+ "inner join gemeinde gem on d.gemeinde_id = gem.id "
+				+ "where g.timestamp_verfuegt is not null and g.gueltig is true "
+				+ "and gem.id = UNHEX(REPLACE(?1, '-','')) "
+				+ "and gp.id = UNHEX(REPLACE(?2, '-',''));", Gesuch.class
+		);
+		nativeQuery.setParameter(1, gemeinde.getId());
+		nativeQuery.setParameter(2, gesuchsperiode.getId());
+		final List<Gesuch> resultList = nativeQuery.getResultList();
+		return resultList;
 	}
 
 	@Override

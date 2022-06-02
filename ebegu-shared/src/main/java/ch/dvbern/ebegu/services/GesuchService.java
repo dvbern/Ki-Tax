@@ -33,7 +33,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -153,6 +152,15 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId);
+
+	/**
+	 * Gibt eine Liste der neuesten verfuegten Gesuche pro Gemeinde und Gesuchsperiode
+	 */
+	@Nonnull
+	Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde
+	);
 
 	/**
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.

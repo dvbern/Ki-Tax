@@ -173,6 +173,7 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
@@ -267,6 +268,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
+import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
@@ -1365,13 +1367,13 @@ public final class TestDataUtil {
 		} else {
 			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
-		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.setFinanzielleSituationJA(new FinanzielleSituation());
 		if (zweiGesuchsteller) {
-			gesuch.setGesuchsteller2(new GesuchstellerContainer());
+			gesuch.setGesuchsteller2(TestDataUtil.createDefaultGesuchstellerContainer());
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 			gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer()
@@ -2010,6 +2012,8 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode, persistence);
 		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BETREUUNG_INPUT_SWITCH_ENABLED, "true", gesuchsperiode, persistence);
+		saveEinstellung(VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT, "true", gesuchsperiode, persistence);
+		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2662,6 +2666,12 @@ public final class TestDataUtil {
 	}
 
 	public static Fall addSozialdienstToFall(Persistence persistence, FallService fallService, Fall fall) {
+		SozialdienstStammdaten sozialdienstStammdaten = createDefaultSozialdienstStammdaten(fall);
+		persistence.persist(sozialdienstStammdaten);
+		return fallService.saveFall(fall);
+	}
+
+	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@Nonnull Fall fall) {
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
 		sozialdienstFall.setName("SozialName");
 		sozialdienstFall.setVorname("SozialVorname");
@@ -2687,12 +2697,22 @@ public final class TestDataUtil {
 		sozialdienstStammdaten.setMail("sozialmail@mailbucket.dvbern.ch");
 		sozialdienstStammdaten.setTelefon("078 818 82 84");
 		sozialdienstStammdaten.setWebseite("");
-		persistence.persist(sozialdienstStammdaten);
-		return fallService.saveFall(fall);
+		return sozialdienstStammdaten;
 	}
 
 	public static void persistFachstelle(@Nonnull Persistence persistence, @Nonnull Fachstelle fachstelle) {
 		saveMandantIfNecessary(persistence, fachstelle.getMandant());
 		persistence.persist(fachstelle);
+	}
+
+	public static void addSecondGesuchsteller(@Nonnull Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		final GesuchstellerContainer gs2 = TestDataUtil.createDefaultGesuchstellerContainer();
+		final FinanzielleSituationContainer finsitGs2 = new FinanzielleSituationContainer();
+		gs2.setFinanzielleSituationContainer(finsitGs2);
+		finsitGs2.setFinanzielleSituationJA(new FinanzielleSituation());
+		gesuch.setGesuchsteller2(gs2);
 	}
 }

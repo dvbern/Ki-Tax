@@ -46,6 +46,7 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public sameVerfuegteVerfuegungsrelevanteDaten: boolean; // Fuer Anzeige "Identische Berechnung"
     public verfuegteAnzahlZeiteinheiten: number;
     public verguenstigung: number;
+    public verguenstigungProZeiteinheit: number;
     public verguenstigungOhneBeruecksichtigungMinimalbeitrag: number;
     public verguenstigungOhneBeruecksichtigungVollkosten: number;
     public vollkosten: number;

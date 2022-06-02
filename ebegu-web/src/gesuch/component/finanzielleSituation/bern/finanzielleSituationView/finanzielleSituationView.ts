@@ -185,6 +185,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung
             && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
     }
@@ -268,6 +272,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
         }
+        // wenn es sich um ein sozialdienstfall handelt ebenfalls
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return true;
+        }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
         if (EbeguUtil.isNotNullAndFalse(this.model.gemeinsameSteuererklaerung) && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
@@ -335,7 +343,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) &&
+            this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
             !this.model.gemeinsameSteuererklaerung &&
             this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
             EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff);

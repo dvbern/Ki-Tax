@@ -20,6 +20,7 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -48,6 +49,7 @@ describe('stammdatenView', () => {
     let uploadRS: UploadRS;
     let downloadRS: DownloadRS;
     let dokumentRS: DokumenteRS;
+    let mandantService: MandantService;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -69,6 +71,7 @@ describe('stammdatenView', () => {
         uploadRS = $injector.get('UploadRS');
         downloadRS = $injector.get('DownloadRS');
         dokumentRS = $injector.get('DokumenteRS');
+        mandantService = $injector.get('MandantService');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -87,7 +90,8 @@ describe('stammdatenView', () => {
             uploadRS,
             downloadRS,
             applicationPropertyRS,
-            dokumentRS);
+            dokumentRS,
+            mandantService);
     })));
 
     describe('disableWohnadresseFor2GS', () => {

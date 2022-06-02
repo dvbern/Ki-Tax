@@ -16,6 +16,7 @@
  */
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -23,6 +24,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboarding-help-dialog.component';
 
 @Component({
     selector: 'dv-onboarding-neu-benutzer',
@@ -51,7 +53,8 @@ export class OnboardingNeuBenutzerComponent {
         private readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly dialog: MatDialog
     ) {
         this.gemeinden$ = from(this.gemeindeRS.getAktiveUndVonSchulverbundGemeinden())
             .pipe(map(gemeinden => {
@@ -85,7 +88,7 @@ export class OnboardingNeuBenutzerComponent {
         });
         this.stateService.go(this.nextState, {
             gemeindeBGId: this.gemeinde !== undefined ? this.gemeinde.id : null,
-            gemeindenId: listIds
+            gemeindenId: listIds,
         });
     }
 
@@ -108,5 +111,15 @@ export class OnboardingNeuBenutzerComponent {
 
     public resetBgGemeinde(): void {
         this.gemeinde = undefined;
+    }
+
+    public isNotNullAndNotEmpty(tsGemeindes: TSGemeinde[]): boolean {
+        return tsGemeindes !== null && tsGemeindes.length > 0;
+    }
+
+    public openHelp($event: MouseEvent): void {
+        $event.preventDefault();
+        const dialogConfig = new MatDialogConfig();
+        this.dialog.open(OnboardingHelpDialogComponent, dialogConfig);
     }
 }

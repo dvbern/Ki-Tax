@@ -56,6 +56,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setMonatlicheNebenmahlzeiten(betPensumMitteilung.getMonatlicheNebenmahlzeiten());
 		this.setTarifProHauptmahlzeit(betPensumMitteilung.getTarifProHauptmahlzeit());
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
+		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {

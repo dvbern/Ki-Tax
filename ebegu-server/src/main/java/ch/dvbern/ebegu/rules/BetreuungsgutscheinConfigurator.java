@@ -422,7 +422,9 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(einreichungsfristRule, einstellungMap);
 
 		// Abwesenheit
-		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale);
+		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
+		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
+		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale, abwesenheitMaxDaysValue);
 		addToRuleSetIfRelevantForGemeinde(abwesenheitCalcRule, einstellungMap);
 
 		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt

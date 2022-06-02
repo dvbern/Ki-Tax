@@ -45,8 +45,12 @@ INSERT INTO gemeinde_stammdaten_korrespondenz (
 UPDATE gemeinde_stammdaten gs
 SET gs.gemeinde_stammdaten_korrespondenz_id = (
 	SELECT gsk.id FROM gemeinde_stammdaten_korrespondenz gsk
-	WHERE gsk.tmpIdStammdaten = gs.id AND gsk.logo_name IS NOT NULL
+	WHERE gsk.tmpIdStammdaten = gs.id
 );
+
+# Jetzt kann GemeindeStammdatenKorrespondenz auf required gesetzt werden
+ALTER TABLE gemeinde_stammdaten
+CHANGE gemeinde_stammdaten_korrespondenz_id gemeinde_stammdaten_korrespondenz_id BINARY(16) NOT NULL;
 
 # Jetzt kann das temporaere Id-Feld auf der GemeindeStammdatenKorrespondenz wieder entfernt werden
 ALTER TABLE gemeinde_stammdaten_korrespondenz DROP tmpIdStammdaten;
@@ -59,7 +63,3 @@ ALTER TABLE gemeinde_stammdaten DROP logo_name;
 ALTER TABLE gemeinde_stammdaten_aud DROP logo_content;
 ALTER TABLE gemeinde_stammdaten_aud DROP logo_type;
 ALTER TABLE gemeinde_stammdaten_aud DROP logo_name;
-
-# Jetzt kann GemeindeStammdatenKorrespondenz auf required gesetzt werden
-ALTER TABLE gemeinde_stammdaten
-CHANGE gemeinde_stammdaten_korrespondenz_id gemeinde_stammdaten_korrespondenz_id BINARY(16) NOT NULL;
