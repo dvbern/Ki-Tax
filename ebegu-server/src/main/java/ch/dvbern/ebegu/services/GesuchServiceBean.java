@@ -1346,7 +1346,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	public Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@NonNull Gemeinde gemeinde
+		@Nonnull Gemeinde gemeinde
 	) {
 		final Query nativeQuery = persistence.getEntityManager().createNativeQuery(
 			"select g.* "
