@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.needle4j.annotation.InjectIntoMany;
 
 public class PrincipalBeanMock extends PrincipalBean {
@@ -52,7 +51,7 @@ public class PrincipalBeanMock extends PrincipalBean {
 		return benutzer != null && benutzer.getRole() == role;
 	}
 
-	@NonNull
+	@Nonnull
 	@Override
 	public Mandant getMandant() {
 		return mandantService.getMandantBern();

@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +74,7 @@ public class PrincipalBean {
 		return benutzer;
 	}
 
-	@NonNull
+	@Nonnull
 	public Mandant getMandant() {
 		if (mandant == null || !getBenutzer().getId().equals(principal.getName())) {
 			mandant = getBenutzer().getMandant();

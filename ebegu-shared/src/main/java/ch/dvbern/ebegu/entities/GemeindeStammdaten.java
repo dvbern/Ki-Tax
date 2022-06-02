@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -50,8 +51,6 @@ import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.enums.ExternalClientType.GEMEINDE_SCOLARIS_SERVICE;
@@ -115,7 +114,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = true)
 	private Adresse beschwerdeAdresse;
 
-	@NonNull
+	@Nonnull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_stammdatenkorrespondenz_id"), nullable = false)
 	private GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
@@ -292,7 +291,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.defaultBenutzerTS = defaultBenutzerTS;
 	}
 
-	@NonNull
+	@Nonnull
 	public Gemeinde getGemeinde() {
 		return gemeinde;
 	}
@@ -319,12 +318,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.beschwerdeAdresse = beschwerdeAdresse;
 	}
 
-	@NonNull
+	@Nonnull
 	public GemeindeStammdatenKorrespondenz getGemeindeStammdatenKorrespondenz() {
 		return gemeindeStammdatenKorrespondenz;
 	}
 
-	public void setGemeindeStammdatenKorrespondenz(@NonNull GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
+	public void setGemeindeStammdatenKorrespondenz(@Nonnull GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
 		this.gemeindeStammdatenKorrespondenz = gemeindeStammdatenKorrespondenz;
 	}
 

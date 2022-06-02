@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
@@ -29,8 +30,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.ONE_MB;
@@ -47,22 +46,22 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer senderAddressSpacingLeft;
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer senderAddressSpacingTop;
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer receiverAddressSpacingLeft;
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer receiverAddressSpacingTop;
 
@@ -84,12 +83,12 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	private Integer logoWidth;
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer logoSpacingLeft;
 
 	@NotNull
-	@NonNull
+	@Nonnull
 	@Column(nullable = false)
 	private Integer logoSpacingTop;
 

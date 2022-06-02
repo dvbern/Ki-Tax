@@ -342,7 +342,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 	}
 
-	private void generateTestDocument(@NonNull KibonPdfGenerator generator, @NonNull MandantIdentifier mandant, @NonNull String dokumentname)
+	private void generateTestDocument(@Nonnull KibonPdfGenerator generator, @Nonnull MandantIdentifier mandant, @Nonnull String dokumentname)
 		throws FileNotFoundException, InvoiceGeneratorException {
 		generator.generate(new FileOutputStream(pfad + mandant + '/' +  dokumentname));
 	}

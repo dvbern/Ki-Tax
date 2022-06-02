@@ -27,6 +27,7 @@ import java.util.Optional;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -58,8 +59,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static ch.dvbern.ebegu.util.MonitoringUtil.monitor;
 import static java.util.Objects.requireNonNull;
@@ -216,7 +215,7 @@ public abstract class AbstractReportServiceBean extends AbstractBaseService {
 	}
 
 	@SuppressFBWarnings("NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE")
-	protected Workbook createWorkbook(@Nullable InputStream is, @NonNull ReportVorlage reportVorlage) {
+	protected Workbook createWorkbook(@Nullable InputStream is, @Nonnull ReportVorlage reportVorlage) {
 		return ExcelMerger.createWorkbookFromTemplate(requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN));
 	}
 }
