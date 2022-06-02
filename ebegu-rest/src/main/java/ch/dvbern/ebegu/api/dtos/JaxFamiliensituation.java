@@ -52,6 +52,12 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private Boolean sozialhilfeBezueger;
 
 	@Nullable
+	private String zustaendigeAmtsstelle;
+
+	@Nullable
+	private String nameBetreuer;
+
+	@Nullable
 	private Boolean verguenstigungGewuenscht;
 
 	@Nullable
@@ -91,7 +97,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private String infomaBankcode;
-
 
 	@Nullable
 	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
@@ -167,6 +172,24 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	@Nullable
+	public String getZustaendigeAmtsstelle() {
+		return zustaendigeAmtsstelle;
+	}
+
+	public void setZustaendigeAmtsstelle(@Nullable String zustaendigeAmtsstelle) {
+		this.zustaendigeAmtsstelle = zustaendigeAmtsstelle;
+	}
+
+	@Nullable
+	public String getNameBetreuer() {
+		return nameBetreuer;
+	}
+
+	public void setNameBetreuer(@Nullable String nameBetreuer) {
+		this.nameBetreuer = nameBetreuer;
 	}
 
 	@Nullable

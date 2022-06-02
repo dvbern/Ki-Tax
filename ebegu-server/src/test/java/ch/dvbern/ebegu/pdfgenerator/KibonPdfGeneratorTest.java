@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -140,8 +139,9 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private void createFreigabequittung(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws InvoiceGeneratorException, IOException {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FreigabequittungPdfGenerator generator = new FreigabequittungPdfGenerator(gesuch, stammdaten, benoetigteUnterlagen);
-		generateTestDocument(generator, mandant, dokumentname);
+		final AbstractFreigabequittungPdfGenerator
+				generator = new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 

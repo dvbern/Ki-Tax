@@ -22,8 +22,12 @@
             </h2>
             <hr class="header"/>
             <p>
-                <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT"></span>
-                <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT_FKJV"></span>
+                <span ng-if="!vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT"
+                      data-translate-value-tage="{{vm.maxTageAbwesenheit}}"
+                      data-translate-value-tage-plus-1="{{vm.maxTageAbwesenheit + 1}}"></span>
+                <span ng-if="vm.gesuchModelManager.isFKJVTexte" data-translate="ABWESENHEIT_HINT_FKJV"
+                      data-translate-value-tage="{{vm.maxTageAbwesenheit}}"
+                      data-translate-value-tage-plus-1="{{vm.maxTageAbwesenheit + 1}}"></span>
             </p>
         </div>
     </div>

@@ -185,6 +185,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
 
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung
             && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
     }
@@ -266,6 +270,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
         // bei einem Papiergesuch ebenfalls
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+            return true;
+        }
+        // wenn es sich um ein sozialdienstfall handelt ebenfalls
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht

@@ -172,8 +172,8 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
@@ -268,6 +268,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
+import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
@@ -2011,6 +2012,8 @@ public final class TestDataUtil {
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode, persistence);
 		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BETREUUNG_INPUT_SWITCH_ENABLED, "true", gesuchsperiode, persistence);
+		saveEinstellung(VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT, "true", gesuchsperiode, persistence);
+		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2668,7 +2671,7 @@ public final class TestDataUtil {
 		return fallService.saveFall(fall);
 	}
 
-	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@NonNull Fall fall) {
+	public static SozialdienstStammdaten createDefaultSozialdienstStammdaten(@Nonnull Fall fall) {
 		SozialdienstFall sozialdienstFall = new SozialdienstFall();
 		sozialdienstFall.setName("SozialName");
 		sozialdienstFall.setVorname("SozialVorname");
@@ -2702,7 +2705,7 @@ public final class TestDataUtil {
 		persistence.persist(fachstelle);
 	}
 
-	public static void addSecondGesuchsteller(@NonNull Gesuch gesuch) {
+	public static void addSecondGesuchsteller(@Nonnull Gesuch gesuch) {
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);

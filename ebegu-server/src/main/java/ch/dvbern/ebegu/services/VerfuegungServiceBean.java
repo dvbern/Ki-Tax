@@ -187,6 +187,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			verfuegungEvent.ifPresent(verfuegungVerfuegtEvent -> this.event.fire(verfuegungVerfuegtEvent));
 			persistedVerfuegung.setEventPublished(true);
 		} else {
+			persistedVerfuegung.setSkipPreUpdate(true);
 			persistedVerfuegung.setEventPublished(false);
 		}
 		persistence.merge(persistedVerfuegung);

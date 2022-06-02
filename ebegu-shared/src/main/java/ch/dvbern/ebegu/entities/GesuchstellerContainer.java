@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckGesuchstellerContainerComplete;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -223,7 +222,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Namen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
-	@NonNull
+	@Nonnull
 	public String extractNachname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getNachname();
@@ -234,7 +233,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Vornamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
-	@NonNull
+	@Nonnull
 	public String extractVorname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getVorname();
@@ -245,7 +244,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den FullNamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
-	@NonNull
+	@Nonnull
 	public String extractFullName() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getFullName();

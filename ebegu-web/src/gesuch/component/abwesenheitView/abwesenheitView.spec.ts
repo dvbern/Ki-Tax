@@ -13,11 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSEinstellung} from '../../../models/TSEinstellung';
+import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSKind} from '../../../models/TSKind';
@@ -39,6 +43,7 @@ describe('abwesenheitView', () => {
     let $q: angular.IQService;
     let $scope: angular.IScope;
     let $timeout: angular.ITimeoutService;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -54,11 +59,18 @@ describe('abwesenheitView', () => {
         $q = $injector.get('$q');
         $scope = $injector.get('$rootScope');
         $timeout = $injector.get('$timeout');
+        einstellungRS = $injector.get('EinstellungRS');
     }));
 
     beforeEach(() => {
+        spyOn(einstellungRS, 'findEinstellung')
+            .and.returnValue($q.resolve(new TSEinstellung()));
+        spyOn(gesuchModelManager, 'getGemeinde')
+            .and.returnValue(new TSGemeinde());
+        spyOn(gesuchModelManager, 'getGesuchsperiode')
+            .and.returnValue(new TSGesuchsperiode());
         abwesenheitController = new AbwesenheitViewController(gesuchModelManager, berechnungsManager,
-            wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout);
+            wizardStepManager, dialog, $translate, $q, errorService, $scope, $timeout, einstellungRS);
     });
 
     describe('getNameFromBetroffene', () => {
