@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguMailiciousContentException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.capybara.clamav.ClamavClient;
@@ -63,7 +63,7 @@ public class AVClient {
 		}
 	}
 
-	public void scan (@NonNull FileMetadata fileMetadata) {
+	public void scan (@Nonnull FileMetadata fileMetadata) {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
@@ -81,7 +81,7 @@ public class AVClient {
 		}
 	}
 
-	public void scan(byte[] content, @NonNull String info) {
+	public void scan(byte[] content, @Nonnull String info) {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
@@ -115,11 +115,11 @@ public class AVClient {
 		}
 	}
 
-	private void logFoundViruses(@NonNull VirusFound result, @NonNull FileMetadata fileMetadata) {
+	private void logFoundViruses(@Nonnull VirusFound result, @Nonnull FileMetadata fileMetadata) {
 		this.logFoundViruses(result, fileMetadata.getFilepfad());
 	}
 
-	private void logFoundViruses(@NonNull VirusFound result, @NonNull String description) {
+	private void logFoundViruses(@Nonnull VirusFound result, @Nonnull String description) {
 		StringBuilder log = new StringBuilder("Malicious file detected at: ");
 		log.append(description);
 		for (Entry<String, Collection<String>> virus : result.getFoundViruses().entrySet()) {
