@@ -29,6 +29,8 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -72,13 +74,13 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 
 	@Nonnull
 	@Override
-	public Zahlung findZahlungForEmpfaenger(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+	public Zahlung findZahlungForEmpfaengerOrCreate(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution
 	) {
-		Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());
-		InstitutionStammdaten institution = zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten();
+		InstitutionStammdaten institution = betreuung.getInstitutionStammdaten();
 		if (zahlungProInstitution.containsKey(institution.getId())) {
 			return zahlungProInstitution.get(institution.getId());
 		}

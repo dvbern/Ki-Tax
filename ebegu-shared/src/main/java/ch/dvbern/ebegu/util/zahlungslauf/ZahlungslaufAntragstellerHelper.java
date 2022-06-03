@@ -76,14 +76,12 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 
 	@Nonnull
 	@Override
-	public Zahlung findZahlungForEmpfaenger(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+	public Zahlung findZahlungForEmpfaengerOrCreate(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution
 	) {
-		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
-		Objects.requireNonNull(betreuung);
-		Gesuch gesuch = betreuung.extractGesuch();
 		// Wir setzen als "Empfaenger-ID" die ID des Falles: In selben Zahlungslauf kann es zu Auszahlungen
 		// von mehreren Mutation derselben Familie kommen, daher waere die Gesuch-ID oder die Gesuchsteller-ID
 		// nicht geeignet. Da auch Korrekturzahlungen ueber die Periode hinaus moeglich sind, faellt auch

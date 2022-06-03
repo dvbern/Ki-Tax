@@ -25,6 +25,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -62,8 +64,9 @@ public interface ZahlungslaufHelper extends Serializable {
 	 * eine neue erstellt.
 	 */
 	@Nonnull
-	Zahlung findZahlungForEmpfaenger(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+	Zahlung findZahlungForEmpfaengerOrCreate(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution);
 

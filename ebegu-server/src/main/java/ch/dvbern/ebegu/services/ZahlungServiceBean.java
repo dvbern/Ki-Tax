@@ -103,7 +103,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Zahlungen. Die Zahlungen werden folgendermassen generiert:
- * Wenn ein neuer Zahlungsauftrag erstellt wird, muss nur ein Faelligkeitsdatum mitgegeben werden. Dieses wird *nur* fuer
+ * Wenn ein neuer Zahlungsauftrag erstellt wird, muss nur ein Faelligkeitsdatum mitgegeben werden. Dieses wird *nur*
+ * fuer
  * das Abfuellen des XML Files (ISO-20022) verwendet. Fuer die Ermittlung der einzuschliessenden Zahlungsdetail wird
  * immer der aktuelle Timestamp verwendet. Dies, damit wir fuer den naechsten Zahlungsauftrag immer wissen, welche
  * Zahlungen bereits beruecksichtigt wurden.
@@ -119,7 +120,8 @@ import static java.util.Objects.requireNonNull;
  */
 @Stateless
 @Local(ZahlungService.class)
-@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "SpringAutowiredFieldsWarningInspection", "InstanceMethodNamingConvention", "PMD.NcssMethodCount" })
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals", "SpringAutowiredFieldsWarningInspection",
+	"InstanceMethodNamingConvention", "PMD.NcssMethodCount" })
 public class ZahlungServiceBean extends AbstractBaseService implements ZahlungService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ZahlungServiceBean.class.getSimpleName());
@@ -157,6 +159,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private GesuchService gesuchService;
 
 	@Override
 	@Nonnull
@@ -188,14 +192,18 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull LocalDateTime datumGeneriert,
 		@Nonnull Mandant mandant
 	) {
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		authorizer.checkWriteAuthorization(gemeinde);
 
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
 		if (lastZahlungsauftrag.isPresent() && lastZahlungsauftrag.get().getStatus().isEntwurf()) {
-			throw new EbeguRuntimeException(KibonLogLevel.DEBUG, "zahlungsauftragErstellen", ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
+			throw new EbeguRuntimeException(
+				KibonLogLevel.DEBUG,
+				"zahlungsauftragErstellen",
+				ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
 		}
 
 		LOGGER.info("Erstelle Zahlungsauftrag mit Faelligkeit: {}", Constants.DATE_FORMATTER.format(datumFaelligkeit));
@@ -210,25 +218,33 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		// Alle aktuellen (d.h. der letzte Antrag jedes Falles) Verfuegungen suchen, welche ein Kita-Angebot haben
 		// Wir brauchen folgende Daten:
-		// - Zeitraum, welcher fuer die (normale) Auszahlung gilt: Immer ganzer Monat, mindestens der Monat des DatumFaellig,
+		// - Zeitraum, welcher fuer die (normale) Auszahlung gilt: Immer ganzer Monat, mindestens der Monat des
+		// DatumFaellig,
 		// 		jedoch seit Ende Monat des letzten Auftrags -> 1 oder mehrere ganze Monate
-		// - Zeitraum, welcher fuer die Berechnung der rueckwirkenden Korrekturen gilt: Zeitpunkt der letzten Zahlungserstellung bis aktueller Zeitpunkt
-		// 		(Achtung: Es ist *nicht* das Faelligkeitsdatum relevant, sondern das Erstellungsdatum des letzten Auftrags!)
+		// - Zeitraum, welcher fuer die Berechnung der rueckwirkenden Korrekturen gilt: Zeitpunkt der letzten
+		// Zahlungserstellung bis aktueller Zeitpunkt
+		// 		(Achtung: Es ist *nicht* das Faelligkeitsdatum relevant, sondern das Erstellungsdatum des letzten
+		// 		Auftrags!)
 		// Den letzten Zahlungsauftrag lesen
 		LocalDateTime lastZahlungErstellt = Constants.START_OF_DATETIME; // Default, falls dies der erste Auftrag ist
 		// Falls es eine Wiederholung des Auftrags ist, muessen nur noch die Korrekturen beruecksichtigt werden, welche
 		// seit dem letzten Auftrag erstellt wurden
 		boolean isRepetition = false;
-		// Falls fuer denselben Zeitraum (oder den letzten Teil davon) schon ein Auftrag vorhanden ist, kann das DatumVon nicht
+		// Falls fuer denselben Zeitraum (oder den letzten Teil davon) schon ein Auftrag vorhanden ist, kann das
+		// DatumVon nicht
 		// einfach an den letzten Auftrag anschliessen
 		LocalDate zeitabschnittVon;
-		LocalDate zeitabschnittBis = zahlungsauftrag.getDatumGeneriert().toLocalDate().with(TemporalAdjusters.lastDayOfMonth());
+		LocalDate zeitabschnittBis =
+			zahlungsauftrag.getDatumGeneriert().toLocalDate().with(TemporalAdjusters.lastDayOfMonth());
 
 		if (lastZahlungsauftrag.isPresent()) {
 			lastZahlungErstellt = lastZahlungsauftrag.get().getDatumGeneriert();
-			if (zahlungsauftrag.getDatumGeneriert().toLocalDate().isAfter(lastZahlungsauftrag.get().getGueltigkeit().getGueltigBis())) {
+			if (zahlungsauftrag.getDatumGeneriert()
+				.toLocalDate()
+				.isAfter(lastZahlungsauftrag.get().getGueltigkeit().getGueltigBis())) {
 				// Wir beginnen am Anfang des Folgemonats des letzten Auftrags
-				zeitabschnittVon = lastZahlungErstellt.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).toLocalDate();
+				zeitabschnittVon =
+					lastZahlungErstellt.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).toLocalDate();
 			} else {
 				// Repetition, dh.der Monat ist schon ausgeloest. Wir nehmen den Anfang des Monats
 				zeitabschnittVon = lastZahlungErstellt.with(TemporalAdjusters.firstDayOfMonth()).toLocalDate();
@@ -242,10 +258,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		if (!zahlungsauftrag.getGueltigkeit().isValid()) {
 			throw new EbeguRuntimeException(
-					"zahlungsauftragErstellen",
-					ErrorCodeEnum.ERROR_ZAHLUNGSAUFTRAG_GENERIERT_BEFORE_LAST_ZAHLUNGSAUFTRAG_GENERIERT,
-					datumGeneriert.toLocalDate(),
-					zeitabschnittVon
+				"zahlungsauftragErstellen",
+				ErrorCodeEnum.ERROR_ZAHLUNGSAUFTRAG_GENERIERT_BEFORE_LAST_ZAHLUNGSAUFTRAG_GENERIERT,
+				datumGeneriert.toLocalDate(),
+				zeitabschnittVon
 			);
 		}
 
@@ -255,32 +271,42 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// "Normale" Zahlungen
 		if (!isRepetition) {
 			LOGGER.info("Ermittle normale Zahlungen im Zeitraum {}", zahlungsauftrag.getGueltigkeit().toRangeString());
-			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte = getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
-				zeitabschnittBis);
+			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte =
+				getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
+					zeitabschnittBis);
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
-				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isNeu()) {
+				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(
+					zeitabschnitt).isNeu()) {
 					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
 				}
 			}
 		}
 		// Korrekturen und Nachzahlungen
 		// Stichtag: Falls es eine Wiederholung des Auftrags ist, wurde der aktuelle Monat bereits ausbezahlt.
-		LocalDate stichtagKorrekturen = isRepetition ? zeitabschnittBis : zeitabschnittBis.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+		LocalDate stichtagKorrekturen =
+			isRepetition ? zeitabschnittBis : zeitabschnittBis.minusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
 		// Die Korrekturzahlungen werden seit dem letzten Zahlungsauftrag beruecksichtigt. Falls wir im TEST-Mode sind
-		// und ein fiktives "DatumGeneriert" gewaehlt haben, nehmen wir als Datum des letzten Auftrags das timestampErstellt
+		// und ein fiktives "DatumGeneriert" gewaehlt haben, nehmen wir als Datum des letzten Auftrags das
+		// timestampErstellt
 		// und nicht das (eventuell ebenfalls fiktive) datumGeneriert.
 		boolean isTestMode = ebeguConfiguration.getIsZahlungenTestMode();
 		if (isTestMode) {
 			lastZahlungErstellt = Constants.START_OF_DATETIME;
 		}
-		Collection<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
-			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
+		Collection<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte =
+			getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
+				zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
 			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt)
 				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
-					|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt) == VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
-				createZahlungspositionenKorrekturUndNachzahlung(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+				|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt)
+				== VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
+				createZahlungspositionenKorrekturUndNachzahlung(
+					zahlungslaufHelper,
+					zeitabschnitt,
+					zahlungsauftrag,
+					zahlungProInstitution);
 			}
 		}
 
@@ -321,10 +347,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	/**
-	 * Ermittelt die aktuell gueltigen Verfuegungszeitabschnitte fuer die normale monatliche Zahlung (keine Korrekturen).
+	 * Ermittelt die aktuell gueltigen Verfuegungszeitabschnitte fuer die normale monatliche Zahlung (keine
+	 * Korrekturen).
 	 */
 	@Nonnull
-	private Collection<VerfuegungZeitabschnitt> getGueltigeVerfuegungZeitabschnitte(@Nonnull Gemeinde gemeinde, @Nonnull LocalDate zeitabschnittVon,
+	private Collection<VerfuegungZeitabschnitt> getGueltigeVerfuegungZeitabschnitte(
+		@Nonnull Gemeinde gemeinde, @Nonnull LocalDate zeitabschnittVon,
 		@Nonnull LocalDate zeitabschnittBis) {
 		requireNonNull(zeitabschnittVon, "zeitabschnittVon muss gesetzt sein");
 		requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
@@ -341,14 +369,19 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Datum Von
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), zeitabschnittBis);
+		Predicate predicateStart = cb.lessThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Datum Bis
-		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittVon);
+		Predicate predicateEnd = cb.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			zeitabschnittVon);
 		predicates.add(predicateEnd);
 		// Nur Angebot KITA und TAGESFAMILIEN
-		Predicate predicateAngebot = joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
-			.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+		Predicate predicateAngebot =
+			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
+				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
 		predicates.add(predicateAngebot);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -380,7 +413,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		LOGGER.info("Ermittle Korrekturzahlungen:");
 		LOGGER.info("Zeitabschnitt endet vor: {}", Constants.DATE_FORMATTER.format(zeitabschnittBis));
-		LOGGER.info("Gesuch verfuegt zwischen: {} - {}", Constants.DATE_FORMATTER.format(datumVerfuegtVon), Constants.DATE_FORMATTER.format(datumVerfuegtBis));
+		LOGGER.info(
+			"Gesuch verfuegt zwischen: {} - {}",
+			Constants.DATE_FORMATTER.format(datumVerfuegtVon),
+			Constants.DATE_FORMATTER.format(datumVerfuegtBis));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
@@ -393,15 +429,22 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		List<Predicate> predicates = new ArrayList<>();
 
-		// Datum Bis muss VOR dem regulaeren Auszahlungszeitraum sein (sonst ist es keine Korrektur und schon im obigen Statement enthalten)
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittBis);
+		// Datum Bis muss VOR dem regulaeren Auszahlungszeitraum sein (sonst ist es keine Korrektur und schon im
+		// obigen Statement enthalten)
+		Predicate predicateStart = cb.lessThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Nur Angebot KITA und TAGESFAMILIEN
-		Predicate predicateAngebot = joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
-			.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+		Predicate predicateAngebot =
+			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
+				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
 		predicates.add(predicateAngebot);
 		// Gesuche, welche seit dem letzten Zahlungslauf verfuegt wurden. Nur neueste Verfuegung jedes Falls beachten
-		Predicate predicateDatum = cb.between(joinGesuch.get(Gesuch_.timestampVerfuegt), cb.literal(datumVerfuegtVon), cb.literal(datumVerfuegtBis));
+		Predicate predicateDatum = cb.between(
+			joinGesuch.get(Gesuch_.timestampVerfuegt),
+			cb.literal(datumVerfuegtVon),
+			cb.literal(datumVerfuegtBis));
 		predicates.add(predicateDatum);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -431,7 +474,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
 		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
 		zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
-		Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+		Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
+			helper,
+			zeitabschnitt,
+			zahlungsauftrag,
+			zahlungProInstitution);
 		zahlungsposition.setZahlung(zahlung);
 		zahlung.getZahlungspositionen().add(zahlungsposition);
 		helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
@@ -460,7 +507,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zeitabschnittOnVorgaengerVerfuegung);
 
 		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
-			Zahlung zahlung = helper.findZahlungForEmpfaenger(zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
+			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(helper, zeitabschnittNeu, zahlungsauftrag,
+				zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
 				// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
@@ -468,13 +516,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				// wir muessen noch aufpassen, das dieser Korrektur nicht schon drin ist falls man einen Monat
 				// in mehrer Zeitabschnitten migriert haben.
 				boolean alreadyCorrected = false;
-				for(Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()){
-					if(zahlungsposition.getVerfuegungZeitabschnitt().equals(vorgaengerZeitabschnitt)){
+				for (Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()) {
+					if (zahlungsposition.getVerfuegungZeitabschnitt().equals(vorgaengerZeitabschnitt)) {
 						alreadyCorrected = true;
 						break;
 					}
 				}
-				if(!alreadyCorrected) {
+				if (!alreadyCorrected) {
 					createZahlungspositionKorrekturAlterWert(helper, vorgaengerZeitabschnitt, zahlung,
 						helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend());
 				}
@@ -482,6 +530,32 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
 			createZahlungsposition(helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 		}
+	}
+
+	private Zahlung findZahlungForEmpfaengerOrCreate(@Nonnull ZahlungslaufHelper helper,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Map<String, Zahlung> zahlungProInstitution){
+		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+		Objects.requireNonNull(betreuung);
+		Gesuch gesuch = betreuung.extractGesuch();
+		if (!gesuch.isGueltig()) {
+			gesuch = gesuchService.getAllGesuchForDossier(gesuch.getDossier().getId())
+				.stream()
+				.filter(gesuchFound -> gesuchFound.isGueltig())
+				.findFirst()
+				.orElseThrow(() ->
+					new EbeguRuntimeException(
+						"createZahlungsposition",
+						"Zahlungposition hat keine gueltige Gesuch")
+				);
+		}
+
+		return helper.findZahlungForEmpfaengerOrCreate(
+			gesuch,
+			betreuung,
+			zahlungsauftrag,
+			zahlungProInstitution);
 	}
 
 	/**
@@ -525,9 +599,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		korrekturPosition.setStatus(status);
 		zahlung.getZahlungspositionen().add(korrekturPosition);
 		if (helper.getZahlungsstatus(vorgaengerZeitabschnitt).isIgnoriertIgnorierend()) {
-			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
+			helper.setZahlungsstatus(
+				vorgaengerZeitabschnitt,
+				VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			helper.setZahlungsstatus(vorgaengerZeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(
+				vorgaengerZeitabschnitt,
+				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
 		}
 	}
 
@@ -559,7 +637,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@Nonnull
-	public Zahlungsauftrag zahlungsauftragAktualisieren(@Nonnull String auftragId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
+	public Zahlungsauftrag zahlungsauftragAktualisieren(
+		@Nonnull String auftragId,
+		@Nonnull LocalDate datumFaelligkeit,
+		@Nonnull String beschreibung) {
 		requireNonNull(auftragId, "auftragId muss gesetzt sein");
 		requireNonNull(datumFaelligkeit, "datumFaelligkeit muss gesetzt sein");
 		requireNonNull(beschreibung, "beschreibung muss gesetzt sein");
@@ -582,8 +663,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	public Zahlungsauftrag zahlungsauftragAusloesen(@Nonnull String auftragId) {
 		requireNonNull(auftragId, "auftragId muss gesetzt sein");
 
-		Zahlungsauftrag zahlungsauftrag = findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
+		Zahlungsauftrag zahlungsauftrag =
+			findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
 
 		authorizer.checkWriteAuthorizationZahlungsauftrag(zahlungsauftrag);
 
@@ -596,7 +678,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
 			if (ZahlungStatus.ENTWURF != zahlung.getStatus()) {
-				throw new IllegalArgumentException("Zahlung muss im Status ENTWURF sein, wenn der Auftrag ausgelöst wird: " + zahlung.getId());
+				throw new IllegalArgumentException(
+					"Zahlung muss im Status ENTWURF sein, wenn der Auftrag ausgelöst wird: " + zahlung.getId());
 			}
 			zahlung.setStatus(ZahlungStatus.AUSGELOEST);
 			persistence.merge(zahlung);
@@ -667,7 +750,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		return persistence.getCriteriaSingleResult(query);
 	}
 
-	private List<Predicate> createPredicatesForZahlungen(ZahlungenSearchParamsDTO zahlungenSearchParamsDTO, CriteriaBuilder cb, Root<Zahlungsauftrag> root, Join<Zahlungsauftrag, Gemeinde> joinGemeinde) {
+	private List<Predicate> createPredicatesForZahlungen(
+		ZahlungenSearchParamsDTO zahlungenSearchParamsDTO,
+		CriteriaBuilder cb,
+		Root<Zahlungsauftrag> root,
+		Join<Zahlungsauftrag, Gemeinde> joinGemeinde) {
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"createPredicatesForZahlungen", "Non logged in user should never reach this"));
 
@@ -681,7 +768,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		if (zahlungenSearchParamsDTO.getGemeinde() != null) {
 			predicates.add(cb.equal(root.get(Zahlungsauftrag_.gemeinde), zahlungenSearchParamsDTO.getGemeinde()));
 		}
-		predicates.add(cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), zahlungenSearchParamsDTO.getZahlungslaufTyp()));
+		predicates.add(cb.equal(
+			root.get(Zahlungsauftrag_.zahlungslaufTyp),
+			zahlungenSearchParamsDTO.getZahlungslaufTyp()));
 
 		// institutionen
 		if (currentBenutzer.getCurrentBerechtigung().getRole().isInstitutionRole()) {
@@ -730,8 +819,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			sortExpression = root.get(Zahlungsauftrag_.betragTotalAuftrag);
 			break;
 		case "status": {
-			Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-				"setSortOrder", "Non logged in user should never reach this"));
+			Benutzer currentBenutzer =
+				benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+					"setSortOrder", "Non logged in user should never reach this"));
 
 			if (currentBenutzer.getCurrentBerechtigung().getRole().isInstitutionRole()) {
 				sortExpression = createInstitutionStatusSortPredicate(query, zahlungenSearchParamsDTO, root, cb);
@@ -782,8 +872,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	public Zahlung zahlungBestaetigen(@Nonnull String zahlungId) {
 		requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
-		Zahlung zahlung = findZahlung(zahlungId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungBestaetigen",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
+		Zahlung zahlung =
+			findZahlung(zahlungId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungBestaetigen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
 		zahlung.setStatus(ZahlungStatus.BESTAETIGT);
 		Zahlung persistedZahlung = persistence.merge(zahlung);
 		zahlungauftragBestaetigenIfAllZahlungenBestaetigt(zahlung.getZahlungsauftrag());
@@ -801,15 +892,21 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// Zeitraum
-		Predicate predicateZeitraum = cb.between(root.get(Zahlungsauftrag_.datumGeneriert), cb.literal(von.atStartOfDay()), cb.literal(bis.atTime(LocalTime.MAX)));
+		Predicate predicateZeitraum = cb.between(
+			root.get(Zahlungsauftrag_.datumGeneriert),
+			cb.literal(von.atStartOfDay()),
+			cb.literal(bis.atTime(LocalTime.MAX)));
 		predicatesToUse.add(predicateZeitraum);
 		// Dieser Report betrifft nur Institutionszahlungen
-		Predicate predicateAuftragTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
+		Predicate predicateAuftragTyp =
+			cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		predicatesToUse.add(predicateAuftragTyp);
 
 		Mandant mandant = principalBean.getMandant();
 		if (mandant == null) {
-			throw new EbeguRuntimeException("getZahlungsauftraegeInPeriode", "mandant not found for principal " + principalBean.getPrincipal().getName());
+			throw new EbeguRuntimeException(
+				"getZahlungsauftraegeInPeriode",
+				"mandant not found for principal " + principalBean.getPrincipal().getName());
 		}
 
 		// Mandant
@@ -879,7 +976,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 * Removes the Pain001Dokument that is linked with the given Zahlungsauftrag if it exists.
 	 */
 	private void removePAIN001FromZahlungsauftrag(Zahlungsauftrag zahlungsauftrag) {
-		final Collection<Pain001Dokument> pain001Dokument = criteriaQueryHelper.getEntitiesByAttribute(Pain001Dokument.class, zahlungsauftrag, Pain001Dokument_.zahlungsauftrag);
+		final Collection<Pain001Dokument> pain001Dokument =
+			criteriaQueryHelper.getEntitiesByAttribute(
+				Pain001Dokument.class,
+				zahlungsauftrag,
+				Pain001Dokument_.zahlungsauftrag);
 		pain001Dokument.forEach(pain -> {
 			fileSaverService.removeAllFromSubfolder(pain.getZahlungsauftrag().getId());
 			persistence.remove(Pain001Dokument.class, pain.getId());
@@ -906,7 +1007,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	private void zahlungauftragBestaetigenIfAllZahlungenBestaetigt(@Nonnull Zahlungsauftrag zahlungsauftrag) {
 		requireNonNull(zahlungsauftrag, "zahlungsauftrag darf nicht null sein");
-		if (zahlungsauftrag.getZahlungen().stream().allMatch(zahlung -> zahlung.getStatus() == ZahlungStatus.BESTAETIGT)) {
+		if (zahlungsauftrag.getZahlungen()
+			.stream()
+			.allMatch(zahlung -> zahlung.getStatus() == ZahlungStatus.BESTAETIGT)) {
 			zahlungsauftrag.setStatus(ZahlungauftragStatus.BESTAETIGT);
 			persistence.merge(zahlungsauftrag);
 		}
@@ -915,8 +1018,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId) {
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
 		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(
 			gemeinde,
