@@ -246,7 +246,8 @@ public class BGCalculationResult extends AbstractEntity {
 		this.elternbeitrag = roundToFrankenRappen(elternbeitrag);
 		this.minimalerElternbeitragGekuerzt = roundToFrankenRappen(minimalerElternbeitragGekuerzt);
 		this.verguenstigung = roundToFrankenRappen(verguenstigung);
-		this.verguenstigungProZeiteinheit = roundToFrankenRappen(verguenstigungProZeiteinheit);
+		//verguenstigung pro Zeiteinheit soll auf den Rappen genau berechnet werden
+		this.verguenstigungProZeiteinheit = MathUtil.ZWEI_NACHKOMMASTELLE.from(verguenstigungProZeiteinheit);
 
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
