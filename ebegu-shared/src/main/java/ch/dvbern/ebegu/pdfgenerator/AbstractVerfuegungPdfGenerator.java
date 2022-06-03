@@ -711,7 +711,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		);
 	}
 
-	private void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(getFusszeile1Verfuegung())
