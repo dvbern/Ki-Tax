@@ -74,56 +74,6 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 
 	@Nonnull
 	@Override
-	public Zahlung findZahlungForEmpfaengerOrCreate(
-		@Nonnull Gesuch gesuch,
-		@Nonnull Betreuung betreuung,
-		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
-	) {
-		InstitutionStammdaten institution = betreuung.getInstitutionStammdaten();
-		if (zahlungProInstitution.containsKey(institution.getId())) {
-			return zahlungProInstitution.get(institution.getId());
-		}
-		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
-		Zahlung zahlung = createZahlung(institution, zahlungsauftrag);
-		zahlungProInstitution.put(institution.getId(), zahlung);
-		return zahlung;
-	}
-
-	@Nonnull
-	private Zahlung createZahlung(
-		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull Zahlungsauftrag zahlungsauftrag
-	) {
-		Zahlung zahlung = new Zahlung();
-		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		final InstitutionStammdatenBetreuungsgutscheine stammdatenBG =
-			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
-		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
-		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
-		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
-			throw new EbeguRuntimeException(KibonLogLevel.INFO,
-				"createZahlung",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
-				institutionStammdaten.getInstitution().getName());
-		}
-
-		Objects.requireNonNull(auszahlungsdaten);
-		zahlung.setAuszahlungsdaten(auszahlungsdaten);
-		zahlung.setEmpfaengerId(institutionStammdaten.getInstitution().getId());
-		zahlung.setEmpfaengerName(institutionStammdaten.getInstitution().getName());
-		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
-		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
-			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());
-		}
-		zahlung.setZahlungsauftrag(zahlungsauftrag);
-		zahlungsauftrag.getZahlungen().add(zahlung);
-		return zahlung;
-	}
-
-	@Nonnull
-	@Override
 	public BigDecimal getAuszahlungsbetrag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		return zeitabschnitt.getVerguenstigung();
 	}

@@ -59,18 +59,6 @@ public interface ZahlungslaufHelper extends Serializable {
 		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status);
 
 	/**
-	 * Ermittelt das Zahlungsobjekt fuer den Empfaenger des uebergebenen Zeitabschnitts. Falls im uebergebenen
-	 * Auftrag schon eine Zahlung fuer diesen Empfaenger vorhanden ist, wird diese zurueckgegeben, ansonsten
-	 * eine neue erstellt.
-	 */
-	@Nonnull
-	Zahlung findZahlungForEmpfaengerOrCreate(
-		@Nonnull Gesuch gesuch,
-		@Nonnull Betreuung betreuung,
-		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution);
-
-	/**
 	 * Gibt den auszuzahlenden Betrag zurueck.
 	 */
 	@Nonnull

@@ -51,15 +51,20 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -532,12 +537,17 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 	}
 
-	private Zahlung findZahlungForEmpfaengerOrCreate(@Nonnull ZahlungslaufHelper helper,
+	private Zahlung findZahlungForEmpfaengerOrCreate(
+		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution){
+		@Nonnull Map<String, Zahlung> zahlungProInstitution) {
 		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 		Objects.requireNonNull(betreuung);
+		if (helper.getZahlungslaufTyp().equals(ZahlungslaufTyp.GEMEINDE_INSTITUTION)) {
+			return findZahlungForInstitutionOrCreate(betreuung, zahlungsauftrag, zahlungProInstitution);
+		}
+
 		Gesuch gesuch = betreuung.extractGesuch();
 		if (!gesuch.isGueltig()) {
 			gesuch = gesuchService.getAllGesuchForDossier(gesuch.getDossier().getId())
@@ -551,11 +561,127 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				);
 		}
 
-		return helper.findZahlungForEmpfaengerOrCreate(
+		return findZahlungForAntragstellerOrCreate(
 			gesuch,
 			betreuung,
 			zahlungsauftrag,
 			zahlungProInstitution);
+
+	}
+
+	private Zahlung findZahlungForAntragstellerOrCreate(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Betreuung betreuung,
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Map<String, Zahlung> zahlungProInstitution
+	) {
+		// Wir setzen als "Empfaenger-ID" die ID des Falles: In selben Zahlungslauf kann es zu Auszahlungen
+		// von mehreren Mutation derselben Familie kommen, daher waere die Gesuch-ID oder die Gesuchsteller-ID
+		// nicht geeignet. Da auch Korrekturzahlungen ueber die Periode hinaus moeglich sind, faellt auch
+		// die Dossier-ID weg.
+		String fallId = gesuch.getDossier().getFall().getId();
+		if (zahlungProInstitution.containsKey(fallId)) {
+			return zahlungProInstitution.get(fallId);
+		}
+		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
+		Zahlung zahlung =
+			createZahlungForAntragsteller(gesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag);
+		zahlungProInstitution.put(fallId, zahlung);
+		return zahlung;
+	}
+
+	@Nonnull
+	private Zahlung createZahlungForAntragsteller(
+		@Nonnull Gesuch gesuch,
+		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
+		@Nonnull String fallId,
+		@Nonnull Zahlungsauftrag zahlungsauftrag
+	) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+
+		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"createZahlung",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+				gesuch.getJahrFallAndGemeindenummer());
+		}
+
+		Objects.requireNonNull(auszahlungsdaten, "Die Auszahlungsdaten muessen zu diesem Zeitpunkt definiert sein");
+
+		final Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"createZahlung",
+				"GS1 not found for Gesuch " + gesuch.getId()));
+		Gesuchsteller gesuchsteller2 = null;
+
+		if (gesuch.getGesuchsteller2() != null) {
+			gesuchsteller2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+		}
+
+		Zahlung zahlung = new Zahlung();
+		zahlung.setStatus(ZahlungStatus.ENTWURF);
+		zahlung.setAuszahlungsdaten(auszahlungsdaten);
+		zahlung.setEmpfaengerId(fallId);
+		zahlung.setEmpfaengerName(gesuchsteller1.getFullName());
+		if (gesuchsteller2 != null) {
+			zahlung.setEmpfaenger2Name(gesuchsteller2.getFullName());
+		}
+		zahlung.setBetreuungsangebotTyp(betreuungsangebotTyp);
+		zahlung.setZahlungsauftrag(zahlungsauftrag);
+		zahlungsauftrag.getZahlungen().add(zahlung);
+		return zahlung;
+	}
+
+	private Zahlung findZahlungForInstitutionOrCreate(
+		@Nonnull Betreuung betreuung,
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Map<String, Zahlung> zahlungProInstitution
+	) {
+		InstitutionStammdaten institution = betreuung.getInstitutionStammdaten();
+		if (zahlungProInstitution.containsKey(institution.getId())) {
+			return zahlungProInstitution.get(institution.getId());
+		}
+		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
+		Zahlung zahlung = createZahlungForInstitution(institution, zahlungsauftrag);
+		zahlungProInstitution.put(institution.getId(), zahlung);
+		return zahlung;
+	}
+
+	@Nonnull
+	private Zahlung createZahlungForInstitution(
+		@Nonnull InstitutionStammdaten institutionStammdaten,
+		@Nonnull Zahlungsauftrag zahlungsauftrag
+	) {
+		Zahlung zahlung = new Zahlung();
+		zahlung.setStatus(ZahlungStatus.ENTWURF);
+		final InstitutionStammdatenBetreuungsgutscheine stammdatenBG =
+			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
+		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
+		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"createZahlung",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
+				institutionStammdaten.getInstitution().getName());
+		}
+
+		Objects.requireNonNull(auszahlungsdaten);
+		zahlung.setAuszahlungsdaten(auszahlungsdaten);
+		zahlung.setEmpfaengerId(institutionStammdaten.getInstitution().getId());
+		zahlung.setEmpfaengerName(institutionStammdaten.getInstitution().getName());
+		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
+		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
+			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());
+		}
+		zahlung.setZahlungsauftrag(zahlungsauftrag);
+		zahlungsauftrag.getZahlungen().add(zahlung);
+		return zahlung;
 	}
 
 	/**
