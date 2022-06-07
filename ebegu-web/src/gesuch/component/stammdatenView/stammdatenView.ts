@@ -470,6 +470,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             .then(dokumentGrund => {
                 this.dokumentGrund = dokumentGrund;
                 this.dvFileUploadError = null;
+                this.form.$setDirty();
             });
     }
 
@@ -498,6 +499,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             if (this.dokumentGrund.dokumente.length === 0) {
                 this.dvFileUploadError = {required: true};
             }
+            this.form.$setDirty();
         }).catch(err => {
             LOG.error(err);
             this.errorService.addMesageAsError(err);
