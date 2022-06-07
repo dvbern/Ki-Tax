@@ -20,6 +20,7 @@ import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -54,8 +55,8 @@ export class BetreuungInputComponent implements IController {
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
-    private readonly multiplierKita: number = 1;
-    private readonly multiplierTfo: number = 1;
+    private readonly multiplierKita: number;
+    private readonly multiplierTfo: number;
 
     private pensumValue: number;
 
@@ -114,7 +115,7 @@ export class BetreuungInputComponent implements IController {
 
     public updateLabel(): void {
         const calculatedResult = this.calculateValueForAdditionalLabel();
-        if (calculatedResult === 'NaN') {
+        if (isNaN(calculatedResult)) {
             this.label = '';
             return;
         }
@@ -122,16 +123,20 @@ export class BetreuungInputComponent implements IController {
             ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
             : this.translate.instant(this.switchOptions[0]);
 
-        this.label = `${this.translate.instant('OR')} ${calculatedResult}${lbl}`;
+        this.label = `${this.translate.instant('OR')} ${calculatedResult.toFixed(2)}${lbl}`;
     }
 
-    private calculateValueForAdditionalLabel(): string {
+    private calculateValueForAdditionalLabel(): number {
         return this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? (this.pensumValue * this.multiplier).toFixed(2)
-            : (this.pensumValue / this.multiplier).toFixed(2);
+            ? (this.pensumValue * this.multiplier)
+            : (this.pensumValue / this.multiplier);
     }
 
     private parseToPensumUnit(): void {
+        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
+            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+            return;
+        }
         this.pensumValue =
             (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE)
                 ? this.pensumContainer.betreuungspensumJA.pensum
@@ -140,6 +145,10 @@ export class BetreuungInputComponent implements IController {
 
     private parseToPercentage(): void {
         if (!(this.pensumContainer && this.pensumContainer.betreuungspensumJA)) {
+            return;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
+            this.pensumContainer.betreuungspensumJA.pensum = this.pensumValue;
             return;
         }
         this.pensumContainer.betreuungspensumJA.pensum =
