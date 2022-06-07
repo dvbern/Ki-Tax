@@ -115,7 +115,7 @@ export class BetreuungInputComponent implements IController {
 
     public updateLabel(): void {
         const calculatedResult = this.calculateValueForAdditionalLabel();
-        if (calculatedResult === 'NaN') {
+        if (isNaN(calculatedResult)) {
             this.label = '';
             return;
         }
@@ -123,16 +123,13 @@ export class BetreuungInputComponent implements IController {
             ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
             : this.translate.instant(this.switchOptions[0]);
 
-        this.label = `${this.translate.instant('OR')} ${calculatedResult}${lbl}`;
+        this.label = `${this.translate.instant('OR')} ${calculatedResult.toFixed(2)}${lbl}`;
     }
 
-    private calculateValueForAdditionalLabel(): string {
-        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
-            return NaN.toFixed(2);
-        }
+    private calculateValueForAdditionalLabel(): number {
         return this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? (this.pensumValue * this.multiplier).toFixed(2)
-            : (this.pensumValue / this.multiplier).toFixed(2);
+            ? (this.pensumValue * this.multiplier)
+            : (this.pensumValue / this.multiplier);
     }
 
     private parseToPensumUnit(): void {
