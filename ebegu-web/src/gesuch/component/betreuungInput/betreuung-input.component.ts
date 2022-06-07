@@ -20,6 +20,7 @@ import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -54,8 +55,8 @@ export class BetreuungInputComponent implements IController {
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
     private multiplier: number = 1;
-    private readonly multiplierKita: number = 1;
-    private readonly multiplierTfo: number = 1;
+    private readonly multiplierKita: number;
+    private readonly multiplierTfo: number;
 
     private pensumValue: number;
 
@@ -126,12 +127,19 @@ export class BetreuungInputComponent implements IController {
     }
 
     private calculateValueForAdditionalLabel(): string {
+        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
+            return NaN.toFixed(2);
+        }
         return this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
             ? (this.pensumValue * this.multiplier).toFixed(2)
             : (this.pensumValue / this.multiplier).toFixed(2);
     }
 
     private parseToPensumUnit(): void {
+        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
+            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+            return;
+        }
         this.pensumValue =
             (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE)
                 ? this.pensumContainer.betreuungspensumJA.pensum
@@ -140,6 +148,10 @@ export class BetreuungInputComponent implements IController {
 
     private parseToPercentage(): void {
         if (!(this.pensumContainer && this.pensumContainer.betreuungspensumJA)) {
+            return;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
+            this.pensumContainer.betreuungspensumJA.pensum = this.pensumValue;
             return;
         }
         this.pensumContainer.betreuungspensumJA.pensum =
