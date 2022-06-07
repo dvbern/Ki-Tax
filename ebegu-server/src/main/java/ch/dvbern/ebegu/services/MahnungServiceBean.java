@@ -232,7 +232,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Nonnull
 	private Benutzer getVerantwortlicher(@Nonnull Gesuch gesuch) {
-		final Benutzer dossierVerantwortlicher = gesuch.getVerantwortlicherAccordingToBetreuungen();
+		final Benutzer dossierVerantwortlicher = gesuch.getMahnungVerantwortlicherAccordingToBetreuungen();
 		if (dossierVerantwortlicher != null) {
 			return dossierVerantwortlicher;
 		}
