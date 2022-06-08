@@ -205,6 +205,9 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 	@Nullable
 	protected String getSachbearbeiterSigniert() {
 		Benutzer hauptVerantwortlicher = getGesuch().getDossier().getVerantwortlicherTS();
+		if (hauptVerantwortlicher == null) {
+			hauptVerantwortlicher = getGesuch().getDossier().getVerantwortlicherBG();
+		}
 		return hauptVerantwortlicher != null ? translate(SIGNIERT, hauptVerantwortlicher.getFullName()) : null;
 	}
 
