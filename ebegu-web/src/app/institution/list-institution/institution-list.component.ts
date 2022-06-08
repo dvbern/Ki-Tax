@@ -80,7 +80,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => gemeinde.angebotTS));
             this.userHasGemeindeWithoutTSEnabled = isSuperadmin ||
                 EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => !gemeinde.angebotTS));
-        });
+        }, err => this.log.error(err));
     }
 
     public loadData(): void {

@@ -19,6 +19,7 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -39,6 +40,7 @@ describe('InstitutionListComponent', () => {
             ]);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['isRole', 'isOneOfRoles']);
         const i18nServiceSpy = jasmine
@@ -54,6 +56,7 @@ describe('InstitutionListComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [InstitutionListComponent],
