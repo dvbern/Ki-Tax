@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 
 public class KitaLuzernRechner extends AbstractLuzernRechner {
 
@@ -46,6 +47,49 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		this.isBaby = bgCalculationInput.isBabyTarif();
 
 		super.calculate(verfuegungZeitabschnitt, parameterDTO);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
+		//Bei KITA Rechner wurden die Vollkosten bereits pro Monat berechnet
+		return vollkostenGekuerzt;
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
+		//Bei KITA Rechner wird der Gutschein schon pro Monat berechnet
+		return gutschein;
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt() {
+		BigDecimal gutscheinProTagAufgrundEinkommen = calculateBGProZeiteinheitByEinkommen();
+		BigDecimal gutscheinProTagVorZuschlagUndSelbstbehalt = calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(gutscheinProTagAufgrundEinkommen);
+		return EXACT.multiply(gutscheinProTagVorZuschlagUndSelbstbehalt, verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateMinimalerSelbstbehalt() {
+		return EXACT.multiply(getMinimalTarif(), verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten() {
+		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
+		BigDecimal anspruchsPensum = BigDecimal.valueOf(input.getAnspruchspensumProzent());
+
+		//wenn anspruchspensum < betreuungspensum, dann anspruchspensum/betreuungspensum * monatlicheBetreuungskosten
+		if(anspruchsPensum.compareTo(betreuungspensum) < 0) {
+			BigDecimal anspruchsPensumDevidedByBetreuungspensum = EXACT.divide(anspruchsPensum, betreuungspensum);
+			return EXACT.multiply(anspruchsPensumDevidedByBetreuungspensum, input.getMonatlicheBetreuungskosten());
+		}
+
+		return input.getMonatlicheBetreuungskosten();
+	}
+
+	@Override
+	protected BigDecimal calculateZuschlag() {
+		return EXACT.multiply(verfuegteZeiteinheit, calculateZuschlagProZeiteinheit());
 	}
 
 	@Override
@@ -74,8 +118,9 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateBGProTagByEinkommen() {
-		return isBaby? calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+	protected BigDecimal calculateBGProZeiteinheitByEinkommen() {
+		BigDecimal bgProTag = isBaby ? calculateBetreuungsgutscheinProZeiteinheitAufgrundEinkommenGemaessFormel() : calculateBGProTagByEinkommenKind();
+		return MathUtil.maximum(bgProTag, getMaximalWertBGProTagAufgrundEinkommen());
 	}
 
 	@Override

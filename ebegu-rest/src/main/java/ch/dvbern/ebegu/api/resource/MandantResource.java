@@ -15,8 +15,11 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +69,21 @@ public class MandantResource {
 		Optional<Mandant> optional = mandantService.findMandant(mandantID);
 
 		return optional.map(mandant -> converter.mandantToJAX(mandant)).orElse(null);
+	}
+
+	@ApiOperation(value = "Gibt alle aktiven Mandanten zurueck.")
+	@Nullable
+	@GET
+	@Path("/all")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<JaxMandant> findAllActive() {
+		Collection<Mandant> all = mandantService.getAll();
+
+		return all.stream()
+				.filter(Mandant::isActivated)
+				.map(mandant -> converter.mandantToJAX(mandant))
+				.collect(Collectors.toList());
 	}
 
 }

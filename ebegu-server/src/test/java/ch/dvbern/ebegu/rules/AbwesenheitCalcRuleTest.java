@@ -53,7 +53,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testSchulamtBetreuungWithAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE, 30);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(true);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
@@ -67,7 +67,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testJABetreuungWithAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE, 30);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(true);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
@@ -86,7 +86,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testJABetreuungWithoutAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE, 30);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(false);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);

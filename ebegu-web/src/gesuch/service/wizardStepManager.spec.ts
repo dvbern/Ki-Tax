@@ -14,6 +14,8 @@
  */
 
 import * as angular from 'angular';
+import {of} from 'rxjs';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
@@ -28,8 +30,11 @@ import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
 import {TSAdresseContainer} from '../../models/TSAdresseContainer';
 import {TSDossier} from '../../models/TSDossier';
+import {TSEinstellung} from '../../models/TSEinstellung';
 import {TSFall} from '../../models/TSFall';
+import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGesuch} from '../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {TSWizardStep} from '../../models/TSWizardStep';
 import {TSDateRange} from '../../models/types/TSDateRange';
@@ -46,6 +51,7 @@ describe('wizardStepManager', () => {
     let wizardStepRS: WizardStepRS;
     let scope: angular.IScope;
     let $q: angular.IQService;
+    let einstellungRS: EinstellungRS;
 
     const gesuchAntrag = new TSGesuch();
 
@@ -61,6 +67,7 @@ describe('wizardStepManager', () => {
         scope = $injector.get('$rootScope').$new();
         $q = $injector.get('$q');
         wizardStepManager = $injector.get('WizardStepManager');
+        einstellungRS = $injector.get('EinstellungRS');
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
     }));
@@ -308,12 +315,17 @@ describe('wizardStepManager', () => {
                 expect(wizardStepManager.isStepVisible(TSWizardStepName.UMZUG)).toBe(false);
             });
         it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
+            const einstellungAbwesenheit = new TSEinstellung();
+            einstellungAbwesenheit.value = 'true';
+            spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(einstellungAbwesenheit).toPromise());
             createAllSteps(TSWizardStepStatus.OK);
             const gesuch = new TSGesuch();
             gesuch.eingangsart = TSEingangsart.PAPIER;
             gesuch.typ = TSAntragTyp.MUTATION;
             gesuch.dossier = new TSDossier();
             gesuch.dossier.fall = new TSFall();
+            gesuch.dossier.gemeinde = new TSGemeinde();
+            gesuch.gesuchsperiode = new TSGesuchsperiode();
             wizardStepManager.setHiddenSteps(gesuch);
 
             expect(wizardStepManager.isStepVisible(TSWizardStepName.FREIGABE)).toBe(false);

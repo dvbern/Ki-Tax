@@ -24,7 +24,7 @@
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
 
             <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
+            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="!vm.isLuzern"></p>
         </div>
     </div>
     <div class="row">
@@ -40,10 +40,11 @@
                                 <label class="md-no-float" data-translate="TAETIGKEIT" for="bezeichnung"></label>
                                 <input id="bezeichnung" type="text" name="bezeichnung"
                                        ng-model="vm.model.erwerbspensumJA.bezeichnung"
-                                       dv-max-length class="form-control" ng-required="false"
+                                       dv-max-length class="form-control"
                                        ng-disabled="vm.erwerbspensumDisabled()"
                                        aria-describedby="bezeichnung-error"
                                        ng-attr-placeholder="{{'TAETIGKEIT_PLACEHOLDER' | translate}}"
+                                       ng-required="vm.isLuzern"
                                 >
                                 <dv-bisher gs="vm.model.erwerbspensumGS.bezeichnung"
                                            ja="vm.model.erwerbspensumJA.bezeichnung"
@@ -207,6 +208,24 @@
                                 <dv-error-messages input-id="urlaubDatumBis" class="error"
                                                    for="vm.form.urlaubDatumBis.$error"></dv-error-messages>
                             </dv-input-container>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="vm.isLuzern">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten" name="unregelmaessigeArbeitszeiten" id="unregelmaessigeArbeitszeiten"
+                                             aria-label="{{'UNREGELMAESSIGE_ARBEITSZEITEN'|translate}}"
+                                             ng-disabled="vm.isGesuchReadonly()">
+                                    <span data-translate="UNREGELMAESSIGE_ARBEITSZEITEN"></span>
+                                </md-checkbox>
+                                <dv-tooltip text="'UNREGELMAESSIGE_ARBEITSZEITEN_HINT' | translate"></dv-tooltip>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unregelmaessigeArbeitszeiten"
+                                           ja="vm.model.erwerbspensumJA.unregelmaessigeArbeitszeiten"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                <dv-error-messages for="vm.form.unregelmaessigeArbeitszeiten.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
                         </div>
                     </div>
 

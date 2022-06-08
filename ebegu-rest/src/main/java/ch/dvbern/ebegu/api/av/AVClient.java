@@ -17,13 +17,15 @@
 
 package ch.dvbern.ebegu.api.av;
 
-
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -44,6 +46,7 @@ import xyz.capybara.clamav.commands.scan.result.ScanResult.VirusFound;
 public class AVClient {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AVClient.class);
+	private static final String METHOD_NAME = "scan";
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
@@ -60,24 +63,40 @@ public class AVClient {
 		}
 	}
 
-	@SuppressWarnings("PMD.PreserveStackTrace")
-	public void scan (FileMetadata fileMetadata) {
-
+	public void scan (@Nonnull FileMetadata fileMetadata) {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
-
 		try {
 			InputStream is = new FileInputStream(fileMetadata.getFilepfad());
 			ScanResult result = client.scan(is);
 
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, fileMetadata);
-				throw new EbeguMailiciousContentException("scan", ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
 			}
 		} catch (FileNotFoundException e) {
-			throw new EbeguEntityNotFoundException("scan",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fileMetadata.getId());
+			throw new EbeguEntityNotFoundException(METHOD_NAME,
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, e, fileMetadata.getId());
+		}
+	}
+
+	public void scan(byte[] content, @Nonnull String info) {
+		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
+			return;
+		}
+		try (
+			final ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
+		) {
+			ScanResult result = client.scan(inputStream);
+			if (result instanceof ScanResult.VirusFound) {
+				logFoundViruses((VirusFound) result, info);
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, info);
+			}
+		} catch (IOException e) {
+			throw new EbeguEntityNotFoundException(
+				METHOD_NAME,
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, e, info);
 		}
 	}
 
@@ -96,9 +115,13 @@ public class AVClient {
 		}
 	}
 
-	private void logFoundViruses(VirusFound result, FileMetadata fileMetadata) {
+	private void logFoundViruses(@Nonnull VirusFound result, @Nonnull FileMetadata fileMetadata) {
+		this.logFoundViruses(result, fileMetadata.getFilepfad());
+	}
+
+	private void logFoundViruses(@Nonnull VirusFound result, @Nonnull String description) {
 		StringBuilder log = new StringBuilder("Malicious file detected at: ");
-		log.append(fileMetadata.getFilepfad());
+		log.append(description);
 		for (Entry<String, Collection<String>> virus : result.getFoundViruses().entrySet()) {
 			int count = 0;
 			for (String info : virus.getValue()) {

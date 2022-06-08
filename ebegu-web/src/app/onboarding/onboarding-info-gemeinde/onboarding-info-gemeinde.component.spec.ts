@@ -15,12 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -33,6 +34,9 @@ describe('OnboardingInfoGemComponent', () => {
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
     const i18nServiceSpy =
         jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const applicationPropertyRSSpy =
+        jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached']);
 
     beforeEach(waitForAsync(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
@@ -46,6 +50,7 @@ describe('OnboardingInfoGemComponent', () => {
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -53,6 +58,7 @@ describe('OnboardingInfoGemComponent', () => {
     }));
 
     beforeEach(() => {
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of({} as any).toPromise());
         fixture = TestBed.createComponent(OnboardingInfoGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

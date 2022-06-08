@@ -2,6 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, ReplaySubject} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {TSMandant} from '../../../models/TSMandant';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {KiBonMandant, KiBonMandantFull} from '../../core/constants/MANDANTS';
@@ -40,11 +42,11 @@ export class MandantService {
 
     private static hostnameToMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
-            case 'be':
+            case KiBonMandant.BE:
                 return KiBonMandant.BE;
-            case 'lu':
+            case KiBonMandant.LU:
                 return KiBonMandant.LU;
-            case 'so':
+            case KiBonMandant.SO:
                 return KiBonMandant.SO;
             default:
                 return KiBonMandant.NONE;
@@ -139,7 +141,7 @@ export class MandantService {
     }
 
     public parseHostnameForMandant(): KiBonMandant {
-        const regex = /(be|so|lu)(?=.(dvbern|kibon))/g;
+        const regex = /(be|so|stadtluzern)(?=.(dvbern|kibon))/g;
         const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
         if (matches === null) {
             return KiBonMandant.NONE;
@@ -186,7 +188,7 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /([a-z]*-(kibon))?(?=(-[a-z]{2})?\.(dvbern|kibon))/;
+        const environmentRegex = /([a-z]*-(kibon))?(?=(-(be|so|stadtluzern))?\.(dvbern|kibon))/;
         const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
         if (matches === null) {
             return '';
@@ -207,6 +209,38 @@ export class MandantService {
                 return 'authentication.login';
             default:
                 return 'authentication.locallogin';
+        }
+    }
+
+    public mandantToKibonMandant(mandant: TSMandant): KiBonMandant {
+        switch (mandant.mandantIdentifier) {
+            case 'SOLOTHURN':
+                return KiBonMandant.SO;
+            case 'LUZERN':
+                return KiBonMandant.LU;
+            case 'BERN':
+            default:
+                return KiBonMandant.BE;
+        }
+    }
+
+    public getAll(): Observable<TSMandant[]> {
+        return this.http.get<any[]>(`${CONSTANTS.REST_API}mandanten/all`)
+            .pipe(
+                map(results => results.map(restMandant => this.restUtil.parseMandant(new TSMandant(), restMandant))),
+            );
+    }
+
+    public getMandantLogoName(mandant: KiBonMandant): string {
+        switch (mandant) {
+            case KiBonMandant.BE:
+                return 'logo-kibon-bern.svg';
+            case KiBonMandant.LU:
+                return 'logo-kibon-luzern.svg';
+            case KiBonMandant.SO:
+                return 'logo-kibon-solothurn.svg';
+            default:
+                return 'logo-kibon-bern.svg';
         }
     }
 }

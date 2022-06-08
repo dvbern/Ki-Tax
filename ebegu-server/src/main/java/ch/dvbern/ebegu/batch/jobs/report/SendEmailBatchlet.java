@@ -84,15 +84,15 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
 		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken()); // add the actual generated doc to the workjob
 		try {
-			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage), mandant);
+			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(mandant), Locale.forLanguageTag(receiverLanguage), mandant);
 			return BatchStatus.COMPLETED.toString();
 		} catch (Exception ignore) {
 			return BatchStatus.FAILED.toString();
 		}
 	}
 
-	private String createStatistikPageLink() {
-		return configuration.isClientUsingHTTPS() ? "https://" : "http://" + configuration.getHostname()  + "/statistik";
+	private String createStatistikPageLink(Mandant mandant) {
+		return configuration.isClientUsingHTTPS() ? "https://" : "http://" + configuration.getHostname(mandant.getMandantIdentifier())  + "/statistik";
 	}
 
 	@Nullable

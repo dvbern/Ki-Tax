@@ -36,8 +36,9 @@ public class ErwerbspensumAsivCalcRule extends ErwerbspensumCalcRule {
 		@Nonnull DateRange validityPeriod,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
+		int paramMinDauerKonkubinat,
 		@Nonnull Locale locale
 	) {
-		super(RuleValidity.ASIV, validityPeriod, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, locale);
+		super(RuleValidity.ASIV, validityPeriod, minErwerbspensumNichtEingeschult, minErwerbspensumEingeschult, paramMinDauerKonkubinat, locale);
 	}
 }

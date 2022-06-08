@@ -242,6 +242,7 @@ public class AbstractConverter {
 		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
@@ -252,6 +253,7 @@ public class AbstractConverter {
 		pensumEntity.setPensum(jaxPensum.getPensum());
 		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -270,6 +272,7 @@ public class AbstractConverter {
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
+		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -281,6 +284,7 @@ public class AbstractConverter {
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
+		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -291,6 +295,7 @@ public class AbstractConverter {
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
+		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -302,6 +307,7 @@ public class AbstractConverter {
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
+		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 	}
 
 	protected JaxFile convertFileToJax(FileMetadata fileMetadata, JaxFile jaxFile) {

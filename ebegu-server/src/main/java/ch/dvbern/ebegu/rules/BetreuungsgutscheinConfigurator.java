@@ -41,6 +41,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEF
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
@@ -135,7 +136,8 @@ public class BetreuungsgutscheinConfigurator {
 			AUSSERORDENTLICHER_ANSPRUCH_RULE,
 			DAUER_BABYTARIF,
 			KINDERABZUG_TYP,
-			FKJV_TEXTE
+			FKJV_TEXTE,
+			FACHSTELLEN_TYP
 		);
 	}
 
@@ -289,8 +291,10 @@ public class BetreuungsgutscheinConfigurator {
 		// - Erwerbspensum Gemeinde
 		Einstellung minEWP_nichtEingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultGmde = einstellungMap.get(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(minEWP_nichtEingeschultGmde, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultGmde, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(paramMinDauerKonkubinat, "Parameter MINIMALDAUER_KONKUBINAT muss gesetzt sein");
 		// Im Fall von BERN die Gueltigkeit einfach erst ab Tag X setzen?
 		if (kitaxParameterDTO != null && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeinde)) {
 			// Fuer die Stadt Bern gibt es die Rule mit verschiedenen Parameter: Vor dem Stichtag und nach dem Stichtag
@@ -300,6 +304,7 @@ public class BetreuungsgutscheinConfigurator {
 				vorStichtag,
 				kitaxParameterDTO.getMinEWP(),
 				kitaxParameterDTO.getMinEWP(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			// Wir muessen die Regel hier manuell hinzufuegen, da wir nicht die ueblichen Einstellungen verwenden!
 			// Sonst wird sie bei der Pruefung isRelevantForGemeinde wieder entfernt
@@ -310,6 +315,7 @@ public class BetreuungsgutscheinConfigurator {
 				nachStichtag,
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			addToRuleSetIfRelevantForGemeinde(ewpBernCalcRuleNachStichtag, einstellungMap);
 		} else {
@@ -318,13 +324,16 @@ public class BetreuungsgutscheinConfigurator {
 				defaultGueltigkeit,
 				minEWP_nichtEingeschultGmde.getValueAsInteger(),
 				minEWP_eingeschultGmde.getValueAsInteger(),
+				paramMinDauerKonkubinat.getValueAsInteger(),
 				locale);
 			addToRuleSetIfRelevantForGemeinde(erwerbspensumGemeindeCalcRule, einstellungMap);
 		}
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
-		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(fachstelleCalcRule, einstellungMap);
+		FachstelleBernCalcRule fachstelleBernCalcRule = new FachstelleBernCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(fachstelleBernCalcRule, einstellungMap);
+		FachstelleLuzernCalcRule fachstelleLuzrnCalcRule = new FachstelleLuzernCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(fachstelleLuzrnCalcRule, einstellungMap);
 
 		KitaPlusZuschlagCalcRule kitaPlusZuschlagCalcRule = new KitaPlusZuschlagCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kitaPlusZuschlagCalcRule, einstellungMap);
@@ -413,7 +422,9 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(einreichungsfristRule, einstellungMap);
 
 		// Abwesenheit
-		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale);
+		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
+		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
+		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale, abwesenheitMaxDaysValue);
 		addToRuleSetIfRelevantForGemeinde(abwesenheitCalcRule, einstellungMap);
 
 		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt
@@ -456,12 +467,14 @@ public class BetreuungsgutscheinConfigurator {
 
 		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
 		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		return new ErwerbspensumAsivCalcRule(
 			defaultGueltigkeit,
 			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
 			minEWP_eingeschultAsiv.getValueAsInteger(),
+			paramMinDauerKonkubinat.getValueAsInteger(),
 			locale);
 	}
 }

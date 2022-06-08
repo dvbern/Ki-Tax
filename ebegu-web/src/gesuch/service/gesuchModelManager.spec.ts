@@ -532,7 +532,7 @@ describe('gesuchModelManager', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
             });
             it('should be false if ALLEINERZIEHEND with no geteilte Obhut and unterhaltsvereinbarung nicht moeglich', () => {
@@ -547,7 +547,7 @@ describe('gesuchModelManager', () => {
                 createFamsit(true, TSFamilienstatus.ALLEINERZIEHEND);
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.geteilteObhut = false;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN;
+                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
             });
             it('should be true if VERHEIRATET with FKJV', () => {
@@ -583,10 +583,10 @@ describe('gesuchModelManager', () => {
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
 
                 famSit.geteilteObhut = false;
-                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA;
+                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(false);
 
-                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN;
+                famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
                 expect(gesuchModelManager.isGesuchsteller2Required()).toBe(true);
 
                 famSit.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;

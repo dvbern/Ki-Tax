@@ -54,6 +54,9 @@
                                 <span class="ebegu-h1 required">
                                     <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
                                           data-translate-values="{{vm.basisJahrUndPeriode}}"></span>
+                                    <dv-tooltip input-id="eingeschrieben-tooltip"
+                                               text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT' | translate"></dv-tooltip>
+
                                 </span>
                                     <dv-radio-container name="einkommensverschlechterung"
                                                         ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
@@ -93,7 +96,7 @@
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
                                              role="alert"
                                              class="error">
-                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM"
+                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM" class="inline-block"
                                                  for="vm.form.ekvFuerBasisJahrPlus1.$error"></div>
                                         </div>
                                     </div>
@@ -134,7 +137,7 @@
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
                                              class="error">
-                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM"
+                                            <div ng-message="required" data-translate="ERROR_REQUIRED_ONE_OF_THEM" class="inline-block"
                                                  for="vm.form.ekvFuerBasisJahrPlus2.$error"></div>
                                         </div>
                                     </div>

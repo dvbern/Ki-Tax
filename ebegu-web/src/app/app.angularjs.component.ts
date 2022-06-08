@@ -36,6 +36,14 @@ export class AppAngularjsComponent implements IController {
                     .css('display', response.devmode ? 'inline' : 'none');
                 this.$element.find('.logo-bern')
                     .css('background-image', this.getBackgroundImage(response.logoFileName));
+                // Beim Abl�sen bitte mit ngIf ersetzen, das hier ist ein Workaround, weil das Template hier nicht
+                // auf den Controller zugreifen konnte
+                if (!response.frenchEnabled) {
+                    this.$element.find('#language-selector').css('display', 'none');
+                }
+                if (response.devmode) {
+                    document.querySelector('meta[name="robots"]').setAttribute('content', 'noindex,nofollow');
+                }
                 ColorService.changeColors(response);
             });
     }

@@ -57,6 +57,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
     @Input()
     public areThereAnyBgBetreuungen: boolean;
 
+    @Input()
+    public hideSozialhilfeQuestion: boolean = false;
+
     private maxMassgebendesEinkommen: number;
     private isFinSitTypFkjv: boolean = false;
 
@@ -126,6 +129,10 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         }
 
         return isNotSozialhilfeBezueger;
+    }
+
+    public showSozialhilfeQuestion(): boolean {
+        return !this.hideSozialhilfeQuestion;
     }
 
     public getMaxMassgebendesEinkommen(): string {

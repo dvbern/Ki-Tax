@@ -33,19 +33,22 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 	private final Art art;
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
+	private final boolean isFKJVTexte;
 
 	public VerfuegungPdfGeneratorVisitor(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art,
 		boolean kontingentierungEnabledAndEntwurf,
-		boolean stadtBernAsivConfigured
+		boolean stadtBernAsivConfigured,
+		boolean isFKJVTexte
 	) {
 		this.betreuung = betreuung;
 		this.stammdaten = stammdaten;
 		this.art = art;
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
+		this.isFKJVTexte = isFKJVTexte;
 	}
 
 	public AbstractVerfuegungPdfGenerator getVerfuegungPdfGeneratorForMandant(@NotNull Mandant mandant) {
@@ -54,16 +57,16 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitBern() {
-		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured);
+		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitLuzern() {
-		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured);
+		return new VerfuegungPdfGeneratorLuzern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitSolothurn() {
-		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured);
+		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 }

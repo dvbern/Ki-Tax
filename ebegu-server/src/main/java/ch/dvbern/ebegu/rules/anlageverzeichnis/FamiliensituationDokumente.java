@@ -86,7 +86,7 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 			return !EbeguUtil.isNullOrFalse(familiensituation.getSozialhilfeBezueger());
 		case NACHWEIS_UNTERHALTSVEREINBARUNG:
 			return EbeguUtil.isNotNullAndTrue(familiensituation.isFkjvFamSit()) &&
-					familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA;
+					familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
 		default:
 			return false;
 		}

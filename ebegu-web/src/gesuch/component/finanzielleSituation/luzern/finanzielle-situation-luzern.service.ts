@@ -41,7 +41,8 @@ export class FinanzielleSituationLuzernService {
         // zwei Antragstellerinnen aber es wird nur eine FinSit verlangt
         const hasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuchModelManager.getGesuch().gesuchsteller2);
         const isVerheiratet = gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET;
-        return hasSecondAntragsteller && !isVerheiratet;
+        const isSozialhilfeBezueger = EbeguUtil.isNotNullAndTrue(gesuchModelManager.getFamiliensituation().sozialhilfeBezueger);
+        return hasSecondAntragsteller && !isVerheiratet && !isSozialhilfeBezueger;
     }
 
     public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {

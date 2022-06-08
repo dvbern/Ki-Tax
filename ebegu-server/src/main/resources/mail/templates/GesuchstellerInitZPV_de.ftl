@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="id" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
-Subject: <@base64Header>kiBon - Lastenausgleich Tagesschule</@base64Header>
+Subject: <@base64Header>kiBon - Verkuepfung ihres Antrags mit weiterem BE-Login</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -23,16 +23,17 @@ Content-Type: text/html;charset=utf-8
 		Guten Tag
 	</p>
 	<p>
-		Sie haben die Verknüpfung ihres kiBon Antrags mit einem zweiten BE-Login beantragt. Dafür befolgen Sie bitte folgende Schritt:
-
-
+		Sie haben die Verknüpfung Ihres kiBon-Antrags mit einem zweiten BE-Login beantragt, um die Steuerdaten abzurufen.
 	</p>
-	<ul>
-		<li>Stellen Sie sicher, dass sie weder bei kiBon noch beim BE-Login eingeloggt sind</li>
-		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}${link}">diesem Link</a></li>
-	</ul>
 	<p>
-		Nachdem Sie sich beim BE-Login eingeloggt haben, werden Sie zu kiBon zurückgeleitet, wo Ihr Antrag mit dem BE-Login verknüpft wird.
+		<b>Achtung:</b> Stellen Sie bitte sicher, dass Sie im BE-Login nicht mehr eingeloggt sind.
+	</p>
+	<p>
+		Über die untenstehende Schaltfläche erlauben Sie den Abruf Ihrer Steuerdaten:<br>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}${link}">BE Login verknüpfen und Abfrage der Steuerdaten erlauben.</a></li>
+	</p>
+	<p>
+		Nachdem Sie sich beim BE-Login eingeloggt haben, werden Sie auf kiBon zurückgeleitet, wo Ihr Antrag mit dem BE-Login verknüpft wird.
 	</p>
 
 	<p>

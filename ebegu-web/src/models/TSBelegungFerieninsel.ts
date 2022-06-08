@@ -21,6 +21,7 @@ export class TSBelegungFerieninsel extends TSAbstractMutableEntity {
 
     private _ferienname: TSFerienname;
     private _tage: Array<TSBelegungFerieninselTag> = [];
+    private _tageMorgenmodul: Array<TSBelegungFerieninselTag> = [];
     private _notfallAngaben: string;
 
     public constructor(ferienname?: TSFerienname, tage?: Array<TSBelegungFerieninselTag>, notfallAngaben?: string) {
@@ -44,6 +45,14 @@ export class TSBelegungFerieninsel extends TSAbstractMutableEntity {
 
     public set tage(value: Array<TSBelegungFerieninselTag>) {
         this._tage = value;
+    }
+
+    public get tageMorgenmodul(): Array<TSBelegungFerieninselTag> {
+        return this._tageMorgenmodul;
+    }
+
+    public set tageMorgenmodul(value: Array<TSBelegungFerieninselTag>) {
+        this._tageMorgenmodul = value;
     }
 
     public get notfallAngaben(): string {

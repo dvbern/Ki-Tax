@@ -20,6 +20,7 @@ import {ErrorService} from '../../../../../app/core/errors/service/ErrorService'
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -237,7 +238,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        this.resetKiBonAnfrageFinSit();
         if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
@@ -253,6 +253,15 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         } else {
             this.model.initFinSit();
         }
+
+        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerdatenZugriff = undefined;
+        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerdatenZugriff = undefined;
+        this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        this.getModel().finanzielleSituationJA.steuerdatenZugriff = undefined;
+        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+        // first, reset local properties before sending request
+        this.resetKiBonAnfrageFinSit();
     }
 
     /**
@@ -350,7 +359,12 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
 
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung;
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
+        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && this.model.gemeinsameSteuererklaerung
+            && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {
@@ -358,14 +372,17 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
 
+        if (!this.isFinanziellesituationRequired()) {
+            return false;
+        }
+
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
             this.model.gemeinsameSteuererklaerung &&
-            (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff) ||
-                (EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff) &&
-                    !isSteuerdatenAnfrageStatusErfolgreich(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+            (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff));
     }
 
     public steuerdatenzugriffClicked(): void {
+        this.resetAutomatischePruefungSteuerdaten();
         if (this.getModel().finanzielleSituationJA.steuerdatenZugriff) {
             return;
         }

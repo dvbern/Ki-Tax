@@ -16,9 +16,14 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {KiBonMandant} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {MandantService} from '../../shared/services/mandant.service';
+import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboarding-help-dialog.component';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
 
 @Component({
@@ -36,14 +41,19 @@ export class OnboardingComponent implements OnInit {
     private readonly description4: string = 'ONBOARDING_MAIN_DESC4';
     public isDummyMode$: Observable<boolean>;
     public currentLangDe$: BehaviorSubject<boolean>;
+    public isMultimandantEnabled$: Observable<boolean>;
+    public isLuzern$: Observable<boolean>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
         private readonly translate: TranslateService,
+        private readonly dialog: MatDialog,
+        private readonly mandantService: MandantService,
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
-
+        this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());
+        this.isLuzern$ = this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU));
     }
 
     public ngOnInit(): void {
@@ -66,5 +76,11 @@ export class OnboardingComponent implements OnInit {
 
     public isGerman$(): Observable<boolean> {
         return this.currentLangDe$.asObservable();
+    }
+
+    public openHelp($event: MouseEvent): void {
+        $event.preventDefault();
+        const dialogConfig = new MatDialogConfig();
+        this.dialog.open(OnboardingHelpDialogComponent, dialogConfig);
     }
 }

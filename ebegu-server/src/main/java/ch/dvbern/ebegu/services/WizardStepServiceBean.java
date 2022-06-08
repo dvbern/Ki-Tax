@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
@@ -107,6 +108,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private GesuchService gesuchService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	@Nonnull
@@ -174,6 +177,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	@Override
 	public List<WizardStep> createWizardStepList(Gesuch gesuch) {
 		List<WizardStep> wizardStepList = new ArrayList<>();
+
+		Boolean abwesenheitActiv = einstellungService.findEinstellung(EinstellungKey.ABWESENHEIT_AKTIV,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode()).getValueAsBoolean();
+
 		if (AntragTyp.MUTATION == gesuch.getTyp()) {
 			if (gesuch.getDossier().getFall().getSozialdienstFall() != null) {
 				wizardStepList.add(saveWizardStep(createWizardStepObject(
@@ -212,11 +220,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				WizardStepName.BETREUUNG,
 				WizardStepStatus.OK,
 				true)));
-			wizardStepList.add(saveWizardStep(createWizardStepObject(
-				gesuch,
-				WizardStepName.ABWESENHEIT,
-				WizardStepStatus.OK,
-				true)));
+			if (abwesenheitActiv.equals(Boolean.TRUE)) {
+				wizardStepList.add(saveWizardStep(createWizardStepObject(
+					gesuch,
+					WizardStepName.ABWESENHEIT,
+					WizardStepStatus.OK,
+					true)));
+			}
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
 				WizardStepName.ERWERBSPENSUM,
@@ -289,11 +299,13 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				WizardStepName.BETREUUNG,
 				WizardStepStatus.UNBESUCHT,
 				false)));
-			wizardStepList.add(saveWizardStep(createWizardStepObject(
-				gesuch,
-				WizardStepName.ABWESENHEIT,
-				WizardStepStatus.UNBESUCHT,
-				false)));
+			if (abwesenheitActiv.equals(Boolean.TRUE)) {
+				wizardStepList.add(saveWizardStep(createWizardStepObject(
+					gesuch,
+					WizardStepName.ABWESENHEIT,
+					WizardStepStatus.UNBESUCHT,
+					false)));
+			}
 			wizardStepList.add(saveWizardStep(createWizardStepObject(
 				gesuch,
 				WizardStepName.ERWERBSPENSUM,
@@ -534,7 +546,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 	/**
 	 * Wenn der Status von Gesuchsteller auf OK gesetzt wird, koennen wir davon ausgehen, dass die benoetigten GS
-	 * eingetragen wurden. Deswegen kann man die steps fuer die FINANZIELLE_SITUATION_X und EINKOMMENSVERSCHLECHTERUNG aktivieren
+	 * eingetragen wurden. Deswegen kann man die steps fuer die FINANZIELLE_SITUATION_X und EINKOMMENSVERSCHLECHTERUNG
+	 * aktivieren
 	 */
 	private void updateAllStatusForGesuchsteller(List<WizardStep> wizardSteps) {
 		for (WizardStep wizardStep : wizardSteps) {
@@ -828,9 +841,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 	private List<KindContainer> findAllKinderFromGesuch(WizardStep wizardStep) {
 		return kindService.findAllKinderFromGesuch(wizardStep.getGesuch().getId())
-				.stream()
-				.filter(kindContainer -> kindContainer.getKindJA().getFamilienErgaenzendeBetreuung())
-				.collect(Collectors.toList());
+			.stream()
+			.filter(kindContainer -> kindContainer.getKindJA().getFamilienErgaenzendeBetreuung())
+			.collect(Collectors.toList());
 	}
 
 	private boolean hasNichtGepruefteKinder(List<KindContainer> kinderFromGesuch) {
@@ -844,7 +857,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		Familiensituation oldEntity,
 		Familiensituation newEntity) {
 		for (WizardStep wizardStep : wizardSteps) {
-			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()) { // vermeide, dass der Status eines unbesuchten Steps geaendert wird
+			if (WizardStepStatus.UNBESUCHT
+				!= wizardStep.getWizardStepStatus()) { // vermeide, dass der Status eines unbesuchten Steps geaendert
+				// wird
 				updateStatusForFamiliensituation(wizardStep, oldEntity, newEntity);
 			}
 			// Es gibt ein Spezialfall: Falls eine BG Betreuung hinzugefügt wurde, wird die Frage
@@ -876,7 +891,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep) {
-		if(hasNichtGepruefteKinder(findAllKinderFromGesuch(wizardStep))) {
+		if (hasNichtGepruefteKinder(findAllKinderFromGesuch(wizardStep))) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
@@ -884,7 +899,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private void updateStatusOnlyOneGS(WizardStep wizardStep) {
 		if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 			updateStepGesuchstellerOnlyOneGS(wizardStep);
-		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName().isEKVWizardStepName()) {
+		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName()
+			.isEKVWizardStepName()) {
 			updateStepFinSitAndEKVOnlyOneGS(wizardStep);
 		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 			updateStepErwerbspensumOnlyOneGS(wizardStep);
@@ -892,7 +908,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void updateStepErwerbspensumOnlyOneGS(WizardStep wizardStep) {
-		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
+		if (erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch())) {
 			if (isErwerbespensumContainerEmpty(wizardStep.getGesuch().getGesuchsteller1())) {
 				if (wizardStep.getWizardStepStatus() != WizardStepStatus.NOK) {
 					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden
@@ -918,22 +934,24 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void updateStatusFromOneGSToTwoGS(WizardStep wizardStep) {
-		//Falls bereits ein GS2 exisitiert müssen die Wizardsteps beim Wechsel von ein GS auf zwei GS nicht updated werden
+		//Falls bereits ein GS2 exisitiert müssen die Wizardsteps beim Wechsel von ein GS auf zwei GS nicht updated
+		// werden
 		if (wizardStep.getGesuch().getGesuchsteller2() != null) {
 			return;
 		}
 
 		if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 			updateStepGesuchstellerFromOneGSTOTwoGS(wizardStep);
-		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName().isEKVWizardStepName()) {
+		} else if (wizardStep.getWizardStepName().isFinSitWizardStepName() || wizardStep.getWizardStepName()
+			.isEKVWizardStepName()) {
 			updateStepFinSitAndEKVFromOneGSToTwoGS(wizardStep);
-		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()){
+		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 			updateStepErwerbspensumFromOneGSToTwoGS(wizardStep);
 		}
 	}
 
 	private boolean isErwerbespensumContainerEmpty(GesuchstellerContainer gesuchsteller) {
-		if(gesuchsteller == null)  {
+		if (gesuchsteller == null) {
 			return true;
 		}
 
@@ -941,7 +959,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void updateStepErwerbspensumFromOneGSToTwoGS(WizardStep wizardStep) {
-		if(erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()) &&
+		if (erwerbspensumService.isErwerbspensumRequired(wizardStep.getGesuch()) &&
 			isErwerbspensumRequiredForGS2(wizardStep.getGesuch())) {
 			// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 			setVerguegbarAndNOK(wizardStep);
@@ -949,7 +967,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private void updateStepFinSitAndEKVFromOneGSToTwoGS(WizardStep wizardStep) {
-		if(EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())) {
+		if (EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())) {
 			setVerguegbarAndNOK(wizardStep);
 		}
 	}
@@ -1004,7 +1022,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	/**
-	 * Updates the Status of the Steps FINANZIELLE_SITUATION_X or EINKOMMENSVERSCHLECHTERUNG depending on the kind of the
+	 * Updates the Status of the Steps FINANZIELLE_SITUATION_X or EINKOMMENSVERSCHLECHTERUNG depending on the kind of
+	 * the
 	 * betreuungen.
 	 * This should be called after removing or adding a Betreuung. It is also called after a change in the famsit
 	 */
@@ -1014,11 +1033,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!isEkvOrFinSitStep) {
 			return;
 		}
-		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG || wizardStep.getWizardStepStatus() == WizardStepStatus.UNBESUCHT) {
+		if (wizardStep.getWizardStepStatus() == WizardStepStatus.IN_BEARBEITUNG
+			|| wizardStep.getWizardStepStatus() == WizardStepStatus.UNBESUCHT) {
 			return;
 		}
 		boolean finSitIntroducedAndComplete = EbeguUtil.isFinanzielleSituationIntroducedAndComplete(
-			wizardStep.getGesuch(),	wizardStep.getWizardStepName());
+			wizardStep.getGesuch(), wizardStep.getWizardStepName());
 		if (finSitIntroducedAndComplete) {
 			return;
 		}
@@ -1065,7 +1085,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		wizardStep.setVerfuegbar(available);
 	}
 
-
 	/**
 	 * Prüft, ob ein Erwerbspensum für den GS2 nötig ist.
 	 * Falls ein GS2 vorhanden ist, ist ein Erwerbspesnum grundsätzlich nötig.
@@ -1073,10 +1092,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Einzige Ausnahme bietet folgender Spezialfall innerhalb einer FKJV Periode:
 	 * Die elterliche Obhut findet nicht in zwei Haushalten statt (Familiensituation#geteilteObhut)
 	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
-	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
+	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1
+	 * relevant
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
-		if(isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
+		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
 			return false;
 		}
 
@@ -1085,18 +1105,17 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	}
 
 	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
-		if(gesuch.getFamiliensituationContainer() == null ||
+		if (gesuch.getFamiliensituationContainer() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
 			return false;
 		}
 
-		var unterhaltsvereinbarung = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
-		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA
+		var unterhaltsvereinbarung =
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
 			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
-
-
 
 	/**
 	 * Der Step mit dem uebergebenen StepName bekommt den Status OK. Diese Methode wird immer aufgerufen, um den
@@ -1153,7 +1172,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		default:
-			throw new EbeguRuntimeException("getFinSitWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
+			throw new EbeguRuntimeException(
+				"getFinSitWizardStepNameForGesuch",
+				"no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}
 	}
 
@@ -1169,7 +1190,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case SOLOTHURN:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
 		default:
-			throw new EbeguRuntimeException("getEKVWizardStepNameForGesuch", "no WizardStepName found for typ " + gesuch.getFinSitTyp());
+			throw new EbeguRuntimeException(
+				"getEKVWizardStepNameForGesuch",
+				"no WizardStepName found for typ " + gesuch.getFinSitTyp());
 		}
 	}
 }

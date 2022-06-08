@@ -16,6 +16,7 @@
 import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -25,8 +26,11 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFall} from '../../../models/TSFall';
+import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuch} from '../../../models/TSGesuch';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -49,6 +53,7 @@ describe('freigabeView', () => {
     let dossier: TSDossier;
     let fall: TSFall;
     let $translate: TranslateService;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -70,6 +75,7 @@ describe('freigabeView', () => {
         authServiceRS = $injector.get('AuthServiceRS');
         $timeout = $injector.get('$timeout');
         $translate = $injector.get('$translate');
+        einstellungRS = $injector.get('EinstellungRS');
 
         spyOn(applicationPropertyRS, 'isDevMode').and.returnValue($q.when(false));
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
@@ -81,9 +87,23 @@ describe('freigabeView', () => {
         dossier.gemeinde = TestDataUtil.createGemeindeParis();
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getFall').and.returnValue(fall);
+        spyOn(gesuchModelManager, 'getGemeinde').and.returnValue(new TSGemeinde());
+        spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
+        spyOn(einstellungRS, 'findEinstellung')
+            .and
+            .returnValue(Promise.resolve(new TSEinstellung()));
 
-        controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout, $translate);
+        controller = new FreigabeViewController(gesuchModelManager,
+            $injector.get('BerechnungsManager'),
+            wizardStepManager,
+            dialog,
+            downloadRS,
+            $scope,
+            applicationPropertyRS,
+            authServiceRS,
+            $timeout,
+            $translate,
+            einstellungRS);
 
         controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);

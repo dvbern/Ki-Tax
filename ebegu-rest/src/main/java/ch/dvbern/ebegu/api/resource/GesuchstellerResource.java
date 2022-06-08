@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -194,9 +196,9 @@ public class GesuchstellerResource {
 			mandant = mandantService.findMandantByCookie(mandantCookie);
 		}
 
-		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+		String ssoLoginInitURL = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
 
-		mailService.sendInitGSZPVNr(url, gesuchstellerContainer, email, korrespondenzSprache);
+		mailService.sendInitGSZPVNr(ssoLoginInitURL, gesuchstellerContainer, email, korrespondenzSprache);
 
 		return converter.gesuchstellerContainerToJAX(gesuchstellerContainer);
 	}

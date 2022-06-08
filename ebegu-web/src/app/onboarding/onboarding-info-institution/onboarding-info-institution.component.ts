@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.service';
@@ -54,7 +54,8 @@ export class OnboardingInfoInstitutionComponent implements OnInit {
         if (!form.valid) {
             return;
         }
-        const mailto = 'mailto:support@kibon.ch?subject=';
+        const supportMail = this.translate.instant('SUPPORT_MAIL');
+        const mailto = `mailto:${supportMail}?subject=`;
         const emailBody = '&body=';
         const zeilenUmbruch = '%0D%0A%0D%0A';
         const body: string = this.translate.instant(this.emailBody, {institution: this.institutionName});

@@ -25,7 +25,8 @@
 			 name="Kanton Bern"
 			 mandant_identifier="BERN"
 			 angebotts="false"
-			 angebotfi="false"/>
+			 angebotfi="false"
+			 activated="true"/>
 	<application_property id="ZyGYNw4STZeyRWSbkNnSpQ==" timestamp_erstellt="2016-03-04 16:14:28.134"
 						  timestamp_mutiert="2016-03-04 16:14:28.134" user_erstellt="me" user_mutiert="me"
 						  version="2" name="EVALUATOR_DEBUG_ENABLED" value="entry2" mandant_id="43NuuG7vQO+eUparSNjyIA=="/>

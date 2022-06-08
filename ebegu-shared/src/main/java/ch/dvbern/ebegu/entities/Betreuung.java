@@ -408,6 +408,7 @@ public class Betreuung extends AbstractPlatz {
 			target.setBetreuungMutiert(null);
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
+			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -497,6 +498,7 @@ public class Betreuung extends AbstractPlatz {
 				abweichung.addNebenmahlzeiten(pensum.getMonatlicheNebenmahlzeiten().multiply(anteil));
 				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
 				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
+				abweichung.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 			}
 		}
 		return abweichung;

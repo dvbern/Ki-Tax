@@ -45,6 +45,7 @@
                                       [basisJahr]="this.gesuchModelManager.getBasisjahrToWorkWith()"
                                       [basisJahrPlus]="this.gesuchModelManager.getBasisJahrPlusNumber()"
                                       [isEKV]="true"
+                                      [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
                 ></dv-selbstdeklaration>
                 <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
                                  [dvSubStep]="3"></dv-navigation-x>

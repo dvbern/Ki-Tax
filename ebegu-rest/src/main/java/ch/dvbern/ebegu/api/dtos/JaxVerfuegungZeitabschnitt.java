@@ -96,6 +96,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private BigDecimal verguenstigung;
 
+	private BigDecimal verguenstigungProZeiteinheit;
+
 	private BigDecimal minimalerElternbeitrag;
 
 	private BigDecimal minimalerElternbeitragGekuerzt;
@@ -431,5 +433,13 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	public void setVerfuegungZeitabschnittBemerkungList(
 		@Nullable List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList) {
 		this.verfuegungZeitabschnittBemerkungList = verfuegungZeitabschnittBemerkungList;
+	}
+
+	public BigDecimal getVerguenstigungProZeiteinheit() {
+		return verguenstigungProZeiteinheit;
+	}
+
+	public void setVerguenstigungProZeiteinheit(BigDecimal verguenstigungProZeiteinheit) {
+		this.verguenstigungProZeiteinheit = verguenstigungProZeiteinheit;
 	}
 }

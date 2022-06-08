@@ -29,6 +29,8 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -68,56 +70,6 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status
 	) {
 		zeitabschnitt.setZahlungsstatus(status);
-	}
-
-	@Nonnull
-	@Override
-	public Zahlung findZahlungForEmpfaenger(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
-	) {
-		Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());
-		InstitutionStammdaten institution = zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten();
-		if (zahlungProInstitution.containsKey(institution.getId())) {
-			return zahlungProInstitution.get(institution.getId());
-		}
-		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
-		Zahlung zahlung = createZahlung(institution, zahlungsauftrag);
-		zahlungProInstitution.put(institution.getId(), zahlung);
-		return zahlung;
-	}
-
-	@Nonnull
-	private Zahlung createZahlung(
-		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull Zahlungsauftrag zahlungsauftrag
-	) {
-		Zahlung zahlung = new Zahlung();
-		zahlung.setStatus(ZahlungStatus.ENTWURF);
-		final InstitutionStammdatenBetreuungsgutscheine stammdatenBG =
-			institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine();
-		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
-		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
-		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
-			throw new EbeguRuntimeException(KibonLogLevel.INFO,
-				"createZahlung",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
-				institutionStammdaten.getInstitution().getName());
-		}
-
-		Objects.requireNonNull(auszahlungsdaten);
-		zahlung.setAuszahlungsdaten(auszahlungsdaten);
-		zahlung.setEmpfaengerId(institutionStammdaten.getInstitution().getId());
-		zahlung.setEmpfaengerName(institutionStammdaten.getInstitution().getName());
-		zahlung.setBetreuungsangebotTyp(institutionStammdaten.getBetreuungsangebotTyp());
-		if (institutionStammdaten.getInstitution().getTraegerschaft() != null) {
-			zahlung.setTraegerschaftName(institutionStammdaten.getInstitution().getTraegerschaft().getName());
-		}
-		zahlung.setZahlungsauftrag(zahlungsauftrag);
-		zahlungsauftrag.getZahlungen().add(zahlung);
-		return zahlung;
 	}
 
 	@Nonnull

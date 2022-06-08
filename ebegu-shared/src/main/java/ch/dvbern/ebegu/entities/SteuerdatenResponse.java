@@ -91,6 +91,14 @@ public class SteuerdatenResponse extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
+	private Boolean unregelmaessigkeitInDerVeranlagung;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean veraendertePartnerschaft;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal erwerbseinkommenUnselbstaendigkeitDossiertraeger;
 
 	@Nullable
@@ -522,6 +530,24 @@ public class SteuerdatenResponse extends AbstractEntity {
 		this.geburtsdatumPartner = geburtsdatumPartner;
 	}
 
+	@Nullable
+	public Boolean getUnregelmaessigkeitInDerVeranlagung() {
+		return unregelmaessigkeitInDerVeranlagung;
+	}
+
+	public void setUnregelmaessigkeitInDerVeranlagung(@Nullable Boolean unregelmaessigkeitInDerVeranlagung) {
+		this.unregelmaessigkeitInDerVeranlagung = unregelmaessigkeitInDerVeranlagung;
+	}
+
+	@Nullable
+	public Boolean getVeraendertePartnerschaft() {
+		return veraendertePartnerschaft;
+	}
+
+	public void setVeraendertePartnerschaft(@Nullable Boolean veraendertePartnerschaft) {
+		this.veraendertePartnerschaft = veraendertePartnerschaft;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -548,6 +574,8 @@ public class SteuerdatenResponse extends AbstractEntity {
 			Objects.equals(this.synchroneAntwort, o.synchroneAntwort) &&
 			this.veranlagungsstand == o.veranlagungsstand &&
 			Objects.equals(this.unterjaehrigerFall, o.unterjaehrigerFall) &&
+			Objects.equals(this.unregelmaessigkeitInDerVeranlagung, o.unregelmaessigkeitInDerVeranlagung) &&
+			Objects.equals(this.veraendertePartnerschaft, o.veraendertePartnerschaft) &&
 			isSame(this.erwerbseinkommenUnselbstaendigkeitDossiertraeger, o.erwerbseinkommenUnselbstaendigkeitDossiertraeger) &&
 			isSame(this.erwerbseinkommenUnselbstaendigkeitPartner, o.erwerbseinkommenUnselbstaendigkeitPartner) &&
 			isSame(this.steuerpflichtigesErsatzeinkommenDossiertraeger, o.steuerpflichtigesErsatzeinkommenDossiertraeger) &&

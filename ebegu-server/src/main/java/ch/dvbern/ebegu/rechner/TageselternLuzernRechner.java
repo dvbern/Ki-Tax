@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
@@ -33,6 +34,7 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.ONE;
 
 	private boolean isBaby = false;
+	private BigDecimal stuendlicherVorllkostenTarif;
 
 	@Override
 	public void calculate(
@@ -40,7 +42,39 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
 		isBaby = verfuegungZeitabschnitt.getBgCalculationInputAsiv().isBabyTarif();
+		stuendlicherVorllkostenTarif = verfuegungZeitabschnitt.getBgCalculationInputAsiv().getStuendlicheVollkosten();
 		super.calculate(verfuegungZeitabschnitt, parameterDTO);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
+		return EXACT.multiply(vollkostenGekuerzt, this.verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
+		return EXACT.multiply(gutschein, this.verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt() {
+		BigDecimal gutscheinProStundeAufgrundEinkommen = calculateBGProZeiteinheitByEinkommen();
+		return calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(gutscheinProStundeAufgrundEinkommen);
+	}
+
+	@Override
+	protected BigDecimal calculateMinimalerSelbstbehalt() {
+		return getMinimalTarif();
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten() {
+		return this.stuendlicherVorllkostenTarif;
+	}
+
+	@Override
+	protected BigDecimal calculateZuschlag() {
+		return calculateZuschlagProZeiteinheit();
 	}
 
 	@Override
@@ -71,8 +105,9 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateBGProTagByEinkommen() {
-		return calculateBetreuungsgutscheinProTagAuftrungEinkommenGemaessFormel();
+	protected BigDecimal calculateBGProZeiteinheitByEinkommen() {
+		BigDecimal bgProStunde = calculateBetreuungsgutscheinProZeiteinheitAufgrundEinkommenGemaessFormel();
+		return MathUtil.maximum(bgProStunde, getMaximalWertBGProTagAufgrundEinkommen());
 	}
 
 	@Override

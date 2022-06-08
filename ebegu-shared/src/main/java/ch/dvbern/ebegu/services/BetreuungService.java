@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -138,6 +139,16 @@ public interface BetreuungService {
 	 * @return Anmeldung mit der angegebenen ID (z.B. 18.000116.1.2) die AKTUELLE oder NULL ist.
 	 */
 	List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer);
+
+	/**
+	 * Findet die entsprechende Betreuung in der uebergebenen Gesuchsperiode
+	 */
+	@Nonnull
+	Optional<Betreuung> findSameBetreuungInDifferentGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Dossier dossier,
+		int betreuungNummer,
+		int kindNummer);
 
 	/**
 	 * Wenn onlyGueltig = true:

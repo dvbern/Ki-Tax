@@ -53,17 +53,20 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
+	private final int paramMinDauerKonkubinat;
 
 	protected ErwerbspensumCalcRule(
 		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
+		int paramMinDauerKonkubinat,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, ruleValidity, validityPeriod, locale);
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
+		this.paramMinDauerKonkubinat = paramMinDauerKonkubinat;
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			return false;
 		}
 
-		return isErwerbspensumRelevantForExistingGS2(familiensituation);
+		return isErwerbspensumRelevantForExistingGS2(familiensituation, inputData.getParent().getGueltigkeit());
 	}
 
 	private int getMinimumErwerbspensum(@Nonnull AbstractPlatz betreuung) {
@@ -221,8 +224,19 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1 relevant
 	 */
-	private boolean isErwerbspensumRelevantForExistingGS2(@Nonnull Familiensituation familiensituation) {
-		return familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN;
+	private boolean isErwerbspensumRelevantForExistingGS2(@Nonnull Familiensituation familiensituation, DateRange zeitabschnitt) {
+		if (familiensituation.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
+			return true;
+		}
+
+		//Wenn UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG und kein KonkubinatsDatum ist der Antragsteller immer
+		//Alleinerziehend und das EWP von GS2 ist nicht relevant
+		if (familiensituation.getStartKonkubinat() == null) {
+			return false;
+		}
+
+		LocalDate dateKonkubinatMinDauerReached = familiensituation.getStartKonkubinat().plusYears(paramMinDauerKonkubinat);
+		return dateKonkubinatMinDauerReached.isBefore(zeitabschnitt.getGueltigAb());
 	}
 
 	@Nonnull

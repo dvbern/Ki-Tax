@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -56,6 +55,7 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -87,6 +87,7 @@ public class MailTemplateConfiguration {
 	public static final String FTL_FILE_EXTENSION = ".ftl";
 	public static final String UNGELESENDE_MITTEILUNG = "ungelesendeMitteilung";
 	public static final String OFFENE_PENDENZEN = "offenePendenzen";
+	public static final String HOSTNAME = "hostname";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -111,11 +112,12 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
 		return processTemplateBetreuung(
 			MailTemplate.InfoBetreuungAbgelehnt,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()),
 			sprache);
 	}
 
@@ -125,12 +127,11 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
-
-		return processTemplateGesuch(
+		return processTemplateGesuchWithEmpfaengerParam(
 			MailTemplate.InfoBetreuungenBestaetigt,
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -145,7 +146,7 @@ public class MailTemplateConfiguration {
 			MailTemplate.InfoSchulamtAnmeldungTagesschuleUebernommen,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -160,7 +161,7 @@ public class MailTemplateConfiguration {
 			MailTemplate.InfoSchulamtAnmeldungFerieninselUebernommen,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -174,7 +175,7 @@ public class MailTemplateConfiguration {
 			MailTemplate.InfoSchulamtAnmeldungAbgelehnt,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -189,7 +190,7 @@ public class MailTemplateConfiguration {
 		@Nonnull LocalDate birthdayKind,
 		@Nonnull Sprache sprache) {
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, fall.getMandant().getMandantIdentifier());
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
 		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale(),
@@ -215,7 +216,7 @@ public class MailTemplateConfiguration {
 		@Nonnull LocalDate birthdayKind,
 		@Nonnull Sprache sprache) {
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, fall.getMandant().getMandantIdentifier());
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
 
 		return processTemplateBetreuungVerfuegt(
@@ -234,7 +235,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache,
 		@Nonnull Mandant mandant
 	) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("downloadurl", downloadurl);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale(), mandant));
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
@@ -245,7 +246,8 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull List<Sprache> sprachen
 	) {
-		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail), sprachen);
+		Mandant mandant = mitteilung.getFall().getMandant();
+		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()), sprachen);
 	}
 
 	public String getInfoVerfuegtGesuch(
@@ -255,11 +257,11 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
-		return processTemplateGesuch(
+		return processTemplateGesuchWithEmpfaengerParam(
 			MailTemplate.InfoVerfuegtGesuch,
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -269,11 +271,11 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache) {
 
-		return processTemplateGesuch(
+		return processTemplateGesuchWithEmpfaengerParam(
 			MailTemplate.InfoVerfuegtMutation,
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -283,11 +285,11 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
-		return processTemplateGesuch(
+		return processTemplateGesuchWithEmpfaengerParam(
 			MailTemplate.InfoMahnung,
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -298,7 +300,7 @@ public class MailTemplateConfiguration {
 		int anzahlTage,
 		@Nonnull Sprache sprache) {
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(TS_ONLY_ANTRAG, gesuch.hasOnlyBetreuungenOfSchulamt());
 
@@ -319,7 +321,7 @@ public class MailTemplateConfiguration {
 
 		LocalDate datumLoeschung = LocalDate.now().plusDays(anzahlTage).minusDays(1);
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
 
 		GemeindeStammdaten stammdaten = gemeindeService
 			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
@@ -343,11 +345,11 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache) {
 
-		return processTemplateGesuch(
+		return processTemplateGesuchWithEmpfaengerParam(
 			MailTemplate.InfoGesuchGeloescht,
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
@@ -359,7 +361,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
 		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
@@ -380,7 +382,7 @@ public class MailTemplateConfiguration {
 
 		Benutzer eingeladener = einladung.getEingeladener();
 
-		Map<Object, Object> paramMap = initParamMap();
+		Map<Object, Object> paramMap = initParamMap(eingeladener.getMandant().getMandantIdentifier());
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
 		paramMap.put("acceptLink", benutzerService.createInvitationLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
@@ -402,7 +404,8 @@ public class MailTemplateConfiguration {
 		boolean offenePendenzen,
 		boolean ungelesendeMitteilung
 	) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
@@ -416,10 +419,10 @@ public class MailTemplateConfiguration {
 		@Nonnull GemeindeAngebotTyp angebotName,
 		@Nonnull List<Sprache> sprachen
 	) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
-		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"),
-				requireNonNull(gemeinde.getMandant())));
-		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), gemeinde.getMandant()));
+		Mandant mandant = gemeinde.getMandant();
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
+		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"), mandant));
+		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), mandant));
 		paramMap.put("gemeinde", gemeinde);
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
 	}
@@ -429,7 +432,7 @@ public class MailTemplateConfiguration {
 		@Nonnull String mailaddressTS,
 		@Nonnull List<Sprache> sprachen) {
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
 
@@ -473,6 +476,17 @@ public class MailTemplateConfiguration {
 			.orElse("");
 	}
 
+	private String processTemplateGesuchWithEmpfaengerParam(
+		@Nonnull MailTemplate nameOfTemplate,
+		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
+		return processTemplateGesuch(nameOfTemplate, gesuch, gesuchsteller, paramMap, sprache);
+	}
+
 	private String processTemplateGesuch(
 		@Nonnull MailTemplate nameOfTemplate,
 		@Nonnull Gesuch gesuch,
@@ -514,10 +528,11 @@ public class MailTemplateConfiguration {
 		@Nonnull MailTemplate nameOfTemplate,
 		@Nonnull AbstractAnmeldung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
-
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
@@ -645,18 +660,24 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	private Map<Object, Object> initParamMap() {
-		Map<Object, Object> paramMap = new HashMap<>();
-		paramMap.put("configuration", ebeguConfiguration);
-		paramMap.put("templateConfiguration", this);
-		paramMap.put("base64Header", new UTF8Base64MailHeaderDirective());
-
+	private Map<Object, Object> initParamMap(MandantIdentifier mandantIdentifier) {
+		Map<Object, Object> paramMap = initParamMapWithoutHostname();
+		paramMap.put(HOSTNAME, this.ebeguConfiguration.getHostname(mandantIdentifier));
 		return paramMap;
 	}
 
 	@Nonnull
-	private Map<Object, Object> paramsWithEmpfaenger(@Nonnull String empfaenger) {
-		Map<Object, Object> paramMap = initParamMap();
+	private  Map<Object, Object> initParamMapWithoutHostname() {
+		Map<Object, Object> paramMap = new HashMap<>();
+		paramMap.put("configuration", ebeguConfiguration);
+		paramMap.put("templateConfiguration", this);
+		paramMap.put("base64Header", new UTF8Base64MailHeaderDirective());
+		return paramMap;
+	}
+
+	@Nonnull
+	private Map<Object, Object> paramsWithEmpfaenger(@Nonnull String empfaenger, MandantIdentifier mandantIdentifier) {
+		Map<Object, Object> paramMap = initParamMap(mandantIdentifier);
 		paramMap.put(EMPFAENGER_MAIL, empfaenger);
 
 		return paramMap;
@@ -673,17 +694,18 @@ public class MailTemplateConfiguration {
 			MailTemplate.InfoSchulamtAnmeldungTagesschuleAkzeptiert,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
 	public String getNotrechtGenerischeMitteilung(
 		String empfaengerMail,
 		String betreff,
-		String inhalt
+		String inhalt,
+		MandantIdentifier mandantIdentifier
 	) {
 
-		Map<Object, Object> paramMap = initParamMap();
+		Map<Object, Object> paramMap = initParamMap(mandantIdentifier);
 
 		paramMap.put("empfaenger", empfaengerMail);
 		paramMap.put("betreff", betreff);
@@ -698,7 +720,8 @@ public class MailTemplateConfiguration {
 		@Nonnull String betragRueckerstattungNichtAngeboten,
 		@Nonnull String betragKostenuebernahmeNichtAnwesend
 	) {
-		Map<Object, Object> paramMap = initParamMap();
+		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(BETRAG1, betragRueckerstattungNichtAngeboten);
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
@@ -711,7 +734,8 @@ public class MailTemplateConfiguration {
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		@Nonnull String empfaengerMail
 	) {
-		Map<Object, Object> paramMap = initParamMap();
+		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put("rueckforderungFormular", rueckforderungFormular);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put("empfaenger", empfaengerMail);
@@ -720,7 +744,7 @@ public class MailTemplateConfiguration {
 	}
 
 	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, lastenausgleich.getMandant().getMandantIdentifier());
 		paramMap.put("jahr", lastenausgleich.getJahr().toString());
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichDurch, sprachen), paramMap);
 	}
@@ -735,12 +759,13 @@ public class MailTemplateConfiguration {
 			MailTemplate.InfoSchulamtAnmeldungStorniert,
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail),
+			empfaengerMail,
 			sprache);
 	}
 
 	public String getInfoGemeindeLastenausgleichTagesschuleZurueckAnGemeinde(LastenausgleichTagesschuleAngabenGemeindeContainer container, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Mandant mandant = container.getGemeinde().getMandant();
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("id", container.getId());
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
 	}
@@ -750,9 +775,10 @@ public class MailTemplateConfiguration {
 			List<Sprache> sprachen,
 			@Nonnull String empfaengerMail,
 			String trunctatedHostname) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		Map<Object, Object> paramMap = initParamMapWithoutHostname();
+		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put("link", url);
-		paramMap.put("hostname", trunctatedHostname);
+		paramMap.put(HOSTNAME, trunctatedHostname);
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.GesuchstellerInitZPV, sprachen), paramMap);
 	}
 }

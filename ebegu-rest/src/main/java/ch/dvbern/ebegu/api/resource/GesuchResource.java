@@ -1080,16 +1080,6 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) throws EbeguException {
-		// Achtung dieser Resource ist nur fuer Tests geeignet, soll niemals Produktiv verwendet werden!!!
-		if(!configuration.getIsDevmode()) {
-			String errorMessage = "Dieser Funktion ist nicht erlaubt im Produktive Umgebung";
-			LOG.warn(errorMessage);
-			throw new EbeguRuntimeException(
-				"getSteuerdaten",
-				errorMessage,
-				errorMessage,
-				kibonAnfrage.getAntragId());
-		}
 
 		if(!configuration.getEbeguKibonAnfrageTestGuiEnabled()) {
 			String errorMessage = "Steuerschnittstelle Test GUI is disabled";

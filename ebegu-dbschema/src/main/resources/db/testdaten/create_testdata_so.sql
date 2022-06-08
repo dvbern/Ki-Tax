@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
+
 SET @mandant_id_bern = UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', ''));
 SET @gesuchperiode_20_id = UNHEX(REPLACE('6dc45fb0-5378-11ec-98e8-f4390979fa3e', '-', ''));
 SET @gesuchsperiode_bern_id = UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', ''));
@@ -28,34 +28,6 @@ SET @tfo_id = UNHEX(REPLACE('8284b8e2-537e-11ec-98e8-f4390979fa3e', '-', ''));
 # APPLICATION PROPERTIES
 UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = @mandant_id_solothurn;
-
-# GESUCHSPERIODE 20/21
-INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-							vorgaenger_id, gueltig_ab, gueltig_bis, status,
-							datum_aktiviert, mandant_id)
-VALUES (@gesuchperiode_20_id, '2018-01-01 00:00:00', '2018-01-01 00:00:00',
-		'flyway', 'flyway', 0, NULL, '2020-08-01', '2021-07-31', 'ENTWURF', NULL, @mandant_id_solothurn);
-
-# Default system einstellungen for lu GS
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, 0,
-	einstellung_key, value, NULL, @gesuchperiode_20_id, NULL
-FROM einstellung
-WHERE mandant_id IS NULL AND gesuchsperiode_id = @gesuchsperiode_bern_id AND NOT EXISTS(
-		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  @gesuchperiode_20_id
-				and e1.mandant_id IS NULL AND e1.einstellung_key = einstellung.einstellung_key AND e1.gemeinde_id IS NULL
-	);
-
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, 0,
-	einstellung_key, value, NULL, @gesuchperiode_20_id, @mandant_id_solothurn
-FROM einstellung
-WHERE mandant_id = @mandant_id_bern AND gesuchsperiode_id = @gesuchsperiode_bern_id AND NOT EXISTS(
-		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  @gesuchperiode_20_id
-				and e1.mandant_id = @mandant_id_solothurn AND e1.einstellung_key = einstellung.einstellung_key
-	) AND gemeinde_id IS NULL;
 
 # noinspection SqlWithoutWhere
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_20_id;
@@ -86,18 +58,6 @@ VALUES (UNHEX(REPLACE('b5171d87-537a-11ec-98e8-f4390979fa3e', '-', '')), '2018-1
         @testgemeinde_solothurn_id, UNHEX(REPLACE('7ebfc8dc-537a-11ec-98e8-f4390979fa3e', '-', '')),
         'solothurn@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.solothurn.ch', null, 'DE', null, 'BIC', 'CH2089144969768441935',
         'Solothurn Kontoinhaber', true, true, true, true, false);
-
-INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
-VALUES (
-	UNHEX(REPLACE('09399d46-537b-11ec-98e8-f4390979fa3e', '-', '')), # id
-	'2018-01-01 00:00:00', # timestamp_erstellt
-	'2018-01-01 00:00:00', # timestamp_mutiert
-	'flyway', # user_erstellt
-	'flyway', # user_mutiert
-	0, # version
-	'FALL_NUMMER', # sequence_type
-	100, # current_value
-	@mandant_id_solothurn);
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
@@ -306,5 +266,3 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		'flyway', 'flyway', 0, NULL, 'sozialdienst-so@mailbucket.dvbern.ch', '078 898 98 98', 'http://sodialdienst-so.dvbern.ch',
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('1b1b4208-5394-11ec-98e8-f4390979fa3e', '-', '')));
-
-UPDATE (einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id) SET value = 'SOLOTHURN' WHERE einstellung_key = 'FINANZIELLE_SITUATION_TYP' AND gesuchsperiode.mandant_id = @mandant_id_solothurn;

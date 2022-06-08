@@ -53,6 +53,9 @@ public class JaxGemeindeStammdatenGesuchsperiodeFerieninsel extends JaxAbstractD
 	@Nullable
 	private List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung;
 
+	@Nullable
+	private List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegungMorgenmodul;
+
 	public Ferienname getFerienname() {
 		return ferienname;
 	}
@@ -84,6 +87,15 @@ public class JaxGemeindeStammdatenGesuchsperiodeFerieninsel extends JaxAbstractD
 
 	public void setPotenzielleFerieninselTageFuerBelegung(@Nullable List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegung) {
 		this.potenzielleFerieninselTageFuerBelegung = potenzielleFerieninselTageFuerBelegung;
+	}
+
+	@Nullable
+	public List<JaxBelegungFerieninselTag> getPotenzielleFerieninselTageFuerBelegungMorgenmodul() {
+		return potenzielleFerieninselTageFuerBelegungMorgenmodul;
+	}
+
+	public void setPotenzielleFerieninselTageFuerBelegungMorgenmodul(@Nullable List<JaxBelegungFerieninselTag> potenzielleFerieninselTageFuerBelegungMorgenmodul) {
+		this.potenzielleFerieninselTageFuerBelegungMorgenmodul = potenzielleFerieninselTageFuerBelegungMorgenmodul;
 	}
 
 	public boolean isFerienActive() {

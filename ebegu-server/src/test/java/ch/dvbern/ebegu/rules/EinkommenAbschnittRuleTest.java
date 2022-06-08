@@ -156,8 +156,8 @@ public class EinkommenAbschnittRuleTest {
 				+ ". Das massgebende Einkommen des Jahres "
 				+ formatedYear
 				+ " ist höher als CHF "
-				+ NumberFormat.getInstance(Constants.DEFAULT_LOCALE).format(ekvLimit)
-				+ ".";
+				+ NumberFormat.getInstance().format(ekvLimit)
+				+ " (Art. 57 Abs 2  und Art. 66 Abs. 1 Bst. k FKJV).";
 
 		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE);

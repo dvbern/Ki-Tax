@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="id" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
-Subject: <@base64Header>kiBon - Lastenausgleich Tagesschule</@base64Header>
+Subject: <@base64Header>kiBon - lier votre demande avec un autre BE-Login</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -12,7 +12,7 @@ Content-Type: text/html;charset=utf-8
     ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon - Lastenausgleich Tagesschule</title>
+	<title>kiBon - lier votre demande avec un autre BE-Login</title>
 
 </head>
 
@@ -20,27 +20,28 @@ Content-Type: text/html;charset=utf-8
 
 <div>
 	<p>
-		Guten Tag
+		Bonjour,
 	</p>
 	<p>
-		Sie haben die Verknüpfung ihres kiBon Antrags mit einem zweiten BE-Login beantragt. Dafür befolgen Sie bitte folgende Schritt:
+		Vous souhaitez relier votre demande kiBon à un deuxième compte BE-Login pour pouvoir récupérer les données fiscales.
+	</p>
+	<p>
+		<b>Attention:</b> assurez-vous que vous êtes déconnecté·e de BE-Login.
+	</p>
+	<p>
+		Le bouton ci-dessous vous permet de récupérer vos données fiscales:<br>
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}${link}">Connecter à BE Login et autoriser la récupération des données fiscales.</a></li>
+	</p>
+	<p>
+		Une fois connecté·e dans BE-Login, vous serez redirigé·e vers kiBon et votre demande sera reliée à votre compte BE-Login.
+	</p>
 
-
-	</p>
-	<ul>
-		<li>Stellen Sie sicher, dass sie weder bei kiBon noch beim BE-Login eingeloggt sind</li>
-		<li>Folgen Sie<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuchsteller/${id}/init-zpv">diesem Link</a></li>
-	</ul>
 	<p>
-		Nachdem Sie sich beim BE-Login eingeloggt haben, werden Sie zu kiBon zurückgeleitet, wo Ihr Antrag mit dem BE-Login verknüpft wird.
-	</p>
-
-	<p>
-		Freundliche Grüsse<br/>
-		kiBon - Team
+		Avec nos salutations les meilleures,<br/>
+		L’équipe kiBon
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

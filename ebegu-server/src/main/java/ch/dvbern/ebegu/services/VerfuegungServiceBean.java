@@ -181,9 +181,17 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		// Dokument erstellen
 		generateVerfuegungDokument(betreuungMitVerfuegungPreview);
 
-		Optional<VerfuegungVerfuegtEvent> verfuegungEvent = verfuegungEventConverter.of(persistedVerfuegung);
+		if (applicationPropertyService.isPublishSchnittstelleEventsAktiviert(persistedVerfuegung.getPlatz().extractGesuch().extractMandant())) {
+			Optional<VerfuegungVerfuegtEvent> verfuegungEvent = verfuegungEventConverter.of(persistedVerfuegung);
 
-		verfuegungEvent.ifPresent(verfuegungVerfuegtEvent -> this.event.fire(verfuegungVerfuegtEvent));
+			verfuegungEvent.ifPresent(verfuegungVerfuegtEvent -> this.event.fire(verfuegungVerfuegtEvent));
+			persistedVerfuegung.setEventPublished(true);
+		} else {
+			persistedVerfuegung.setSkipPreUpdate(true);
+			persistedVerfuegung.setEventPublished(false);
+		}
+		persistence.merge(persistedVerfuegung);
+
 		if (sendEmail) {
 			mailService.sendInfoBetreuungVerfuegt(betreuungMitVerfuegungPreview);
 		}

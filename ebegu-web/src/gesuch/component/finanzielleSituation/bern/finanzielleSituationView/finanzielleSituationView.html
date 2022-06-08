@@ -61,15 +61,17 @@
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
-                        <div class="col-xs-12" ng-if="vm.showSteuerdatenAbholenButton()">
-                            <dv-loading-button
-                                button-disabled="!vm.isGesuchsteller()"
-                                type="button"
-                                button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
-                                {{'STEUERDATEN_ABHOLEN' | translate}}
-                            </dv-loading-button>
-                            <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
-                                <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                        <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
+                            <div class="col-xs-12">
+                                <dv-loading-button
+                                        button-disabled="!vm.isGesuchsteller()"
+                                        type="button"
+                                        button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                    {{'STEUERDATEN_ABHOLEN' | translate}}
+                                </dv-loading-button>
+                                <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
+                                    <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                                </div>
                             </div>
                         </div>
                         <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
@@ -421,6 +423,7 @@
                                                        ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element"
+                                                       allow-negative="true"
                                                        required>
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
@@ -449,6 +452,7 @@
                                                         input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                         ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
                                                         ng-required="true"
+                                                        ng-click="vm.einkommenInVereinfachtemVerfarenClicked()"
                                                         true-option-label="{{ 'LABEL_JA' | translate}}"
                                                         false-option-label="{{'LABEL_NEIN' | translate}}"
                                                         aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
@@ -602,7 +606,7 @@
                 </div>
 
                 <!--Buttons-->
-                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()"
+                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()" dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()"
                                dv-sub-step="2" dv-sub-step-name="{{vm.subStepName()}}">
                 </dv-navigation>
             </form>

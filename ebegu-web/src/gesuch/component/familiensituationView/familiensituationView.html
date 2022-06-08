@@ -174,8 +174,12 @@
                     <div class="row" ng-if="vm.showBemerkungUnterhaltsvereinbarung()">
                         <div class="col-sm-12 dv-input-container-medium form-group">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" for="begruendung"
-                                       data-translate="BEGRUENDUNG"></label>
+                                 <span>
+                                     <span class="required" data-translate="UNTERHALTSVEREINBARUNG_GRUND"></span>
+                                     <dv-tooltip input-id="begruendung"
+                                                 text="vm.getTextForFamSitUnterhaltsvereinbarungGrund()"></dv-tooltip>
+                                 </span>
+
                                 <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
                                           ng-maxlength="3000"
                                           ng-minlength="5"

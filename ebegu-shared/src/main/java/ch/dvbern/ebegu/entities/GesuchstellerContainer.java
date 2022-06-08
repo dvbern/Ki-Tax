@@ -28,6 +28,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
@@ -220,6 +221,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Namen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractNachname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getNachname();
@@ -230,6 +232,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den Vornamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractVorname() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getVorname();
@@ -240,6 +243,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	/**
 	 * Gibt den FullNamen des GesuchstellerJA oder ein Leerzeichen wenn er nicht existiert
 	 */
+	@Nonnull
 	public String extractFullName() {
 		if (this.gesuchstellerJA != null) {
 			return this.gesuchstellerJA.getFullName();
@@ -417,4 +421,5 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		}
 		return getWohnadresseAm(stichtag);
 	}
+
 }

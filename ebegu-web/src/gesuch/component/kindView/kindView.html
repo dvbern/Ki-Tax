@@ -25,7 +25,7 @@
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
-            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT"></p>
+            <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="!vm.isLuzern"></p>
         </div>
     </div>
     <div class="row">
@@ -134,7 +134,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                     <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
-                                                        ng-required="vm.showKinderabzugFrage()"
+                                                        ng-required="vm.showAsivKinderabzug()"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly()"
@@ -161,7 +161,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                     <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
-                                                        ng-required="vm.showKinderabzugFrage()"
+                                                        ng-required="vm.showAsivKinderabzug()"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly()"
@@ -268,6 +268,7 @@
                                                 dv-enable-element
                                                 dv-enable-allowed-roles="vm.allowedRoles"
                                                 dv-enable-expression="!vm.isGesuchReadonly()"
+                                                ng-change="vm.einschulungTypChanged()"
                                                 ng-model="vm.getModel().einschulungTyp"
                                                 ng-options="typ | translate for typ in vm.einschulungTypValues track by typ"
                                                 ng-required="vm.getModel().familienErgaenzendeBetreuung">
@@ -278,6 +279,24 @@
                                         <dv-error-messages input-id="einschulungTyp" for="vm.form.einschulungTyp.$error">
                                         </dv-error-messages>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row" ng-if="vm.isEinschulungTypObligatorischerKindergarten()">
+                            <div class="col-xs-12 dv-input-container-question">
+                                <div class="checkbox checkbox-with-margin no-tooltip margin-bottom-4rem">
+                                    <md-checkbox ng-model="vm.getModel().keinPlatzInSchulhort"
+                                                 name="keinPlatzInSchulhort"
+                                                 id="keinPlatzInSchulhort"
+                                                 aria-label="{{'KEIN_PLATZ_IN_SCHULHORT'|translate}}"
+                                                 ng-disabled="vm.isGesuchReadonly()">
+                                        <span data-translate="KEIN_PLATZ_IN_SCHULHORT"></span>
+                                    </md-checkbox>
+                                    <dv-bisher gs="vm.model.kindGS.keinPlatzInSchulhort"
+                                               ja="vm.model.kindJA.keinPlatzInSchulhort"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 </div>
                             </div>
                         </div>
@@ -301,8 +320,6 @@
                                                    ja="vm.showFachstelle"
                                                    specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
-                                        <dv-error-messages for="vm.form.showFachstelle.$error"
-                                                           class="error"></dv-error-messages>
                                     </div>
                                 </div>
                             </div>
@@ -394,7 +411,7 @@
                                 </div>
 
                                 <!--betreuungspensumFachstelle-->
-                                <div class="row" ng-if="!vm.isLuzern">
+                                <div class="row" ng-if="!vm.isFachstellenTypLuzern()">
                                     <div class="col-sm-12 dv-input-container-small">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"

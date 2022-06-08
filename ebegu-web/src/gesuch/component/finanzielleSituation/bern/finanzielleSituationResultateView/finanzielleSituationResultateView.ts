@@ -52,7 +52,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         'WizardStepManager',
         '$scope',
         '$timeout',
-        'DvDialog'
+        'DvDialog',
     ];
 
     public constructor(
@@ -153,12 +153,13 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     }
 
     public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
-        return this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff &&
-            !this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+        return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff) &&
+            isSteuerdatenAnfrageStatusErfolgreich(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
+
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
-        return this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff &&
-            !this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus.startsWith('FAILED');
+        return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff) &&
+            isSteuerdatenAnfrageStatusErfolgreich(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
 
     public startAufteilung(): void {
@@ -168,18 +169,12 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             });
     }
 
-    public isSteueranfrageErfolgreichForGS1(): boolean {
-        const finSit = this.gesuchModelManager.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
-        return EbeguUtil.isNotNullAndTrue(finSit.steuerdatenZugriff)
-            && isSteuerdatenAnfrageStatusErfolgreich(finSit.steuerdatenAbfrageStatus);
-    }
-
     /*
     Falls gemeinsameSteuererklärung = true ist, wird die Abfrage immer nur für GS1 gemacht. Deshalb reicht es hier
     wenn wir prüfen, ob die Steuerabfrage für gs1 erfolgrech war
      */
     public showAufteilung(): boolean {
-        return this.isSteueranfrageErfolgreichForGS1()
+        return this.hasGS1SteuerDatenErfolgreichAbgefragt()
             && this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA.gemeinsameSteuererklaerung;
     }
 

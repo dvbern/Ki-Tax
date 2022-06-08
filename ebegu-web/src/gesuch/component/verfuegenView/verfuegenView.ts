@@ -16,10 +16,13 @@
 
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
+import {map} from 'rxjs/operators';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -38,6 +41,7 @@ import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
@@ -79,7 +83,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'AuthServiceRS',
         'I18nServiceRSRest',
         '$q',
-        '$translate'
+        '$translate',
+        'MandantService'
     ];
 
     // this is the model...
@@ -101,6 +106,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
+    public isLuzern: boolean;
+
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -119,7 +126,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly authServiceRs: AuthServiceRS,
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly $q: IQService,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly mandantService: MandantService,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -136,6 +144,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         this.gesuchModelManager.setBetreuungIndex(betreuungIndex);
         this.wizardStepManager.setCurrentStep(TSWizardStepName.VERFUEGEN);
+
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+        }, error => this.$log.error(error));
 
         this.initView();
 
@@ -568,6 +580,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
+    public isAuszahlungAnElternAndInstitutionRole(): boolean {
+        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern
+        && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+    }
+
     public showVerfuegungPdfLink(): boolean {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
@@ -716,6 +733,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public auszahlungAnEltern(): boolean {
         return this.getBetreuung().auszahlungAnEltern;
+    }
+
+    public showGutscheinProStunde(): boolean {
+        return this.isLuzern && this.getBetreuung().isAngebotTagesfamilien();
     }
 
     public showMahlzeitenverguenstigung(): boolean {

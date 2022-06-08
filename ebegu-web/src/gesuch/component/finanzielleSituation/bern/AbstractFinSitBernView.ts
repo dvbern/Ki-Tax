@@ -80,15 +80,15 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
         // Wenn zusätzlich noch GemeinsameStek -> Dasselbe auch für GS2
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
-        if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
-            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
+        if (this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
+            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             }
-        } else if (!this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuerveranlagungErhalten) {
+        } else if (!this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
-            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
+            this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
             if (this.model.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
@@ -132,4 +132,12 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected abstract resetKiBonAnfrageFinSit(): void;
 
     protected abstract showAutomatischePruefungSteuerdatenFrage(): boolean;
+
+    public resetAutomatischePruefungSteuerdaten(): void {
+        this.getModel().finanzielleSituationJA.automatischePruefungErlaubt = undefined;
+    }
+
+    public einkommenInVereinfachtemVerfarenClicked(): void {
+        this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+    }
 }

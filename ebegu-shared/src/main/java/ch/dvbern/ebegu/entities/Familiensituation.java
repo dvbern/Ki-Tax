@@ -76,6 +76,14 @@ public class Familiensituation extends AbstractMutableEntity {
 	private Boolean sozialhilfeBezueger;
 
 	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String zustaendigeAmtsstelle;
+
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String nameBetreuer;
+
+	@Nullable
 	@Column(nullable = true)
 	private Boolean verguenstigungGewuenscht;
 
@@ -203,6 +211,24 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	@Nullable
+	public String getZustaendigeAmtsstelle() {
+		return zustaendigeAmtsstelle;
+	}
+
+	public void setZustaendigeAmtsstelle(@Nullable String zustaendigeAmtsstelle) {
+		this.zustaendigeAmtsstelle = zustaendigeAmtsstelle;
+	}
+
+	@Nullable
+	public String getNameBetreuer() {
+		return nameBetreuer;
+	}
+
+	public void setNameBetreuer(@Nullable String nameBetreuer) {
+		this.nameBetreuer = nameBetreuer;
 	}
 
 	@Nullable
@@ -366,7 +392,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
 		}
 
-		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN;
+		return this.unterhaltsvereinbarung != null && this.unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
 	@Nonnull
@@ -388,6 +414,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
+			target.setZustaendigeAmtsstelle(this.getZustaendigeAmtsstelle());
+			target.setNameBetreuer(this.getNameBetreuer());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
@@ -405,6 +433,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
+			target.setZustaendigeAmtsstelle(this.getZustaendigeAmtsstelle());
+			target.setNameBetreuer(this.getNameBetreuer());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()

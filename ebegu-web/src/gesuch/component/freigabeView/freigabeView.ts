@@ -15,11 +15,13 @@
 
 import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFallStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -58,12 +60,14 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         'AuthServiceRS',
         '$timeout',
         '$translate',
+        'EinstellungRS'
     ];
 
     public isFreigebenClicked: boolean = false;
     public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
     public isVolksschule: boolean = false;
+    private isFreigabequittungEinlesenRequired: boolean;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -76,10 +80,17 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
         private readonly $translate: TranslateService,
+        private readonly einstellungService: EinstellungRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
         this.isVolksschule = this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
+        this.einstellungService.findEinstellung(TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellung => {
+                this.isFreigabequittungEinlesenRequired = einstellung.value === 'true';
+            });
         this.initViewModel();
     }
 
@@ -102,8 +113,12 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public confirmationCallback(): void {
+        // tslint:disable-next-line:early-exit
         if (this.gesuchModelManager.isGesuch()) {
-            this.openFreigabequittungPDF(true);
+            const freigabeQuittung = this.openFreigabequittungPDF(true);
+            if (EbeguUtil.isNotNullAndFalse(this.isFreigabequittungEinlesenRequired)) {
+                freigabeQuittung.then(() => this.gesuchFreigeben());
+            }
         } else {
             this.gesuchFreigeben(); // wenn keine freigabequittung noetig direkt freigeben
         }
