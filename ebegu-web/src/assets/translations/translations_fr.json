@@ -2910,5 +2910,6 @@
     "ABWESENHEIT_AKTIV": "Activer les absences",
     "SUPPORT_MAIL": "support@kibon.ch",
     "BENOETIGEN_SIE_HILFE": "Benötigen Sie Hilfe?",
+    "LATS_ONLY_WARNUNG": "Achtung: Ihre Gemeinde hat das Tagesschule Modul nicht ativiert. Diese Tagesschule wird im Status NUR_LASTENAUSGLEICH erstellt und kann nur im Lastenausgleich für die Tagesschulen verwendet werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

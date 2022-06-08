@@ -59,7 +59,7 @@ export class AddInstitutionComponent implements OnInit {
     public selectedGemeinde: TSGemeinde;
     public gemeinden: Array<TSGemeinde>;
 
-    private isLatsInstitution: boolean;
+    public isLatsInstitution: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
