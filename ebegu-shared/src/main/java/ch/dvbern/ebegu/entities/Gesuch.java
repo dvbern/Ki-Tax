@@ -1352,16 +1352,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
-	public Benutzer getMahnungVerantwortlicherAccordingToBetreuungen() {
+	public Benutzer getVerantwortlicherAccordingToBetreuungen() {
 		if (hasOnlyBetreuungenOfSchulamt()) {
-			return getDossier().getVerantwortlicherTS();
-		}
-		return getDossier().getVerantwortlicherBG();
-	}
-
-	@Nullable
-	public Benutzer getSignaturVerantwortlicherAccordingToBetreuungen() {
-		if (hasBetreuungOfSchulamt()) {
 			return getDossier().getVerantwortlicherTS();
 		}
 		return getDossier().getVerantwortlicherBG();

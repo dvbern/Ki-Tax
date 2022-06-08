@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
@@ -198,6 +199,13 @@ public class AnmeldebestaetigungTSPDFGenerator extends DokumentAnFamilieGenerato
 			abschlussElemente.add(createParagraphSignatur());
 			document.add(PdfUtil.createKeepTogetherTable(abschlussElemente, 2, 0));
 		};
+	}
+
+	@Override
+	@Nullable
+	protected String getSachbearbeiterSigniert() {
+		Benutzer hauptVerantwortlicher = getGesuch().getDossier().getVerantwortlicherTS();
+		return hauptVerantwortlicher != null ? translate(SIGNIERT, hauptVerantwortlicher.getFullName()) : null;
 	}
 
 	private void createGebuehrenTabelle(@Nonnull Verfuegung verfuegung, @Nonnull Document document) {
