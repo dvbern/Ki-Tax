@@ -113,4 +113,8 @@ export class DvPulldownUserMenuController implements IController {
                 this.frenchEnabled = frenchEnabled;
             });
     }
+
+    public getTraegerschaftId(): string {
+        return this.principal.currentBerechtigung.traegerschaft?.id;
+    }
 }
