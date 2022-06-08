@@ -208,7 +208,7 @@ export class AddInstitutionComponent implements OnInit {
                     .pipe(take(1))
                     .subscribe(
                         gemeinden => {
-                            this.gemeinden = gemeinden;
+                            this.gemeinden = gemeinden.filter(gemeinde => !gemeinde.angebotTS);
                             this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                         },
                         err => LOG.error(err),
