@@ -121,6 +121,14 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         });
     }
 
+    public createLATSInstitutionTS(): void {
+        this.goToAddInstitution({
+            betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
+            latsOnly: true,
+        });
+    }
+
     public createInstitutionFI(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.FERIENINSEL,
@@ -180,6 +188,11 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isCreateTSAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
+            && this.authServiceRS.getPrincipal().mandant.angebotTS;
+    }
+
+    public isCreateLATSTSAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
             && this.authServiceRS.getPrincipal().mandant.angebotTS;
     }

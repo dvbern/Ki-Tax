@@ -48,7 +48,7 @@ export class AddInstitutionComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
-    @ViewChild(NgForm, { static: true }) public form: NgForm;
+    @ViewChild(NgForm, {static: true}) public form: NgForm;
     public isBGInstitution: boolean;
     public betreuungsangebote: TSBetreuungsangebotTyp[];
     public betreuungsangebot: TSBetreuungsangebotTyp;
@@ -58,6 +58,8 @@ export class AddInstitutionComponent implements OnInit {
     public adminMail: string;
     public selectedGemeinde: TSGemeinde;
     public gemeinden: Array<TSGemeinde>;
+
+    private isLatsInstitution: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -75,6 +77,7 @@ export class AddInstitutionComponent implements OnInit {
     public ngOnInit(): void {
         this.betreuungsangebot = this.$transition$.params().betreuungsangebot;
         this.betreuungsangebote = this.$transition$.params().betreuungsangebote;
+        this.isLatsInstitution = this.$transition$.params().latsOnly;
 
         // initally we think it is a Betreuungsgutschein Institution
         this.isBGInstitution = true;
@@ -137,7 +140,7 @@ export class AddInstitutionComponent implements OnInit {
                             this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
                                 () => {
                                     this.persistInstitution();
-                                }
+                                },
                             );
                         },
                         () => {
@@ -147,7 +150,7 @@ export class AddInstitutionComponent implements OnInit {
                     () => {
                         this.errorService.clearAll();
                         this.persistInstitution();
-                    }
+                    },
                 );
             }
         });
@@ -163,14 +166,18 @@ export class AddInstitutionComponent implements OnInit {
         ).then(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-            });
+        });
     }
 
     private initInstitution(): void {
         this.institution = new TSInstitution();
+        if (this.isLatsInstitution) {
+            this.institution.status = TSInstitutionStatus.NUR_LATS;
+            return;
+        }
         this.institution.status = this.isBGInstitution ?
-            TSInstitutionStatus.EINGELADEN :
-            TSInstitutionStatus.KONFIGURATION;
+                TSInstitutionStatus.EINGELADEN :
+                TSInstitutionStatus.KONFIGURATION;
     }
 
     private goToNextView(): void {
@@ -189,21 +196,33 @@ export class AddInstitutionComponent implements OnInit {
     private navigateToEdit(): void {
         this.$state.go('institution.edit', {
             institutionId: this.institution.id,
-            editMode: true
+            editMode: true,
         });
     }
 
     public loadGemeindenList(): void {
         // tslint:disable-next-line:early-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.gemeindeRS.getGemeindenForTSByPrincipal$()
-                .pipe(take(1))
-                .subscribe(
-                    gemeinden => {
-                        this.gemeinden = gemeinden;
-                    },
-                    err => LOG.error(err),
-                );
+            if (this.isLatsInstitution) {
+                this.gemeindeRS.getGemeindenForPrincipal$()
+                    .pipe(take(1))
+                    .subscribe(
+                        gemeinden => {
+                            this.gemeinden = gemeinden;
+                            this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
+                        },
+                        err => LOG.error(err),
+                    );
+            } else {
+                this.gemeindeRS.getGemeindenForTSByPrincipal$()
+                    .pipe(take(1))
+                    .subscribe(
+                        gemeinden => {
+                            this.gemeinden = gemeinden;
+                        },
+                        err => LOG.error(err),
+                    );
+            }
         }
         // tslint:disable-next-line:early-exit
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
