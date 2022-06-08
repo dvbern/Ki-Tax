@@ -18,5 +18,6 @@
 export enum TSInstitutionStatus {
     AKTIV = 'AKTIV',
     KONFIGURATION = 'KONFIGURATION',
-    EINGELADEN = 'EINGELADEN'
+    EINGELADEN = 'EINGELADEN',
+    NUR_LATS = 'NUR_LATS'
 }

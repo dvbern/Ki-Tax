@@ -24,7 +24,8 @@ public enum InstitutionStatus {
 
 	AKTIV,
 	KONFIGURATION,
-	EINGELADEN;
+	EINGELADEN,
+	NUR_LATS;
 
 	public boolean isEnabled() {
 		return AKTIV == this;
