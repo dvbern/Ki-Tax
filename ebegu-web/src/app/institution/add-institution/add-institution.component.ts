@@ -201,40 +201,23 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public loadGemeindenList(): void {
-        // tslint:disable-next-line:early-exit
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            if (this.isLatsInstitution) {
-                this.gemeindeRS.getGemeindenForPrincipal$()
-                    .pipe(take(1))
-                    .subscribe(
-                        gemeinden => {
-                            this.gemeinden = gemeinden.filter(gemeinde => !gemeinde.angebotTS);
-                            this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
-                        },
-                        err => LOG.error(err),
-                    );
-            } else {
-                this.gemeindeRS.getGemeindenForTSByPrincipal$()
-                    .pipe(take(1))
-                    .subscribe(
-                        gemeinden => {
-                            this.gemeinden = gemeinden;
-                        },
-                        err => LOG.error(err),
-                    );
-            }
+        let obs$;
+        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && this.isLatsInstitution) {
+            obs$ = this.gemeindeRS.getGemeindenForPrincipal$();
+        } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && !this.isLatsInstitution) {
+            obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
+        } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+            obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
         }
-        // tslint:disable-next-line:early-exit
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
-            this.gemeindeRS.getGemeindenForFIByPrincipal$()
-                .pipe(take(1))
-                .subscribe(
-                    gemeinden => {
-                        this.gemeinden = gemeinden;
-                    },
-                    err => LOG.error(err),
-                );
-        }
+        obs$.pipe(take(1))
+            .subscribe(
+                gemeinden => {
+                    this.gemeinden = this.isLatsInstitution ? gemeinden.filter(gemeinde => !gemeinde.angebotTS) : gemeinden;
+                    this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
+                },
+                err => LOG.error(err),
+            );
+
     }
 
     /*
