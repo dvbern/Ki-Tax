@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 	private final BGRechnerParameterDTO defaultParameterDTO = getRechnerParameterLuzern();
@@ -43,12 +44,12 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(451);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(451);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(527.65);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(10);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(11.70);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(419.45);
 		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.30);
-		testValues.expectedElternbeitrag = BigDecimal.valueOf(108.25);
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(31.55);
+		testValues.expectedElternbeitrag = BigDecimal.valueOf(2.40);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(49.99);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(45.1);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(45.1);
@@ -71,12 +72,12 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = true;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(367.55);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(205.60);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(205.60);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(9.10);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(9.10);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(205.60);
-		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.10);
+		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.12);
 		testValues.expectedElternbeitrag = BigDecimal.valueOf(0);
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(15.80);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(29.99);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(22.55);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(22.55);
@@ -104,7 +105,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedVerguenstigung = BigDecimal.ZERO;
 		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.ZERO;
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(105);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(150);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(180.4);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(150);
@@ -127,12 +128,12 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = true;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1027);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(982.85);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(982.85);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(15.60);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(15.60);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(982.85);
 		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(15.60);
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(44.10);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(63);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(112.75);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(63);
@@ -156,15 +157,43 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = false;
 
 		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(740.1);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(710.3);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(710.3);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(9.60);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(9.60);
 		testValues.expectedVerguenstigung = BigDecimal.valueOf(710.3);;
 		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.60);
 		testValues.expectedElternbeitrag = BigDecimal.ZERO;
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(51.80);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(74.01);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(90.2);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(74.01);
+
+		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		rechner.calculate(zeitabschnitt, defaultParameterDTO);
+
+		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
+		assertCalculationResultResult(result, testValues);
+	}
+
+	@Test
+	public void testKindOhneBetreuung() { //Kind 1 im BG_Rechner_Luzern Excel ohne Betreuungspensum (rückwirkende Eingabe)
+		TestValues testValues = new TestValues();
+		testValues.stuendlicheVollkosten = MathUtil.DEFAULT.fromNullSafe(10);
+		testValues.betreuungsPensum = BigDecimal.ZERO;
+		testValues.anspruchsPensum = 20;
+		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(10000);
+		testValues.isBaby = false;
+
+		testValues.expectedVollkosten = BigDecimal.ZERO;
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(10);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(11.70);
+		testValues.expectedVerguenstigung = BigDecimal.ZERO;
+		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.30);
+		testValues.expectedElternbeitrag = BigDecimal.valueOf(2.40);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.ZERO;
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(45.1);
+		testValues.expectedBgZeiteinheit =  BigDecimal.ZERO;;
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
