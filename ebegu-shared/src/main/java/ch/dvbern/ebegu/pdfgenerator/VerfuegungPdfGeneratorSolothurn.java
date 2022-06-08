@@ -32,6 +32,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,6 +95,11 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		PdfPTable table,
 		@Nullable BigDecimal verguenstigungProZeiteinheit) {
 		//defualt no-op: wird nur in Luzern angezeigt
+	}
+
+	@Override
+	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		//no-op: wird in Solothurn nicht angezeigt
 	}
 
 	@Override
