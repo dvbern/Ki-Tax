@@ -2301,6 +2301,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setEmailBenachrichtigungKiBonMail(institutionStammdaten.getErinnerungMail());
 		}
 		row.setName(institution.getName());
+		row.setStatus(ServerMessageUtil.getMessage("InstitutionStatus_" + institution.getStatus(), locale,
+				institution.getMandant()));
 		if (adresse.getOrganisation() != null) {
 			row.setAnschrift(adresse.getOrganisation());
 		}
