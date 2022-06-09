@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
@@ -69,6 +70,12 @@ public class TagesschuleBetreuungszeitAbschnittRule extends AbstractAbschnittRul
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull AnmeldungTagesschule anmeldungTagesschule){
 		// Tageschulanmeldungen gelten immer fuer die ganze Gesuchsperiode
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(anmeldungTagesschule.extractGesuchsperiode().getGueltigkeit());
+
+		// MZV Beantragt bei die Eltern oder nicht
+		Familiensituation famSit = anmeldungTagesschule.extractGesuch().extractFamiliensituation();
+		boolean verguenstigungBeantrag = famSit != null && !famSit.isKeineMahlzeitenverguenstigungBeantragt();
+		zeitabschnitt.setVerguenstigungMahlzeitenBeantragtForAsivAndGemeinde(verguenstigungBeantrag);
+
 		Objects.requireNonNull(anmeldungTagesschule.getBelegungTagesschule());
 
 		long dauerProWocheInMinutenMitBetreuung = 0;

@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
+
 /**
  * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the
  * Betreuungsgutschein
@@ -353,6 +354,4 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		return rechnerRules;
 	}
-
-
 }

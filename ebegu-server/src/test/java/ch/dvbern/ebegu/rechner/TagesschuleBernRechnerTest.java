@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -39,7 +40,7 @@ public class TagesschuleBernRechnerTest {
 	private final BigDecimal MAXIMAL_MASSGEGEBENES_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(160000.00);
 	private final BigDecimal MINIMAL_MASSGEGEBENES_EINKOMMEN = MathUtil.DEFAULT.fromNullSafe(43000.00);
 
-	private TagesschuleBernRechner tarifRechner = new TagesschuleBernRechner();
+	private TagesschuleBernRechner tarifRechner = new TagesschuleBernRechner(Collections.emptyList());
 	private BGRechnerParameterDTO parameterDTO;
 
 
