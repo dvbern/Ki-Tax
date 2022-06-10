@@ -92,12 +92,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
-	protected String getTextGutschein() {
-		String messageKey =  betreuung.isAuszahlungAnEltern() ? GUTSCHEIN_AN_ELTERN : GUTSCHEIN_AN_INSTITUTION;
-		return translate(messageKey);
-	}
-
-	@Override
 	protected void addTitleGutscheinProStunde(PdfPTable table) {
 		if (isBetreuungTagesfamilie) {
 			table.addCell(createCell(
