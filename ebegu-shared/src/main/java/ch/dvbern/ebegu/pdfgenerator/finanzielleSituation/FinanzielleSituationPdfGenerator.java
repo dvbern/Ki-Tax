@@ -58,6 +58,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 	protected static final String JAHR = "PdfGeneration_MassgEinkommen_Jahr";
 	protected static final String MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEink";
 	protected static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
+	protected static final String TOTAL_MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEinkTotal";
 	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
 	protected static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	protected static final String NETTOVERMOEGEN = "PdfGeneration_FinSit_Nettovermoegen";

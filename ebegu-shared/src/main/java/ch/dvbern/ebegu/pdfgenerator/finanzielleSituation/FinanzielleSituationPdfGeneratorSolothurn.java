@@ -52,6 +52,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 	private static final String KINDER_IN_AUSBILDUNG = "PdfGeneration_KinderInAusbildung";
 	private static final String STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_SteuerbaresVermoegen";
 	private static final String FOOTER_STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_FooterSteuerbaresVermoegen";
+	private static final String FOOTER_MASSG_EINK = "PdfGeneration_FinSit_FooterMassgEink";
 	private static final String BRUTTOLOHN = "PdfGeneration_FinSit_Bruttolohn";
 	private static final String FOOTER_BRUTTOLOHN = "PdfGeneration_FinSit_FooterBruttolohn";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
@@ -305,6 +306,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			translate(MASSG_EINK),
 			massgebendesEinkommen
 		);
+		addFooter(massgEinkommen, FOOTER_MASSG_EINK);
 		vermoegenTable.addRow(title);
 		vermoegenTable.addRow(nettovermoegen);
 		vermoegenTable.addRow(massgEinkommen);
@@ -411,6 +413,11 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		table.addRow(createRow(NETTOVERMOEGEN, ekvGS1.getNettoVermoegen(), hasSecondGesuchsteller, nettovermoegenGS2));
 
 		table.addRow(createRow(MASSG_EINK, ekvBasisJahr.getMassgebendesEinkVorAbzFamGrGS1(), hasSecondGesuchsteller, ekvBasisJahr.getMassgebendesEinkVorAbzFamGrGS2()));
+
+		if(hasSecondGesuchsteller) {
+			table.addRow(createRow(TOTAL_MASSG_EINK, null, true, ekvBasisJahr.getMassgebendesEinkVorAbzFamGr()));
+		}
+
 		return table.createTable();
 	}
 }
