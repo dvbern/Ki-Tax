@@ -9,7 +9,9 @@
 							name="steuerveranlagungGemeinsam"
 							#steuerveranlagungGemeinsam="ngModel"
 							required
-							[(ngModel)]="model.gemeinsameSteuererklaerung">
+							[(ngModel)]="model.gemeinsameSteuererklaerung"
+                            dvEnableElement
+                            [enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
