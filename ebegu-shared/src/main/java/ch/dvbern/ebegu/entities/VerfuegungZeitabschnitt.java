@@ -374,6 +374,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().getTsCalculationResultOhnePaedagogischerBetreuung();
 	}
 
+	public boolean isAuszahlungAnEltern() {
+		return getRelevantBgCalculationResult().isAuszahlungAnEltern();
+	}
+
 	/* Ende Delegator-Methoden */
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -619,6 +623,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setStuendlicheVollkosten(stuendlicheVollkosten);
 	}
 
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.getBgCalculationInputAsiv().setAuszahlungAnEltern(auszahlungAnEltern);
+		this.getBgCalculationInputGemeinde().setAuszahlungAnEltern(auszahlungAnEltern);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull
@@ -830,6 +839,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setZuSpaetEingereicht(input.isZuSpaetEingereicht());
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
+		result.setAuszahlungAnEltern(input.isAuszahlungAnEltern());
 	}
 
 	public boolean isSameMZV(VerfuegungZeitabschnitt other) {

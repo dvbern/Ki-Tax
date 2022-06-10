@@ -137,6 +137,8 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private BigDecimal verguenstigungMahlzeitTotal;
 
+	private boolean auszahlungAnEltern;
+
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
 	}
@@ -441,5 +443,13 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setVerguenstigungProZeiteinheit(BigDecimal verguenstigungProZeiteinheit) {
 		this.verguenstigungProZeiteinheit = verguenstigungProZeiteinheit;
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }
