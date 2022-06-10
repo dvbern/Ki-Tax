@@ -1080,6 +1080,7 @@
     "MIN_ELTERNBEITRAG_HELP": "Die Eltern müssen einen minimalen Elternbeitrag leisten. Falls dies noch nicht der Fall ist, weil die Kosten vollständig oder fast vollständig durch den Betreuungsgutschein gedeckt werden, muss die Kita oder Tagesfamilienorganisation den Eltern den (fehlenden) minimalen Elternbeitrag in Rechnung stellen. Der minimale Elternbeitrag beträgt 7 Franken pro Betreuungstag (20% Pensum pro Woche) in einer Kita und 70 Rappen pro Betreuungsstunde bei Tagesfamilien.",
     "ELTERNBEITRAG_HELP": "Elternbeitrag in&nbsp;CHF Hilfetext",
     "VERGUENSTIGUNG_HELP": "Bezeichnet den Betrag in CHF, der an die Kita überwiesen wird. Dieser entspricht dem Betreuungsgutschein abzüglich eines allfälligen minimalen Elternbeitrags (den die Kita bzw. die Tagesfamilienorganisation den Eltern in Rechnung stellen würde).",
+    "VERGUENSTIGUNG_ELTERN_HELP": "Bezeichnet den Betrag in CHF, der an die Eltern überwiesen wird. Dieser entspricht dem Betreuungsgutschein abzüglich eines allfälligen minimalen Elternbeitrags (den die Kita bzw. die Tagesfamilienorganisation den Eltern in Rechnung stellen würde).",
     "VERFUEGTE_ZEITEINHEITEN": "Verfügte Zeiteinheiten",
     "ANSPRUCHSBERECHTIGTE_ZEITEINHEITEN": "Anspruchsberechtigte Zeiteinheiten",
     "ZEITEINHEIT": "Zeiteinheit",

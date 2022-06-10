@@ -372,8 +372,11 @@
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
                                     <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td class="result">
+                                <td ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td ng-if="vm.showAuszahlungAnElternRow()" class="result">
+                                    <dv-tooltip text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
@@ -400,8 +403,8 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th ng-if="!vm.isLuzern" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
-                                <th ng-if="!vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
-                                <th ng-if="vm.auszahlungAnEltern()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
+                                <th ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.showAuszahlungAnElternRow()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
                             </tr>
                             </thead>
@@ -455,8 +458,11 @@
                                <td ng-if="vm.showGutscheinProStunde()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result"
-                                    ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
+                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenRow()"
+                                    ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
+                                <!-- An Kita überwiesen (Gutschein) -->
+                                <td class="result" ng-if="vm.showAuszahlungAnElternRow()"
+                                    ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
