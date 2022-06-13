@@ -123,6 +123,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -248,8 +249,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 
-		setFinSitTyp(gesuchToPersist);
-		setMinDauerKonkubiat(gesuchToPersist);
+		updateGesuchWithConfiguration(gesuchToPersist);
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
@@ -265,32 +265,55 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistedGesuch;
 	}
 
-	private void setMinDauerKonkubiat(Gesuch gesuch) {
+	private void updateGesuchWithConfiguration(Gesuch gesuch) {
+		Collection<Einstellung> einstellungList =
+			einstellungService.getAllEinstellungenByMandant(gesuch.getGesuchsperiode());
+
+		setFKJVFamiliensituationFlag(gesuch, einstellungList);
+		setMinDauerKonkubiat(gesuch, einstellungList);
+		setFinSitTyp(gesuch, einstellungList);
+	}
+
+	private void setFKJVFamiliensituationFlag(Gesuch gesuch, Collection<Einstellung> einstellungList) {
 		if (gesuch.getFamiliensituationContainer() == null
-		|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
 			return;
 		}
 
-		Einstellung minimalDauerKonkubinat = einstellungService.findEinstellung(
-			EinstellungKey.MINIMALDAUER_KONKUBINAT,
-			gesuch.extractGemeinde(),
-			gesuch.getGesuchsperiode()
-		);
+		Einstellung einstellung = getEinstellungByKeyFromList(EinstellungKey.FKJV_FAMILIENSITUATION_NEU, einstellungList);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFkjvFamSit(einstellung.getValueAsBoolean());
+	}
 
+	private void setMinDauerKonkubiat(Gesuch gesuch, Collection<Einstellung> einstellungList) {
+		if (gesuch.getFamiliensituationContainer() == null
+			|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			return;
+		}
+
+		Einstellung minimalDauerKonkubinat = getEinstellungByKeyFromList(EinstellungKey.MINIMALDAUER_KONKUBINAT, einstellungList);
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setMinDauerKonkubinat(minimalDauerKonkubinat.getValueAsInteger());
 	}
 
-	private void setFinSitTyp(Gesuch gesuchToCreate) {
-		var finSitTyp = einstellungService.findEinstellung(
-			EinstellungKey.FINANZIELLE_SITUATION_TYP,
-			gesuchToCreate.extractGemeinde(),
-			gesuchToCreate.getGesuchsperiode()
-		).getValue();
+	private void setFinSitTyp(Gesuch gesuchToCreate, Collection<Einstellung> einstellungList) {
+		Einstellung finSitTyp = getEinstellungByKeyFromList(EinstellungKey.FINANZIELLE_SITUATION_TYP, einstellungList);
+
 		try {
-			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp));
+			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp.getValue()));
 		} catch (IllegalArgumentException e) {
 			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp, e);
 		}
+	}
+
+	private Einstellung getEinstellungByKeyFromList(
+		EinstellungKey key,
+		Collection<Einstellung> einstellungList) {
+
+		return einstellungList
+			.stream()
+			.filter(einstellung -> einstellung.getKey() == key)
+			.findFirst()
+			.orElseThrow(() ->
+				new EbeguRuntimeException("getEinstellungByKeyFromList()", "Keine Einstellung für Key " + key + " gfunden"));
 	}
 
 	private void stripGesuchOfInvalidData(@Nonnull Gesuch gesuch) {
