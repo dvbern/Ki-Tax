@@ -28,6 +28,7 @@ import {EinkommensverschlechterungLuzernResultateViewComponent} from './componen
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
+import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -63,7 +64,7 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
     public controllerAs = 'vm';
 }
 
-const fallCreationView = '<fall-creation-view>';
+const fallCreationView = '<dv-fall-creation-view-x></dv-fall-creation-view-x>';
 
 const sozialdienstfallCreationView = '<sozialdienst-fall-creation-view>';
 
@@ -81,9 +82,9 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
         gemeindeId: '',
     };
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: any = {
         gesuchViewPort: {
-            template: fallCreationView,
+            component: FallCreationViewXComponent,
         },
         kommentarViewPort: {
             template: kommentarView,

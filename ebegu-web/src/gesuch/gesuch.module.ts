@@ -43,6 +43,7 @@ import {EinkommensverschlechterungSolothurnResultateViewComponent} from './compo
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
+import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
@@ -102,6 +103,8 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
         .component('einkommensverschlechterungSolothurnResultateView',
             downgradeComponent({component: EinkommensverschlechterungSolothurnResultateViewComponent}))
+        .component('dvFallCreationViewX',
+            downgradeComponent({component: FallCreationViewXComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())
