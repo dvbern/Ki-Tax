@@ -108,6 +108,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public isLuzern: boolean;
 
+    private showAuszahlungAnInstitutionen: boolean;
+    private showAuszahlungAnEltern: boolean;
+
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -742,6 +745,48 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showMahlzeitenverguenstigung(): boolean {
         return this.isMahlzeitenverguenstigungEnabled()
             && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    public showAuszahlungAnInstitutionenRow(): boolean {
+        // Wenn Vergünstigung in mindestens einem Zeitabschnitt nicht an die Eltern ausbezahlt wird soll die
+        // Auszahlung an Insitutionen Row angezeigt werden
+        if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnInstitutionen)) {
+            this.showAuszahlungAnInstitutionen = this.getVerfuegungZeitabschnitte()
+                .some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
+        }
+
+        return this.showAuszahlungAnInstitutionen;
+    }
+
+    private hasBetreuungInZeitabschnitt(zeitabschnitt: TSVerfuegungZeitabschnitt): boolean {
+        return zeitabschnitt.betreuungspensumProzent !== 0;
+    }
+
+    public showAuszahlungAnElternRow(): boolean {
+        // Wenn Vergünstigung in mindestens einem Zeitabschnitt an die Eltern ausbezahlt wird soll die Auszahlung
+        // an Insitutionen Row angezeigt werden
+        if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnEltern)) {
+            this.showAuszahlungAnEltern =  this.getVerfuegungZeitabschnitte()
+                .some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
+        }
+
+        return this.showAuszahlungAnEltern;
+    }
+
+    public getVerguenstigungAnInstitution(zeiabschnitt: TSVerfuegungZeitabschnitt): number {
+        if (!zeiabschnitt.auszahlungAnEltern) {
+            return zeiabschnitt.verguenstigung;
+        }
+
+        return 0;
+    }
+
+    public getVerguenstigungAnEltern(zeiabschnitt: TSVerfuegungZeitabschnitt): number {
+        if (zeiabschnitt.auszahlungAnEltern) {
+            return zeiabschnitt.verguenstigung;
+        }
+
+        return 0;
     }
 
     private onlyZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitte: Array<TSVerfuegungZeitabschnitt>): Array<TSVerfuegungZeitabschnitt> {

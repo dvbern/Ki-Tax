@@ -33,8 +33,14 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
+import ch.dvbern.ebegu.errors.EbeguException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -491,6 +497,106 @@ public class MutationsMergerTest {
 		Assert.assertFalse(mutationZeitabschnittAugust.getVerfuegungenZeitabschnittBemerkungenAsString()
 			.contains("Ihre Anpassung hat eine Erhöhung des Betreuungsgutscheins zur Folge, die Anpassung erfolgt auf den Folgemonat nach Einreichung aller Belege (Art 34r ASIV)."));
 	}
+
+	@Test
+	public void test_Mutation_AuszahlungAnEltern_keine_Aenderung() {
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+
+		// mergen
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule,
+			mutierteBetreuung,
+			zeitaschnitteMutation);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		//ueberprüfen
+		Assert.assertNotNull(zeitabschnitte);
+		Assert.assertEquals(12, zeitabschnitte.size());
+		zeitabschnitte
+			.forEach(zeitabschnitt -> Assert.assertFalse(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
+	}
+
+	@Test
+	public void test_Mutation_AuszahlungAnEltern_Aenderung_noch_kein_Auszahlung() {
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1));
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+
+		// mergen
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule,
+			mutierteBetreuung,
+			zeitaschnitteMutation);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		//ueberprüfen
+		Assert.assertNotNull(zeitabschnitte);
+		Assert.assertEquals(12, zeitabschnitte.size());
+		zeitabschnitte
+			.forEach(zeitabschnitt -> Assert.assertTrue(zeitabschnitt.getRelevantBgCalculationInput().isAuszahlungAnEltern()));
+	}
+
+	@Test
+	public void test_Mutation_AuszahlungAnEltern_Aenderung_mit_Auszahlung() {
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+		VerfuegungZeitabschnitt verfuegterZaAugust = findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST);
+		verfuegterZaAugust.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1));
+		mutierteBetreuung.setAuszahlungAnEltern(true);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+
+		// mergen
+		List<VerfuegungZeitabschnitt> zeitabschnitteAfterMonatsRule = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule,
+			mutierteBetreuung,
+			zeitaschnitteMutation);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.runSingleAbschlussRule(mutationsMerger,
+			mutierteBetreuung,
+			zeitabschnitteAfterMonatsRule);
+
+		//ueberprüfen
+		Assert.assertNotNull(zeitabschnitte);
+		Assert.assertEquals(12, zeitabschnitte.size());
+
+		Assert.assertFalse(findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.OCTOBER).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.NOVEMBER).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.DECEMBER).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JANUARY).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.FEBRUARY).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MARCH).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.APRIL).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.MAY).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JUNE).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+		Assert.assertTrue(findZeitabschnittByMonth(zeitabschnitte, Month.JULY).getRelevantBgCalculationInput().isAuszahlungAnEltern());
+	}
+
+	private VerfuegungZeitabschnitt findZeitabschnittByMonth(List<VerfuegungZeitabschnitt> zeitabschnittList, Month month) {
+		return zeitabschnittList
+				.stream()
+				.filter(zeitabschnitt -> zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == month)
+				.findFirst()
+				.orElseThrow(() -> new EbeguRuntimeException("findZeitabschnittByMonth", "Kein Zeitabschnitt für diesen Monat gefunden"));
+	}
+
+
 
 	private Verfuegung prepareErstGesuchVerfuegung() {
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
