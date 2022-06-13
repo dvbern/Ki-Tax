@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -13,7 +14,6 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {INewFallStateParams} from '../../gesuch.route';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
@@ -26,7 +26,8 @@ import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 })
 export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
-    private gesuchsperiodeId: string;
+    public gesuchsperiodeId: string;
+    @ViewChild(NgForm) private form: NgForm;
 
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
@@ -34,13 +35,12 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
-        protected readonly gesuchModelManager: GesuchModelManager,
+        public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
-        private readonly $stateParams: INewFallStateParams,
         protected readonly wizardStepManager: WizardStepManager,
         private readonly $translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gesuchsperiodeRS: GesuchsperiodeRS
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -55,9 +55,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     }
 
     private readStateParams(): void {
-        if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
-            this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
-        }
+        //if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
+        //  this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
+        // }
     }
 
     public setShowError(showError: boolean): void {
@@ -224,6 +224,23 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         return !this.canChangeGesuchsperiode()
             // do not show readonly gesuchsperioden for sozialdienst
             && !TSRoleUtil.isSozialdienstRole(this.authServiceRS.getPrincipalRole());
+    }
+
+    /**
+     * Diese Methode prueft ob das Form valid ist. Sollte es nicht valid sein wird das erste fehlende Element gesucht
+     * und fokusiert, damit der Benutzer nicht scrollen muss, um den Fehler zu finden.
+     * Am Ende wird this.form.$valid zurueckgegeben
+     */
+    public isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
+    }
+
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
     }
 
 }

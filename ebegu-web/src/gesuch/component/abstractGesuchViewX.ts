@@ -15,8 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, Directive, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {AfterViewInit, Directive} from '@angular/core';
 import {isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
@@ -31,7 +30,6 @@ import {WizardStepManager} from '../service/wizardStepManager';
 export class AbstractGesuchViewX<T> implements AfterViewInit {
 
     private _model: T;
-    @ViewChild(NgForm) protected form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -120,18 +118,5 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
         return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
             && this.isKorrekturModusJugendamtOrFreigegeben();
-    }
-
-    /**
-     * Diese Methode prueft ob das Form valid ist. Sollte es nicht valid sein wird das erste fehlende Element gesucht
-     * und fokusiert, damit der Benutzer nicht scrollen muss, um den Fehler zu finden.
-     * Am Ende wird this.form.$valid zurueckgegeben
-     */
-    public isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
     }
 }
