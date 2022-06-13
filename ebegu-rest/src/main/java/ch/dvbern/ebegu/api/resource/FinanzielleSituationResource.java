@@ -460,20 +460,22 @@ public class FinanzielleSituationResource {
 
 		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchsteller, convertedFinSitCont, kibonAnfrageId.getId());
 
-		kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam);
+		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam);
+		FinanzielleSituationContainer persistedFinSitGS2 = null;
 		// Save
 		if (kibonAnfrageContext.getFinSitContGS2() != null) {
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
 				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
 				kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitContGS2());
+			persistedFinSitGS2 = this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitContGS2());
 		}
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
 			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(),
 			kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont());
-		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+		return converter.finanzielleSituationContainerToJAX(kibonAnfrageContext.isZwitched() ?
+			requireNonNull(persistedFinSitGS2) : persistedFinSit);
 	}
 
 	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"

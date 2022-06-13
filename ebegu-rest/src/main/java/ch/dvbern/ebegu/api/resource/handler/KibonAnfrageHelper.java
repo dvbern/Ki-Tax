@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -52,7 +52,8 @@ public class KibonAnfrageHelper {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
 		} else {
 			setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(), steuerdatenResponse);
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
+				.getFinanzielleSituationJA(), steuerdatenResponse);
 		}
 	}
 
@@ -71,15 +72,19 @@ public class KibonAnfrageHelper {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT);
 		} else if (steuerdatenResponse.getZpvNrPartner() == null) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
-		} else if (!KibonAnfrageHelper.isGebrutsdatumGS2CorrectInResponse(kibonAnfrageContext.getGesuch(), steuerdatenResponse)) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
 		} else {
 			assert kibonAnfrageContext.getFinSitContGS2() != null;
-			setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
-				kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(),
-				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
-				steuerdatenResponse);
+			if (!KibonAnfrageHelper.isGebrutsdatumGS2CorrectInResponse(
+				kibonAnfrageContext.getFinSitContGS2(),
+				steuerdatenResponse)) {
+				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
+			} else {
+				setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
+				KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+					kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(),
+					kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
+					steuerdatenResponse);
+			}
 		}
 	}
 
@@ -98,11 +103,11 @@ public class KibonAnfrageHelper {
 	}
 
 	protected static boolean isGebrutsdatumGS2CorrectInResponse(
-		Gesuch gesuch,
+		FinanzielleSituationContainer finanzielleSituationContainer,
 		SteuerdatenResponse steuerdatenResponse) {
 
-		requireNonNull(gesuch.getGesuchsteller2());
-		LocalDate geburstdatumGS2 = gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
+		LocalDate geburstdatumGS2 =
+			finanzielleSituationContainer.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum();
 
 		if (isGS2Dossiertraeger(steuerdatenResponse)) {
 			return geburstdatumGS2.compareTo(
@@ -135,7 +140,9 @@ public class KibonAnfrageHelper {
 		return !isAntragstellerDossiertraeger(steuerdatenResponse);
 	}
 
-	protected static void setValuesFromPartnerToFinSit(FinanzielleSituation finSit, SteuerdatenResponse steuerdatenResponse) {
+	protected static void setValuesFromPartnerToFinSit(
+		FinanzielleSituation finSit,
+		SteuerdatenResponse steuerdatenResponse) {
 		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
 		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
 		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
@@ -175,9 +182,9 @@ public class KibonAnfrageHelper {
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
 	}
 
-
-
-	protected static void setVeranlagungsstand(KibonAnfrageContext kibonAnfrageContext, SteuerdatenResponse steuerdatenResponse) {
+	protected static void setVeranlagungsstand(
+		KibonAnfrageContext kibonAnfrageContext,
+		SteuerdatenResponse steuerdatenResponse) {
 		if (steuerdatenResponse.getVeranlagungsstand() != null) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(
 				SteuerdatenAnfrageStatus.valueOf(steuerdatenResponse.getVeranlagungsstand().name()));

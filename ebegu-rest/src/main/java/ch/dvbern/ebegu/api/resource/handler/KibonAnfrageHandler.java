@@ -39,20 +39,23 @@ public class KibonAnfrageHandler {
 	@Inject
 	private PrincipalBean principalBean;
 
-	public void handleKibonAnfrage(
+	public KibonAnfrageContext handleKibonAnfrage(
 		KibonAnfrageContext kibonAnfrageContext,
 		boolean isGemeinsam) {
-		handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, true);
+		return handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, true);
 	}
 
-	private void handleKibonAnfrage(
+	private KibonAnfrageContext handleKibonAnfrage(
 		KibonAnfrageContext kibonAnfrageContext,
 		boolean isGemeinsam,
 		boolean doRetry) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		Benutzer benutzer = principalBean.getBenutzer();
 		if (hasTwoAntragStellende && isGemeinsam) {
-			createFinSitGS2Container(kibonAnfrageContext);
+			// nur erstes Mal, dann schon initialisiert
+			if (doRetry) {
+				createFinSitGS2Container(kibonAnfrageContext);
+			}
 
 			String zpvNummer = benutzer.getZpvNummer() != null ?
 				benutzer.getZpvNummer() :
@@ -78,8 +81,7 @@ public class KibonAnfrageHandler {
 						.getFamilienstatus()
 						.equals(
 							EnumFamilienstatus.VERHEIRATET) && doRetry) {
-						kibonAnfrageContext.zwitchGSContainer();
-						handleKibonAnfrage(kibonAnfrageContext, true, false);
+						return handleKibonAnfrage(kibonAnfrageContext.zwitchGSContainer(), true, false);
 					} else {
 						kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 					}
@@ -114,6 +116,7 @@ public class KibonAnfrageHandler {
 						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
 		}
+		return kibonAnfrageContext;
 	}
 
 	private void createFinSitGS2Container(KibonAnfrageContext kibonAnfrageContext) {
