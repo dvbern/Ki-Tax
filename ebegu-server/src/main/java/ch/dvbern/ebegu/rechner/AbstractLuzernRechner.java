@@ -48,7 +48,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	private BigDecimal geschwisternBonus2Kind;
 	private BigDecimal geschwisternBonus3Kind;
 
-	private BigDecimal verfuegteZeiteinheit; //Betreuungtage oder Betreuungsstunden pro Monat
+	protected BigDecimal verfuegteZeiteinheit; //Betreuungtage oder Betreuungsstunden pro Monat
 
 	@Override
 	public void calculate(
@@ -77,62 +77,50 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal anspruchsberechtigteZeiteinheiten = calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
 		BigDecimal betreuungsZeiteinheiten = calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(input.getBetreuungspensumProzent());
 
-		BigDecimal gutscheinProZeieinheitAufgrundEinkommen = calculateBGProZeiteinheitByEinkommen();
-		BigDecimal gutscheinProZeiteinheitVorZuschlagUndSelbstbehalt = calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(gutscheinProZeieinheitAufgrundEinkommen);
-		BigDecimal gutscheinProMonatVorZuschlagUndSelbstbehalt = EXACT.multiply(gutscheinProZeiteinheitVorZuschlagUndSelbstbehalt,
-			verfuegteZeiteinheit);
+		BigDecimal gutscheinVorZuschlagUndSelbstbehalt = calculateGutscheinVorZuschlagUndSelbstbehalt();
+		BigDecimal vollkostenGekuerzt = calculateVollkosten();
+		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkostenGekuerzt,gutscheinVorZuschlagUndSelbstbehalt);
 
-		BigDecimal vollkostenGekuerzt = calculateVollkosten(this.verfuegteZeiteinheit);
-		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkostenGekuerzt,gutscheinProMonatVorZuschlagUndSelbstbehalt);
-		BigDecimal minimalerSelbstbehalt = EXACT.multiply(getMinimalTarif(), verfuegteZeiteinheit);
+		BigDecimal minimalerSelbstbehalt = calculateMinimalerSelbstbehalt();
 		BigDecimal selbstbehaltDerEltern = calculateEffektiverSelbstbehaltEltern(differenzVollkostenUndGutschein, minimalerSelbstbehalt);
+		BigDecimal zuschlag = calculateZuschlag();
 
-		BigDecimal gutscheinProMonatGekuerzt = calculateGutscheinProMonatGekuerzt(differenzVollkostenUndGutschein, gutscheinProMonatVorZuschlagUndSelbstbehalt);
-		BigDecimal zuschlagProMonat = calculateZuschlagProMonat();
-		BigDecimal guscheinProMonatGekuerztInklZuschlag = EXACT.add(gutscheinProMonatGekuerzt, zuschlagProMonat);
-		BigDecimal gutscheinProMonatVorAbzugSelbstbehalt
-			= EXACT.add(gutscheinProMonatVorZuschlagUndSelbstbehalt, zuschlagProMonat);
-		BigDecimal gutscheinProMonat =  EXACT.subtract(gutscheinProMonatVorAbzugSelbstbehalt, selbstbehaltDerEltern);
-		BigDecimal gutscheinProZeiteinheit = calculateGutscheinProZeiteinheit(gutscheinProMonat);
+		BigDecimal gutscheinGekuerzt = calculateGutscheinGekuerzt(differenzVollkostenUndGutschein, gutscheinVorZuschlagUndSelbstbehalt);
+		BigDecimal guscheinGekuerztInklZuschlag = EXACT.add(gutscheinGekuerzt, zuschlag);
+		BigDecimal gutscheinVorAbzugSelbstbehalt = EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, zuschlag);
+
+		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehalt, selbstbehaltDerEltern);
+		BigDecimal gutscheinProMonat = calculateGutscheinProMonat(gutschein);
+		BigDecimal vollkostenProMonat = calculateVollkostenProMonat(vollkostenGekuerzt);
 
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 
-		result.setVollkosten(vollkostenGekuerzt);
+		result.setVollkosten(vollkostenProMonat);
 		result.setMinimalerElternbeitrag(minimalerSelbstbehalt);
 		result.setElternbeitrag(selbstbehaltDerEltern);
 		result.setMinimalerElternbeitragGekuerzt(minimalerSelbstbehalt);
-		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(guscheinProMonatGekuerztInklZuschlag);
-		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinProMonatVorAbzugSelbstbehalt);
+		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(guscheinGekuerztInklZuschlag);
+		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinVorAbzugSelbstbehalt);
 		result.setVerguenstigung(gutscheinProMonat);
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungsZeiteinheiten);
 		result.setBgPensumZeiteinheit(verfuegteZeiteinheit);
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
-		result.setVerguenstigungProZeiteinheit(gutscheinProZeiteinheit);
+		result.setVerguenstigungProZeiteinheit(gutschein);
 
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
 	}
 
-	private BigDecimal calculateGutscheinProZeiteinheit(BigDecimal gutscheinProMonat) {
-		if (gutscheinProMonat.compareTo(BigDecimal.ZERO) <= 0) {
-			return BigDecimal.ZERO;
-		}
-
-		return EXACT.divide(gutscheinProMonat, this.verfuegteZeiteinheit);
-	}
-
-	protected BigDecimal calculateGutscheinProMonatGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinProMonatVorZuschlagUndSelbstbehalt) {
+	protected BigDecimal calculateGutscheinGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinVorZuschlagUndSelbstbehalt) {
 		if(differenzVollkostenUndGutschein.compareTo(BigDecimal.ZERO) < 0) {
-			return EXACT.add(gutscheinProMonatVorZuschlagUndSelbstbehalt, differenzVollkostenUndGutschein);
+			return EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, differenzVollkostenUndGutschein);
 		}
 
-		return gutscheinProMonatVorZuschlagUndSelbstbehalt;
+		return gutscheinVorZuschlagUndSelbstbehalt;
 	}
-
-	protected abstract BigDecimal calculateVollkosten(BigDecimal verfuegteZeiteinheiten);
 
 	private BigDecimal calculateGeschwisternBonus2Kind() {
 		//SelbstbehaltElternProzent * 50% * VollkostenTarif
@@ -151,7 +139,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), pensum, anteilMonat);
 	}
 
-	private BigDecimal calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {
+	protected BigDecimal calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {
 		BigDecimal gutscheinProTagVorZuschlagUndSelbstbahalt = gutscheinProTagAufgrundEinkommen.add(BigDecimal.ZERO);
 
 		if(inputIsGeschwisternBonus2Kind) {
@@ -225,12 +213,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return EXACT.subtract(getVollkostenTarif(), getMinimalTarif());
 	}
 
-	private BigDecimal calculateZuschlagProMonat() {
-		BigDecimal zuschlagProTag = inputZuschlagErhoeterBeterungsbedarf;
+	protected BigDecimal calculateZuschlagProZeiteinheit() {
+		BigDecimal zuschlagProZeiteinheit = inputZuschlagErhoeterBeterungsbedarf;
 		BigDecimal zuschlagKitaPlus = inputIsKitaPlusZuschlag ? getKitaPlusZuschlag() : BigDecimal.ZERO;
 
-		BigDecimal totalZuschlagProTag = EXACT.add(zuschlagProTag, zuschlagKitaPlus);
-		return EXACT.multiply(verfuegteZeiteinheit, totalZuschlagProTag);
+		return EXACT.add(zuschlagProZeiteinheit, zuschlagKitaPlus);
 	}
 
 	protected BigDecimal getZ() {
@@ -262,6 +249,12 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return this.selbstBehaltElternProzent;
 	}
 
+	protected abstract BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt);
+	protected abstract BigDecimal calculateZuschlag();
+	protected abstract BigDecimal calculateVollkosten();
+	protected abstract BigDecimal calculateGutscheinProMonat(BigDecimal gutschein);
+	protected abstract BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt();
+	protected abstract BigDecimal calculateMinimalerSelbstbehalt();
 	protected abstract BigDecimal getMinimalTarif();
 	protected abstract PensumUnits getZeiteinheit();
 	protected abstract BigDecimal getVollkostenTarif();

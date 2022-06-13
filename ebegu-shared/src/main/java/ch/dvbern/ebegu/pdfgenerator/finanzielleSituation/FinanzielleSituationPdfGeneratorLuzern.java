@@ -257,6 +257,10 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 
 		FinanzielleSituationRow title = new FinanzielleSituationRow(
 			translate(EKV_TITLE,  String.valueOf(basisJahr)), gesuchstellerName);
+		if(hasSecondGesuchsteller) {
+			assert gesuch.getGesuchsteller2() != null;
+			title.setGs2(gesuch.getGesuchsteller2().extractFullName());
+		}
 		//EKV Tabelle ist dieselbe wie die Selbstdeklarations-Tabelle
 		document.add(createTableSelbstdeklaration(hasSecondGesuchsteller, 1, finSitDTO, title));
 	}
@@ -277,7 +281,9 @@ public class FinanzielleSituationPdfGeneratorLuzern extends FinanzielleSituation
 		table.addRow(createRow(TOTAL_ABZUEGE, finSitDTO.getAbzuege(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getAbzuegeGS2()));
 		table.addRow(createRow(ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION, finSitDTO.getVermoegenXPercentAnrechenbar(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getVermoegenXPercentAnrechenbarGS2()));
 		table.addRow(createRow(MASSG_EINK, finSitDTO.getMassgebendesEinkVorAbzFamGr(gesuchstellerNumberValue1), hasSecondGS, finSitDTO.getMassgebendesEinkVorAbzFamGrGS2()));
-
+		if(hasSecondGS) {
+			table.addRow(createRow(TOTAL_MASSG_EINK, null, true, finSitDTO.getMassgebendesEinkVorAbzFamGr()));
+		}
 		return table.createTable();
 	}
 

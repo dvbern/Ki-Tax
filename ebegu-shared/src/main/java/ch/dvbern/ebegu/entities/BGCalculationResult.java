@@ -153,6 +153,9 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private BigDecimal verguenstigungMahlzeitenTotal;
 
+	@Column(nullable = false)
+	private boolean auszahlungAnEltern;
+
 	@Valid
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -208,6 +211,8 @@ public class BGCalculationResult extends AbstractEntity {
 		if (toCopy.tsCalculationResultOhnePaedagogischerBetreuung != null) {
 			this.tsCalculationResultOhnePaedagogischerBetreuung = new TSCalculationResult(toCopy.tsCalculationResultOhnePaedagogischerBetreuung);
 		}
+
+		this.auszahlungAnEltern = toCopy.auszahlungAnEltern;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -246,7 +251,8 @@ public class BGCalculationResult extends AbstractEntity {
 		this.elternbeitrag = roundToFrankenRappen(elternbeitrag);
 		this.minimalerElternbeitragGekuerzt = roundToFrankenRappen(minimalerElternbeitragGekuerzt);
 		this.verguenstigung = roundToFrankenRappen(verguenstigung);
-		this.verguenstigungProZeiteinheit = roundToFrankenRappen(verguenstigungProZeiteinheit);
+		//verguenstigung pro Zeiteinheit soll auf den Rappen genau berechnet werden
+		this.verguenstigungProZeiteinheit = MathUtil.ZWEI_NACHKOMMASTELLE.from(verguenstigungProZeiteinheit);
 
 		this.betreuungspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(betreuungspensumZeiteinheit);
 		this.anspruchspensumZeiteinheit = zeiteinheitenRoundingStrategy.apply(anspruchspensumZeiteinheit);
@@ -285,6 +291,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("einkommensjahr", einkommensjahr)
 			.add("massgebendesEinkommenVorAbzugFamgr", massgebendesEinkommenVorAbzugFamgr)
 			.add("abzugFamGroesse", abzugFamGroesse)
+			.add("auszahlungAnEltern", auszahlungAnEltern)
 			.toString();
 	}
 
@@ -312,7 +319,8 @@ public class BGCalculationResult extends AbstractEntity {
 			minimalesEwpUnterschritten == otherResult.minimalesEwpUnterschritten &&
 			Objects.equals(einkommensjahr, otherResult.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
-			MathUtil.isSame(verguenstigungProZeiteinheit, otherResult.verguenstigungProZeiteinheit);
+			MathUtil.isSame(verguenstigungProZeiteinheit, otherResult.verguenstigungProZeiteinheit) &&
+			auszahlungAnEltern == otherResult.isAuszahlungAnEltern();
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -336,8 +344,9 @@ public class BGCalculationResult extends AbstractEntity {
 				TSCalculationResult.isSameSichtbareDaten(
 					thisEntity.tsCalculationResultOhnePaedagogischerBetreuung,
 					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung) &&
-				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit)
-			));
+				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
+				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
+		));
 	}
 
 	/**
@@ -386,7 +395,8 @@ public class BGCalculationResult extends AbstractEntity {
 				MathUtil.isSame(thisEntity.massgebendesEinkommenVorAbzugFamgr, otherEntity.massgebendesEinkommenVorAbzugFamgr) &&
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
-				isSameZeiteinheiten(thisEntity, otherEntity)
+				isSameZeiteinheiten(thisEntity, otherEntity) &&
+				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
 		));
 	}
 
@@ -679,5 +689,13 @@ public class BGCalculationResult extends AbstractEntity {
 		int anspruchVorRegel = getAnspruchspensumProzent();
 		setAnspruchspensumProzent(0);
 		setAnspruchspensumRest(BigDecimal.valueOf(anspruchVorRegel));
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }

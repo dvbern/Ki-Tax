@@ -50,7 +50,31 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateVollkosten(BigDecimal verfuegteZeiteinheiten) {
+	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
+		//Bei KITA Rechner wurden die Vollkosten bereits pro Monat berechnet
+		return vollkostenGekuerzt;
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
+		//Bei KITA Rechner wird der Gutschein schon pro Monat berechnet
+		return gutschein;
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt() {
+		BigDecimal gutscheinProTagAufgrundEinkommen = calculateBGProZeiteinheitByEinkommen();
+		BigDecimal gutscheinProTagVorZuschlagUndSelbstbehalt = calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(gutscheinProTagAufgrundEinkommen);
+		return EXACT.multiply(gutscheinProTagVorZuschlagUndSelbstbehalt, verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateMinimalerSelbstbehalt() {
+		return EXACT.multiply(getMinimalTarif(), verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten() {
 		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
 		BigDecimal anspruchsPensum = BigDecimal.valueOf(input.getAnspruchspensumProzent());
 
@@ -61,6 +85,11 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		}
 
 		return input.getMonatlicheBetreuungskosten();
+	}
+
+	@Override
+	protected BigDecimal calculateZuschlag() {
+		return EXACT.multiply(verfuegteZeiteinheit, calculateZuschlagProZeiteinheit());
 	}
 
 	@Override
