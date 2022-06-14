@@ -15,6 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import "~style/variables";
+
 dv-error-messages {
     display: none;
 }
@@ -30,4 +32,8 @@ dv-error-messages {
     dv-error-messages {
         display: block;
     }
+}
+
+input.ng-touched.ng-invalid  {
+    background-color: @background-error-color;
 }

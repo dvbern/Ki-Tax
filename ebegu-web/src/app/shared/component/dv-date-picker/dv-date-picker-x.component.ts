@@ -43,6 +43,12 @@ export class DvDatePickerXComponent implements OnInit {
     @Input()
     public maxDate: moment.Moment;
 
+    @Input()
+    public datePickerEnabled: boolean = true;
+
+    @Input()
+    public inputId: string;
+
     @Output()
     public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();
 
