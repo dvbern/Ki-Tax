@@ -50,17 +50,14 @@
 						 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()">
 						<div class="col-sm-12 dv-input-container-medium">
 							<dv-input-container class="form-group">
-								<label class="md-no-float" for="eingangsdatum_ID">
-									<span [translate]="'EINGANGSDATUM'"
-										  [translateParams]="{typ: getGesuchModel().typ | translate}"></span>
-								</label>
+								<label for="eingangsdatum"
+									   class="required">{{'EINGANGSDATUM' | translate:{typ: getGesuchModel().typ | translate} }}</label>
 								<div class="dv-input-container-medium-label">
-									<dv-datepicker input-id="eingangsdatum_ID" name="eingangsdatum"
-												   ng-model="vm.getGesuchModel().eingangsdatum" ng-required="true"
-												   class="input-element">
-									</dv-datepicker>
-									<dv-error-messages input-id="eingangsdatum_ID" for="vm.form.eingangsdatum.$error"
-													   class="error"></dv-error-messages>
+									<dv-date-picker-x [required]="true"
+													  [inputId]="'eingangsdatum'"
+													  id="eingangsdatum"
+													  [datePickerEnabled]="false"
+													  [(date)]="getGesuchModel().eingangsdatum"></dv-date-picker-x>
 								</div>
 							</dv-input-container>
 						</div>
@@ -71,19 +68,19 @@
 						 dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst()">
 						<div class="col-sm-12 dv-input-container-medium">
 							<dv-input-container class="form-group">
-								<label class="md-no-float" for="regelnGueltigAb_ID">
+								<label class="md-no-float" for="alternativDatum">
 									<span [translate]="'REGELN_GUELTIG_AB'"></span>
 									<dv-tooltip [inputId]="'regelnGueltigAb_ID'"
 												[text]="'REGELN_GUELTIG_AB_HELP' | translate"></dv-tooltip>
 								</label>
 								<div class="dv-input-container-medium-label">
-									<dv-datepicker input-id="regelnGueltigAb_ID" name="regelnGueltigAb"
-												   ng-model="vm.getGesuchModel().regelnGueltigAb" ng-required="false"
-												   class="input-element">
-									</dv-datepicker>
-									<dv-error-messages input-id="regelnGueltigAb_ID"
-													   for="vm.form.regelnGueltigAb.$error"
-													   class="error"></dv-error-messages>
+									<dv-date-picker-x [(date)]="getGesuchModel().regelnGueltigAb"
+													  [required]="false"
+													  [inputId]="'alternativDatum'"
+													  id="alternativDatum"
+													  [datePickerEnabled]="false"
+													  class="input-element">
+									</dv-date-picker-x>
 								</div>
 							</dv-input-container>
 						</div>
