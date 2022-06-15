@@ -149,7 +149,7 @@
                         <div class="col-sm-12 dv-input-container-medium">
                             <p class="inline-hint margin-bottom-20 margin-top-20" translate>AUSWEIS_NACHWEIS_DESCRIPTION</p>
                             <dv-input-container class="form-group margin-bottom-50">
-                                <dv-file-upload
+                                <dv-multiple-file-upload
                                     (download)="vm.downloadAusweisDokument($event[0],$event[1])"
                                     [title]="'AUSWEIS_NACHWEIS'"
                                     [tooltip-text]="'AUSWEIS_NACHWEIS_TOOLTIP' | translate"
@@ -159,7 +159,7 @@
                                     [read-only]="vm.isGesuchReadonly()"
                                     [read-only-delete]="vm.isGesuchReadonly()"
                                 >
-                                </dv-file-upload>
+                                </dv-multiple-file-upload>
                                 <dv-error-messages input-id="ausweis_nachweis" for="vm.dvFileUploadError" class="error file-upload-error"></dv-error-messages>
                             </dv-input-container>
                         </div>
