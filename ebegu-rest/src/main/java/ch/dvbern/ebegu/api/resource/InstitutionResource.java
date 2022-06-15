@@ -181,7 +181,7 @@ public class InstitutionResource {
 
 		Mandant mandant = requireNonNull(persistedInstitution.getMandant());
 
-		if (!persistedInstitution.isLatsOnly() && (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien())) {
+		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
 			Benutzer benutzer = benutzerService.findBenutzer(adminMail, mandant)
 				.map(b -> {
 					if ((b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT && b.getRole() != UserRole.GESUCHSTELLER) ||
