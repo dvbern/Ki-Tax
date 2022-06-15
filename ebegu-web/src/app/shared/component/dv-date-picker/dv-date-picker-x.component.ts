@@ -15,8 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ControlContainer, NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {ControlContainer, NgForm, NgModel} from '@angular/forms';
 import * as moment from 'moment';
 
 @Component({
@@ -27,9 +27,6 @@ import * as moment from 'moment';
     viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
 })
 export class DvDatePickerXComponent implements OnInit {
-
-    // store if picker is touched to set css class for validation
-    public touched = false;
 
     @Input()
     public label: string;
@@ -43,9 +40,16 @@ export class DvDatePickerXComponent implements OnInit {
     @Input()
     public maxDate: moment.Moment;
 
+    /**
+     * Whether the mat-toggle for opening the calender is enabled. Defaults to true
+     */
     @Input()
     public datePickerEnabled: boolean = true;
 
+    /**
+     * Custom id to be used as id for the input field. Will also be used for the label.for attribute if a label is
+     * provided
+     */
     @Input()
     public inputId: string;
 
