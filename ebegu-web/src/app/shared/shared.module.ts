@@ -68,7 +68,8 @@ import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picke
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
-import {FileUploadComponent} from './component/file-upload/file-upload.component';
+import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
+import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
@@ -147,7 +148,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent,
+        MultipleFileUploadComponent,
+        SingleFileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,
@@ -218,7 +220,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         TooltipDirective,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent,
+        MultipleFileUploadComponent,
+        SingleFileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,

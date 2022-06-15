@@ -16,7 +16,7 @@
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
-import {FileUploadComponent} from '../app/shared/component/file-upload/file-upload.component';
+import {MultipleFileUploadComponent} from '../app/shared/component/multpile-file-upload/multiple-file-upload.component';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
@@ -133,7 +133,7 @@ export const GESUCH_JS_MODULE =
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
         .directive('dvFileUpload',
             downgradeComponent({
-                component: FileUploadComponent,
+                component: MultipleFileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
                 outputs: ['download', 'delete', 'uploadFile'],
             }))
