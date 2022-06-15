@@ -41,6 +41,10 @@
                 <span translate>TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 
+            <button *ngIf="isCreateLATSTSAllowed()" (click)="createLATSInstitutionTS();" class="dv-btn next-button">
+                <span translate>LATS_TAGESSCHULE_HINZUFUEGEN</span>
+            </button>
+
             <button *ngIf="isCreateFIAllowed()" (click)="createInstitutionFI();" class="dv-btn next-button">
                 <span translate>FERIENINSEL_HINZUFUEGEN</span>
             </button>

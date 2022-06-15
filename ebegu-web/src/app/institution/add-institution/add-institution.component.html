@@ -34,6 +34,9 @@
                 <div class="row" *ngIf="!isBGInstitution && gemeinden.length == 0" translate>
                     <div class="col-sm-12 well well-status-abgewiesen" translate>KEINE_GEMEINDE_KONFIGURATION</div>
                 </div>
+                <div *ngIf="isLatsInstitution" translate>
+                    <dv-warning>LATS_ONLY_WARNUNG</dv-warning>
+                </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">

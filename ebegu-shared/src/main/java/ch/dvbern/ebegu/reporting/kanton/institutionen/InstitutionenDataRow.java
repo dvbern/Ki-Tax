@@ -34,6 +34,7 @@ public class InstitutionenDataRow {
 	private String emailBenachrichtigungKiBonMail = null;
 	private String email = null;
 	private String name = null;
+	private String status = null;
 	private String anschrift = null;
 	private String strasse = null;
 	private String plz = null;
@@ -416,5 +417,13 @@ public class InstitutionenDataRow {
 
 	public void setEmailBenachrichtigungKiBonMail(String emailBenachrichtigungKiBonMail) {
 		this.emailBenachrichtigungKiBonMail = emailBenachrichtigungKiBonMail;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

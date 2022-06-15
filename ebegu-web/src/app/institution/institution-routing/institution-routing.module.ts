@@ -55,6 +55,10 @@ const states: NgHybridStateDeclaration[] = [
             betreuungsangebot: {
                 type: 'any',
             },
+            latsOnly: {
+                type: 'any',
+                value: false
+            }
         },
     },
     {

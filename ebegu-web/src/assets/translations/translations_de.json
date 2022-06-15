@@ -899,6 +899,7 @@
     "GEMEINDE_STATUS_EINGELADEN": "Eingeladen",
     "INSTITUTION_STATUS_AKTIV": "Aktiv",
     "INSTITUTION_STATUS_EINGELADEN": "Eingeladen",
+    "INSTITUTION_STATUS_NUR_LATS": "Nur Lastenausgleich",
     "INSTITUTION_STATUS_CHECK_REQUIRED": "(benötigt Überprüfung)",
     "INSTITUTION_CHECK_REQUIRED_BUTTON": "Stammdaten sind korrekt",
     "GELOESCHT": "Gelöscht",
@@ -2024,6 +2025,7 @@
     "FREIGABEQUITTUNG_AUSSTEHEND_ZURUECKZIEHEN": "(Freigabe zurückziehen und Antrag erneut bearbeiten)",
     "FREIGABE_GESUCH_ALTE_FREIGABEQUITTUNG": "Der Antrag wurde nach der Freigabe erneut von den Antragstellenden bearbeitet. Bitte scannen Sie die neue Freigabequittung.",
     "TAGESSCHULE_HINZUFUEGEN": "Tagesschule hinzufügen",
+    "LATS_TAGESSCHULE_HINZUFUEGEN": "Tagesschule für Lastenausgleich hinzufügen",
     "FERIENINSEL_HINZUFUEGEN": "Ferieninsel hinzufügen",
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
@@ -2913,5 +2915,6 @@
     "SUPPORT_MAIL": "support@kibon.ch",
     "ONBARDING_HILFE": "Benötigen Sie Hilfe?",
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Benötigen Sie Hilfe?</b><br><br>Haben Sie Fragen oder benötigen Sie Hilfe? Als Antragsteller/in oder Unterstützungsdienst melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten. Der Support für Antragsteller/innen und Unterstützungsdienste wird von der zuständigen Gemeinde durchgeführt.<br>",
+    "LATS_ONLY_WARNUNG": "Achtung: Ihre Gemeinde hat das Tagesschule Modul nicht ativiert. Diese Tagesschule wird im Status NUR_LASTENAUSGLEICH erstellt und kann nur im Lastenausgleich für die Tagesschulen verwendet werden.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
