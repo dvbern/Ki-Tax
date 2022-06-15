@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -41,6 +41,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly $translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly cd: ChangeDetectorRef
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -77,31 +78,37 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         }
         this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
             .then((response: TSGesuchsperiode[]) => {
-                this.yetUnusedGesuchsperiodenListe = angular.copy(response);
+                this.yetUnusedGesuchsperiodenListe = response;
+                this.cd.markForCheck();
             });
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public save(): Promise<TSGesuch> {
+    public save(navigateFunction: Function): void {
         this.showError = true;
         if (!this.isGesuchValid()) {
+            this.form.form.markAllAsTouched();
+            navigateFunction(undefined);
             return undefined;
         }
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return Promise.resolve(this.gesuchModelManager.getGesuch());
+            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveGesuchAndFall().then(
+        this.gesuchModelManager.saveGesuchAndFall().then(
             gesuch => {
                 // if sozialdienst Fall Step muss be updated
                 if (EbeguUtil.isNotNullOrUndefined(gesuch.dossier.fall.sozialdienstFall)) {
                     this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
                 }
+                this.cd.markForCheck();
                 return gesuch;
             },
-        ) as Promise<TSGesuch>;
+            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+        ).catch(err => console.error(err)).then(gesuch => navigateFunction(gesuch));
     }
 
     private isSavingNecessary(): boolean {
