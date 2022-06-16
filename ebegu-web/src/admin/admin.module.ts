@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
@@ -20,6 +21,7 @@ import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
+import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
@@ -40,6 +42,7 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .component('dvAdminView', new AdminViewComponentConfig())
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
+    .directive('dvGesuchsperiodeViewX', downgradeComponent({component: GesuchsperiodeViewXComponent}))
     .component('benutzerListView', new BenutzerListViewComponentConfig())
     .run(adminRun);
 

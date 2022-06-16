@@ -29,6 +29,7 @@ import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanziel
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
+import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
 import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
@@ -392,6 +393,17 @@ export const gesuchstellerRSProvider = {
     deps: ['$injector'],
 };
 
+// Global Cache Service
+export function globalCacheServiceFactory(i: IInjectorService): GlobalCacheService {
+    return i.get('GlobalCacheService');
+}
+
+export const globalCacheServiceProvider = {
+    provide: GlobalCacheService,
+    useFactory: globalCacheServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -423,4 +435,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     berechnungsManagerProvider,
     listResourceRSProvider,
     gesuchstellerRSProvider,
+    globalCacheServiceProvider
 ];
