@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
@@ -138,7 +139,9 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
-		event.fire(institutionEventConverter.of(updatedStammdaten));
+		if (!updatedStammdaten.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
+			event.fire(institutionEventConverter.of(updatedStammdaten));
+		}
 	}
 
 	@Nonnull
@@ -231,7 +234,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(
 			institutionId,
 			true);
-		if (institutionStammdatenToRemove != null) {
+		if (institutionStammdatenToRemove != null && !institutionStammdatenToRemove.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			rueckforderungFormularService.getRueckforderungFormulareByInstitutionStammdaten(
 							institutionStammdatenToRemove)

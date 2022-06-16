@@ -119,11 +119,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		return fontTabelle;
 	}
 
-	@Override
-	protected String getTextGutschein() {
-		return translate(GUTSCHEIN_AN_INSTITUTION);
-	}
-
 	private Paragraph createParagraphTitle(String title) {
 		return PdfUtil.createBoldParagraph(title, 1);
 	}

@@ -18,8 +18,11 @@
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -39,10 +42,13 @@ describe('InstitutionListComponent', () => {
             ]);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['isRole', 'isOneOfRoles']);
+            ['isRole', 'isOneOfRoles', 'principal$']);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+
+        authServiceSpy.principal$ = of(new TSBenutzer());
 
         TestBed.configureTestingModule({
             imports: [
@@ -54,6 +60,7 @@ describe('InstitutionListComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [InstitutionListComponent],
