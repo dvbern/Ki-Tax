@@ -17,51 +17,24 @@
 @import (reference) '../../../../style/variables.less';
 @import (reference) '../../../../style/mixins.less';
 
-.outer-table {
-    tr {
-        &.file-required {
-            background-color: @warning-light;
-            cursor: pointer;
-        }
-
-        &.file-uploaded {
-            background-color: @success-light;
-            cursor: pointer;
-        }
-    }
-
-    tr:hover {
-        background: none;
-
-        &.file-required {
-            background-color: @warning-light;
-        }
-
-        &.file-uploaded {
-            background-color: @success-light;
-        }
-    }
+.container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 6rem;
+    padding-left: 0;
 }
 
-.table .table.inner-table {
-    background: none;
-
-    :hover {
-        background: none;
-    }
-
-    td, th {
-        background-color: transparent;
-        border: none;
-        font-size: 1.2rem;
-        height: 3rem !important;
-    }
-
-    th {
-        padding: 0 0.8rem 0;
-    }
+.file-title {
+    width: 620px;
 }
 
-td.no-padding {
-    padding: 0;
+.spacer {
+    width: 100%;
+}
+
+.symbol-container {
+    display: flex;
+    gap: 10px;
 }
