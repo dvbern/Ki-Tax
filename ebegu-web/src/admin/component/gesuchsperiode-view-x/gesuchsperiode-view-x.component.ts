@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {IFormController} from 'angular';
@@ -29,6 +30,7 @@ const log = LogFactory.createLog('GesuchsperiodeViewXComponent');
 @Component({
   selector: 'dv-gesuchsperiode-view-x',
   templateUrl: './gesuchsperiode-view-x.component.html',
+  styleUrls: ['./gesuchsperiode-view-x.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
@@ -37,10 +39,11 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
 
     public form: IFormController;
     public gesuchsperiode: TSGesuchsperiode;
-    public einstellungenGesuchsperiode: TSEinstellung[];
+    public einstellungenGesuchsperiode: MatTableDataSource<TSEinstellung>;
+
+    public displayedColumns: string[] = ['key', 'value'];
 
     public initialStatus: TSGesuchsperiodeStatus;
-    public datumFreischaltungTagesschule: moment.Moment;
 
     public isErlaeuterungDE: boolean = false;
     public isErlaeuterungFR: boolean = false;
@@ -112,7 +115,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
                 return this.$translate.instant(a.key.toString())
                     .localeCompare(this.$translate.instant(b.key.toString()));
             });
-            this.einstellungenGesuchsperiode = response;
+            this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
         });
     }
 
@@ -169,7 +172,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.einstellungenGesuchsperiode.forEach(param => this.einstellungenRS.saveEinstellung(param));
+        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
@@ -408,5 +411,9 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
             default:
                 return;
         }
+    }
+
+    public doFilter(value: string): void {
+        this.einstellungenGesuchsperiode.filter = value.trim().toLocaleLowerCase();
     }
 }

@@ -257,37 +257,48 @@
                                     <hr class="header"/>
                                 </div>
                             </div>
-                            <!-- Parameter-Liste (repeater) -->
-                            <div *ngFor="let paramgp of einstellungenGesuchsperiode" class="row">
-                                <div class="col-md-12 form-group">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label [translate]="paramgp.key" class="md-no-float"
-                                                   for="propertyValue_{{paramgp.key}}"></label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input id="propertyValue_{{paramgp.key}}" type="text"
-                                                   [name]="'propertyValue_'+paramgp.key"
-                                                   [(ngModel)]="paramgp.value"
-                                                   dv-max-length class="input-element" required
-                                                   [disabled]="!periodenParamsEditable()">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3 col-md-offset-9">
-                                            <dv-error-messages for="form['propertyName_' + paramgp.name].$error"
-                                                               class="error"></dv-error-messages>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <div class="filter">
+                                <input class="filter"
+                                       matInput
+                                       type="text"
+                                       (keyup)="doFilter($event.target.value)"
+                                       placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
                             </div>
+
+                            <!-- Parameter-Liste (repeater) -->
+                            <mat-table [dataSource]="einstellungenGesuchsperiode">
+
+                                <ng-container matColumnDef="key">
+                                    <td class="key" *matCellDef="let item">
+                                        <label>
+                                            {{item.key | translate}}
+                                        </label>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="value">
+                                    <td class="value" *matCellDef="let item">
+                                        <input id="propertyValue_{{item.key}}" type="text"
+                                               [name]="'propertyValue_'+item.key"
+                                               [(ngModel)]="item.value"
+                                               dv-max-length class="input-element" required
+                                               [disabled]="!periodenParamsEditable()">
+                                    </td>
+                                </ng-container>
+
+                                <dv-error-messages for="form['propertyName_' + paramgp.name].$error"
+                                                   class="error"></dv-error-messages>
+
+                                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+                            </mat-table>
                             <!-- Parameter pro Gesuchsperiode Buttons-->
                             <div class="row" *ngIf="!isReadonly()">
                                 <div class="col-md-12" *ngIf="gesuchsperiode">
                                     <dv-loading-button type="button"
-                                                       (click)="saveParameterByGesuchsperiode()"
+                                                       (buttonClick)="saveParameterByGesuchsperiode()"
                                                        buttonClass="color-success">
-                                            <span>{{(einstellungenGesuchsperiode && einstellungenGesuchsperiode[0].isNew())
+                                            <span>{{(einstellungenGesuchsperiode && einstellungenGesuchsperiode.data[0].isNew())
                                                              ? ('SAVE' | translate) : ('UPDATE' | translate)}}</span>
                                     </dv-loading-button>
                                 </div>
