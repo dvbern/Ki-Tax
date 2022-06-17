@@ -25,7 +25,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {AbstractAdminViewX} from '../../abstractAdminViewX';
 import {EinstellungRS} from '../../service/einstellungRS.rest';
 
-const log = LogFactory.createLog('GesuchsperiodeViewXComponent');
+const LOG = LogFactory.createLog('GesuchsperiodeViewXComponent');
 
 @Component({
   selector: 'dv-gesuchsperiode-view-x',
@@ -138,7 +138,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
             text: dialogText
         }}).afterClosed().subscribe(() => {
             this.doSave();
-        });
+        }, error => LOG.error(error));
         return;
     }
 
@@ -194,7 +194,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
         if (this.gesuchsperiode.status === TSGesuchsperiodeStatus.GESCHLOSSEN) {
             return 'GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN';
         }
-        log.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
+        LOG.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
 
         return null;
     }

@@ -38,5 +38,4 @@ export class AbstractAdminViewX implements OnInit {
         return false;
     }
 
-
 }
