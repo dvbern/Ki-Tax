@@ -137,9 +137,9 @@ export class EbeguMutationState implements Ng1StateDeclaration {
     public name = 'gesuch.mutation';
     public url = '/mutation/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: any = {
         gesuchViewPort: {
-            template: fallCreationView,
+            component: FallCreationViewXComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -159,9 +159,9 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
     public name = 'gesuch.erneuerung';
     public url = '/erneuerung/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
-    public views: { [name: string]: Ng1StateDeclaration } = {
+    public views: any = {
         gesuchViewPort: {
-            template: fallCreationView,
+            component: FallCreationViewXComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
