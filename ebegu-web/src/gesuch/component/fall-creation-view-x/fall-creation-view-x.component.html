@@ -15,14 +15,12 @@
 
 					<!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
 					<div *ngIf="isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
-						<p class="ebegu-h3" translate="'GESUCHSPERIODE_INAKTIV_HINT'">
-						</p>
+						<p class="ebegu-h3" translate>GESUCHSPERIODE_INAKTIV_HINT</p>
 					</div>
 					<!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
 					<div *dvNgShowElement="getGesuchModel().isFolgegesuch(); roles: getGesuchstellerOnlyRoles()"
 						 class="well well-status-warten">
-						<p class="ebegu-h3" translate="'FOLGEGESUCH_HINT'">
-						</p>
+						<p class="ebegu-h3" translate>FOLGEGESUCH_HINT</p>
 					</div>
 
 					<!--Willkommnstext bei Erstgesuch-->
@@ -35,7 +33,7 @@
 					<!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
 					<div *ngIf="!gesuchModelManager.isGesuch()" class="margin-bottom-20">
 
-						<h3 class="ebegu-h2" translate="'MUTATION_AUSWAHL_TEXT_1'"></h3>
+						<h3 class="ebegu-h2" translate>MUTATION_AUSWAHL_TEXT_1</h3>
 						<br>
 						<p>
 							<span [innerHTML]="'MUTATION_AUSWAHL_TEXT_2' | translate"></span>
@@ -84,7 +82,7 @@
 					</div>
 
 					<!-- Gesuchsperiode: Auswahl -->
-					<div *ngIf="canChangeGesuchsperiode()">
+					<div *dvNgShowElement="canChangeGesuchsperiode(); roles: getAllRolesButGesuchstellerSozialdienst()">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
