@@ -334,6 +334,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     private initAfterKiBonAnfrageUpdate(): void {
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            TSWizardStepStatus.NOK);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.initSelbstaendigkeit();
     }
