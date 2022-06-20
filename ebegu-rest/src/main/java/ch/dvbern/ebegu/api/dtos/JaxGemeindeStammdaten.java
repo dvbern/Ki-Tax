@@ -54,7 +54,7 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	private JaxAdresse tsAdresse;
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
-	@NonNull
+	@Nonnull
 	private JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
@@ -167,12 +167,12 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 		this.beschwerdeAdresse = beschwerdeAdresse;
 	}
 
-	@NonNull
+	@Nonnull
 	public JaxGemeindeStammdatenKorrespondenz getGemeindeStammdatenKorrespondenz() {
 		return gemeindeStammdatenKorrespondenz;
 	}
 
-	public void setGemeindeStammdatenKorrespondenz(@NonNull JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
+	public void setGemeindeStammdatenKorrespondenz(@Nonnull JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
 		this.gemeindeStammdatenKorrespondenz = gemeindeStammdatenKorrespondenz;
 	}
 
