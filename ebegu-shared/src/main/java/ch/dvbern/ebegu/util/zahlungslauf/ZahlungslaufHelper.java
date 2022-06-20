@@ -25,6 +25,8 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -55,17 +57,6 @@ public interface ZahlungslaufHelper extends Serializable {
 	void setZahlungsstatus(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status);
-
-	/**
-	 * Ermittelt das Zahlungsobjekt fuer den Empfaenger des uebergebenen Zeitabschnitts. Falls im uebergebenen
-	 * Auftrag schon eine Zahlung fuer diesen Empfaenger vorhanden ist, wird diese zurueckgegeben, ansonsten
-	 * eine neue erstellt.
-	 */
-	@Nonnull
-	Zahlung findZahlungForEmpfaenger(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution);
 
 	/**
 	 * Gibt den auszuzahlenden Betrag zurueck.

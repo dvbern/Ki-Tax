@@ -183,6 +183,8 @@ public class BGCalculationInput {
 
 	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
 
+	private boolean isAuszahlungAnEltern = false;
+
 	//für TFO Luzern
 	private BigDecimal stuendlicheVollkosten;
 
@@ -249,6 +251,7 @@ public class BGCalculationInput {
 		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
+		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
 	}
 
 	@Nonnull
@@ -681,6 +684,14 @@ public class BGCalculationInput {
 		this.verguenstigungMahlzeitenBeantragt = verguenstigungMahlzeitenBeantragt;
 	}
 
+	public boolean isAuszahlungAnEltern() {
+		return isAuszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		isAuszahlungAnEltern = auszahlungAnEltern;
+	}
+
 	public BigDecimal getKostenAnteilMonat() {
 		return kostenAnteilMonat;
 	}
@@ -787,6 +798,7 @@ public class BGCalculationInput {
 		this.isKesbPlatzierung = this.isKesbPlatzierung || other.isKesbPlatzierung;
 		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
+		this.isAuszahlungAnEltern = this.isAuszahlungAnEltern || other.isAuszahlungAnEltern;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -933,7 +945,8 @@ public class BGCalculationInput {
 			this.isKesbPlatzierung == other.isKesbPlatzierung &&
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
-			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten);
+			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
+			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -960,7 +973,8 @@ public class BGCalculationInput {
 			this.tsInputMitBetreuung.isSame(that.tsInputMitBetreuung) &&
 			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == that.sozialhilfeempfaenger &&
-			this.isZuSpaetEingereicht() == that.isZuSpaetEingereicht();
+			this.isZuSpaetEingereicht() == that.isZuSpaetEingereicht() &&
+			this.isAuszahlungAnEltern == that.isAuszahlungAnEltern;
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

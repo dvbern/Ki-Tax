@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSInstitutionStatus {
-    AKTIV = 'AKTIV',
-    KONFIGURATION = 'KONFIGURATION',
-    EINGELADEN = 'EINGELADEN',
-    NUR_LATS = 'NUR_LATS'
-}
+alter table bgcalculation_result add auszahlung_an_eltern bit not null default 0;
+alter table bgcalculation_result_aud add auszahlung_an_eltern bit;

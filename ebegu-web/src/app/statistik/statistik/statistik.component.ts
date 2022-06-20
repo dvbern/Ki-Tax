@@ -25,6 +25,7 @@ import {Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParameterType';
 import {TSBatchJobInformation} from '../../../models/TSBatchJobInformation';
@@ -121,6 +122,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((tagesschulenStammdatenList: TSInstitutionStammdaten[]) => {
                 this.tagesschulenStammdatenList = tagesschulenStammdatenList
+                    .filter(t => t.institution.status !== TSInstitutionStatus.NUR_LATS)
                     .filter(t => t.institutionStammdatenTagesschule?.einstellungenTagesschule);
                 this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
                 this.cd.markForCheck();

@@ -169,6 +169,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 			target.setBetreuungInGemeinde(this.getBetreuungInGemeinde());
 			target.setKitaPlusZuschlag(this.getKitaPlusZuschlag());
+			target.setKitaPlusZuschlagBestaetigt(this.isKitaPlusZuschlagBestaetigt());
 			target.setErweitereteBeduerfnisseBetrag(this.getErweitereteBeduerfnisseBetrag());
 			break;
 		case ERNEUERUNG:

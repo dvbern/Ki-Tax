@@ -201,6 +201,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
 				getLocale());
 		}
+
+		// Information, ob die Zahlung an die Eltern oder Institution ausbezahlt wird übernehmen.
+		zeitabschnitt.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
 		return zeitabschnitt;
 	}
 

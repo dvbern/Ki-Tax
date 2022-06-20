@@ -46,8 +46,12 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 		if (!isConfigueredForGemeinde(parameterDTO)) {
 			return false;
 		}
+		// (1) Nur Kita und TFO
+		if (!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+			return false;
+		}
 		boolean hasAnspruch = true;
-		// (1) Anspruchsgrenze
+		// (2) Anspruchsgrenze
 		EinschulungTyp einschulungsTypAnspruchsgrenze = getAnspruchsgrenzeSchulstufe(inputGemeinde, parameterDTO);
 		EinschulungTyp einschulungTyp = inputGemeinde.getEinschulungTyp();
 		if (einschulungTyp != null) {
@@ -57,17 +61,17 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 				addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_SCHULSTUFE);
 			}
 		}
-		// (2) Sozialhilfe
+		// (3) Sozialhilfe
 		if (inputGemeinde.isSozialhilfeempfaenger()) {
 			hasAnspruch = false;
 			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE);
 		}
-		// (3) Betreuung in Bern
+		// (4) Betreuung in Bern
 		if (!inputGemeinde.isBetreuungInGemeinde()) {
 			hasAnspruch = false;
 			addMessage(inputGemeinde, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
 		}
-		// (4) Lange Abwesenheit
+		// (5) Lange Abwesenheit
 		if (inputGemeinde.isLongAbwesenheit()) {
 			// Bei Abwesenheit wird der Anspruch *nicht* auf 0 gesetzt, darum muss es hier speziell behandelt werden
 			hasAnspruch = false;

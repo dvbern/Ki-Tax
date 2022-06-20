@@ -61,6 +61,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 					MergeFieldInstitutionen.emailBenachrichtigungKiBonMail,
 					dataRow.getEmailBenachrichtigungKiBonMail());
 			excelRowGroup.addValue(MergeFieldInstitutionen.name, dataRow.getName());
+			excelRowGroup.addValue(MergeFieldInstitutionen.status, dataRow.getStatus());
 			excelRowGroup.addValue(MergeFieldInstitutionen.anschrift, dataRow.getAnschrift());
 			excelRowGroup.addValue(MergeFieldInstitutionen.strasse, dataRow.getStrasse());
 			excelRowGroup.addValue(MergeFieldInstitutionen.plz, dataRow.getPlz());
@@ -120,6 +121,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 				MergeFieldInstitutionen.emailBenachrichtigungKiBonMailTitle,
 				ServerMessageUtil.getMessage("Reports_emailBenachrichtigungKiBonMailTitle", locale, mandant));
 		mergerDTO.addValue(MergeFieldInstitutionen.nameTitle, ServerMessageUtil.getMessage("Reports_nameTitle", locale, mandant));
+		mergerDTO.addValue(MergeFieldInstitutionen.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale, mandant));
 		mergerDTO.addValue(MergeFieldInstitutionen.anschriftTitle, ServerMessageUtil.getMessage("Reports_anschriftTitle", locale, mandant));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.strasseTitle,

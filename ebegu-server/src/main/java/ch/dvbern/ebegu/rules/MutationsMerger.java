@@ -60,6 +60,12 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
  * Dieselbe Regeln gilt für sämtliche Berechnungen des Anspruchs, d.h. auch für Fachstellen. Grundsätzlich lässt sich sagen:
  * Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
  * Reduktionen des Anspruchs sind auch rückwirkend erlaubt
+ * <p>
+ * Regel für das Setzten des Flags auszahlungAnEltern bei einer Mutation:
+ * - Flag hat denselben Wert im aktuellen als auch im Vorgänger Zeitabschnitt -> keine Aktion
+ * - Flag hat nicht denselben Wert im aktuellen wie im Vorgänger Zeitabschnitt
+ * 		- Wenn Zahlung bereits ausgeführt -> Wert des Vorgängers übernehmen
+ * 	    - Wenn Zahlung noch nicht ausgeführt -> Wert des aktuellen überhnehmen
  */
 @SuppressWarnings("PMD.CollapsibleIfStatements") // wegen besserer Lesbarkeit
 public final class MutationsMerger extends AbstractAbschlussRule {
@@ -115,6 +121,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
 
 				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
+				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt, vorangehenderAbschnitt);
 
 				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
 					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
@@ -139,6 +146,15 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			}
 		}
 		return zeitabschnitte;
+	}
+
+	private void handleAuszahlungAnElternFlag(
+		VerfuegungZeitabschnitt aktuellerAbschnitt,
+		VerfuegungZeitabschnitt vorangehenderAbschnitt) {
+
+		if (vorangehenderAbschnitt.getZahlungsstatus().isVerrechnet() || vorangehenderAbschnitt.getZahlungsstatus().isVerrechnend()) {
+			aktuellerAbschnitt.setAuszahlungAnEltern(vorangehenderAbschnitt.isAuszahlungAnEltern());
+		}
 	}
 
 	private void handleEinreichfrist(BGCalculationInput inputAsiv, LocalDate mutationsEingansdatum) {

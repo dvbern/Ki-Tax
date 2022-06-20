@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,10 +38,12 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -63,7 +66,8 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.institutionclient.InstitutionClientEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
-import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections4.map.HashedMap;
@@ -191,6 +195,17 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
+
+		List<Predicate> predicates = new ArrayList<>();
+		Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
+		Predicate predicateActive = cb.between(
+			cb.literal(LocalDate.now()),
+			dateRangePath.get(DateRange_.gueltigAb),
+			dateRangePath.get(DateRange_.gueltigBis)
+		);
+		predicates.add(predicateActive);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
 	}
 

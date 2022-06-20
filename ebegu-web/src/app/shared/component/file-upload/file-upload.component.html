@@ -18,7 +18,7 @@
     <table class="table outer-table" width="100%">
         <thead></thead>
         <tbody>
-        <tr [ngClass]="{'file-required': files?.length === 0, 'file-uploaded': files?.length > 0}"
+        <tr [ngClass]="{'file-required': !files || files.length === 0, 'file-uploaded': files?.length > 0}"
         (click)="click(fileInput)">
             <td style="white-space: pre-wrap;">{{title | translate}}
                 <dv-tooltip style="white-space: normal;" *ngIf="tooltipText?.length > 0" [text]="tooltipText" (click)="$event.stopPropagation()"></dv-tooltip>

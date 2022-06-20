@@ -3923,6 +3923,7 @@ public class JaxBConverter extends AbstractConverter {
 			tsCalculationResultToJax(zeitabschnitt.getTsCalculationResultOhnePaedagogischerBetreuung()));
 		jaxZeitabschn.setVerguenstigungMahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult()
 			.getVerguenstigungMahlzeitenTotal());
+		jaxZeitabschn.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern());
 		return jaxZeitabschn;
 	}
 

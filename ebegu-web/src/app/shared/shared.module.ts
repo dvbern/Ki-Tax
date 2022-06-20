@@ -88,6 +88,7 @@ import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
+import { WarningComponent } from './component/warning/warning.component';
 
 export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
@@ -174,7 +175,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguNumberPipe,
         DvValueinputXComponent,
         DvRadioInputXComponent,
-        DvCheckboxXComponent
+        DvCheckboxXComponent,
+        WarningComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -245,7 +247,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         EbeguNumberPipe,
         DvValueinputXComponent,
         DvRadioInputXComponent,
-        DvCheckboxXComponent
+        DvCheckboxXComponent,
+        WarningComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

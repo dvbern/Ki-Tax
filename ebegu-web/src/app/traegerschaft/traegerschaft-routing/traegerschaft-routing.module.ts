@@ -44,7 +44,7 @@ export const STATES: NgHybridStateDeclaration[] = [
         url: '/edit/:traegerschaftId',
         component: TraegerschaftEditComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getAllRolesForTraegerschaften(),
         },
     },
     {

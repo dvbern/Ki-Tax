@@ -32,6 +32,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,6 +98,11 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
+	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		//no-op: wird in Solothurn nicht angezeigt
+	}
+
+	@Override
 	protected float[] getVerfuegungColumnWidths() {
 		return DEFAULT_COLUMN_WIDTHS_VERFUEGUNG_TABLE;
 	}
@@ -111,11 +117,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
-	}
-
-	@Override
-	protected String getTextGutschein() {
-		return translate(GUTSCHEIN_AN_INSTITUTION);
 	}
 
 	private Paragraph createParagraphTitle(String title) {

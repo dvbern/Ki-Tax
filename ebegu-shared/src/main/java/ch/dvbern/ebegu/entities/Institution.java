@@ -157,6 +157,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		this.institutionExternalClients = institutionExternalClients;
 	}
 
+	public boolean isLatsOnly() {
+		return this.getStatus() != InstitutionStatus.NUR_LATS;
+	}
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
