@@ -75,7 +75,6 @@ import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Stateless
 @Local(PDFService.class)
@@ -364,9 +363,9 @@ public class PDFServiceBean implements PDFService {
 	}
 
 	@Override
-	@NonNull
+	@Nonnull
 	public byte[] generateMusterdokument(
-		@NonNull GemeindeStammdaten gemeindeStammdaten
+		@Nonnull GemeindeStammdaten gemeindeStammdaten
 	) throws MergeDocException {
 		Objects.requireNonNull(gemeindeStammdaten, "Das Argument 'gemeindeStammdaten' darf nicht leer sein");
 		authorizer.checkReadAuthorization(gemeindeStammdaten.getGemeinde());

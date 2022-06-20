@@ -10,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 @XmlRootElement(name = "gemeindeStammdatenKorrespondenz")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -24,34 +22,28 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 	private static final long serialVersionUID = 1413073353878066142L;
 
 	@NotNull
-	@NonNull
 	private Integer senderAddressSpacingLeft;
 
 	@NotNull
-	@NonNull
 	private Integer senderAddressSpacingTop;
 
 	@NotNull
-	@NonNull
 	private Integer receiverAddressSpacingLeft;
 
 	@NotNull
-	@NonNull
 	private Integer receiverAddressSpacingTop;
 
-	@Nullable
+	@NotNull
 	private Integer logoWidth;
 
 	@NotNull
-	@NonNull
 	private Integer logoSpacingLeft;
 
 	@NotNull
-	@NonNull
 	private Integer logoSpacingTop;
 
-	@NonNull
-	public static JaxGemeindeStammdatenKorrespondenz from(@NonNull GemeindeStammdatenKorrespondenz stammdaten) {
+	@NotNull
+	public static JaxGemeindeStammdatenKorrespondenz from(@NotNull GemeindeStammdatenKorrespondenz stammdaten) {
 		return new JaxGemeindeStammdatenKorrespondenz(
 			stammdaten.getSenderAddressSpacingLeft(),
 			stammdaten.getSenderAddressSpacingTop(),
@@ -63,7 +55,7 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 		);
 	}
 
-	public void apply(@NonNull GemeindeStammdatenKorrespondenz entity) {
+	public void apply(@NotNull GemeindeStammdatenKorrespondenz entity) {
 		entity.setSenderAddressSpacingLeft(senderAddressSpacingLeft);
 		entity.setSenderAddressSpacingTop(senderAddressSpacingTop);
 		entity.setReceiverAddressSpacingLeft(receiverAddressSpacingLeft);

@@ -32,7 +32,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface PDFService {
 
@@ -101,9 +100,9 @@ public interface PDFService {
 		boolean writeProtected
 	) throws MergeDocException;
 
-	@NonNull
+	@Nonnull
 	byte[] generateMusterdokument(
-		@NonNull GemeindeStammdaten gemeindeStammdaten
+		@Nonnull GemeindeStammdaten gemeindeStammdaten
 	) throws MergeDocException;
 
 	@Nonnull
