@@ -30,9 +30,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     public gesuchsperiodeId: string;
     @ViewChild(NgForm) private form: NgForm;
 
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
-    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    public showError: boolean = false;
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
@@ -42,7 +39,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly $translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -60,10 +57,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         //if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
         //  this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         // }
-    }
-
-    public setShowError(showError: boolean): void {
-        this.showError = showError;
     }
 
     private initViewModel(): void {
@@ -86,7 +79,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     // tslint:disable-next-line:cognitive-complexity
     public save(navigateFunction: Function): void {
-        this.showError = true;
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
             navigateFunction(undefined);
@@ -217,21 +209,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
         }
         return undefined;
-    }
-
-    /**
-     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
-     * gesuchsperiode set
-     */
-    public isThereAnyGesuchsperiode(): boolean {
-        return (this.yetUnusedGesuchsperiodenListe && this.yetUnusedGesuchsperiodenListe.length > 0)
-            || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
-    }
-
-    public showGesuchsperiodeReadonly(): boolean {
-        return !this.canChangeGesuchsperiode()
-            // do not show readonly gesuchsperioden for sozialdienst
-            && !TSRoleUtil.isSozialdienstRole(this.authServiceRS.getPrincipalRole());
     }
 
     /**

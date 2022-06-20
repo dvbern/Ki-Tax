@@ -44,7 +44,6 @@ import {EinkommensverschlechterungSolothurnViewComponent} from './component/eink
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
-import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
@@ -113,7 +112,6 @@ export const GESUCH_JS_MODULE =
         .component('abwesenheitView', new AbwesenheitViewComponentConfig())
         .component('erwerbspensumListView', new ErwerbspensumListViewComponentConfig())
         .component('erwerbspensumView', new ErwerbspensumViewComponentConfig())
-        .component('fallCreationView', new FallCreationViewComponentConfig())
         .component('verfuegenListView', new VerfuegenListViewComponentConfig())
         .component('verfuegenView', new VerfuegenViewComponentConfig())
         .component('dossierToolbar', new DossierToolbarComponentConfig())
