@@ -6,6 +6,7 @@ import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest'
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -250,4 +251,11 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         return this.gesuchModelManager.isGesuchReadonly();
     }
 
+    public getAllRolesButGesuchstellerSozialdienst(): ReadonlyArray<TSRole> {
+        return TSRoleUtil.getAllRolesButGesuchstellerSozialdienst();
+    }
+
+    public getGesuchstellerOnlyRoles(): ReadonlyArray<TSRole> {
+        return TSRoleUtil.getGesuchstellerOnlyRoles();
+    }
 }
