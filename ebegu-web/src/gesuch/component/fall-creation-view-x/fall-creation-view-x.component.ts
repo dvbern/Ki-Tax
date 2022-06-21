@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -40,6 +41,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly authServiceRS: AuthServiceRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly cd: ChangeDetectorRef,
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -54,9 +56,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     }
 
     private readStateParams(): void {
-        //if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
-        //  this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
-        // }
+        if (this.uiRouterGlobals.params.gesuchsperiodeId && this.uiRouterGlobals.params.gesuchsperiodeId !== '') {
+          this.gesuchsperiodeId = this.uiRouterGlobals.params.gesuchsperiodeId;
+         }
     }
 
     private initViewModel(): void {
