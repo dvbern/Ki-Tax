@@ -69,18 +69,20 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		table.addCell(titelCell);
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
 		table.addCell(new Phrase("", defaultFont));
-		PdfPCell unterschriftNameCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName(),
-			defaultFont));
-		unterschriftNameCell.setPaddingLeft(0);
-		unterschriftNameCell.setBorder(0);
-		table.addCell(unterschriftNameCell);
-		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftName2(),
-			defaultFont));
+		table.addCell(createCellZeroPaddingLeftAndBorder(gemeindeStammdaten.getStandardDokUnterschriftName(), defaultFont));
+		table.addCell(createCellZeroPaddingLeftAndBorder(gemeindeStammdaten.getStandardDokUnterschriftName2(), defaultFont));
 		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel(),
 			defaultFont));
 		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel2(),
 			defaultFont));
 		return table;
+	}
+
+	private PdfPCell createCellZeroPaddingLeftAndBorder(@Nullable String text, Font font) {
+		PdfPCell cell = new PdfPCell(new Phrase(text, font));
+		cell.setPaddingLeft(0);
+		cell.setBorder(0);
+		return cell;
 	}
 
 	@Override
