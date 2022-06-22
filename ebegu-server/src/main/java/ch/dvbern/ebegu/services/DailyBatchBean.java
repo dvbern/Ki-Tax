@@ -228,7 +228,6 @@ public class DailyBatchBean implements DailyBatch {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 30)
 	public void runBatchInfoOffenePendenzenNeueMitteilungInstitution() {
 		try {
