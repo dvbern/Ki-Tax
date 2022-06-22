@@ -66,7 +66,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -90,7 +90,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -135,7 +135,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
             return true;
         }
-        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage nicht
+        // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
+        // nicht
         if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
@@ -407,6 +408,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
+                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                        TSWizardStepName.FINANZIELLE_SITUATION,
+                        TSWizardStepStatus.NOK);
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
                 },
