@@ -116,7 +116,7 @@ public class FinanzielleSituationResource {
 	private GesuchService gesuchService;
 
 	@Inject
-	KibonAnfrageHandler kibonAnfrageHandler;
+	private KibonAnfrageHandler kibonAnfrageHandler;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -466,7 +466,7 @@ public class FinanzielleSituationResource {
 			kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont());
-		return converter.finanzielleSituationContainerToJAX(kibonAnfrageContext.isZwitched() ?
+		return converter.finanzielleSituationContainerToJAX(kibonAnfrageContext.isSwitched() ?
 			requireNonNull(persistedFinSitGS2) : persistedFinSit);
 	}
 

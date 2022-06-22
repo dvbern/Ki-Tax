@@ -97,9 +97,9 @@ public class KibonAnfrageHelper {
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageStatus(
-		FinanzielleSituation finSitGS1,
+		FinanzielleSituation finSitGS,
 		@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
-		finSitGS1.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+		finSitGS.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
 	}
 
 	protected static boolean isGebrutsdatumGS2CorrectInResponse(

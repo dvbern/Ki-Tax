@@ -81,7 +81,7 @@ public class KibonAnfrageHandler {
 						.getFamilienstatus()
 						.equals(
 							EnumFamilienstatus.VERHEIRATET) && doRetry) {
-						return handleKibonAnfrage(kibonAnfrageContext.zwitchGSContainer(), true, false);
+						return handleKibonAnfrage(kibonAnfrageContext.switchGSContainer(), true, false);
 					} else {
 						kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 					}

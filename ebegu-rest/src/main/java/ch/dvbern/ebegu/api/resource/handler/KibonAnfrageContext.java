@@ -40,12 +40,12 @@ public class KibonAnfrageContext {
 	private FinanzielleSituationContainer finSitContGS2;
 
 	@Nonnull
-	String kibonAnfrageId;
+	private String kibonAnfrageId;
 
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAnfrageStatus;
 
-	private boolean isZwitched = false;
+	private boolean isSwitched = false;
 
 	public KibonAnfrageContext(
 		@Nonnull Gesuch gesuch,
@@ -96,11 +96,11 @@ public class KibonAnfrageContext {
 		this.finSitContGS2 = finSitContGS2;
 	}
 
-	public boolean isZwitched() {
-		return isZwitched;
+	public boolean isSwitched() {
+		return isSwitched;
 	}
 
-	public KibonAnfrageContext zwitchGSContainer() {
+	public KibonAnfrageContext switchGSContainer() {
 		assert this.finSitContGS2 != null;
 		KibonAnfrageContext kibonAnfrageContext =
 			new KibonAnfrageContext(
@@ -109,7 +109,7 @@ public class KibonAnfrageContext {
 				this.finSitContGS2,
 				this.kibonAnfrageId);
 		kibonAnfrageContext.setFinSitContGS2(this.finSitCont);
-		kibonAnfrageContext.isZwitched = true;
+		kibonAnfrageContext.isSwitched = true;
 		return kibonAnfrageContext;
 	}
 }
