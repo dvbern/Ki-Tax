@@ -2910,7 +2910,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT": "Unregelmässigkeit in der Veranlagung. Die Daten müssen manuell ausgefüllt werden.",
     "ABWESENHEIT_AKTIV": "Activer les absences",
     "SUPPORT_MAIL": "support@kibon.ch",
-    "BENOETIGEN_SIE_HILFE": "Avez-vous besoin d'aide?",
+    "ONBARDING_HILFE": "Avez-vous besoin d'aide?",
     "LATS_ONLY_WARNUNG": "Attention: votre commune n'a pas activé l'offre pour les écoles à journées continue. Cette école à jounrée continue ne pourra être utilisée que dans la compensation des charges pour les écoles à journée continue.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
