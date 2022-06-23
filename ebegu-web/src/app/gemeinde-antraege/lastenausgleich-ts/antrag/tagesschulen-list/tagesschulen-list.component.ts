@@ -47,6 +47,10 @@ export class TagesschulenListComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+    }
+
+    private getAllVisibleTagesschulenAngabenForTSLastenausgleich(): void {
         this.gemeindeAntragService.getAllVisibleTagesschulenAngabenForTSLastenausgleich(this.lastenausgleichId)
             .subscribe(data => {
                 this.data = data.map(latsInstitutionContainer => {
@@ -71,6 +75,10 @@ export class TagesschulenListComponent implements OnInit {
 
     public createMissingTagesschuleFormulare(): void {
         this.lastenausgleichTSService.createMissingTagesschuleFormulare(this.lastenausgleichId)
-            .subscribe(() => this.ngOnInit());
+            .subscribe(() => {
+                // since we changed institutions of angabenGemeinde Object, we have to reload store
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
+                this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+            });
     }
 }
