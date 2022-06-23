@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +93,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService angabenGemeindeService;
+
+	@Inject
+	private LastenausgleichTagesschuleAngabenInstitutionService angabenInstitutionService;
 
 	@Inject
 	private LastenausgleichTagesschuleDokumentService latsDokumentService;
@@ -598,5 +602,33 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		throw new EbeguRuntimeException("dokumentErstellen", "Lats Template has no content");
 
+	}
+
+	@ApiOperation(
+		value = "Erstellt fehlende LastenausgleichTagesschuleInstitutionContainers für den gegebenen Gemeindeantrag",
+		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+	@POST
+	@Path("/create-missing-institutions")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Nonnull
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer createMissingInstitutions(
+		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(latsGemeindeContainerJax.getId());
+		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
+			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer =
+			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(converted);
+
+		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(gemeindeContainer);
 	}
 }
