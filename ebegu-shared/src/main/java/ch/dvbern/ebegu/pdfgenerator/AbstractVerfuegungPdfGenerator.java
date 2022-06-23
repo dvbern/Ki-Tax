@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
@@ -127,6 +128,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	public enum Art {
 		NORMAL,
 		KEIN_ANSPRUCH,
+		KEIN_ANSCHRUCH_TFO,
 		NICHT_EINTRETTEN
 	}
 
@@ -179,53 +181,15 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		@Nonnull final Document document,
 		@Nonnull PdfGenerator generator) throws DocumentException {
 
-		Kind kind = betreuung.getKind().getKindJA();
-		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
-		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
-		Paragraph paragraphWithSupertext;
 		switch (art) {
 		case NORMAL:
-			createFusszeileNormaleVerfuegung(generator.getDirectContent());
-			paragraphWithSupertext = PdfUtil.createParagraph(translate(
-				VERFUEGUNG_CONTENT_1,
-				kind.getFullName(),
-				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
-			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
-			document.add(paragraphWithSupertext);
-			document.add(createVerfuegungTable());
-
-			// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
-			if (!stadtBernAsivConfigured && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
-				document.add(createErklaerungstextFEBR());
-			}
-
-			addBemerkungenIfAvailable(document);
-			addZusatzTextIfAvailable(document);
+			createDokumentNormal(document, generator);
 			break;
 		case KEIN_ANSPRUCH:
-			createFusszeileKeinAnspruch(generator.getDirectContent());
-			document.add(PdfUtil.createParagraph(translate(
-				KEIN_ANSPRUCH_CONTENT_1,
-				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-				Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
-				kind.getFullName(),
-				betreuung.getInstitutionStammdaten().getInstitution().getName(),
-				betreuung.getBGNummer())));
-			document.add(PdfUtil.createParagraph(translate(
-				KEIN_ANSPRUCH_CONTENT_2,
-				Constants.DATE_FORMATTER.format(eingangsdatum))));
-			addBemerkungenIfAvailable(document, false);
-			addZusatzTextIfAvailable(document);
-			paragraphWithSupertext = PdfUtil.createParagraph(translate(
-				KEIN_ANSPRUCH_CONTENT_3,
-				kind.getFullName(),
-				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
-				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-				Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2);
-			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(' ' + translate(KEIN_ANSPRUCH_CONTENT_4)));
-			document.add(paragraphWithSupertext);
+			createDokumentKeinAnspruch(document, generator);
+			break;
+		case KEIN_ANSCHRUCH_TFO:
+			createDokumentKeinAnspruchTFO(document, generator);
 			break;
 		case NICHT_EINTRETTEN:
 			createDokumentNichtEintretten(document, generator);
@@ -235,6 +199,61 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addGruesseElements(gruesseElements);
 		document.add(PdfUtil.createKeepTogetherTable(gruesseElements, 2, 0));
 		document.add(createRechtsmittelBelehrung());
+	}
+
+	protected void createDokumentNormal(Document document, PdfGenerator generator) {
+		Kind kind = betreuung.getKind().getKindJA();
+
+		createFusszeileNormaleVerfuegung(generator.getDirectContent());
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+			VERFUEGUNG_CONTENT_1,
+			kind.getFullName(),
+			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
+		document.add(paragraphWithSupertext);
+		document.add(createVerfuegungTable());
+
+		// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
+		if (!stadtBernAsivConfigured && KitaxUtil.isGemeindeWithKitaxUebergangsloesung(gemeindeStammdaten.getGemeinde())) {
+			document.add(createErklaerungstextFEBR());
+		}
+
+		addBemerkungenIfAvailable(document);
+		addZusatzTextIfAvailable(document);
+	}
+
+	private void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
+		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
+		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		Kind kind = betreuung.getKind().getKindJA();
+
+		createFusszeileKeinAnspruch(generator.getDirectContent());
+		document.add(PdfUtil.createParagraph(translate(
+			KEIN_ANSPRUCH_CONTENT_1,
+			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
+			kind.getFullName(),
+			betreuung.getInstitutionStammdaten().getInstitution().getName(),
+			betreuung.getBGNummer())));
+		document.add(PdfUtil.createParagraph(translate(
+			KEIN_ANSPRUCH_CONTENT_2,
+			Constants.DATE_FORMATTER.format(eingangsdatum))));
+		addBemerkungenIfAvailable(document, false);
+		addZusatzTextIfAvailable(document);
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+			KEIN_ANSPRUCH_CONTENT_3,
+			kind.getFullName(),
+			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
+			Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(' ' + translate(KEIN_ANSPRUCH_CONTENT_4)));
+		document.add(paragraphWithSupertext);
+	}
+
+	protected void createDokumentKeinAnspruchTFO(Document document, PdfGenerator generator) {
+		createDokumentKeinAnspruch(document, generator);
 	}
 
 	private void addGruesseElements(@Nonnull List<Element> gruesseElements) {
@@ -649,40 +668,46 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
+	protected List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
+		// first of all we get all Zeitabschnitte and create a List of VerfuegungZeitabschnittPrintImpl
+		List<VerfuegungZeitabschnitt> result = getZeitabschnitteOrderByGueltigAb(true);
+		// then we remove
+		// all Zeitabschnitte with Pensum == 0 that we find at the beginning of the list.
+		// 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30, 0, 0
+		removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(result);
+		// then we remove
+		// all Zeitabschnitte with Pensum == 0 that we find at the end of the list. All Zeitabschnitte
+		// between two valid values will remain: 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30
+		Collections.reverse(result);
+		removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(result);
+		return result;
+	}
+
+	private void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
+		ListIterator<VerfuegungZeitabschnitt> listIterator = result.listIterator();
+		while (listIterator.hasNext()) {
+			VerfuegungZeitabschnitt zeitabschnitt = listIterator.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensumProzent())) {
+				listIterator.remove();
+			} else {
+				break;
+			}
+		}
+	}
+
+	protected List<VerfuegungZeitabschnitt> getZeitabschnitteOrderByGueltigAb(boolean reversed) {
 		Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegung == null) {
 			return Collections.emptyList();
 		}
-		// first of all we get all Zeitabschnitte and create a List of VerfuegungZeitabschnittPrintImpl, then we remove
-		// all Zeitabschnitte with Pensum == 0 that we find at the beginning and at the end of the list. All
-		// Zeitabschnitte
-		// between two valid values will remain: 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30
-		List<VerfuegungZeitabschnitt> result = verfuegung.getZeitabschnitte().stream()
-			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed())
-			.collect(Collectors.toList());
 
-		@SuppressWarnings("Duplicates")
-		ListIterator<VerfuegungZeitabschnitt> listIteratorBeginning = result.listIterator();
-		while (listIteratorBeginning.hasNext()) {
-			VerfuegungZeitabschnitt zeitabschnitt = listIteratorBeginning.next();
-			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensumProzent())) {
-				listIteratorBeginning.remove();
-			} else {
-				break;
-			}
-		}
-		Collections.reverse(result);
-		ListIterator<VerfuegungZeitabschnitt> listIteratorEnd = result.listIterator();
-		while (listIteratorEnd.hasNext()) {
-			VerfuegungZeitabschnitt zeitabschnitt = listIteratorEnd.next();
-			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensumProzent())) {
-				listIteratorEnd.remove();
-			} else {
-				break;
-			}
-		}
-		return result;
+		Comparator<Gueltigkeit> comparator = reversed ?
+			Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed() :
+			Gueltigkeit.GUELTIG_AB_COMPARATOR;
+
+		return verfuegung.getZeitabschnitte().stream()
+			.sorted(comparator)
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
