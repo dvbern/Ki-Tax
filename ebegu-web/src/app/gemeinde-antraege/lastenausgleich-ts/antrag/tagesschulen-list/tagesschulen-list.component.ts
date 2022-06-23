@@ -18,8 +18,11 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('TagesschulenListComponent');
 
 @Component({
     selector: 'dv-tagesschulen-list',
@@ -79,6 +82,8 @@ export class TagesschulenListComponent implements OnInit {
                 // since we changed institutions of angabenGemeinde Object, we have to reload store
                 this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
                 this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+            }, err => {
+                LOG.error(err);
             });
     }
 }
