@@ -38,8 +38,7 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	/**
 	 * Erstellt einen LastenausgleichTagesschuleAngabenInstitutionContainer fuer jede Tagesschule der Gemeinde
 	 */
-	@Nonnull
-	LastenausgleichTagesschuleAngabenGemeindeContainer createLastenausgleichTagesschuleInstitution(
+	void createLastenausgleichTagesschuleInstitution(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer);
 
 	/**

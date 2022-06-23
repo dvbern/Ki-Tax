@@ -110,8 +110,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenInstitutionServiceBean.class);
 
 	@Override
-	@Nonnull
-	public LastenausgleichTagesschuleAngabenGemeindeContainer createLastenausgleichTagesschuleInstitution(
+	public void createLastenausgleichTagesschuleInstitution(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer
 	) {
 		Objects.requireNonNull(gemeindeContainer);
@@ -124,7 +123,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			createLatsInstitutionContainerIfNotExisting(gemeindeContainer, institutionStammdaten);
 		}
-		return gemeindeContainer;
 	}
 
 	private void createLatsInstitutionContainerIfNotExisting(

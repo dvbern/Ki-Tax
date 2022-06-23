@@ -606,29 +606,25 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@ApiOperation(
 		value = "Erstellt fehlende LastenausgleichTagesschuleInstitutionContainers für den gegebenen Gemeindeantrag",
-		response = JaxLastenausgleichTagesschuleAngabenGemeindeContainer.class)
+		response = void.class)
 	@POST
-	@Path("/create-missing-institutions")
+	@Path("/create-missing-institutions/{gemeindeAngabenId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Nonnull
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
-	public JaxLastenausgleichTagesschuleAngabenGemeindeContainer createMissingInstitutions(
-		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenGemeindeContainer latsGemeindeContainerJax,
+	public void createMissingInstitutions(
+		@Nonnull @PathParam("gemeindeAngabenId") JaxId gemeindeAngabenId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
-		Objects.requireNonNull(latsGemeindeContainerJax.getId());
-		Objects.requireNonNull(latsGemeindeContainerJax.getGemeinde().getId());
+		Objects.requireNonNull(gemeindeAngabenId.getId());
 
-		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(latsGemeindeContainerJax.getId());
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(gemeindeAngabenId.getId());
 
-		final LastenausgleichTagesschuleAngabenGemeindeContainer converted =
-			getConvertedLastenausgleichTagesschuleAngabenGemeindeContainer(latsGemeindeContainerJax);
+		final LastenausgleichTagesschuleAngabenGemeindeContainer container =
+			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeindeAngabenId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("createMissingInstitutions", gemeindeAngabenId.getId()));
 
-		final LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer =
-			angabenInstitutionService.createLastenausgleichTagesschuleInstitution(converted);
-
-		return converter.lastenausgleichTagesschuleAngabenGemeindeContainerToJax(gemeindeContainer);
+		angabenInstitutionService.createLastenausgleichTagesschuleInstitution(container);
 	}
 }

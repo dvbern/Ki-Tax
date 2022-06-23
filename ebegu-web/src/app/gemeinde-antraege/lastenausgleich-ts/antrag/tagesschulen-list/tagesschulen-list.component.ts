@@ -19,6 +19,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
 @Component({
     selector: 'dv-tagesschulen-list',
@@ -37,6 +38,7 @@ export class TagesschulenListComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly cd: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
@@ -65,5 +67,10 @@ export class TagesschulenListComponent implements OnInit {
 
     public navigate($event: any): void {
         this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL', {institutionId: $event.element.id});
+    }
+
+    public createMissingTagesschuleFormulare(): void {
+        this.lastenausgleichTSService.createMissingTagesschuleFormulare(this.lastenausgleichId)
+            .subscribe(() => this.ngOnInit());
     }
 }
