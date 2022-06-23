@@ -64,8 +64,6 @@ export class EbeguGesuchState implements Ng1StateDeclaration {
     public controllerAs = 'vm';
 }
 
-const fallCreationView = '<dv-fall-creation-view-x></dv-fall-creation-view-x>';
-
 const sozialdienstfallCreationView = '<sozialdienst-fall-creation-view>';
 
 const kommentarView = '<kommentar-view>';

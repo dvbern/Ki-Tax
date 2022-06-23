@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
-import {StateService} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
@@ -17,7 +17,7 @@ import {FallCreationViewXComponent} from './fall-creation-view-x.component';
 describe('FallCreationViewXComponent', () => {
     let component: FallCreationViewXComponent;
     let fixture: ComponentFixture<FallCreationViewXComponent>;
-    const form: NgForm = new NgForm([], []);
+    const form = new NgForm([], []);
     form.form.markAsUntouched();
 
     const gesuchModelManager = jasmine.createSpyObj<GesuchModelManager>('GesuchModelManager',
@@ -38,6 +38,7 @@ describe('FallCreationViewXComponent', () => {
     const finSitRS = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
         ['saveFinanzielleSituation']);
     const stateService = jasmine.createSpyObj<StateService>(StateService.name, ['transition']);
+    const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const gesuch = new TSGesuch();
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
@@ -55,6 +56,7 @@ describe('FallCreationViewXComponent', () => {
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRS},
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
