@@ -23,6 +23,7 @@
     "FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_VERANLAGUNG_HINT": "Tragen Sie hier den Betrag aus Ziffer 990 der Staatssteuerveranlagung ein. Es werden 5 % des steuerbaren Vermögens zum Nettoeinkommen hinzugerechnet.",
     "FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN": "Massgebendes Einkommen",
     "EKV_SOLOTHURN_HINT": "Zur Geltendmachung einer Einkommensänderung sind die Bruttolöhne gemäss den letzten 3 Lohnabrechnungen anzugeben",
+    "EVK_BRUTTOLOHN_JAHR": "Jährlicher Bruttolohn",
     "EVK_BRUTTOLOHN_JAHR_HINT": "Zur Berechnung des Massgebenden Einkommens wird vom Bruttolohn 25 % abgezogen.",
     "NETTO_VERMOEGEN_STAND_HINT": "Es ist das Nettovermögen zum Zeitpunkt der Meldung der Einkommensänderung zu deklarieren (Stand heute). Es werden 5 % des Vermögens für das massgebende Einkommen hinzugerechnet.",
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Sie haben die Einkommensänderung nur für {{jahr1periode}} deklariert. In diesem Fall gilt für das Jahr {{jahr2periode}} wieder das Einkommen des Jahres {{basisjahr}}",
@@ -75,5 +76,7 @@
     "ABWESENHEIT_HINT": "Hier müssen Sie erfassen, wenn ein Kind mehr als {{tage}} Kalendertage am Stück innerhalb einer Gutscheinperiode abwesend ist. Wenn das Kind mehr als {{tage}} Tage abwesend ist, entfällt der Anspruch auf einen Betreuungsgutschein ab dem {{tagePlus1}}. Tag. Ausnahme: Falls eine Krankheit oder ein Unfall die Abwesenheit verursacht oder das Kind aus Gründen der Institution nicht betreut werden kann, muss dies nicht angegeben werden.",
     "ONBARDING_HILFE": "Hilfe / Anleitung für Antragstellende",
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Anleitung für Antragstellende</b><br><a target='_blank' href='assets/pdf/Anleitung_Antragstellende_Solothurn.pdf'>Anleitung für Antragstellende</a>.<br><b><br>Benötigen Sie Hilfe?</b><br>Als Antragsteller/in melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten.<br>",
+    "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
+    "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
