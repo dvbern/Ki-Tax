@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -60,12 +59,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 			return translate(VERFUEGUNG_NICHT_EINTRETEN_TITLE);
 		}
 		return translate(VERFUEGUNG_TITLE);
-	}
-
-	@Override
-	protected void addGruesseElements(@Nonnull List<Element> gruesseElements) {
-		gruesseElements.add(createParagraphGruss());
-		gruesseElements.add(createParagraphSignatur());
 	}
 
 	@Override

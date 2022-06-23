@@ -237,7 +237,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		document.add(createRechtsmittelBelehrung());
 	}
 
-	protected abstract void addGruesseElements(@Nonnull List<Element> gruesseElements);
+	private void addGruesseElements(@Nonnull List<Element> gruesseElements) {
+		gruesseElements.add(createParagraphGruss());
+		gruesseElements.add(createParagraphSignatur());
+	}
 
 	protected abstract void createDokumentNichtEintretten(@Nonnull final Document document, @Nonnull PdfGenerator generator);
 
