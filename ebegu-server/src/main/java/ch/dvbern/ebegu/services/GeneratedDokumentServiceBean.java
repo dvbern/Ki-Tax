@@ -817,7 +817,11 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		WriteProtectedDokument persistedDokument = null;
 
-		GeneratedDokumentTyp dokumentTyp = GeneratedDokumentTyp.PAIN001;
+		Objects.requireNonNull(zahlungsauftrag.getMandant());
+		final IZahlungsfileGenerator zahlungsfileGenerator =
+			zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant());
+
+		GeneratedDokumentTyp dokumentTyp = zahlungsfileGenerator.getGeneratedDokumentTyp();
 
 		final Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId());
 		if (!stammdatenOptional.isPresent()) {
@@ -841,8 +845,11 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		Sprache korrespondenzsprache = EbeguUtil.extractGemeindeSprachen(stammdaten).get(0);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(dokumentTyp, zahlungsauftrag.getFilename(), korrespondenzsprache.getLocale(),
-					Objects.requireNonNull(zahlungsauftrag.getMandant()));
+			.getFileNameForGeneratedDokumentTyp(
+				dokumentTyp,
+				zahlungsauftrag.getFilename(),
+				korrespondenzsprache.getLocale(),
+				zahlungsauftrag.getMandant());
 
 		if (!forceCreation && ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus()) {
 			persistedDokument = getPain001DocumentIfExistsAndIsWriteProtected(
@@ -856,8 +863,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 			boolean writeProtectPDF = forceCreation || ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus();
 
-			final IZahlungsfileGenerator zahlungsfileGenerator =
-				zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant());
 			byte[] data = zahlungsfileGenerator.generateZahlungfile(
 				zahlungsauftrag,
 				stammdaten,

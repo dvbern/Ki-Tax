@@ -15,6 +15,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -39,6 +40,11 @@ public class ZahlungsfileGeneratorPain implements IZahlungsfileGenerator {
 		@Nonnull Locale locale
 	) {
 		return pain001Service.getPainFileContent(wrapZahlungsauftrag(zahlungsauftrag, stammdaten, locale));
+	}
+
+	@Override
+	public GeneratedDokumentTyp getGeneratedDokumentTyp() {
+		return GeneratedDokumentTyp.PAIN001;
 	}
 
 	private Pain001DTO wrapZahlungsauftrag(

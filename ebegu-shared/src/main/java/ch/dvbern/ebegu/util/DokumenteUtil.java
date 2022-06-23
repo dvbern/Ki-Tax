@@ -125,6 +125,8 @@ public final class DokumenteUtil {
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, locale, mandant, identificationNumber);
 		case PAIN001:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, locale, mandant, identificationNumber);
+		case INFOMA:
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.INFOMA, locale, mandant, identificationNumber);
 		case ANMELDEBESTAETIGUNGMITTARIF:
 			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.ANMELDEBESTAETIGUNGMITTARIF, locale, mandant,
 				identificationNumber);

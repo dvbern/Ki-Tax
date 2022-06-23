@@ -13,6 +13,9 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfil
 	@Inject
 	private ZahlungsfileGeneratorPain painGenerator;
 
+	@Inject
+	private ZahlungsfileGeneratorInfoma infomaGenerator;
+
 	public IZahlungsfileGenerator getZahlungsfileGenerator(
 		@Nonnull Mandant mandant
 	) {
@@ -26,7 +29,7 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfil
 
 	@Override
 	public IZahlungsfileGenerator visitLuzern() {
-		return painGenerator;
+		return infomaGenerator;
 	}
 
 	@Override
