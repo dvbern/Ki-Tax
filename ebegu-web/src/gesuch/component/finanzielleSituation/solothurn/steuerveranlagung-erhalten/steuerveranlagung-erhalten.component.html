@@ -11,7 +11,7 @@
                         required
                         #selbststaendig="ngModel"
                         dvEnableElement
-                        [enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()"
+                        [enableExpression]="canEdit()"
                         [(ngModel)]="model.finanzielleSituationJA.momentanSelbststaendig">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -40,7 +40,7 @@
 							required
 							#steuerveranlagungErhalten="ngModel"
 							dvEnableElement
-							[enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()"
+							[enableExpression]="canEdit()"
 							[ngModel]="model.finanzielleSituationJA.steuerveranlagungErhalten"
 							(ngModelChange)="setSteuerveranlagungErhalten($event)">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>

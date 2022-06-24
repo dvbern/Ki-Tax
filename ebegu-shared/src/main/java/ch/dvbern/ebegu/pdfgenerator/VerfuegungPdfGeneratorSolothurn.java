@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -26,15 +25,19 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
-import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
+
+import static ch.dvbern.ebegu.pdfgenerator.PdfUtil.DEFAULT_FONT_SIZE;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenerator {
 
@@ -51,14 +54,35 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 
+	@Nonnull
 	@Override
-	protected void addGruesseElements(@Nonnull List<Element> gruesseElements) {
-		Paragraph gruss = PdfUtil.createParagraph(translate(GRUSS));
-		gruss.add(Chunk.NEWLINE);
-		gruss.add(PdfUtil.createBoldParagraph(gemeindeStammdaten.getGemeinde().getName(), 2));
+	protected PdfPTable createAlternativSignatureTable() {
+		PdfPTable table = new PdfPTable(2);
+		// Init
+		PdfUtil.setTableDefaultStyles(table);
+		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
+		PdfPCell titelCell = new PdfPCell(new Phrase(gemeindeStammdaten.getStandardDokTitle(),
+			getPageConfiguration().getFonts().getFontBold()));
+		titelCell.setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
+		titelCell.setPaddingLeft(0);
+		titelCell.setBorder(0);
+		table.addCell(titelCell);
+		final Font defaultFont = getPageConfiguration().getFonts().getFont();
+		table.addCell(new Phrase("", defaultFont));
+		table.addCell(createCellZeroPaddingLeftAndBorder(gemeindeStammdaten.getStandardDokUnterschriftName(), defaultFont));
+		table.addCell(createCellZeroPaddingLeftAndBorder(gemeindeStammdaten.getStandardDokUnterschriftName2(), defaultFont));
+		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel(),
+			defaultFont));
+		table.addCell(new Phrase(gemeindeStammdaten.getStandardDokUnterschriftTitel2(),
+			defaultFont));
+		return table;
+	}
 
-		gruesseElements.add(gruss);
-		gruesseElements.add(createParagraphSignatur());
+	private PdfPCell createCellZeroPaddingLeftAndBorder(@Nullable String text, Font font) {
+		PdfPCell cell = new PdfPCell(new Phrase(text, font));
+		cell.setPaddingLeft(0);
+		cell.setBorder(0);
+		return cell;
 	}
 
 	@Override
@@ -117,11 +141,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 	@Override
 	protected Font getBgColorForUeberwiesenerBetragCell() {
 		return fontTabelle;
-	}
-
-	@Override
-	protected String getTextGutschein() {
-		return translate(GUTSCHEIN_AN_INSTITUTION);
 	}
 
 	private Paragraph createParagraphTitle(String title) {

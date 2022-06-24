@@ -40,6 +40,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -122,6 +123,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -247,8 +249,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
 
-		setFinSitTyp(gesuchToPersist);
-		setMinDauerKonkubiat(gesuchToPersist);
+		updateGesuchWithConfiguration(gesuchToPersist);
 
 		authorizer.checkReadAuthorization(gesuchToPersist);
 
@@ -264,32 +265,55 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistedGesuch;
 	}
 
-	private void setMinDauerKonkubiat(Gesuch gesuch) {
+	private void updateGesuchWithConfiguration(Gesuch gesuch) {
+		Collection<Einstellung> einstellungList =
+			einstellungService.getAllEinstellungenByMandant(gesuch.getGesuchsperiode());
+
+		setFKJVFamiliensituationFlag(gesuch, einstellungList);
+		setMinDauerKonkubiat(gesuch, einstellungList);
+		setFinSitTyp(gesuch, einstellungList);
+	}
+
+	private void setFKJVFamiliensituationFlag(Gesuch gesuch, Collection<Einstellung> einstellungList) {
 		if (gesuch.getFamiliensituationContainer() == null
-		|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
 			return;
 		}
 
-		Einstellung minimalDauerKonkubinat = einstellungService.findEinstellung(
-			EinstellungKey.MINIMALDAUER_KONKUBINAT,
-			gesuch.extractGemeinde(),
-			gesuch.getGesuchsperiode()
-		);
+		Einstellung einstellung = getEinstellungByKeyFromList(EinstellungKey.FKJV_FAMILIENSITUATION_NEU, einstellungList);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFkjvFamSit(einstellung.getValueAsBoolean());
+	}
 
+	private void setMinDauerKonkubiat(Gesuch gesuch, Collection<Einstellung> einstellungList) {
+		if (gesuch.getFamiliensituationContainer() == null
+			|| gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null) {
+			return;
+		}
+
+		Einstellung minimalDauerKonkubinat = getEinstellungByKeyFromList(EinstellungKey.MINIMALDAUER_KONKUBINAT, einstellungList);
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setMinDauerKonkubinat(minimalDauerKonkubinat.getValueAsInteger());
 	}
 
-	private void setFinSitTyp(Gesuch gesuchToCreate) {
-		var finSitTyp = einstellungService.findEinstellung(
-			EinstellungKey.FINANZIELLE_SITUATION_TYP,
-			gesuchToCreate.extractGemeinde(),
-			gesuchToCreate.getGesuchsperiode()
-		).getValue();
+	private void setFinSitTyp(Gesuch gesuchToCreate, Collection<Einstellung> einstellungList) {
+		Einstellung finSitTyp = getEinstellungByKeyFromList(EinstellungKey.FINANZIELLE_SITUATION_TYP, einstellungList);
+
 		try {
-			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp));
+			gesuchToCreate.setFinSitTyp(FinanzielleSituationTyp.valueOf(finSitTyp.getValue()));
 		} catch (IllegalArgumentException e) {
 			throw new EbeguRuntimeException("setFinSitTyp", "wrong finSitTyp: " + finSitTyp, e);
 		}
+	}
+
+	private Einstellung getEinstellungByKeyFromList(
+		EinstellungKey key,
+		Collection<Einstellung> einstellungList) {
+
+		return einstellungList
+			.stream()
+			.filter(einstellung -> einstellung.getKey() == key)
+			.findFirst()
+			.orElseThrow(() ->
+				new EbeguRuntimeException("getEinstellungByKeyFromList()", "Keine Einstellung für Key " + key + " gfunden"));
 	}
 
 	private void stripGesuchOfInvalidData(@Nonnull Gesuch gesuch) {
@@ -1339,6 +1363,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			status = AntragStatus.IN_BEARBEITUNG_JA;
 		}
 		return status;
+	}
+
+	@Override
+	@Nonnull
+	public Collection<Gesuch> getNeuesteVerfuegtesGesuchProDossierFuerGemeindeUndGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde
+	) {
+		final Query nativeQuery = persistence.getEntityManager().createNativeQuery(
+			"select g.* "
+				+ "from gesuch g "
+				+ "inner join dossier d on g.dossier_id = d.id "
+				+ "inner join fall f on d.fall_id = f.id "
+				+ "inner join gesuchsperiode gp on g.gesuchsperiode_id = gp.id "
+				+ "inner join gemeinde gem on d.gemeinde_id = gem.id "
+				+ "where g.timestamp_verfuegt is not null and g.gueltig is true "
+				+ "and gem.id = UNHEX(REPLACE(?1, '-','')) "
+				+ "and gp.id = UNHEX(REPLACE(?2, '-',''));", Gesuch.class
+		);
+		nativeQuery.setParameter(1, gemeinde.getId());
+		nativeQuery.setParameter(2, gesuchsperiode.getId());
+		final List<Gesuch> resultList = nativeQuery.getResultList();
+		return resultList;
 	}
 
 	@Override

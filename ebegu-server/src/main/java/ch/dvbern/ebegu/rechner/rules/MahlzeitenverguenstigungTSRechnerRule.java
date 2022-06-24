@@ -136,6 +136,5 @@ public final class MahlzeitenverguenstigungTSRechnerRule implements RechnerRule 
 
 	@Override
 	public void resetParameter(@Nonnull RechnerRuleParameterDTO rechnerParameter) {
-
 	}
 }

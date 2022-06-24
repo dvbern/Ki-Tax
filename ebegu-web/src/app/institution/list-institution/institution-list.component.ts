@@ -19,14 +19,17 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
-import {from, Observable} from 'rxjs';
+import {combineLatest, from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../models/TSBerechtigung';
 import {TSInstitution} from '../../../models/TSInstitution';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
@@ -47,6 +50,8 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public antragList$: Observable<DVEntitaetListItem[]>;
 
     @ViewChild(NgForm) public form: NgForm;
+    private userHasGemeindeWithTSEnabled: boolean;
+    private userHasGemeindeWithoutTSEnabled: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -55,6 +60,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
         super(authServiceRS);
     }
@@ -62,6 +68,19 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public ngOnInit(): void {
         this.setHiddenColumns();
         this.loadData();
+        this.setupGemeindeAndRoleSpecificProperties();
+    }
+
+    private setupGemeindeAndRoleSpecificProperties(): void {
+        combineLatest([
+            this.gemeindeRS.getGemeindenForPrincipal$(),
+            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin())),
+        ]).subscribe(([gemeinden, isSuperadmin]) => {
+            this.userHasGemeindeWithTSEnabled = isSuperadmin ||
+                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => gemeinde.angebotTS));
+            this.userHasGemeindeWithoutTSEnabled = isSuperadmin ||
+                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => !gemeinde.angebotTS));
+        }, err => this.log.error(err));
     }
 
     public loadData(): void {
@@ -118,6 +137,14 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
             betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
+        });
+    }
+
+    public createLATSInstitutionTS(): void {
+        this.goToAddInstitution({
+            betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
+            latsOnly: true,
         });
     }
 
@@ -181,6 +208,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public isCreateTSAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
+            && this.userHasGemeindeWithTSEnabled
+            && this.authServiceRS.getPrincipal().mandant.angebotTS;
+    }
+
+    public isCreateLATSTSAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
+            && this.userHasGemeindeWithoutTSEnabled
             && this.authServiceRS.getPrincipal().mandant.angebotTS;
     }
 

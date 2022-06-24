@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,7 @@ import org.junit.Test;
 
 public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechnerTest {
 
-	private TagesschuleBernRechner rechner = new TagesschuleBernRechner();
+	private TagesschuleBernRechner rechner = new TagesschuleBernRechner(Collections.emptyList());
 	private Gesuch gesuch;
 	private AnmeldungTagesschule anmeldungTagesschule;
 	private KindContainer kindContainer;

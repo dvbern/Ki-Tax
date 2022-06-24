@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -63,12 +62,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	}
 
 	@Override
-	protected void addGruesseElements(@Nonnull List<Element> gruesseElements) {
-		gruesseElements.add(createParagraphGruss());
-		gruesseElements.add(createParagraphSignatur());
-	}
-
-	@Override
 	protected void createDokumentNichtEintretten(
 		@Nonnull Document document,
 		@Nonnull PdfGenerator generator) {
@@ -89,12 +82,6 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	@Override
 	protected Font getBgColorForBetreuungsgutscheinCell() {
 		return fontTabelle;
-	}
-
-	@Override
-	protected String getTextGutschein() {
-		String messageKey =  betreuung.isAuszahlungAnEltern() ? GUTSCHEIN_AN_ELTERN : GUTSCHEIN_AN_INSTITUTION;
-		return translate(messageKey);
 	}
 
 	@Override

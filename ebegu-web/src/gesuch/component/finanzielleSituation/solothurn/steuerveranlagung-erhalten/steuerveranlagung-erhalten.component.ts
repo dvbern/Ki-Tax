@@ -32,4 +32,9 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     public showVeranlagungErhalten(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationJA.momentanSelbststaendig);
     }
+
+    public canEdit(): boolean {
+        return !this.gesuchModelManager.isGesuchReadonly() && (!this.gesuchModelManager.isKorrekturModusJugendamt()
+            || (this.gesuchModelManager.isKorrekturModusJugendamt() && EbeguUtil.isNullOrUndefined(this.model.finanzielleSituationGS)));
+    }
 }

@@ -70,7 +70,6 @@ import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
 import com.google.common.base.Strings;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
@@ -743,7 +742,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Transient
-	private String extractFamiliennamenSozialdienstfallString(@NonNull SozialdienstFall sozialdienstFall) {
+	private String extractFamiliennamenSozialdienstfallString(@Nonnull SozialdienstFall sozialdienstFall) {
 		String bothFamiliennamen = sozialdienstFall.getName();
 		bothFamiliennamen +=  !Strings.isNullOrEmpty(sozialdienstFall.getNameGs2())
 			? ", " + sozialdienstFall.getNameGs2()

@@ -18,7 +18,7 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegtOrKeinKontingent} from '../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegtOrKeinKontingent, TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
@@ -403,6 +403,7 @@ export class WizardStepManager {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
                 !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) &&
+                !this.isMandantRoleAndInBearbeitungGemeinde(gesuch) &&
                 !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
             }
@@ -595,5 +596,10 @@ export class WizardStepManager {
             return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
         }
         return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG;
+    }
+
+    private isMandantRoleAndInBearbeitungGemeinde(gesuch: TSGesuch): boolean {
+        return gesuch.status === TSAntragStatus.IN_BEARBEITUNG_JA &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
     }
 }

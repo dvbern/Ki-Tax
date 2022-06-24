@@ -47,8 +47,34 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateVollkosten(BigDecimal verfuegteZeiteinheiten) {
-		return EXACT.multiply(stuendlicherVorllkostenTarif, verfuegteZeiteinheiten);
+	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
+		return EXACT.multiply(vollkostenGekuerzt, this.verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
+		return EXACT.multiply(gutschein, this.verfuegteZeiteinheit);
+	}
+
+	@Override
+	protected BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt() {
+		BigDecimal gutscheinProStundeAufgrundEinkommen = calculateBGProZeiteinheitByEinkommen();
+		return calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(gutscheinProStundeAufgrundEinkommen);
+	}
+
+	@Override
+	protected BigDecimal calculateMinimalerSelbstbehalt() {
+		return getMinimalTarif();
+	}
+
+	@Override
+	protected BigDecimal calculateVollkosten() {
+		return this.stuendlicherVorllkostenTarif;
+	}
+
+	@Override
+	protected BigDecimal calculateZuschlag() {
+		return calculateZuschlagProZeiteinheit();
 	}
 
 	@Override

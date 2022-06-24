@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,7 +83,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private boolean stadtBernAsivConfiguered = false;
 
-	private TagesschuleBernRechner rechner = new TagesschuleBernRechner();
+	private TagesschuleBernRechner rechner = new TagesschuleBernRechner(Collections.emptyList());
 
 
 	@Before

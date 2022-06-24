@@ -545,7 +545,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             });
             return;
         }
-        if (this.form.$valid) {
+
+        if (this.isStatusOkAndGesuchBearbeitbar() || this.form.$valid) {
             this.preSave();
             this.anmeldungSchulamtFalscheAngaben();
         }
