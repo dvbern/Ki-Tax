@@ -25,6 +25,7 @@ import {EinkommensverschlechterungLuzernResultateViewComponent} from './componen
 import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
+import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {DialogInitZPVNummerVerknuepfen} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
@@ -90,7 +91,8 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         FinanzielleSituationAufteilungComponent,
         AufteilungComponent,
         SteuerabfrageResponseHintsComponent,
-        DialogInitZPVNummerVerknuepfen
+        DialogInitZPVNummerVerknuepfen,
+        FallCreationViewXComponent
     ],
     exports: [
         DvSwitchComponent,
