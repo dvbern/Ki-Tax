@@ -19,9 +19,15 @@
     <span *ngIf="text" [textContent]="text | translate"></span>
 
     <section>
+        <mat-checkbox class="select-all"
+                      [checked]="allChecked"
+                      [indeterminate]="someChecked"
+                      (change)="setAll($event.checked)">
+            {{(allChecked? 'ALLE_ABWAEHLEN' : 'ALLE_WAEHLEN') | translate}}
+        </mat-checkbox>
         <ul>
             <li *ngFor="let option of selectOptions">
-                <mat-checkbox [checked]="option.selected">{{option.labelSelectFunction ? option.labelSelectFunction() : option.item.name}}</mat-checkbox>
+                <mat-checkbox [(ngModel)]="option.selected" (ngModelChange)="updateCheckedFlags()">{{option.labelSelectFunction ? option.labelSelectFunction() : option.item.name}}</mat-checkbox>
             </li>
         </ul>
 

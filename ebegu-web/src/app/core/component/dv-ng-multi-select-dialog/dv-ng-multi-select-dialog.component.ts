@@ -14,11 +14,14 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {optimize} from 'webpack';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 export interface DvMultiSelectDialogItem {
     item: any;
     selected: boolean;
+
     labelSelectFunction?(): string;
 }
 
@@ -28,13 +31,15 @@ export interface DvMultiSelectDialogItem {
 @Component({
     selector: 'dv-ng-multi-select-dialog',
     templateUrl: './dv-ng-multi-select-dialog.template.html',
-    styleUrls: ['./dv-ng-multi-select-dialog.component.less']
+    styleUrls: ['./dv-ng-multi-select-dialog.component.less'],
 })
 export class DvNgMultiSelectDialog {
 
     public title: string = '';
     public text: string = '';
     public selectOptions: DvMultiSelectDialogItem[];
+    public allChecked: boolean;
+    public someChecked: boolean;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMultiSelectDialog>,
@@ -54,5 +59,23 @@ export class DvNgMultiSelectDialog {
 
     public cancel(): void {
         this.dialogRef.close();
+    }
+
+    public setAll(checked: boolean): void {
+        this.selectOptions.forEach(option => option.selected = checked);
+        this.allChecked = checked;
+        this.someChecked = false;
+    }
+
+    public updateCheckedFlags(): void {
+        this.allChecked =
+            EbeguUtil.isNullOrUndefined(
+                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected)));
+        this.someChecked =
+            EbeguUtil.isNotNullOrUndefined(
+                this.selectOptions.find(option => EbeguUtil.isNotNullAndTrue(option.selected))) &&
+            EbeguUtil.isNotNullOrUndefined(
+                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected)),
+            );
     }
 }

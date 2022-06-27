@@ -2912,5 +2912,7 @@
     "SUPPORT_MAIL": "support@kibon.ch",
     "ONBARDING_HILFE": "Avez-vous besoin d'aide?",
     "LATS_ONLY_WARNUNG": "Attention: votre commune n'a pas activé l'offre pour les écoles à journées continue. Cette école à jounrée continue ne pourra être utilisée que dans la compensation des charges pour les écoles à journée continue.",
+    "ALLE_ABWAEHLEN": "Alle abwählen",
+    "ALLE_WAEHLEN": "Alle auswählen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

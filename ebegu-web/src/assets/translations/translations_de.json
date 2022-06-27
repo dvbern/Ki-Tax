@@ -2916,5 +2916,7 @@
     "ONBARDING_HILFE": "Benötigen Sie Hilfe?",
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Benötigen Sie Hilfe?</b><br><br>Haben Sie Fragen oder benötigen Sie Hilfe? Als Antragsteller/in oder Unterstützungsdienst melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten. Der Support für Antragsteller/innen und Unterstützungsdienste wird von der zuständigen Gemeinde durchgeführt.<br>",
     "LATS_ONLY_WARNUNG": "Achtung: Ihre Gemeinde hat das Tagesschule Modul nicht ativiert. Diese Tagesschule wird im Status NUR_LASTENAUSGLEICH erstellt und kann nur im Lastenausgleich für die Tagesschulen verwendet werden.",
+    "ALLE_ABWAEHLEN": "Alle abwählen",
+    "ALLE_WAEHLEN": "Alle auswählen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
