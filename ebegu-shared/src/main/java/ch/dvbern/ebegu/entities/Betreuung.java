@@ -514,14 +514,16 @@ public class Betreuung extends AbstractPlatz {
 		Set<BetreuungspensumAbweichung> abweichungenFromDb = this.getBetreuungspensumAbweichungen();
 
 		while (from.isBefore(to)) {
-
+			BetreuungspensumAbweichung abweichung;
 			// check if we already stored something in the database
 			if (abweichungenFromDb != null) {
 				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
-				abweichungen.add(existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien(), multiplier)));
+				abweichung = existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
 			} else {
-				abweichungen.add(createEmptyAbweichung(from, this.isAngebotTagesfamilien(), multiplier));
+				abweichung = createEmptyAbweichung(from, this.isAngebotTagesfamilien());
 			}
+			abweichung.setMultiplier(multiplier);
+			abweichungen.add(abweichung);
 			from = from.plusMonths(1);
 		}
 
@@ -530,7 +532,7 @@ public class Betreuung extends AbstractPlatz {
 
 	@SuppressFBWarnings(value ="NP_NONNULL_PARAM_VIOLATION", justification = "initially the affected fields need to "
 		+ "be null, we want to force the user to enter data")
-	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien, @Nonnull BigDecimal multiplier) {
+	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
 		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
 		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
 		// initially those fields need to be null, we want to force the user to enter data
@@ -545,8 +547,6 @@ public class Betreuung extends AbstractPlatz {
 		if (isTagesfamilien) {
 			abweichung.setUnitForDisplay(PensumUnits.HOURS);
 		}
-
-		abweichung.setMultiplier(multiplier);
 		return abweichung;
 	}
 

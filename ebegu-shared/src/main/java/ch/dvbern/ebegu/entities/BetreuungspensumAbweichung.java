@@ -53,8 +53,8 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
 
-	@NotNull
-	@Column(nullable = false)
+	@Transient
+	@Nullable
 	private BigDecimal multiplier = BigDecimal.ZERO;
 
 	// every Zeitabschnitt containing any date of this.gueltigkeit
@@ -182,7 +182,7 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.betreuung = betreuung;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getMultiplier() {
 		return multiplier;
 	}
