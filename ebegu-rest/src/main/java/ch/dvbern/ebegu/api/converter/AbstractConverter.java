@@ -27,11 +27,12 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractIntegerPensumDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractMahlzeitenPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractPersonDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
+
+
 import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractIntegerPensum;
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -226,33 +228,13 @@ public class AbstractConverter {
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
-		JaxBetreuungspensum jaxPensum,
-		Betreuungspensum pensumEntity) {
-
-		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
-		pensumEntity.setPensum(jaxPensum.getPensum());
-		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
-	}
-
-	protected void convertAbstractPensumFieldsToEntity(
-		JaxBetreuungspensumAbweichung jaxPensum,
-		BetreuungspensumAbweichung pensumEntity) {
+		JaxAbstractMahlzeitenPensumDTO jaxPensum,
+		AbstractMahlzeitenPensum pensumEntity) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setPensum(jaxPensum.getPensum());
-		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
-	}
-
-	protected void convertAbstractPensumFieldsToEntity(
-		JaxBetreuungsmitteilungPensum jaxPensum,
-		BetreuungsmitteilungPensum pensumEntity) {
-
-		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
-		pensumEntity.setPensum(jaxPensum.getPensum());
-		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
-		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setStuendlicheVollkosten(jaxPensum.getStuendlicheVollkosten());
 	}
 
@@ -262,17 +244,6 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
-	}
-
-	protected void convertAbstractPensumFieldsToJAX(
-		final BetreuungsmitteilungPensum pensum,
-		final JaxBetreuungspensum jaxPensum) {
-
-		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-		jaxPensum.setPensum(pensum.getPensum());
-		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
-		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
-		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -288,22 +259,10 @@ public class AbstractConverter {
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
-		Betreuungspensum pensum,
-		JaxBetreuungspensum jaxPensum) {
+		AbstractMahlzeitenPensum pensum,
+		JaxAbstractMahlzeitenPensumDTO jaxPensum) {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-		jaxPensum.setPensum(pensum.getPensum());
-		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
-		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
-		jaxPensum.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-	}
-
-	protected void convertAbstractPensumFieldsToJAX(
-		BetreuungspensumAbweichung pensum,
-		JaxBetreuungspensumAbweichung jaxPensum) {
-
-		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
-
 		jaxPensum.setPensum(pensum.getPensum());
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
