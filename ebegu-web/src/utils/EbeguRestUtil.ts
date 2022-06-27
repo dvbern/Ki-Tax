@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationAufteilungDTO} from '../models/dto/TSFinanzielleSituationAufteilungDTO';
@@ -2506,13 +2505,11 @@ export class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
-        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        restAbweichung.multiplier = abweichung.vertraglicheKosten;
 
-        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
-            ? restAbweichung.vertraglichesPensum / multiplier
+            ? restAbweichung.vertraglichesPensum / restAbweichung.multiplier
             : undefined;
 
         restAbweichung.vertraglichesPensum = originalPensum;
@@ -2665,12 +2662,11 @@ export class EbeguRestUtil {
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
-        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        abweichungTS.multiplier = abweichungFromServer.multiplier;
 
-        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
-        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
+        const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
+            .toFixed(2));
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -248,4 +249,7 @@ public interface BetreuungService {
 
 	@Nonnull
 	Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(@Nonnull Set<BetreuungsmitteilungPensum> pensen, @Nonnull DateRange gueltigkeit);
+
+	@Nonnull
+	BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung);
 }

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -92,6 +94,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -112,6 +115,7 @@ import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -166,6 +170,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+	@Inject
+	private EinstellungService einstellungService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(BetreuungServiceBean.class.getSimpleName());
 
@@ -273,7 +279,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			});
 
 		//Export Tagesschule Anmeldung oder moegliche Aenderungen an der exchange-service
-		if(isAnmeldungInStatusToFireEvent(mergedBetreuung) && !mergedBetreuung.isKeineDetailinformationen()) {
+		if (isAnmeldungInStatusToFireEvent(mergedBetreuung) && !mergedBetreuung.isKeineDetailinformationen()) {
 			fireAnmeldungTagesschuleAddedEvent(mergedBetreuung);
 		}
 
@@ -299,7 +305,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public void fireAnmeldungTagesschuleAddedEvent(@Nonnull AnmeldungTagesschule anmeldungTagesschule) {
 		if (ebeguConfiguration.isAnmeldungTagesschuleApiEnabled() &&
 			applicationPropertyService.isPublishSchnittstelleEventsAktiviert(Objects.requireNonNull(
-			anmeldungTagesschule.extractGemeinde().getMandant()))) {
+				anmeldungTagesschule.extractGemeinde().getMandant()))) {
 			event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
 			anmeldungTagesschule.setEventPublished(true);
 		} else {
@@ -308,7 +314,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	private boolean isAnmeldungInStatusToFireEvent(AnmeldungTagesschule betreuung) {
-		return EnumUtil.isOneOf(betreuung.getBetreuungsstatus(),
+		return EnumUtil.isOneOf(
+			betreuung.getBetreuungsstatus(),
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
 			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
@@ -658,11 +665,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private Mandant getMandantFromBgNummer(String refnr) {
 		final int gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(refnr);
 		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
+			new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
 
 		return gemeinde.getMandant();
 	}
-
 
 	@Override
 	public List<AbstractAnmeldung> findNewestAnmeldungByBGNummer(@Nonnull String bgNummer) {
@@ -675,8 +681,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	private <T extends AbstractAnmeldung> List<T> findAnmeldungenByBGNummer(
-			@Nonnull Class<T> clazz,
-			@Nonnull String bgNummer, boolean getOnlyAktuelle, @Nonnull Mandant mandant) {
+		@Nonnull Class<T> clazz,
+		@Nonnull String bgNummer, boolean getOnlyAktuelle, @Nonnull Mandant mandant) {
 		final int betreuungNummer = BetreuungUtil.getBetreuungNummerFromBGNummer(bgNummer);
 		final int kindNummer = BetreuungUtil.getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
@@ -742,7 +748,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
 		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
-		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch,
+			JoinType.LEFT);
 		final Join<Gesuch, Dossier> joinGesuchDossier = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
 
 		ParameterExpression<Fall> fallParam = cb.parameter(Fall.class, "fall");
@@ -756,7 +763,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Predicate predGueltig = cb.isTrue(root.get(Betreuung_.gueltig));
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummerParam);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummerParam);
-		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiodeParam);
+		Predicate predGesuchsperiode =
+			cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiodeParam);
 
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(predFallNummer);
@@ -788,7 +796,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<Betreuung> findBetreuungByBGNummer(@Nonnull String bgNummer, boolean onlyGueltig, @Nonnull Mandant mandant) {
+	public Optional<Betreuung> findBetreuungByBGNummer(
+		@Nonnull String bgNummer,
+		boolean onlyGueltig,
+		@Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
@@ -1353,7 +1364,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(@Nonnull String bgNummer, @Nonnull Mandant mandant) {
+	public Optional<AnmeldungTagesschule> findAnmeldungenTagesschuleByBGNummer(
+		@Nonnull String bgNummer,
+		@Nonnull Mandant mandant) {
 		final int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(bgNummer);
 
 		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
@@ -1369,7 +1382,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
 
 		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
-		final Join<AnmeldungTagesschule, KindContainer> kindjoin = root.join(AnmeldungTagesschule_.kind, JoinType.LEFT);
+		final Join<AnmeldungTagesschule, KindContainer> kindjoin = root.join(AnmeldungTagesschule_.kind,
+			JoinType.LEFT);
 		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
 			KindContainer_.gesuch,
 			JoinType.LEFT);
@@ -1402,10 +1416,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public Set<BetreuungsmitteilungPensum> capBetreuungspensenToGueltigkeit(
-			@Nonnull Set<BetreuungsmitteilungPensum> pensen,
-			@Nonnull DateRange gueltigkeit) {
+		@Nonnull Set<BetreuungsmitteilungPensum> pensen,
+		@Nonnull DateRange gueltigkeit) {
 
-		for (Iterator<BetreuungsmitteilungPensum> i = pensen.iterator(); i.hasNext();) {
+		for (Iterator<BetreuungsmitteilungPensum> i = pensen.iterator(); i.hasNext(); ) {
 			BetreuungsmitteilungPensum betreuungsmitteilungPensum = i.next();
 
 			capBetreuungsmitteilungStart(betreuungsmitteilungPensum, gueltigkeit);
@@ -1416,29 +1430,61 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		return pensen;
 	}
 
+	@Nonnull
+	@Override
+	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
+		if (betreuung.isAngebotKita()) {
+			Einstellung oeffnungstageKita =
+				einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSTAGE_KITA,
+					betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, EinstellungKey.OEFFNUNGSTAGE_KITA)
+				);
+			return MathUtil.EXACT.divide(
+					MathUtil.EXACT.divide(	oeffnungstageKita.getValueAsBigDecimal(), MathUtil.EXACT.from(12)),
+				MathUtil.EXACT.from(100));
+		}
+		Einstellung oeffnungstageTFO =
+			einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSTAGE_TFO,
+				betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,	EinstellungKey.OEFFNUNGSTAGE_TFO)
+			);
+		Einstellung oeffnungsstundenTFO =
+			einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+				betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, EinstellungKey.OEFFNUNGSSTUNDEN_TFO)
+			);
+		return MathUtil.EXACT.divide(
+			MathUtil.EXACT.divide(
+				MathUtil.EXACT.multiply(
+					oeffnungstageTFO.getValueAsBigDecimal(),
+					oeffnungsstundenTFO.getValueAsBigDecimal()),
+				MathUtil.EXACT.from(12)),
+			MathUtil.EXACT.from(100));
+	}
+
 	private void capBetreuungsmitteilungEnd(
-			@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
-			@Nonnull DateRange gueltigkeit) {
+		@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
+		@Nonnull DateRange gueltigkeit) {
 		if (betreuungsmitteilungPensum.getGueltigkeit().endsAfter(gueltigkeit)) {
 			betreuungsmitteilungPensum.setGueltigkeit(new DateRange(
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
-					gueltigkeit.getGueltigBis()));
+				betreuungsmitteilungPensum.getGueltigkeit().getGueltigAb(),
+				gueltigkeit.getGueltigBis()));
 		}
 	}
 
 	private void capBetreuungsmitteilungStart(
-			@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
-			@Nonnull DateRange gueltigkeit) {
+		@Nonnull BetreuungsmitteilungPensum betreuungsmitteilungPensum,
+		@Nonnull DateRange gueltigkeit) {
 		if (betreuungsmitteilungPensum.getGueltigkeit().startsBefore(gueltigkeit)) {
 			betreuungsmitteilungPensum.setGueltigkeit(new DateRange(
-					gueltigkeit.getGueltigAb(),
-					betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis()));
+				gueltigkeit.getGueltigAb(),
+				betreuungsmitteilungPensum.getGueltigkeit().getGueltigBis()));
 		}
 	}
 
 	private void removeInvalidBetreuungsmitteilungPensumFromSet(
-			Iterator<BetreuungsmitteilungPensum> i,
-			BetreuungsmitteilungPensum betreuungsmitteilungPensum) {
+		Iterator<BetreuungsmitteilungPensum> i,
+		BetreuungsmitteilungPensum betreuungsmitteilungPensum) {
 		if (!betreuungsmitteilungPensum.getGueltigkeit().isValid()) {
 			persistence.remove(betreuungsmitteilungPensum);
 			i.remove();

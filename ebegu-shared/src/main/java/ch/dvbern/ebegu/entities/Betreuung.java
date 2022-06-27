@@ -461,8 +461,8 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 
-	public List<BetreuungspensumAbweichung> fillAbweichungen() {
-		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen();
+	public List<BetreuungspensumAbweichung> fillAbweichungen(@Nonnull BigDecimal multiplier) {
+		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen(multiplier);
 
 		for (BetreuungspensumAbweichung abweichung : initialAbweichungen) {
 			extractOriginalPensum(this.getBetreuungspensumContainers(), abweichung);
@@ -505,7 +505,7 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
-	private List<BetreuungspensumAbweichung> initAbweichungen() {
+	private List<BetreuungspensumAbweichung> initAbweichungen(@Nonnull BigDecimal multiplier) {
 		Gesuchsperiode gp = this.extractGesuchsperiode();
 		LocalDate from = gp.getGueltigkeit().getGueltigAb();
 		LocalDate to = gp.getGueltigkeit().getGueltigBis();
@@ -518,9 +518,9 @@ public class Betreuung extends AbstractPlatz {
 			// check if we already stored something in the database
 			if (abweichungenFromDb != null) {
 				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
-				abweichungen.add(existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien())));
+				abweichungen.add(existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien(), multiplier)));
 			} else {
-				abweichungen.add(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
+				abweichungen.add(createEmptyAbweichung(from, this.isAngebotTagesfamilien(), multiplier));
 			}
 			from = from.plusMonths(1);
 		}
@@ -530,7 +530,7 @@ public class Betreuung extends AbstractPlatz {
 
 	@SuppressFBWarnings(value ="NP_NONNULL_PARAM_VIOLATION", justification = "initially the affected fields need to "
 		+ "be null, we want to force the user to enter data")
-	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien) {
+	private BetreuungspensumAbweichung createEmptyAbweichung(@Nonnull LocalDate from, boolean isTagesfamilien, @Nonnull BigDecimal multiplier) {
 		BetreuungspensumAbweichung abweichung = new BetreuungspensumAbweichung();
 		abweichung.setStatus(BetreuungspensumAbweichungStatus.NONE);
 		// initially those fields need to be null, we want to force the user to enter data
@@ -545,6 +545,8 @@ public class Betreuung extends AbstractPlatz {
 		if (isTagesfamilien) {
 			abweichung.setUnitForDisplay(PensumUnits.HOURS);
 		}
+
+		abweichung.setMultiplier(multiplier);
 		return abweichung;
 	}
 

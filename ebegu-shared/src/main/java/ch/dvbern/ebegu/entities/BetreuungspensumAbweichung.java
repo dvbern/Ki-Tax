@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -51,6 +52,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_betreuung_id"), nullable = false)
 	private Betreuung betreuung;
+
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal multiplier = BigDecimal.ZERO;
 
 	// every Zeitabschnitt containing any date of this.gueltigkeit
 	// merged by its part of the current Gueltigkeit into one monthly (=this.gueltigkeit) Betreuungspensum.
@@ -175,6 +180,15 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 
 	public void setBetreuung(@Nonnull Betreuung betreuung) {
 		this.betreuung = betreuung;
+	}
+
+	@Nonnull
+	public BigDecimal getMultiplier() {
+		return multiplier;
+	}
+
+	public void setMultiplier(@Nonnull BigDecimal multiplier) {
+		this.multiplier = multiplier;
 	}
 
 	@Override
