@@ -41,6 +41,7 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {
     DvMultiSelectDialogItem,
@@ -106,6 +107,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public types: TSGemeindeAntragTyp[];
     public creatableTypes: TSGemeindeAntragTyp[];
     public latsDeletePossible$: Observable<boolean>;
+    private antraege: TSGemeindeAntrag[];
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -155,6 +157,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
             )))),
             tap(dto => this.totalItems = dto.totalResultSize),
+            tap(dto => this.antraege = dto.resultList),
             map(dto => {
                 return dto.resultList.map(antrag => {
                     return {
@@ -191,7 +194,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             );
     }
 
-    public async createAllAntraege(): Promise<void> {
+    public async createAllAntraege(gemeinde: TSGemeinde): Promise<void> {
         if (!this.formGroup.valid) {
             this.triedSending = true;
             return;
@@ -202,7 +205,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 selectOptions: this.gemeinden.map(gemeinde => {
                     const selectOption: DvMultiSelectDialogItem = {
                         item: gemeinde,
-                        selected: false,
+                        selected: this.hasGemeindeAlreadyAntrag(gemeinde, this.formGroup.value.periode),
                         labelSelectFunction(): string {
                             return this.item.name;
                         },
@@ -213,7 +216,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         };
 
         const gemeinden = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig).afterClosed().toPromise();
-        if (gemeinden.length === 0) {
+        if (EbeguUtil.isNullOrUndefined(gemeinden) || gemeinden.length === 0) {
             return;
 
         }
@@ -225,6 +228,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         }, (err: TSExceptionReport[]) => {
             this.handleCreateAntragErrors(err);
         });
+    }
+
+    private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde, periodeId: string): boolean {
+        return EbeguUtil.isNotNullOrUndefined(
+            this.antraege.find(listItem =>
+                listItem.gesuchsperiode.id === periodeId && gemeinde.id === listItem.gemeinde.id));
     }
 
     public deleteAllLatsAntraege(): void {
@@ -239,19 +248,19 @@ export class GemeindeAntraegeComponent implements OnInit {
                 }
                 return this.gemeindeAntragService.deleteAllAntrage(
                     this.formGroup.value.periode,
-                    this.formGroup.value.antragTyp
+                    this.formGroup.value.antragTyp,
                 );
             }),
         ).subscribe(() => {
-                this.loadAntragList();
-                this.cd.markForCheck();
+            this.loadAntragList();
+            this.cd.markForCheck();
             // tslint:disable-next-line:no-identical-functions
-            }, err => {
-                const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
-                this.errorService.clearAll();
-                this.errorService.addMesageAsError(msg);
-                LOG.error(err);
-            });
+        }, err => {
+            const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+            this.errorService.clearAll();
+            this.errorService.addMesageAsError(msg);
+            LOG.error(err);
+        });
     }
 
     public deleteGemeindeAntrag(antrag: DVAntragListItem): void {
