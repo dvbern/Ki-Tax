@@ -33,7 +33,6 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -108,7 +107,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public types: TSGemeindeAntragTyp[];
     public creatableTypes: TSGemeindeAntragTyp[];
     public latsDeletePossible$: Observable<boolean>;
-    private antraege: TSGemeindeAntrag[];
+    private gemeindenWithExistingLATS: TSGemeinde[];
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -133,7 +132,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             gemeinde: [''],
         });
         this.loadAntragList();
-        this.loadGemeinden();
+        this.loadGemeindeLists();
         this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
             this.gesuchsperioden = result;
             // init filtered GS for Ferienbetreuungen
@@ -158,7 +157,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                 mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
             )))),
             tap(dto => this.totalItems = dto.totalResultSize),
-            tap(dto => this.antraege = dto.resultList),
             map(dto => {
                 return dto.resultList.map(antrag => {
                     return {
@@ -176,7 +174,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         );
     }
 
-    private loadGemeinden(): void {
+    private loadGemeindeLists(): void {
+        this.loadGemeindeList();
+        this.loadGemeindenWithPreexistingLatsList();
+    }
+
+    private loadGemeindeList(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .subscribe(
                 gemeinden => {
@@ -195,6 +198,12 @@ export class GemeindeAntraegeComponent implements OnInit {
             );
     }
 
+    private loadGemeindenWithPreexistingLatsList(): void {
+        this.gemeindeRS.getGemeindenWithPreExistingLATS().then(gemeinden => {
+            this.gemeindenWithExistingLATS = gemeinden;
+        });
+    }
+
     public async createAllAntraege(): Promise<void> {
         if (!this.formGroup.valid) {
             this.triedSending = true;
@@ -203,10 +212,10 @@ export class GemeindeAntraegeComponent implements OnInit {
 
         const dialogConfig: MatDialogConfig = {
             data: {
-                selectOptions: this.getActiveTSGemeinden().map(gemeinde => {
+                selectOptions: (this.gemeinden).map(gemeinde => {
                     const selectOption: DvMultiSelectDialogItem = {
                         item: gemeinde,
-                        selected: this.hasGemeindeAlreadyAntrag(gemeinde, this.formGroup.value.periode),
+                        selected: this.hasGemeindeAlreadyAntrag(gemeinde),
                         labelSelectFunction(): string {
                             return this.item.name;
                         },
@@ -228,6 +237,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.errorService.clearAll();
         this.gemeindeAntragService.createAllAntrage(this.formGroup.value, gemeindeSelection).subscribe(result => {
             this.loadAntragList();
+            this.loadGemeindenWithPreexistingLatsList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
         }, (err: TSExceptionReport[]) => {
@@ -235,14 +245,9 @@ export class GemeindeAntraegeComponent implements OnInit {
         });
     }
 
-    private getActiveTSGemeinden(): TSGemeinde[] {
-        return this.gemeinden.filter(gemeinde => gemeinde.angebotTS && gemeinde.status === TSGemeindeStatus.AKTIV);
-    }
-
-    private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde, periodeId: string): boolean {
+    private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde): boolean {
         return EbeguUtil.isNotNullOrUndefined(
-            this.antraege.find(listItem =>
-                listItem.gesuchsperiode.id === periodeId && gemeinde.id === listItem.gemeinde.id));
+            this.gemeindenWithExistingLATS.find(gemeindeWithLats => gemeinde.id === gemeindeWithLats.id));
     }
 
     public deleteAllLatsAntraege(): void {

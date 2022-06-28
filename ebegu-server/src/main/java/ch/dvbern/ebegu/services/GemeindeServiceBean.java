@@ -51,6 +51,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -689,5 +691,17 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		query.where(gemeindeNummerPredicate);
 
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
+
+	@Override
+	public List<Gemeinde> getGemeindenWithLats() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query = cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root = query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+
+		root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde);
+
+		return persistence.getCriteriaResults(query).stream().map(LastenausgleichTagesschuleAngabenGemeindeContainer::getGemeinde).collect(
+				Collectors.toList());
 	}
 }

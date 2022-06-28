@@ -198,4 +198,5 @@ public interface GemeindeService {
 
 	Optional<Gemeinde> getGemeindeByGemeindeNummer(int gemeindeNummer);
 
+	List<Gemeinde> getGemeindenWithLats();
 }

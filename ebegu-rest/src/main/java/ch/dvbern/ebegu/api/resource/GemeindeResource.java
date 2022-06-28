@@ -972,4 +972,20 @@ public class GemeindeResource {
 	public Long getNextBfsnummer() {
 		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
 	}
+
+	@ApiOperation(value = "Gibt die nächste freie BFS Nummer zurück, die ener besonderen Volksschule"
+		+ "zugewiesen werden kann",
+		response = Long.class)
+	@Nullable
+	@GET
+	@Path("/gemeinden-with-lats")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxGemeinde> getGemeindenWithLats() {
+		return gemeindeService.getGemeindenWithLats()
+				.stream()
+				.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+				.collect(Collectors.toList());
+	}
 }
