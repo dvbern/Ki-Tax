@@ -15,7 +15,6 @@
 
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {optimize} from 'webpack';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 export interface DvMultiSelectDialogItem {
@@ -45,12 +44,12 @@ export class DvNgMultiSelectDialog {
         private readonly dialogRef: MatDialogRef<DvNgMultiSelectDialog>,
         @Inject(MAT_DIALOG_DATA) data: any,
     ) {
-
         if (data) {
             this.title = data.title;
             this.text = data.text;
             this.selectOptions = data.selectOptions;
         }
+        this.updateCheckedFlags();
     }
 
     public ok(): void {
@@ -62,7 +61,9 @@ export class DvNgMultiSelectDialog {
     }
 
     public setAll(checked: boolean): void {
-        this.selectOptions.forEach(option => option.selected = checked);
+        this.selectOptions.forEach(option => {
+            option.selected = checked;
+        });
         this.allChecked = checked;
         this.someChecked = false;
     }
