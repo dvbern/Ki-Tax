@@ -36,7 +36,9 @@ public interface GemeindeKennzahlenService {
 	 * Erstellt für alle Gemeinden mit aktiviertem BG einen GemeindeKennzahlen-Antrag fuer die gewuenschte Periode.
 	 */
 	@Nonnull
-	List<GemeindeKennzahlen> createGemeindeKennzahlen(@Nonnull Gesuchsperiode gesuchsperiode);
+	List<GemeindeKennzahlen> createGemeindeKennzahlen(
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull List<Gemeinde> gemeindeList);
 
 	@Nonnull
 	Optional<GemeindeKennzahlen> findGemeindeKennzahlen(@Nonnull String id);

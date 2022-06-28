@@ -33,6 +33,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -224,12 +225,19 @@ export class GemeindeAntraegeComponent implements OnInit {
                 }),
             },
         };
+        let gemeindeSelection: TSGemeinde[];
 
-        const gemeindeSelection: TSGemeinde[] = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig)
-            .afterClosed()
-            .toPromise()
-            .then((allGemeinden: DvMultiSelectDialogItem[]) => allGemeinden?.filter(selection => selection.selected))
-            .then(selectedGemeinden => selectedGemeinden?.map(selection => selection.item as TSGemeinde));
+        if (this.formGroup.value.antragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+            gemeindeSelection = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig)
+                .afterClosed()
+                .toPromise()
+                .then((allGemeinden: DvMultiSelectDialogItem[]) =>
+                    allGemeinden?.filter(selection => selection.selected))
+                .then(selectedGemeinden => selectedGemeinden?.map(selection => selection.item as TSGemeinde));
+        } else {
+            gemeindeSelection =
+                this.gemeinden.filter(gemeinde => gemeinde.angebotBG && gemeinde.status === TSGemeindeStatus.AKTIV);
+        }
         if (EbeguUtil.isNullOrUndefined(gemeindeSelection) || gemeindeSelection.length === 0) {
             return;
 

@@ -76,7 +76,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		case FERIENBETREUUNG:
 			throw new NotImplementedException("Masseninitialisierung für Ferienbetreuungen wird nicht umgesetzt");
 		case GEMEINDE_KENNZAHLEN:
-			return new ArrayList<>(gemeindeKennzahlenService.createGemeindeKennzahlen(gesuchsperiode));
+			return new ArrayList<>(gemeindeKennzahlenService.createGemeindeKennzahlen(gesuchsperiode, gemeindeList));
 		}
 		return Collections.emptyList();
 	}
