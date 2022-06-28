@@ -136,18 +136,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Override
 	@Nonnull
 	public List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(
-		@Nonnull Gesuchsperiode gesuchsperiode
-	) {
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull List<Gemeinde> gemeindeList) {
 		Objects.requireNonNull(gesuchsperiode);
 
 		List<GemeindeAntrag> result = new ArrayList<>();
-		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(Objects.requireNonNull(
-				gesuchsperiode.getMandant()));
-		final Collection<Gemeinde> tsGemeinden = aktiveGemeinden.stream()
-			.filter(gemeinde -> gemeinde.isTagesschuleActiveForGesuchsperiode(gesuchsperiode))
-			.collect(Collectors.toList());
-
-		for (Gemeinde gemeinde : tsGemeinden) {
+		for (Gemeinde gemeinde : gemeindeList) {
 			Optional<LastenausgleichTagesschuleAngabenGemeindeContainer> existingOptional =
 				findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeinde, gesuchsperiode);
 			if (existingOptional.isPresent()) {

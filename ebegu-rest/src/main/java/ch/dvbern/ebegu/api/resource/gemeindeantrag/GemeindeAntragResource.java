@@ -29,17 +29,22 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.Validation;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxPaginationDTO;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
@@ -62,6 +67,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.GemeindeAntragService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -119,21 +125,28 @@ public class GemeindeAntragResource {
 	@ApiOperation(
 		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/createAllAntraege/{gemeindeAntragTyp}/gesuchsperiode/{gesuchsperiodeId}")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<JaxGemeindeAntrag> createAllGemeindeAntraege(
-		@Nonnull @Valid @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
-		@Nonnull @Valid @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
+	public List<JaxGemeindeAntrag> createAllGemeindeAntraegee(
+		List<JaxGemeinde> jaxGemeinden,
+		@Nonnull @PathParam("gemeindeAntragTyp") GemeindeAntragTyp gemeindeAntragTyp,
+		@Nonnull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo
 	) {
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		Objects.requireNonNull(gemeindeAntragTyp);
+		Validate.notNull(gemeindeAntragTyp);
+		Validate.notNull(gesuchsperiodeJaxId);
+		Validate.notNull(jaxGemeinden);
 
+		List<Gemeinde> gemeindeList = converter.gemeindeListToEntity(jaxGemeinden);
 		Gesuchsperiode gesuchsperiode = getGesuchsperiodeFromJaxId(gesuchsperiodeJaxId);
 
 		final List<GemeindeAntrag> gemeindeAntragList =
-				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp);
+				gemeindeAntragService.createAllGemeindeAntraege(gesuchsperiode, gemeindeAntragTyp, gemeindeList);
 		return converter.gemeindeAntragListToJax(gemeindeAntragList);
 
 	}

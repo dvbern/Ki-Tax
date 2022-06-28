@@ -33,6 +33,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -194,7 +195,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             );
     }
 
-    public async createAllAntraege(gemeinde: TSGemeinde): Promise<void> {
+    public async createAllAntraege(): Promise<void> {
         if (!this.formGroup.valid) {
             this.triedSending = true;
             return;
@@ -202,7 +203,7 @@ export class GemeindeAntraegeComponent implements OnInit {
 
         const dialogConfig: MatDialogConfig = {
             data: {
-                selectOptions: this.gemeinden.map(gemeinde => {
+                selectOptions: this.getActiveTSGemeinden().map(gemeinde => {
                     const selectOption: DvMultiSelectDialogItem = {
                         item: gemeinde,
                         selected: this.hasGemeindeAlreadyAntrag(gemeinde, this.formGroup.value.periode),
@@ -215,19 +216,27 @@ export class GemeindeAntraegeComponent implements OnInit {
             },
         };
 
-        const gemeinden = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig).afterClosed().toPromise();
-        if (EbeguUtil.isNullOrUndefined(gemeinden) || gemeinden.length === 0) {
+        const gemeindeSelection: TSGemeinde[] = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig)
+            .afterClosed()
+            .toPromise()
+            .then((allGemeinden: DvMultiSelectDialogItem[]) => allGemeinden?.filter(selection => selection.selected))
+            .then(selectedGemeinden => selectedGemeinden?.map(selection => selection.item as TSGemeinde));
+        if (EbeguUtil.isNullOrUndefined(gemeindeSelection) || gemeindeSelection.length === 0) {
             return;
 
         }
         this.errorService.clearAll();
-        this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
+        this.gemeindeAntragService.createAllAntrage(this.formGroup.value, gemeindeSelection).subscribe(result => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
         }, (err: TSExceptionReport[]) => {
             this.handleCreateAntragErrors(err);
         });
+    }
+
+    private getActiveTSGemeinden(): TSGemeinde[] {
+        return this.gemeinden.filter(gemeinde => gemeinde.angebotTS && gemeinde.status === TSGemeindeStatus.AKTIV);
     }
 
     private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde, periodeId: string): boolean {

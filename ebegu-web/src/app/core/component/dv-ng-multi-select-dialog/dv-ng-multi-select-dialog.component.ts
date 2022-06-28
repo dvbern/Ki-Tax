@@ -54,7 +54,7 @@ export class DvNgMultiSelectDialog {
     }
 
     public ok(): void {
-        this.dialogRef.close(true);
+        this.dialogRef.close(this.selectOptions);
     }
 
     public cancel(): void {

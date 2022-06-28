@@ -39,7 +39,8 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	 */
 	@Nonnull
 	List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(
-		@Nonnull Gesuchsperiode gesuchsperiode);
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull List<Gemeinde> gemeindeList);
 
 	/**
 	 * Sucht den LastenausgleichTagesschuleAngabenGemeindeContainer mit der uebergebenen ID

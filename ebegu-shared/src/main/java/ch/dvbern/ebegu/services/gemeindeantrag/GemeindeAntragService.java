@@ -37,7 +37,10 @@ public interface GemeindeAntragService {
 	 * Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.
 	 */
 	@Nonnull
-	List<GemeindeAntrag> createAllGemeindeAntraege(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GemeindeAntragTyp typ);
+	List<GemeindeAntrag> createAllGemeindeAntraege(
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull GemeindeAntragTyp typ,
+			@Nonnull List<Gemeinde> gemeindeList);
 
 	/**
 	 * Erstellt für die angegebene Gemeinden einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.

@@ -66,12 +66,13 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@Nonnull
 	public List<GemeindeAntrag> createAllGemeindeAntraege(
-		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull GemeindeAntragTyp typ) {
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull GemeindeAntragTyp typ,
+			@Nonnull List<Gemeinde> gemeindeList) {
 		switch (typ) {
 		case LASTENAUSGLEICH_TAGESSCHULEN:
 			return new ArrayList<>(lastenausgleichTagesschuleAngabenGemeindeService.createLastenausgleichTagesschuleGemeinde(
-				gesuchsperiode));
+				gesuchsperiode, gemeindeList));
 		case FERIENBETREUUNG:
 			throw new NotImplementedException("Masseninitialisierung für Ferienbetreuungen wird nicht umgesetzt");
 		case GEMEINDE_KENNZAHLEN:
