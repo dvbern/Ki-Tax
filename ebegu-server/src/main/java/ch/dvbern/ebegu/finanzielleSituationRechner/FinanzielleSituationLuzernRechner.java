@@ -42,17 +42,13 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		if (hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null) {
 			finanzielleSituationGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
 		}
-		calculateZusammen(
-			finSitResultDTO,
-			finanzielleSituationGS1,
-			finanzielleSituationGS2);
-		calculateAlleine(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
+		calculateFinSit(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
 	}
 
 	/**
 	 * calculate massgebendes einkommen for each antragsteller separately and stores variables in finSitResultDTO
 	 */
-	private void calculateAlleine(
+	private void calculateFinSit(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
@@ -84,6 +80,10 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		finSitResultDTO.setAbzuegeGS2(abzuegeGS2);
 		finSitResultDTO.setVermoegenXPercentAnrechenbarGS2(vermoegen10PercenGS2);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(massgebendesEinkommenGS2);
+
+		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
+			add(finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS1(), finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS2())
+		);
 	}
 
 	@Override
@@ -104,20 +104,12 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		}
 
 		if (basisJahrPlus == 2) {
-			calculateZusammen(
-				einkVerResultDTO,
-				einkommensverschlechterungGS1Bjp2,
-				einkommensverschlechterungGS2Bjp2);
-			calculateAlleine(
+			calculateFinSit(
 				einkommensverschlechterungGS1Bjp2,
 				einkommensverschlechterungGS2Bjp2,
 				einkVerResultDTO);
 		} else {
-			calculateZusammen(
-				einkVerResultDTO,
-				einkommensverschlechterungGS1Bjp1,
-				einkommensverschlechterungGS2Bjp1);
-			calculateAlleine(
+			calculateFinSit(
 				einkommensverschlechterungGS1Bjp1,
 				einkommensverschlechterungGS2Bjp1,
 				einkVerResultDTO);
@@ -132,28 +124,6 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 		BigDecimal anrechenbaresEinkommen = add(einkommen, vermoegen10Percent);
 		return MathUtil.positiveNonNullAndRound(
 			subtract(anrechenbaresEinkommen, abzuege));
-	}
-
-	private void calculateZusammen(
-		@Nonnull final FinanzielleSituationResultateDTO finSitResultDTO,
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2) {
-
-		finSitResultDTO.setEinkommenBeiderGesuchsteller(calcEinkommen(
-			finanzielleSituationGS1,
-			finanzielleSituationGS2));
-		finSitResultDTO.setNettovermoegenXProzent(calcVermoegen10Prozent(
-			finanzielleSituationGS1,
-			finanzielleSituationGS2));
-		finSitResultDTO.setAbzuegeBeiderGesuchsteller(calcAbzuege(finanzielleSituationGS1, finanzielleSituationGS2));
-
-		finSitResultDTO.setAnrechenbaresEinkommen(add(
-			finSitResultDTO.getEinkommenBeiderGesuchsteller(), finSitResultDTO.getNettovermoegenXProzent())
-		);
-		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
-			MathUtil.positiveNonNullAndRound(subtract(
-					finSitResultDTO.getAnrechenbaresEinkommen(),
-					finSitResultDTO.getAbzuegeBeiderGesuchsteller())));
 	}
 
 	private BigDecimal getAdditionEinkommenLiegenschaftenGS(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
@@ -180,7 +150,8 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			if (!calculateByVeranlagung(finanzielleSituationGS1)) {
 				abzuegeGS1 = finanzielleSituationGS1.getSelbstdeklaration() != null ? finanzielleSituationGS1.getSelbstdeklaration().calculateAbzuege() : BigDecimal.ZERO;
 			} else {
-				abzuegeGS1 = calcAbzuegeFromVeranlagung(finanzielleSituationGS1);
+				// Keine Abzüge bei Berechnung nach Veranlagung
+				abzuegeGS1 = BigDecimal.ZERO;
 			}
 			totalAbzuege = totalAbzuege.add(abzuegeGS1);
 		}
@@ -189,17 +160,12 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			if (!calculateByVeranlagung(finanzielleSituationGS2)) {
 				abzuegeGS2 = finanzielleSituationGS2.getSelbstdeklaration() != null ? finanzielleSituationGS2.getSelbstdeklaration().calculateAbzuege() : BigDecimal.ZERO;
 			} else {
-				abzuegeGS2 = calcAbzuegeFromVeranlagung(finanzielleSituationGS2);
+				// Keine Abzüge bei Berechnung nach Veranlagung
+				abzuegeGS2 = BigDecimal.ZERO;
 			}
 			totalAbzuege = totalAbzuege.add(abzuegeGS2);
 		}
 		return MathUtil.positiveNonNullAndRound(totalAbzuege);
-	}
-
-	private BigDecimal calcAbzuegeFromVeranlagung(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		total = add(total, finanzielleSituation.getEinkaeufeVorsorge());
-		return total;
 	}
 
 	private BigDecimal calcVermoegen10Prozent(
@@ -250,6 +216,7 @@ public class FinanzielleSituationLuzernRechner extends AbstractFinanzielleSituat
 			} else {
 				total = add(total, abstractFinanzielleSituation.getSteuerbaresEinkommen());
 				total = add(total, abstractFinanzielleSituation.getGeschaeftsverlust());
+				total = add(total, abstractFinanzielleSituation.getEinkaeufeVorsorge());
 				total = add(total, getAdditionEinkommenLiegenschaftenGS(abstractFinanzielleSituation));
 			}
 		}
