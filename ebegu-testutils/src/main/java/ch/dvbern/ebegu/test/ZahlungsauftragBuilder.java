@@ -20,8 +20,11 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
  *
  * Zahlungsauftrag auftrag = ZahlungsauftragBuilder.create(builder -> builder
  * 			.withZahlungslauftyp(ZahlungslaufTyp.GEMEINDE_INSTITUTION)
- * 			.withGesuchsteller2("Müller", "Anna"));
+ * 			.withDatumGeneriert(LocalDate.of(2022, Month.AUGUST, 31))
+ * 			.withDatumFaellig(LocalDate.of(2022, Month.AUGUST, 31))
+ * 	);
  */
+@SuppressWarnings("UnusedReturnValue")
 public class ZahlungsauftragBuilder {
 
 	private final Zahlungsauftrag zahlungsauftrag;
@@ -38,17 +41,17 @@ public class ZahlungsauftragBuilder {
 		return this;
 	}
 
-	public ZahlungsauftragBuilder withDatumGeneriert(LocalDate datumGeneriert) {
+	public ZahlungsauftragBuilder withDatumGeneriert(@Nonnull LocalDate datumGeneriert) {
 		zahlungsauftrag.setDatumGeneriert(datumGeneriert.atTime(LocalTime.of(12, 15)));
 		return this;
 	}
 
-	public ZahlungsauftragBuilder withDatumFaellig(LocalDate datumFaellig) {
+	public ZahlungsauftragBuilder withDatumFaellig(@Nonnull LocalDate datumFaellig) {
 		zahlungsauftrag.setDatumFaellig(datumFaellig);
 		return this;
 	}
 
-	public ZahlungsauftragBuilder withBeschrieb(String beschrieb) {
+	public ZahlungsauftragBuilder withBeschrieb(@Nonnull String beschrieb) {
 		zahlungsauftrag.setBeschrieb(beschrieb);
 		return this;
 	}
@@ -56,7 +59,8 @@ public class ZahlungsauftragBuilder {
 	public ZahlungsauftragBuilder withZahlung(
 		@Nonnull BigDecimal betrag,
 		@Nonnull String empfaenger,
-		String empfaengerKonto) {
+		@Nonnull String empfaengerKonto
+	) {
 		Zahlung zahlung = new Zahlung();
 		zahlung.setBetragTotalZahlung(betrag);
 		zahlung.setEmpfaengerName(empfaenger);
@@ -67,11 +71,10 @@ public class ZahlungsauftragBuilder {
 		return this;
 	}
 
-	public static Zahlungsauftrag create(Consumer<ZahlungsauftragBuilder> block) {
+	@Nonnull
+	public static Zahlungsauftrag create(@Nonnull Consumer<ZahlungsauftragBuilder> block) {
 		ZahlungsauftragBuilder builder = new ZahlungsauftragBuilder();
 		block.accept(builder);
 		return builder.zahlungsauftrag;
 	}
-
-
 }
