@@ -4,6 +4,7 @@
 <#-- @ftlvariable name="offenePendenzen" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="ungelesendeMitteilung" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="frenchEnabled" type="java.lang.Boolean" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> –  <#if offenePendenzen>Offene Pendenzen</#if><#if ungelesendeMitteilung && offenePendenzen> und</#if><#if ungelesendeMitteilung> neue Mitteilungen</#if> (${institutionStammdaten.institution.name}) / <#if offenePendenzen>Confirmation de places en attente</#if><#if ungelesendeMitteilung && offenePendenzen> et</#if><#if ungelesendeMitteilung> nouveau message</#if> (${institutionStammdaten.institution.name})</@base64Header>
@@ -45,29 +46,34 @@ ${templateConfiguration.mailCss}
 
 	<hr>
 
-	<p>
-		Bonjour,
-	</p>
-    <#if offenePendenzen>
-	<p>
-		Nous vous informons que des places sont en attente de confirmation pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
-		Vous pouvez les consulter
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/pendenzenBetreuungen">ici</a>.
-	</p>
-	</#if>
-    <#if ungelesendeMitteilung>
+    <#if frenchEnabled>
 		<p>
-			Nous vous informons<#if offenePendenzen> aussi </#if> qu'il y a des nouveaux messages pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
-			Vous pouvez les consulter
-			<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/posteingang">ici</a>.
+			Bonjour,
+		</p>
+        <#if offenePendenzen>
+			<p>
+				Nous vous informons que des places sont en attente de confirmation pour
+				l'institution ${institutionStammdaten.institution.name} dans kiBon.
+				Vous pouvez les consulter
+				<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/pendenzenBetreuungen">ici</a>.
+			</p>
+        </#if>
+        <#if ungelesendeMitteilung>
+			<p>
+				Nous vous informons<#if offenePendenzen> aussi </#if> qu'il y a des nouveaux messages pour
+				l'institution ${institutionStammdaten.institution.name} dans kiBon.
+				Vous pouvez les consulter
+				<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/posteingang">ici</a>.
+			</p>
+        </#if>
+		<p>
+            <#if configuration.isDevmode>
+				<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce
+					système ne donnent pas droit à un versement.</b><br><br>
+            </#if>
+			Merci de ne pas répondre à ce message automatique.
 		</p>
     </#if>
-	<p>
-		<#if configuration.isDevmode>
-		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
-		</#if>
-		Merci de ne pas répondre à ce message automatique.
-	</p>
 
 </div>
 

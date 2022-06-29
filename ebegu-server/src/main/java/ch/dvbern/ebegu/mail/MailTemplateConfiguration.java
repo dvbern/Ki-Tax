@@ -416,9 +416,14 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
+		boolean frenchEnabeld = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				institutionStammdaten.getInstitution()
+						.getMandant()));
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
+		paramMap.put(FRENCH_ENABLED, frenchEnabeld);
 
 		return doProcessTemplate(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution.name() + FTL_FILE_EXTENSION, paramMap);
 	}
