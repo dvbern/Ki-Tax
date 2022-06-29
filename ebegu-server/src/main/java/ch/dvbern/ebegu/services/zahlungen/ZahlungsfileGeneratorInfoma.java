@@ -10,10 +10,13 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaFooter;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaHeader;
+import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaStammdatenFinanzbuchhaltung;
+import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaStammdatenZahlung;
 
 @Dependent
 public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
@@ -37,7 +40,10 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
-		// TODO Je eine Zeile fuer Zahlung und Finanzbuchhaltung
+		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+			sb.append(InfomaStammdatenZahlung.with(zahlung, "TODO Belegnummer"));
+			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, "TODO Belegnummer"));
+		}
 		sb.append(InfomaFooter.with(zahlungsauftrag.getZahlungen().size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.UTF_8);
 	}
