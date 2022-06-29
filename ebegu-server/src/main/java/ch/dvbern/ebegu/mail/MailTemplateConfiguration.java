@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MandantLocaleVisitor;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import freemarker.template.Configuration;
@@ -241,10 +242,11 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache,
 		@Nonnull Mandant mandant
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("downloadurl", downloadurl);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale(), mandant));
-		return doProcessTemplate(MailTemplate.InfoStatistikGeneriert.name() + FTL_FILE_EXTENSION, sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoStatistikGeneriert), mandantLocale, paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(
@@ -376,6 +378,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Gesuch gesuch,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
@@ -384,7 +387,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoFreischaltungGesuchsperiode), sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoFreischaltungGesuchsperiode), mandantLocale, paramMap);
 	}
 
 	/**
@@ -416,7 +419,7 @@ public class MailTemplateConfiguration {
 	}
 
 	/**
-	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution.
+	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution. TODO: rework
 	 */
 	@Nonnull
 	public String getInfoOffenePendenzenNeuMitteilungInstitution(
@@ -446,23 +449,27 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		Mandant mandant = gemeinde.getMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mandant);
+
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"), mandant));
 		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), mandant));
 		paramMap.put("gemeinde", gemeinde);
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeAngebotAktiviert), getLocaleFromSprachen(sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeAngebotAktiviert), mandantLocale, paramMap);
 	}
 
 
-	public String getInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch,
+	public String getInfoGesuchVerfuegtVerantwortlicherTS(
+		@Nonnull Gesuch gesuch,
 		@Nonnull String mailaddressTS,
 		@Nonnull List<Sprache> sprachen) {
 
+		Locale mandantLocale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(gesuch.extractMandant());
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS), getLocaleFromSprachen(sprachen),
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS), mandantLocale,
 			paramMap);
 	}
 
@@ -520,13 +527,14 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
 
 		paramMap.put(GESUCH, gesuch);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
-		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller){
@@ -544,10 +552,13 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
+				.process(betreuung.extractGesuch().extractMandant());
+
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateAnmeldung(
@@ -558,11 +569,12 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 		Mandant mandant = betreuung.extractGesuch().extractMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateBetreuungGeloescht(
@@ -596,6 +608,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
+				.process(betreuung.extractGesuch().extractMandant());
 
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put("fall", fall);
@@ -603,7 +617,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
 		paramMap.put("institution", institution);
 
-		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateBetreuungVerfuegt(
@@ -633,8 +647,8 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		paramMap.put(MITTEILUNG, mitteilung);
-		Locale locale = getLocaleFromSprachen(sprachen);
-		return doProcessTemplate(MailTemplate.InfoMitteilungErhalten.name() + FTL_FILE_EXTENSION, locale, paramMap);
+		Locale locale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mitteilung.getFall().getMandant());
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoMitteilungErhalten), locale, paramMap);
 	}
 
 	private String getTemplateFileName(@Nonnull final  MailTemplate mailTemplate) {
@@ -727,6 +741,7 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
+	//TODO: rework
 	@Nonnull
 	public String getNotrechtBestaetigungPruefungStufe1(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
@@ -747,6 +762,7 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtBestaetigungPruefungStufe1), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
+	//TODO: rework
 	public String getNotrechtProvisorischeVerfuegung(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		@Nonnull InstitutionStammdaten institutionStammdaten,
