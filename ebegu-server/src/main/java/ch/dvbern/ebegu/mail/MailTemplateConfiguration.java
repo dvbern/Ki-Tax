@@ -47,10 +47,12 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
@@ -88,6 +90,7 @@ public class MailTemplateConfiguration {
 	public static final String UNGELESENDE_MITTEILUNG = "ungelesendeMitteilung";
 	public static final String OFFENE_PENDENZEN = "offenePendenzen";
 	public static final String HOSTNAME = "hostname";
+	public static final String FRENCH_ENABLED = "frenchEnabled";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -99,6 +102,9 @@ public class MailTemplateConfiguration {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	public MailTemplateConfiguration() {
 		this.freeMarkerConfiguration = new Configuration();
@@ -389,7 +395,11 @@ public class MailTemplateConfiguration {
 
 		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Locale.GERMAN);
 
-		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
+		if (Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				eingeladener.getMandant()))) {
+			addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
+		}
 
 		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + FTL_FILE_EXTENSION, paramMap);
 	}
