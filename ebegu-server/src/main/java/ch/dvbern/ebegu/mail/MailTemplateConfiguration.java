@@ -91,7 +91,6 @@ public class MailTemplateConfiguration {
 	public static final String UNGELESENDE_MITTEILUNG = "ungelesendeMitteilung";
 	public static final String OFFENE_PENDENZEN = "offenePendenzen";
 	public static final String HOSTNAME = "hostname";
-	public static final String FRENCH_ENABLED = "frenchEnabled";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -430,11 +429,8 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
-		boolean frenchEnabeld = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
-				ApplicationPropertyKey.FRENCH_ENABLED,
-				institutionStammdaten.getInstitution()
-						.getMandant()));
-		Locale locale = frenchEnabeld ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution()
+				.getMandant());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
@@ -729,19 +725,19 @@ public class MailTemplateConfiguration {
 		String empfaengerMail,
 		String betreff,
 		String inhalt,
-		MandantIdentifier mandantIdentifier
+		Mandant mandant
 	) {
-
-		Map<Object, Object> paramMap = initParamMap(mandantIdentifier);
+		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
+		Locale locale = getMandantLocale(mandant);
 
 		paramMap.put("empfaenger", empfaengerMail);
 		paramMap.put("betreff", betreff);
 		paramMap.put("inhalt", inhalt);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), Constants.DEFAULT_LOCALE, paramMap);
+
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), locale, paramMap);
 	}
 
-	//TODO: rework
 	@Nonnull
 	public String getNotrechtBestaetigungPruefungStufe1(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
@@ -749,37 +745,29 @@ public class MailTemplateConfiguration {
 		@Nonnull String betragKostenuebernahmeNichtAnwesend
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
-		boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
-				ApplicationPropertyKey.FRENCH_ENABLED,
-				institutionStammdaten.getInstitution()
-						.getMandant()));
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution().getMandant());
+
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(BETRAG1, betragRueckerstattungNichtAngeboten);
-		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtBestaetigungPruefungStufe1), Constants.DEFAULT_LOCALE, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtBestaetigungPruefungStufe1), locale, paramMap);
 	}
 
-	//TODO: rework
 	public String getNotrechtProvisorischeVerfuegung(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		@Nonnull String empfaengerMail
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
-		boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
-				ApplicationPropertyKey.FRENCH_ENABLED,
-				institutionStammdaten.getInstitution()
-						.getMandant()));
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution().getMandant());
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put("rueckforderungFormular", rueckforderungFormular);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
-		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put("empfaenger", empfaengerMail);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtProvisorischeVerfuegung), Constants.DEFAULT_LOCALE, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtProvisorischeVerfuegung), locale, paramMap);
 	}
 
 	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
@@ -819,5 +807,12 @@ public class MailTemplateConfiguration {
 		paramMap.put("link", url);
 		paramMap.put(HOSTNAME, trunctatedHostname);
 		return doProcessTemplate(getTemplateFileName(MailTemplate.GesuchstellerInitZPV), getLocaleFromSprachen(sprachen), paramMap);
+	}
+
+	private Locale getMandantLocale(Mandant mandant) {
+		final boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				mandant));
+		return frenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
 	}
 }

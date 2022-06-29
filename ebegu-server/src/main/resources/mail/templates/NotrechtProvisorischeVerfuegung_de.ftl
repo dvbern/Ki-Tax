@@ -3,7 +3,6 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaenger" type="java.lang.String" -->
-<#-- @ftlvariable name="frenchEnabled" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaenger}
@@ -66,60 +65,5 @@ ${institutionStammdaten.institution.name}<br>
 		</p>
     </#if>
 </div>
-<#if frenchEnabled>
-	<div>
-		<p>
-			<b>
-				Indemnités pour pertes financières en faveur des institutions d’accueil extra-familial pour enfants en
-				compensation des contributions de garde non perçues en raison des mesures de lutte contre le coronavirus
-				(COVID-19)
-			</b>
-		</p>
-		<p>
-			Mesdames, Messieurs,
-		</p>
-		<p>
-			Votre demande d’indemnités pour pertes financières nous est bien parvenue et a retenu toute notre attention.
-			Nous avons le plaisir de vous faire parvenir <a href="<#if configuration
-            .clientUsingHTTPS>https://<#else>http://</#if>${configuration
-            .hostname}/corona-finanzierung/list/rueckforderung/${rueckforderungFormular.id}/verfuegungen">la
-				décision</a>.
-			A noter que celle-ci est prise <b>sous réserve d’une correction ultérieure</b>. Si nous avons statué de
-			cette manière,
-			c’est soit parce que l’examen de votre demande n’est pas encore achevé, soit parce que vous n’avez pas
-			encore reçu
-			les décomptes définitifs relatifs aux indemnités en cas de réduction de l’horaire de travail et / ou à
-			l’allocation
-			pour perte de gain en cas de coronavirus.
-		</p>
-		<p>
-			Dans le premier cas, vous n’avez aucune démarche à entreprendre : nous reprendrons spontanément contact avec
-			vous.
-			Dans le second cas, nous vous prions de nous remettre les décomptes via la plateforme kiBon dès que ceux-ci
-			seront en votre possession.
-		</p>
-		<p>
-			En vous remerciant de votre engagement en cette période de pandémie, nous vous prions d’agréer,
-			Mesdames, Messieurs, nos salutations distinguées.
-		</p>
-		<p>
-			Meilleurs salutations
-		</p>
-		<p>
-			La division Famille</p>
-		<p>
-			Office de l’intégration et de l’action sociale
-			Courriel : <a href="mailto:info.fam@be.ch">info.fam@be.ch</a>
-			Tél : +41 31 633 78 83
-		</p>
-        <#if configuration.isDevmode>
-			<p>
-				<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce
-					système
-					ne donnent pas droit à un versement.</b><br><br>
-			</p>
-        </#if>
-	</div>
-</#if>
 </body>
 </html>
