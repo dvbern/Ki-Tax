@@ -462,20 +462,20 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull String contentName,
 		@Nonnull String footerName,
-		@Nonnull Locale french
+		@Nonnull Locale locale
 	) {
 		paramMap.put(
 			contentName,
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
-				french,
+				locale,
 				einladender.getMandant(),
 				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), french, eingeladener.getMandant()),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale, eingeladener.getMandant()),
 				getRollenZusatz(einladung, eingeladener)
 			)
 		);
-		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", french, einladender.getMandant()));
+		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale, einladender.getMandant()));
 	}
 
 	@Nonnull
