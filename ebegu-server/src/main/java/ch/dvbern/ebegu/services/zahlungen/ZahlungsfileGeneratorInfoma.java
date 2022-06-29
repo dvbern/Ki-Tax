@@ -12,6 +12,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaFooter;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaHeader;
 
 @Dependent
@@ -25,7 +26,8 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 
 
 	@Override
-		public byte[] generateZahlungfile(
+	@Nonnull
+	public byte[] generateZahlungfile(
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Locale locale
@@ -34,13 +36,14 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 		final boolean isDevmode = ebeguConfiguration.getIsDevmode();
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(new InfomaHeader(isDevmode, currentUsername));
+		sb.append(InfomaHeader.with(isDevmode, currentUsername));
 		// TODO Je eine Zeile fuer Zahlung und Finanzbuchhaltung
-		// TODO Footer
+		sb.append(InfomaFooter.with(zahlungsauftrag.getZahlungen().size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.UTF_8);
 	}
 
 	@Override
+	@Nonnull
 	public GeneratedDokumentTyp getGeneratedDokumentTyp() {
 		return GeneratedDokumentTyp.INFOMA;
 	}

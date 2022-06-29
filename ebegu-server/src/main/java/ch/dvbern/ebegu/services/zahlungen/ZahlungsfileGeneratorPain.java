@@ -34,7 +34,8 @@ public class ZahlungsfileGeneratorPain implements IZahlungsfileGenerator {
 	private Pain001Service pain001Service;
 
 	@Override
-		public byte[] generateZahlungfile(
+	@Nonnull
+	public byte[] generateZahlungfile(
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Locale locale
@@ -43,6 +44,7 @@ public class ZahlungsfileGeneratorPain implements IZahlungsfileGenerator {
 	}
 
 	@Override
+	@Nonnull
 	public GeneratedDokumentTyp getGeneratedDokumentTyp() {
 		return GeneratedDokumentTyp.PAIN001;
 	}
