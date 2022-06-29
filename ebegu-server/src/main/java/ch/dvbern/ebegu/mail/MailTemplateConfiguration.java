@@ -419,7 +419,7 @@ public class MailTemplateConfiguration {
 	}
 
 	/**
-	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution. TODO: rework
+	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution.
 	 */
 	@Nonnull
 	public String getInfoOffenePendenzenNeuMitteilungInstitution(
@@ -434,12 +434,12 @@ public class MailTemplateConfiguration {
 				ApplicationPropertyKey.FRENCH_ENABLED,
 				institutionStammdaten.getInstitution()
 						.getMandant()));
+		Locale locale = frenchEnabeld ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
-		paramMap.put(FRENCH_ENABLED, frenchEnabeld);
 
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution), Constants.DEFAULT_LOCALE, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution), locale, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
