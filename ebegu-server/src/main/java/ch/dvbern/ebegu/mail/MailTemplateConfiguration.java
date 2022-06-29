@@ -244,7 +244,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("downloadurl", downloadurl);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale(), mandant));
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
+		return doProcessTemplate(MailTemplate.InfoStatistikGeneriert.name() + FTL_FILE_EXTENSION, sprache.getLocale(), paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(
@@ -254,6 +254,16 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = mitteilung.getFall().getMandant();
 		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()), sprachen);
+	}
+
+	private Locale getLocaleFromSprachen(List<Sprache> sprachen) {
+		if (sprachen.contains(Sprache.DEUTSCH) && sprachen.contains(Sprache.FRANZOESISCH)) {
+			return Constants.DEUTSCH_FRENCH_LOCALE;
+		}
+		if (sprachen.contains(Sprache.FRANZOESISCH)) {
+			return Constants.FRENCH_LOCALE;
+		}
+		return Constants.DEFAULT_LOCALE;
 	}
 
 	public String getInfoVerfuegtGesuch(
@@ -374,7 +384,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoFreischaltungGesuchsperiode, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoFreischaltungGesuchsperiode), sprache.getLocale(), paramMap);
 	}
 
 	/**
@@ -401,7 +411,8 @@ public class MailTemplateConfiguration {
 			addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
 		}
 
-		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + FTL_FILE_EXTENSION, paramMap);
+		//TODO: rework this template to defr?
+		return doProcessTemplate(getTemplateFileName(MailTemplate.BenutzerEinladung), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
 	/**
@@ -425,7 +436,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
 		paramMap.put(FRENCH_ENABLED, frenchEnabeld);
 
-		return doProcessTemplate(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
@@ -439,7 +450,7 @@ public class MailTemplateConfiguration {
 		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"), mandant));
 		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), mandant));
 		paramMap.put("gemeinde", gemeinde);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeAngebotAktiviert), getLocaleFromSprachen(sprachen), paramMap);
 	}
 
 
@@ -451,7 +462,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS, sprachen),
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS), getLocaleFromSprachen(sprachen),
 			paramMap);
 	}
 
@@ -515,7 +526,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
 	}
 
 	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller){
@@ -536,7 +547,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
 	}
 
 	private String processTemplateAnmeldung(
@@ -551,7 +562,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
 	}
 
 	private String processTemplateBetreuungGeloescht(
@@ -592,7 +603,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
 		paramMap.put("institution", institution);
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), sprache.getLocale(), paramMap);
 	}
 
 	private String processTemplateBetreuungVerfuegt(
@@ -622,31 +633,18 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		paramMap.put(MITTEILUNG, mitteilung);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoMitteilungErhalten, sprachen), paramMap);
+		Locale locale = getLocaleFromSprachen(sprachen);
+		return doProcessTemplate(MailTemplate.InfoMitteilungErhalten.name() + FTL_FILE_EXTENSION, locale, paramMap);
 	}
 
-	/**
-	 * Appends the language and the file extension to the given name. Result will look like "name_de.ftl"
-	 */
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Sprache sprache) {
-		return appendLanguageToTemplateName(mailTemplate, sprache.getLocale());
+	private String getTemplateFileName(@Nonnull final  MailTemplate mailTemplate) {
+		return mailTemplate.name() + FTL_FILE_EXTENSION;
 	}
 
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull List<Sprache> sprachen) {
-		if (sprachen.size() == 1) {
-			return appendLanguageToTemplateName(mailTemplate, sprachen.get(0).getLocale());
-		}
-		return mailTemplate.name() + "_defr" + FTL_FILE_EXTENSION;
-	}
-
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
-		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + FTL_FILE_EXTENSION;
-	}
-
-	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
+	private String doProcessTemplate(@Nonnull final String name, @Nonnull Locale locale, final Map<Object, Object> rootMap) {
 
 		try {
-			final Template template = freeMarkerConfiguration.getTemplate(name, Constants.DEFAULT_LOCALE);
+			final Template template = freeMarkerConfiguration.getTemplate(name, locale);
 			final StringWriter out = new StringWriter(50);
 			template.process(rootMap, out);
 
@@ -726,7 +724,7 @@ public class MailTemplateConfiguration {
 		paramMap.put("betreff", betreff);
 		paramMap.put("inhalt", inhalt);
 
-		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
 	@Nonnull
@@ -746,7 +744,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
-		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtBestaetigungPruefungStufe1), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
 	public String getNotrechtProvisorischeVerfuegung(
@@ -765,13 +763,13 @@ public class MailTemplateConfiguration {
 		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put("empfaenger", empfaengerMail);
 
-		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtProvisorischeVerfuegung), Constants.DEFAULT_LOCALE, paramMap);
 	}
 
 	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, lastenausgleich.getMandant().getMandantIdentifier());
 		paramMap.put("jahr", lastenausgleich.getJahr().toString());
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichDurch, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichDurch), getLocaleFromSprachen(sprachen), paramMap);
 	}
 
 	public String getInfoSchulamtAnmeldungStorniert(
@@ -792,7 +790,7 @@ public class MailTemplateConfiguration {
 		Mandant mandant = container.getGemeinde().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("id", container.getId());
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde), getLocaleFromSprachen(sprachen), paramMap);
 	}
 
 	public String getInitGSZPVNr(
@@ -804,6 +802,6 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put("link", url);
 		paramMap.put(HOSTNAME, trunctatedHostname);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.GesuchstellerInitZPV, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.GesuchstellerInitZPV), getLocaleFromSprachen(sprachen), paramMap);
 	}
 }
