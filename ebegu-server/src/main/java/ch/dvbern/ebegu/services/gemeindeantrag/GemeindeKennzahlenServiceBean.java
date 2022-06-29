@@ -74,9 +74,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private GemeindeService gemeindeService;
-
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
 
 	@Nonnull
