@@ -3,6 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="betrag1" type="java.lang.String" -->
 <#-- @ftlvariable name="betrag2" type="java.lang.String" -->
+<#-- @ftlvariable name="frenchEnabled" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
@@ -67,47 +68,50 @@ Content-Type: text/html;charset=utf-8
     </#if>
 </div>
 
-<div>
-	<p>
-		Mesdames, Messieurs,
-	</p>
-	<p>
-		Le versement suivant sera effectué au cours des prochains jours :
-	</p>
-	<p>
-    	${betrag1} francs pour les heures ou les places qui n’ont plus pu être proposées.<br>
-    	${betrag2} francs de contributions parentales pour les frais de prise en charge des enfants absents en raison du coronavirus.
-	</p>
-	<p>
-		Vous pouvez contrôler <a
-				href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list">ici</a>
-		si les données saisies ont été modifiées. Le décompte définitif avec justification des
-		écarts sera établi après examen détaillé de votre demande dans le cadre de la seconde étape.
-	</p>
-	<p>
-		Délais pour le dépôt de la demande (étape 2) :
-	</p>
-	<ul>
-		<li>Pour les institutions privées : le 17 juillet 2020
-		</li>
-		<li>Pour les institutions publiques : le 31 juillet 2020
-		</li>
-	</ul>
-	<p>
-		En restant à votre disposition en cas de question (info.fam@be.ch ; +41 31 633 78 83), nous vous présentons,
-		Mesdames, Messieurs, nos salutations les meilleures.
-	</p>
-	<p>
-		La division Famille de l’Office de l’intégration et de l’action sociale
-	</p>
-    <#if configuration.isDevmode>
+<#if frenchEnabled>
+	<div>
 		<p>
-			<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système
-				ne donnent pas droit à un versement.</b><br><br>
+			Mesdames, Messieurs,
 		</p>
-    </#if>
-</div>
-
+		<p>
+			Le versement suivant sera effectué au cours des prochains jours :
+		</p>
+		<p>
+            ${betrag1} francs pour les heures ou les places qui n’ont plus pu être proposées.<br>
+            ${betrag2} francs de contributions parentales pour les frais de prise en charge des enfants absents en
+			raison du coronavirus.
+		</p>
+		<p>
+			Vous pouvez contrôler <a
+					href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/corona-finanzierung/list">ici</a>
+			si les données saisies ont été modifiées. Le décompte définitif avec justification des
+			écarts sera établi après examen détaillé de votre demande dans le cadre de la seconde étape.
+		</p>
+		<p>
+			Délais pour le dépôt de la demande (étape 2) :
+		</p>
+		<ul>
+			<li>Pour les institutions privées : le 17 juillet 2020
+			</li>
+			<li>Pour les institutions publiques : le 31 juillet 2020
+			</li>
+		</ul>
+		<p>
+			En restant à votre disposition en cas de question (info.fam@be.ch ; +41 31 633 78 83), nous vous présentons,
+			Mesdames, Messieurs, nos salutations les meilleures.
+		</p>
+		<p>
+			La division Famille de l’Office de l’intégration et de l’action sociale
+		</p>
+        <#if configuration.isDevmode>
+			<p>
+				<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce
+					système
+					ne donnent pas droit à un versement.</b><br><br>
+			</p>
+        </#if>
+	</div>
+</#if>
 </body>
 
 </html>

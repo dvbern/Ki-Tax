@@ -736,9 +736,14 @@ public class MailTemplateConfiguration {
 		@Nonnull String betragKostenuebernahmeNichtAnwesend
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				institutionStammdaten.getInstitution()
+						.getMandant()));
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(BETRAG1, betragRueckerstattungNichtAngeboten);
+		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
 		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
@@ -750,9 +755,14 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				institutionStammdaten.getInstitution()
+						.getMandant()));
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put("rueckforderungFormular", rueckforderungFormular);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
+		paramMap.put(FRENCH_ENABLED, frenchEnabled);
 		paramMap.put("empfaenger", empfaengerMail);
 
 		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
