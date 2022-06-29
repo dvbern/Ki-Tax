@@ -406,16 +406,16 @@ public class MailTemplateConfiguration {
 		paramMap.put("acceptLink", benutzerService.createInvitationLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
 
-		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Locale.GERMAN);
-
-		if (Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
+		final boolean isFrenchEnabled = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
 				ApplicationPropertyKey.FRENCH_ENABLED,
-				eingeladener.getMandant()))) {
-			addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
-		}
+				eingeladener.getMandant()));
+		Locale locale = isFrenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
 
-		//TODO: rework this template to defr?
-		return doProcessTemplate(getTemplateFileName(MailTemplate.BenutzerEinladung), Constants.DEFAULT_LOCALE, paramMap);
+		addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Constants.DEUTSCH_LOCALE);
+		if (isFrenchEnabled) {
+			addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Constants.FRENCH_LOCALE);
+		}
+		return doProcessTemplate(getTemplateFileName(MailTemplate.BenutzerEinladung), locale, paramMap);
 	}
 
 	/**
@@ -473,7 +473,7 @@ public class MailTemplateConfiguration {
 			paramMap);
 	}
 
-	private void addContentInLanguage(
+	private void addRoleContentInLanguage(
 		@Nonnull Benutzer einladender,
 		@Nonnull Einladung einladung,
 		@Nonnull Benutzer eingeladener,
