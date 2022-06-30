@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
@@ -296,15 +297,14 @@ public class BGCalculationResult extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(@Nullable AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof BGCalculationResult)) {
 			return false;
 		}
 		final BGCalculationResult otherResult = (BGCalculationResult) other;

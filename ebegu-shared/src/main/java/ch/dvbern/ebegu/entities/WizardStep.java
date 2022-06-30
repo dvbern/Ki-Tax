@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.util.Constants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -114,15 +115,14 @@ public class WizardStep extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof WizardStep)) {
 			return false;
 		}
 		final WizardStep otherWizardStep = (WizardStep) other;

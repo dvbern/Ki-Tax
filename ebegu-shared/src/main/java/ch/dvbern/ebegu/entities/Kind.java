@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validators.CheckKinderabzug;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -394,6 +395,8 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -403,9 +406,6 @@ public class Kind extends AbstractPersonEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Kind)) {
 			return false;
 		}
 		final Kind otherKind = (Kind) other;

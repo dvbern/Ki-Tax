@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
 import ch.dvbern.ebegu.enums.RueckforderungStatus;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -704,15 +705,14 @@ public class RueckforderungFormular extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof RueckforderungFormular)) {
 			return false;
 		}
 		final RueckforderungFormular otherRueckforderungFormular = (RueckforderungFormular) other;

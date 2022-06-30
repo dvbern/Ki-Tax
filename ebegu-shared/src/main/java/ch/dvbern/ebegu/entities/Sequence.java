@@ -113,15 +113,14 @@ public class Sequence extends AbstractMutableEntity implements HasMandant {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Sequence)) {
 			return false;
 		}
 		final Sequence otherSequence = (Sequence) other;

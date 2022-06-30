@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -129,9 +128,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 		Root<Traegerschaft> root = query.from(Traegerschaft.class);
 
 		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getAllActiveTraegerschaften", "mandant not found for principal " + principalBean.getPrincipal().getName());
-		}
 
 		Predicate mandantPredicate = cb.equal(root.get(Traegerschaft_.mandant), mandant);
 		Predicate activePredicate = cb.equal(root.get(Traegerschaft_.active), true);
@@ -154,9 +150,6 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 		Root<Traegerschaft> root = query.from(Traegerschaft.class);
 
 		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getAllTraegerschaften", "mandant not found for principal " + principalBean.getPrincipal().getName());
-		}
 
 		Predicate mandantPredicate = cb.equal(root.get(Traegerschaft_.mandant), mandant);
 		query.orderBy(cb.asc(root.get(Traegerschaft_.name)));

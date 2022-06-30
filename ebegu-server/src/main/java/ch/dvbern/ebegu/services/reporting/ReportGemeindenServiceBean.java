@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,10 +39,10 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDataRow;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenDatenDataRow;
 import ch.dvbern.ebegu.reporting.gemeinden.GemeindenExcelConverter;
-import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -51,7 +52,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -88,33 +88,34 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 	@Nonnull
 	@Override
 	public UploadFileInfo generateExcelReportGemeinden(
-		@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException {
+		@Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException, IOException {
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_GEMEINDEN;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, vorlage);
+		) {
+			Sheet sheet = workbook.getSheet(GEMEINDE_SHEET_NAME);
+			Sheet secondSheet = workbook.getSheet(GEMEINDE_PERIODEN_SHEET_NAME);
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(GEMEINDE_SHEET_NAME);
-		Sheet secondSheet = workbook.getSheet(GEMEINDE_PERIODEN_SHEET_NAME);
+			final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 
-		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
+			List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden, locale);
 
-		List<GemeindenDataRow> reportData = getReportDataGemeinden(aktiveGemeinden, locale);
+			ExcelMergerDTO excelMergerDTO = gemeindenExcelConverter.toExcelMergerDTO(reportData,
+				requireNonNull(principal.getMandant()), locale);
+			mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
+			mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
+			gemeindenExcelConverter.applyAutoSize(sheet);
+			gemeindenExcelConverter.applyAutoSize(secondSheet);
 
-		ExcelMergerDTO excelMergerDTO = gemeindenExcelConverter.toExcelMergerDTO(reportData,
-			requireNonNull(principal.getMandant()), locale);
-		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
-		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
-		gemeindenExcelConverter.applyAutoSize(sheet);
-		gemeindenExcelConverter.applyAutoSize(secondSheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			"Gemeinden.xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				"Gemeinden.xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<GemeindenDataRow> getReportDataGemeinden(

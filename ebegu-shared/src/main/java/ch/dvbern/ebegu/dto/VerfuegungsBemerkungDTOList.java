@@ -35,6 +35,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
 
@@ -52,6 +53,8 @@ public class VerfuegungsBemerkungDTOList {
 	@Nonnull
 	private final Set<VerfuegungsBemerkungDTO> bemerkungenList = new HashSet<>();
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(@Nullable VerfuegungsBemerkungDTOList other) {
 		//noinspection ObjectEquality
 		if (this == other) {

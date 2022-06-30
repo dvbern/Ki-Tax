@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -92,17 +93,15 @@ public class AbwesenheitContainer extends AbstractMutableEntity implements Compa
 	 * that the Abwesenheit "this" and "other" belong to the same Betreuung. To that porpouse we compare the
 	 * Betreuungen just by the BetreuungNummer.
 	 */
-	@SuppressWarnings("OverlyComplexMethod")
 	@Override
+	@SuppressWarnings({"OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof AbwesenheitContainer)) {
 			return false;
 		}
 		final AbwesenheitContainer otherAbwesenheitContainer = (AbwesenheitContainer) other;

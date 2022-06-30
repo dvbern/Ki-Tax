@@ -177,9 +177,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAktiveGemeinden() {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getAktiveGemeinden", "Mandant not defined");
-		}
 		return getAktiveGemeinden(principalBean.getMandant());
 	}
 
@@ -264,9 +261,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(
 			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId)
 		);
-		stammdaten.setLogoContent(content);
-		stammdaten.setLogoName(name);
-		stammdaten.setLogoType(type);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(content);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoName(name);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoType(type);
 		return saveGemeindeStammdaten(stammdaten);
 	}
 

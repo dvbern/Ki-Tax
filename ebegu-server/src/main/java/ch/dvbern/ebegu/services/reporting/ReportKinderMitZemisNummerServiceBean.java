@@ -53,9 +53,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
-import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -90,37 +88,43 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZEMIS;
 
-		InputStream is = ReportKinderMitZemisNummerServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportKinderMitZemisNummerServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<KindMitZemisNummerDataRow> reportData = getReportKinderMitZemisNummer(lastenausgleichJahr);
 
-		List<KindMitZemisNummerDataRow> reportData = getReportKinderMitZemisNummer(lastenausgleichJahr);
+			ExcelMergerDTO excelMergerDTO =
+				kinderMitZemisNummerExcelConverter.toExcelMergerDTO(reportData, lastenausgleichJahr);
 
-		ExcelMergerDTO excelMergerDTO = kinderMitZemisNummerExcelConverter.toExcelMergerDTO(reportData, lastenausgleichJahr);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			kinderMitZemisNummerExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		kinderMitZemisNummerExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
 					Objects.requireNonNull(principalBean.getMandant())) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Override
 	public void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent) throws IOException, MailException {
 
-		try (InputStream is = new ByteArrayInputStream(fileContent)) {
+		try (
+			InputStream is = new ByteArrayInputStream(fileContent);
 			Workbook workbook = WorkbookFactory.create(is);
+		) {
 			Sheet sheet = workbook.getSheetAt(0);
 
 			final int firstRelevantRow = 6;

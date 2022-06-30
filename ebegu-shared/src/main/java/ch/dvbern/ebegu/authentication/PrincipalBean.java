@@ -74,7 +74,7 @@ public class PrincipalBean {
 		return benutzer;
 	}
 
-	@Nullable
+	@Nonnull
 	public Mandant getMandant() {
 		if (mandant == null || !getBenutzer().getId().equals(principal.getName())) {
 			mandant = getBenutzer().getMandant();

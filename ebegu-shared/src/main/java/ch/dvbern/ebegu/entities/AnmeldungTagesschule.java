@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -125,6 +126,8 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -134,9 +137,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof AnmeldungTagesschule)) {
 			return false;
 		}
 		final AnmeldungTagesschule otherBetreuung = (AnmeldungTagesschule) other;

@@ -76,6 +76,11 @@
                                      [fiAnmeldungenStartStr]="fiAnmeldungenStartStr">
                 </dv-edit-gemeinde-fi>
             </mat-tab>
+            <mat-tab label="{{'GEMEINDE_TAB_KORRESPONDENZ' | translate}}" ngForm="gemeinde_korrespondenz">
+                <dv-edit-gemeinde-korrespondenz [stammdaten$]="stammdaten$"
+                                                [editMode]="editMode">
+                </dv-edit-gemeinde-korrespondenz>
+            </mat-tab>
         </mat-tab-group>
 
         <!-- Buttons -->

@@ -84,7 +84,7 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 			return;
 		}
 		sb.append(t.toString());
-		if (t.getCause() != null && t != t.getCause()) {
+		if (t.getCause() != null && !t.equals(t.getCause())) {
 			sb.append('[');
 			doUnwrapException(sb, t.getCause());
 			sb.append(']');

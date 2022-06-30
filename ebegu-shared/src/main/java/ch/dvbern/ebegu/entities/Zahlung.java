@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -202,15 +203,14 @@ public class Zahlung extends AbstractMutableEntity implements Comparable<Zahlung
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Zahlung)) {
 			return false;
 		}
 		final Zahlung otherZahlung = (Zahlung) other;

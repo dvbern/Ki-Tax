@@ -34,7 +34,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -43,6 +42,7 @@ import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -196,6 +196,8 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMand
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -205,9 +207,6 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements HasMand
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Zahlungsauftrag)) {
 			return false;
 		}
 		final Zahlungsauftrag otherZahlungsauftrag = (Zahlungsauftrag) other;

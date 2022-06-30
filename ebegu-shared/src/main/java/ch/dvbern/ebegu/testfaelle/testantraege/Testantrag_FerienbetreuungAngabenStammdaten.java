@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_FerienbetreuungAngabenStammdaten {
 
 	private FerienbetreuungAngabenStammdaten stammdaten;
