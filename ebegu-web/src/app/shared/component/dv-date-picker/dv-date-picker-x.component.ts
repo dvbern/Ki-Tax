@@ -28,9 +28,6 @@ import * as moment from 'moment';
 })
 export class DvDatePickerXComponent implements OnInit {
 
-    // store if picker is touched to set css class for validation
-    public touched = false;
-
     @Input()
     public label: string;
 
@@ -42,6 +39,19 @@ export class DvDatePickerXComponent implements OnInit {
 
     @Input()
     public maxDate: moment.Moment;
+
+    /**
+     * Whether the mat-toggle for opening the calender is enabled. Defaults to true
+     */
+    @Input()
+    public datePickerEnabled: boolean = true;
+
+    /**
+     * Custom id to be used as id for the input field. Will also be used for the label.for attribute if a label is
+     * provided
+     */
+    @Input()
+    public inputId: string;
 
     @Output()
     public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();

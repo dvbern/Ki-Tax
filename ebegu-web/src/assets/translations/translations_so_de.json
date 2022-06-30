@@ -1,7 +1,7 @@
 {
     "FAELLE_LIST": "Alle Fälle",
-    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie im Jahr {{basisjahrPlus}} oder {{basisjahr}} eine Steuerveranlagung erhalten?" ,
-    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG": "Haben Sie in den Jahren {{basisjahrPlus}}, {{basisjahr}} oder {{basisjahrMinus}} eine Steuerveranlagung erhalten?" ,
+    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}} oder {{basisjahrMinus}} erhalten?" ,
+    "FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}}, {{basisjahrMinus}} oder {{basisjahrMinus2}} erhalten?" ,
     "MOMENTAN_SELBSTSTAENDIG": "Sind Sie selbstständig erwerbend?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} abweichen?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",

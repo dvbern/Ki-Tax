@@ -1,0 +1,122 @@
+<div class="gesuch-modul static-position">
+	<h1 class="access-for-all-title" translate="'AFA_GESUCHSFORMULAR'"></h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>
+				<span>{{getTitle()}}</span>
+			</h2>
+			<hr class="header"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<form role="form" name="form" class="" novalidate unsaved-warning-form>
+				<fieldset [disabled]="isGesuchReadonly()">
+
+					<!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
+					<div *ngIf="isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
+						<p class="ebegu-h3" translate>GESUCHSPERIODE_INAKTIV_HINT</p>
+					</div>
+					<!-- Folgegesuch: Info, dass Daten uebernommen wurden -->
+					<div *dvNgShowElement="getGesuchModel().isFolgegesuch(); roles: getGesuchstellerOnlyRoles()"
+						 class="well well-status-warten">
+						<p class="ebegu-h3" translate>FOLGEGESUCH_HINT</p>
+					</div>
+
+					<!--Willkommnstext bei Erstgesuch-->
+					<div *ngIf="gesuchModelManager.isGesuch()">
+						<p>
+							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
+						</p>
+					</div>
+
+					<!--Mutationelemente auswaehlen. Nur fuer Mutationen-->
+					<div *ngIf="!gesuchModelManager.isGesuch()" class="margin-bottom-20">
+
+						<h3 class="ebegu-h2" translate>MUTATION_AUSWAHL_TEXT_1</h3>
+						<br>
+						<p>
+							<span [innerHTML]="'MUTATION_AUSWAHL_TEXT_2' | translate"></span>
+							<span [innerHTML]="'MUTATION_AUSWAHL_TEXT_3' | translate"></span>
+						</p>
+
+					</div>
+
+					<!--Eingangsdatum-->
+					<div class="row margin-top-30" *dvNgShowElement="true; roles: getAllRolesButGesuchstellerSozialdienst()">
+						<div class="col-sm-12 dv-input-container-medium">
+							<dv-input-container class="form-group">
+								<label for="eingangsdatum"
+									   class="required">{{'EINGANGSDATUM' | translate:{typ: getGesuchModel().typ | translate} }}</label>
+								<div class="dv-input-container-medium-label">
+									<dv-date-picker-x [required]="true"
+													  [inputId]="'eingangsdatum'"
+													  id="eingangsdatum"
+													  [datePickerEnabled]="false"
+													  [(date)]="getGesuchModel().eingangsdatum"></dv-date-picker-x>
+								</div>
+							</dv-input-container>
+						</div>
+					</div>
+
+					<!-- Regeln gueltig ab (Datum) -->
+					<div class="row" *dvNgShowElement="true; roles: getAllRolesButGesuchstellerSozialdienst()">
+						<div class="col-sm-12 dv-input-container-medium">
+							<dv-input-container class="form-group">
+								<label class="md-no-float" for="alternativDatum">
+									<span [translate]="'REGELN_GUELTIG_AB'"></span>
+									<dv-tooltip [inputId]="'regelnGueltigAb_ID'"
+												[text]="'REGELN_GUELTIG_AB_HELP' | translate"></dv-tooltip>
+								</label>
+								<div class="dv-input-container-medium-label">
+									<dv-date-picker-x [(date)]="getGesuchModel().regelnGueltigAb"
+													  [required]="false"
+													  [inputId]="'alternativDatum'"
+													  id="alternativDatum"
+													  [datePickerEnabled]="false"
+													  class="input-element">
+									</dv-date-picker-x>
+								</div>
+							</dv-input-container>
+						</div>
+					</div>
+
+					<!-- Gesuchsperiode: Auswahl -->
+					<div *dvNgShowElement="canChangeGesuchsperiode(); roles: getAllRolesButGesuchstellerSozialdienst()">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<div class="dv-radio-container">
+										<dv-radio-container-x>
+											<mat-radio-group
+													aria-labelledby=""
+													name="gesuchsperioden"
+													#gesuchsperioden="ngModel"
+													[(ngModel)]="gesuchsperiodeId"
+													(change)="setSelectedGesuchsperiode()"
+													[required]="true">
+												<mat-radio-button *ngFor="let gp of getAllActiveGesuchsperioden()"
+																  [value]="gp.id"
+																  [aria-label]="gp.gesuchsperiodeString">{{gp.gesuchsperiodeString}}
+												</mat-radio-button>
+												<dv-error-messages *ngIf="gesuchsperioden.touched" [errorObject]="gesuchsperioden.errors"></dv-error-messages>
+											</mat-radio-group>
+
+										</dv-radio-container-x>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</fieldset>
+
+				<!--Buttons-->
+				<dv-navigation-x [dvNext]="true"
+								 [dvTranslateNext]="getNextButtonText()"
+								 (dvSave)="save($event.onResult)"></dv-navigation-x>
+
+			</form>
+		</div>
+	</div>
+</div>

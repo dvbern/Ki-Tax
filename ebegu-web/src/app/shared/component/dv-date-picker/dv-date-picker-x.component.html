@@ -15,20 +15,19 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-input-container class="form-group" [ngClass]="{'touched': touched}">
-    <label class="md-no-float" [ngClass]="{'required': required}" [for]="'date-' + randId">{{label | translate}}</label>
-    <input class="dv-mat-datepicker" type="text"
-           [name]="'date-' + randId + '-name'" [id]="'date-' + randId"
+<dv-input-container class="form-group" [ngClass]="{'touched': dateRef.touched}">
+    <label *ngIf="label" class="md-no-float" [ngClass]="{'required': required}" [for]="(inputId? inputId : 'date-') + randId">{{label | translate}}</label>
+    <input [ngClass]="{'dv-mat-datepicker': datePickerEnabled, 'dv-mat-datepicker-wide': !datePickerEnabled}" type="text"
+           [name]="(inputId? inputId : 'date-' + randId) + '-name'" [id]="(inputId? inputId : 'date-') + randId"
            #dateRef='ngModel'
            [(ngModel)]="date"
            (ngModelChange)="emit()"
-           (blur)="touched = true"
            [min]="minDate"
            [max]="maxDate"
            [matDatepicker]="datePicker"
            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
            [required]="required">
-    <mat-datepicker-toggle matSuffix
+    <mat-datepicker-toggle *ngIf="datePickerEnabled" matSuffix
                            [for]="datePicker"></mat-datepicker-toggle>
     <mat-datepicker #datePicker></mat-datepicker>
     <dv-error-messages [errorObject]="dateRef.errors"

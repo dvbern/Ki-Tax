@@ -170,5 +170,7 @@
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Anleitung für Antragstellende</b><br><a target='_blank' href='assets/pdf/Anleitung_Antragstellende_Luzern.pdf'>Anleitung für Antragstellende</a>.<br><br><b>Benötigen Sie Hilfe?</b><br><br>Stadt Luzern <br/>Kinder Jugend Familie <br/>Kasernenplatz 3, Postfach <br/> 6000 Luzern 7<br><a href=\"tel:+41 41 208 81 90\">+41 41 208 81 90</a><br><a href=\"mailto:betreuungsgutscheine@stadtluzern.ch\">betreuungsgutscheine@stadtluzern.ch</a><br><a href=\"https://www.kinderbetreuung.stadtluzern.ch\">www.kinderbetreuung.stadtluzern.ch</a><br>",
     "ZAHLUNGSINFORMATIONEN": "Zahlungsinformationen",
     "ANGABEN_ZAHLUNGSINFORMATIONEN": "Geben Sie hier Ihre Angaben für die Auszahlung der Betreuungsgutscheine ein",
+    "ONBOARDING_INFO_GEMEINDE_LINK": "",
+    "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

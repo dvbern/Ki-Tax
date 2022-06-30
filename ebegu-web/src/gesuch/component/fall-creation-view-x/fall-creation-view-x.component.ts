@@ -1,24 +1,13 @@
-/*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
+import {UIRouterGlobals} from '@uirouter/core';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSGemeinde} from '../../../models/TSGemeinde';
@@ -26,78 +15,50 @@ import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {INewFallStateParams} from '../../gesuch.route';
-import {BerechnungsManager} from '../../service/berechnungsManager';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../abstractGesuchView';
-import ITimeoutService = angular.ITimeoutService;
-import ITranslateService = angular.translate.ITranslateService;
+import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
-export class FallCreationViewComponentConfig implements IComponentOptions {
-    public transclude = false;
-    public template = require('./fallCreationView.html');
-    public controller = FallCreationViewController;
-    public controllerAs = 'vm';
-}
+@Component({
+    selector: 'dv-fall-creation-view-x',
+    templateUrl: './fall-creation-view-x.component.html',
+    styleUrls: [],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
-export class FallCreationViewController extends AbstractGesuchViewController<any> {
+    public gesuchsperiodeId: string;
+    @ViewChild(NgForm) private readonly form: NgForm;
 
-    public static $inject = [
-        'GesuchModelManager',
-        'BerechnungsManager',
-        'ErrorService',
-        '$stateParams',
-        'WizardStepManager',
-        '$translate',
-        '$q',
-        '$scope',
-        'AuthServiceRS',
-        'GesuchsperiodeRS',
-        '$timeout',
-    ];
-    private gesuchsperiodeId: string;
-
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
-    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    public showError: boolean = false;
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
-        gesuchModelManager: GesuchModelManager,
-        berechnungsManager: BerechnungsManager,
+        public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
-        private readonly $stateParams: INewFallStateParams,
-        wizardStepManager: WizardStepManager,
-        private readonly $translate: ITranslateService,
-        private readonly $q: IQService,
-        $scope: IScope,
+        protected readonly wizardStepManager: WizardStepManager,
+        private readonly $translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        $timeout: ITimeoutService,
+        private readonly cd: ChangeDetectorRef,
+        private readonly uiRouterGlobals: UIRouterGlobals,
     ) {
         super(gesuchModelManager,
-            berechnungsManager,
             wizardStepManager,
-            $scope,
-            TSWizardStepName.GESUCH_ERSTELLEN,
-            $timeout);
+            TSWizardStepName.GESUCH_ERSTELLEN);
     }
 
-    public $onInit(): void {
-        super.$onInit();
+    public ngOnInit(): void {
+        // TODO: do we need super.onInit? See abstractGesuchView.$onInit
+
         this.readStateParams();
         this.initViewModel();
     }
 
     private readStateParams(): void {
-        if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
-            this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
-        }
-    }
-
-    public setShowError(showError: boolean): void {
-        this.showError = showError;
+        if (this.uiRouterGlobals.params.gesuchsperiodeId && this.uiRouterGlobals.params.gesuchsperiodeId !== '') {
+          this.gesuchsperiodeId = this.uiRouterGlobals.params.gesuchsperiodeId;
+         }
     }
 
     private initViewModel(): void {
@@ -113,36 +74,41 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         }
         this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
             .then((response: TSGesuchsperiode[]) => {
-                this.yetUnusedGesuchsperiodenListe = angular.copy(response);
+                this.yetUnusedGesuchsperiodenListe = response;
+                this.cd.markForCheck();
             });
     }
 
     // tslint:disable-next-line:cognitive-complexity
-    public save(): IPromise<TSGesuch> {
-        this.showError = true;
+    public save(navigateFunction: Function): void {
         if (!this.isGesuchValid()) {
+            this.form.form.markAllAsTouched();
+            navigateFunction(undefined);
             return undefined;
         }
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return this.$q.when(this.gesuchModelManager.getGesuch());
+            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
         }
         this.errorService.clearAll();
-        return this.gesuchModelManager.saveGesuchAndFall().then(
+        this.gesuchModelManager.saveGesuchAndFall().then(
             gesuch => {
                 // if sozialdienst Fall Step muss be updated
                 if (EbeguUtil.isNotNullOrUndefined(gesuch.dossier.fall.sozialdienstFall)) {
                     this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
                 }
+                this.cd.markForCheck();
                 return gesuch;
             },
-        );
+            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+        ).catch(err => console.error(err)).then(gesuch => navigateFunction(gesuch));
     }
 
     private isSavingNecessary(): boolean {
         // if form is dirty or gesuch is new => save
-        if (this.form.$dirty || this.gesuchModelManager.getGesuch().isNew()) {
+        if (this.form.dirty || this.gesuchModelManager.getGesuch().isNew()) {
             return true;
         }
         // user is sozialdienst and step Sozialdienst is ok => don't save
@@ -150,7 +116,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             return false;
         }
         // if user is Gemeinde, Kanton or Superadmin => don't save
-        return !this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAllRolesButGesuchstellerSozialdienst());
+        return !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchstellerSozialdienst());
     }
 
     public getGesuchModel(): TSGesuch {
@@ -202,7 +168,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 return this.$translate.instant('ERSTELLEN');
             }
             if (this.gesuchModelManager.isGesuchReadonly()
-                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())
+                || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
                 || this.isSozialdienstAndOk()) {
                 return this.$translate.instant('WEITER_ONLY');
             }
@@ -215,7 +181,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
      * step is ok (e.g. document is uploaded).
      */
     private isSozialdienstAndOk(): boolean {
-        const sozialdienstRole = this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSozialdienstRolle());
+        const sozialdienstRole = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
         return sozialdienstRole
             && this.wizardStepManager.isStepStatusOk(
                 TSWizardStepName.GESUCH_ERSTELLEN);
@@ -248,17 +214,27 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     /**
-     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
-     * gesuchsperiode set
+     * Diese Methode prueft ob das Form valid ist. Sollte es nicht valid sein wird das erste fehlende Element gesucht
+     * und fokusiert, damit der Benutzer nicht scrollen muss, um den Fehler zu finden.
+     * Am Ende wird this.form.$valid zurueckgegeben
      */
-    public isThereAnyGesuchsperiode(): boolean {
-        return (this.yetUnusedGesuchsperiodenListe && this.yetUnusedGesuchsperiodenListe.length > 0)
-            || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
+    public isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
     }
 
-    public showGesuchsperiodeReadonly(): boolean {
-        return !this.canChangeGesuchsperiode()
-            // do not show readonly gesuchsperioden for sozialdienst
-            && !this.TSRoleUtil.isSozialdienstRole(this.authServiceRS.getPrincipalRole());
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
+
+    public getAllRolesButGesuchstellerSozialdienst(): ReadonlyArray<TSRole> {
+        return TSRoleUtil.getAllRolesButGesuchstellerSozialdienst();
+    }
+
+    public getGesuchstellerOnlyRoles(): ReadonlyArray<TSRole> {
+        return TSRoleUtil.getGesuchstellerOnlyRoles();
     }
 }
