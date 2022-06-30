@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.slf4j.Logger;

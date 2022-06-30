@@ -125,7 +125,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	}
 
 	@Nonnull
-	public PdfPTable createAlternativSignatureTable() {
+	protected PdfPTable createAlternativSignatureTable() {
 		PdfPTable table = new PdfPTable(3);
 		// Init
 		PdfUtil.setTableDefaultStyles(table);
