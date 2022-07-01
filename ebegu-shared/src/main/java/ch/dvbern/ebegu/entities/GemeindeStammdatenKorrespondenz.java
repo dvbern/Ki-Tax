@@ -48,22 +48,22 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer senderAddressSpacingLeft;
+	private Integer senderAddressSpacingLeft = 20;
 
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer senderAddressSpacingTop;
+	private Integer senderAddressSpacingTop = 47;
 
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer receiverAddressSpacingLeft;
+	private Integer receiverAddressSpacingLeft = 123;
 
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer receiverAddressSpacingTop;
+	private Integer receiverAddressSpacingTop = 47;
 
 	@Nullable
 	@Column(nullable = true, length = ONE_MB) // 1 megabytes
@@ -85,12 +85,12 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer logoSpacingLeft;
+	private Integer logoSpacingLeft = 123;
 
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
-	private Integer logoSpacingTop;
+	private Integer logoSpacingTop = 15;
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
