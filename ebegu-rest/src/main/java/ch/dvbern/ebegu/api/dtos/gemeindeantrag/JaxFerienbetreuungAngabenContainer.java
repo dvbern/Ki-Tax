@@ -33,6 +33,9 @@ public class JaxFerienbetreuungAngabenContainer extends JaxAbstractDTO {
 	private FerienbetreuungAngabenStatus status;
 
 	@Nonnull
+	private Boolean zurueckAnGemeinde;
+
+	@Nonnull
 	private JaxGemeinde gemeinde;
 
 	@Nonnull
@@ -54,6 +57,15 @@ public class JaxFerienbetreuungAngabenContainer extends JaxAbstractDTO {
 
 	public void setStatus(@Nonnull FerienbetreuungAngabenStatus status) {
 		this.status = status;
+	}
+
+	@Nonnull
+	public Boolean getZurueckAnGemeinde() {
+		return zurueckAnGemeinde;
+	}
+
+	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
+		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Nonnull

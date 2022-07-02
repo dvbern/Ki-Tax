@@ -59,6 +59,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	@NotNull
 	@Nonnull
+	@Column(nullable = false)
+	private Boolean zurueckAnGemeinde = false;
+
+	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
@@ -98,6 +103,15 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public void setStatus(@Nonnull FerienbetreuungAngabenStatus status) {
 		this.status = status;
+	}
+
+	@Nonnull
+	public Boolean getZurueckAnGemeinde() {
+		return zurueckAnGemeinde;
+	}
+
+	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
+		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Nonnull

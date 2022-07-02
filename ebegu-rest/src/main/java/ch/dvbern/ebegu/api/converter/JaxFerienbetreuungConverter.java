@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ForbiddenException;
@@ -82,7 +81,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	) {
 		convertAbstractFieldsToEntity(jaxContainer, container);
 
-		// never set status, gemeinde and gesuchsperiode from client
+		// never set status, zurueckAnGemeinde, gemeinde and gesuchsperiode from client
 
 		container.setAngabenDeklaration(ferienbetreuungenAngabenToEntity(
 			jaxContainer.getAngabenDeklaration(),
@@ -332,6 +331,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(container, jaxContainer);
 
 		jaxContainer.setStatus(container.getStatus());
+		jaxContainer.setZurueckAnGemeinde(container.getZurueckAnGemeinde());
 		jaxContainer.setGemeinde(gemeindeToJAX(container.getGemeinde()));
 		jaxContainer.setGesuchsperiode(gesuchsperiodeToJAX(container.getGesuchsperiode()));
 		jaxContainer.setAngabenDeklaration(ferienbetreuungAngabenToJax(container.getAngabenDeklaration()));

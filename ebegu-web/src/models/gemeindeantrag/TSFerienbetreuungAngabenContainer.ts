@@ -25,6 +25,7 @@ import {TSFerienbetreuungAngaben} from './TSFerienbetreuungAngaben';
 export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
 
     private _status: FerienbetreuungAngabenStatus;
+    private _zurueckAnGemeinde: boolean;
     private _gemeinde: TSGemeinde;
     private _gesuchsperiode: TSGesuchsperiode;
     private _angabenDeklaration: TSFerienbetreuungAngaben;
@@ -37,6 +38,14 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
 
     public set status(value: FerienbetreuungAngabenStatus) {
         this._status = value;
+    }
+
+    public get zurueckAnGemeinde(): boolean {
+        return this._zurueckAnGemeinde;
+    }
+
+    public set zurueckAnGemeinde(value: boolean) {
+        this._zurueckAnGemeinde = value;
     }
 
     public get gemeinde(): TSGemeinde {
