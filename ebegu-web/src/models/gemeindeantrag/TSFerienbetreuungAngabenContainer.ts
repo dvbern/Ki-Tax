@@ -97,6 +97,11 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         ].includes(this.status);
     }
 
+    public isAtLeastInPruefungKantonOrZurueckgegeben(): boolean {
+        return this.isAtLeastInPruefungKanton()
+        || this._zurueckAnGemeinde;
+    }
+
     public isInPruefungKanton(): boolean {
         return this.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
     }

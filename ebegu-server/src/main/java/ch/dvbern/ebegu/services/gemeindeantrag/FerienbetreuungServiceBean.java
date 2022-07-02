@@ -525,8 +525,6 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenContainer must not be null"
 		);
 
-		container.copyForZurueckAnGemeinde();
-
 		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
 
 		container.getAngabenDeklaration()
@@ -555,6 +553,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		container.getAngabenKorrektur()
 			.getFerienbetreuungAngabenKostenEinnahmen()
 			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
+
+		container.setZurueckAnGemeinde(true);
 
 		return persistence.merge(container);
 	}

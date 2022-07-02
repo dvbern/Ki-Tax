@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
-import com.google.common.base.Preconditions;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -189,6 +188,10 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;
 	}
 
+	public boolean isAtLeastInPruefungKantonOrZurueckAnGemeinde() {
+		return this.isAtLeastInPruefungKanton() || zurueckAnGemeinde;
+	}
+
 	public boolean isReadyForGeprueft() {
 		if(getAngabenKorrektur() == null) {
 			return false;
@@ -226,21 +229,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
-		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
+		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
+		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
+		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE && !zurueckAnGemeinde) {
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}
-	}
-
-	public void copyForZurueckAnGemeinde() {
-		Preconditions.checkState(
-			status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
-			"FerienbetreuungAngabenContainer must be in state IN_PRUEFUNG_KANTON"
-		);
-		Preconditions.checkState(
-			angabenKorrektur != null,
-			"angabenKorrektur must not be null"
-		);
-		angabenDeklaration = new FerienbetreuungAngaben(angabenKorrektur);
 	}
 
 	public boolean isInBearbeitungGemeinde() {

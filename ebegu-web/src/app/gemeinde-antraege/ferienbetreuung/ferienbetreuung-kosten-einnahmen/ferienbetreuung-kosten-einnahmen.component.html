@@ -60,7 +60,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkosten"
                         [korrektur]="form.get('personalkosten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -83,7 +83,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkostenLeitungAdmin"
                         [korrektur]="form.get('personalkostenLeitungAdmin').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -113,7 +113,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sachkosten"
                         [korrektur]="form.get('sachkosten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -139,7 +139,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.verpflegungskosten"
                         [korrektur]="form.get('verpflegungskosten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -163,7 +163,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereKosten"
                         [korrektur]="form.get('weitereKosten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -181,7 +181,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
                         [korrektur]="form.get('bemerkungenKosten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -221,7 +221,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.elterngebuehren"
                         [korrektur]="form.get('elterngebuehren').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -251,7 +251,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereEinnahmen"
                         [korrektur]="form.get('weitereEinnahmen').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>

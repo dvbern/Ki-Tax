@@ -94,7 +94,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.stammdaten = container.isAtLeastInPruefungKanton() ?
+            this.stammdaten = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
                 container.angabenKorrektur?.stammdaten : container.angabenDeklaration?.stammdaten;
             this.setupFormAndPermissions(container, this.stammdaten, principal);
             this.unsavedChangesService.registerForm(this.form);
