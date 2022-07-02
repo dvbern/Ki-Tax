@@ -2451,15 +2451,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private List<FerienbetreuungDataRow> getReportDataFerienbetreuung() {
 		return ferienbetreuungService.getAllFerienbetreuungAntraege().stream()
-			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKanton)
+			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKantonOrZurueckAnGemeinde)
 			.map(this::convertFerienbetreungToDataRow)
 			.collect(Collectors.toList());
 	}
 
 	private FerienbetreuungDataRow convertFerienbetreungToDataRow(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
 		FerienbetreuungDataRow ferienbetreuungDataRow = new FerienbetreuungDataRow();
-		FerienbetreuungAngaben ferienbetreuungAngaben = ferienbetreuungAngabenContainer.getAngabenKorrektur() != null ?
-			ferienbetreuungAngabenContainer.getAngabenKorrektur() : ferienbetreuungAngabenContainer.getAngabenDeklaration();
+		FerienbetreuungAngaben ferienbetreuungAngaben = getFerienbetreuungAngabenBasedOnStatus(ferienbetreuungAngabenContainer);
 
 		ferienbetreuungDataRow.setGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getName());
 		ferienbetreuungDataRow.setBfsNummerGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getBfsNummer());
@@ -2475,6 +2474,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		setBerechnungenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungBerechnungen());
 
 		return ferienbetreuungDataRow;
+	}
+
+	private FerienbetreuungAngaben getFerienbetreuungAngabenBasedOnStatus(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
+		// falls Antrag zurück an Gemeinde gegeben wurde, sollen der Antrag im Report sichtbar sein. Allerdings nur
+		// die Deklaration, um zu verhindern, dass nicht freigegebene Änderungen schon für den Kanton sichtbar sind.
+		if (ferienbetreuungAngabenContainer.getZurueckAnGemeinde()) {
+			return ferienbetreuungAngabenContainer.getAngabenDeklaration();
+		}
+		// sonst zeigen wir immer die Korrektur, falls vorhanden
+		return ferienbetreuungAngabenContainer.getAngabenKorrektur() != null ?
+			ferienbetreuungAngabenContainer.getAngabenKorrektur() : ferienbetreuungAngabenContainer.getAngabenDeklaration();
 	}
 
 	private void setStammdatenValues(
