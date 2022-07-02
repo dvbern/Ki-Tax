@@ -6129,6 +6129,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(gemeindeContainer, jaxGemeindeContainer);
 
 		jaxGemeindeContainer.setStatus(gemeindeContainer.getStatus());
+		jaxGemeindeContainer.setZurueckAnGemeinde(gemeindeContainer.getZurueckAnGemeinde());
 		jaxGemeindeContainer.setGemeinde(gemeindeToJAX(gemeindeContainer.getGemeinde()));
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());

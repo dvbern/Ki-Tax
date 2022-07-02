@@ -68,6 +68,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@NotNull
 	@Nonnull
+	@Column(nullable = false)
+	private Boolean zurueckAnGemeinde = false;
+
+	@NotNull
+	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
@@ -115,6 +120,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status) {
 		this.status = status;
+	}
+
+	@Nonnull
+	public Boolean getZurueckAnGemeinde() {
+		return zurueckAnGemeinde;
+	}
+
+	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
+		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Override
