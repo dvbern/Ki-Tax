@@ -480,13 +480,22 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
-		Preconditions.checkArgument(
-			container.getAngabenDeklaration().isReadyForFreigeben(),
-			"angaben incomplete"
-		);
+		if (container.getZurueckAnGemeinde()) {
+			Objects.requireNonNull(container.getAngabenKorrektur());
+			Preconditions.checkArgument(
+				container.getAngabenKorrektur().isReadyForFreigeben(),
+				"angaben incomplete"
+			);
+		} else {
+			Preconditions.checkArgument(
+				container.getAngabenDeklaration().isReadyForFreigeben(),
+				"angaben incomplete"
+			);
+		}
 
 		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
+		container.setZurueckAnGemeinde(false);
 
 		return persistence.merge(container);
 	}

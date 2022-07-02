@@ -39,7 +39,8 @@ public class KostenEinnahmenStep implements WizardStep<FerienbetreuungWizard> {
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		if (wizard.getFerienbetreuungAngabenContainer().isAtLeastInPruefungKanton()) {
+		var container = wizard.getFerienbetreuungAngabenContainer();
+		if (container.isAtLeastInPruefungKanton() || container.getZurueckAnGemeinde()) {
 			if (wizard.getRole().isRoleGemeindeabhaengig()) {
 				return WizardStateEnum.OK;
 			}

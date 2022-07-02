@@ -21,7 +21,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -40,11 +39,12 @@ public class StammdatenGemeindeStep implements WizardStep<FerienbetreuungWizard>
 
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
-		if (wizard.getFerienbetreuungAngabenContainer().isAtLeastInPruefungKanton()) {
+		var container = wizard.getFerienbetreuungAngabenContainer();
+		if (container.isAtLeastInPruefungKanton() || container.getZurueckAnGemeinde()) {
 			if (wizard.getRole().isRoleGemeindeabhaengig()) {
 				return WizardStateEnum.OK;
 			}
-			return Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer()
+			return Objects.requireNonNull(container
 				.getAngabenKorrektur())
 				.getFerienbetreuungAngabenStammdaten()
 				.isAbgeschlossen() ?
@@ -52,7 +52,7 @@ public class StammdatenGemeindeStep implements WizardStep<FerienbetreuungWizard>
 				WizardStateEnum.IN_BEARBEITUNG;
 		}
 
-		return wizard.getFerienbetreuungAngabenContainer()
+		return container
 			.getAngabenDeklaration()
 			.getFerienbetreuungAngabenStammdaten()
 			.isAbgeschlossen() ?
