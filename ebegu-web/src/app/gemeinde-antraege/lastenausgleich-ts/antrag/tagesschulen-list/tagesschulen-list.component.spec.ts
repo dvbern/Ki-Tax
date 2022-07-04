@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
@@ -37,6 +38,9 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
 ]);
+
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
@@ -62,6 +66,10 @@ describe('TagesschulenListComponent', () => {
                 {
                     provide: GemeindeAntragService,
                     useValue: gemeindeAntragServiceSpy
+                },
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceSpy
                 }
             ],
             declarations: [TagesschulenListComponent],
