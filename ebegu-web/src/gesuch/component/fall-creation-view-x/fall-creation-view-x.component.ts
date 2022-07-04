@@ -33,6 +33,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
+    public isTagesschuleEnabledForMandant: boolean;
+
     public constructor(
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
@@ -67,6 +69,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
+
+        this.isTagesschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
 
         const dossier = this.gesuchModelManager.getDossier();
         if (!dossier) {

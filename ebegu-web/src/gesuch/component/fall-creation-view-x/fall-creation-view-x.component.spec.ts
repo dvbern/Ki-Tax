@@ -33,7 +33,7 @@ describe('FallCreationViewXComponent', () => {
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearAll']);
     const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
         ['setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles', 'hasMandantAngebotTS']);
     const gesuchsperiodeRS = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, ['getServiceName']);
     const finSitRS = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
         ['saveFinanzielleSituation']);
