@@ -78,7 +78,7 @@
                     <div class="row" *ngIf="!isReadonly()">
                         <div class="col-md-2" *ngIf="gesuchsperiode">
                             <dv-loading-button type="button"
-                                               (click)="saveGesuchsperiode()"
+                                               (buttonClick)="saveGesuchsperiode()"
                                                buttonClass="color-success">
                                 <span>{{gesuchsperiode.isNew() ? ('SAVE' | translate) : ('UPDATE' | translate)}}</span>
                             </dv-loading-button>
@@ -130,7 +130,7 @@
                     </div>
 
                     <!--Merkblatt Anmeldung Tagesschule-->
-                    <div class="row view-title margin-top-30" ng-if="gesuchsperiode && !gesuchsperiode.isNew()">
+                    <div class="row view-title margin-top-30" *ngIf="gesuchsperiode && !gesuchsperiode.isNew()">
                         <div class="col-md-12">
                             <h1>
                                 <span translate="MERKBLATT_ANMELDUNG_TAGESSCHULE"></span>

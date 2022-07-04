@@ -1,9 +1,9 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {IFormController} from 'angular';
 import * as moment from 'moment';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -37,7 +37,8 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
 
     private static readonly DOKUMENT_TYP_NOT_DEFINED = 'DokumentTyp not defined';
 
-    public form: IFormController;
+    @ViewChild(NgForm) public form: NgForm;
+
     public gesuchsperiode: TSGesuchsperiode;
     public einstellungenGesuchsperiode: MatTableDataSource<TSEinstellung>;
 
@@ -116,6 +117,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
                     .localeCompare(this.$translate.instant(b.key.toString()));
             });
             this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
+            this.cd.markForCheck();
         });
     }
 
@@ -124,7 +126,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     public saveGesuchsperiode(): void {
-        if (!this.form.$valid || !this.statusHaveChanged()) {
+        if (this.form.invalid || !this.statusHaveChanged()) {
             return;
         }
         if (!(this.gesuchsperiode.isNew()
@@ -136,8 +138,10 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
         this.dvDialog.open(DvNgRemoveDialogComponent, {data: {
             title: 'GESUCHSPERIODE_DIALOG_TITLE',
             text: dialogText
-        }}).afterClosed().subscribe(() => {
-            this.doSave();
+        }}).afterClosed().subscribe(isOk => {
+            if (isOk) {
+                this.doSave();
+            }
         }, error => LOG.error(error));
         return;
     }
@@ -151,6 +155,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
             this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); // reset gesuchperioden in manager
             this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
             this.initialStatus = this.gesuchsperiode.status;
+            this.cd.markForCheck();
         });
     }
 
