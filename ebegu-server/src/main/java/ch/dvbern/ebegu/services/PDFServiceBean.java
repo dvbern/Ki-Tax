@@ -272,7 +272,7 @@ public class PDFServiceBean implements PDFService {
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
 
-		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		Art art = evaluateArt(betreuung);
 
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 		assert mandant != null;
@@ -288,6 +288,14 @@ public class PDFServiceBean implements PDFService {
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
+	}
+
+	private Art evaluateArt(Betreuung betreuung) {
+		if (betreuung.hasAnspruch()) {
+			return Art.NORMAL;
+		}
+
+		return betreuung.isAngebotTagesfamilien() ? Art.KEIN_ANSCHRUCH_TFO : Art.KEIN_ANSPRUCH;
 	}
 
 	@Nonnull
