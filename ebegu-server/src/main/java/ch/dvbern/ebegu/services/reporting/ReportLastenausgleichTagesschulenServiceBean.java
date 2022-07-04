@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,12 +41,9 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
-import static java.util.Objects.requireNonNull;
 
 @Stateless
 @Local(ReportLastenausgleichTagesschulenService.class)
@@ -65,31 +63,32 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 
 	@Nonnull
 	@Override
-	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException, IOException {
 
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, vorlage);
+		) {
+			Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
+			Sheet secondSheet = workbook.getSheet(TAGESSCHULEN_SHEET_NAME);
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
-		Sheet secondSheet = workbook.getSheet(TAGESSCHULEN_SHEET_NAME);
+			List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
 
-		List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
+			ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
+			mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
+			mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
+			lastenausgleichTagesschulenExcelConverter.applyAutoSize(sheet);
+			lastenausgleichTagesschulenExcelConverter.applyAutoSize(secondSheet);
 
-		ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
-		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
-		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
-		lastenausgleichTagesschulenExcelConverter.applyAutoSize(sheet);
-		lastenausgleichTagesschulenExcelConverter.applyAutoSize(secondSheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			"LastenausgleichTagesschulen.xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				"LastenausgleichTagesschulen.xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<LastenausgleichGemeindenDataRow> getReportDataLastenausgleichTagesschulen() {

@@ -41,8 +41,10 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -51,6 +53,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -83,6 +86,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	private final LocalhostChecker localhostChecker;
 	private final EbeguConfiguration configuration;
 	private final GesuchstellerService gesuchstellerService;
+	private final GesuchService gesuchService;
 
 	@Context
 	private HttpServletRequest request;
@@ -98,7 +102,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		BenutzerService benutzerService,
 		AuthService authService,
 		MandantService mandantService,
-		GesuchstellerService gesuchstellerService
+		GesuchstellerService gesuchstellerService,
+		GesuchService gesuchService
 	) {
 
 		this.configuration = configuration;
@@ -108,6 +113,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		this.authService = authService;
 		this.mandantService = mandantService;
 		this.gesuchstellerService = gesuchstellerService;
+		this.gesuchService = gesuchService;
 	}
 
 	@Override
@@ -177,17 +183,22 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 		Benutzer storedUser;
 
-
 		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitation(benutzer, mandant);
 		// wenn der Benutzer eingeladen ist, muss er die Einladung akzeptieren
-		if(invitedUserOpt.isPresent()) {
+		if (invitedUserOpt.isPresent()) {
 			final Benutzer presentUser = invitedUserOpt.get();
 			String url = benutzerService.createInvitationLink(presentUser, Einladung.forRolle(presentUser));
 			externalBenutzer.setInvitationLink(url);
 			externalBenutzer.setInvitationPending(true);
-			String rolleIst = ServerMessageUtil.translateEnumValue(UserRole.GESUCHSTELLER, LocaleThreadLocal.get(), mandant);
-			String rolleSoll = ServerMessageUtil.translateEnumValue(presentUser.getRole(), LocaleThreadLocal.get(), mandant);
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get(), mandant, rolleIst, rolleSoll);
+			String rolleIst =
+				ServerMessageUtil.translateEnumValue(UserRole.GESUCHSTELLER, LocaleThreadLocal.get(), mandant);
+			String rolleSoll =
+				ServerMessageUtil.translateEnumValue(presentUser.getRole(), LocaleThreadLocal.get(), mandant);
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION,
+				LocaleThreadLocal.get(),
+				mandant,
+				rolleIst,
+				rolleSoll);
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
 
@@ -222,7 +233,10 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (existingBenutzer == null) {
 			return convertBenutzerResponseWrapperToJax(
 				externalBenutzer,
-				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get(), mandantService.getMandantBern())
+				ServerMessageUtil.translateEnumValue(
+					ERROR_ENTITY_NOT_FOUND,
+					LocaleThreadLocal.get(),
+					mandantService.getMandantBern())
 			);
 		}
 
@@ -252,8 +266,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			if (!existingBenutzer.getId().equals(duplicatedBenutzer.getId())) {
 				benutzerService.deleteExternalUUIDInNewTransaction(duplicatedBenutzer.getId());
 				String bemerkung =
-					"ExternalUUID uebernommen von Benutzer: username=" + duplicatedBenutzer.getUsername()
-						+ " externalUUID= " + duplicatedBenutzer.getExternalUUID() + ". Bei diesem wurde die externalUUID gelöscht";
+					"ExternalUUID uebernommen von Benutzer: username="
+						+ duplicatedBenutzer.getUsername()
+						+ " externalUUID= "
+						+ duplicatedBenutzer.getExternalUUID()
+						+ ". Bei diesem wurde die externalUUID gelöscht";
 				LOG.info(bemerkung);
 				existingBenutzer.addBemerkung(bemerkung);
 			}
@@ -321,14 +338,21 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Override
 	public void updateGesuchstellerZPVNr(@Nonnull String gesuchstellerContainerId, @Nonnull String zpvNummer) {
-		GesuchstellerContainer container = gesuchstellerService.findGesuchsteller(gesuchstellerContainerId).orElseThrow();
+		GesuchstellerContainer container =
+			gesuchstellerService.findGesuchsteller(gesuchstellerContainerId).orElseThrow();
 
 		assert container.getFinanzielleSituationContainer() != null;
 
-		container.getGesuchstellerJA().setZpvNummer(zpvNummer);
-		container.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(
+		Gesuch gesuch = gesuchService.findGesuchOfGS(container);
+
+		if (gesuch.getStatus().equals(AntragStatus.IN_BEARBEITUNG_GS)
+			&& container.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenAbfrageStatus() != null
+			&& !container.getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			container.getGesuchstellerJA().setZpvNummer(zpvNummer);
+			container.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(
 				SteuerdatenAnfrageStatus.RETRY);
-		gesuchstellerService.updateGesuchsteller(container);
+			gesuchstellerService.updateGesuchsteller(container);
+		}
 	}
 
 	@Override

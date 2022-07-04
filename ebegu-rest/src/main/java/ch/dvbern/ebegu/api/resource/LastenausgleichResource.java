@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -167,7 +168,7 @@ public class LastenausgleichResource {
 	public Response getLastenausgleichReportExcel(
 		@QueryParam("lastenausgleichId") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException, RollbackException {
+		throws ExcelMergeException, EbeguRuntimeException, RollbackException, IOException {
 
 		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
@@ -222,7 +223,7 @@ public class LastenausgleichResource {
 		@QueryParam("jahr") @Nonnull @Valid Integer lastenausgleichJahr,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException, IOException {
 
 		Objects.requireNonNull(lastenausgleichJahr);
 		String ip = downloadResource.getIP(request);

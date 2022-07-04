@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -342,11 +343,15 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		stammdaten.setMail("gemeinde@example.com");
 		stammdaten.setTelefon("0789256896");
 		stammdaten.setWebseite("www.tutorialgemeinde.ch");
+		GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz = new GemeindeStammdatenKorrespondenz();
+		stammdaten.setGemeindeStammdatenKorrespondenz(gemeindeStammdatenKorrespondenz);
 
-		try {
-			final InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png");
+		try (
+			InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png")
+		) {
+			Objects.requireNonNull(logo);
 			final byte[] gemeindeLogo = IOUtils.toByteArray(logo);
-			stammdaten.setLogoContent(gemeindeLogo);
+			stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
 		} catch (IOException e) {
 			LOG.info("Logo for Tutorial couldnot be added to Gemeinde");
 		}

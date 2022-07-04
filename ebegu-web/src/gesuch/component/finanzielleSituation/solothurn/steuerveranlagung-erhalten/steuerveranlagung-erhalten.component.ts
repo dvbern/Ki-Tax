@@ -34,7 +34,6 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     }
 
     public canEdit(): boolean {
-        return !this.gesuchModelManager.isGesuchReadonly() && (!this.gesuchModelManager.isKorrekturModusJugendamt()
-            || (this.gesuchModelManager.isKorrekturModusJugendamt() && EbeguUtil.isNullOrUndefined(this.model.finanzielleSituationGS)));
+        return !this.gesuchModelManager.isGesuchReadonly();
     }
 }

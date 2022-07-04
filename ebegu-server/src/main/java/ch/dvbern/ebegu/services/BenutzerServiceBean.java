@@ -75,6 +75,8 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -423,7 +425,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return null;
 	}
 
-	private boolean checkIfGesuchFreigegeben(List<String> gesuchIdList){
+	private boolean checkIfGesuchFreigegeben(List<String> gesuchIdList) {
 		for (String id : gesuchIdList) {
 			Gesuch gs = gesuchService.findGesuch(id, false)
 				.orElseThrow(() -> new EbeguRuntimeException(
@@ -459,8 +461,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		try {
 			return Optional.of(persistence.getEntityManager()
-					.createQuery(query)
-					.getSingleResult());
+				.createQuery(query)
+				.getSingleResult());
 		} catch (NoResultException nre) {
 			return Optional.empty();
 		}
@@ -792,8 +794,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 
 		// Benutzer nicht ueber ExternalUUID gefunden. Es koennte aber sein, dass wir den Benutzer resettet wurde
-		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(benutzer.getUsername(),
-				requireNonNull(benutzer.getMandant()));
+		final Optional<Benutzer> benutzerByUsernameOptional = findBenutzer(
+			benutzer.getUsername(),
+			requireNonNull(benutzer.getMandant()));
 		if (benutzerByUsernameOptional.isPresent()) {
 			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
 			Benutzer foundUser = benutzerByUsernameOptional.get();
@@ -853,8 +856,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	public Optional<Benutzer> findUserWithInvitation(
-			@Nonnull Benutzer benutzer,
-			Mandant mandant) {
+		@Nonnull Benutzer benutzer,
+		Mandant mandant) {
 		return findBenutzer(benutzer.getEmail(), mandant)
 			.filter(benutzerByEmail ->
 				benutzerByEmail.getStatus() == BenutzerStatus.EINGELADEN
@@ -1037,7 +1040,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		user.getCurrentBerechtigung();
 		Set<Gemeinde> userGemeinden = user.extractGemeindenForUser();
 
-		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant),benutzerTableFilterDTO.getMandant());
+		Predicate mandantPredicate = cb.equal(root.get(Benutzer_.mandant), benutzerTableFilterDTO.getMandant());
 		predicates.add(mandantPredicate);
 
 		if (addInstitutionUsers) {
@@ -1050,25 +1053,42 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// BEGIN SUBQUERY
 			Subquery<String> subquery = queryTS.subquery(String.class);
 			Root<InstitutionStammdaten> sqFrom = subquery.from(InstitutionStammdaten.class);
+			Subquery<String> subqueryFI = queryTS.subquery(String.class);
+			Root<InstitutionStammdaten> sqFromFI = subqueryFI.from(InstitutionStammdaten.class);
 
 			Predicate stammdatenTSPredicate =
 				cb.isNotNull(sqFrom.get(InstitutionStammdaten_.institutionStammdatenTagesschule));
+			Predicate stammdatenFIPredicate =
+				cb.isNotNull(sqFromFI.get(InstitutionStammdaten_.institutionStammdatenFerieninsel));
 
 			Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> instStammdatenTSJoin =
 				sqFrom.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.INNER);
 
-			subquery.where(
+			Join<InstitutionStammdaten, InstitutionStammdatenFerieninsel> instStammdatenFIJoin =
+				sqFromFI.join(InstitutionStammdaten_.institutionStammdatenFerieninsel, JoinType.INNER);
+
+			Predicate predicateFI = cb.and(
+				stammdatenFIPredicate,
+				instStammdatenFIJoin.get(InstitutionStammdatenFerieninsel_.gemeinde).in(userGemeinden));
+
+			Predicate predicateTS = cb.and(
 				stammdatenTSPredicate,
 				instStammdatenTSJoin.get(InstitutionStammdatenTagesschule_.gemeinde).in(userGemeinden));
 
+			subquery.where(predicateTS);
+
+			subqueryFI.where(predicateFI);
+
 			subquery.select(sqFrom.get(InstitutionStammdaten_.institution).get(Institution_.id));
+			subqueryFI.select(sqFromFI.get(InstitutionStammdaten_.institution).get(Institution_.id));
 			// END SUBQUERY
 
 			Join<Berechtigung, Institution> instiutionenJoin =
 				currentBerechtigungJoinTS.join(Berechtigung_.institution, JoinType.INNER);
 
 			Predicate inSubquery = cb.in(instiutionenJoin.get(Institution_.id)).value(subquery);
-			predicatesTS.add(inSubquery);
+			Predicate inSubqueryFI = cb.in(instiutionenJoin.get(Institution_.id)).value(subqueryFI);
+			predicatesTS.add(cb.or(inSubquery, inSubqueryFI));
 		}
 
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
@@ -1086,8 +1106,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
 				setRoleFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
-			}
-			else {
+			} else {
 				// Mandant Benutzende cannot see Antragstellende users in Statistik
 				setAntragstellerFilterForCurrentUser(currentBerechtigungJoin, predicates);
 			}

@@ -25,6 +25,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import ch.dvbern.ebegu.util.Constants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -72,15 +73,14 @@ public class TextRessource extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof TextRessource)) {
 			return false;
 		}
 		final TextRessource otherTextRessource = (TextRessource) other;

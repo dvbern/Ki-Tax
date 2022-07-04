@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -248,6 +249,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -257,9 +260,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity implements K
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof InstitutionStammdaten)) {
 			return false;
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;

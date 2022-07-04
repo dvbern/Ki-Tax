@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 /**
@@ -44,6 +45,8 @@ public class UnbezahlterUrlaub extends AbstractDateRangedEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -54,9 +57,6 @@ public class UnbezahlterUrlaub extends AbstractDateRangedEntity {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof UnbezahlterUrlaub)) {
 			return false;
 		}
 		final UnbezahlterUrlaub otherUrlaub = (UnbezahlterUrlaub) other;

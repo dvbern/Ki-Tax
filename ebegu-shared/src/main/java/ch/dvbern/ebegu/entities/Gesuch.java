@@ -69,6 +69,7 @@ import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.google.common.base.Strings;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -608,15 +609,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Gesuch)) {
 			return false;
 		}
 		final Gesuch otherAntrag = (Gesuch) other;

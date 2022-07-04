@@ -125,6 +125,7 @@ import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenKorrespondenz} from '../models/TSGemeindeStammdatenKorrespondenz';
 import {TSGemeindeStammdatenLite} from '../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
@@ -1019,6 +1020,9 @@ export class EbeguRestUtil {
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }
+            restStammdaten.gemeindeStammdatenKorrespondenz = this.gemeindeStammdatenKorrespondenzToRestObject(
+                {},
+                stammdaten.gemeindeStammdatenKorrespondenz);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -1077,6 +1081,9 @@ export class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.gemeindeStammdatenKorrespondenz = this.parseGemeindeStammdatenKorrespondenz(
+                new TSGemeindeStammdatenKorrespondenz(),
+                stammdatenFromServer.gemeindeStammdatenKorrespondenz);
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;
@@ -1154,6 +1161,42 @@ export class EbeguRestUtil {
         tsAbstractGemeindeStammdaten.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
         tsAbstractGemeindeStammdaten.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
         tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
+    }
+
+    public gemeindeStammdatenKorrespondenzToRestObject(
+        restStammdaten: any,
+        stammdaten: TSGemeindeStammdatenKorrespondenz
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+            restStammdaten.senderAddressSpacingLeft = stammdaten.senderAddressSpacingLeft;
+            restStammdaten.senderAddressSpacingTop = stammdaten.senderAddressSpacingTop;
+            restStammdaten.receiverAddressSpacingLeft = stammdaten.receiverAddressSpacingLeft;
+            restStammdaten.receiverAddressSpacingTop = stammdaten.receiverAddressSpacingTop;
+            restStammdaten.logoWidth = stammdaten.logoWidth;
+            restStammdaten.logoSpacingLeft = stammdaten.logoSpacingLeft;
+            restStammdaten.logoSpacingTop = stammdaten.logoSpacingTop;
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdatenKorrespondenz(
+        stammdatenTS: TSGemeindeStammdatenKorrespondenz,
+        stammdatenFromServer: any,
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            stammdatenTS.senderAddressSpacingLeft = stammdatenFromServer.senderAddressSpacingLeft;
+            stammdatenTS.senderAddressSpacingTop = stammdatenFromServer.senderAddressSpacingTop;
+            stammdatenTS.receiverAddressSpacingLeft = stammdatenFromServer.receiverAddressSpacingLeft;
+            stammdatenTS.receiverAddressSpacingTop = stammdatenFromServer.receiverAddressSpacingTop;
+            stammdatenTS.logoWidth = stammdatenFromServer.logoWidth;
+            stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
+            stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
+            return stammdatenTS;
+        }
+        return undefined;
     }
 
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {

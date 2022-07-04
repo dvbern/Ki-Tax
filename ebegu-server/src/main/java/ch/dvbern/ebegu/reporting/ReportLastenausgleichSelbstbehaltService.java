@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -31,6 +32,6 @@ public interface ReportLastenausgleichSelbstbehaltService {
 	UploadFileInfo generateExcelReportLastenausgleichKibon(
 		@Nonnull LocalDate dateFrom,
 		@Nonnull Locale locale
-	) throws ExcelMergeException;
+	) throws ExcelMergeException, IOException;
 
 }

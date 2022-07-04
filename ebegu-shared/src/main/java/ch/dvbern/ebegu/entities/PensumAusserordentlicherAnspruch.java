@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -66,6 +67,8 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -76,9 +79,6 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof PensumAusserordentlicherAnspruch)) {
 			return false;
 		}
 		final PensumAusserordentlicherAnspruch otherPensumFachstelle = (PensumAusserordentlicherAnspruch) other;

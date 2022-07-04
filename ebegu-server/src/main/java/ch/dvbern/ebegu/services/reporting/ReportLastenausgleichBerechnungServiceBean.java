@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.transaction.RollbackException;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -53,9 +53,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
-import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.StringUtil;
@@ -84,54 +82,60 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportLastenausgleichKibon(
 		@Nonnull String lastenausgleichId,
-		@Nonnull Locale locale) throws ExcelMergeException,	RollbackException {
-
+		@Nonnull Locale locale
+	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BERECHNUNG;
 
-		InputStream is = ReportLastenausgleichBerechnungServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportLastenausgleichBerechnungServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			Lastenausgleich lastenausgleich = lastenausgleichService.findLastenausgleich(lastenausgleichId);
 
+			LastenausgleichGrundlagen grundlagen =
+				lastenausgleichService.findLastenausgleichGrundlagen(lastenausgleich.getJahr())
+					.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"generateExcelReportLastenausgleichKibon",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						lastenausgleich.getJahr()));
 
-		Lastenausgleich lastenausgleich = lastenausgleichService.findLastenausgleich(lastenausgleichId);
+			List<LastenausgleichDetail> lastenausgleichDetails =
+				principal.getBenutzer().getCurrentBerechtigung().getRole().isRoleGemeindeOrBG() ?
+					lastenausgleich.getLastenausgleichDetails()
+						.stream()
+						.filter(lastenausgleichDetail -> principal.getBenutzer()
+							.getCurrentBerechtigung()
+							.getGemeindeList()
+							.contains(lastenausgleichDetail.getGemeinde()))
+						.collect(Collectors.toList()) :
+					lastenausgleich.getLastenausgleichDetails();
 
-		LastenausgleichGrundlagen grundlagen = lastenausgleichService.findLastenausgleichGrundlagen(lastenausgleich.getJahr())
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportLastenausgleichKibon", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, lastenausgleich.getJahr()));
+			List<LastenausgleichBerechnungDataRow> reportData =
+				getReportLastenausgleichBerechnung(lastenausgleichDetails);
 
-		List<LastenausgleichDetail> lastenausgleichDetails =
-			principal.getBenutzer().getCurrentBerechtigung().getRole().isRoleGemeindeOrBG()?
-				lastenausgleich.getLastenausgleichDetails()
-					.stream()
-					.filter(lastenausgleichDetail -> principal.getBenutzer()
-						.getCurrentBerechtigung()
-						.getGemeindeList()
-						.contains(lastenausgleichDetail.getGemeinde()))
-					.collect(Collectors.toList()) :
-				lastenausgleich.getLastenausgleichDetails();
+			ExcelMergerDTO excelMergerDTO = lastenausgleichExcelConverter
+				.toExcelMergerDTO(
+					reportData,
+					lastenausgleich.getJahr(),
+					grundlagen.getSelbstbehaltPro100ProzentPlatz(),
+					locale, Objects.requireNonNull(principal.getMandant()));
 
-		List<LastenausgleichBerechnungDataRow> reportData =
-			getReportLastenausgleichBerechnung(lastenausgleichDetails);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			lastenausgleichExcelConverter.applyAutoSize(sheet);
 
+			byte[] bytes = createWorkbook(workbook);
 
-		ExcelMergerDTO excelMergerDTO = lastenausgleichExcelConverter
-			.toExcelMergerDTO(
-				reportData,
-				lastenausgleich.getJahr(),
-				grundlagen.getSelbstbehaltPro100ProzentPlatz(),
-				locale, Objects.requireNonNull(principal.getMandant()));
-
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		lastenausgleichExcelConverter.applyAutoSize(sheet);
-
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale, principal.getMandant()) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(
+					reportVorlage.getDefaultExportFilename(),
+					locale,
+					principal.getMandant()) + ".xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull

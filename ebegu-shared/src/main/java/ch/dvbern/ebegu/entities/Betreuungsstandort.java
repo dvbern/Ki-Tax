@@ -34,6 +34,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.util.Constants;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -120,15 +121,14 @@ public class Betreuungsstandort extends AbstractMutableEntity implements Kontakt
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Betreuungsstandort)) {
 			return false;
 		}
 		final Betreuungsstandort otherBetreuungsstandort = (Betreuungsstandort) other;

@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
 	private final BigDecimal GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE = new BigDecimal(5);

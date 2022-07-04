@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +48,15 @@ public class VersionInfoBean {
 	}
 
 	@Nullable
+	@SuppressFBWarnings({"NP_LOAD_OF_KNOWN_NULL_VALUE", "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"})
 	private VersionInfo readVersionInfo() {
-		InputStream is = context.getResourceAsStream("META-INF/MANIFEST.MF");
-		if (is == null) {
-			LOG.warn("Could not read versionInfo. InputStream is NULL.");
-			return null;
-		}
-
-		try {
+		try (
+			InputStream is = context.getResourceAsStream("META-INF/MANIFEST.MF");
+		) {
+			if (is == null) {
+				LOG.warn("Could not read versionInfo. InputStream is NULL.");
+				return null;
+			}
 			return VersionInfo.fromManifest(new Manifest(is));
 		} catch (IOException e) {
 			LOG.warn("Could not read versionInfo", e);

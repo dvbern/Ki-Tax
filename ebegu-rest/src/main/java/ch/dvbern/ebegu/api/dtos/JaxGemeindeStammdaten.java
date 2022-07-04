@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -55,6 +54,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	private JaxAdresse tsAdresse;
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
+	@Nonnull
+	private JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz;
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
@@ -164,6 +165,15 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 
 	public void setBeschwerdeAdresse(@Nullable JaxAdresse beschwerdeAdresse) {
 		this.beschwerdeAdresse = beschwerdeAdresse;
+	}
+
+	@Nonnull
+	public JaxGemeindeStammdatenKorrespondenz getGemeindeStammdatenKorrespondenz() {
+		return gemeindeStammdatenKorrespondenz;
+	}
+
+	public void setGemeindeStammdatenKorrespondenz(@Nonnull JaxGemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz) {
+		this.gemeindeStammdatenKorrespondenz = gemeindeStammdatenKorrespondenz;
 	}
 
 	@Nullable

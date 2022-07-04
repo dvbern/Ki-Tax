@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -69,15 +70,14 @@ public class ModulTagesschule extends AbstractEntity implements Comparable<Modul
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof ModulTagesschule)) {
 			return false;
 		}
 		final ModulTagesschule otherModulTagesschule = (ModulTagesschule) other;

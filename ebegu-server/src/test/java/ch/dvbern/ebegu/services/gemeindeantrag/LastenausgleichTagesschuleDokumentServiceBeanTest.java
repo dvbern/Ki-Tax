@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -117,6 +118,9 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setBfsNummer(99999L);
 		stammdaten.setGemeinde(gemeinde);
+
+		GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz = new GemeindeStammdatenKorrespondenz();
+		stammdaten.setGemeindeStammdatenKorrespondenz(gemeindeStammdatenKorrespondenz);
 
 		return stammdaten;
 	}
