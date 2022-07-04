@@ -17,8 +17,14 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
+import {LogFactory} from '../../../../core/logging/LogFactory';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
+import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
+
+const LOG = LogFactory.createLog('TagesschulenListComponent');
 
 @Component({
     selector: 'dv-tagesschulen-list',
@@ -37,14 +43,20 @@ export class TagesschulenListComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
+        private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly cd: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
-        private readonly $state: StateService
+        private readonly $state: StateService,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
     public ngOnInit(): void {
+        this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+    }
+
+    private getAllVisibleTagesschulenAngabenForTSLastenausgleich(): void {
         this.gemeindeAntragService.getAllVisibleTagesschulenAngabenForTSLastenausgleich(this.lastenausgleichId)
             .subscribe(data => {
                 this.data = data.map(latsInstitutionContainer => {
@@ -65,5 +77,21 @@ export class TagesschulenListComponent implements OnInit {
 
     public navigate($event: any): void {
         this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL', {institutionId: $event.element.id});
+    }
+
+    public createMissingTagesschuleFormulare(): void {
+        this.lastenausgleichTSService.createMissingTagesschuleFormulare(this.lastenausgleichId)
+            .subscribe(() => {
+                // since we changed institutions of angabenGemeinde Object, we have to reload store
+                this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.lastenausgleichId);
+                this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+                this.errorService.addMesageAsInfo('ALL_TAGESSCHULE_FORMULARE_CREATED');
+            }, err => {
+                LOG.error(err);
+            });
+    }
+
+    public isGemeindeSuperadmin(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
     }
 }
