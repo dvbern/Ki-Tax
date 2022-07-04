@@ -34,12 +34,12 @@ export interface HTMLInputEvent extends Event {
 }
 
 @Component({
-    selector: 'dv-file-upload',
-    templateUrl: './file-upload.component.html',
-    styleUrls: ['./file-upload.component.less'],
+    selector: 'dv-multiple-file-upload',
+    templateUrl: './multiple-file-upload.component.html',
+    styleUrls: ['./multiple-file-upload.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FileUploadComponent<T extends TSFile> implements OnChanges, OnInit {
+export class MultipleFileUploadComponent<T extends TSFile> implements OnChanges, OnInit {
 
     @Input() public title: string;
     @Input() public readOnly: boolean;

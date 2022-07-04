@@ -1348,7 +1348,7 @@
                         <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteAngaben">
                             <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                         </div>
-                        <dv-file-upload
+                        <dv-multiple-file-upload
                             (download)="download($event[0],$event[1])"
                             [title]="getDokumenteAngabenTitle(rueckforderungFormular)"
                             (delete)="delete($event)"
@@ -1358,7 +1358,7 @@
                             [readOnly]="readOnlyDocument"
                             [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
-                        </dv-file-upload>
+                        </dv-multiple-file-upload>
                     </div>
                 </div>
                 <div class="row">
@@ -1366,7 +1366,7 @@
                         <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKommunikation">
                             <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                         </div>
-                        <dv-file-upload
+                        <dv-multiple-file-upload
                             (download)="download($event[0],$event[1])"
                             [title]="getDokumenteKommunikationTitle(rueckforderungFormular)"
                             (delete)="delete($event)"
@@ -1376,7 +1376,7 @@
                             [readOnly]="readOnlyDocument"
                             [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
-                        </dv-file-upload>
+                        </dv-multiple-file-upload>
                     </div>
                 </div>
                 <div class="row">
@@ -1384,7 +1384,7 @@
                         <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteEinsatzplaene">
                             <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                         </div>
-                        <dv-file-upload
+                        <dv-multiple-file-upload
                             (download)="download($event[0],$event[1])"
                             [title]="getDokumenteEinsatzplaeneTitle(rueckforderungFormular)"
                             (delete)="delete($event)"
@@ -1394,7 +1394,7 @@
                             [readOnly]="readOnlyDocument"
                             [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                         >
-                        </dv-file-upload>
+                        </dv-multiple-file-upload>
                     </div>
                 </div>
                 <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
@@ -1403,7 +1403,7 @@
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                             </div>
-                            <dv-file-upload
+                            <dv-multiple-file-upload
                                 (download)="download($event[0],$event[1])"
                                 [title]="'RUECKOFORDERUNG_DOKUMENTE_KURZARBEIT'"
                                 (delete)="delete($event)"
@@ -1413,7 +1413,7 @@
                                 [readOnly]="readOnlyDocument"
                                 [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
-                            </dv-file-upload>
+                            </dv-multiple-file-upload>
                         </div>
                     </div>
                     <div class="row" *ngIf="rueckforderungFormular.coronaErwerbsersatzDefinitivVerfuegt">
@@ -1421,7 +1421,7 @@
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteErwerbsersatz">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                             </div>
-                            <dv-file-upload
+                            <dv-multiple-file-upload
                                 (download)="download($event[0],$event[1])"
                                 [title]="'RUECKOFORDERUNG_DOKUMENTE_ERWERBSERSATZ'"
                                 (delete)="delete($event)"
@@ -1431,7 +1431,7 @@
                                 [readOnly]="readOnlyDocument"
                                 [readOnlyDelete]="!canDeleteDocuments(rueckforderungFormular)"
                             >
-                            </dv-file-upload>
+                            </dv-multiple-file-upload>
                         </div>
                     </div>
                 </div>
@@ -1519,7 +1519,7 @@
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteBeschwerde">
                                 <span>{{'RUECKFORDERUNG_FEHLENDE_DOKUMENTE' | translate}}</span>
                             </div>
-                            <dv-file-upload
+                            <dv-multiple-file-upload
                                 (download)="download($event[0],$event[1])"
                                 [title]="'RUECKOFORDERUNG_DOKUMENTE_BESCHWERDE'"
                                 (delete)="delete($event)"
@@ -1529,7 +1529,7 @@
                                 [readOnly]="beschwerdeReadOnly"
                                 [readOnlyDelete]="beschwerdeReadOnly"
                             >
-                            </dv-file-upload>
+                            </dv-multiple-file-upload>
                         </div>
                     </div>
                     <div class="row" *ngIf="!beschwerdeReadOnly">

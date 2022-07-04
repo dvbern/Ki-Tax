@@ -268,7 +268,7 @@
                         </h1>
                         <hr class="header"/>
 
-                        <dv-file-upload
+                        <dv-multiple-file-upload
                             (download)="vm.downloadVollmachtDokument($event[0],$event[1])"
                             [title]="'VOLLMACHT_DOKUMENT'"
                             (delete)="vm.removeVollmachtDokument($event)"
@@ -277,7 +277,7 @@
                             [read-only]="vm.isSozialdienstDokumentReadOnly()"
                             [read-only-delete]="vm.isSozialdienstDokumentReadOnly()"
                         >
-                        </dv-file-upload>
+                        </dv-multiple-file-upload>
                     </div>
                 </div>
 
