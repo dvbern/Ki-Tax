@@ -19,6 +19,7 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
+import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.component';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
@@ -40,6 +41,7 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .service('DailyBatchRS', DailyBatchRS)
     .service('FerieninselStammdatenRS', FerieninselStammdatenRS)
     .component('dvAdminView', new AdminViewComponentConfig())
+    .directive('dvAdminViewX', downgradeComponent({component: AdminViewXComponent}))
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
     .directive('dvGesuchsperiodeViewX', downgradeComponent({component: GesuchsperiodeViewXComponent}))

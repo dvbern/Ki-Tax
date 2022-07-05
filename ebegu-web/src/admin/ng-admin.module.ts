@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
+import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.component';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
@@ -34,7 +35,8 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         BatchjobTriggerViewComponent,
         DebuggingComponent,
         BetreuungMonitoringComponent,
-        GesuchsperiodeViewXComponent
+        GesuchsperiodeViewXComponent,
+        AdminViewXComponent
     ],
     providers: [],
 })
