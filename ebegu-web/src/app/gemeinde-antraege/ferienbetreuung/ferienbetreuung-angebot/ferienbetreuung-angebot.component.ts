@@ -20,7 +20,7 @@ import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
@@ -53,6 +53,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     private angebot: TSFerienbetreuungAngabenAngebot;
     private subscription: Subscription;
+    public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -89,6 +90,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer();
     }
 
     public ngOnDestroy(): void {

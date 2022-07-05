@@ -236,14 +236,14 @@
 
         <mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
 
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_ANGEBOT' | translate }}
-                <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
-            </h3>
+        <h3 class="uppercase max-width-container-750">
+            {{'FERIENBETREUUNG_ANGEBOT' | translate }}
+            <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
+        </h3>
 
-            <dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
                 <label required
                        for="anzahl_ferienwoche_herbst_id"
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
@@ -262,15 +262,22 @@
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
-                        [korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
+                            [korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenHerbstferien}}</span>
+            </div>
+        </div>
 
-            <dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
                 <label required
                        for="anzahl_ferienwoche_winter_id"
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
@@ -288,15 +295,22 @@
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
-                        [korrektur]="form.get('anzahlFerienwochenWinterferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
+                            [korrektur]="form.get('anzahlFerienwochenWinterferien').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahrPlus1()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenWinterferien}}</span>
+            </div>
+        </div>
 
-            <dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
                 <label required
                        for="anzahl_ferienwoche_sport_id"
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSportferien').errors}">
@@ -315,8 +329,15 @@
                     </mat-error>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenSportferien}}</span>
+            </div>
+        </div>
 
-            <dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
                 <label required
                        for="anzahl_ferienwoche_fruehling_id"
                        [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
@@ -334,67 +355,88 @@
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
-                        [korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                            [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
+                            [korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenFruehlingsferien}}</span>
+            </div>
+        </div>
 
-        <dv-input-container-x>
-            <label required
-                   for="anzahl_ferienwoche_sommer_id"
-                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
-            </label>
-            <mat-form-field floatLabel="always">
-                <input matInput
-                       id="anzahl_ferienwoche_sommer_id"
-                       formControlName="anzahlFerienwochenSommerferien"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
-                    [korrektur]="form.get('anzahlFerienwochenSommerferien').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
+                <label required
+                       for="anzahl_ferienwoche_sommer_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="anzahl_ferienwoche_sommer_id"
+                           formControlName="anzahlFerienwochenSommerferien"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
+                            [korrektur]="form.get('anzahlFerienwochenSommerferien').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenSommerferien}}</span>
+            </div>
+        </div>
 
-        <dv-input-container-x>
-            <label required
-                   for="anzahl_tage_id"
-                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
-            </label>
-            <mat-form-field floatLabel="always">
-                <input matInput
-                       id="anzahl_tage_id"
-                       formControlName="anzahlTage"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
-                    [korrektur]="form.get('anzahlTage').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
+                <label required
+                       for="anzahl_tage_id"
+                       [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+                    {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="anzahl_tage_id"
+                           formControlName="anzahlTage"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                            [deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
+                            [korrektur]="form.get('anzahlTage').value"
+                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlTage}}</span>
+            </div>
+        </div>
 
-            <dv-input-container-x [verticalAlign]="true">
+        <div class="flex-row">
+        <dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
                 <label for="bemerkungen_id">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -410,19 +452,23 @@
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
-            </dv-input-container-x>
-
+        </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.bemerkungenAnzahlFerienwochen}}</span>
+            </div>
         </div>
 
         <mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
                 <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
             </h3>
 
-            <dv-input-container-x>
+        <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750">
                 <label required
                        for="anzahl_stunden_betreuungstag_id"
                        [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
@@ -447,8 +493,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot.anzahlStundenProBetreuungstag}}</span>
+			</div>
+        </div>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label required
                        [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
                        id="betreuungErfolgtTagsueber_id">
@@ -473,26 +526,37 @@
                     </dv-bisher-x>
                 </dv-radio-container-x>
             </dv-input-container-x>
+				<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot.betreuungErfolgtTagsueber}}</span>
+				</div>
+            </div>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_oeffnungszeiten_id">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
+                    <label for="bemerkungen_oeffnungszeiten_id">
+                        {{'BEMERKUNGEN' | translate }}
+                    </label>
+                    <mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
                           id="bemerkungen_oeffnungszeiten_id"
                           formControlName="bemerkungenOeffnungszeiten"
                           class="form-control dv-input"></textarea>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
-                        [korrektur]="form.get('bemerkungenOeffnungszeiten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
-
-        </div>
+                        <dv-bisher-x
+                                [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
+                                [korrektur]="form.get('bemerkungenOeffnungszeiten').value"
+                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+				<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot.bemerkungenOeffnungszeiten}}</span>
+				</div>
+            </div>
 
         <mat-divider></mat-divider>
 
@@ -717,8 +781,10 @@
 
                 </dv-radio-container-x>
             </dv-input-container-x>
+        </div>
 
-            <dv-input-container-x [verticalAlign]="true">
+        <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="betreuungsschluessel_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
@@ -744,6 +810,14 @@
                 </mat-form-field>
             </dv-input-container-x>
 
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahrPlus1()} }}
+                    : {{vorgaenger.angabenKorrektur.angebot.anzahlFerienwochenWinterferien}}</span>
+            </div>
+        </div>
+
+        <div class="max-width-container-750">
             <dv-input-container-x [verticalAlign]="true">
                 <label for="bemerkungen_personal">
                     {{'BEMERKUNGEN' | translate }}

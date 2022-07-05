@@ -2865,5 +2865,6 @@
     "KORRESPONDENZ_MUSTERDOKUMENT": "Modèle de document.pdf",
     "CREATE_MISSING_FORMULARE": "Fehlende Tagesschule Formulare erstellen",
     "ALL_TAGESSCHULE_FORMULARE_CREATED": "Alle Tagesschule Formulare wurden erstellt",
+    "ANGABEN_VORJAHR": "Angabe {{vorjahr}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
