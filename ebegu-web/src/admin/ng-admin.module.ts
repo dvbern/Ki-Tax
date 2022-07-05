@@ -20,6 +20,7 @@ import {SharedModule} from '../app/shared/shared.module';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
+import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 
@@ -32,7 +33,8 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         TestdatenViewComponent,
         BatchjobTriggerViewComponent,
         DebuggingComponent,
-        BetreuungMonitoringComponent
+        BetreuungMonitoringComponent,
+        GesuchsperiodeViewXComponent
     ],
     providers: [],
 })

@@ -276,8 +276,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * erreicht hat
      */
     public isFinanziellesituationPDFVisible(): boolean {
-        if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-            || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
+        if (!this.gesuchModelManager.isFinanzielleSituationRequired()) {
             return false;
         }
         if (this.isGesuchstellerOrSozialdienst()) {

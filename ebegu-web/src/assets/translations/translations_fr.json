@@ -45,7 +45,8 @@
     "ERROR_NO_FUTURE_DATETIME": "Vous ne pouvez pas saisir un horaire ultérieur à celui actuel.",
     "ERROR_MINDESTENS_EIN_WERT": "Choisir au moins un domaine de changement",
     "ERROR_DATUM_GESETZT_BEI_MUTATION": "En cas de changement, la situation familiale doit être modifiée si une date a été fixée.",
-    "ERSTGESUCH_WILLKOMMEN_TEXT_2": "KiBon vous accompagne pas à pas dans votre demande de bons de garde et/ou insciption dans une école à journée continue.",
+    "ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde et/ou insciption dans une école à journée continue.",
+    "ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_3": "Pour plus d'informations, cliquez sur l'icône Information ",
     "TAETIGKEIT": "Activité",
     "TAETIGKEIT_PLACEHOLDER": "P. ex. employeur",
@@ -2862,5 +2863,7 @@
     "KORRESPONDENZ_LOGO_SPACING_TOP": "Distance du logo en haut",
     "KORRESPONDENZ_MUSTERDOKUMENT_LINK": "Télécharger un document type pour vérifier les paramètres",
     "KORRESPONDENZ_MUSTERDOKUMENT": "Modèle de document.pdf",
+    "CREATE_MISSING_FORMULARE": "Fehlende Tagesschule Formulare erstellen",
+    "ALL_TAGESSCHULE_FORMULARE_CREATED": "Alle Tagesschule Formulare wurden erstellt",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

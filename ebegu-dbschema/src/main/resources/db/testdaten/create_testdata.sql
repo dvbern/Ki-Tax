@@ -33,21 +33,29 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 																							 '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway',
 																							 'flyway', 0, null, '2018-01-01', '9999-01-01', 'London', '1',
 																							 'CH', 'Gemeinde', 'London', '3072', 'Schiessplatzweg', null);
+INSERT IGNORE INTO gemeinde_stammdaten_korrespondenz (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, logo_content, logo_name, logo_spacing_left, logo_spacing_top, logo_type, logo_width, receiver_address_spacing_left, receiver_address_spacing_top, sender_address_spacing_left, sender_address_spacing_top)
+VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bc', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, null, 123, 15, null, null, 123, 47, 20, 47);
+
+INSERT IGNORE INTO gemeinde_stammdaten_korrespondenz (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, logo_content, logo_name, logo_spacing_left, logo_spacing_top, logo_type, logo_width, receiver_address_spacing_left, receiver_address_spacing_top, sender_address_spacing_left, sender_address_spacing_top)
+VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bd', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, null, 123, 15, null, null, 123, 47, 20, 47);
+
 
 INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzer_id,
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
-								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
+								 bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 								 benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
-								 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen) VALUES(UNHEX(REPLACE
-	('4a7d313f-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
-																													 '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'paris@mailbucket.dvbern.ch', '+41 31 321 61 11', 'https://www.bern.ch', null, 'DE_FR', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'Paris Kontoinhaber', true, true, true, true, true);
+								 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen, gemeinde_stammdaten_korrespondenz_id)
+								 VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
+
+
+																												 '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('4a7afba9-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'paris@mailbucket.dvbern.ch', '+41 31 321 61 11', 'https://www.bern.ch', null, 'DE_FR', 'BIC', 'CH93 0076 2011 6238 5295 7', 'Paris Kontoinhaber', true, true, true, true, true, UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bc', '-', '')));
 INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, default_benutzer_id,
 								 default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite, beschwerde_adresse_id, korrespondenzsprache,
-								 logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
+								 bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 								 benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
-								 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen) VALUES (UNHEX(REPLACE
-	('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
-																													  '2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'london@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', null, 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true, true, true, true, false);
+								 standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen, gemeinde_stammdaten_korrespondenz_id)
+								 VALUES (UNHEX(REPLACE('4a7dc6e5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2018-10-23 00:00:00',
+										'2018-10-23 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('4a7d4ba5-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), 'london@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.ostermundigen.ch', null, 'DE', 'BIC', 'CH93 0076 2011 6238 5295 7', 'London Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bd', '-', '')));
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active) VALUES (UNHEX(REPLACE('f9ddee82-81a1-4cda-b273-fb24e9299308', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Bern', true);

@@ -236,4 +236,10 @@ export class LastenausgleichTSService {
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
         ).subscribe(result => this.next(result), error => LOG.error(error));
     }
+
+    public createMissingTagesschuleFormulare(gemeindeAngabenId: string): Observable<void> {
+        return this.http.post<void>(
+            `${this.API_BASE_URL}/create-missing-institutions/${gemeindeAngabenId}`, {}
+        );
+    }
 }

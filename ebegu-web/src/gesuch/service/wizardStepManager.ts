@@ -599,7 +599,13 @@ export class WizardStepManager {
     }
 
     private isMandantRoleAndInBearbeitungGemeinde(gesuch: TSGesuch): boolean {
-        return gesuch.status === TSAntragStatus.IN_BEARBEITUNG_JA &&
+        return (gesuch.status === TSAntragStatus.IN_BEARBEITUNG_JA ||
+                gesuch.status === TSAntragStatus.GEPRUEFT ||
+                gesuch.status === TSAntragStatus.VERFUEGEN ||
+                gesuch.status === TSAntragStatus.ERSTE_MAHNUNG ||
+                gesuch.status === TSAntragStatus.ERSTE_MAHNUNG_ABGELAUFEN ||
+                gesuch.status === TSAntragStatus.ZWEITE_MAHNUNG ||
+                gesuch.status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN) &&
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
     }
 }

@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -341,10 +342,12 @@ public class GemeindeResource {
 
 
 	private Optional<GemeindeStammdaten> initGemeindeStammdaten(String gemeindeId) {
+		GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz = new GemeindeStammdatenKorrespondenz();
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
 		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
 		stammdaten.setAdresse(getInitAdresse());
+		stammdaten.setGemeindeStammdatenKorrespondenz(gemeindeStammdatenKorrespondenz);
 		stammdaten.setMail("");
 		return Optional.of(stammdaten);
 	}

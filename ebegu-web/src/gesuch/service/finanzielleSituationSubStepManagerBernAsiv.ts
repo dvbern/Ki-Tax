@@ -34,8 +34,7 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
                 return TSFinanzielleSituationSubStepName.BERN_SOZIALHILFE;
             }
             // (2) Normale FinSit Eingabe
-            if (this.gesuchModelManager.isFinanzielleSituationEnabled()
-                && this.gesuchModelManager.isFinanzielleSituationRequired()) {
+            if (this.gesuchModelManager.isFinanzielleSituationRequired()) {
                 return TSFinanzielleSituationSubStepName.BERN_GS1;
             }
             // (3) Keine FinSit notwendig, aber auch keine Sozialhilfedetails (Gemeindeabhaengig)
