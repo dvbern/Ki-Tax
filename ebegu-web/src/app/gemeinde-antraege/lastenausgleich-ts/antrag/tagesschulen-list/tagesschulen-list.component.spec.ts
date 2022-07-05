@@ -33,13 +33,13 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
-    'addMesageAsError'
+    'addMesageAsError',
 ]);
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
 ]);
 
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
 
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
