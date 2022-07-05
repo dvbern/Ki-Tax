@@ -20,8 +20,8 @@ import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Observable, Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
@@ -52,8 +52,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     public bfsGemeinden: TSBfsGemeinde[];
 
     private angebot: TSFerienbetreuungAngabenAngebot;
-    private subscription: Subscription;
     public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
+    private unsubscribe$ = new Subject();
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -72,11 +72,12 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
                 this.ferienbetreuungService.getFerienbetreuungContainer(),
                 this.authService.principal$.pipe(filter(principal => !!principal)),
             ],
-        ).subscribe(([container, principal]) => {
+        ).pipe(takeUntil(this.unsubscribe$))
+            .subscribe(([container, principal]) => {
             this.container = container;
             this.angebot = container.isAtLeastInPruefungKanton() ?
                 container.angabenKorrektur?.angebot : container.angabenDeklaration?.angebot;
@@ -90,11 +91,12 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
-        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer();
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {

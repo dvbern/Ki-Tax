@@ -20,7 +20,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Observable, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
@@ -44,7 +45,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     OnDestroy {
 
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
-    private subscription: Subscription;
+    private unsubscribe$ = new Subject();
     public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
 
     public constructor(
@@ -63,10 +64,11 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
-        ]).subscribe(([container, principal]) => {
+        ]).pipe(takeUntil(this.unsubscribe$))
+            .subscribe(([container, principal]) => {
             this.container = container;
             this.kostenEinnahmen = container.isAtLeastInPruefungKanton() ?
                 container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
@@ -75,11 +77,12 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }, error => {
             LOG.error(error);
         });
-        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer();
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {

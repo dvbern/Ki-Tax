@@ -20,7 +20,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Observable, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
@@ -43,8 +44,8 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
 export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
-    private subscription: Subscription;
     public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
+    private unsubscribe$ = new Subject();
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -62,10 +63,12 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
-        ]).subscribe(([container, principal]) => {
+        ]).pipe(
+            takeUntil(this.unsubscribe$)
+        ).subscribe(([container, principal]) => {
             this.container = container;
             this.nutzung = container.isAtLeastInPruefungKanton() ?
                 container.angabenKorrektur?.nutzung : container.angabenDeklaration?.nutzung;
@@ -74,11 +77,12 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         }, error => {
             LOG.error(error);
         });
-        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer();
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     public async onAbschliessen(): Promise<void> {
