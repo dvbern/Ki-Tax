@@ -66,6 +66,7 @@ public class ZahlungsauftragBuilder {
 		zahlung.setEmpfaengerName(empfaenger);
 		zahlung.setAuszahlungsdaten(new Auszahlungsdaten());
 		zahlung.getAuszahlungsdaten().setIban(new IBAN(empfaengerKonto));
+		zahlung.getAuszahlungsdaten().setInfomaKreditorennummer(empfaengerKonto);
 		zahlungsauftrag.getZahlungen().add(zahlung);
 		zahlung.setZahlungsauftrag(zahlungsauftrag);
 		return this;
