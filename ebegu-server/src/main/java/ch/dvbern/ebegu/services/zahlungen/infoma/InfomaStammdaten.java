@@ -1,6 +1,5 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
-import java.text.MessageFormat;
 import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
@@ -36,7 +35,7 @@ public abstract class InfomaStammdaten {
 		String[] args = new String[72];
 		args[0] = ZEILENART_STAMMDATEN;
 		args[1] = STAMMDATEN_BELEGART;
-		args[2] = MessageFormat.format("{0}{1}", BELEGNUMMER_PRAEFIX, belegnummer);
+		args[2] = BELEGNUMMER_PRAEFIX + belegnummer;
 		args[3] = zahlung.getId();
 		args[4] = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
 		args[6] = getKontoart();
