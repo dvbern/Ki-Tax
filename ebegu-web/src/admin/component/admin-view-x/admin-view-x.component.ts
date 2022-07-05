@@ -10,11 +10,14 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Observable} from 'rxjs';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {AbstractAdminViewX} from '../../abstractAdminViewX';
 import {ReindexRS} from '../../service/reindexRS.rest';
+
+const LOG = LogFactory.createLog('AdminViewXComponent');
 
 @Component({
   selector: 'dv-admin-view-x',
@@ -60,6 +63,8 @@ export class AdminViewXComponent extends AbstractAdminViewX {
                     text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT',
             }}).afterClosed().subscribe(() => {
                 this.doSave();
+            }, err => {
+                LOG.error(err);
             });
         } else {
             this.doSave();
