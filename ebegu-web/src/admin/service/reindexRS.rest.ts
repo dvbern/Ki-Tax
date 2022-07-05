@@ -13,25 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService} from 'angular';
-import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class ReindexRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-
-    public serviceURL: string;
+    public readonly serviceURL: string = `${CONSTANTS.REST_API}admin/reindex`;
 
     public constructor(
-        public readonly http: IHttpService,
-        REST_API: string,
-        public readonly ebeguRestUtil: EbeguRestUtil,
-    ) {
-        this.serviceURL = REST_API + 'admin/reindex';
-    }
+        public readonly $http: HttpClient,
+    ) {}
 
-    public reindex(): IHttpPromise<any> {
-        return this.http.get(this.serviceURL + '/');
+    public reindex(): Observable<any> {
+        return this.$http.get(this.serviceURL + '/');
     }
 
 }
