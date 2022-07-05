@@ -20,7 +20,7 @@ import {catchError} from 'rxjs/operators';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
 import {TSExceptionReport} from '../../../../models/TSExceptionReport';
-import {HTTP_ERROR_CODES} from '../../constants/CONSTANTS';
+import {HTTP_CODES} from '../../constants/CONSTANTS';
 import {LogFactory} from '../../logging/LogFactory';
 import {ErrorServiceX} from './ErrorServiceX';
 
@@ -47,12 +47,12 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                 }
 
                 // here we handle all errorcodes except 401 and 403, 401 is handeld in HttpAuthInterceptor
-                if (err.status === HTTP_ERROR_CODES.FORBIDDEN) {
+                if (err.status === HTTP_CODES.FORBIDDEN) {
                     this.errorService.addMesageAsError('ERROR_UNAUTHORIZED');
                     throw err;
                 }
 
-                if (err.status !== HTTP_ERROR_CODES.UNAUTHORIZED) {
+                if (err.status !== HTTP_CODES.UNAUTHORIZED) {
                     // here we could analyze the http status of the response. But instead we check if the  response has
                     // the format of a known response such as errortypes such as violationReport or ExceptionReport and
                     // transform it as such. If the response matches know expected format we create an unexpected
@@ -80,7 +80,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         response: HttpErrorResponse,
     ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
-        if (response.status === HTTP_ERROR_CODES.NOT_FOUND && (
+        if (response.status === HTTP_CODES.NOT_FOUND && (
             url.includes('ebegu.dvbern.ch')
             || url.includes('ebegu-test.bern.ch')
             || url.includes('ebegu.bern.ch'))) {
@@ -221,7 +221,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
         if (!data) {
             return false;
         }
-        return data.status === HTTP_ERROR_CODES.CONFLICT;
+        return data.status === HTTP_CODES.CONFLICT;
     }
 
     private isBlob(error: any): boolean {

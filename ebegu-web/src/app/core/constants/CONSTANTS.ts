@@ -101,7 +101,8 @@ export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string 
     }
 }
 
-export const HTTP_ERROR_CODES = {
+export const HTTP_CODES = {
+    OK: 200,
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,

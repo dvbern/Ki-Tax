@@ -165,7 +165,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }
         this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
             .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));

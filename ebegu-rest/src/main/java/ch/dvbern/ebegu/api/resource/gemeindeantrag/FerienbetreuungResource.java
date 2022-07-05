@@ -37,6 +37,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
@@ -116,6 +117,40 @@ public class FerienbetreuungResource {
 			.map(container ->
 				converter.ferienbetreuungAngabenContainerToJax(container))
 			.orElse(null);
+	}
+
+	@ApiOperation(
+		value = "Gibt den Vorgaenger des FerienbetreuungAngabenContainers mit der uebergebenen Id zurueck",
+		response = JaxFerienbetreuungAngabenContainer.class)
+	@Nullable
+	@GET
+	@Path("/vorgaenger/{containerId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
+	public Response findFerienbetreuungVorgaengerContainer(
+			@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+		Objects.requireNonNull(containerId.getId());
+
+		authorizer.checkReadAuthorizationFerienbetreuung(containerId.getId());
+
+		final Optional<FerienbetreuungAngabenContainer> ferienbetreuungAngabenContainerOpt =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(converter.toEntityId(containerId));
+
+		final Optional<FerienbetreuungAngabenContainer> ferienbetreuungAngabenContainerVorgaenger =
+				ferienbetreuungService.findFerienbetreuungAngabenVorgaengerContainer(ferienbetreuungAngabenContainerOpt.orElseThrow());
+
+		if (ferienbetreuungAngabenContainerVorgaenger.isPresent()) {
+			JaxFerienbetreuungAngabenContainer converted =
+					converter.ferienbetreuungAngabenContainerToJax(ferienbetreuungAngabenContainerVorgaenger.get());
+			return Response.ok(converted)
+					.build();
+		}
+		return Response.noContent().build();
 	}
 
 	@ApiOperation(

@@ -245,7 +245,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
 		container.setDokumente(new HashSet<>());
 
-		copyFromVorjahrAntragIfExistsAndIsGeprueft(gemeinde, gesuchsperiode, container);
+		copyFromVorjahrAntragIfExistsAndIsGeprueft(container);
 
 		FerienbetreuungAngabenContainer persistedContainer = persistence.persist(container);
 
@@ -256,19 +256,14 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	}
 
 	private void copyFromVorjahrAntragIfExistsAndIsGeprueft(
-		Gemeinde gemeinde,
-		Gesuchsperiode gesuchsperiode,
 		FerienbetreuungAngabenContainer container) {
-		Optional<Gesuchsperiode> gesuchsperiodeVorjahr = gesuchsperiodeService.getVorjahrGesuchsperiode(gesuchsperiode);
 
-		if (gesuchsperiodeVorjahr.isPresent()) {
 			Optional<FerienbetreuungAngabenContainer> antragOfpreviousYear =
-					findFerienbetreuungAngabenContainer(gemeinde, gesuchsperiodeVorjahr.get())
+					findFerienbetreuungAngabenVorgaengerContainer(container)
 							.filter(FerienbetreuungAngabenContainer::isGeprueft);
 
 			antragOfpreviousYear.ifPresent(ferienbetreuungAngabenContainer ->
 					ferienbetreuungAngabenContainer.copyForErneuerung(container));
-		}
 	}
 
 	@Nonnull
@@ -672,6 +667,18 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 			container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
 			return persistence.merge(container);
+	}
+
+	@Override
+	public Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenVorgaengerContainer(
+			@Nonnull FerienbetreuungAngabenContainer container) {
+		Optional<Gesuchsperiode> vorgaengerGesuchperiode = gesuchsperiodeService.getVorjahrGesuchsperiode(container.getGesuchsperiode());
+
+		if (vorgaengerGesuchperiode.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return findFerienbetreuungAngabenContainer(container.getGemeinde(), vorgaengerGesuchperiode.get());
 	}
 }
 
