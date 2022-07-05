@@ -161,4 +161,6 @@ public interface GesuchsperiodeService {
 
 	byte[] downloadGesuchsperiodeDokument(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache,
 		@Nonnull DokumentTyp dokumentTyp);
+
+	Optional<Gesuchsperiode> getVorjahrGesuchsperiode(Gesuchsperiode gesuchsperiode);
 }

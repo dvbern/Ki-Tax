@@ -154,4 +154,9 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	public void setFerienbetreuungBerechnungen(@Nullable FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
 		this.ferienbetreuungBerechnungen = ferienbetreuungBerechnungen;
 	}
+
+	public void copyForErneuerung(FerienbetreuungAngaben target) {
+		getFerienbetreuungAngabenStammdaten().copyForErneuerung(target.getFerienbetreuungAngabenStammdaten());
+		getFerienbetreuungAngabenAngebot().copyForErneuerung(target.getFerienbetreuungAngabenAngebot());
+	}
 }
