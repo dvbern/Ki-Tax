@@ -167,6 +167,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Inject
 	private GesuchService gesuchService;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Override
 	@Nonnull
 	public Zahlungsauftrag zahlungsauftragErstellen(
@@ -810,6 +813,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlung.setStatus(ZahlungStatus.AUSGELOEST);
 			persistence.merge(zahlung);
 		}
+		// Die nextBelegnummerInfoma hochzaehlen
+		final Mandant mandant = zahlungsauftrag.getMandant();
+		Objects.requireNonNull(mandant);
+		final long oldNextNummer = mandant.getNextInfomaBelegnummer();
+		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
+		mandantService.updateNextInfomaBelegnummer(mandant, oldNextNummer + anzahlNeueZahlungen);
 		return persistence.merge(zahlungsauftrag);
 	}
 

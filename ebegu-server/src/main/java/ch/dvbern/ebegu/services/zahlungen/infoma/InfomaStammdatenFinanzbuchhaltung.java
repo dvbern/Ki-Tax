@@ -17,13 +17,13 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
 	public InfomaStammdatenFinanzbuchhaltung(
 		@NonNull Zahlung zahlung,
-		@NonNull String belegnummer
+		long belegnummer
 	) {
 		super(zahlung, belegnummer);
 	}
 
 	@Nonnull
-	public static String with(@NonNull Zahlung zahlung, @NonNull String belegnummer) {
+	public static String with(@NonNull Zahlung zahlung, long belegnummer) {
 		InfomaStammdatenFinanzbuchhaltung stammdaten = new InfomaStammdatenFinanzbuchhaltung(zahlung, belegnummer);
 		return stammdaten.toString();
 	}

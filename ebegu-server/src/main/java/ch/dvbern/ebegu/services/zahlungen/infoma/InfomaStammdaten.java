@@ -1,5 +1,6 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
+import java.text.MessageFormat;
 import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
@@ -10,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BANKCODE;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BELEGNUMMER_PRAEFIX;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BUCHUNGSKREIS;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DATE_FORMAT;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.INSTITUTIONELLE_GLIEDERUNG;
@@ -22,11 +24,11 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalF
 public abstract class InfomaStammdaten {
 
 	private final Zahlung zahlung;
-	private final String belegnummer;
+	private final long belegnummer;
 
-	public InfomaStammdaten(@NonNull Zahlung zahlung, @NonNull String belegnummer) {
+	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer) {
 		this.zahlung = zahlung;
-		this.belegnummer = belegnummer; // TODO Unique ueber alle Zahlungen, startend bei BGR200001
+		this.belegnummer = belegnummer;
 	}
 
 	@Nonnull
@@ -34,7 +36,7 @@ public abstract class InfomaStammdaten {
 		String[] args = new String[72];
 		args[0] = ZEILENART_STAMMDATEN;
 		args[1] = STAMMDATEN_BELEGART;
-		args[2] = belegnummer;
+		args[2] = MessageFormat.format("{0}{1}", BELEGNUMMER_PRAEFIX, belegnummer);
 		args[3] = zahlung.getId();
 		args[4] = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
 		args[6] = getKontoart();

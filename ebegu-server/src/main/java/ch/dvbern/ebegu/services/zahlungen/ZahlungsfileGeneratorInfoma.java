@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.services.zahlungen;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -37,12 +38,17 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 	) {
 		final String currentUsername = principalBean.getBenutzer().getUsername();
 		final boolean isDevmode = ebeguConfiguration.getIsDevmode();
+		Objects.requireNonNull(zahlungsauftrag.getMandant());
+		// Die nextInfomaBelegnummer darf erst bei der Freigabe der Zahlung auf dem Mandant
+		// hochgezaehlt werden!
+		long nextInfomaBelegnummer = zahlungsauftrag.getMandant().getNextInfomaBelegnummer();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
 		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
-			sb.append(InfomaStammdatenZahlung.with(zahlung, "TODO Belegnummer"));
-			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, "TODO Belegnummer"));
+			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer));
+			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer));
+			nextInfomaBelegnummer++;
 		}
 		sb.append(InfomaFooter.with(zahlungsauftrag.getZahlungen().size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.UTF_8);

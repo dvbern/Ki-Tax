@@ -19,3 +19,10 @@ ALTER TABLE auszahlungsdaten ADD infoma_kreditorennummer VARCHAR(255);
 ALTER TABLE auszahlungsdaten_aud ADD infoma_kreditorennummer VARCHAR(255);
 
 alter table auszahlungsdaten CHANGE iban iban VARCHAR(34) NULL;
+
+ALTER TABLE mandant ADD next_infoma_belegnummer BIGINT NOT NULL DEFAULT 1;
+ALTER TABLE mandant_aud ADD next_infoma_belegnummer BIGINT NULL;
+ALTER TABLE mandant_aud ADD activated BIT NULL;
+
+UPDATE mandant SET next_infoma_belegnummer = 200001 WHERE mandant_identifier = 'LUZERN';
+
