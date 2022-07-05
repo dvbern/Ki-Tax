@@ -33,9 +33,9 @@ public class CheckAnyAuszahlungskontoSetValidator implements ConstraintValidator
 	@Override
 	public boolean isValid(Auszahlungsdaten berechtigung, @Nullable ConstraintValidatorContext context) {
 		// Es muss entweder eine IBAN oder eine infomaKontonummer gesetzt sein
-		if (berechtigung.getIban() == null) {
-			return StringUtils.isNotEmpty(berechtigung.getInfomaKreditorennummer());
+		if (berechtigung.getIban() != null) {
+			return true;
 		}
-		return false;
+		return StringUtils.isNotEmpty(berechtigung.getInfomaKreditorennummer());
 	}
 }
