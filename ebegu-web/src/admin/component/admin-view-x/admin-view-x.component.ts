@@ -22,7 +22,7 @@ import {ReindexRS} from '../../service/reindexRS.rest';
   styleUrls: ['./admin-view-x.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminViewXComponent extends AbstractAdminViewX{
+export class AdminViewXComponent extends AbstractAdminViewX {
 
     @ViewChild(NgForm) public form: NgForm;
 
