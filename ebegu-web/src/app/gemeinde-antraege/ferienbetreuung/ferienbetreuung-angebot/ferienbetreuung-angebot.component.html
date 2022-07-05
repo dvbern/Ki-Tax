@@ -533,7 +533,7 @@
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.angebot.betreuungErfolgtTagsueber}}</span>
+					: {{(vorgaenger.angabenKorrektur.angebot.betreuungErfolgtTagsueber ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</span>
 			</div>
 		</div>
 
