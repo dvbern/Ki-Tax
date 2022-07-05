@@ -68,6 +68,7 @@ public abstract class AbstractBaseService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
+	@SuppressWarnings("PMD.CloseResource")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void updateLuceneIndex(Class<? extends AbstractEntity> clazz, String id) {
 		// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
@@ -81,14 +82,18 @@ public abstract class AbstractBaseService {
 	}
 
 	@Nonnull
-	public BGRechnerParameterDTO loadCalculatorParameters(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+	public BGRechnerParameterDTO loadCalculatorParameters(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> paramMap =
+			einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 	}
 
 	@Nonnull
 	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter(@Nonnull Mandant mandant) {
-		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten = criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten =
+			criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
 		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
 			applicationPropertyService.getStadtBernAsivStartDatum(mandant),
 			applicationPropertyService.isStadtBernAsivConfigured(mandant),
@@ -139,7 +144,10 @@ public abstract class AbstractBaseService {
 		return vorgaengerPlatz.map(AbstractPlatz::getVerfuegung);
 	}
 
-	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {
+	protected void logExceptionAccordingToEnvironment(
+		@Nonnull Exception e,
+		@Nonnull String message,
+		@Nonnull String arg) {
 		if (ebeguConfiguration.getIsDevmode()) {
 			LOG.info("{} {}", message, arg, e);
 		} else {

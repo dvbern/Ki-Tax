@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_FerienbetreuungAngabenKostenEinnahmen {
 
 	private FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen;

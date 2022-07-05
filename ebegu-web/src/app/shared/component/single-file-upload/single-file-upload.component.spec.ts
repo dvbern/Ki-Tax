@@ -26,11 +26,11 @@ import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../material.module';
 import {SharedModule} from '../../shared.module';
 
-import {FileUploadComponent} from './file-upload.component';
+import {SingleFileUploadComponent} from './single-file-upload.component';
 
 describe('FileUploadComponent', () => {
-    let component: FileUploadComponent<TSFile>;
-    let fixture: ComponentFixture<FileUploadComponent<TSFile>>;
+    let component: SingleFileUploadComponent<TSFile>;
+    let fixture: ComponentFixture<SingleFileUploadComponent<TSFile>>;
 
     const applicationPropertyRSSpy =
         jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes']);
@@ -57,7 +57,7 @@ describe('FileUploadComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(FileUploadComponent);
+        fixture = TestBed.createComponent(SingleFileUploadComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

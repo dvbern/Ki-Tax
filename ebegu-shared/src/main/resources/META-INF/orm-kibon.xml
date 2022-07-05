@@ -414,4 +414,5 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	<entity class="ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog"/>
 	<entity class="ch.dvbern.ebegu.entities.SteuerdatenResponse"/>
 	<entity class="ch.dvbern.ebegu.entities.SteuerdatenRequest"/>
+	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz"/>
 </entity-mappings>

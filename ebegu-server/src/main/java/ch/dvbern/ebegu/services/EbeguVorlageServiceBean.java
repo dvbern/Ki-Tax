@@ -180,13 +180,15 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		if (key == null) {
 			return null;
 		}
-		try {
+		try (
+			InputStream is = EbeguVorlageServiceBean.class.getResourceAsStream(key.getDefaultVorlagePath())
+		) {
 			Vorlage vorlage = new Vorlage();
 			vorlage.setFilesize("10");
 			final String filename = ServerMessageUtil.getMessage(key.name(), new Locale(language), mandant) + ".xlsx";
 			vorlage.setFilename(filename);
 			// Das Defaultfile lesen und im Filesystem ablegen
-			InputStream is = EbeguVorlageServiceBean.class.getResourceAsStream(key.getDefaultVorlagePath());
+			Objects.requireNonNull(is);
 			byte[] bytes = IOUtils.toByteArray(is);
 			String folder = Constants.TEMP_NOTVERORDNUNG;
 			UploadFileInfo notrechtVorlage = fileSaverService.save(bytes, vorlage.getFilename(), folder);

@@ -32,6 +32,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity
@@ -121,6 +122,8 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -129,11 +132,6 @@ public class SteuerdatenAnfrageLog extends AbstractEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-
-		if (!(other instanceof SteuerdatenAnfrageLog)) {
-			return false;
-		}
-
 		final SteuerdatenAnfrageLog otherAnfrage = (SteuerdatenAnfrageLog) other;
 		return StringUtils.equals(this.faultReceived, otherAnfrage.faultReceived) &&
 			this.timestampSent.equals(otherAnfrage.timestampSent) &&

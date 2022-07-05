@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -42,7 +43,6 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Massenversand;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -61,10 +61,8 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -155,48 +153,48 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		boolean ohneErneuerungsgesuch,
 		@Nullable String text,
 		@Nonnull Locale locale
-	) throws ExcelMergeException {
-
+	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MASSENVERSAND;
 
-		InputStream is = ReportMassenversandServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportMassenversandServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			List<MassenversandDataRow> reportData = getReportMassenversand(
+				datumVon, datumBis, gesuchPeriodeId, inklBgGesuche, inklMischGesuche, inklTsGesuche,
+				ohneErneuerungsgesuch, text, locale);
 
-		List<MassenversandDataRow> reportData = getReportMassenversand(
-			datumVon, datumBis, gesuchPeriodeId, inklBgGesuche, inklMischGesuche, inklTsGesuche,
-			ohneErneuerungsgesuch, text, locale);
+			Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
+			Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.orElseThrow(() ->
+				new EbeguEntityNotFoundException("findGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchPeriodeId)
+			);
 
-		Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.orElseThrow(() ->
-			new EbeguEntityNotFoundException("findGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchPeriodeId)
-		);
+			ExcelMergerDTO excelMergerDTO = massenversandExcelConverter.toExcelMergerDTO(
+				reportData,
+				locale,
+				datumVon,
+				datumBis,
+				gesuchsperiode,
+				inklBgGesuche,
+				inklMischGesuche,
+				inklTsGesuche,
+				ohneErneuerungsgesuch,
+				text);
 
-		ExcelMergerDTO excelMergerDTO = massenversandExcelConverter.toExcelMergerDTO(
-			reportData,
-			locale,
-			datumVon,
-			datumBis,
-			gesuchsperiode,
-			inklBgGesuche,
-			inklMischGesuche,
-			inklTsGesuche,
-			ohneErneuerungsgesuch,
-			text);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			massenversandExcelConverter.applyAutoSize(sheet);
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		massenversandExcelConverter.applyAutoSize(sheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
 					Objects.requireNonNull(gesuchsperiode.getMandant())) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<MassenversandDataRow> createReportDataMassenversand(

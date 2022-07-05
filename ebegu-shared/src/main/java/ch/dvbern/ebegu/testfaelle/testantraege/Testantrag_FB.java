@@ -22,6 +22,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_FB {
 
 	private final FerienbetreuungAngabenContainer container;

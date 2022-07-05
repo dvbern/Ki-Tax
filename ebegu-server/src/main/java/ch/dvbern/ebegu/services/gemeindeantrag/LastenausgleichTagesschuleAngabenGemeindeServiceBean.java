@@ -94,8 +94,10 @@ import org.slf4j.LoggerFactory;
 public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends AbstractBaseService
 	implements LastenausgleichTagesschuleAngabenGemeindeService {
 
-	private static final String ANGABEN_KORREKTUR_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenKorrektur must not be null";
-	private static final String ANGABEN_DEKLARATION_NOT_NULL = "LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null";
+	private static final String ANGABEN_KORREKTUR_NOT_NULL =
+		"LastenausgleichTagesschuleAngabenGemeindeContainer angabenKorrektur must not be null";
+	private static final String ANGABEN_DEKLARATION_NOT_NULL =
+		"LastenausgleichTagesschuleAngabenGemeindeContainer angabenDeklaration must not be null";
 
 	@Inject
 	private Persistence persistence;
@@ -142,7 +144,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		List<GemeindeAntrag> result = new ArrayList<>();
 		final Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(Objects.requireNonNull(
-				gesuchsperiode.getMandant()));
+			gesuchsperiode.getMandant()));
 		final Collection<Gemeinde> tsGemeinden = aktiveGemeinden.stream()
 			.filter(gemeinde -> gemeinde.isTagesschuleActiveForGesuchsperiode(gesuchsperiode))
 			.collect(Collectors.toList());
@@ -250,17 +252,17 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			throw new EbeguRuntimeException(
 				"deleteAntragIfExistsAndIsNotAbgeschlossen",
-					"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin und Mandant möglich");
+				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als SuperAdmin und Mandant möglich");
 		}
 
 		findLastenausgleichTagesschuleAngabenGemeindeContainer(
-				gemeinde,
-				gesuchsperiode)
-				.filter(antrag -> !antrag.isAntragAbgeschlossen())
-				.ifPresent(container -> {
-					deleteHistoryForContainer(container);
-					persistence.remove(container);
-		});
+			gemeinde,
+			gesuchsperiode)
+			.filter(antrag -> !antrag.isAntragAbgeschlossen())
+			.ifPresent(container -> {
+				deleteHistoryForContainer(container);
+				persistence.remove(container);
+			});
 	}
 
 	private void deleteHistoryForContainer(LastenausgleichTagesschuleAngabenGemeindeContainer container) {
@@ -420,7 +422,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			);
 		}
 		if (periode != null) {
-			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(
+				cb,
 				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
 				periode));
 		}
@@ -453,15 +456,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	private Predicate createMandantPredicate(
-			CriteriaBuilder cb,
-			Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
+		CriteriaBuilder cb,
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root) {
 		Mandant mandant = principal.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("LastenausgleichTagesschuleAngabenGemeindeServiceBean", "mandant not found for principal " + principal.getPrincipal().getName());
-		}
 		return cb.equal(
-				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
-						.get(Gemeinde_.mandant), mandant
+			root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde)
+				.get(Gemeinde_.mandant), mandant
 		);
 	}
 
@@ -527,7 +527,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		predicates.add(notNeu);
 
 		if (periode != null) {
-			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(
+				cb,
 				root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode, JoinType.INNER),
 				periode));
 		}
@@ -552,17 +553,19 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		// Nur moeglich, wenn noch nicht geprüft
 		Preconditions.checkState(
 			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
-			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+				fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
 			"LastenausgleichAngabenGemeindeContainer muss im Status IN_PRUEFUNG oder ZWEITPRUEFUNG sein");
 		Objects.requireNonNull(fallContainer.getAngabenKorrektur());
 		Preconditions.checkState(
-			fallContainer.getAngabenKorrektur().getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
+			fallContainer.getAngabenKorrektur().getStatus()
+				== LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN,
 			"Die Angaben der Gemeinde müssen abgeschlossen sein"
 		);
 
 		if (!fallContainer.isInZweitpruefung() && this.selectedForZweitpruefung(fallContainer)) {
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG);
-			fallContainer.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+			fallContainer.getAngabenKorrektur()
+				.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		} else {
 			fallContainer.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT);
 		}
@@ -695,7 +698,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 		Preconditions.checkState(
 			container.isInPruefungKanton(),
 			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Prüfung Kanton sein"
@@ -713,10 +716,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		// reopen gemeinde formular, don't reopen insti formulare
 		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
-		container.getAngabenDeklaration().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
-		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.getAngabenDeklaration()
+			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.getAngabenKorrektur()
+			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+			saveLastenausgleichTagesschuleGemeinde(container, true);
 
 		mailService.sendInfoLATSAntragZurueckAnGemeinde(saved);
 
@@ -726,7 +732,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeZurueckInPruefungKanton(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 		Preconditions.checkState(
 			container.isAntragGeprueft(),
 			"LastenausgleichTagesschuleAngabenGemeindeContainer Geprüft sein"
@@ -742,17 +748,18 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		// reopen gemeinde korrektur formular, don't reopen insti or deklaration formulare
 		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON);
-		container.getAngabenKorrektur().setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.getAngabenKorrektur()
+			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 
-		LastenausgleichTagesschuleAngabenGemeindeContainer saved = saveLastenausgleichTagesschuleGemeinde(container, true);
+		LastenausgleichTagesschuleAngabenGemeindeContainer saved =
+			saveLastenausgleichTagesschuleGemeinde(container, true);
 
 		return saved;
 	}
 
-
-
 	@Nonnull
 	@Override
+	@SuppressWarnings("PMD.AvoidDecimalLiteralsInBigDecimalConstructor")
 	public boolean selectedForZweitpruefung(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 
 		Preconditions.checkState(
@@ -782,18 +789,18 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
 							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR,
-								container.getGemeinde().getMandant());
+							container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
 						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR,
-							container.getGemeinde().getMandant());
+						container.getGemeinde().getMandant());
 				} else {
 					betreuungsstundenForAutoZweitpruefung =
 						applicationPropertyService.findApplicationPropertyAsBigDecimal(
 							ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE,
-								container.getGemeinde().getMandant());
+							container.getGemeinde().getMandant());
 					anteilGemeindenForZweitpruefung = applicationPropertyService.findApplicationPropertyAsBigDecimal(
 						ApplicationPropertyKey.LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE,
-							container.getGemeinde().getMandant());
+						container.getGemeinde().getMandant());
 				}
 
 				BigDecimal randomNumber = new BigDecimal(Math.random(), MathContext.DECIMAL64);
@@ -810,14 +817,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	@Override
-	public @Nullable LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId) {
+	public @Nullable
+	LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			findLastenausgleichTagesschuleAngabenGemeindeContainer(currentAntragId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"findContainerOfPreviousPeriode",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				currentAntragId)
-			);
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"findContainerOfPreviousPeriode",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					currentAntragId)
+				);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query =
@@ -848,7 +856,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList = persistence.getCriteriaResults(query);
 
 		if (containerList.size() > 1) {
-			throw new EbeguRuntimeException("findContainerOfPreviousPeriode", "Too many results found for container " + currentAntrag.getId());
+			throw new EbeguRuntimeException(
+				"findContainerOfPreviousPeriode",
+				"Too many results found for container " + currentAntrag.getId());
 		}
 
 		if (containerList.size() == 1) {
@@ -874,8 +884,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		authorizer.checkReadAuthorization(currentAntrag);
 
-
-		Collection<InstitutionStammdaten> allTagesschulen = this.institutionStammdatenService.getAllTagesschulenForGemeinde(currentAntrag.getGemeinde());
+		Collection<InstitutionStammdaten> allTagesschulen =
+			this.institutionStammdatenService.getAllTagesschulenForGemeinde(currentAntrag.getGemeinde());
 		BigDecimal erwarteteBetreuungsstunden = BigDecimal.ZERO;
 		for (InstitutionStammdaten stammdaten : allTagesschulen) {
 			BigDecimal result = this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
@@ -883,19 +893,20 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				currentAntrag.getGesuchsperiode()
 			);
 			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
-		};
+		}
+		;
 		return erwarteteBetreuungsstunden;
 	}
 
 	@Override
 	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
-				findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
-						.orElseThrow(() -> new EbeguEntityNotFoundException(
-								"savePrognose",
-								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-								containerId)
-						);
+			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"savePrognose",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
 		authorizer.checkWriteAuthorization(currentAntrag);
 
 		currentAntrag.setBetreuungsstundenPrognose(prognose);
@@ -905,12 +916,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeAbschliessen(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkState(
-				container.getBetreuungsstundenPrognose() != null,
-				"LATS Antrag kann ohne Prognose Betreuungsstunden nicht abgeschlossen werden"
+			container.getBetreuungsstundenPrognose() != null,
+			"LATS Antrag kann ohne Prognose Betreuungsstunden nicht abgeschlossen werden"
 		);
 
 		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN);

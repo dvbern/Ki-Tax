@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -107,8 +108,9 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -118,9 +120,6 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Erwerbspensum)) {
 			return false;
 		}
 		final Erwerbspensum otherErwerbspensum = (Erwerbspensum) other;

@@ -20,6 +20,10 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.lib.invoicegenerator.dto.BaseLayoutConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
 import ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent;
@@ -36,10 +40,6 @@ import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.ADRE
 
 public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 
-	private static final int RECEIVER_LEFT_IN_MM = 123;
-	private static final int RECEIVER_TOP_IN_MM = 47;
-
-	public static final int LOGO_LEFT_IN_MM = RECEIVER_LEFT_IN_MM;
 	public static final int LOGO_TOP_IN_MM = 15;
 	public static final int BARCODE_TOP_IN_MM = 22;
 	private static final int LOGO_MAX_WIDTH_IN_MM = 70;
@@ -49,47 +49,63 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfLayoutConfiguration.class);
 
-	public PdfLayoutConfiguration(final byte[] logo, final List<String> absenderHeader, boolean isKanton) {
+	public PdfLayoutConfiguration(
+		@Nonnull GemeindeStammdatenKorrespondenz stammdaten,
+		@Nullable final List<String> absenderHeader,
+		boolean isKanton
+	) {
 		super(new AddressComponent(
 			null,
-			RECEIVER_LEFT_IN_MM,
-			RECEIVER_TOP_IN_MM,
+			stammdaten.getReceiverAddressSpacingLeft(),
+			stammdaten.getReceiverAddressSpacingTop(),
 			ADRESSE_WIDTH,
 			ADRESSE_HEIGHT,
 			OnPage.FIRST));
-		applyLogo(logo, isKanton);
+		applyLogo(stammdaten, isKanton);
 		if (absenderHeader != null && !absenderHeader.isEmpty()) {
 			setHeader(new PhraseRenderer(absenderHeader,
-				LEFT_PAGE_DEFAULT_MARGIN_MM,
-				RECEIVER_TOP_IN_MM,
+				stammdaten.getSenderAddressSpacingLeft(),
+				stammdaten.getSenderAddressSpacingTop(),
 				ADRESSE_WIDTH, ADRESSE_HEIGHT,
 				PdfUtil.DEFAULT_FONT));
 		}
 	}
 
-	private void applyLogo(final byte[] logo, boolean isKanton) {
-		if (logo == null || logo.length == 0) {
+	private void applyLogo(GemeindeStammdatenKorrespondenz stammdaten, boolean isKanton) {
+		if (stammdaten.getLogoContent().length == 0) {
 			return;
 		}
-
 		try {
-			Image image = Image.getInstance(logo);
-			final float imageWidthInMm = Utilities.pointsToMillimeters(image.getWidth());
-			final float imageHeightInMm = Utilities.pointsToMillimeters(image.getHeight());
-			float widthInMm = Math.min(isKanton ? LOGO_KANTON_MAX_WIDTH_IN_MM : LOGO_MAX_WIDTH_IN_MM, imageWidthInMm);
-			if (imageHeightInMm > (isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM)) {
-				final float factor =
-					(isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM) / imageHeightInMm;
-				widthInMm = Math.min(widthInMm, imageWidthInMm * factor);
+			// Falls eine gewuenschte Logo-Breite gesetzt ist, nehmen wir diese ungeprueft.
+			// Ansonsten Berechnung gemaess Regeln von kiBon
+			float widthInMm;
+			if (stammdaten.getLogoWidth() != null) {
+				widthInMm = stammdaten.getLogoWidth().floatValue();
+			} else {
+				Image image = Image.getInstance(stammdaten.getLogoContent());
+				widthInMm = getImageWidthDefault(image, isKanton);
 			}
+			int logoLeft = stammdaten.getLogoSpacingLeft();
 			Logo logoToApply = new Logo(
-				logo,
-				isKanton ? 8 : LOGO_LEFT_IN_MM,
-				isKanton ? 5 : LOGO_TOP_IN_MM,
+				stammdaten.getLogoContent(),
+				logoLeft,
+				isKanton ? 5 : stammdaten.getLogoSpacingTop(),
 				widthInMm);
 			setLogo(logoToApply);
 		} catch (IOException | BadElementException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage(), e);
 		}
+	}
+
+	private float getImageWidthDefault(@Nonnull Image image, boolean isKanton) {
+		final float imageWidthInMm = Utilities.pointsToMillimeters(image.getWidth()); // 20
+		final float imageHeightInMm = Utilities.pointsToMillimeters(image.getHeight());
+		float widthInMm = Math.min(isKanton ? LOGO_KANTON_MAX_WIDTH_IN_MM : LOGO_MAX_WIDTH_IN_MM, imageWidthInMm);
+		if (imageHeightInMm > (isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM)) {
+			final float factor =
+				(isKanton ? LOGO_KANTON_MAX_HEIGHT_IN_MM : LOGO_MAX_HEIGHT_IN_MM) / imageHeightInMm;
+			widthInMm = Math.min(widthInMm, imageWidthInMm * factor);
+		}
+		return widthInMm;
 	}
 }

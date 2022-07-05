@@ -19,11 +19,13 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -147,5 +149,21 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 				1,
 				1));
 		}
+	}
+
+	@Override
+	@Nonnull
+	protected List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
+		if (!this.isBetreuungTagesfamilie) {
+			return super.getVerfuegungZeitabschnitt();
+		}
+
+		//Für TFOs sollen die Zeitabschnitte, welche kein Betreuungspensum haben nicht aus der Liste entfernt werden
+		return super.getZeitabschnitteOrderByGueltigAb(false);
+	}
+
+	@Override
+	protected void createDokumentKeinAnspruchTFO(Document document, PdfGenerator generator) {
+		super.createDokumentNormal(document, generator);
 	}
 }

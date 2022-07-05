@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * EKV, 2 Gesuchsteller
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall_ASIV_04 extends AbstractASIVTestfall {
 
 	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(70000);

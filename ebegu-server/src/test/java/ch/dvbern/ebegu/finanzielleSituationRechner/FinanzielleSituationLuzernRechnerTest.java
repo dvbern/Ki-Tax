@@ -21,11 +21,11 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
@@ -61,21 +61,21 @@ public class FinanzielleSituationLuzernRechnerTest {
 		 * Steuerbares Vermögen	10'000, 10% =			       + 1'000
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... - 0 (Eingabe +1'000)
 		 * Verrechenbare Geschäftsverluste aus den Vorjahren.. + 1'000
-		 * Einkäufe in die berufliche Vorsorge Subtrahieren    - 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
 		 *                                                     -------
-		 *                                                      61'000
+		 *                                                      63'000
 		 *                                                     */
 		@Test
 		public void testAlleWertVorhandenPositiverNettoeinkommenLiegenschaften() {
 			Gesuch gesuch = prepareGesuch(false);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(61000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(63000)));
 
 			//zwei Antragstellende, beides ueberpruefen
 			gesuch = prepareGesuch(true);
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(61000)));
-			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(122000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(63000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(126000)));
 		}
 
 		/**
@@ -83,24 +83,24 @@ public class FinanzielleSituationLuzernRechnerTest {
 		 * Steuerbares Vermögen	10'000, 10% =			       + 1'000
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000 (Eingabe -1'000)
 		 * Verrechenbare Geschäftsverluste aus den Vorjahren.. + 1'000
-		 * Einkäufe in die berufliche Vorsorge Subtrahieren    - 1'000
+		 * Einkäufe in die berufliche Vorsorge addieren    	   + 1'000
 		 *                                                     -------
-		 *                                                      60'000
+		 *                                                      64'000
 		 *                                                     */
 		@Test
 		public void testAlleWertVorhandenNegativerNettoeinkommenLiegenschaften() {
 			Gesuch gesuch = prepareGesuch(false);
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.valueOf(-1000));
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(64000)));
 
 			//zwei Antragstellende, beides ueberpruefen
 			gesuch = prepareGesuch(true);
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.valueOf(-1000));
 			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.valueOf(-1000));
 			finSitRechner.calculateFinanzDaten(gesuch, null);
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124000)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(64000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(128000)));
 		}
 
 		/**

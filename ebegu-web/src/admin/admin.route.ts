@@ -67,8 +67,7 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'admin.gesuchsperiode',
-        template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
-            + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
+        component: 'dvGesuchsperiodeViewX',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         params: {
             gesuchsperiodeId: '',

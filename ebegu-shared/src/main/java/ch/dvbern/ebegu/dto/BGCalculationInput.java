@@ -949,6 +949,7 @@ public class BGCalculationInput {
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -701,9 +702,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return sb;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
-		"OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
+		"OverlyComplexMethod", "PMD.CompareObjectsWithEquals" })
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -728,6 +730,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(verfuegungZeitabschnittBemerkungList, otherVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList);
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

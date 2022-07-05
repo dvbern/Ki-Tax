@@ -88,6 +88,7 @@ public class JaxBerechtigung extends JaxAbstractDateRangedDTO {
 		this.gemeindeList = gemeindeList;
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(@Nonnull JaxBerechtigung that) {
 		if (this == that) {
 			return true;

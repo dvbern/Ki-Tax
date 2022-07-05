@@ -32,6 +32,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 public final class EBEGUGermanAnalyzer extends Analyzer {
 
 	@Override
+	@SuppressWarnings("PMD.CloseResource")
 	protected TokenStreamComponents createComponents(String fieldName) {
 		final Tokenizer source = new StandardTokenizer();
 		TokenStream result = new StandardFilter(source);

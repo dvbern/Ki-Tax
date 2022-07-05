@@ -2135,8 +2135,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isSameMandant(@Nonnull HasMandant entity) {
-		return principalBean.getMandant() != null
-				&& principalBean.getMandant().equals(entity.getMandant());
+		return principalBean.getMandant().equals(entity.getMandant());
 	}
 
 	@Override

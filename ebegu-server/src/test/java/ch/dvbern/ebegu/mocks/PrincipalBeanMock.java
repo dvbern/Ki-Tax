@@ -51,7 +51,7 @@ public class PrincipalBeanMock extends PrincipalBean {
 		return benutzer != null && benutzer.getRole() == role;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	public Mandant getMandant() {
 		return mandantService.getMandantBern();

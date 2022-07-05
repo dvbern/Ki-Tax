@@ -178,6 +178,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		}
 	}
 
+	@Override
 	protected void createPageBasisJahr(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
 		@Nonnull Document document
@@ -213,6 +214,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		return MathUtil.roundToFrankenRappen(durchschnitt);
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // FalsePositive: Die Methode ist benutzt
 	private void addTablesToDocument(
 		@Nonnull Document document,
 		@Nonnull AbstractFinanzielleSituation basisJahrGS1,
@@ -265,6 +267,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		addTablesToDocument(document, ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich);
 	}
 
+	@Override
 	protected void createPageEkv2(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
 		@Nonnull Document document

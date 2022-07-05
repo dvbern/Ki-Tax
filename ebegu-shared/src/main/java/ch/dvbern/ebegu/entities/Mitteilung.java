@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validators.CheckMitteilungCompleteness;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -199,17 +200,15 @@ public class Mitteilung extends AbstractMutableEntity {
 		this.sentDatum = sentDatum;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({"OverlyComplexBooleanExpression", "OverlyComplexMethod", "PMD.CompareObjectsWithEquals"})
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof Mitteilung)) {
 			return false;
 		}
 		final Mitteilung otherMitteilung = (Mitteilung) other;

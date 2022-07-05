@@ -92,6 +92,14 @@ export class SelbstdeklarationComponent implements OnInit {
         }
     }
 
+    public getCurrentAntragstellerName(): string {
+        if (this.antragstellerNummer === 2) {
+            return this.antragsteller2Name();
+        }
+
+        return this.antragsteller1Name();
+    }
+
     public antragsteller1Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
     }

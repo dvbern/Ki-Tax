@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_FerienbetreuungAngabenAngebot {
 
 	private FerienbetreuungAngabenAngebot angebot;

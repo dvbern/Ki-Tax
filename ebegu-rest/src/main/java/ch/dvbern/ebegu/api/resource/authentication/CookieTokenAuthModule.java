@@ -239,7 +239,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 				+ "set");
 			return setResponseUnauthorised(httpMsgContext);
 		}
-
+		Response response = null;
 		try {
 			String header = request.getHeader("Authorization");
 			final String[] strings = BasicAuthHelper.parseHeader(header);
@@ -257,7 +257,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 				.param("username", scolarisGemeindeUsername)
 				.param("password", scolarisGemeindePasswort);
 
-			Response response = ClientBuilder.newClient()
+			response = ClientBuilder.newClient()
 				.target(this.keycloackAuthServer)
 				.request(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON)
@@ -272,6 +272,10 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			throw e;
 		} catch (Exception ex) {
 			return setResponseUnauthorised(httpMsgContext);
+		} finally {
+			if (response != null) {
+				response.close();
+			}
 		}
 	}
 

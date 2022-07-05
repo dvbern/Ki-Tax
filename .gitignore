@@ -43,3 +43,5 @@ ebegu-ws/src/test/
 .run/**
 /ebegu-dbschema/src/main/resources/_nachher.sql
 /ebegu-dbschema/src/main/resources/_vorher.sql
+/ebegu-dbschema/_dbNachher.sql
+/ebegu-dbschema/_dbVorher.sql

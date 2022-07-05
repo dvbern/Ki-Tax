@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
+import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +93,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 	@Inject
 	private LastenausgleichTagesschuleAngabenGemeindeService angabenGemeindeService;
+
+	@Inject
+	private LastenausgleichTagesschuleAngabenInstitutionService angabenInstitutionService;
 
 	@Inject
 	private LastenausgleichTagesschuleDokumentService latsDokumentService;
@@ -598,5 +602,29 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		throw new EbeguRuntimeException("dokumentErstellen", "Lats Template has no content");
 
+	}
+
+	@ApiOperation(
+		value = "Erstellt fehlende LastenausgleichTagesschuleInstitutionContainers für den gegebenen Gemeindeantrag",
+		response = void.class)
+	@POST
+	@Path("/create-missing-institutions/{gemeindeAngabenId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
+	public void createMissingInstitutions(
+		@Nonnull @PathParam("gemeindeAngabenId") JaxId gemeindeAngabenId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(gemeindeAngabenId.getId());
+
+		authorizer.checkWriteAuthorizationLATSGemeindeAntrag(gemeindeAngabenId.getId());
+
+		final LastenausgleichTagesschuleAngabenGemeindeContainer container =
+			angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(gemeindeAngabenId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("createMissingInstitutions", gemeindeAngabenId.getId()));
+
+		angabenInstitutionService.createLastenausgleichTagesschuleInstitution(container);
 	}
 }
