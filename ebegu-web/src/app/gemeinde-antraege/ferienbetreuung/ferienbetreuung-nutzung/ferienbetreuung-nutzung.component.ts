@@ -20,8 +20,9 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -43,6 +44,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
 
     private nutzung: TSFerienbetreuungAngabenNutzung;
     private subscription: Subscription;
+    public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -72,6 +74,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         }, error => {
             LOG.error(error);
         });
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer();
     }
 
     public ngOnDestroy(): void {
