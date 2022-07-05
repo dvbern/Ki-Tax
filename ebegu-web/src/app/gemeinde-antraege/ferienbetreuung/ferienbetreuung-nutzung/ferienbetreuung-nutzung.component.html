@@ -137,8 +137,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.betreuungstageKinderDieserGemeindeSonderschueler"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.betreuungstageKinderDieserGemeindeSonderschueler}}</span>
 			</div>
@@ -211,15 +211,14 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler}}</span>
 			</div>
 		</div>
 		<div class="custom-errors">
-			<div
-					*ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
+			<div *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
 					translate>
 				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 				<span translate>ERROR_FB_SONDERSCHUELER</span>
@@ -258,8 +257,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder}}</span>
 			</div>
@@ -289,8 +288,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinderSonderschueler"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinderSonderschueler}}</span>
 			</div>
@@ -323,8 +322,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder1Zyklus"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder1Zyklus}}</span>
 			</div>
@@ -357,8 +356,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder2Zyklus"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder2Zyklus}}</span>
 			</div>
@@ -391,8 +390,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder3Zyklus"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.nutzung.anzahlBetreuteKinder3Zyklus}}</span>
 			</div>

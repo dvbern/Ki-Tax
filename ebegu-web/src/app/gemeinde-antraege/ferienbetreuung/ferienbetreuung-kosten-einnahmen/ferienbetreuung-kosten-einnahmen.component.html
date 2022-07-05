@@ -94,8 +94,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.personalkostenLeitungAdmin"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.personalkostenLeitungAdmin}}</span>
 			</div>
@@ -164,8 +164,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.verpflegungskosten"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.verpflegungskosten}}</span>
 			</div>
@@ -195,8 +195,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.weitereKosten"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.weitereKosten}}</span>
 			</div>
@@ -220,8 +220,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.bemerkungenKosten"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.bemerkungenKosten}}</span>
 			</div>

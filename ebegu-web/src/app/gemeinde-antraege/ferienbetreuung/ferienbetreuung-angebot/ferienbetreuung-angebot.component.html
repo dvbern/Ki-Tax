@@ -457,8 +457,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.angebot.bemerkungenAnzahlFerienwochen"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.angebot.bemerkungenAnzahlFerienwochen}}</span>
 			</div>
@@ -555,8 +555,8 @@
 					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.angebot.bemerkungenOeffnungszeiten"
 					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
 					: {{vorgaenger.angabenKorrektur.angebot.bemerkungenOeffnungszeiten}}</span>
 			</div>
