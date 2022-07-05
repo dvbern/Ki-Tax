@@ -53,7 +53,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
     private angebot: TSFerienbetreuungAngabenAngebot;
     public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
-    private unsubscribe$ = new Subject();
+    private readonly unsubscribe$ = new Subject();
 
     public constructor(
         protected readonly errorService: ErrorService,

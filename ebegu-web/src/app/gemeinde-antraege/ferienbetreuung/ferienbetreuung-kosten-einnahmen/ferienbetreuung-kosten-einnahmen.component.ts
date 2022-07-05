@@ -45,7 +45,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     OnDestroy {
 
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
-    private unsubscribe$ = new Subject();
+    private readonly unsubscribe$ = new Subject();
     public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
 
     public constructor(

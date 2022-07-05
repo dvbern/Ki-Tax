@@ -39,12 +39,13 @@ const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(Gem
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
 ]);
 
-const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
 
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
     gemeindeAntragServiceSpy.getAllVisibleTagesschulenAngabenForTSLastenausgleich.and.returnValue(of([]));
+    authServiceSpy.isOneOfRoles.and.returnValue(true);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

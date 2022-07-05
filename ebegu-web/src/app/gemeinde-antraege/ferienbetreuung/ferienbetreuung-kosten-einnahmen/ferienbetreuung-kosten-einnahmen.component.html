@@ -66,8 +66,8 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.personalkosten}}</span>
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkosten}}</span>
 			</div>
 		</div>
 
@@ -95,9 +95,9 @@
 				</mat-form-field>
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.personalkostenLeitungAdmin"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.personalkostenLeitungAdmin}}</span>
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin}}</span>
 			</div>
 		</div>
 
@@ -133,8 +133,8 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.sachkosten}}</span>
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.sachkosten}}</span>
 			</div>
 		</div>
 
@@ -165,9 +165,9 @@
 				</mat-form-field>
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.verpflegungskosten"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.verpflegungskosten}}</span>
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten}}</span>
 			</div>
 		</div>
 
@@ -196,9 +196,9 @@
 				</mat-form-field>
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.weitereKosten"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.weitereKosten}}</span>
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten}}</span>
 			</div>
 		</div>
 
@@ -221,9 +221,9 @@
 				</mat-form-field>
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen.bemerkungenKosten"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.bemerkungenKosten}}</span>
+                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten}}</span>
 			</div>
 		</div>
 
@@ -266,8 +266,8 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.elterngebuehren}}</span>
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.elterngebuehren}}</span>
 			</div>
 		</div>
 
@@ -303,8 +303,8 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
-					: {{vorgaenger.angabenKorrektur.kostenEinnahmen.weitereEinnahmen}}</span>
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereEinnahmen}}</span>
 			</div>
 		</div>
 
