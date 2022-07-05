@@ -68,6 +68,7 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
@@ -2503,17 +2504,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setStammdatenKontaktpersonTelefon(stammdaten.getStammdatenKontaktpersonTelefon());
 		row.setStammdatenKontaktpersonEmail(stammdaten.getStammdatenKontaktpersonEmail());
 
-		if(stammdaten.getAuszahlungsdaten() != null) {
-			row.setKontoinhaber(stammdaten.getAuszahlungsdaten().getKontoinhaber());
-			row.setIban(stammdaten.getAuszahlungsdaten().getIban().getIban());
+		final Auszahlungsdaten auszahlungsdaten = stammdaten.getAuszahlungsdaten();
+		if(auszahlungsdaten != null) {
+			row.setKontoinhaber(auszahlungsdaten.getKontoinhaber());
+			// "IBAN" ist entweder die tatsaechliche IBAN oder die InfomaKontonummer
+			row.setIban(auszahlungsdaten.getIbanOrInfomaKreditorennummer());
 			row.setKontoVermerk(stammdaten.getVermerkAuszahlung());
 
-			if(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber() != null)  {
-				row.setKontoStrasse(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getStrasse());
-				row.setKontoHausnummer(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getHausnummer());
-				row.setKontoZusatz(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getZusatzzeile());
-				row.setKontoPlz(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getPlz());
-				row.setKontoOrt(stammdaten.getAuszahlungsdaten().getAdresseKontoinhaber().getOrt());
+			if(auszahlungsdaten.getAdresseKontoinhaber() != null)  {
+				row.setKontoStrasse(auszahlungsdaten.getAdresseKontoinhaber().getStrasse());
+				row.setKontoHausnummer(auszahlungsdaten.getAdresseKontoinhaber().getHausnummer());
+				row.setKontoZusatz(auszahlungsdaten.getAdresseKontoinhaber().getZusatzzeile());
+				row.setKontoPlz(auszahlungsdaten.getAdresseKontoinhaber().getPlz());
+				row.setKontoOrt(auszahlungsdaten.getAdresseKontoinhaber().getOrt());
 			}
 		}
 	}

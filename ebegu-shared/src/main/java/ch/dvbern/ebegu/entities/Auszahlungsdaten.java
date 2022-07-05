@@ -141,12 +141,22 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	public boolean isZahlungsinformationValid() {
 		return StringUtils.isNotEmpty(kontoinhaber)
-			&& ((iban != null && StringUtils.isNotEmpty(iban.getIban()))
-			|| StringUtils.isNotEmpty(infomaKreditorennummer));
+			&& StringUtils.isNotEmpty(getIbanOrInfomaKreditorennummer());
 	}
 
 	@Nullable
 	public String extractIbanAsString() {
 		return iban != null ? iban.getIban() : null;
+	}
+
+	@Nonnull
+	public String getIbanOrInfomaKreditorennummer() {
+		String kontonr = extractIbanAsString();
+		if (StringUtils.isNotEmpty(kontonr)) {
+			return kontonr;
+		}
+		kontonr = getInfomaKreditorennummer();
+		Objects.requireNonNull(kontonr);
+		return kontonr;
 	}
 }

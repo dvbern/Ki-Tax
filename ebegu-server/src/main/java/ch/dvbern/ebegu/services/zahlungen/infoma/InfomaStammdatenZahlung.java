@@ -1,12 +1,12 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Zahlung;
-import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class InfomaStammdatenZahlung extends InfomaStammdaten {
@@ -33,13 +33,9 @@ public class InfomaStammdatenZahlung extends InfomaStammdaten {
 	@Override
 	@Nonnull
 	protected String getKontonummer() {
-		if (getZahlung().getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
-			// TODO hier muss die infomaKreditorennummer rein!
-			return getZahlung().getAuszahlungsdaten().getIban().getIban();
-		} else {
-			// TODO ist es automatsich schon immer diejenige des empfängers?
-			return getZahlung().getAuszahlungsdaten().getIban().getIban();
-		}
+		final String infomaKontonummer = getZahlung().getAuszahlungsdaten().getInfomaKreditorennummer();
+		Objects.requireNonNull(infomaKontonummer);
+		return infomaKontonummer;
 	}
 
 	@Nullable
