@@ -30,13 +30,12 @@
 
     <form *ngIf="form" [formGroup]="form">
 
-        <div class="max-width-container-750">
-
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
             </h3>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="personalkosten_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('personalkosten').errors}">
@@ -65,8 +64,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.personalkosten}}</span>
+            </div>
+            </div>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="personalkosten_leitung_admin_id" class="padding-left-20"
                        [ngClass]="{'label-required-error': form?.get('personalkostenLeitungAdmin').errors}">
                     {{'FERIENBETREUUNG_PERSONALKOSTEN_LEITUNG_ADMIN' | translate }}
@@ -88,8 +94,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.personalkostenLeitungAdmin}}</span>
+            </div>
+            </div>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="sachkosten_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('sachkosten').errors}">
@@ -118,8 +131,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.sachkosten}}</span>
+            </div>
+            </div>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="verpflegungskosten_id"
                        [ngClass]="{'label-required-error': form && form.get('verpflegungskosten').errors}">
                     {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
@@ -144,9 +164,16 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.verpflegungskosten}}</span>
+            </div>
+            </div>
 
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="weitere_kosten_id"
                        [ngClass]="{'label-required-error': form?.get('weitereKosten').errors}">
                     {{'FERIENBETREUUNG_WEITERE_KOSTEN' | translate }}
@@ -168,8 +195,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.weitereKosten}}</span>
+            </div>
+            </div>
 
-            <dv-input-container-x [verticalAlign]="true">
+            <div class="flex-row">
+            <dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
                 <label for="bemerkungen_kosten_id">
                     {{'BEMERKUNGEN' | translate }}
                 </label>
@@ -186,19 +220,23 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.bemerkungenKosten}}</span>
+            </div>
+            </div>
 
-        </div>
 
         <mat-divider></mat-divider>
-
-        <div class="max-width-container-750">
 
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
             </h3>
 
-            <dv-input-container-x>
-                <label for="elterngebuehren_id"
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
+                    <label for="elterngebuehren_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('elterngebuehren').errors}">
                     {{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate }}
@@ -226,8 +264,15 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.elterngebuehren}}</span>
+            </div>
+            </div>
 
-            <dv-input-container-x>
+            <div class="flex-row">
+                <dv-input-container-x class="max-width-container-750">
                 <label for="weitereEinnahmen_id"
                        required
                        [ngClass]="{'label-required-error': form && form.get('weitereEinnahmen').errors}">
@@ -256,8 +301,13 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
+            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode.getBasisJahr()} }}
+                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen.weitereEinnahmen}}</span>
+            </div>
+            </div>
 
-        </div>
 
         <mat-divider></mat-divider>
 
