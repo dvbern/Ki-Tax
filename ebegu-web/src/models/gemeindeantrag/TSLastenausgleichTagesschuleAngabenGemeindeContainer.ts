@@ -38,10 +38,10 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
      */
     public getAngabenToWorkWith(): TSLastenausgleichTagesschuleAngabenGemeinde {
-        if (this.isInBearbeitungGemeinde()) {
-            return this.angabenDeklaration;
+        if (this.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
+            return this.angabenKorrektur;
         }
-        return this.angabenKorrektur;
+        return this.angabenDeklaration;
     }
 
     public isInBearbeitungGemeinde(): boolean {
@@ -64,6 +64,11 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
         ].includes(this.status);
+    }
+
+    public isAtLeastInBearbeitungKantonOrZurueckgegeben(): boolean {
+        return this.isAtLeastInBearbeitungKanton()
+            || this.zurueckAnGemeinde;
     }
 
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {

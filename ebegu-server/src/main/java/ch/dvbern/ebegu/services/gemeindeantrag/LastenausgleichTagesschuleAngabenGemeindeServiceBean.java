@@ -712,14 +712,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			ANGABEN_KORREKTUR_NOT_NULL
 		);
 
-		container.copyForZurueckAnGemeinde();
-
 		// reopen gemeinde formular, don't reopen insti formulare
 		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
 		container.getAngabenDeklaration()
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur()
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
+		container.setZurueckAnGemeinde(true);
 
 		LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 			saveLastenausgleichTagesschuleGemeinde(container, true);

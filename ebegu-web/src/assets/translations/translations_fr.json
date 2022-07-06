@@ -2447,7 +2447,7 @@
     "LATS_LOHNNORMKOSTEN_LESS_THAN_50": "Heures assurées par < 50%",
     "LATS_STICHTAG": "Jour de pointage pour le calcul de la compensation des charges (par Ex. nombre enfants au 15.09.2020)",
     "LATS_CALCULATION_ERROR": "Le calcul n'a pas pu être effectué. Veuillez controller les données entrées",
-    "LATS_BISHER_LABEL": "Saisie de la commune: ",
+    "LATS_BISHER_LABEL": "Ursprüngliche Angabe: ",
     "LATS_BISHER_LABEL_INSTITUTION": "Saisie de l'institution: ",
     "LATS_FRAGE_INSTITUTION_FORMULAR_FREIGEBEN": "Est-ce que le formulaire doit-il vraiment être libéré pour la vérification auprès de la commune ?",
     "LATS_FRAGE_INSTITUTION_FORMULAR_GEPRUEFT": "Est-ce que le formulaire doit-il vraiment être libéré pour la vérification auprès du canton ?",
