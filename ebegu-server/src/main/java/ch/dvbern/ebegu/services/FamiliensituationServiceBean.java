@@ -92,7 +92,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// get old FamSit to compare with
 		Familiensituation oldFamiliensituation;
 		if (mergedFamiliensituationContainer != null
-				&& mergedFamiliensituationContainer .getFamiliensituationErstgesuch() != null) {
+			&& mergedFamiliensituationContainer.getFamiliensituationErstgesuch() != null) {
 			// Bei Mutation immer die Situation vom Erstgesuch als  Basis fuer Wizardstepanpassung
 			oldFamiliensituation = mergedFamiliensituationContainer.getFamiliensituationErstgesuch();
 		} else {
@@ -115,7 +115,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		}
 
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
-		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
 			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()) {
 			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
@@ -142,7 +142,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 		// KONKUBINAT => VERHEIRATET: beide Container löschen
 		if (isKonkubinat
-			&& mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.VERHEIRATET
+			&& mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+			== EnumFamilienstatus.VERHEIRATET
 			&& gesuch.getGesuchsteller2() != null) {
 			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
@@ -159,12 +160,13 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// VERHEIRATET => KONKUBINAT: Container GS1 löschen
 		// VERHEIRATET => ALLEINERZIEHEND: Container GS1 löschen
 		boolean oldIsVerheiratet = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
-		boolean newIsKonkubinatOrAlleinerziehend = mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-			== EnumFamilienstatus.KONKUBINAT
-			|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-			== EnumFamilienstatus.KONKUBINAT_KEIN_KIND
-			|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-			== EnumFamilienstatus.ALLEINERZIEHEND;
+		boolean newIsKonkubinatOrAlleinerziehend =
+			mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+				== EnumFamilienstatus.KONKUBINAT
+				|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+				== EnumFamilienstatus.KONKUBINAT_KEIN_KIND
+				|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
+				== EnumFamilienstatus.ALLEINERZIEHEND;
 
 		if (oldIsVerheiratet && newIsKonkubinatOrAlleinerziehend) {
 			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
@@ -174,7 +176,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private void resetFragenKinderabzugAndSetToUeberpruefen(Gesuch gesuch) {
 		gesuch.getKindContainers()
 			.forEach(kindContainer -> {
-				if(kindContainer.getKindJA() != null) {
+				if (kindContainer.getKindJA() != null) {
 					kindContainer.getKindJA().setGemeinsamesGesuch(null);
 					kindContainer.getKindJA().setInPruefung(true);
 				}
@@ -210,8 +212,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 	/**
 	 * Wenn die neue Familiensituation nur 1GS hat und der zweite GS schon existiert, wird dieser
-	 * und seine Daten endgueltig geloescht. Dies gilt aber nur fuer ERSTGESUCH. Bei Mutationen wird
-	 * der 2GS nie geloescht. Ebenfalls nicht geloescht wird im KorrekturmodusGemeinde
+	 * und seine Daten endgueltig geloescht. Dies gilt aber nur fuer ERSTGESUCH.
+	 * Bei Mutation oder nach Freigabe kann der GS2 geloescht werden wenn er gar nicht mehr ins Gesuch
+	 * beruecksichtig wird. D.H. alle Daten die die FamSit / FinSit Regeln betreffen muessen geprueft werden
 	 */
 	private boolean isNeededToRemoveGesuchsteller2(
 		Gesuch gesuch,
@@ -219,11 +222,15 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		Familiensituation familiensituationErstgesuch
 	) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return (!EbeguUtil.isKorrekturmodusGemeinde(gesuch) || (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getGesuchstellerGS() == null))
-			&& ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
+		LocalDate gesuchsperiodeAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
+		return gesuch.getGesuchsteller2() != null && ((!gesuch.isMutation()
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
 			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation,
-			familiensituationErstgesuch)));
+			familiensituationErstgesuch))
+			|| (gesuch.isMutation() && (newFamiliensituation.getAenderungPer() != null
+			&& newFamiliensituation.getAenderungPer().isBefore(gesuchsperiodeAb)) && (
+			(gesuch.getRegelnGueltigAb() != null && gesuch.getRegelnGueltigAb().isBefore(gesuchsperiodeAb))
+				|| (gesuch.getRegelnGueltigAb() == null && gesuch.getEingangsdatum() != null && gesuch.getEingangsdatum().isBefore(gesuchsperiodeAb)))));
 	}
 
 	private boolean isChanged1To2Reverted(
@@ -232,7 +239,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		Familiensituation familiensituationErstgesuch
 	) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
+		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(
+			gesuchsperiodeBis)
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis);
 	}
 }
