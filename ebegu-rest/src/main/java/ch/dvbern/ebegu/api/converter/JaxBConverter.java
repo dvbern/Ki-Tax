@@ -851,7 +851,7 @@ public class JaxBConverter extends AbstractConverter {
 			persistedFamiliensituation.getAuszahlungsdatenInfoma();
 		if (persistedAuszahlungsdatenInfoma != null) {
 			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.extractIbanAsString());
-			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.getInfomaKreditorennummer());
+			jaxFamiliensituation.setInfomaKreditorennummer(persistedAuszahlungsdatenInfoma.getInfomaKreditorennummer());
 			jaxFamiliensituation.setKontoinhaberInfoma(persistedAuszahlungsdatenInfoma.getKontoinhaber());
 			if (persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseInfoma(adresseToJAX(persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber()));
