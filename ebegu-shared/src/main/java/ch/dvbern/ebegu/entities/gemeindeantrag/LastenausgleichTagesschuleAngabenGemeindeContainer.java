@@ -401,4 +401,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
 		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
 	}
+
+	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
+		return this.status.atLeastInPruefungKanton() || zurueckAnGemeinde;
+	}
 }
