@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -696,12 +697,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public List<Gemeinde> getGemeindenWithLats() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<LastenausgleichTagesschuleAngabenGemeindeContainer> query = cb.createQuery(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+
 		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root = query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Path<Gemeinde> gemeinde = root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde);
+		final CriteriaQuery<Gemeinde> gemeindeQuery =  query.select(gemeinde).distinct(true);
 
-		root.join(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde);
-
-		return persistence.getCriteriaResults(query).stream().map(LastenausgleichTagesschuleAngabenGemeindeContainer::getGemeinde).collect(
-				Collectors.toList());
+		List<Gemeinde> gde = persistence.getCriteriaResults(gemeindeQuery);
+		return gde;
 	}
 }
