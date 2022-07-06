@@ -2523,6 +2523,7 @@
     "FERIENBETREUUNG_NUTZUNG": "Fréquentation",
     "FERIENBETREUUNG_NUTZUNG_TITLE": "Jours de prise en charge {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Coûts et recettes",
+    "FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE": "Coûts et recettes {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_UPLOAD": "Dépôt des documents",
     "FERIENBETREUUNG_ABSCHLUSS": "Validation",
     "FERIENBETREUUNG_TRAEGERSCHAFT": "Organisme responsable de la structure d’accueil durant les vacances scolaires",

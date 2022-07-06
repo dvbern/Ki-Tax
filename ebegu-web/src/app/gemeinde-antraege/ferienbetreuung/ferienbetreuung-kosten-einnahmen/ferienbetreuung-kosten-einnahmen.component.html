@@ -17,13 +17,11 @@
 
 <div class="ferienbetreuung-nutzung">
     <h1 class="access-for-all-title">
-        {{'FERIENBETREUUNG_KOSTEN_EINNAHMEN' | translate}} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+        {{'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString, von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb), bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)} }}
     </h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2 translate>
-                {{'FERIENBETREUUNG_KOSTEN_EINNAHMEN' | translate}} {{container?.gesuchsperiode?.gesuchsperiodeString}}
-            </h2>
+            <h2>{{'FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString, von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb), bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)} }}</h2>
             <hr class="header"/>
         </div>
     </div>

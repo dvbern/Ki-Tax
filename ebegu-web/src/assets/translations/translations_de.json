@@ -2594,6 +2594,7 @@
     "FERIENBETREUUNG_NUTZUNG": "Nutzung",
     "FERIENBETREUUNG_NUTZUNG_TITLE": "Betreuungstage {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
+    "FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE": "Kosten und Einnahmen {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_UPLOAD": "Upload",
     "FERIENBETREUUNG_ABSCHLUSS": "Abschluss",
     "FERIENBETREUUNG_TRAEGERSCHAFT": "Trägerschaft des Ferienbetreuungsangebots",
