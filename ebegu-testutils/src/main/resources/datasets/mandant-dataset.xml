@@ -27,7 +27,8 @@
 			 mandant_identifier="BERN"
 			 angebotts="false"
 			 angebotfi="false"
-			 activated="true"/>
+			 activated="true"
+			 next_infoma_belegnummer="1"/>
 	<gesuchsperiode id="BiH7XaGHWpGrr4qBPE0qqg=="
 					timestamp_erstellt="2013-05-30 16:39:38.0"
 					timestamp_mutiert="2013-05-30 16:39:38.0"
