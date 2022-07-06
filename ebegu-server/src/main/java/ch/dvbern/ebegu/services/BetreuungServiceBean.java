@@ -1433,33 +1433,32 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Nonnull
 	@Override
 	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
+		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
+
 		if (betreuung.isAngebotKita()) {
-			Einstellung oeffnungstageKita =
-				einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSTAGE_KITA,
-					betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
-						"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, EinstellungKey.OEFFNUNGSTAGE_KITA)
-				);
-			return MathUtil.EXACT.divide(
-					MathUtil.EXACT.divide(	oeffnungstageKita.getValueAsBigDecimal(), MathUtil.EXACT.from(12)),
-				MathUtil.EXACT.from(100));
+			Einstellung oeffnungstageKita = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA, gp);
+			return calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());
 		}
-		Einstellung oeffnungstageTFO =
-			einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSTAGE_TFO,
-				betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
-					"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,	EinstellungKey.OEFFNUNGSTAGE_TFO)
-			);
-		Einstellung oeffnungsstundenTFO =
-			einstellungService.getEinstellungByMandant(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-				betreuung.extractGesuchsperiode()).orElseThrow(() -> new EbeguEntityNotFoundException(
-					"oeffnungstagKitaEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, EinstellungKey.OEFFNUNGSSTUNDEN_TFO)
-			);
+
+		Einstellung oeffnungstageTFO = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO, gp);
+		Einstellung oeffnungsstundenTFO = getEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO, gp);
+
+		BigDecimal oeffungszeitProJahrTFO = MathUtil.EXACT.multiply(
+			oeffnungstageTFO.getValueAsBigDecimal(),
+			oeffnungsstundenTFO.getValueAsBigDecimal());
+		return calculateOeffnungszeitPerMonthProcentual(oeffungszeitProJahrTFO);
+	}
+
+	private BigDecimal calculateOeffnungszeitPerMonthProcentual(@Nullable BigDecimal oeffnungszeitProJahr) {
 		return MathUtil.EXACT.divide(
-			MathUtil.EXACT.divide(
-				MathUtil.EXACT.multiply(
-					oeffnungstageTFO.getValueAsBigDecimal(),
-					oeffnungsstundenTFO.getValueAsBigDecimal()),
-				MathUtil.EXACT.from(12)),
+			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
 			MathUtil.EXACT.from(100));
+	}
+
+	private Einstellung getEinstellung(EinstellungKey einstellungKey, Gesuchsperiode gesuchsperiode) {
+		return einstellungService
+			.getEinstellungByMandant(einstellungKey, gesuchsperiode)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getEinstellung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, einstellungKey));
 	}
 
 	private void capBetreuungsmitteilungEnd(
