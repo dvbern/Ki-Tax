@@ -537,4 +537,21 @@ public enum MathUtil {
 
 		return actualDelta.compareTo(BigDecimal.ZERO) <= 0;
 	}
+
+	@Nonnull
+	public static BigDecimal assertNotNull(@Nullable BigDecimal valueOrNull) {
+		if (valueOrNull == null) {
+			return BigDecimal.ZERO;
+		}
+		return valueOrNull;
+	}
+
+	@Nonnull
+	public static BigDecimal assertNotNullAndNotNegative(@Nullable BigDecimal valueOrNull) {
+		BigDecimal valueNotNull = assertNotNull(valueOrNull);
+		if (valueNotNull.compareTo(BigDecimal.ZERO) < 0) {
+			return BigDecimal.ZERO;
+		}
+		return valueNotNull;
+	}
 }
