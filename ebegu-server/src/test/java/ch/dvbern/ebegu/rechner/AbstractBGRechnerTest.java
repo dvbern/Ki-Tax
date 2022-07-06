@@ -67,13 +67,12 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * Superklasse für BG-Rechner-Tests
@@ -97,7 +96,6 @@ public abstract class AbstractBGRechnerTest {
 
 
 	@Before
-	@BeforeEach
 	public void setUpCalcuator() {
 		evaluator = createEvaluator(gesuchsperiodeOfEvaluator, gemeindeOfEvaluator);
 	}
@@ -118,9 +116,8 @@ public abstract class AbstractBGRechnerTest {
 		BigDecimal betreuungspensum,
 		int anspruchsberechtigtesPensum,
 		BigDecimal bgPensum) {
-		assertEquals(MathUtil.DEFAULT.from(betreuungspensum),
-			MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()),
-			"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt);
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
@@ -131,9 +128,8 @@ public abstract class AbstractBGRechnerTest {
 		int anspruchsberechtigtesPensum,
 		int bgPensum,
 		int anspruchspensumRest) {
-		assertEquals(MathUtil.DEFAULT.from(betreuungspensum),
-			MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()),
-			"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt);
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 		assertEquals(MathUtil.DEFAULT.from(anspruchspensumRest),
@@ -162,9 +158,8 @@ public abstract class AbstractBGRechnerTest {
 		double verguenstigung,
 		double elternbeitrag) {
 
-		assertEquals(MathUtil.DEFAULT.from(betreuungspensum),
-			MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()),
-			"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt);
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 		assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
