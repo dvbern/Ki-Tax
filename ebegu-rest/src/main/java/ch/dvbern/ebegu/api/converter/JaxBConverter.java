@@ -6535,4 +6535,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
 		return jaxBetreuungMonitoring;
 	}
+
+	public List<Gemeinde> gemeindeListToEntity(List<JaxGemeinde> jaxGemeinden) {
+		return jaxGemeinden
+				.stream()
+				.map(jaxGemeinde -> this.gemeindeToEntity(jaxGemeinde, new Gemeinde()))
+				.collect(Collectors.toList());
+	}
 }
