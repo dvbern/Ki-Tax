@@ -261,6 +261,98 @@
 
         <mat-divider></mat-divider>
 
+        <div *ngIf="isDelegationsmodell" class="max-width-container-750">
+
+            <h3 class="uppercase">
+                {{'FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_LEISTUNGSVERTRAG' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
+            </h3>
+            <p class="inline-hint margin-bottom-20" translate>FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_SUBTITLE</p>
+
+            <dv-input-container-x>
+                <label for="sockelbeitrag_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('sockelbeitrag').errors}">
+                    {{'FERIENBETREUUNG_SOCKELBEITRAG' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="sockelbeitrag_id"
+                           formControlName="sockelbeitrag"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('sockelbeitrag').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('sockelbeitrag').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sockelbeitrag"
+                        [korrektur]="form.get('sockelbeitrag').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label for="beitraegeNachAnmeldungen_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('beitraegeNachAnmeldungen').errors}">
+                    {{'FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="beitraegeNachAnmeldungen_id"
+                           formControlName="beitraegeNachAnmeldungen"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('beitraegeNachAnmeldungen').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('beitraegeNachAnmeldungen').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.beitraegeNachAnmeldungen"
+                        [korrektur]="form.get('beitraegeNachAnmeldungen').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label for="vorfinanzierteKantonsbeitraege_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('vorfinanzierteKantonsbeitraege').errors}">
+                    {{'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="vorfinanzierteKantonsbeitraege_id"
+                           formControlName="vorfinanzierteKantonsbeitraege"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('vorfinanzierteKantonsbeitraege').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('vorfinanzierteKantonsbeitraege').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
+                        [korrektur]="form.get('vorfinanzierteKantonsbeitraege').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+        </div>
+
+        <mat-divider *ngIf="isDelegationsmodell"></mat-divider>
+
         <div class="max-width-container-750">
 
             <dv-ferienbetreuung-berechnung [form]="form"></dv-ferienbetreuung-berechnung>

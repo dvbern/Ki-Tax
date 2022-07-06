@@ -117,6 +117,15 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
             ],
+            sockelbeitrag: [
+                kostenEinnahmen.sockelbeitrag,
+            ],
+            beitraegeNachAnmeldungen: [
+                kostenEinnahmen.beitraegeNachAnmeldungen,
+            ],
+            vorfinanzierteKantonsbeitraege: [
+                kostenEinnahmen.vorfinanzierteKantonsbeitraege,
+            ],
         });
         this.setBasicValidation();
     }
@@ -145,6 +154,15 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereEinnahmen').setValidators(
             numberValidator(ValidationType.INTEGER),
         );
+        this.form.get('sockelbeitrag').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
+        this.form.get('beitraegeNachAnmeldungen').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
+        this.form.get('vorfinanzierteKantonsbeitraege').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
         this.triggerFormValidation();
     }
 
@@ -157,6 +175,12 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        // tslint:disable-next-line:early-exit
+        if (this.isDelegationsmodell) {
+            this.form.get('sockelbeitrag').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('beitraegeNachAnmeldungen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('vorfinanzierteKantonsbeitraege').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        }
     }
 
     public save(): void {
@@ -190,6 +214,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.kostenEinnahmen.bemerkungenKosten = this.form.get('bemerkungenKosten').value;
         this.kostenEinnahmen.elterngebuehren = this.form.get('elterngebuehren').value;
         this.kostenEinnahmen.weitereEinnahmen = this.form.get('weitereEinnahmen').value;
+        this.kostenEinnahmen.sockelbeitrag = this.form.get('sockelbeitrag').value;
+        this.kostenEinnahmen.beitraegeNachAnmeldungen = this.form.get('beitraegeNachAnmeldungen').value;
+        this.kostenEinnahmen.vorfinanzierteKantonsbeitraege = this.form.get('vorfinanzierteKantonsbeitraege').value;
         return this.kostenEinnahmen;
     }
 
