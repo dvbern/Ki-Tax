@@ -973,8 +973,7 @@ public class GemeindeResource {
 		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
 	}
 
-	@ApiOperation(value = "Gibt die nächste freie BFS Nummer zurück, die ener besonderen Volksschule"
-		+ "zugewiesen werden kann",
+	@ApiOperation(value = "Gibt alle Gemeinden zurück, für welche ein Lastenausgleich Tagescchule existiert",
 		response = Long.class)
 	@Nullable
 	@GET

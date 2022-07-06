@@ -34,7 +34,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 public interface GemeindeAntragService {
 
 	/**
-	 * Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.
+	 * Erstellt fuer jede Gemeinde in der übergebenen Liste einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode.
 	 */
 	@Nonnull
 	List<GemeindeAntrag> createAllGemeindeAntraege(

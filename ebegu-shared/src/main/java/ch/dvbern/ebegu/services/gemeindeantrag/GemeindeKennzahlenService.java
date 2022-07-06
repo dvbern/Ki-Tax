@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 public interface GemeindeKennzahlenService {
 
 	/**
-	 * Erstellt für alle Gemeinden mit aktiviertem BG einen GemeindeKennzahlen-Antrag fuer die gewuenschte Periode.
+	 * Erstellt für alle Gemeinden in der übergebenen Liste einen GemeindeKennzahlen-Antrag fuer die gewuenschte Periode.
 	 */
 	@Nonnull
 	List<GemeindeKennzahlen> createGemeindeKennzahlen(

@@ -123,7 +123,7 @@ public class GemeindeAntragResource {
 	private EbeguConfiguration configuration;
 
 	@ApiOperation(
-		"Erstellt fuer jede aktive Gemeinde einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
+		"Erstellt fuer jede Gemeinde in der übergebenen Liste einen Gemeindeantrag des gewuenschten Typs fuer die gewuenschte Periode")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

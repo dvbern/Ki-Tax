@@ -35,7 +35,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 public interface LastenausgleichTagesschuleAngabenGemeindeService {
 
 	/**
-	 * Erstellt fuer jede aktive Gemeinde einen LastenausgleichTagesschule fuer die angegebene Periode
+	 * Erstellt fuer jede Gemeinde in der übergebenen Liste einen LastenausgleichTagesschule fuer die angegebene Periode
 	 */
 	@Nonnull
 	List<? extends GemeindeAntrag> createLastenausgleichTagesschuleGemeinde(
