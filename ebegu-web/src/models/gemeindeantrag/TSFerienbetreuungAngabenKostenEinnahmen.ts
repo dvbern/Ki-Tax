@@ -27,6 +27,9 @@ export class TSFerienbetreuungAngabenKostenEinnahmen extends TSFerienbetreuungAb
     private _bemerkungenKosten: string;
     private _elterngebuehren: number;
     private _weitereEinnahmen: number;
+    private _sockelbeitrag: number;
+    private _beitraegeNachAnmeldungen: number;
+    private _vorfinanzierteKantonsbeitraege: number;
 
     public get personalkosten(): number {
         return this._personalkosten;
@@ -90,5 +93,29 @@ export class TSFerienbetreuungAngabenKostenEinnahmen extends TSFerienbetreuungAb
 
     public set weitereEinnahmen(value: number) {
         this._weitereEinnahmen = value;
+    }
+
+    public get sockelbeitrag(): number {
+        return this._sockelbeitrag;
+    }
+
+    public set sockelbeitrag(value: number) {
+        this._sockelbeitrag = value;
+    }
+
+    public get beitraegeNachAnmeldungen(): number {
+        return this._beitraegeNachAnmeldungen;
+    }
+
+    public set beitraegeNachAnmeldungen(value: number) {
+        this._beitraegeNachAnmeldungen = value;
+    }
+
+    public get vorfinanzierteKantonsbeitraege(): number {
+        return this._vorfinanzierteKantonsbeitraege;
+    }
+
+    public set vorfinanzierteKantonsbeitraege(value: number) {
+        this._vorfinanzierteKantonsbeitraege = value;
     }
 }

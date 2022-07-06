@@ -53,6 +53,15 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 	@Nullable
 	private BigDecimal weitereEinnahmen;
 
+	@Nullable
+	private BigDecimal sockelbeitrag;
+
+	@Nullable
+	private BigDecimal beitraegeNachAnmeldungen;
+
+	@Nullable
+	private BigDecimal vorfinanzierteKantonsbeitraege;
+
 	@Nonnull
 	private FerienbetreuungFormularStatus status;
 
@@ -126,6 +135,33 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 
 	public void setWeitereEinnahmen(@Nullable BigDecimal weitereEinnahmen) {
 		this.weitereEinnahmen = weitereEinnahmen;
+	}
+
+	@Nullable
+	public BigDecimal getSockelbeitrag() {
+		return sockelbeitrag;
+	}
+
+	public void setSockelbeitrag(@Nullable BigDecimal sockelbeitrag) {
+		this.sockelbeitrag = sockelbeitrag;
+	}
+
+	@Nullable
+	public BigDecimal getBeitraegeNachAnmeldungen() {
+		return beitraegeNachAnmeldungen;
+	}
+
+	public void setBeitraegeNachAnmeldungen(@Nullable BigDecimal beitraegeNachAnmeldungen) {
+		this.beitraegeNachAnmeldungen = beitraegeNachAnmeldungen;
+	}
+
+	@Nullable
+	public BigDecimal getVorfinanzierteKantonsbeitraege() {
+		return vorfinanzierteKantonsbeitraege;
+	}
+
+	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
+		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
 	}
 
 	@Nonnull

@@ -5442,6 +5442,9 @@ export class EbeguRestUtil {
         restKostenEinnahmen.bemerkungenKosten = kostenEinnahmenTS.bemerkungenKosten;
         restKostenEinnahmen.elterngebuehren = kostenEinnahmenTS.elterngebuehren;
         restKostenEinnahmen.weitereEinnahmen = kostenEinnahmenTS.weitereEinnahmen;
+        restKostenEinnahmen.sockelbeitrag = kostenEinnahmenTS.sockelbeitrag;
+        restKostenEinnahmen.beitraegeNachAnmeldungen = kostenEinnahmenTS.beitraegeNachAnmeldungen;
+        restKostenEinnahmen.vorfinanzierteKantonsbeitraege = kostenEinnahmenTS.vorfinanzierteKantonsbeitraege;
         return restKostenEinnahmen;
     }
 
@@ -5607,6 +5610,9 @@ export class EbeguRestUtil {
         kostenEinnahmenTS.bemerkungenKosten = kostenEinnahmenFromServer.bemerkungenKosten;
         kostenEinnahmenTS.elterngebuehren = kostenEinnahmenFromServer.elterngebuehren;
         kostenEinnahmenTS.weitereEinnahmen = kostenEinnahmenFromServer.weitereEinnahmen;
+        kostenEinnahmenTS.sockelbeitrag = kostenEinnahmenFromServer.sockelbeitrag;
+        kostenEinnahmenTS.beitraegeNachAnmeldungen = kostenEinnahmenFromServer.beitraegeNachAnmeldungen;
+        kostenEinnahmenTS.vorfinanzierteKantonsbeitraege = kostenEinnahmenFromServer.vorfinanzierteKantonsbeitraege;
         return kostenEinnahmenTS;
     }
 

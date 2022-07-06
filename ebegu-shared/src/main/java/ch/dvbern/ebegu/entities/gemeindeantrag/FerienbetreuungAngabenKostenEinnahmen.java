@@ -75,12 +75,25 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	@Column()
 	private BigDecimal weitereEinnahmen;
 
+	@Nullable
+	@Column()
+	private BigDecimal sockelbeitrag;
+
+	@Nullable
+	@Column()
+	private BigDecimal beitraegeNachAnmeldungen;
+
+	@Nullable
+	@Column()
+	private BigDecimal vorfinanzierteKantonsbeitraege;
+
 	@Nonnull
 	@Column()
 	@Enumerated(EnumType.STRING)
-	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;;
+	private FerienbetreuungFormularStatus status = FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE;
 
-	public FerienbetreuungAngabenKostenEinnahmen() {}
+	public FerienbetreuungAngabenKostenEinnahmen() {
+	}
 
 	public FerienbetreuungAngabenKostenEinnahmen(FerienbetreuungAngabenKostenEinnahmen toCopy) {
 		this.personalkosten = toCopy.personalkosten;
@@ -91,6 +104,9 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 		this.bemerkungenKosten = toCopy.bemerkungenKosten;
 		this.elterngebuehren = toCopy.elterngebuehren;
 		this.weitereEinnahmen = toCopy.weitereEinnahmen;
+		this.sockelbeitrag = toCopy.sockelbeitrag;
+		this.beitraegeNachAnmeldungen = toCopy.beitraegeNachAnmeldungen;
+		this.vorfinanzierteKantonsbeitraege = toCopy.vorfinanzierteKantonsbeitraege;
 	}
 
 	@Nullable
@@ -163,6 +179,33 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 
 	public void setWeitereEinnahmen(@Nullable BigDecimal weitereEinnahmen) {
 		this.weitereEinnahmen = weitereEinnahmen;
+	}
+
+	@Nullable
+	public BigDecimal getSockelbeitrag() {
+		return sockelbeitrag;
+	}
+
+	public void setSockelbeitrag(@Nullable BigDecimal sockelbeitrag) {
+		this.sockelbeitrag = sockelbeitrag;
+	}
+
+	@Nullable
+	public BigDecimal getBeitraegeNachAnmeldungen() {
+		return beitraegeNachAnmeldungen;
+	}
+
+	public void setBeitraegeNachAnmeldungen(@Nullable BigDecimal beitraegeNachAnmeldungen) {
+		this.beitraegeNachAnmeldungen = beitraegeNachAnmeldungen;
+	}
+
+	@Nullable
+	public BigDecimal getVorfinanzierteKantonsbeitraege() {
+		return vorfinanzierteKantonsbeitraege;
+	}
+
+	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
+		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
 	}
 
 	@Override
