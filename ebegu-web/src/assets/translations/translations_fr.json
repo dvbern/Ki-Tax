@@ -2524,6 +2524,7 @@
     "FERIENBETREUUNG_NUTZUNG_TITLE": "Jours de prise en charge {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Coûts et recettes",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE": "Coûts et recettes {{periode}} ({{von}} - {{bis}})",
+    "FERIENBETREUUNG_EINNAHMEN_GEMAESS_LEISTUNGSERBRINGER": "Achtung: bitte die Kosten und Einnahmen gemäss Abrechnung des Leistungserbringers für die gesuchstellende Gemeinde einsetzen (effektive Kosten des Angebots).",
     "FERIENBETREUUNG_UPLOAD": "Dépôt des documents",
     "FERIENBETREUUNG_ABSCHLUSS": "Validation",
     "FERIENBETREUUNG_TRAEGERSCHAFT": "Organisme responsable de la structure d’accueil durant les vacances scolaires",

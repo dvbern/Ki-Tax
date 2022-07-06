@@ -44,6 +44,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
 
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
     private subscription: Subscription;
+    public isDelegationsmodell: boolean = false;
 
     public constructor(
         protected readonly cd: ChangeDetectorRef,
@@ -66,8 +67,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.authService.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.isAtLeastInPruefungKanton() ?
-                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
+            const angaben = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur : container.angabenDeklaration;
+            this.kostenEinnahmen = angaben?.kostenEinnahmen;
+            this.isDelegationsmodell = angaben?.isDelegationsmodell();
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {

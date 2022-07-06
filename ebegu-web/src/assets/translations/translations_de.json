@@ -2595,6 +2595,7 @@
     "FERIENBETREUUNG_NUTZUNG_TITLE": "Betreuungstage {{periode}} ({{von}} - {{bis}})",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN": "Kosten und Einnahmen",
     "FERIENBETREUUNG_KOSTEN_EINNAHMEN_TITLE": "Kosten und Einnahmen {{periode}} ({{von}} - {{bis}})",
+    "FERIENBETREUUNG_EINNAHMEN_GEMAESS_LEISTUNGSERBRINGER": "Achtung: bitte die Kosten und Einnahmen gemäss Abrechnung des Leistungserbringers für die gesuchstellende Gemeinde einsetzen (effektive Kosten des Angebots).",
     "FERIENBETREUUNG_UPLOAD": "Upload",
     "FERIENBETREUUNG_ABSCHLUSS": "Abschluss",
     "FERIENBETREUUNG_TRAEGERSCHAFT": "Trägerschaft des Ferienbetreuungsangebots",
