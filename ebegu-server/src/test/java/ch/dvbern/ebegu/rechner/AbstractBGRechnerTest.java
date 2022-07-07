@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Before;
 
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
@@ -210,29 +211,7 @@ public abstract class AbstractBGRechnerTest {
 	 * Stellt alle für die Berechnung benötigten Parameter zusammen
 	 */
 	public static BGRechnerParameterDTO getParameter() {
-		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO();
-		parameterDTO.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
-		parameterDTO.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
-		parameterDTO.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
-		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
-		parameterDTO.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		parameterDTO.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		parameterDTO.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
-		parameterDTO.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
-		parameterDTO.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
-		parameterDTO.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
-		parameterDTO.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
-		parameterDTO.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
-		parameterDTO.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
-		parameterDTO.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
-		parameterDTO.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
-		parameterDTO.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
-		parameterDTO.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
-		parameterDTO.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
-		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
-		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherBabyGutscheinEnabled(false);
-		parameterDTO.getMahlzeitenverguenstigungParameter().setEnabled(false);
-		return parameterDTO;
+		return TestUtils.getParameter();
 	}
 
 	/**
