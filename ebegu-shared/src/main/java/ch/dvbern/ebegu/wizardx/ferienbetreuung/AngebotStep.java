@@ -40,7 +40,7 @@ public class AngebotStep implements WizardStep<FerienbetreuungWizard> {
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
 		var container = wizard.getFerienbetreuungAngabenContainer();
-		if (container.isAtLeastInPruefungKanton() || container.getZurueckAnGemeinde()) {
+		if (container.isAtLeastInPruefungKantonOrZurueckAnGemeinde()) {
 			if (wizard.getRole().isRoleGemeindeabhaengig()) {
 				return WizardStateEnum.OK;
 			}
