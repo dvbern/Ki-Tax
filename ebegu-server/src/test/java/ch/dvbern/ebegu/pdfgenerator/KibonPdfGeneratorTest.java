@@ -50,12 +50,12 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
-import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.ebegu.util.TestUtils;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -71,7 +71,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * generiert.
  */
 @SuppressWarnings("JUnitTestMethodWithNoAssertions") // some tests will check that the file is created. no assertion is needed
-public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
+public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 
 	private GemeindeStammdaten stammdaten;
 	private List<DokumentGrund> benoetigteUnterlagen;
@@ -186,7 +186,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		evaluator.evaluate(gesuch, getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, TestUtils.getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
@@ -324,7 +324,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch_tagesschule.getGesuchsperiode());
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			rechner.calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), getParameter());
+			rechner.calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), TestUtils.getParameter());
 		}
 		Verfuegung verfuegungPreview = new Verfuegung();
 		verfuegungPreview.setZeitabschnitte(zeitabschnitte);

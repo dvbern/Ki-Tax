@@ -76,7 +76,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 		List<? extends GemeindeAntrag> gemeindeAntragList =
 			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode1920, List.of(gemeindeParis));
 		Assert.assertNotNull(gemeindeAntragList);
-		Assert.assertEquals("Wir erwarten keinen Antrag für die GP 19/20", 0, gemeindeAntragList.size());
+		Assert.assertEquals("Wir erwarten einen Antrag für die GP 19/20 obwohl es gibt keine TS Angebot aktiviert", 1, gemeindeAntragList.size());
 
 		gemeindeAntragList =
 			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode2021, List.of(gemeindeParis));
