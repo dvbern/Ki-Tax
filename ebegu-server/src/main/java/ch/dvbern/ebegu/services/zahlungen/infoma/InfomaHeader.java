@@ -1,5 +1,6 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
@@ -14,11 +15,14 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.ZEILENAR
 
 public class InfomaHeader {
 
-	private final boolean devMode;
-	private final String benutzer;
+	private String zeilenart = ZEILENART_HEADER;
+	private String herkunft;
+	private String datum = LocalDate.now().format(DATE_FORMAT);
+	private String zeit = LocalDateTime.now().format(TIME_FORMAT);
+	private String benutzer;
 
 	private InfomaHeader(boolean devMode, @Nonnull String benutzer) {
-		this.devMode = devMode;
+		this.herkunft = "kiBon-" + (devMode ? "DEV" : "PROD");
 		this.benutzer = benutzer;
 	}
 
@@ -30,14 +34,12 @@ public class InfomaHeader {
 
 	@Nonnull
 	public String toString() {
-		LocalDateTime timestamp = LocalDateTime.now();
-
 		String[] args = new String[5];
-		args[0] = ZEILENART_HEADER;
-		args[1] = "kiBon-" + (devMode ? "DEV" : "PROD");
-		args[2] = timestamp.format(DATE_FORMAT);
-		args[3] = timestamp.format(TIME_FORMAT);
-		args[4] = benutzer;
+		args[0] = zeilenart;
+		args[1] = StringUtils.abbreviate(herkunft, 20);
+		args[2] = datum;
+		args[3] = zeit;
+		args[4] = StringUtils.abbreviate(benutzer, 20);
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
 	}
 }

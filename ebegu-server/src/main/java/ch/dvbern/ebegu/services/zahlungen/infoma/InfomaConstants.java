@@ -40,7 +40,7 @@ public final class InfomaConstants {
 	@Nonnull
 	public static DecimalFormat decimalFormat() {
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols(GERMAN);
-		symbols.setDecimalSeparator(',');
+		symbols.setDecimalSeparator('.');
 		DecimalFormat decimalFormat = new DecimalFormat();
 		decimalFormat.setGroupingUsed(false);
 		decimalFormat.setMinimumFractionDigits(2);

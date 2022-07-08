@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Zahlung;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DATE_FORMAT;
+
 public class InfomaStammdatenZahlung extends InfomaStammdaten {
 
 	public InfomaStammdatenZahlung(
@@ -32,8 +34,8 @@ public class InfomaStammdatenZahlung extends InfomaStammdaten {
 
 	@Override
 	@Nonnull
-	protected String getKontonummer() {
-		final String infomaKontonummer = getZahlung().getAuszahlungsdaten().getInfomaKreditorennummer();
+	protected String getKontonummer(@Nonnull Zahlung zahlung) {
+		final String infomaKontonummer = zahlung.getAuszahlungsdaten().getInfomaKreditorennummer();
 		Objects.requireNonNull(infomaKontonummer);
 		return infomaKontonummer;
 	}
@@ -46,7 +48,10 @@ public class InfomaStammdatenZahlung extends InfomaStammdaten {
 
 	@Nullable
 	@Override
-	protected LocalDate getFaelligkeitsdatum() {
-		return getZahlung().getZahlungsauftrag().getDatumFaellig();
+	protected String getFaelligkeitsdatum(@Nonnull Zahlung zahlung) {
+		final LocalDate datumFaellig = zahlung.getZahlungsauftrag().getDatumFaellig();
+		return datumFaellig != null
+			? DATE_FORMAT.format(datumFaellig)
+			: "";
 	}
 }

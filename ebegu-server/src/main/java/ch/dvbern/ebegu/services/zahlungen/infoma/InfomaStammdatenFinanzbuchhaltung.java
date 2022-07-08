@@ -1,7 +1,5 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
-import java.time.LocalDate;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -36,8 +34,8 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
 	@Override
 	@Nonnull
-	protected String getKontonummer() {
-		if (getZahlung().getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
+	protected String getKontonummer(@Nonnull Zahlung zahlung) {
+		if (zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION) {
 			return KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION;
 		}
 		return KONTONUMMER_FINANZBUCHHALTUNG_ELTERN;
@@ -51,7 +49,7 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
 	@Nullable
 	@Override
-	protected LocalDate getFaelligkeitsdatum() {
+	protected String getFaelligkeitsdatum(@Nonnull Zahlung zahlung) {
 		return null;
 	}
 }

@@ -13,12 +13,13 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalF
 
 public class InfomaFooter {
 
-	private final int anzahlBuchungen;
-	private final BigDecimal summeAllerBuchungen;
+	private final String zeilenart = ZEILENART_FOOTER;
+	private final String anzahlBuchungen;
+	private final String summeAllerBuchungen;
 
 	private InfomaFooter(int anzahlBuchungen, @Nonnull BigDecimal summeAllerBuchungen) {
-		this.anzahlBuchungen = anzahlBuchungen;
-		this.summeAllerBuchungen = summeAllerBuchungen;
+		this.anzahlBuchungen = String.valueOf(anzahlBuchungen);
+		this.summeAllerBuchungen = decimalFormat().format(summeAllerBuchungen);
 	}
 
 	@Nonnull
@@ -30,9 +31,9 @@ public class InfomaFooter {
 	@Nonnull
 	public String toString() {
 		String[] args = new String[3];
-		args[0] = ZEILENART_FOOTER;
-		args[1] = String.valueOf(anzahlBuchungen);
-		args[2] = decimalFormat().format(summeAllerBuchungen);
+		args[0] = zeilenart;
+		args[1] = anzahlBuchungen;
+		args[2] = summeAllerBuchungen;
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
 	}
 }
