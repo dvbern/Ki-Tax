@@ -41,6 +41,7 @@
                                     <dv-valueinput input-id="einkommenBeiderGesuchsteller"
                                                    name="einkommenBeiderGesuchsteller"
                                                    ng-model="vm.getResultate().einkommenBeiderGesuchsteller"
+                                                   allow-negative="true"
                                                    aria-label="{{vm.model.isGesuchsteller2Required() ? ('FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS'|translate) : ('FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS' | translate)}}"
                                                    class="input-element" ng-disabled="true">
                                     </dv-valueinput>
@@ -241,6 +242,7 @@
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="anrechenbaresEinkommen" name="anrechenbaresEinkommen"
                                                    ng-model="vm.getResultate().anrechenbaresEinkommen"
+                                                   allow-negative="true"
                                                    ng-disabled="true">
                                     </dv-valueinput>
                                     <div class="dv-error-messages"></div>
