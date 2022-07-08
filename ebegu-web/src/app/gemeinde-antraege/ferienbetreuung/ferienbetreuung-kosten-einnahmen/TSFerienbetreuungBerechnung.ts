@@ -263,7 +263,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set sockelbeitrag(value: number) {
-        this._sockelbeitrag = value;
+        this._sockelbeitrag = this.convertPossibleStringToNumber(value);
     }
 
     public get beitraegeNachAnmeldungen(): number {
@@ -271,7 +271,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set beitraegeNachAnmeldungen(value: number) {
-        this._beitraegeNachAnmeldungen = value;
+        this._beitraegeNachAnmeldungen = this.convertPossibleStringToNumber(value);
     }
 
     public get vorfinanzierteKantonsbeitraege(): number {
@@ -279,7 +279,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set vorfinanzierteKantonsbeitraege(value: number) {
-        this._vorfinanzierteKantonsbeitraege = value;
+        this._vorfinanzierteKantonsbeitraege = this.convertPossibleStringToNumber(value);
     }
 
     public get eigenleistungenGemeinde(): number {
@@ -287,7 +287,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     public set eigenleistungenGemeinde(value: number) {
-        this._eigenleistungenGemeinde = value;
+        this._eigenleistungenGemeinde = this.convertPossibleStringToNumber(value);
     }
 
     public get isDelegationsmodell(): boolean {

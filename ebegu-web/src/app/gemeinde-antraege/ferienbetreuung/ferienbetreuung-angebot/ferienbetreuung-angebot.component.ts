@@ -275,8 +275,10 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('leitungDurchPersonMitAusbildung').setValidators(Validators.required);
         this.form.get('betreuungDurchPersonenMitErfahrung').setValidators(Validators.required);
         this.form.get('anzahlKinderAngemessen').setValidators(Validators.required);
-        this.form.get('betreuungsschluessel')
-            .setValidators([Validators.required]);
+        this.form.get('betreuungsschluessel').setValidators([Validators.required]);
+
+        this.form.get('gemeindeFuehrtAngebotSelber').setValidators([Validators.required]);
+        this.form.get('gemeindeBeauftragtExterneAnbieter').setValidators([Validators.required]);
     }
 
     public async save(): Promise<void> {

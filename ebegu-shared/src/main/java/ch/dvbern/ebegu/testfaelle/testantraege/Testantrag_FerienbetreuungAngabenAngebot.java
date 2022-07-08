@@ -54,6 +54,9 @@ public class Testantrag_FerienbetreuungAngabenAngebot {
 		this.angebot.setBetreuungDurchPersonenMitErfahrung(true);
 		this.angebot.setBetreuungErfolgtTagsueber(true);
 
+		this.angebot.setGemeindeFuehrtAngebotSelber(true);
+		this.angebot.setGemeindeBeauftragtExterneAnbieter(false);
+
 		if(status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			this.angebot.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 		} else {
