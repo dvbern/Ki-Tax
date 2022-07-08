@@ -128,6 +128,9 @@ public class FerienbetreuungExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.bemerkungenKosten, dataRow.getBemerkungenKosten());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.elterngebuehren, dataRow.getElterngebuehren());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.weitereEinnahmen, dataRow.getWeitereEinnahmen());
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.sockelbeitrag, dataRow.getSockelbeitrag());
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.beitraegeNachAnmeldungen, dataRow.getBeitraegeNachAnmeldungen());
+			excelRowGroup.addValue(MergeFieldFerienbetreuung.vorfinanzierteKantonsbeitraege, dataRow.getVorfinanzierteKantonsbeitraege());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.totalKantonsbeitrag, dataRow.getTotalKantonsbeitrag());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.beitragKinderAnbietendenGemeinde, dataRow.getBeitragKinderAnbietendenGemeinde());
 			excelRowGroup.addValue(MergeFieldFerienbetreuung.beteiligungAnbietendenGemeinde, dataRow.getBeteiligungAnbietendenGemeinde());

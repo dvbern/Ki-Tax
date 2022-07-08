@@ -115,10 +115,13 @@ public class FerienbetreuungDataRow {
 	private @Nullable String bemerkungenKosten = null;
 	private @Nullable BigDecimal elterngebuehren = null;
 	private @Nullable BigDecimal weitereEinnahmen = null;
+	private @Nullable BigDecimal sockelbeitrag = null;
+	private @Nullable BigDecimal beitraegeNachAnmeldungen = null;
+	private @Nullable BigDecimal vorfinanzierteKantonsbeitraege = null;
 
 	private BigDecimal totalKantonsbeitrag = null;
 	private BigDecimal beitragKinderAnbietendenGemeinde = null;
-	private BigDecimal beteiligungAnbietendenGemeinde =  null;
+	private BigDecimal beteiligungAnbietendenGemeinde = null;
 
 	private @Nullable String kommentar = null;
 
@@ -755,6 +758,33 @@ public class FerienbetreuungDataRow {
 
 	public void setWeitereEinnahmen(@Nullable BigDecimal weitereEinnahmen) {
 		this.weitereEinnahmen = weitereEinnahmen;
+	}
+
+	@Nullable
+	public BigDecimal getSockelbeitrag() {
+		return sockelbeitrag;
+	}
+
+	public void setSockelbeitrag(@Nullable BigDecimal sockelbeitrag) {
+		this.sockelbeitrag = sockelbeitrag;
+	}
+
+	@Nullable
+	public BigDecimal getBeitraegeNachAnmeldungen() {
+		return beitraegeNachAnmeldungen;
+	}
+
+	public void setBeitraegeNachAnmeldungen(@Nullable BigDecimal beitraegeNachAnmeldungen) {
+		this.beitraegeNachAnmeldungen = beitraegeNachAnmeldungen;
+	}
+
+	@Nullable
+	public BigDecimal getVorfinanzierteKantonsbeitraege() {
+		return vorfinanzierteKantonsbeitraege;
+	}
+
+	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
+		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
 	}
 
 	public BigDecimal getTotalKantonsbeitrag() {
