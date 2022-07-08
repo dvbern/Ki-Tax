@@ -122,6 +122,11 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         if (!this.angabenKorrektur.nutzung.isAbgeschlossen()) {
             throw new Error('Nutzung muss abgeschlossen sein um die Berchnungen durchzuführen');
         }
+        if (!this.angabenKorrektur.angebot.isAbgeschlossen()) {
+            throw new Error('Angebot muss abgeschlossen sein um die Berchnungen durchzuführen');
+        }
+        berechnungen.isDelegationsmodell = this.angabenKorrektur.isDelegationsmodell();
+
         const kostenEinnahmen = this.angabenKorrektur.kostenEinnahmen;
         const nutzung = this.angabenKorrektur.nutzung;
 
@@ -129,6 +134,9 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         berechnungen.sachkosten = kostenEinnahmen.sachkosten;
         berechnungen.verpflegungskosten = kostenEinnahmen.verpflegungskosten;
         berechnungen.weitereKosten = kostenEinnahmen.weitereKosten;
+        berechnungen.sockelbeitrag = kostenEinnahmen.sockelbeitrag;
+        berechnungen.beitraegeNachAnmeldungen = kostenEinnahmen.beitraegeNachAnmeldungen;
+        berechnungen.vorfinanzierteKantonsbeitraege = kostenEinnahmen.vorfinanzierteKantonsbeitraege;
 
         berechnungen.anzahlBetreuungstageKinderBern = nutzung.anzahlBetreuungstageKinderBern;
         berechnungen.betreuungstageKinderDieserGemeinde = nutzung.betreuungstageKinderDieserGemeinde;
