@@ -16,23 +16,21 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.NEWLINE;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.SEPARATOR;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.STAMMDATEN_BELEGART;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.ZEILENART_STAMMDATEN;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaUtil.normalize;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaUtil.normalizeAndAbbreviate;
 
+@SuppressWarnings("FieldCanBeLocal")
 public abstract class InfomaStammdaten {
 
-	private final String zeilenart = ZEILENART_STAMMDATEN;
-	private final String belegart = STAMMDATEN_BELEGART;
 	private final String belegnummer;
 	private final String externeNummer;
 	private final String buchungsdatum;
 	private final String kontoart;
 	private final String kontonummer;
 	private final String buchungstext;
-	private final String buchungskreis = BUCHUNGSKREIS;
-	private final String institutionelleGliederung = INSTITUTIONELLE_GLIEDERUNG;
 	private final String dimensionswert3;
 	private final String betrag;
 	private final String faelligkeitsdatum;
-	private final String bankcode = BANKCODE;
 	private final String kundenspezifischesFeld2;
 
 	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer) {
@@ -94,21 +92,21 @@ public abstract class InfomaStammdaten {
 	@Nonnull
 	public String toString() {
 		String[] args = new String[72];
-		args[0] = zeilenart;
-		args[1] = belegart;
-		args[2] = StringUtils.abbreviate(belegnummer, 20);
-		args[3] = StringUtils.abbreviate(externeNummer, 20);
+		args[0] = ZEILENART_STAMMDATEN;
+		args[1] = STAMMDATEN_BELEGART;
+		args[2] = normalizeAndAbbreviate(belegnummer, 20);
+		args[3] = normalizeAndAbbreviate(externeNummer, 20);
 		args[4] = buchungsdatum;
-		args[6] = kontoart;
-		args[7] = kontonummer;
-		args[11] = StringUtils.abbreviate(buchungstext, 120);
-		args[12] = StringUtils.abbreviate(buchungskreis, 20);
-		args[13] = StringUtils.abbreviate(institutionelleGliederung, 20);
-		args[16] = StringUtils.abbreviate(dimensionswert3, 20);
+		args[6] = normalize(kontoart);
+		args[7] = normalize(kontonummer);
+		args[11] = normalizeAndAbbreviate(buchungstext, 120);
+		args[12] = BUCHUNGSKREIS;
+		args[13] = INSTITUTIONELLE_GLIEDERUNG;
+		args[16] = normalizeAndAbbreviate(dimensionswert3, 20);
 		args[30] = betrag;
 		args[32] = faelligkeitsdatum;
-		args[63] = bankcode;
-		args[68] = kundenspezifischesFeld2;
+		args[63] = BANKCODE;
+		args[68] = normalize(kundenspezifischesFeld2);
 
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
 	}

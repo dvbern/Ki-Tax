@@ -12,17 +12,19 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.NEWLINE;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.SEPARATOR;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.TIME_FORMAT;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.ZEILENART_HEADER;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaUtil.normalizeAndAbbreviate;
 
 public class InfomaHeader {
 
-	private String zeilenart = ZEILENART_HEADER;
-	private String herkunft;
-	private String datum = LocalDate.now().format(DATE_FORMAT);
-	private String zeit = LocalDateTime.now().format(TIME_FORMAT);
-	private String benutzer;
+	private final String herkunft;
+	private final String datum;
+	private final String zeit;
+	private final String benutzer;
 
 	private InfomaHeader(boolean devMode, @Nonnull String benutzer) {
 		this.herkunft = "kiBon-" + (devMode ? "DEV" : "PROD");
+		this.datum = LocalDate.now().format(DATE_FORMAT);
+		this.zeit = LocalDateTime.now().format(TIME_FORMAT);
 		this.benutzer = benutzer;
 	}
 
@@ -35,11 +37,11 @@ public class InfomaHeader {
 	@Nonnull
 	public String toString() {
 		String[] args = new String[5];
-		args[0] = zeilenart;
-		args[1] = StringUtils.abbreviate(herkunft, 20);
+		args[0] = ZEILENART_HEADER;
+		args[1] = normalizeAndAbbreviate(herkunft, 20);
 		args[2] = datum;
 		args[3] = zeit;
-		args[4] = StringUtils.abbreviate(benutzer, 20);
+		args[4] = normalizeAndAbbreviate(benutzer, 20);
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
 	}
 }

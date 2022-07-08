@@ -13,7 +13,6 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalF
 
 public class InfomaFooter {
 
-	private final String zeilenart = ZEILENART_FOOTER;
 	private final String anzahlBuchungen;
 	private final String summeAllerBuchungen;
 
@@ -31,7 +30,7 @@ public class InfomaFooter {
 	@Nonnull
 	public String toString() {
 		String[] args = new String[3];
-		args[0] = zeilenart;
+		args[0] = ZEILENART_FOOTER;
 		args[1] = anzahlBuchungen;
 		args[2] = summeAllerBuchungen;
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
