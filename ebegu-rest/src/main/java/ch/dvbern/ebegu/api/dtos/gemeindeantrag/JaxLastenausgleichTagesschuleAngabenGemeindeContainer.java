@@ -37,9 +37,6 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	@NotNull @Nonnull
 	private LastenausgleichTagesschuleAngabenGemeindeStatus status;
 
-	@Nonnull
-	private Boolean zurueckAnGemeinde;
-
 	@NotNull @Nonnull
 	private JaxGemeinde gemeinde;
 
@@ -71,15 +68,6 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status) {
 		this.status = status;
-	}
-
-	@Nonnull
-	public Boolean getZurueckAnGemeinde() {
-		return zurueckAnGemeinde;
-	}
-
-	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
-		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Nonnull

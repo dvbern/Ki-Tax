@@ -65,6 +65,7 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 			return WizardStateEnum.IN_BEARBEITUNG;
 		}
 		// zurueck an Gemeinde
+		// TODO change zurueckAnGemeinde
 		if (wizard.getFerienbetreuungAngabenContainer().getZurueckAnGemeinde()) {
 			Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur());
 			if (wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur().isReadyForFreigeben()) {
@@ -98,6 +99,7 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	private boolean isReadyForFreigeben(@Nonnull FerienbetreuungWizard wizard) {
 		var container = wizard.getFerienbetreuungAngabenContainer();
+		// TODO change zurueckAnGemeinde
 		if (container.getZurueckAnGemeinde()) {
 			Objects.requireNonNull(container.getAngabenKorrektur());
 			return container.getAngabenKorrektur().isReadyForFreigeben();

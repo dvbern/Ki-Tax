@@ -40,6 +40,7 @@ public class NutzungStep implements WizardStep<FerienbetreuungWizard> {
 	@Override
 	public WizardStateEnum getStatus(@Nonnull FerienbetreuungWizard wizard) {
 		var container = wizard.getFerienbetreuungAngabenContainer();
+		// TODO change zurueckAnGemeinde
 		if (container.isAtLeastInPruefungKanton() || container.getZurueckAnGemeinde()) {
 			if (wizard.getRole().isRoleGemeindeabhaengig()) {
 				return WizardStateEnum.OK;

@@ -67,6 +67,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     }
 
     public isAtLeastInBearbeitungKantonOrZurueckgegeben(): boolean {
+        // TODO change zurueckAnGemeinde
         return this.isAtLeastInBearbeitungKanton()
             || this.zurueckAnGemeinde;
     }

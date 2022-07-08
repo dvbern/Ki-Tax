@@ -58,11 +58,6 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	@NotNull
 	@Nonnull
-	@Column(nullable = false)
-	private Boolean zurueckAnGemeinde = false;
-
-	@NotNull
-	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
@@ -102,15 +97,6 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public void setStatus(@Nonnull FerienbetreuungAngabenStatus status) {
 		this.status = status;
-	}
-
-	@Nonnull
-	public Boolean getZurueckAnGemeinde() {
-		return zurueckAnGemeinde;
-	}
-
-	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
-		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Nonnull
@@ -189,6 +175,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	}
 
 	public boolean isAtLeastInPruefungKantonOrZurueckAnGemeinde() {
+		// TODO change zurueckAnGemeinde
 		return this.isAtLeastInPruefungKanton() || zurueckAnGemeinde;
 	}
 
@@ -231,6 +218,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
 		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
+		// TODO change zurueckAnGemeinde
 		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE && !zurueckAnGemeinde) {
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}

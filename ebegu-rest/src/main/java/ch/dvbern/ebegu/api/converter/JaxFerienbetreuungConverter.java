@@ -81,7 +81,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	) {
 		convertAbstractFieldsToEntity(jaxContainer, container);
 
-		// never set status, zurueckAnGemeinde, gemeinde and gesuchsperiode from client
+		// never set status, gemeinde and gesuchsperiode from client
 
 		container.setAngabenDeklaration(ferienbetreuungenAngabenToEntity(
 			jaxContainer.getAngabenDeklaration(),
@@ -331,7 +331,6 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(container, jaxContainer);
 
 		jaxContainer.setStatus(container.getStatus());
-		jaxContainer.setZurueckAnGemeinde(container.getZurueckAnGemeinde());
 		jaxContainer.setGemeinde(gemeindeToJAX(container.getGemeinde()));
 		jaxContainer.setGesuchsperiode(gesuchsperiodeToJAX(container.getGesuchsperiode()));
 		jaxContainer.setAngabenDeklaration(ferienbetreuungAngabenToJax(container.getAngabenDeklaration()));

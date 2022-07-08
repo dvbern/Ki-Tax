@@ -718,7 +718,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur()
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
-		container.setZurueckAnGemeinde(true);
+
+		// TODO change zurueckAnGemeinde
 
 		LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 			saveLastenausgleichTagesschuleGemeinde(container, true);

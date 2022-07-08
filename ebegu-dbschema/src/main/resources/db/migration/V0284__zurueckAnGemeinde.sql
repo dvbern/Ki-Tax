@@ -1,5 +1,0 @@
-ALTER TABLE ferienbetreuung_angaben_container ADD COLUMN zurueck_an_gemeinde BIT DEFAULT FALSE;
-ALTER TABLE ferienbetreuung_angaben_container_aud ADD COLUMN zurueck_an_gemeinde BIT DEFAULT FALSE;
-
-ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container ADD COLUMN zurueck_an_gemeinde BIT DEFAULT FALSE;
-ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_container_aud ADD COLUMN zurueck_an_gemeinde BIT DEFAULT FALSE;

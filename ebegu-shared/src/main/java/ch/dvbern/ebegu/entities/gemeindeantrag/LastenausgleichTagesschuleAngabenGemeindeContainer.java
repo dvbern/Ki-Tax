@@ -68,11 +68,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	@NotNull
 	@Nonnull
-	@Column(nullable = false)
-	private Boolean zurueckAnGemeinde = false;
-
-	@NotNull
-	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
@@ -120,15 +115,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void setStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeStatus status) {
 		this.status = status;
-	}
-
-	@Nonnull
-	public Boolean getZurueckAnGemeinde() {
-		return zurueckAnGemeinde;
-	}
-
-	public void setZurueckAnGemeinde(@Nonnull Boolean zurueckAnGemeinde) {
-		this.zurueckAnGemeinde = zurueckAnGemeinde;
 	}
 
 	@Override
@@ -222,6 +208,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		// Wir kopieren nicht, wenn Kanton bereits Daten erfasst hat
 		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
 		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
+		// TODO change zurueckAnGemeinde
 		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
 			&& angabenDeklaration != null && !zurueckAnGemeinde) {
 			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
@@ -403,6 +390,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
+		// TODO change zurueckAnGemeinde
 		return this.status.atLeastInPruefungKanton() || zurueckAnGemeinde;
 	}
 }

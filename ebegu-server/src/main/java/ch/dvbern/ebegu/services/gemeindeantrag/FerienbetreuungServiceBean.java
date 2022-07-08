@@ -480,6 +480,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
 		);
 
+		// TODO change zurueckAnGemeinde
 		if (container.getZurueckAnGemeinde()) {
 			Objects.requireNonNull(container.getAngabenKorrektur());
 			Preconditions.checkArgument(
@@ -495,7 +496,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
-		container.setZurueckAnGemeinde(false);
+		// TODO change zurueckAnGemeinde
 
 		return persistence.merge(container);
 	}
@@ -563,8 +564,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			.getFerienbetreuungAngabenKostenEinnahmen()
 			.setStatus(FerienbetreuungFormularStatus.IN_BEARBEITUNG_GEMEINDE);
 
-		container.setZurueckAnGemeinde(true);
-
+		// TODO change zurueckAnGemeinde
 		return persistence.merge(container);
 	}
 
