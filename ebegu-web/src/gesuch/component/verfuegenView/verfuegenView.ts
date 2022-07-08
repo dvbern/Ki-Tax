@@ -36,6 +36,7 @@ import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagessc
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
@@ -728,6 +729,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return tsEinstellungenTagesschule.tagi;
         }
         return false;
+    }
+
+    public showTarifeTable(): boolean {
+        return !this.isInstitutionenRoleAndTSModuleAkzeptiert();
+    }
+
+    private isInstitutionenRoleAndTSModuleAkzeptiert(): boolean {
+        return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION])
+          && this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
     }
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
