@@ -2642,6 +2642,7 @@
     "FERIENBETREUUNG_SOCKELBEITRAG": "Sockelbeitrag / Jahresbeitrag",
     "FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN": "Beiträge nach Anmeldungen",
     "FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE":  "- davon vorfinanzierte Kantonsbeiträge",
+    "FERIENBETREUUNG_TOTAL_LEISTUNGSVERTRAG": "Total Leistungen der Gemeinde im Rahmen des Leistungsvertrages",
     "FERIENBETREUUNG_INVALIDATE_KOSTEN_NUTZEN_DELEGATIONSMODELL": "Die Gemeinde delegiert einige Aufgaben an andere Gemeinden. Deshalb müssen unter Kosten und Einnahmen zusätzliche Angaben gemacht werden.",
     "FERIENBETREUUNG_DELETE_KOSTEN_NUTZEN_DELEGATIONSMODELL": "Einige Angaben, die unter Kosten und Einnahmen gemacht wurden sind nicht mehr nötig. Diese werden zurückgesetzt.",
     "FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT":  "Alle Kosten und Einnahmen: Angabe in ganzen Frankenbeträgen",

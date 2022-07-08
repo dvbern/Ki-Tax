@@ -36,9 +36,15 @@ export class TSFerienbetreuungBerechnung {
 
     private _einnahmenElterngebuehren: number;
     private _weitereEinnahmen: number;
+    private _sockelbeitrag: number;
+    private _beitraegeNachAnmeldungen: number;
+    private _vorfinanzierteKantonsbeitraege: number;
+
+    private _isDeleagtionsmodell: boolean;
 
     // BERECHNUNGEN
     private _totalKosten: number;
+    private _totalLeistungenLeistungsvertrag: number;
 
     private _betreuungstageKinderDieserGemeindeMinusSonderschueler: number;
     private _betreuungstageKinderAndererGemeindeMinusSonderschueler: number;
@@ -58,6 +64,7 @@ export class TSFerienbetreuungBerechnung {
 
     public calculate(): void {
         this.calculateTotalKosten();
+        this.calculateTotalLeistungenLeistungsvertrag();
         this.calculateKinderAnbietendeGemeindeMinusSonderschueler();
         this.calculateKinderAndereGemeindeMinusSonderschueler();
         this.calculateTotalKantonsbeitrag();
@@ -82,6 +89,21 @@ export class TSFerienbetreuungBerechnung {
             + this._sachkosten
             + this._verpflegungskosten
             + this._weitereKosten;
+    }
+
+    private calculateTotalLeistungenLeistungsvertrag(): void {
+        if (EbeguUtil.isNullOrUndefined(this._sockelbeitrag)) {
+            this._sockelbeitrag = 0;
+        }
+        if (EbeguUtil.isNullOrUndefined(this._beitraegeNachAnmeldungen)) {
+            this._beitraegeNachAnmeldungen = 0;
+        }
+        if (EbeguUtil.isNullOrUndefined(this._vorfinanzierteKantonsbeitraege)) {
+            this._vorfinanzierteKantonsbeitraege = 0;
+        }
+        this._totalLeistungenLeistungsvertrag = this._sockelbeitrag
+            + this.beitraegeNachAnmeldungen
+            - this._vorfinanzierteKantonsbeitraege;
     }
 
     private calculateKinderAnbietendeGemeindeMinusSonderschueler(): void {
@@ -132,8 +154,15 @@ export class TSFerienbetreuungBerechnung {
         this._beitragFuerKinderDerAnbietendenGemeinde =
             EbeguUtil.roundToFiveRappen(this._beitragFuerKinderDerAnbietendenGemeinde);
 
-        this._beteiligungDurchAnbietendeGemeinde = this._totalKosten - this._totalKantonsbeitrag - this._totalEinnahmen;
+        this._beteiligungDurchAnbietendeGemeinde = this.calculateBeteiligungDurchAnbietendeGemeinde();
         this._beteiligungZuTief = this._beteiligungDurchAnbietendeGemeinde < this._beitragFuerKinderDerAnbietendenGemeinde;
+    }
+
+    private calculateBeteiligungDurchAnbietendeGemeinde(): number {
+        if (this._isDeleagtionsmodell) {
+            return this._totalLeistungenLeistungsvertrag;
+        }
+        return this._totalKosten - this._totalKantonsbeitrag - this._totalEinnahmen;
     }
 
     public get personalkosten(): number {
@@ -224,8 +253,44 @@ export class TSFerienbetreuungBerechnung {
         this._weitereEinnahmen = this.convertPossibleStringToNumber(value);
     }
 
+    public get sockelbeitrag(): number {
+        return this._sockelbeitrag;
+    }
+
+    public set sockelbeitrag(value: number) {
+        this._sockelbeitrag = value;
+    }
+
+    public get beitraegeNachAnmeldungen(): number {
+        return this._beitraegeNachAnmeldungen;
+    }
+
+    public set beitraegeNachAnmeldungen(value: number) {
+        this._beitraegeNachAnmeldungen = value;
+    }
+
+    public get vorfinanzierteKantonsbeitraege(): number {
+        return this._vorfinanzierteKantonsbeitraege;
+    }
+
+    public set vorfinanzierteKantonsbeitraege(value: number) {
+        this._vorfinanzierteKantonsbeitraege = value;
+    }
+
+    public get isDeleagtionsmodell(): boolean {
+        return this._isDeleagtionsmodell;
+    }
+
+    public set isDeleagtionsmodell(value: boolean) {
+        this._isDeleagtionsmodell = value;
+    }
+
     public get totalKosten(): number {
         return this._totalKosten;
+    }
+
+    public get totalLeistungenLeistungsvertrag(): number {
+        return this._totalLeistungenLeistungsvertrag;
     }
 
     public get betreuungstageKinderDieserGemeindeMinusSonderschueler(): number {
