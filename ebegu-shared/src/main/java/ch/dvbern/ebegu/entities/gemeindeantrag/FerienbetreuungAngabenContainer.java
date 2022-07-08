@@ -167,16 +167,12 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		return getId().equals(other.getId());
 	}
 
-	public boolean isAtLeastInPruefungKanton() {
+	public boolean isAtLeastInPruefungKantonOrZurueckAnGemeinde() {
 		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON ||
 			status == FerienbetreuungAngabenStatus.GEPRUEFT ||
 			status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN ||
-			status == FerienbetreuungAngabenStatus.ABGELEHNT;
-	}
-
-	public boolean isAtLeastInPruefungKantonOrZurueckAnGemeinde() {
-		// TODO change zurueckAnGemeinde
-		return this.isAtLeastInPruefungKanton() || zurueckAnGemeinde;
+			status == FerienbetreuungAngabenStatus.ABGELEHNT ||
+			status == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
 	}
 
 	public boolean isReadyForGeprueft() {
@@ -218,8 +214,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
 		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
-		// TODO change zurueckAnGemeinde
-		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE && !zurueckAnGemeinde) {
+		if (status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE) {
 			angabenKorrektur = new FerienbetreuungAngaben(angabenDeklaration);
 		}
 	}

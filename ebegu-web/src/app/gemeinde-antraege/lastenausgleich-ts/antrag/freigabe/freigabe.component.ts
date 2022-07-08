@@ -138,8 +138,7 @@ export class FreigabeComponent implements OnInit {
 
     public isInBearbeitungGemeinde(): Observable<boolean> {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
-            map(latsContainer => latsContainer.status ===
-                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE),
+            map(latsContainer => latsContainer.isInBearbeitungGemeinde()),
         );
     }
 

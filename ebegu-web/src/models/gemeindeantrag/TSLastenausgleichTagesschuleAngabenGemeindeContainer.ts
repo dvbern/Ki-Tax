@@ -48,6 +48,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
         ].includes(this.status);
     }
 
@@ -63,13 +64,13 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return ![
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE
         ].includes(this.status);
     }
 
     public isAtLeastInBearbeitungKantonOrZurueckgegeben(): boolean {
-        // TODO change zurueckAnGemeinde
         return this.isAtLeastInBearbeitungKanton()
-            || this.zurueckAnGemeinde;
+            || this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
     }
 
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {

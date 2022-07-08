@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen.LastenausgleichGemeindenDataRow;
@@ -147,8 +148,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 	// falls der Antrag zurück an die Gemeinde gegeben wurde, ist dieser zwar in der Statistik sichtbar, allerdings
 	// sollen dort nur die Werte der Deklaration erscheinen. Ansonsten returnieren wir die Angaben Korrektur
 	private LastenausgleichTagesschuleAngabenGemeinde getLastenausgleichTagesschuleAngabenBasedOnStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
-		// TODO change zurueckAnGemeinde
-		if (container.getZurueckAnGemeinde()) {
+		if (container.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE) {
 			return container.getAngabenDeklaration();
 		}
 		return container.getAngabenKorrektur();

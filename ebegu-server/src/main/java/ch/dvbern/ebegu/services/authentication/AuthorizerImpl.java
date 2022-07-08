@@ -1786,7 +1786,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		switch (antrag.getStatus()) {
 		case NEU:
-		case IN_BEARBEITUNG_GEMEINDE: {
+		case IN_BEARBEITUNG_GEMEINDE:
+		case ZURUECK_AN_GEMEINDE: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
 				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 				return;

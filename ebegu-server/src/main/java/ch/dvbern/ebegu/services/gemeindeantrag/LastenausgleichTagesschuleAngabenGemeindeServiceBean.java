@@ -321,8 +321,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		Preconditions.checkState(
-			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
-			"LastenausgleichAngabenGemeindeContainer muss im Status IN_BEARBEITUNG_GEMEINDE sein");
+			fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+			|| fallContainer.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
+			"LastenausgleichAngabenGemeindeContainer muss im Status IN_BEARBEITUNG_GEMEINDE oder ZURUECK_AN_GEMEINDE sein");
 		Preconditions.checkArgument(
 			fallContainer.getAngabenInstitutionContainers()
 				.stream()
@@ -713,13 +714,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		);
 
 		// reopen gemeinde formular, don't reopen insti formulare
-		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.setStatus(LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE);
 		container.getAngabenDeklaration()
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
 		container.getAngabenKorrektur()
 			.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.IN_BEARBEITUNG);
-
-		// TODO change zurueckAnGemeinde
 
 		LastenausgleichTagesschuleAngabenGemeindeContainer saved =
 			saveLastenausgleichTagesschuleGemeinde(container, true);

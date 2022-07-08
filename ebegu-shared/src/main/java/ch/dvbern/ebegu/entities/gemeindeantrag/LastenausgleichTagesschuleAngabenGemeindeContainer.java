@@ -208,9 +208,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		// Wir kopieren nicht, wenn Kanton bereits Daten erfasst hat
 		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
 		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
-		// TODO change zurueckAnGemeinde
-		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
-			&& angabenDeklaration != null && !zurueckAnGemeinde) {
+		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE) {
 			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
 		}
 	}
@@ -390,7 +388,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
-		// TODO change zurueckAnGemeinde
-		return this.status.atLeastInPruefungKanton() || zurueckAnGemeinde;
+		return this.status.atLeastInPruefungKantonOrZurueckgegeben();
 	}
 }

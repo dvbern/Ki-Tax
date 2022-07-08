@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -65,8 +66,7 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 			return WizardStateEnum.IN_BEARBEITUNG;
 		}
 		// zurueck an Gemeinde
-		// TODO change zurueckAnGemeinde
-		if (wizard.getFerienbetreuungAngabenContainer().getZurueckAnGemeinde()) {
+		if (wizard.getFerienbetreuungAngabenContainer().getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {
 			Objects.requireNonNull(wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur());
 			if (wizard.getFerienbetreuungAngabenContainer().getAngabenKorrektur().isReadyForFreigeben()) {
 				return WizardStateEnum.IN_BEARBEITUNG;
@@ -99,8 +99,7 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 
 	private boolean isReadyForFreigeben(@Nonnull FerienbetreuungWizard wizard) {
 		var container = wizard.getFerienbetreuungAngabenContainer();
-		// TODO change zurueckAnGemeinde
-		if (container.getZurueckAnGemeinde()) {
+		if (container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {
 			Objects.requireNonNull(container.getAngabenKorrektur());
 			return container.getAngabenKorrektur().isReadyForFreigeben();
 		}

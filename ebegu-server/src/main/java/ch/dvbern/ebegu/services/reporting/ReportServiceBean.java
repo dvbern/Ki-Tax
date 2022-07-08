@@ -120,6 +120,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -2479,8 +2480,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private FerienbetreuungAngaben getFerienbetreuungAngabenBasedOnStatus(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
 		// falls Antrag zurück an Gemeinde gegeben wurde, sollen der Antrag im Report sichtbar sein. Allerdings nur
 		// die Deklaration, um zu verhindern, dass nicht freigegebene Änderungen schon für den Kanton sichtbar sind.
-		// TODO change zurueckAnGemeinde
-		if (ferienbetreuungAngabenContainer.getZurueckAnGemeinde()) {
+		if (ferienbetreuungAngabenContainer.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {
 			return ferienbetreuungAngabenContainer.getAngabenDeklaration();
 		}
 		// sonst zeigen wir immer die Korrektur, falls vorhanden
