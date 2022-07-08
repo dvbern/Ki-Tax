@@ -4,7 +4,7 @@
     </h3>
 
     <div class="berechnung-container">
-        <div class="section" *ngIf="!berechnung.isDeleagtionsmodell">
+        <div class="section" *ngIf="!berechnung.isDelegationsmodell">
             <div>
                 <p>{{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="section" *ngIf="berechnung.isDeleagtionsmodell">
+        <div class="section" *ngIf="berechnung.isDelegationsmodell">
             <div>
                 <p>{{'FERIENBETREUUNG_SOCKELBEITRAG' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
@@ -167,7 +167,7 @@
             </div>
         </div>
 
-        <div class="section" *ngIf="!berechnung.isDeleagtionsmodell">
+        <div class="section" *ngIf="!berechnung.isDelegationsmodell">
             <div>
                 <p>{{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate}}</p>
                 <span class="flex-whitespace-item"></span>

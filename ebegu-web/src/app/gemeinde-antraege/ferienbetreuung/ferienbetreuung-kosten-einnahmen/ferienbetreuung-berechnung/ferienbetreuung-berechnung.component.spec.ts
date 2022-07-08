@@ -71,11 +71,32 @@ describe('FerienbetreuungBerechnungComponent', () => {
         berechnung.betreuungstageKinderAndererGemeinde = 15;
         berechnung.betreuungstageKinderAndererGemeindenSonderschueler = 1;
         berechnung.einnahmenElterngebuehren = 1200;
+        berechnung.isDelegationsmodell = false;
 
         berechnung.calculate();
         expect(berechnung.totalKantonsbeitrag).toEqual(1440);
         expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(960);
         expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(860);
+        expect(berechnung.beteiligungZuTief).toBeTrue();
+    });
+
+    it('should calculate 1440 CHF, 960 CHF and \"false\". It should use calculation for delegationsmodell', () => {
+        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+        berechnung.sockelbeitrag = 1111;
+        berechnung.beitraegeNachAnmeldungen = 2222;
+        berechnung.vorfinanzierteKantonsbeitraege = 3000;
+
+        berechnung.anzahlBetreuungstageKinderBern = 45;
+        berechnung.betreuungstageKinderDieserGemeinde = 30;
+        berechnung.betreuungstageKinderDieserGemeindeSonderschueler = 2;
+        berechnung.betreuungstageKinderAndererGemeinde = 15;
+        berechnung.betreuungstageKinderAndererGemeindenSonderschueler = 1;
+        berechnung.isDelegationsmodell = true;
+
+        berechnung.calculate();
+        expect(berechnung.totalKantonsbeitrag).toEqual(1440);
+        expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(960);
+        expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(333);
         expect(berechnung.beteiligungZuTief).toBeTrue();
     });
 

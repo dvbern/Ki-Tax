@@ -40,7 +40,7 @@ export class TSFerienbetreuungBerechnung {
     private _beitraegeNachAnmeldungen: number;
     private _vorfinanzierteKantonsbeitraege: number;
 
-    private _isDeleagtionsmodell: boolean;
+    private _isDelegationsmodell: boolean;
 
     // BERECHNUNGEN
     private _totalKosten: number;
@@ -159,7 +159,7 @@ export class TSFerienbetreuungBerechnung {
     }
 
     private calculateBeteiligungDurchAnbietendeGemeinde(): number {
-        if (this._isDeleagtionsmodell) {
+        if (this._isDelegationsmodell) {
             return this._totalLeistungenLeistungsvertrag;
         }
         return this._totalKosten - this._totalKantonsbeitrag - this._totalEinnahmen;
@@ -277,12 +277,12 @@ export class TSFerienbetreuungBerechnung {
         this._vorfinanzierteKantonsbeitraege = value;
     }
 
-    public get isDeleagtionsmodell(): boolean {
-        return this._isDeleagtionsmodell;
+    public get isDelegationsmodell(): boolean {
+        return this._isDelegationsmodell;
     }
 
-    public set isDeleagtionsmodell(value: boolean) {
-        this._isDeleagtionsmodell = value;
+    public set isDelegationsmodell(value: boolean) {
+        this._isDelegationsmodell = value;
     }
 
     public get totalKosten(): number {

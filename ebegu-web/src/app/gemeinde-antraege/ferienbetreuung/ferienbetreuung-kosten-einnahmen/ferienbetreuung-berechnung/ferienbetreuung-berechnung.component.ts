@@ -153,7 +153,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
             angaben?.nutzung?.davonBetreuungstageKinderAndererGemeinden;
         this.berechnung.betreuungstageKinderAndererGemeindenSonderschueler =
             angaben?.nutzung?.davonBetreuungstageKinderAndererGemeindenSonderschueler;
-        this.berechnung.isDeleagtionsmodell = angaben?.isDelegationsmodell();
+        this.berechnung.isDelegationsmodell = angaben?.isDelegationsmodell();
 
         this.calculate();
     }
