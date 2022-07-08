@@ -24,7 +24,6 @@ import {combineLatest, Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
-import {FerienbetreuungAngabenStatus} from '../../../../models/enums/FerienbetreuungAngabenStatus';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
@@ -306,11 +305,6 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.angebot.angebotAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
 
         return this.angebot;
-    }
-
-    public formularReadOnly(): boolean {
-        return !(this.container?.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
-            this.container?.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
     }
 
     public async onAbschliessen(): Promise<void> {

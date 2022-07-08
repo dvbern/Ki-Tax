@@ -412,9 +412,10 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
-			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+				|| container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON
+				|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE, ZURUECK_AN_GEMEINDE or IN_PRUEFUNG_KANTON");
 
 		FerienbetreuungAngabenStammdaten stammdaten =
 			ferienbetreuungService.findFerienbetreuungAngabenStammdaten(jaxStammdaten.getId())
@@ -538,9 +539,10 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
-				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
-			"FerienbetreuungAngabenContainer must be in state ABGESCHLOSSEN");
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+				|| container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON
+				|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE, ZURUECK_AN_GEMEINDE or IN_PRUEFUNG_KANTON");
 
 		FerienbetreuungAngabenAngebot angebot =
 			ferienbetreuungService.findFerienbetreuungAngabenAngebot(jaxAngebot.getId())
@@ -662,9 +664,10 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
-				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
-			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+				|| container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON
+				|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE, ZURUECK_AN_GEMEINDE or IN_PRUEFUNG_KANTON");
 
 		FerienbetreuungAngabenNutzung nutzung =
 			ferienbetreuungService.findFerienbetreuungAngabenNutzung(jaxNutzung.getId())
@@ -791,9 +794,10 @@ public class FerienbetreuungResource {
 		authorizer.checkWriteAuthorization(container);
 
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE ||
-				container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON,
-			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE");
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+				|| container.getStatus() == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON
+				|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE, ZURUECK_AN_GEMEINDE or IN_PRUEFUNG_KANTON");
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
 			ferienbetreuungService.findFerienbetreuungAngabenKostenEinnahmen(jaxKostenEinnahmen.getId())

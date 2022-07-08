@@ -476,8 +476,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
-			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+			|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE or ZURUECK_AN_GEMEINDE"
 		);
 
 		if (container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {

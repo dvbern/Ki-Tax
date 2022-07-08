@@ -926,13 +926,11 @@
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
                 (click)="save()"
-                [disabled]="formularReadOnly()"
                 [textContent]="'SAVE' | translate">
         </button>
         <dv-loading-button
             *ngIf="canSeeAbschliessen | async"
             type="button"
-            [buttonDisabled]="formularReadOnly()"
             (buttonClick)="onAbschliessen()">
             <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
             <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
