@@ -120,6 +120,9 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
             this.form.get('vorfinanzierteKantonsbeitraege').valueChanges.pipe(
                 startWith(angaben?.kostenEinnahmen.vorfinanzierteKantonsbeitraege),
             ),
+            this.form.get('eigenleistungenGemeinde').valueChanges.pipe(
+                startWith(angaben?.kostenEinnahmen.eigenleistungenGemeinde),
+            ),
         ]).subscribe(formValues => {
             this.berechnung.personalkosten = formValues[0];
             this.berechnung.sachkosten = formValues[1];
@@ -130,6 +133,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
             this.berechnung.sockelbeitrag = formValues[6];
             this.berechnung.beitraegeNachAnmeldungen = formValues[7];
             this.berechnung.vorfinanzierteKantonsbeitraege = formValues[8];
+            this.berechnung.eigenleistungenGemeinde = formValues[9];
 
             this.calculate();
         }, err => {

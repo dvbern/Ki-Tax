@@ -320,6 +320,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		kostenEinnahmen.setSockelbeitrag(jaxKostenEinnahmen.getSockelbeitrag());
 		kostenEinnahmen.setBeitraegeNachAnmeldungen(jaxKostenEinnahmen.getBeitraegeNachAnmeldungen());
 		kostenEinnahmen.setVorfinanzierteKantonsbeitraege(jaxKostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		kostenEinnahmen.setEigenleistungenGemeinde(jaxKostenEinnahmen.getEigenleistungenGemeinde());
 
 		return kostenEinnahmen;
 	}
@@ -547,6 +548,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setSockelbeitrag(kostenEinnahmen.getSockelbeitrag());
 		jaxKostenEinnahmen.setBeitraegeNachAnmeldungen(kostenEinnahmen.getBeitraegeNachAnmeldungen());
 		jaxKostenEinnahmen.setVorfinanzierteKantonsbeitraege(kostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		jaxKostenEinnahmen.setEigenleistungenGemeinde(kostenEinnahmen.getEigenleistungenGemeinde());
 
 		jaxKostenEinnahmen.setStatus(kostenEinnahmen.getStatus());
 

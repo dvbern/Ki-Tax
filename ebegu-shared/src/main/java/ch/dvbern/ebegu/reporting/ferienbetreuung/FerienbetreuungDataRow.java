@@ -118,6 +118,7 @@ public class FerienbetreuungDataRow {
 	private @Nullable BigDecimal sockelbeitrag = null;
 	private @Nullable BigDecimal beitraegeNachAnmeldungen = null;
 	private @Nullable BigDecimal vorfinanzierteKantonsbeitraege = null;
+	private @Nullable BigDecimal eigenleistungenGemeinde = null;
 
 	private BigDecimal totalKantonsbeitrag = null;
 	private BigDecimal beitragKinderAnbietendenGemeinde = null;
@@ -785,6 +786,14 @@ public class FerienbetreuungDataRow {
 
 	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
 		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
+	}
+
+	public BigDecimal getEigenleistungenGemeinde() {
+		return eigenleistungenGemeinde;
+	}
+
+	public void setEigenleistungenGemeinde(BigDecimal eigenleistungenGemeinde) {
+		this.eigenleistungenGemeinde = eigenleistungenGemeinde;
 	}
 
 	public BigDecimal getTotalKantonsbeitrag() {

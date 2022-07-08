@@ -62,6 +62,9 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 	@Nullable
 	private BigDecimal vorfinanzierteKantonsbeitraege;
 
+	@Nullable
+	private BigDecimal eigenleistungenGemeinde;
+
 	@Nonnull
 	private FerienbetreuungFormularStatus status;
 
@@ -162,6 +165,15 @@ public class JaxFerienbetreuungAngabenKostenEinnahmen extends JaxAbstractDTO {
 
 	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
 		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getEigenleistungenGemeinde() {
+		return eigenleistungenGemeinde;
+	}
+
+	public void setEigenleistungenGemeinde(@Nullable BigDecimal eigenleistungenGemeinde) {
+		this.eigenleistungenGemeinde = eigenleistungenGemeinde;
 	}
 
 	@Nonnull

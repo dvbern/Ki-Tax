@@ -87,6 +87,10 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 	@Column()
 	private BigDecimal vorfinanzierteKantonsbeitraege;
 
+	@Nullable
+	@Column()
+	private BigDecimal eigenleistungenGemeinde;
+
 	@Nonnull
 	@Column()
 	@Enumerated(EnumType.STRING)
@@ -107,6 +111,7 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 		this.sockelbeitrag = toCopy.sockelbeitrag;
 		this.beitraegeNachAnmeldungen = toCopy.beitraegeNachAnmeldungen;
 		this.vorfinanzierteKantonsbeitraege = toCopy.vorfinanzierteKantonsbeitraege;
+		this.eigenleistungenGemeinde = toCopy.eigenleistungenGemeinde;
 	}
 
 	@Nullable
@@ -206,6 +211,15 @@ public class FerienbetreuungAngabenKostenEinnahmen extends AbstractEntity {
 
 	public void setVorfinanzierteKantonsbeitraege(@Nullable BigDecimal vorfinanzierteKantonsbeitraege) {
 		this.vorfinanzierteKantonsbeitraege = vorfinanzierteKantonsbeitraege;
+	}
+
+	@Nullable
+	public BigDecimal getEigenleistungenGemeinde() {
+		return eigenleistungenGemeinde;
+	}
+
+	public void setEigenleistungenGemeinde(@Nullable BigDecimal eigenleistungenGemeinde) {
+		this.eigenleistungenGemeinde = eigenleistungenGemeinde;
 	}
 
 	@Override

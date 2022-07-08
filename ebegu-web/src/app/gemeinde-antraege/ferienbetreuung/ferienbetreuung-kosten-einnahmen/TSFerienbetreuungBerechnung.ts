@@ -39,6 +39,7 @@ export class TSFerienbetreuungBerechnung {
     private _sockelbeitrag: number;
     private _beitraegeNachAnmeldungen: number;
     private _vorfinanzierteKantonsbeitraege: number;
+    private _eigenleistungenGemeinde: number;
 
     private _isDelegationsmodell: boolean;
 
@@ -101,9 +102,13 @@ export class TSFerienbetreuungBerechnung {
         if (EbeguUtil.isNullOrUndefined(this._vorfinanzierteKantonsbeitraege)) {
             this._vorfinanzierteKantonsbeitraege = 0;
         }
+        if (EbeguUtil.isNullOrUndefined(this._eigenleistungenGemeinde)) {
+            this._eigenleistungenGemeinde = 0;
+        }
         this._totalLeistungenLeistungsvertrag = this._sockelbeitrag
-            + this.beitraegeNachAnmeldungen
-            - this._vorfinanzierteKantonsbeitraege;
+            + this._beitraegeNachAnmeldungen
+            - this._vorfinanzierteKantonsbeitraege
+            + this._eigenleistungenGemeinde;
     }
 
     private calculateKinderAnbietendeGemeindeMinusSonderschueler(): void {
@@ -275,6 +280,14 @@ export class TSFerienbetreuungBerechnung {
 
     public set vorfinanzierteKantonsbeitraege(value: number) {
         this._vorfinanzierteKantonsbeitraege = value;
+    }
+
+    public get eigenleistungenGemeinde(): number {
+        return this._eigenleistungenGemeinde;
+    }
+
+    public set eigenleistungenGemeinde(value: number) {
+        this._eigenleistungenGemeinde = value;
     }
 
     public get isDelegationsmodell(): boolean {

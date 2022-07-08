@@ -137,6 +137,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         berechnungen.sockelbeitrag = kostenEinnahmen.sockelbeitrag;
         berechnungen.beitraegeNachAnmeldungen = kostenEinnahmen.beitraegeNachAnmeldungen;
         berechnungen.vorfinanzierteKantonsbeitraege = kostenEinnahmen.vorfinanzierteKantonsbeitraege;
+        berechnungen.eigenleistungenGemeinde = kostenEinnahmen.eigenleistungenGemeinde;
 
         berechnungen.anzahlBetreuungstageKinderBern = nutzung.anzahlBetreuungstageKinderBern;
         berechnungen.betreuungstageKinderDieserGemeinde = nutzung.betreuungstageKinderDieserGemeinde;

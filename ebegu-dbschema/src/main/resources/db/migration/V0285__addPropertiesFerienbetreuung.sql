@@ -18,7 +18,9 @@
 alter table ferienbetreuung_angaben_kosten_einnahmen add column sockelbeitrag DECIMAL (19, 2);
 alter table ferienbetreuung_angaben_kosten_einnahmen add column beitraege_nach_anmeldungen DECIMAL (19, 2);
 alter table ferienbetreuung_angaben_kosten_einnahmen add column vorfinanzierte_kantonsbeitraege DECIMAL (19, 2);
+alter table ferienbetreuung_angaben_kosten_einnahmen add column eigenleistungen_gemeinde DECIMAL (19, 2);
 
 alter table ferienbetreuung_angaben_kosten_einnahmen_aud add column sockelbeitrag DECIMAL (19, 2);
 alter table ferienbetreuung_angaben_kosten_einnahmen_aud add column beitraege_nach_anmeldungen DECIMAL (19, 2);
 alter table ferienbetreuung_angaben_kosten_einnahmen_aud add column vorfinanzierte_kantonsbeitraege DECIMAL (19, 2);
+alter table ferienbetreuung_angaben_kosten_einnahmen_aud add column eigenleistungen_gemeinde DECIMAL (19, 2);

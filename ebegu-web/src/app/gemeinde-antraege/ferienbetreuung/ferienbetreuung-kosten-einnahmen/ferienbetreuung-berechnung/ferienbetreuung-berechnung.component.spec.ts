@@ -85,6 +85,7 @@ describe('FerienbetreuungBerechnungComponent', () => {
         berechnung.sockelbeitrag = 1111;
         berechnung.beitraegeNachAnmeldungen = 2222;
         berechnung.vorfinanzierteKantonsbeitraege = 3000;
+        berechnung.eigenleistungenGemeinde = 500;
 
         berechnung.anzahlBetreuungstageKinderBern = 45;
         berechnung.betreuungstageKinderDieserGemeinde = 30;
@@ -96,7 +97,7 @@ describe('FerienbetreuungBerechnungComponent', () => {
         berechnung.calculate();
         expect(berechnung.totalKantonsbeitrag).toEqual(1440);
         expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(960);
-        expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(333);
+        expect(berechnung.beteiligungDurchAnbietendeGemeinde).toEqual(833);
         expect(berechnung.beteiligungZuTief).toBeTrue();
     });
 

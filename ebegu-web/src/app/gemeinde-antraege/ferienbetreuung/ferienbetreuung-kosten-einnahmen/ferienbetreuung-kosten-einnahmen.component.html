@@ -349,6 +349,33 @@
                 </mat-form-field>
             </dv-input-container-x>
 
+            <dv-input-container-x>
+                <label for="eigenleistungenGemeinde_id"
+                       required
+                       [ngClass]="{'label-required-error': form && form.get('eigenleistungenGemeinde').errors}">
+                    {{'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE' | translate }}
+                </label>
+                <div class="flex-whitespace-item"></div>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           id="eigenleistungenGemeinde_id"
+                           formControlName="eigenleistungenGemeinde"
+                           class="form-control dv-input"/>
+                    <mat-error *ngIf="form && form.get('eigenleistungenGemeinde').errors?.required"
+                               translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error *ngIf="form && form.get('eigenleistungenGemeinde').errors?.isNotInteger"
+                               translate>ERROR_NOT_INTEGER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.eigenleistungenGemeinde"
+                        [korrektur]="form.get('eigenleistungenGemeinde').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
         </div>
 
         <mat-divider *ngIf="isDelegationsmodell"></mat-divider>

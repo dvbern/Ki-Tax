@@ -126,6 +126,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             vorfinanzierteKantonsbeitraege: [
                 kostenEinnahmen.vorfinanzierteKantonsbeitraege,
             ],
+            eigenleistungenGemeinde: [
+                kostenEinnahmen.eigenleistungenGemeinde,
+            ],
         });
         this.setBasicValidation();
     }
@@ -163,6 +166,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('vorfinanzierteKantonsbeitraege').setValidators(
             numberValidator(ValidationType.INTEGER),
         );
+        this.form.get('eigenleistungenGemeinde').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
         this.triggerFormValidation();
     }
 
@@ -179,7 +185,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         if (this.isDelegationsmodell) {
             this.form.get('sockelbeitrag').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
             this.form.get('beitraegeNachAnmeldungen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-            this.form.get('vorfinanzierteKantonsbeitraege').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('vorfinanzierteKantonsbeitraege')
+                .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('eigenleistungenGemeinde')
+                .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         }
     }
 
@@ -217,6 +226,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.kostenEinnahmen.sockelbeitrag = this.form.get('sockelbeitrag').value;
         this.kostenEinnahmen.beitraegeNachAnmeldungen = this.form.get('beitraegeNachAnmeldungen').value;
         this.kostenEinnahmen.vorfinanzierteKantonsbeitraege = this.form.get('vorfinanzierteKantonsbeitraege').value;
+        this.kostenEinnahmen.eigenleistungenGemeinde = this.form.get('eigenleistungenGemeinde').value;
         return this.kostenEinnahmen;
     }
 

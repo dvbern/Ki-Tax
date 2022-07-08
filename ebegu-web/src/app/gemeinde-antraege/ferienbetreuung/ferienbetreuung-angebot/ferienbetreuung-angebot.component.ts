@@ -330,7 +330,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     private async deleteAngabenDelegationsmodellIfNecessary(angaben: TSFerienbetreuungAngaben): Promise<any> {
         if (angaben.kostenEinnahmen.sockelbeitrag
             || angaben.kostenEinnahmen.beitraegeNachAnmeldungen
-            || angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege) {
+            || angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege
+            || angaben.kostenEinnahmen.eigenleistungenGemeinde) {
             const confirmed = await this.confirmDialog('FERIENBETREUUNG_DELETE_KOSTEN_NUTZEN_DELEGATIONSMODELL');
             if (!confirmed) {
                 throw new UserDidNotAcceptError();
@@ -338,6 +339,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             angaben.kostenEinnahmen.sockelbeitrag = null;
             angaben.kostenEinnahmen.beitraegeNachAnmeldungen = null;
             angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege = null;
+            angaben.kostenEinnahmen.eigenleistungenGemeinde = null;
             return this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, angaben.kostenEinnahmen)
                 .toPromise();
         }
@@ -351,7 +353,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }
         if (!angaben.kostenEinnahmen.sockelbeitrag
             || !angaben.kostenEinnahmen.beitraegeNachAnmeldungen
-            || !angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege) {
+            || !angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege
+            || !angaben.kostenEinnahmen.eigenleistungenGemeinde) {
             const confirmed = await this.confirmDialog('FERIENBETREUUNG_INVALIDATE_KOSTEN_NUTZEN_DELEGATIONSMODELL');
             if (!confirmed) {
                 throw new UserDidNotAcceptError();

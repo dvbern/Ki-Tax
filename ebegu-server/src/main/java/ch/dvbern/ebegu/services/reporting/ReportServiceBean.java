@@ -2592,6 +2592,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setSockelbeitrag(kostenEinnahmen.getSockelbeitrag());
 		row.setBeitraegeNachAnmeldungen(kostenEinnahmen.getBeitraegeNachAnmeldungen());
 		row.setVorfinanzierteKantonsbeitraege(kostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		row.setEigenleistungenGemeinde(kostenEinnahmen.getEigenleistungenGemeinde());
 	}
 
 	private void setBerechnungenValues(
