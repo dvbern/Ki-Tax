@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 
-import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.*;
-
 public final class InfomaUtil {
 
 	private InfomaUtil() {
@@ -20,7 +18,7 @@ public final class InfomaUtil {
 		return text;
 	}
 
-	@SuppressWarnings({ "SuspiciousRegexArgument", "DynamicRegexReplaceableByCompiledPattern" })
+	@SuppressWarnings({ "DynamicRegexReplaceableByCompiledPattern" })
 	@Nonnull
 	public static String normalize(@Nullable String text) {
 		if (text == null) {
@@ -30,7 +28,7 @@ public final class InfomaUtil {
 		// TODO Wie genau??? Warte auf Antwort.
 		text = text.replaceAll("\\P{ASCII}", "");
 		// Der Separator (|) darf im Text nicht vorkommen. Es gibt kein Escaping
-		text = text.replaceAll(SEPARATOR, "");
+		text = text.replaceAll("\\|", "");
 		// Kuerzen auf die maximal zugelassene Laenge
 		return text;
 	}
