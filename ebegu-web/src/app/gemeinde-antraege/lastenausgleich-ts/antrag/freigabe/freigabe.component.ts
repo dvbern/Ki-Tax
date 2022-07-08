@@ -170,7 +170,7 @@ export class FreigabeComponent implements OnInit {
     public async zurueckAnGemeinde(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('ZURUECK_AN_GEMEINDE'),
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN'),
         };
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
             .afterClosed()
