@@ -309,4 +309,9 @@ export class GemeindeRS implements IEntityRS {
                 return response.data;
             });
     }
+
+    public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
 }

@@ -3246,6 +3246,7 @@ public class JaxBConverter extends AbstractConverter {
 		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
 		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
 		abweichung.setStatus(jaxAbweichung.getStatus());
+		abweichung.setMultiplier(jaxAbweichung.getMultiplier());
 
 		return abweichung;
 	}
@@ -3555,8 +3556,6 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
 		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
-		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
-		betreuungspensum.setStuendlicheVollkosten(jaxBetreuungspensum.getStuendlicheVollkosten());
 		return betreuungspensum;
 	}
 
@@ -3722,7 +3721,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
-		return betreuung.fillAbweichungen().stream().map(this::betreuungspensumAbweichungToJax)
+		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung)).stream().map(this::betreuungspensumAbweichungToJax)
 			.collect(Collectors.toList());
 	}
 
@@ -3742,6 +3741,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setTarifProNebenmahlzeit(abweichung.getTarifProNebenmahlzeit());
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
+		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
 
 		return jaxAbweichung;
 	}
@@ -6540,5 +6540,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungMonitoring.setRefNummer(betreuungMonitoring.getRefNummer());
 		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
 		return jaxBetreuungMonitoring;
+	}
+
+	public List<Gemeinde> gemeindeListToEntity(List<JaxGemeinde> jaxGemeinden) {
+		return jaxGemeinden
+				.stream()
+				.map(jaxGemeinde -> this.gemeindeToEntity(jaxGemeinde, new Gemeinde()))
+				.collect(Collectors.toList());
 	}
 }

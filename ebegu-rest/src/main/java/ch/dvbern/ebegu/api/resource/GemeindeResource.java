@@ -981,6 +981,21 @@ public class GemeindeResource {
 		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
 	}
 
+	@ApiOperation(value = "Gibt alle Gemeinden zurück, für welche ein Lastenausgleich Tagescchule existiert",
+		response = Long.class)
+	@Nullable
+	@GET
+	@Path("/gemeinden-with-lats")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxGemeinde> getGemeindenWithLats() {
+		return gemeindeService.getGemeindenWithLats()
+				.stream()
+				.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+				.collect(Collectors.toList());
+	}
+
 	@ApiOperation("Erstellt ein Musterdokument, damit die Korrespondenz-Einstellungen geprueft werden koennen")
 	@GET
 	@Path("/musterdokument/{gemeindeId}")

@@ -121,11 +121,12 @@ export class GemeindeAntragService {
     }
 
     public createAllAntrage(
-        toCreate: { periode: string, antragTyp: string, gemeinde?: TSGemeinde },
+        toCreate: { periode: string; antragTyp: string},
+        gemeinden: TSGemeinde[],
     ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
             `${this.API_BASE_URL}/createAllAntraege/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
-            toCreate)
+            gemeinden.map(gemeinde => this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde)))
             .pipe(map(jaxAntrag => this.ebeguRestUtil.parseGemeindeAntragList(jaxAntrag)));
     }
 
