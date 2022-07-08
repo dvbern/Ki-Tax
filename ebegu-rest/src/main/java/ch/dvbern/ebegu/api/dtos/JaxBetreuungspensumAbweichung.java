@@ -46,6 +46,8 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	private BigDecimal vertraglicherTarifNeben;
 
+	private BigDecimal multiplier;
+
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
 	}
@@ -100,5 +102,13 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	public void setVertraglicherTarifNeben(BigDecimal vertraglicherTarifNeben) {
 		this.vertraglicherTarifNeben = vertraglicherTarifNeben;
+	}
+
+	public BigDecimal getMultiplier() {
+		return multiplier;
+	}
+
+	public void setMultiplier(BigDecimal multiplier) {
+		this.multiplier = multiplier;
 	}
 }
