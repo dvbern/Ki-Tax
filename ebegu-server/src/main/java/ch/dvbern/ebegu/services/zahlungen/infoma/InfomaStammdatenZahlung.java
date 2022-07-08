@@ -10,6 +10,7 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DATE_FORMAT;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalFormat;
 
 public class InfomaStammdatenZahlung extends InfomaStammdaten {
 
@@ -44,6 +45,12 @@ public class InfomaStammdatenZahlung extends InfomaStammdaten {
 	@Override
 	protected String getDimensionswert3() {
 		return null;
+	}
+
+	@Nonnull
+	@Override
+	protected String getBetrag(@Nonnull Zahlung zahlung) {
+		return decimalFormat().format(zahlung.getBetragTotalZahlung().negate());
 	}
 
 	@Nullable

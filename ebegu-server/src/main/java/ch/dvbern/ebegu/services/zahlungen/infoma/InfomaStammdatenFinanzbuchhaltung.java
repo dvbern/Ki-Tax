@@ -10,6 +10,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DIMENSIONSWERT_3_FINANZBUCHHALTUNG;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.KONTONUMMER_FINANZBUCHHALTUNG_ELTERN;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION;
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalFormat;
 
 public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
@@ -45,6 +46,12 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 	@Override
 	protected String getDimensionswert3() {
 		return DIMENSIONSWERT_3_FINANZBUCHHALTUNG;
+	}
+
+	@Nonnull
+	@Override
+	protected String getBetrag(@Nonnull Zahlung zahlung) {
+		return decimalFormat().format(zahlung.getBetragTotalZahlung());
 	}
 
 	@Nullable

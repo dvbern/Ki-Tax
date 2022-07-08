@@ -67,6 +67,6 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfil
 					ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 					mandant)
 				.orElse(null);
-		return infomaZahlungen != null && Boolean.getBoolean(infomaZahlungen.getValue());
+		return infomaZahlungen != null && Boolean.parseBoolean(infomaZahlungen.getValue());
 	}
 }

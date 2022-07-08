@@ -16,7 +16,6 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.NEWLINE;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.SEPARATOR;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.STAMMDATEN_BELEGART;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.ZEILENART_STAMMDATEN;
-import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalFormat;
 
 public abstract class InfomaStammdaten {
 
@@ -44,7 +43,7 @@ public abstract class InfomaStammdaten {
 		this.kontonummer = getKontonummer(zahlung);
 		this.buchungstext = getBuchungstext(zahlung);
 		this.dimensionswert3 = getDimensionswert3();
-		this.betrag = decimalFormat().format(zahlung.getBetragTotalZahlung());
+		this.betrag = getBetrag(zahlung);
 		this.faelligkeitsdatum = getFaelligkeitsdatum(zahlung);
 		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung);
 	}
@@ -57,6 +56,9 @@ public abstract class InfomaStammdaten {
 
 	@Nullable
 	protected abstract String getDimensionswert3();
+
+	@Nonnull
+	protected abstract String getBetrag(@Nonnull Zahlung zahlung);
 
 	@Nullable
 	protected abstract String getFaelligkeitsdatum(@Nonnull Zahlung zahlung);
