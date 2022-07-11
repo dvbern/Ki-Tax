@@ -383,6 +383,7 @@ public class FerienbetreuungResource {
 		return converter.ferienbetreuungAngabenStammdatenToJax(persisted);
 	}
 
+	@SuppressWarnings({ "PMD.AvoidDuplicateLiterals"})
 	@ApiOperation(
 		value = "Öffnet die FerienbetreuungAngabenStammdaten zur Wiederbearbeitung als Gemeinde",
 		response = JaxFerienbetreuungAngabenStammdaten.class)
