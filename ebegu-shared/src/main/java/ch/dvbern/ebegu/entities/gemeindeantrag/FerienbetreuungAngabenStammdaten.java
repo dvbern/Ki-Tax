@@ -308,6 +308,7 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		target.setStammdatenKontaktpersonNachname(getStammdatenKontaktpersonNachname());
 		target.setStammdatenKontaktpersonTelefon(getStammdatenKontaktpersonTelefon());
 		target.setStammdatenKontaktpersonFunktion(getStammdatenKontaktpersonFunktion());
+		target.setVermerkAuszahlung(getVermerkAuszahlung());
 		// Auszahlung
 		if (getAuszahlungsdaten() != null) {
 			target.setAuszahlungsdaten(getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), AntragCopyType.ERNEUERUNG));
