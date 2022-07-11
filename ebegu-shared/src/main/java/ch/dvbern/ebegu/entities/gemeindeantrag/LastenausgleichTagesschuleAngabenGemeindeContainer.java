@@ -262,6 +262,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			return false;
 		}
 		LastenausgleichTagesschuleAngabenGemeinde deklaration = getAngabenDeklaration();
+		return angabenComplete(deklaration);
+	}
+
+	public boolean angabenKorrekturComplete() {
+		if (Objects.isNull(getAlleAngabenInKibonErfasst())) {
+			return false;
+		}
+		if (Objects.isNull(getAngabenKorrektur())) {
+			return false;
+		}
+		LastenausgleichTagesschuleAngabenGemeinde korrektur = getAngabenKorrektur();
+		return angabenComplete(korrektur);
+	}
+
+	private boolean angabenComplete(LastenausgleichTagesschuleAngabenGemeinde deklaration) {
 		if (Objects.isNull(deklaration.getBedarfBeiElternAbgeklaert())) {
 			return false;
 		}
@@ -313,7 +328,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean plausibilisierungTagesschulenStundenHoldsForDeklaration() {
 		LastenausgleichTagesschuleAngabenGemeinde formular;
-		if (isAtLeastInBearbeitungKanton()) {
+		if (isAtLeastInBearbeitungKantonOrZuerueckgegeben()) {
 			formular = getAngabenKorrektur();
 		} else {
 			formular = getAngabenDeklaration();
@@ -347,6 +362,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 
+	public boolean isAtLeastInBearbeitungKantonOrZuerueckgegeben() {
+		return isAtLeastInBearbeitungKanton()
+			|| status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
+	}
+
 	public boolean isAngabenDeklarationAbgeschlossen() {
 		return angabenDeklaration != null
 			&& angabenDeklaration.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
@@ -358,7 +378,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isInBearbeitungGemeinde() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+			|| status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
 	}
 
 	public boolean isAntragGeprueft() {

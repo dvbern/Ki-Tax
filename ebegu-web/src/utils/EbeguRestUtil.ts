@@ -4828,7 +4828,6 @@ export class EbeguRestUtil {
         if (gemeindeContainerFromServer) {
             this.parseAbstractEntity(gemeindeContainerTS, gemeindeContainerFromServer);
             gemeindeContainerTS.status = gemeindeContainerFromServer.status;
-            gemeindeContainerTS.zurueckAnGemeinde = gemeindeContainerFromServer.zurueckAnGemeinde;
             gemeindeContainerTS.gesuchsperiode =
                 this.parseGesuchsperiode(new TSGesuchsperiode(), gemeindeContainerFromServer.gesuchsperiode);
             gemeindeContainerTS.gemeinde =
@@ -5454,7 +5453,6 @@ export class EbeguRestUtil {
         }
         this.parseAbstractEntity(containerTS, containerFromServer);
         containerTS.status = containerFromServer.status;
-        containerTS.zurueckAnGemeinde = containerFromServer.zurueckAnGemeinde;
         containerTS.gemeinde = this.parseGemeinde(new TSGemeinde(), containerFromServer.gemeinde);
         containerTS.gesuchsperiode =
             this.parseGesuchsperiode(new TSGesuchsperiode(), containerFromServer.gesuchsperiode);
