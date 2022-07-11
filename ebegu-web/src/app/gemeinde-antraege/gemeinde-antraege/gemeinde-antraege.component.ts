@@ -133,7 +133,10 @@ export class GemeindeAntraegeComponent implements OnInit {
             gemeinde: [''],
         });
         this.loadAntragList();
-        this.loadGemeindeLists();
+        this.loadGemeindeList();
+        if (this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            this.loadGemeindenWithPreexistingLatsList();
+        }
         this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
             this.gesuchsperioden = result;
             // init filtered GS for Ferienbetreuungen
@@ -173,11 +176,6 @@ export class GemeindeAntraegeComponent implements OnInit {
                 });
             }),
         );
-    }
-
-    private loadGemeindeLists(): void {
-        this.loadGemeindeList();
-        this.loadGemeindenWithPreexistingLatsList();
     }
 
     private loadGemeindeList(): void {
