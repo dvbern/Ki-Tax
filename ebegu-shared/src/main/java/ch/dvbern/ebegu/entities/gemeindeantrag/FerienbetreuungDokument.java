@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.FileMetadata;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -63,5 +64,15 @@ public class FerienbetreuungDokument extends FileMetadata {
 
 	public void setTimestampUpload(@Nonnull LocalDateTime timestampUpload) {
 		this.timestampUpload = timestampUpload;
+	}
+
+	@Nonnull
+	public FerienbetreuungDokument copyDokument(
+			@Nonnull FerienbetreuungDokument target,
+			FerienbetreuungAngabenContainer targetContainer) {
+		super.copyFileMetadata(target, AntragCopyType.MUTATION);
+			target.setTimestampUpload(getTimestampUpload());
+			target.setFerienbetreuungAngabenContainer(targetContainer);
+		return target;
 	}
 }

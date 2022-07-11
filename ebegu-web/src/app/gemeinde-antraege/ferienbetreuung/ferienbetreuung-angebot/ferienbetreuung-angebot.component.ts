@@ -20,11 +20,12 @@ import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
 import {TSBfsGemeinde} from '../../../../models/TSBfsGemeinde';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -50,7 +51,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     public bfsGemeinden: TSBfsGemeinde[];
 
     private angebot: TSFerienbetreuungAngabenAngebot;
-    private subscription: Subscription;
+    public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
+    private readonly unsubscribe$ = new Subject();
 
     public constructor(
         protected readonly errorService: ErrorService,
@@ -69,11 +71,12 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
                 this.ferienbetreuungService.getFerienbetreuungContainer(),
                 this.authService.principal$.pipe(filter(principal => !!principal)),
             ],
-        ).subscribe(([container, principal]) => {
+        ).pipe(takeUntil(this.unsubscribe$))
+            .subscribe(([container, principal]) => {
             this.container = container;
             this.angebot = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
                 container.angabenKorrektur?.angebot : container.angabenDeklaration?.angebot;
@@ -87,10 +90,12 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             this.bfsGemeinden.sort((a, b) => a.name.localeCompare(b.name));
             this.cd.markForCheck();
         });
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     protected setupForm(angebot: TSFerienbetreuungAngabenAngebot): void {
@@ -287,7 +292,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.ferienbetreuungService.saveAngebot(this.container.id, this.formToObject())
             .subscribe(() => {
                 this.formValidationTriggered = false;
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));

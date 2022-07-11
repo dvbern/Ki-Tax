@@ -17,7 +17,10 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -221,5 +224,24 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	public boolean isInBearbeitungGemeinde() {
 		return status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+	}
+
+	public void copyForErneuerung(FerienbetreuungAngabenContainer target) {
+		final FerienbetreuungAngaben angabenVorjahr = isAtLeastInPruefungKanton()? getAngabenKorrektur() : getAngabenDeklaration();
+		Objects.requireNonNull(angabenVorjahr);
+
+		angabenVorjahr.copyForErneuerung(target.getAngabenDeklaration());
+		copyDokumenteForErneuerung(target);
+	}
+
+	private void copyDokumenteForErneuerung(FerienbetreuungAngabenContainer target) {
+		Set<FerienbetreuungDokument> dokumentCopies = new HashSet<>();
+		if (getDokumente() != null && !getDokumente().isEmpty()) {
+			dokumentCopies.addAll(getDokumente()
+					.stream()
+					.map(ferienbetreuungDokument -> ferienbetreuungDokument.copyDokument(new FerienbetreuungDokument(), target))
+					.collect(Collectors.toSet()));
+		}
+		target.setDokumente(dokumentCopies);
 	}
 }

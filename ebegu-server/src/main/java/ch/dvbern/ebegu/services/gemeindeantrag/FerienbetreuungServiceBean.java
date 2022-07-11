@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -61,6 +62,7 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -92,6 +94,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Nonnull
 	@Override
@@ -205,7 +210,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		authorizer.checkReadAuthorization(container);
 
-		return Optional.ofNullable(container);
+		return Optional.of(container);
 	}
 
 	@Nonnull
@@ -238,7 +243,27 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		container.setGemeinde(gemeinde);
 		container.setGesuchsperiode(gesuchsperiode);
 		container.setAngabenDeklaration(new FerienbetreuungAngaben());
-		return persistence.persist(container);
+		container.setDokumente(new HashSet<>());
+
+		copyFromVorjahrAntragIfExistsAndIsGeprueft(container);
+
+		FerienbetreuungAngabenContainer persistedContainer = persistence.persist(container);
+
+		for (FerienbetreuungDokument ferienbetreuungDokument : Objects.requireNonNull(container.getDokumente())) {
+			persistence.persist(ferienbetreuungDokument);
+		}
+		return persistedContainer;
+	}
+
+	private void copyFromVorjahrAntragIfExistsAndIsGeprueft(
+		FerienbetreuungAngabenContainer container) {
+
+			Optional<FerienbetreuungAngabenContainer> antragOfpreviousYear =
+					findFerienbetreuungAngabenVorgaengerContainer(container)
+							.filter(FerienbetreuungAngabenContainer::isGeprueft);
+
+			antragOfpreviousYear.ifPresent(ferienbetreuungAngabenContainer ->
+					ferienbetreuungAngabenContainer.copyForErneuerung(container));
 	}
 
 	@Nonnull
@@ -649,6 +674,18 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 			container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
 			return persistence.merge(container);
+	}
+
+	@Override
+	public Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenVorgaengerContainer(
+			@Nonnull FerienbetreuungAngabenContainer container) {
+		Optional<Gesuchsperiode> vorgaengerGesuchperiode = gesuchsperiodeService.getVorjahrGesuchsperiode(container.getGesuchsperiode());
+
+		if (vorgaengerGesuchperiode.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return findFerienbetreuungAngabenContainer(container.getGemeinde(), vorgaengerGesuchperiode.get());
 	}
 }
 

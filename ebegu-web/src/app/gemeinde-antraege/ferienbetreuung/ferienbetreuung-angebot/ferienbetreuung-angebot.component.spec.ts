@@ -39,7 +39,7 @@ import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot.compone
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer'],
+    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer'],
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -60,7 +60,9 @@ describe('FerienbetreuungAngebotComponent', () => {
 
     const container = new TSFerienbetreuungAngabenContainer();
     container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenKorrektur = new TSFerienbetreuungAngaben();
     container.angabenDeklaration.angebot = new TSFerienbetreuungAngabenAngebot();
+    container.angabenKorrektur.angebot = new TSFerienbetreuungAngabenAngebot();
     authServiceSpy.principal$ = of(dummyUser);
 
     beforeEach(async () => {
@@ -89,6 +91,7 @@ describe('FerienbetreuungAngebotComponent', () => {
     beforeEach(() => {
         gemeindeRSSpy.getAllBfsGemeinden.and.returnValue(of([]).toPromise());
         ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        ferienbetreuungServiceSpy.getFerienbetreuungVorgaengerContainer.and.returnValue(of(container));
         authServiceSpy.principal$ = of(new TSBenutzer());
         fixture = TestBed.createComponent(FerienbetreuungAngebotComponent);
         component = fixture.componentInstance;

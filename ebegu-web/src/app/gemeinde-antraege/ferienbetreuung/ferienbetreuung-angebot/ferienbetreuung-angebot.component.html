@@ -16,925 +16,1009 @@
   -->
 
 <div class="ferienbetreuung-stammdaten">
-    <h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
-    <div class="row view-title">
-        <div class="col-md-12">
-            <h2>{{'FERIENBETREUUNG_ANGEBOT_SCHULJAHR' | translate:{periode: container?.gesuchsperiode?.gesuchsperiodeString, von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb), bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)} }}</h2>
-            <hr class="header"/>
-        </div>
-    </div>
+	<h1 class="access-for-all-title" translate>FERIENBETREUUNG_ANGEBOT</h1>
+	<div class="row view-title">
+		<div class="col-md-12">
+			<h2>{{'FERIENBETREUUNG_ANGEBOT_SCHULJAHR' | translate:{
+                periode: container?.gesuchsperiode?.gesuchsperiodeString,
+                von: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigAb),
+                bis: addOneMonthToMoment(container?.gesuchsperiode?.gueltigkeit.gueltigBis)
+            } }}</h2>
+			<hr class="header"/>
+		</div>
+	</div>
 
-    <form *ngIf="form" [formGroup]="form">
+	<form *ngIf="form" [formGroup]="form">
 
-        <div class="max-width-container-750">
+		<div class="max-width-container-750">
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label required
-                       [ngClass]="{'label-required-error': form && form.get('angebot').errors}"
-                       for="angebot_id">
-                    {{'FERIENBETREUUNG_NAME_ANGEBOT' | translate}}
-                    <dv-tooltip inputId="angebot_id"
-                                [text]="'FERIENBETREUUNG_NAME_ANGEBOT_HINT' | translate">
-                    </dv-tooltip>
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input type="text"
-                           matInput
-                           formControlName="angebot"
-                           id="angebot_id"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('angebot').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.angebot"
-                        [korrektur]="form.get('angebot').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+			<dv-input-container-x [verticalAlign]="true">
+				<label required
+					   [ngClass]="{'label-required-error': form && form.get('angebot').errors}"
+					   for="angebot_id">
+					{{'FERIENBETREUUNG_NAME_ANGEBOT' | translate}}
+					<dv-tooltip inputId="angebot_id"
+								[text]="'FERIENBETREUUNG_NAME_ANGEBOT_HINT' | translate">
+					</dv-tooltip>
+				</label>
+				<mat-form-field floatLabel="always">
+					<input type="text"
+						   matInput
+						   formControlName="angebot"
+						   id="angebot_id"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('angebot').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.angebot"
+							[korrektur]="form.get('angebot').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-        </div>
+		</div>
 
-        <mat-divider></mat-divider>
+		<mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
-            <h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
+		<div class="max-width-container-750">
+			<h3 translate class="uppercase">FERIENBETREUUNG_KONTAKTPERSON</h3>
 
-            <div formGroupName="angebotAdresse">
-                <div class="row">
+			<div formGroupName="angebotAdresse">
+				<div class="row">
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                        <label required
-                               for="angebotKontaktpersonVorname_id"
-                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
-                            {{'VORNAME' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   matInput
-                                   id="angebotKontaktpersonVorname_id"
-                                   formControlName="kontaktpersonVorname"
-                                   class="form-control dv-input"/>
-                            <mat-error
-                                *ngIf="form && form.get('angebotAdresse').get('kontaktpersonVorname').errors?.required"
-                                translate>ERROR_REQUIRED
-                            </mat-error>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonVorname"
-                                [korrektur]="form.get('angebotAdresse').get('kontaktpersonVorname').value"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+						<label required
+							   for="angebotKontaktpersonVorname_id"
+							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
+							{{'VORNAME' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   matInput
+								   id="angebotKontaktpersonVorname_id"
+								   formControlName="kontaktpersonVorname"
+								   class="form-control dv-input"/>
+							<mat-error
+									*ngIf="form && form.get('angebotAdresse').get('kontaktpersonVorname').errors?.required"
+									translate>ERROR_REQUIRED
+							</mat-error>
+							<dv-bisher-x
+									[deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonVorname"
+									[korrektur]="form.get('angebotAdresse').get('kontaktpersonVorname').value"
+									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+							</dv-bisher-x>
+						</mat-form-field>
+					</dv-input-container-x>
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-6">
-                        <label required
-                               for="angebotKontaktpersonNachname_id"
-                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
-                            {{'NAME' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   matInput
-                                   id="angebotKontaktpersonNachname_id"
-                                   formControlName="kontaktpersonNachname"
-                                   class="form-control dv-input"/>
-                            <mat-error
-                                *ngIf="form && form.get('angebotAdresse').get('kontaktpersonNachname').errors?.required"
-                                translate>ERROR_REQUIRED
-                            </mat-error>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonNachname"
-                                [korrektur]="form.get('angebotAdresse').get('kontaktpersonNachname').value"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
-                </div>
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-6">
+						<label required
+							   for="angebotKontaktpersonNachname_id"
+							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
+							{{'NAME' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   matInput
+								   id="angebotKontaktpersonNachname_id"
+								   formControlName="kontaktpersonNachname"
+								   class="form-control dv-input"/>
+							<mat-error
+									*ngIf="form && form.get('angebotAdresse').get('kontaktpersonNachname').errors?.required"
+									translate>ERROR_REQUIRED
+							</mat-error>
+							<dv-bisher-x
+									[deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonNachname"
+									[korrektur]="form.get('angebotAdresse').get('kontaktpersonNachname').value"
+									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+							</dv-bisher-x>
+						</mat-form-field>
+					</dv-input-container-x>
+				</div>
 
 
-                <div class="row">
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label required
-                               for="strasse_id"
-                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
-                            {{'ADRESSE_STRASSE' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="strasse_id"
-                                   matInput
-                                   formControlName="strasse"
-                                   class="form-control dv-input"/>
-                            <mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
-                                       translate>ERROR_REQUIRED
-                            </mat-error>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.strasse"
-                                [korrektur]="form.get('angebotAdresse').get('strasse').value"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
+				<div class="row">
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+						<label required
+							   for="strasse_id"
+							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
+							{{'ADRESSE_STRASSE' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   id="strasse_id"
+								   matInput
+								   formControlName="strasse"
+								   class="form-control dv-input"/>
+							<mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
+									   translate>ERROR_REQUIRED
+							</mat-error>
+							<dv-bisher-x
+									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.strasse"
+									[korrektur]="form.get('angebotAdresse').get('strasse').value"
+									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+							</dv-bisher-x>
+						</mat-form-field>
+					</dv-input-container-x>
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label for="hausnummer_id">
-                            {{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="hausnummer_id"
-                                   matInput
-                                   formControlName="hausnummer"
-                                   class="form-control dv-input"/>
-                        </mat-form-field>
-                        <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.hausnummer"
-                            [korrektur]="form.get('angebotAdresse').get('hausnummer').value"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                        </dv-bisher-x>
-                    </dv-input-container-x>
-                </div>
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+						<label for="hausnummer_id">
+							{{'FERIENBETREUUNG_ADRESSE_NR' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   id="hausnummer_id"
+								   matInput
+								   formControlName="hausnummer"
+								   class="form-control dv-input"/>
+						</mat-form-field>
+						<dv-bisher-x
+								[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.hausnummer"
+								[korrektur]="form.get('angebotAdresse').get('hausnummer').value"
+								[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+								[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+						</dv-bisher-x>
+					</dv-input-container-x>
+				</div>
 
-                <dv-input-container-x [verticalAlign]="true">
-                    <label for="adresse_stammdaten_zusatz_id">
-                        {{'ADRESSE_ZUSATZZEILE' | translate}}
-                    </label>
-                    <mat-form-field floatLabel="always">
-                        <input type="text"
-                               id="adresse_stammdaten_zusatz_id"
-                               matInput
-                               formControlName="zusatzzeile"
-                               class="form-control dv-input"/>
-                        <dv-bisher-x
-                            [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
-                            [korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
-                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                        </dv-bisher-x>
-                    </mat-form-field>
-                </dv-input-container-x>
+				<dv-input-container-x [verticalAlign]="true">
+					<label for="adresse_stammdaten_zusatz_id">
+						{{'ADRESSE_ZUSATZZEILE' | translate}}
+					</label>
+					<mat-form-field floatLabel="always">
+						<input type="text"
+							   id="adresse_stammdaten_zusatz_id"
+							   matInput
+							   formControlName="zusatzzeile"
+							   class="form-control dv-input"/>
+						<dv-bisher-x
+								[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
+								[korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
+								[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+								[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+						</dv-bisher-x>
+					</mat-form-field>
+				</dv-input-container-x>
 
-                <div class="row">
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-2">
-                        <label required
-                               for="plz_id"
-                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
-                            {{'ADRESSE_PLZ' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="plz_id"
-                                   matInput
-                                   formControlName="plz"
-                                   class="form-control dv-input"/>
-                            <mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
-                                       translate>ERROR_REQUIRED
-                            </mat-error>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.plz"
-                                [korrektur]="form.get('angebotAdresse').get('plz').value"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
+				<div class="row">
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-2">
+						<label required
+							   for="plz_id"
+							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
+							{{'ADRESSE_PLZ' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   id="plz_id"
+								   matInput
+								   formControlName="plz"
+								   class="form-control dv-input"/>
+							<mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
+									   translate>ERROR_REQUIRED
+							</mat-error>
+							<dv-bisher-x
+									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.plz"
+									[korrektur]="form.get('angebotAdresse').get('plz').value"
+									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+							</dv-bisher-x>
+						</mat-form-field>
+					</dv-input-container-x>
 
-                    <dv-input-container-x [verticalAlign]="true" class="col-xs-10">
-                        <label required
-                               for="ort_id"
-                               [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
-                            {{'ADRESSE_ORT' | translate}}
-                        </label>
-                        <mat-form-field floatLabel="always">
-                            <input type="text"
-                                   id="ort_id"
-                                   matInput
-                                   formControlName="ort"
-                                   class="form-control dv-input"/>
-                            <mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
-                                       translate>ERROR_REQUIRED
-                            </mat-error>
-                            <dv-bisher-x
-                                [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
-                                [korrektur]="form.get('angebotAdresse').get('ort').value"
-                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                                [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                            </dv-bisher-x>
-                        </mat-form-field>
-                    </dv-input-container-x>
-                </div>
-            </div>
+					<dv-input-container-x [verticalAlign]="true" class="col-xs-10">
+						<label required
+							   for="ort_id"
+							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
+							{{'ADRESSE_ORT' | translate}}
+						</label>
+						<mat-form-field floatLabel="always">
+							<input type="text"
+								   id="ort_id"
+								   matInput
+								   formControlName="ort"
+								   class="form-control dv-input"/>
+							<mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
+									   translate>ERROR_REQUIRED
+							</mat-error>
+							<dv-bisher-x
+									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
+									[korrektur]="form.get('angebotAdresse').get('ort').value"
+									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+							</dv-bisher-x>
+						</mat-form-field>
+					</dv-input-container-x>
+				</div>
+			</div>
 
-        </div>
+		</div>
 
-        <mat-divider></mat-divider>
+		<mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
 
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_ANGEBOT' | translate }}
-                <dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
-            </h3>
+		<h3 class="uppercase max-width-container-750">
+			{{'FERIENBETREUUNG_ANGEBOT' | translate }}
+			<dv-tooltip [text]="'FERIENBETREUUNG_ANGEBOT_HINT' | translate"></dv-tooltip>
+		</h3>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_ferienwoche_herbst_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           placeholder=""
-                           id="anzahl_ferienwoche_herbst_id"
-                           formControlName="anzahlFerienwochenHerbstferien"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
-                        [korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_ferienwoche_herbst_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   placeholder=""
+						   id="anzahl_ferienwoche_herbst_id"
+						   formControlName="anzahlFerienwochenHerbstferien"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
+							[korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenHerbstferien}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_ferienwoche_winter_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="anzahl_ferienwoche_winter_id"
-                           formControlName="anzahlFerienwochenWinterferien"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
-                        [korrektur]="form.get('anzahlFerienwochenWinterferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_ferienwoche_winter_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_ferienwoche_winter_id"
+						   formControlName="anzahlFerienwochenWinterferien"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
+							[korrektur]="form.get('anzahlFerienwochenWinterferien').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenWinterferien}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_ferienwoche_sport_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSportferien').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SPORT' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="anzahl_ferienwoche_sport_id"
-                           formControlName="anzahlFerienwochenSportferien"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_ferienwoche_sport_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSportferien').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SPORT' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_ferienwoche_sport_id"
+						   formControlName="anzahlFerienwochenSportferien"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenSportferien}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_ferienwoche_fruehling_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="anzahl_ferienwoche_fruehling_id"
-                           formControlName="anzahlFerienwochenFruehlingsferien"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
-                        [korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_ferienwoche_fruehling_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_ferienwoche_fruehling_id"
+						   formControlName="anzahlFerienwochenFruehlingsferien"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
+							[korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenFruehlingsferien}}</span>
+			</div>
+		</div>
 
-        <dv-input-container-x>
-            <label required
-                   for="anzahl_ferienwoche_sommer_id"
-                   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
-            </label>
-            <mat-form-field floatLabel="always">
-                <input matInput
-                       id="anzahl_ferienwoche_sommer_id"
-                       formControlName="anzahlFerienwochenSommerferien"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
-                    [korrektur]="form.get('anzahlFerienwochenSommerferien').value"
-                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_ferienwoche_sommer_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_ferienwoche_sommer_id"
+						   formControlName="anzahlFerienwochenSommerferien"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
+							[korrektur]="form.get('anzahlFerienwochenSommerferien').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenSommerferien}}</span>
+			</div>
+		</div>
 
-        <dv-input-container-x>
-            <label required
-                   for="anzahl_tage_id"
-                   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
-                {{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
-            </label>
-            <mat-form-field floatLabel="always">
-                <input matInput
-                       id="anzahl_tage_id"
-                       formControlName="anzahlTage"
-                       class="form-control dv-input"/>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
-                           translate>ERROR_REQUIRED
-                </mat-error>
-                <mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
-                           translate>ERROR_NOT_INTEGER
-                </mat-error>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
-                    [korrektur]="form.get('anzahlTage').value"
-                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_tage_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_tage_id"
+						   formControlName="anzahlTage"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
+							[korrektur]="form.get('anzahlTage').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlTage}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_id">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
+				<label for="bemerkungen_id">
+					{{'BEMERKUNGEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
-                          id="bemerkungen_id"
-                          formControlName="bemerkungenAnzahlFerienwochen"
-                          class="form-control dv-input"></textarea>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenAnzahlFerienwochen"
-                        [korrektur]="form.get('bemerkungenAnzahlFerienwochen').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+						  id="bemerkungen_id"
+						  formControlName="bemerkungenAnzahlFerienwochen"
+						  class="form-control dv-input"></textarea>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenAnzahlFerienwochen"
+							[korrektur]="form.get('bemerkungenAnzahlFerienwochen').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.angebot?.bemerkungenAnzahlFerienwochen"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.bemerkungenAnzahlFerienwochen}}</span>
+			</div>
+		</div>
 
-        </div>
+		<mat-divider></mat-divider>
 
-        <mat-divider></mat-divider>
+		<h3 class="uppercase">
+			{{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
+			<dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
+		</h3>
 
-        <div class="max-width-container-750">
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_OEFFNUNGSZEITEN' | translate }}
-                <dv-tooltip [text]="'FERIENBETREUUNG_OEFFNUNGSZEITEN_HINT' | translate"></dv-tooltip>
-            </h3>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   for="anzahl_stunden_betreuungstag_id"
+					   [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="anzahl_stunden_betreuungstag_id"
+						   formControlName="anzahlStundenProBetreuungstag"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.isNotHalf"
+							   translate>ERROR_NOT_HALF
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlStundenProBetreuungstag"
+							[korrektur]="form.get('anzahlStundenProBetreuungstag').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlStundenProBetreuungstag}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x>
-                <label required
-                       for="anzahl_stunden_betreuungstag_id"
-                       [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="anzahl_stunden_betreuungstag_id"
-                           formControlName="anzahlStundenProBetreuungstag"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.isNotHalf"
-                               translate>ERROR_NOT_HALF
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlStundenProBetreuungstag"
-                        [korrektur]="form.get('anzahlStundenProBetreuungstag').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label required
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
+					   id="betreuungErfolgtTagsueber_id">
+					{{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							aria-labelledby="betreuungErfolgtTagsueber_id"
+							class=""
+							name="betreuungErfolgtTagsueber"
+							horizontal
+							[disabled]="form.get('betreuungErfolgtTagsueber').disabled"
+							formControlName="betreuungErfolgtTagsueber">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungErfolgtTagsueber"
+							[korrektur]="form.get('betreuungErfolgtTagsueber').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{(vorgaenger.angabenKorrektur.angebot?.betreuungErfolgtTagsueber ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</span>
+			</div>
+		</div>
 
-            <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
-                       id="betreuungErfolgtTagsueber_id">
-                    {{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        aria-labelledby="betreuungErfolgtTagsueber_id"
-                        class=""
-                        name="betreuungErfolgtTagsueber"
-                        horizontal
-                        [disabled]="form.get('betreuungErfolgtTagsueber').disabled"
-                        formControlName="betreuungErfolgtTagsueber">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.betreuungErfolgtTagsueber"
-                        [korrektur]="form.get('betreuungErfolgtTagsueber').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
-
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_oeffnungszeiten_id">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750" [verticalAlign]="true">
+				<label for="bemerkungen_oeffnungszeiten_id">
+					{{'BEMERKUNGEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
-                          id="bemerkungen_oeffnungszeiten_id"
-                          formControlName="bemerkungenOeffnungszeiten"
-                          class="form-control dv-input"></textarea>
+						  id="bemerkungen_oeffnungszeiten_id"
+						  formControlName="bemerkungenOeffnungszeiten"
+						  class="form-control dv-input"></textarea>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
+							[korrektur]="form.get('bemerkungenOeffnungszeiten').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
+                <span *ngIf="vorgaenger.angabenKorrektur.angebot?.bemerkungenOeffnungszeiten"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.bemerkungenOeffnungszeiten}}</span>
+			</div>
+		</div>
+
+		<mat-divider></mat-divider>
+
+		<div class="max-width-container-750">
+			<h3 class="uppercase">
+				{{'FERIENBETREUUNG_KOOPERATION' | translate }}
+			</h3>
+
+			<dv-input-container-x [verticalAlign]="true">
+				<label for="am-angebot-beteiligte-gemeinden">
+					{{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
+					<dv-tooltip
+							[text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
+				</label>
+				<mat-form-field *ngIf="bfsGemeinden?.length">
+					<mat-select class="form-control"
+								formControlName="finanziellBeteiligteGemeinden"
+								name="finanziellBeteiligteGemeinden"
+								id="am-angebot-beteiligte-gemeinden"
+								[disabled]="form.get('finanziellBeteiligteGemeinden').disabled"
+								[multiple]="true">
+						<mat-option *ngFor="let gemeinde of bfsGemeinden"
+									[value]="gemeinde.name">
+							{{gemeinde.name}}
+						</mat-option>
+					</mat-select>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
+							[korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
+
+			<p class="margin-bottom-30">{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
+
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="gemeindeFuehrtAngebotSelber"
+							horizontal
+							[disabled]="form.get('gemeindeFuehrtAngebotSelber').disabled"
+							formControlName="gemeindeFuehrtAngebotSelber">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotSelber"
+							[korrektur]="form.get('gemeindeFuehrtAngebotSelber').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_IN_KOOPERATION' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="gemeindeFuehrtAngebotInKooperation"
+							horizontal
+							[disabled]="form.get('gemeindeFuehrtAngebotInKooperation').disabled"
+							formControlName="gemeindeFuehrtAngebotInKooperation">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
                     <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
-                        [korrektur]="form.get('bemerkungenOeffnungszeiten').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+                        [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotInKooperation"
+                        [korrektur]="form.get('gemeindeFuehrtAngebotInKooperation').value"
+                        [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-        </div>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="gemeindeBeauftragtExterneAnbieter"
+							horizontal
+							[disabled]="form.get('gemeindeBeauftragtExterneAnbieter').disabled"
+							formControlName="gemeindeBeauftragtExterneAnbieter">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.gemeindeBeauftragtExterneAnbieter"
+							[korrektur]="form.get('gemeindeBeauftragtExterneAnbieter').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-        <mat-divider></mat-divider>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_ANGEBOT_VEREINE_UND_PRIVATE_INTEGRIERT' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="angebotVereineUndPrivateIntegriert"
+							horizontal
+							[disabled]="form.get('angebotVereineUndPrivateIntegriert').disabled"
+							formControlName="angebotVereineUndPrivateIntegriert">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.angebotVereineUndPrivateIntegriert"
+							[korrektur]="form.get('angebotVereineUndPrivateIntegriert').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-        <div class="max-width-container-750">
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_KOOPERATION' | translate }}
-            </h3>
-
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="am-angebot-beteiligte-gemeinden">
-                    {{'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN' | translate}}
-                    <dv-tooltip
-                        [text]="'FERIENBETREUUNG_FINANZIELL_BETEILIGTE_GEMEINDEN_HINT' | translate"></dv-tooltip>
-                </label>
-                <mat-form-field *ngIf="bfsGemeinden?.length">
-                    <mat-select class="form-control"
-                                formControlName="finanziellBeteiligteGemeinden"
-                                name="finanziellBeteiligteGemeinden"
-                                id="am-angebot-beteiligte-gemeinden"
-                                [disabled]="form.get('finanziellBeteiligteGemeinden').disabled"
-                                [multiple]="true">
-                        <mat-option *ngFor="let gemeinde of bfsGemeinden"
-                                    [value]="gemeinde.name">
-                            {{gemeinde.name}}
-                        </mat-option>
-                    </mat-select>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
-                        [korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
-
-            <p class="margin-bottom-30">{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
-
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="gemeindeFuehrtAngebotSelber"
-                        horizontal
-                        [disabled]="form.get('gemeindeFuehrtAngebotSelber').disabled"
-                        formControlName="gemeindeFuehrtAngebotSelber">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotSelber"
-                        [korrektur]="form.get('gemeindeFuehrtAngebotSelber').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
-
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_IN_KOOPERATION' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="gemeindeFuehrtAngebotInKooperation"
-                        horizontal
-                        [disabled]="form.get('gemeindeFuehrtAngebotInKooperation').disabled"
-                        formControlName="gemeindeFuehrtAngebotInKooperation">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </dv-radio-container-x>
-            </dv-input-container-x>
-
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="gemeindeBeauftragtExterneAnbieter"
-                        horizontal
-                        [disabled]="form.get('gemeindeBeauftragtExterneAnbieter').disabled"
-                        formControlName="gemeindeBeauftragtExterneAnbieter">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeBeauftragtExterneAnbieter"
-                        [korrektur]="form.get('gemeindeBeauftragtExterneAnbieter').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
-
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_ANGEBOT_VEREINE_UND_PRIVATE_INTEGRIERT' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="angebotVereineUndPrivateIntegriert"
-                        horizontal
-                        [disabled]="form.get('angebotVereineUndPrivateIntegriert').disabled"
-                        formControlName="angebotVereineUndPrivateIntegriert">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.angebotVereineUndPrivateIntegriert"
-                        [korrektur]="form.get('angebotVereineUndPrivateIntegriert').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
-
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_kooperation">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+			<dv-input-container-x [verticalAlign]="true">
+				<label for="bemerkungen_kooperation">
+					{{'BEMERKUNGEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
-                          id="bemerkungen_kooperation"
-                          formControlName="bemerkungenKooperation"
-                          class="form-control dv-input"></textarea>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenKooperation"
-                        [korrektur]="form.get('bemerkungenKooperation').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+						  id="bemerkungen_kooperation"
+						  formControlName="bemerkungenKooperation"
+						  class="form-control dv-input"></textarea>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenKooperation"
+							[korrektur]="form.get('bemerkungenKooperation').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-        </div>
+		</div>
 
-        <mat-divider></mat-divider>
+		<mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
+		<div class="max-width-container-750">
 
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
-            </h3>
+			<h3 class="uppercase">
+				{{'FERIENBETREUUNG_PERSONAL_UND_QUALITAET' | translate }}
+			</h3>
 
-            <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
-                    {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="leitungDurchPersonMitAusbildung"
-                        horizontal
-                        [disabled]="form.get('leitungDurchPersonMitAusbildung').disabled"
-                        formControlName="leitungDurchPersonMitAusbildung">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.leitungDurchPersonMitAusbildung"
-                        [korrektur]="form.get('leitungDurchPersonMitAusbildung').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label required
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
+					{{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="leitungDurchPersonMitAusbildung"
+							horizontal
+							[disabled]="form.get('leitungDurchPersonMitAusbildung').disabled"
+							formControlName="leitungDurchPersonMitAusbildung">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.leitungDurchPersonMitAusbildung"
+							[korrektur]="form.get('leitungDurchPersonMitAusbildung').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-            <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
-                    {{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="betreuungDurchPersonenMitErfahrung"
-                        horizontal
-                        [disabled]="form.get('betreuungDurchPersonenMitErfahrung').disabled"
-                        formControlName="betreuungDurchPersonenMitErfahrung">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.betreuungDurchPersonenMitErfahrung"
-                        [korrektur]="form.get('betreuungDurchPersonenMitErfahrung').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label required
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
+					{{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="betreuungDurchPersonenMitErfahrung"
+							horizontal
+							[disabled]="form.get('betreuungDurchPersonenMitErfahrung').disabled"
+							formControlName="betreuungDurchPersonenMitErfahrung">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungDurchPersonenMitErfahrung"
+							[korrektur]="form.get('betreuungDurchPersonenMitErfahrung').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-            <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('anzahlKinderAngemessen').errors}">
-                    {{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
-                    <dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="anzahlKinderAngemessen"
-                        horizontal
-                        [disabled]="form.get('anzahlKinderAngemessen').disabled"
-                        formControlName="anzahlKinderAngemessen">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.anzahlKinderAngemessen"
-                        [korrektur]="form.get('anzahlKinderAngemessen').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
+			<dv-input-container-x>
+				<label required
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('anzahlKinderAngemessen').errors}">
+					{{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
+					<dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="anzahlKinderAngemessen"
+							horizontal
+							[disabled]="form.get('anzahlKinderAngemessen').disabled"
+							formControlName="anzahlKinderAngemessen">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlKinderAngemessen"
+							[korrektur]="form.get('anzahlKinderAngemessen').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
 
-                </dv-radio-container-x>
-            </dv-input-container-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
+		</div>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="betreuungsschluessel_id"
-                       required
-                       [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
-                    {{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
-                </label>
-                <mat-form-field floatLabel="always">
-                    <input matInput
-                           id="betreuungsschluessel_id"
-                           formControlName="betreuungsschluessel"
-                           class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
-                               translate>ERROR_REQUIRED
-                    </mat-error>
-                    <mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.isNotInteger"
-                               translate>ERROR_NOT_INTEGER
-                    </mat-error>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.betreuungsschluessel"
-                        [korrektur]="form.get('betreuungsschluessel').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+		<div class="flex-row">
+			<dv-input-container-x class="max-width-container-750">
+				<label for="betreuungsschluessel_id"
+					   required
+					   [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
+					{{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
+				</label>
+				<mat-form-field floatLabel="always">
+					<input matInput
+						   id="betreuungsschluessel_id"
+						   formControlName="betreuungsschluessel"
+						   class="form-control dv-input"/>
+					<mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
+							   translate>ERROR_REQUIRED
+					</mat-error>
+					<mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.isNotInteger"
+							   translate>ERROR_NOT_INTEGER
+					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungsschluessel"
+							[korrektur]="form.get('betreuungsschluessel').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_personal">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
+                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenWinterferien}}</span>
+			</div>
+		</div>
+
+		<div class="max-width-container-750">
+			<dv-input-container-x [verticalAlign]="true">
+				<label for="bemerkungen_personal">
+					{{'BEMERKUNGEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
-                          id="bemerkungen_personal"
-                          formControlName="bemerkungenPersonal"
-                          class="form-control dv-input"></textarea>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenPersonal"
-                        [korrektur]="form.get('bemerkungenPersonal').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+						  id="bemerkungen_personal"
+						  formControlName="bemerkungenPersonal"
+						  class="form-control dv-input"></textarea>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenPersonal"
+							[korrektur]="form.get('bemerkungenPersonal').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-        </div>
+		</div>
 
-        <mat-divider></mat-divider>
+		<mat-divider></mat-divider>
 
-        <div class="max-width-container-750">
+		<div class="max-width-container-750">
 
-            <h3 class="uppercase">
-                {{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
-            </h3>
+			<h3 class="uppercase">
+				{{'FERIENBETREUUNG_TARIFSYSTEM' | translate }}
+			</h3>
 
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_FIXER_TARIF_KINDER_DER_GEMEINDE' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="fixerTarifKinderDerGemeinde"
-                        horizontal
-                        [disabled]="form.get('fixerTarifKinderDerGemeinde').disabled"
-                        formControlName="fixerTarifKinderDerGemeinde">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.fixerTarifKinderDerGemeinde"
-                        [korrektur]="form.get('fixerTarifKinderDerGemeinde').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_FIXER_TARIF_KINDER_DER_GEMEINDE' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="fixerTarifKinderDerGemeinde"
+							horizontal
+							[disabled]="form.get('fixerTarifKinderDerGemeinde').disabled"
+							formControlName="fixerTarifKinderDerGemeinde">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.fixerTarifKinderDerGemeinde"
+							[korrektur]="form.get('fixerTarifKinderDerGemeinde').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_EINKOMMENSABHAENGIGER_TARIF_KINDER' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="einkommensabhaengigerTarifKinderDerGemeinde"
-                        horizontal
-                        [disabled]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').disabled"
-                        formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.einkommensabhaengigerTarifKinderDerGemeinde"
-                        [korrektur]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_EINKOMMENSABHAENGIGER_TARIF_KINDER' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="einkommensabhaengigerTarifKinderDerGemeinde"
+							horizontal
+							[disabled]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').disabled"
+							formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.einkommensabhaengigerTarifKinderDerGemeinde"
+							[korrektur]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="tagesschuleTarifGiltFuerFerienbetreuung"
-                        horizontal
-                        [disabled]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').disabled"
-                        formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.tagesschuleTarifGiltFuerFerienbetreuung"
-                        [korrektur]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_TAGESSCHULE_TARIF_GILT_FUER_FERIENBETREUUNG' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="tagesschuleTarifGiltFuerFerienbetreuung"
+							horizontal
+							[disabled]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').disabled"
+							formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.tagesschuleTarifGiltFuerFerienbetreuung"
+							[korrektur]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-            <dv-input-container-x>
-                <label>
-                    {{'FERIENBETREUUNG_TARIF_ABGELEITET' | translate}}
-                </label>
-                <dv-radio-container-x>
-                    <mat-radio-group
-                        class=""
-                        name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
-                        horizontal
-                        [disabled]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').disabled"
-                        formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
-                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                    </mat-radio-group>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
-                        [korrektur]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </dv-radio-container-x>
-            </dv-input-container-x>
+			<dv-input-container-x>
+				<label>
+					{{'FERIENBETREUUNG_TARIF_ABGELEITET' | translate}}
+				</label>
+				<dv-radio-container-x>
+					<mat-radio-group
+							class=""
+							name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
+							horizontal
+							[disabled]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').disabled"
+							formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
+						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+					</mat-radio-group>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
+							[korrektur]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</dv-radio-container-x>
+			</dv-input-container-x>
 
-        <dv-input-container-x>
-            <label for="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif">
-                {{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
-            </label>
-            <mat-form-field>
-                <mat-select class="form-control"
-                            formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
-                            name="kinderAusAnderenGemeindenZahlenAnderenTarif"
-                            id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
-                            [disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
-                            [multiple]="false">
-                    <mat-option value="JA">
-                        {{'LABEL_JA' | translate}}
-                    </mat-option>
-                    <mat-option value="NEIN">
-                        {{'LABEL_NEIN' | translate}}
-                    </mat-option>
-                    <mat-option value="KEINE_KINDER_AUS_ANDEREN_GEMEINDEN">
-                        {{'KEINE_KINDER_AUS_ANDEREN_GEMEINDEN' | translate}}
-                    </mat-option>
-                </mat-select>
-                <dv-bisher-x
-                    [deklaration]="container?.angabenDeklaration?.angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif"
-                    [korrektur]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value"
-                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                    [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                </dv-bisher-x>
-            </mat-form-field>
-        </dv-input-container-x>
+			<dv-input-container-x>
+				<label for="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif">
+					{{'FERIENBETREUUNG_KINDER_ANDERER_GEMEINDEN_ANDERER_TARIF' | translate}}
+				</label>
+				<mat-form-field>
+					<mat-select class="form-control"
+								formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
+								name="kinderAusAnderenGemeindenZahlenAnderenTarif"
+								id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
+								[disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
+								[multiple]="false">
+						<mat-option value="JA">
+							{{'LABEL_JA' | translate}}
+						</mat-option>
+						<mat-option value="NEIN">
+							{{'LABEL_NEIN' | translate}}
+						</mat-option>
+						<mat-option value="KEINE_KINDER_AUS_ANDEREN_GEMEINDEN">
+							{{'KEINE_KINDER_AUS_ANDEREN_GEMEINDEN' | translate}}
+						</mat-option>
+					</mat-select>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif"
+							[korrektur]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <label for="bemerkungen_tarifsystem_id">
-                    {{'BEMERKUNGEN' | translate }}
-                </label>
-                <mat-form-field floatLabel="always" class="no-margin-left">
+			<dv-input-container-x [verticalAlign]="true">
+				<label for="bemerkungen_tarifsystem_id">
+					{{'BEMERKUNGEN' | translate }}
+				</label>
+				<mat-form-field floatLabel="always" class="no-margin-left">
                 <textarea matInput
-                          id="bemerkungen_tarifsystem_id"
-                          formControlName="bemerkungenTarifsystem"
-                          class="form-control dv-input"></textarea>
-                    <dv-bisher-x
-                        [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenTarifsystem"
-                        [korrektur]="form.get('bemerkungenTarifsystem').value"
-                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
-                        [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
-                    </dv-bisher-x>
-                </mat-form-field>
-            </dv-input-container-x>
+						  id="bemerkungen_tarifsystem_id"
+						  formControlName="bemerkungenTarifsystem"
+						  class="form-control dv-input"></textarea>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenTarifsystem"
+							[korrektur]="form.get('bemerkungenTarifsystem').value"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
+				</mat-form-field>
+			</dv-input-container-x>
 
-        </div>
+		</div>
 
-    </form>
+	</form>
 
-    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
-        </div>
-    </div>
+	<div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
+		<div class="col-md-12">
+			<a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
+		</div>
+	</div>
 
-    <div class="actions">
-        <button type="button" class="dv-btn cancel-button"
-                *ngIf="canSeeSave | async"
-                (click)="save()"
-                [textContent]="'SAVE' | translate">
+	<div class="actions">
+		<button type="button" class="dv-btn cancel-button"
+				*ngIf="canSeeSave | async"
+				(click)="save()"
+				[textContent]="'SAVE' | translate">
         </button>
         <dv-loading-button
             *ngIf="canSeeAbschliessen | async"
             type="button"
-            (buttonClick)="onAbschliessen()">
-            <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
-            <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
-        </dv-loading-button>
-    </div>
+				(buttonClick)="onAbschliessen()">
+			<span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
+			<span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
+		</dv-loading-button>
+	</div>
 
 </div>
