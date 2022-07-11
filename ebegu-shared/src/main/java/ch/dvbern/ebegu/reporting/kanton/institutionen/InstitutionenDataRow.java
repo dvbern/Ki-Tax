@@ -43,8 +43,10 @@ public class InstitutionenDataRow {
 	private String traegergemeinde = null;
 	@Nullable
 	private String standortgemeinde = null;
-	@Nullable private
-	Long bfsGemeinde = null;
+	@Nullable
+	private Long bfsTraegergemeinde = null;
+	@Nullable
+	private Long bfsStandortgemeinde = null;
 	private String telefon = null;
 	private String url = null;
 	@Nullable
@@ -302,12 +304,12 @@ public class InstitutionenDataRow {
 	}
 
 	@Nullable
-	public Long getBfsGemeinde() {
-		return bfsGemeinde;
+	public Long getBfsTraegergemeinde() {
+		return bfsTraegergemeinde;
 	}
 
-	public void setBfsGemeinde(@Nullable Long bfsGemeinde) {
-		this.bfsGemeinde = bfsGemeinde;
+	public void setBfsTraegergemeinde(@Nullable Long bfsTraegergemeinde) {
+		this.bfsTraegergemeinde = bfsTraegergemeinde;
 	}
 
 	@Nullable
@@ -425,5 +427,14 @@ public class InstitutionenDataRow {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public Long getBfsStandortgemeinde() {
+		return bfsStandortgemeinde;
+	}
+
+	public void setBfsStandortgemeinde(@Nullable Long bfsStandortgemeinde) {
+		this.bfsStandortgemeinde = bfsStandortgemeinde;
 	}
 }

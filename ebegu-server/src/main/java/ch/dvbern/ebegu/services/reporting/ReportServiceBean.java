@@ -2401,12 +2401,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 		if (gemeinde != null) {
 			row.setTraegergemeinde(gemeinde.getName());
-			row.setBfsGemeinde(gemeinde.getBfsNummer());
+			row.setBfsTraegergemeinde(gemeinde.getBfsNummer());
 		}
 
 		if (institutionStammdaten.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
 			&& institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine() != null) {
 			row.setStandortgemeinde(institutionStammdaten.getAdresse().getGemeinde());
+			row.setBfsStandortgemeinde(institutionStammdaten.getAdresse().getBfsNummer());
 		}
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
