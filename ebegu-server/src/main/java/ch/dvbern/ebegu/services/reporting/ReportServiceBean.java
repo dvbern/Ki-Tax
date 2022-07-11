@@ -120,6 +120,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -2451,15 +2452,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private List<FerienbetreuungDataRow> getReportDataFerienbetreuung() {
 		return ferienbetreuungService.getAllFerienbetreuungAntraege().stream()
-			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKanton)
+			.filter(FerienbetreuungAngabenContainer::isAtLeastInPruefungKantonOrZurueckAnGemeinde)
 			.map(this::convertFerienbetreungToDataRow)
 			.collect(Collectors.toList());
 	}
 
 	private FerienbetreuungDataRow convertFerienbetreungToDataRow(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
 		FerienbetreuungDataRow ferienbetreuungDataRow = new FerienbetreuungDataRow();
-		FerienbetreuungAngaben ferienbetreuungAngaben = ferienbetreuungAngabenContainer.getAngabenKorrektur() != null ?
-			ferienbetreuungAngabenContainer.getAngabenKorrektur() : ferienbetreuungAngabenContainer.getAngabenDeklaration();
+		FerienbetreuungAngaben ferienbetreuungAngaben = getFerienbetreuungAngabenBasedOnStatus(ferienbetreuungAngabenContainer);
 
 		ferienbetreuungDataRow.setGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getName());
 		ferienbetreuungDataRow.setBfsNummerGemeinde(ferienbetreuungAngabenContainer.getGemeinde().getBfsNummer());
@@ -2475,6 +2475,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		setBerechnungenValues(ferienbetreuungDataRow, ferienbetreuungAngaben.getFerienbetreuungBerechnungen());
 
 		return ferienbetreuungDataRow;
+	}
+
+	private FerienbetreuungAngaben getFerienbetreuungAngabenBasedOnStatus(FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer) {
+		// falls Antrag zurück an Gemeinde gegeben wurde, sollen der Antrag im Report sichtbar sein. Allerdings nur
+		// die Deklaration, um zu verhindern, dass nicht freigegebene Änderungen schon für den Kanton sichtbar sind.
+		if (ferienbetreuungAngabenContainer.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {
+			return ferienbetreuungAngabenContainer.getAngabenDeklaration();
+		}
+		// sonst zeigen wir immer die Korrektur, falls vorhanden
+		return ferienbetreuungAngabenContainer.getAngabenKorrektur() != null ?
+			ferienbetreuungAngabenContainer.getAngabenKorrektur() : ferienbetreuungAngabenContainer.getAngabenDeklaration();
 	}
 
 	private void setStammdatenValues(

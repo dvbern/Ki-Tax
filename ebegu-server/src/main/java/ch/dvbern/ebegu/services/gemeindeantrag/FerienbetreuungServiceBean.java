@@ -476,14 +476,23 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenContainer ferienbetreuungAngabenFreigeben(
 		@Nonnull FerienbetreuungAngabenContainer container) {
 		Preconditions.checkArgument(
-			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE,
-			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE"
+			container.getStatus() == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+			|| container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE,
+			"FerienbetreuungAngabenContainer must be in state IN_BEARBEITUNG_GEMEINDE or ZURUECK_AN_GEMEINDE"
 		);
 
-		Preconditions.checkArgument(
-			container.getAngabenDeklaration().isReadyForFreigeben(),
-			"angaben incomplete"
-		);
+		if (container.getStatus() == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE) {
+			Objects.requireNonNull(container.getAngabenKorrektur());
+			Preconditions.checkArgument(
+				container.getAngabenKorrektur().isReadyForFreigeben(),
+				"angaben incomplete"
+			);
+		} else {
+			Preconditions.checkArgument(
+				container.getAngabenDeklaration().isReadyForFreigeben(),
+				"angaben incomplete"
+			);
+		}
 
 		container.copyForFreigabe();
 		container.setStatus(FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON);
@@ -525,9 +534,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 			"FerienbetreuungAngabenContainer must not be null"
 		);
 
-		container.copyForZurueckAnGemeinde();
-
-		container.setStatus(FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE);
+		container.setStatus(FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE);
 
 		container.getAngabenDeklaration()
 			.getFerienbetreuungAngabenAngebot()

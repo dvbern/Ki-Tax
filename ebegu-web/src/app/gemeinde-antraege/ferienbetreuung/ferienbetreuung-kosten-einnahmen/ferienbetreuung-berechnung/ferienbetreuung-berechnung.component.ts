@@ -126,7 +126,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
     }
 
     private getAngabenForStatus(): TSFerienbetreuungAngaben {
-        return this.container?.isAtLeastInPruefungKanton() ?
+        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben() ?
             this.container?.angabenKorrektur :
             this.container?.angabenDeklaration;
     }

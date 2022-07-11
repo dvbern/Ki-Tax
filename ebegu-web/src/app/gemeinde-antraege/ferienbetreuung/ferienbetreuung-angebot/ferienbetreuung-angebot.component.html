@@ -49,7 +49,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.angebot"
                         [korrektur]="form.get('angebot').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -84,7 +84,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonVorname"
                                 [korrektur]="form.get('angebotAdresse').get('kontaktpersonVorname').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -109,7 +109,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonNachname"
                                 [korrektur]="form.get('angebotAdresse').get('kontaktpersonNachname').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -136,7 +136,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.strasse"
                                 [korrektur]="form.get('angebotAdresse').get('strasse').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -156,7 +156,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.hausnummer"
                             [korrektur]="form.get('angebotAdresse').get('hausnummer').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </dv-input-container-x>
@@ -175,7 +175,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
                             [korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -200,7 +200,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.plz"
                                 [korrektur]="form.get('angebotAdresse').get('plz').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -224,7 +224,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
                                 [korrektur]="form.get('angebotAdresse').get('ort').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -264,7 +264,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
                         [korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -290,7 +290,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
                         [korrektur]="form.get('anzahlFerienwochenWinterferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -336,7 +336,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
                         [korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -362,7 +362,7 @@
                 <dv-bisher-x
                     [deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
                     [korrektur]="form.get('anzahlFerienwochenSommerferien').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -388,7 +388,7 @@
                 <dv-bisher-x
                     [deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
                     [korrektur]="form.get('anzahlTage').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -406,7 +406,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenAnzahlFerienwochen"
                         [korrektur]="form.get('bemerkungenAnzahlFerienwochen').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -442,7 +442,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.anzahlStundenProBetreuungstag"
                         [korrektur]="form.get('anzahlStundenProBetreuungstag').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -468,7 +468,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.betreuungErfolgtTagsueber"
                         [korrektur]="form.get('betreuungErfolgtTagsueber').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -486,7 +486,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
                         [korrektur]="form.get('bemerkungenOeffnungszeiten').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -522,7 +522,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
                         [korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -547,7 +547,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotSelber"
                         [korrektur]="form.get('gemeindeFuehrtAngebotSelber').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -587,7 +587,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeBeauftragtExterneAnbieter"
                         [korrektur]="form.get('gemeindeBeauftragtExterneAnbieter').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -610,7 +610,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.angebotVereineUndPrivateIntegriert"
                         [korrektur]="form.get('angebotVereineUndPrivateIntegriert').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -628,7 +628,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenKooperation"
                         [korrektur]="form.get('bemerkungenKooperation').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -662,7 +662,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.leitungDurchPersonMitAusbildung"
                         [korrektur]="form.get('leitungDurchPersonMitAusbildung').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -686,7 +686,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.betreuungDurchPersonenMitErfahrung"
                         [korrektur]="form.get('betreuungDurchPersonenMitErfahrung').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -711,7 +711,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.anzahlKinderAngemessen"
                         [korrektur]="form.get('anzahlKinderAngemessen').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
 
@@ -738,7 +738,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.betreuungsschluessel"
                         [korrektur]="form.get('betreuungsschluessel').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -756,7 +756,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenPersonal"
                         [korrektur]="form.get('bemerkungenPersonal').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -789,7 +789,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.fixerTarifKinderDerGemeinde"
                         [korrektur]="form.get('fixerTarifKinderDerGemeinde').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -812,7 +812,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.einkommensabhaengigerTarifKinderDerGemeinde"
                         [korrektur]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -835,7 +835,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.tagesschuleTarifGiltFuerFerienbetreuung"
                         [korrektur]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -858,7 +858,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
                         [korrektur]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </dv-radio-container-x>
@@ -888,7 +888,7 @@
                 <dv-bisher-x
                     [deklaration]="container?.angabenDeklaration?.angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif"
                     [korrektur]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </mat-form-field>
@@ -906,7 +906,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenTarifsystem"
                         [korrektur]="form.get('bemerkungenTarifsystem').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -926,13 +926,11 @@
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
                 (click)="save()"
-                [disabled]="formularReadOnly()"
                 [textContent]="'SAVE' | translate">
         </button>
         <dv-loading-button
             *ngIf="canSeeAbschliessen | async"
             type="button"
-            [buttonDisabled]="formularReadOnly()"
             (buttonClick)="onAbschliessen()">
             <span *ngIf="!container?.isInPruefungKanton()" translate>ABSCHLIESSEN</span>
             <span *ngIf="container?.isInPruefungKanton()" translate>GEPRUEFT</span>
