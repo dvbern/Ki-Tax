@@ -227,7 +227,9 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	}
 
 	public void copyForErneuerung(FerienbetreuungAngabenContainer target) {
-		final FerienbetreuungAngaben angabenVorjahr = isAtLeastInPruefungKanton()? getAngabenKorrektur() : getAngabenDeklaration();
+		final FerienbetreuungAngaben angabenVorjahr = isAtLeastInPruefungKantonOrZurueckAnGemeinde()
+			? getAngabenKorrektur()
+			: getAngabenDeklaration();
 		Objects.requireNonNull(angabenVorjahr);
 
 		angabenVorjahr.copyForErneuerung(target.getAngabenDeklaration());
