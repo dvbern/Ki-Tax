@@ -7,7 +7,7 @@
             </div>
             <!-- Application Properties: Tabelle -->
             <div class="row margin-top-10">
-                <div class="col-md-12 ebegu-table table-responsive table-striped">
+                <div class="col-md-12 ebegu-table table-responsive">
 
                     <mat-table [dataSource]="displayedCollection" matSort >
                         <!--Name-->
@@ -60,11 +60,11 @@
                 </div>
             </div>
             <!-- Application Properties Detail -->
-            <div class="row margin-top-10" *ngIf="!isReadonly()">
+            <div *ngIf="!isReadonly()">
                 <form (ngSubmit)="form.valid && submit()" name="form" role="form" class="" novalidate
                       *ngIf="applicationProperty"
                       unsaved-warning-form>
-                    <div class="row">
+                    <div class="row margin-top-40">
                         <div class="col-md-12 form-group">
                             <div class="row">
                                 <div class="col-md-2">
@@ -117,7 +117,7 @@
 
             <!-- Suchindex -->
             <div *ngIf="!isReadonly() && isSuperadmin()">
-                <div class="view-title margin-top-10">
+                <div class="view-title margin-top-40">
                     <h1>{{'CREATE_SEARCHINDEX' | translate}}</h1>
                 </div>
                 <div class="row margin-top-10">
