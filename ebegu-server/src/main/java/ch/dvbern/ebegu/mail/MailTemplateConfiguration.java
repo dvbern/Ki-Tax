@@ -47,13 +47,16 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MandantLocaleVisitor;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import freemarker.template.Configuration;
@@ -99,6 +102,9 @@ public class MailTemplateConfiguration {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	public MailTemplateConfiguration() {
 		this.freeMarkerConfiguration = new Configuration();
@@ -235,10 +241,11 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache,
 		@Nonnull Mandant mandant
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("downloadurl", downloadurl);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale(), mandant));
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoStatistikGeneriert), mandantLocale, paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(
@@ -248,6 +255,16 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = mitteilung.getFall().getMandant();
 		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()), sprachen);
+	}
+
+	private Locale getLocaleFromSprachen(List<Sprache> sprachen) {
+		if (sprachen.contains(Sprache.DEUTSCH) && sprachen.contains(Sprache.FRANZOESISCH)) {
+			return Constants.DEUTSCH_FRENCH_LOCALE;
+		}
+		if (sprachen.contains(Sprache.FRANZOESISCH)) {
+			return Constants.FRENCH_LOCALE;
+		}
+		return Constants.DEFAULT_LOCALE;
 	}
 
 	public String getInfoVerfuegtGesuch(
@@ -360,6 +377,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Gesuch gesuch,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
@@ -368,7 +386,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoFreischaltungGesuchsperiode, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoFreischaltungGesuchsperiode), mandantLocale, paramMap);
 	}
 
 	/**
@@ -387,11 +405,16 @@ public class MailTemplateConfiguration {
 		paramMap.put("acceptLink", benutzerService.createInvitationLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
 
-		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Locale.GERMAN);
+		final boolean isFrenchEnabled = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				eingeladener.getMandant()));
+		Locale locale = isFrenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
 
-		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
-
-		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + FTL_FILE_EXTENSION, paramMap);
+		addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Constants.DEUTSCH_LOCALE);
+		if (isFrenchEnabled) {
+			addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Constants.FRENCH_LOCALE);
+		}
+		return doProcessTemplate(getTemplateFileName(MailTemplate.BenutzerEinladung), locale, paramMap);
 	}
 
 	/**
@@ -406,11 +429,13 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution()
+				.getMandant());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
 
-		return doProcessTemplate(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoOffenePendenzenNeueMitteilungInstitution), locale, paramMap);
 	}
 
 	public String getInfoGemeindeAngebotAktiviert(
@@ -420,47 +445,51 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		Mandant mandant = gemeinde.getMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mandant);
+
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("angebotNameDe", ServerMessageUtil.translateEnumValue(angebotName, new Locale("de"), mandant));
 		paramMap.put("angebotNameFr", ServerMessageUtil.translateEnumValue(angebotName, new Locale("fr"), mandant));
 		paramMap.put("gemeinde", gemeinde);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeAngebotAktiviert, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeAngebotAktiviert), mandantLocale, paramMap);
 	}
 
 
-	public String getInfoGesuchVerfuegtVerantwortlicherTS(@Nonnull Gesuch gesuch,
+	public String getInfoGesuchVerfuegtVerantwortlicherTS(
+		@Nonnull Gesuch gesuch,
 		@Nonnull String mailaddressTS,
 		@Nonnull List<Sprache> sprachen) {
 
+		Locale mandantLocale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(gesuch.extractMandant());
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS, sprachen),
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS), mandantLocale,
 			paramMap);
 	}
 
-	private void addContentInLanguage(
+	private void addRoleContentInLanguage(
 		@Nonnull Benutzer einladender,
 		@Nonnull Einladung einladung,
 		@Nonnull Benutzer eingeladener,
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull String contentName,
 		@Nonnull String footerName,
-		@Nonnull Locale french
+		@Nonnull Locale locale
 	) {
 		paramMap.put(
 			contentName,
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
-				french,
+				locale,
 				einladender.getMandant(),
 				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), french, eingeladener.getMandant()),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale, eingeladener.getMandant()),
 				getRollenZusatz(einladung, eingeladener)
 			)
 		);
-		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", french, einladender.getMandant()));
+		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale, einladender.getMandant()));
 	}
 
 	@Nonnull
@@ -494,13 +523,14 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
 
 		paramMap.put(GESUCH, gesuch);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller){
@@ -518,10 +548,13 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
+				.process(betreuung.extractGesuch().extractMandant());
+
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateAnmeldung(
@@ -532,11 +565,12 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 		Mandant mandant = betreuung.extractGesuch().extractMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateBetreuungGeloescht(
@@ -570,6 +604,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
+				.process(betreuung.extractGesuch().extractMandant());
 
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put("fall", fall);
@@ -577,7 +613,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
 		paramMap.put("institution", institution);
 
-		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
+		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
 	private String processTemplateBetreuungVerfuegt(
@@ -607,31 +643,18 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		paramMap.put(MITTEILUNG, mitteilung);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoMitteilungErhalten, sprachen), paramMap);
+		Locale locale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mitteilung.getFall().getMandant());
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoMitteilungErhalten), locale, paramMap);
 	}
 
-	/**
-	 * Appends the language and the file extension to the given name. Result will look like "name_de.ftl"
-	 */
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Sprache sprache) {
-		return appendLanguageToTemplateName(mailTemplate, sprache.getLocale());
+	private String getTemplateFileName(@Nonnull final  MailTemplate mailTemplate) {
+		return mailTemplate.name() + FTL_FILE_EXTENSION;
 	}
 
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull List<Sprache> sprachen) {
-		if (sprachen.size() == 1) {
-			return appendLanguageToTemplateName(mailTemplate, sprachen.get(0).getLocale());
-		}
-		return mailTemplate.name() + "_defr" + FTL_FILE_EXTENSION;
-	}
-
-	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
-		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + FTL_FILE_EXTENSION;
-	}
-
-	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
+	private String doProcessTemplate(@Nonnull final String name, @Nonnull Locale locale, final Map<Object, Object> rootMap) {
 
 		try {
-			final Template template = freeMarkerConfiguration.getTemplate(name, Constants.DEFAULT_LOCALE);
+			final Template template = freeMarkerConfiguration.getTemplate(name, locale);
 			final StringWriter out = new StringWriter(50);
 			template.process(rootMap, out);
 
@@ -702,16 +725,17 @@ public class MailTemplateConfiguration {
 		String empfaengerMail,
 		String betreff,
 		String inhalt,
-		MandantIdentifier mandantIdentifier
+		Mandant mandant
 	) {
-
-		Map<Object, Object> paramMap = initParamMap(mandantIdentifier);
+		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
+		Locale locale = getMandantLocale(mandant);
 
 		paramMap.put("empfaenger", empfaengerMail);
 		paramMap.put("betreff", betreff);
 		paramMap.put("inhalt", inhalt);
 
-		return doProcessTemplate(MailTemplate.NotrechtGenerischeMitteilung.name() + FTL_FILE_EXTENSION, paramMap);
+
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), locale, paramMap);
 	}
 
 	@Nonnull
@@ -722,11 +746,13 @@ public class MailTemplateConfiguration {
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution().getMandant());
+
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(BETRAG1, betragRueckerstattungNichtAngeboten);
 		paramMap.put(BETRAG2, betragKostenuebernahmeNichtAnwesend);
 
-		return doProcessTemplate(MailTemplate.NotrechtBestaetigungPruefungStufe1.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtBestaetigungPruefungStufe1), locale, paramMap);
 	}
 
 	public String getNotrechtProvisorischeVerfuegung(
@@ -735,18 +761,19 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail
 	) {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+		Locale locale = getMandantLocale(institutionStammdaten.getInstitution().getMandant());
 		Map<Object, Object> paramMap = initParamMap(mandant.getMandantIdentifier());
 		paramMap.put("rueckforderungFormular", rueckforderungFormular);
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put("empfaenger", empfaengerMail);
 
-		return doProcessTemplate(MailTemplate.NotrechtProvisorischeVerfuegung.name() + FTL_FILE_EXTENSION, paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtProvisorischeVerfuegung), locale, paramMap);
 	}
 
 	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, lastenausgleich.getMandant().getMandantIdentifier());
 		paramMap.put("jahr", lastenausgleich.getJahr().toString());
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichDurch, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichDurch), getLocaleFromSprachen(sprachen), paramMap);
 	}
 
 	public String getInfoSchulamtAnmeldungStorniert(
@@ -767,7 +794,7 @@ public class MailTemplateConfiguration {
 		Mandant mandant = container.getGemeinde().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("id", container.getId());
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde), getLocaleFromSprachen(sprachen), paramMap);
 	}
 
 	public String getInitGSZPVNr(
@@ -779,6 +806,13 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put("link", url);
 		paramMap.put(HOSTNAME, trunctatedHostname);
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.GesuchstellerInitZPV, sprachen), paramMap);
+		return doProcessTemplate(getTemplateFileName(MailTemplate.GesuchstellerInitZPV), getLocaleFromSprachen(sprachen), paramMap);
+	}
+
+	private Locale getMandantLocale(Mandant mandant) {
+		final boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.FRENCH_ENABLED,
+				mandant));
+		return frenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
 	}
 }
