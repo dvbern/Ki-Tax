@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -344,8 +345,9 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 		}
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -355,9 +357,6 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Gesuchsperiode)) {
 			return false;
 		}
 		final Gesuchsperiode otherGesuchsperiode = (Gesuchsperiode) other;

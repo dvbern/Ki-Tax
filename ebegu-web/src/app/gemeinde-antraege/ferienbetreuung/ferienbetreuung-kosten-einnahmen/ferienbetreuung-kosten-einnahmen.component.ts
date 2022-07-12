@@ -20,8 +20,10 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -43,7 +45,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     OnDestroy {
 
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
-    private subscription: Subscription;
+    private readonly unsubscribe$ = new Subject();
+    public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
+    public isDelegationsmodell: boolean = false;
 
     public constructor(
         protected readonly cd: ChangeDetectorRef,
@@ -61,22 +65,28 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
-        ]).subscribe(([container, principal]) => {
+        ]).pipe(takeUntil(this.unsubscribe$))
+            .subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.isAtLeastInPruefungKanton() ?
+            this.kostenEinnahmen = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
                 container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
+            const angaben = container.isAtLeastInPruefungKanton() ?
+                container.angabenKorrektur : container.angabenDeklaration;
+            this.isDelegationsmodell = angaben?.isDelegationsmodell();
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
@@ -114,6 +124,18 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             weitereEinnahmen: [
                 kostenEinnahmen.weitereEinnahmen,
             ],
+            sockelbeitrag: [
+                kostenEinnahmen.sockelbeitrag,
+            ],
+            beitraegeNachAnmeldungen: [
+                kostenEinnahmen.beitraegeNachAnmeldungen,
+            ],
+            vorfinanzierteKantonsbeitraege: [
+                kostenEinnahmen.vorfinanzierteKantonsbeitraege,
+            ],
+            eigenleistungenGemeinde: [
+                kostenEinnahmen.eigenleistungenGemeinde,
+            ],
         });
         this.setBasicValidation();
     }
@@ -142,6 +164,18 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereEinnahmen').setValidators(
             numberValidator(ValidationType.INTEGER),
         );
+        this.form.get('sockelbeitrag').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
+        this.form.get('beitraegeNachAnmeldungen').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
+        this.form.get('vorfinanzierteKantonsbeitraege').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
+        this.form.get('eigenleistungenGemeinde').setValidators(
+            numberValidator(ValidationType.INTEGER),
+        );
         this.triggerFormValidation();
     }
 
@@ -154,6 +188,15 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        // tslint:disable-next-line:early-exit
+        if (this.isDelegationsmodell) {
+            this.form.get('sockelbeitrag').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('beitraegeNachAnmeldungen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('vorfinanzierteKantonsbeitraege')
+                .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.get('eigenleistungenGemeinde')
+                .setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+        }
     }
 
     public save(): void {
@@ -165,7 +208,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }
         this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
             .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));
@@ -187,6 +230,10 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.kostenEinnahmen.bemerkungenKosten = this.form.get('bemerkungenKosten').value;
         this.kostenEinnahmen.elterngebuehren = this.form.get('elterngebuehren').value;
         this.kostenEinnahmen.weitereEinnahmen = this.form.get('weitereEinnahmen').value;
+        this.kostenEinnahmen.sockelbeitrag = this.form.get('sockelbeitrag').value;
+        this.kostenEinnahmen.beitraegeNachAnmeldungen = this.form.get('beitraegeNachAnmeldungen').value;
+        this.kostenEinnahmen.vorfinanzierteKantonsbeitraege = this.form.get('vorfinanzierteKantonsbeitraege').value;
+        this.kostenEinnahmen.eigenleistungenGemeinde = this.form.get('eigenleistungenGemeinde').value;
         return this.kostenEinnahmen;
     }
 

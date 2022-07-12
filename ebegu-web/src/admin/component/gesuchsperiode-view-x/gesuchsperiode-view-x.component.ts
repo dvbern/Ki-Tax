@@ -1,29 +1,18 @@
-/*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
-import {StateService} from '@uirouter/core';
-import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {MatTableDataSource} from '@angular/material/table';
+import {TranslateService} from '@ngx-translate/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import * as moment from 'moment';
+import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
+import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
-import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import {GlobalCacheService} from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
@@ -32,45 +21,30 @@ import {TSSprache} from '../../../models/enums/TSSprache';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
-import {AbstractAdminViewController} from '../../abstractAdminView';
-import {IGesuchsperiodeStateParams} from '../../admin.route';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {AbstractAdminViewX} from '../../abstractAdminViewX';
 import {EinstellungRS} from '../../service/einstellungRS.rest';
-import ITranslateService = angular.translate.ITranslateService;
 
-const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
-const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
+const LOG = LogFactory.createLog('GesuchsperiodeViewXComponent');
 
-export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
-    public transclude: boolean = false;
-    public template: string = require('./gesuchsperiodeView.html');
-    public controller: any = GesuchsperiodeViewController;
-    public controllerAs: string = 'vm';
-}
-
-export class GesuchsperiodeViewController extends AbstractAdminViewController {
+@Component({
+  selector: 'dv-gesuchsperiode-view-x',
+  templateUrl: './gesuchsperiode-view-x.component.html',
+  styleUrls: ['./gesuchsperiode-view-x.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
 
     private static readonly DOKUMENT_TYP_NOT_DEFINED = 'DokumentTyp not defined';
 
-    public static $inject = [
-        'EinstellungRS',
-        'DvDialog',
-        'GlobalCacheService',
-        'GesuchsperiodeRS',
-        '$log',
-        '$stateParams',
-        '$state',
-        '$translate',
-        'UploadRS',
-        'DownloadRS',
-        'AuthServiceRS',
-    ];
+    @ViewChild(NgForm) public form: NgForm;
 
-    public form: IFormController;
     public gesuchsperiode: TSGesuchsperiode;
-    public einstellungenGesuchsperiode: TSEinstellung[];
+    public einstellungenGesuchsperiode: MatTableDataSource<TSEinstellung>;
+
+    public displayedColumns: string[] = ['key', 'value'];
 
     public initialStatus: TSGesuchsperiodeStatus;
-    public datumFreischaltungTagesschule: moment.Moment;
 
     public isErlaeuterungDE: boolean = false;
     public isErlaeuterungFR: boolean = false;
@@ -85,35 +59,45 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public isVorlageVerfuegungFerienbetreuungFR: boolean = false;
 
     private readonly OFFICE_DOC_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    public readonly DEUTSCH: TSSprache = TSSprache.DEUTSCH;
+    public readonly FRANZOESISCH: TSSprache = TSSprache.FRANZOESISCH;
+
+    public readonly ERLAUTERUNG_ZUR_VERFUEGUNG: TSDokumentTyp = TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG;
+    public readonly VORLAGE_MERKBLATT_TS: TSDokumentTyp = TSDokumentTyp.VORLAGE_MERKBLATT_TS;
+    public readonly VORLAGE_VERFUEGUNG_LATS: TSDokumentTyp = TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS;
+    public readonly VORLAGE_VERFUEGUNG_FERIENBETREUUNG: TSDokumentTyp =
+        TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG;
 
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
-        private readonly dvDialog: DvDialog,
-        private readonly globalCacheService: GlobalCacheService,
+        private readonly dvDialog: MatDialog,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly $log: ILogService,
-        private readonly $stateParams: IGesuchsperiodeStateParams,
+        private readonly $stateParams: UIRouterGlobals,
         private readonly $state: StateService,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: TranslateService,
         private readonly uploadRS: UploadRS,
         private readonly downloadRS: DownloadRS,
+        private readonly globalCacheService: GlobalCacheService,
         authServiceRS: AuthServiceRS,
+        private readonly cd: ChangeDetectorRef,
     ) {
         super(authServiceRS);
     }
 
-    public $onInit(): void {
-        if (!this.$stateParams.gesuchsperiodeId) {
+    public ngOnInit(): void {
+        if (!this.$stateParams.params.gesuchsperiodeId) {
             this.createGesuchsperiode();
 
             return;
         }
 
-        this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
+        this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.params.gesuchsperiodeId)
+            .then((found: TSGesuchsperiode) => {
             this.setSelectedGesuchsperiode(found);
             this.initialStatus = this.gesuchsperiode.status;
 
             this.updateExistDokumenten(this.gesuchsperiode);
+            this.cd.markForCheck();
         });
     }
 
@@ -132,7 +116,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 return this.$translate.instant(a.key.toString())
                     .localeCompare(this.$translate.instant(b.key.toString()));
             });
-            this.einstellungenGesuchsperiode = response;
+            this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
+            this.cd.markForCheck();
         });
     }
 
@@ -141,7 +126,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveGesuchsperiode(): void {
-        if (!this.form.$valid || !this.statusHaveChanged()) {
+        if (this.form.invalid || !this.statusHaveChanged()) {
             return;
         }
         if (!(this.gesuchsperiode.isNew()
@@ -150,14 +135,14 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             return;
         }
         const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+        this.dvDialog.open(DvNgRemoveDialogComponent, {data: {
             title: 'GESUCHSPERIODE_DIALOG_TITLE',
-            deleteText: dialogText,
-            parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            this.doSave();
-        });
+            text: dialogText
+        }}).afterClosed().subscribe(isOk => {
+            if (isOk) {
+                this.doSave();
+            }
+        }, error => LOG.error(error));
         return;
     }
 
@@ -170,6 +155,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); // reset gesuchperioden in manager
             this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
             this.initialStatus = this.gesuchsperiode.status;
+            this.cd.markForCheck();
         });
     }
 
@@ -191,7 +177,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.einstellungenGesuchsperiode.forEach(param => this.einstellungenRS.saveEinstellung(param));
+        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
@@ -213,7 +199,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         if (this.gesuchsperiode.status === TSGesuchsperiodeStatus.GESCHLOSSEN) {
             return 'GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN';
         }
-        this.$log.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
+        LOG.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
 
         return null;
     }
@@ -236,14 +222,15 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         return gueltigAb.subtract(1, 'days');
     }
 
-    public uploadGesuchsperiodeDokument(file: any[], sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
-        if (file.length <= 0) {
+    public uploadGesuchsperiodeDokument(event: any, sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
+        if (EbeguUtil.isNullOrUndefined(event?.target?.files?.length)) {
             return;
         }
-        const selectedFile = file[0];
+        const files = event.target.files;
+        const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
-            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: this.$translate.instant('FILE_ZU_GROSS'),
+            this.dvDialog.open(DvNgOkDialogComponent, {
+                data: { title: this.$translate.instant('FILE_ZU_GROSS')},
             });
             return;
         }
@@ -264,9 +251,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                         this.setVorlageVerfuegungFerienbetreuungBoolean(true, sprache);
                         break;
                     } default: {
-                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                        throw new Error(GesuchsperiodeViewXComponent.DOKUMENT_TYP_NOT_DEFINED);
                     }
                 }
+                this.cd.markForCheck();
             });
     }
 
@@ -287,13 +275,14 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                         this.setVorlageVerfuegungFerienbetreuungBoolean(false, sprache);
                         break;
                     } default: {
-                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                        throw new Error(GesuchsperiodeViewXComponent.DOKUMENT_TYP_NOT_DEFINED);
                     }
                 }
+                this.cd.markForCheck();
             });
     }
 
-    public downloadGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
+    public  downloadGesuchsperiodeDokument(sprache: TSSprache, dokumentTyp: TSDokumentTyp): void {
         this.gesuchsperiodeRS.downloadGesuchsperiodeDokument(this.gesuchsperiode.id, sprache, dokumentTyp).then(
             response => {
                 let file;
@@ -319,7 +308,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                         filename = this.$translate.instant('VORLAGE_VERFUEGUNG_FERIENBETREUUNG_DATEI_NAME');
                         break;
                     } default: {
-                        throw new Error(GesuchsperiodeViewController.DOKUMENT_TYP_NOT_DEFINED);
+                        throw new Error(GesuchsperiodeViewXComponent.DOKUMENT_TYP_NOT_DEFINED);
                     }
                 }
                 this.downloadRS.openDownload(file, filename);
@@ -344,41 +333,49 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG).then(
             result => {
                 this.isErlaeuterungDE = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.ERLAUTERUNG_ZUR_VERFUEGUNG).then(
             result => {
                 this.isErlaeuterungFR = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
             result => {
                 this.isVorlageMerkblattDE = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_MERKBLATT_TS).then(
             result => {
                 this.isVorlageMerkblattFR = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS).then(
             result => {
                 this.isVorlageVerfuegungLatsDE = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_LATS).then(
             result => {
                 this.isVorlageVerfuegungLatsFR = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.DEUTSCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG).then(
             result => {
                 this.isVorlageVerfuegungFerienbetreuungDE = !!result;
+                this.cd.markForCheck();
             });
         this.gesuchsperiodeRS.existDokument(
             gesuchsperiode.id, TSSprache.FRANZOESISCH, TSDokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG).then(
             result => {
                 this.isVorlageVerfuegungFerienbetreuungFR = !!result;
+                this.cd.markForCheck();
             });
     }
 
@@ -419,5 +416,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             default:
                 return;
         }
+    }
+
+    public doFilter(value: string): void {
+        this.einstellungenGesuchsperiode.filter = value.trim().toLocaleLowerCase();
     }
 }

@@ -1,13 +1,6 @@
 {
 	"FAELLE_LIST": "Alle Fälle",
     "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
-	"FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN": "Satzbestimmendes Einkommen",
-	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT": "Nettoeinkünfte aus Liegenschaften",
-	"FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP": "Abzüge für den effektiven Liegenschaftsunterhalt selbstgenutzter Wohnliegenschaften, welche den Eigenmietwert übersteigen. Minuspositionen bei den Nettoeinkünften aus Liegenschaften können dem Einkommen nicht abgezogen werden. Da Sie beim satzbestimmenden Einkommen jedoch bereits abgezogen sind, müssen sie in diesem Feld wieder dazugerechnet werden. Falls Sie in der Veranlagung eine Minusposition haben, tragen Sie diese Minus-Zahl ein. Falls die Position positiv ist, schreiben Sie bitte 0 in das Feld.",
-	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST": "Verrechenbare Geschäftsverluste",
-	"FINANZIELLE_SITUATION_GESCHAEFTSVERLUST_TOOLTIP": "Verrechenbare Geschäftsverluste aus den Vorjahren gemäss § 38 des Steuergesetzes",
-	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE": "Einkäufe/Vorsorge",
-	"FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP": "Die Einkäufe in die berufliche Vorsorge und die Arbeitnehmeranteile der Beiträge von Selbstständigerwerbenden an die berufliche Vorsorge im Sinn von § 40 Abs. 1 lit. d des Steuergesetzes 14",
     "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
@@ -175,5 +168,10 @@
     "AUSSERORDENTLICHER_ANSPRUCH_HINT": "",
     "ONBARDING_HILFE": "Hilfe / Anleitung für Antragstellende",
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Anleitung für Antragstellende</b><br><a target='_blank' href='assets/pdf/Anleitung_Antragstellende_Luzern.pdf'>Anleitung für Antragstellende</a>.<br><br><b>Benötigen Sie Hilfe?</b><br><br>Stadt Luzern <br/>Kinder Jugend Familie <br/>Kasernenplatz 3, Postfach <br/> 6000 Luzern 7<br><a href=\"tel:+41 41 208 81 90\">+41 41 208 81 90</a><br><a href=\"mailto:betreuungsgutscheine@stadtluzern.ch\">betreuungsgutscheine@stadtluzern.ch</a><br><a href=\"https://www.kinderbetreuung.stadtluzern.ch\">www.kinderbetreuung.stadtluzern.ch</a><br>",
+    "ZAHLUNGSINFORMATIONEN": "Zahlungsinformationen",
+    "ANGABEN_ZAHLUNGSINFORMATIONEN": "Geben Sie hier Ihre Angaben für die Auszahlung der Betreuungsgutscheine ein",
+    "ONBOARDING_INFO_GEMEINDE_LINK": "",
+    "ONBOARDING_INFO_INSTITUTION_LINK": "",
+    "JA_KORREKTUR_FACHSTELLE": "{{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

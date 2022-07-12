@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
@@ -36,5 +37,10 @@ public interface ReportVerrechnungKibonService {
 
 
 	@Nonnull
-	UploadFileInfo generateExcelReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale, @Nonnull Mandant mandant) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportVerrechnungKibon(
+		boolean doSave,
+		@Nonnull BigDecimal betragProKind,
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
+	) throws ExcelMergeException, IOException;
 }

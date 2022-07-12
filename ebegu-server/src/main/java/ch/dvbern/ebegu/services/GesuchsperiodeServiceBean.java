@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -221,9 +220,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	public Collection<Gesuchsperiode> getAllGesuchsperioden() {
 		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getAllGesuchsperioden", MANDANT_NOT_DEFINED);
-		}
 		return getAllGesuchsperioden(mandant);
 	}
 
@@ -244,9 +240,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nullable
 	@Override
 	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", MANDANT_NOT_DEFINED);
-		}
 		List<Gesuchsperiode> gesuchsperioden = null;
 		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
 		if (gesuchsperiode.isPresent()) {
@@ -425,9 +418,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	private Collection<Gesuchsperiode> getGesuchsperiodenImStatus(GesuchsperiodeStatus... status) {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenImStatus", MANDANT_NOT_DEFINED);
-		}
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = builder.createQuery(Gesuchsperiode.class);
 		final Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
@@ -462,11 +452,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nonnull
 	public Collection<Gesuchsperiode> getGesuchsperiodenBetween(
 		@Nonnull LocalDate datumVon,
-		@Nonnull LocalDate datumBis) {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getGesuchsperiodenBetween", MANDANT_NOT_DEFINED);
-		}
-
+		@Nonnull LocalDate datumBis
+	) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
@@ -661,6 +648,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				.orElse(null);
 		}
 		return new byte[0];
+	}
+
+	@Override
+	public Optional<Gesuchsperiode> getVorjahrGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+		return getGesuchsperiodeAm(
+				gesuchsperiode.getGueltigkeit().getGueltigAb().minusYears(1),
+				gesuchsperiode.getMandant());
 	}
 
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {

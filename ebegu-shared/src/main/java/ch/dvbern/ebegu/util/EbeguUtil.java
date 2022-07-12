@@ -393,6 +393,7 @@ public final class EbeguUtil {
 		return isAbstractFinanzielleSituationVollstaendig(einkommensverschlechterung, finSitTyp);
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // FalsePositive: Die Methode ist benutzt
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
 		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
 		FinanzielleSituationTyp finSitTyp) {

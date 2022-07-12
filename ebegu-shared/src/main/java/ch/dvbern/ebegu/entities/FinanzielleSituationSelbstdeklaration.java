@@ -26,6 +26,7 @@ import javax.persistence.Entity;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -296,6 +297,8 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -304,11 +307,6 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-
-		if (!(other instanceof FinanzielleSituationSelbstdeklaration)) {
-			return false;
-		}
-
 		final FinanzielleSituationSelbstdeklaration otherSelbstdeklaration = (FinanzielleSituationSelbstdeklaration) other;
 		return MathUtil.isSame(getEinkunftErwerb(), otherSelbstdeklaration.getEinkunftErwerb()) &&
 			MathUtil.isSame(getEinkunftVersicherung(), otherSelbstdeklaration.getEinkunftVersicherung()) &&

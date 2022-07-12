@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -187,28 +187,35 @@ public class ReportNotrechtServiceBean extends AbstractReportServiceBean impleme
 	@Override
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen
+	) throws ExcelMergeException, IOException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_NOTRECHT;
 
-		InputStream is = ReportNotrechtServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportNotrechtServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
-
-		List<NotrechtDataRow> reportData = getReportNotrecht(zahlungenAusloesen);
-		ExcelMergerDTO excelMergerDTO = excelConverter.toExcelMergerDTO(reportData, zahlungenAusloesen,
+			List<NotrechtDataRow> reportData = getReportNotrecht(zahlungenAusloesen);
+			ExcelMergerDTO excelMergerDTO = excelConverter.toExcelMergerDTO(reportData, zahlungenAusloesen,
 				principalBean.getMandant());
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		excelConverter.applyAutoSize(sheet);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			excelConverter.applyAutoSize(sheet);
 
-		byte[] bytes = createWorkbook(workbook);
+			byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN, principalBean.getMandant()) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(
+					reportVorlage.getDefaultExportFilename(),
+					Locale.GERMAN,
+					principalBean.getMandant()) + ".xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 }

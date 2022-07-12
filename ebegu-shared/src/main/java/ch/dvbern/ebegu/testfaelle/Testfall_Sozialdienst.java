@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/1
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/1
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall_Sozialdienst extends AbstractTestfall {
 
 	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(53265);

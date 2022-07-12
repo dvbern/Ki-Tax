@@ -33,6 +33,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {TSGemeindeAntragTyp} from '../../../models/enums/TSGemeindeAntragTyp';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSGemeindeAntrag} from '../../../models/gemeindeantrag/TSGemeindeAntrag';
@@ -41,7 +42,12 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {
+    DvMultiSelectDialogItem,
+    DvNgMultiSelectDialog,
+} from '../../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -60,7 +66,7 @@ const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
     templateUrl: './gemeinde-antraege.component.html',
     styleUrls: ['./gemeinde-antraege.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
 export class GemeindeAntraegeComponent implements OnInit {
 
@@ -75,7 +81,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
-        'internePendenz'
+        'internePendenz',
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
@@ -96,12 +102,13 @@ export class GemeindeAntraegeComponent implements OnInit {
         reverse?: boolean
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({
         predicate: 'aenderungsdatum',
-        reverse: true
+        reverse: true,
     });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
     public creatableTypes: TSGemeindeAntragTyp[];
     public latsDeletePossible$: Observable<boolean>;
+    private gemeindenWithExistingLATS: TSGemeinde[];
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -126,7 +133,10 @@ export class GemeindeAntraegeComponent implements OnInit {
             gemeinde: [''],
         });
         this.loadAntragList();
-        this.loadGemeinden();
+        this.loadGemeindeList();
+        if (this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+            this.loadGemeindenWithPreexistingLatsList();
+        }
         this.gesuchsperiodenService.getAllActiveGesuchsperioden().then(result => {
             this.gesuchsperioden = result;
             // init filtered GS for Ferienbetreuungen
@@ -140,16 +150,16 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.antragList$ = combineLatest([
             this.filterDebounceSubject,
             this.sortDebounceSubject,
-            this.paginationChangedSubj.asObservable()
+            this.paginationChangedSubj.asObservable(),
         ]).pipe(
             mergeMap(filterSortAndPag => this.gemeindeAntragService.getGemeindeAntraege(
                 filterSortAndPag[0],
                 filterSortAndPag[1],
-                filterSortAndPag[2].toPaginationDTO()
+                filterSortAndPag[2].toPaginationDTO(),
             ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
-                    tap(msg => this.errorService.addMesageAsError(msg)),
-                    mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
-                )))),
+                tap(msg => this.errorService.addMesageAsError(msg)),
+                mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
+            )))),
             tap(dto => this.totalItems = dto.totalResultSize),
             map(dto => {
                 return dto.resultList.map(antrag => {
@@ -161,14 +171,14 @@ export class GemeindeAntraegeComponent implements OnInit {
                         periode: antrag.gesuchsperiode,
                         antragTyp: antrag.gemeindeAntragTyp,
                         aenderungsdatum: antrag.timestampMutiert,
-                        antragAbgeschlossen: antrag.antragAbgeschlossen
+                        antragAbgeschlossen: antrag.antragAbgeschlossen,
                     };
                 });
             }),
         );
     }
 
-    private loadGemeinden(): void {
+    private loadGemeindeList(): void {
         this.gemeindeRS.getGemeindenForPrincipal$()
             .subscribe(
                 gemeinden => {
@@ -187,19 +197,63 @@ export class GemeindeAntraegeComponent implements OnInit {
             );
     }
 
-    public createAllAntraege(): void {
+    private loadGemeindenWithPreexistingLatsList(): void {
+        this.gemeindeRS.getGemeindenWithPreExistingLATS().then(gemeinden => {
+            this.gemeindenWithExistingLATS = gemeinden;
+        });
+    }
+
+    public async createAllAntraege(): Promise<void> {
         if (!this.formGroup.valid) {
             this.triedSending = true;
             return;
         }
+
+        const dialogConfig: MatDialogConfig = {
+            data: {
+                selectOptions: (this.gemeinden).map(gemeinde => {
+                    const selectOption: DvMultiSelectDialogItem = {
+                        item: gemeinde,
+                        selected: this.hasGemeindeAlreadyAntrag(gemeinde),
+                        labelSelectFunction(): string {
+                            return this.item.name;
+                        },
+                    };
+                    return selectOption;
+                }),
+            },
+        };
+        let gemeindeSelection: TSGemeinde[];
+
+        if (this.formGroup.value.antragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
+            gemeindeSelection = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig)
+                .afterClosed()
+                .toPromise()
+                .then((allGemeinden: DvMultiSelectDialogItem[]) =>
+                    allGemeinden?.filter(selection => selection.selected))
+                .then(selectedGemeinden => selectedGemeinden?.map(selection => selection.item as TSGemeinde));
+        } else {
+            gemeindeSelection =
+                this.gemeinden.filter(gemeinde => gemeinde.angebotBG && gemeinde.status === TSGemeindeStatus.AKTIV);
+        }
+        if (EbeguUtil.isNullOrUndefined(gemeindeSelection) || gemeindeSelection.length === 0) {
+            return;
+
+        }
         this.errorService.clearAll();
-        this.gemeindeAntragService.createAllAntrage(this.formGroup.value).subscribe(result => {
+        this.gemeindeAntragService.createAllAntrage(this.formGroup.value, gemeindeSelection).subscribe(result => {
             this.loadAntragList();
+            this.loadGemeindenWithPreexistingLatsList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
         }, (err: TSExceptionReport[]) => {
             this.handleCreateAntragErrors(err);
         });
+    }
+
+    private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde): boolean {
+        return EbeguUtil.isNotNullOrUndefined(
+            this.gemeindenWithExistingLATS.find(gemeindeWithLats => gemeinde.id === gemeindeWithLats.id));
     }
 
     public deleteAllLatsAntraege(): void {
@@ -214,19 +268,19 @@ export class GemeindeAntraegeComponent implements OnInit {
                 }
                 return this.gemeindeAntragService.deleteAllAntrage(
                     this.formGroup.value.periode,
-                    this.formGroup.value.antragTyp
+                    this.formGroup.value.antragTyp,
                 );
-            })
+            }),
         ).subscribe(() => {
-                this.loadAntragList();
-                this.cd.markForCheck();
+            this.loadAntragList();
+            this.cd.markForCheck();
             // tslint:disable-next-line:no-identical-functions
-            }, err => {
-                const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
-                this.errorService.clearAll();
-                this.errorService.addMesageAsError(msg);
-                LOG.error(err);
-            });
+        }, err => {
+            const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
+            this.errorService.clearAll();
+            this.errorService.addMesageAsError(msg);
+            LOG.error(err);
+        });
     }
 
     public deleteGemeindeAntrag(antrag: DVAntragListItem): void {
@@ -239,7 +293,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 return this.gemeindeAntragService.deleteGemeindeAntrag(antrag.periode,
                     gemeinde.id,
                     antrag.antragTyp);
-            })
+            }),
         ).subscribe(() => {
             this.errorService.addMesageAsInfo(this.translate.instant('GEMEINDE_ANTRAG_GELOESCHT',
                 {typ: antrag.antragTyp, periode: antrag.periodenString, gemeinde: antrag.gemeinde}));

@@ -20,6 +20,7 @@ import {TSAbstractGemeindeStammdaten} from './TSAbstractGemeindeStammdaten';
 import {TSAdresse} from './TSAdresse';
 import {TSBenutzer} from './TSBenutzer';
 import {TSGemeinde} from './TSGemeinde';
+import {TSGemeindeStammdatenKorrespondenz} from './TSGemeindeStammdatenKorrespondenz';
 import {TSTextRessource} from './TSTextRessource';
 
 export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
@@ -36,6 +37,7 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
     public tsTelefon: string;
     public tsEmail: string;
     public beschwerdeAdresse: TSAdresse;
+    public gemeindeStammdatenKorrespondenz: TSGemeindeStammdatenKorrespondenz;
     public benutzerListeBG: TSBenutzer[]; // read only
     public benutzerListeTS: TSBenutzer[]; // read only
     public kontoinhaber: string;

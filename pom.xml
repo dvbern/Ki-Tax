@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2022.8.0-SNAPSHOT</version>
+    <version>2022.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -65,9 +65,12 @@
         <version.jaxb-runtime>2.3.5</version.jaxb-runtime>
         <version.junit.jupiter>5.7.2</version.junit.jupiter>
         <version.junit.platform>1.7.0</version.junit.platform>
-        <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
+        <ebegu-code-conventions.version>1.0.3</ebegu-code-conventions.version>
         <version.openpdf>1.3.26</version.openpdf>
-        <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
+        <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
+        <spotbugs-maven-plugin.version>4.6.0.0</spotbugs-maven-plugin.version>
+        <spotbugs-annotations.version>4.6.0</spotbugs-annotations.version>
+        <lombok.version>1.18.22</lombok.version>
 
     </properties>
 
@@ -350,7 +353,7 @@
             <dependency>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-annotations</artifactId>
-                <version>3.1.12</version>
+                <version>${spotbugs-annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -688,6 +691,22 @@
             </dependency>
             <!-- endregion -->
 
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>1.6.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-common</artifactId>
+                <version>1.6.10</version>
+            </dependency>
+
         </dependencies>
 
     </dependencyManagement>
@@ -977,7 +996,7 @@
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <!-- von parent-pom ueberschrieben, siehe KIBON-1703 -->
-                    <version>4.0.4</version>
+                    <version>${spotbugs-maven-plugin.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>ch.dvbern.oss.maven</groupId>

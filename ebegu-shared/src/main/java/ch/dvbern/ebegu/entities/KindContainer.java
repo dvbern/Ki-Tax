@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validators.CheckFachstellen;
 import ch.dvbern.ebegu.validators.CheckFachstellenFromDate;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -319,15 +320,14 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof KindContainer)) {
 			return false;
 		}
 		final KindContainer otherKindContainer = (KindContainer) other;

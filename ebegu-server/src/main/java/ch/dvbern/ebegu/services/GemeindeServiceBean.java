@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -51,6 +52,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -177,9 +180,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAktiveGemeinden() {
-		if (principalBean.getMandant() == null) {
-			throw new EbeguRuntimeException("getAktiveGemeinden", "Mandant not defined");
-		}
 		return getAktiveGemeinden(principalBean.getMandant());
 	}
 
@@ -264,9 +264,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(
 			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId)
 		);
-		stammdaten.setLogoContent(content);
-		stammdaten.setLogoName(name);
-		stammdaten.setLogoType(type);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(content);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoName(name);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoType(type);
 		return saveGemeindeStammdaten(stammdaten);
 	}
 
@@ -689,5 +689,18 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		query.where(gemeindeNummerPredicate);
 
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
+	}
+
+	@Override
+	public List<Gemeinde> getGemeindenWithLats() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
+
+		Root<LastenausgleichTagesschuleAngabenGemeindeContainer> root = query.from(LastenausgleichTagesschuleAngabenGemeindeContainer.class);
+		Path<Gemeinde> gemeinde = root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde);
+		final CriteriaQuery<Gemeinde> gemeindeQuery =  query.select(gemeinde).distinct(true);
+
+		List<Gemeinde> gde = persistence.getCriteriaResults(gemeindeQuery);
+		return gde;
 	}
 }

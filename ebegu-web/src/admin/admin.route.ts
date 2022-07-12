@@ -39,8 +39,7 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'admin.view',
-        template: '<dv-admin-view flex="auto" class="overflow-scroll" '
-            + 'application-properties="$resolve.applicationProperties"></dv-admin-view>',
+        component: 'dvAdminViewX',
         url: '/admin',
         resolve: {
             applicationProperties: applicationPropertiesResolver,
@@ -67,8 +66,7 @@ const ng1States: Ng1StateDeclaration[] = [
     },
     {
         name: 'admin.gesuchsperiode',
-        template: '<dv-gesuchsperiode-view flex="auto" class="overflow-scroll"'
-            + ' mandant="$resolve.mandant"></dv-gesuchsperiode-view>',
+        component: 'dvGesuchsperiodeViewX',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         params: {
             gesuchsperiodeId: '',

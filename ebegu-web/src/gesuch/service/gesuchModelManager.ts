@@ -1743,13 +1743,6 @@ export class GesuchModelManager {
     }
 
     /**
-     * Indicates whether the FinSit is available to be filled out or not.
-     */
-    public isFinanzielleSituationEnabled(): boolean {
-        return !this.areThereOnlyFerieninsel();
-    }
-
-    /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationRequired(): boolean {

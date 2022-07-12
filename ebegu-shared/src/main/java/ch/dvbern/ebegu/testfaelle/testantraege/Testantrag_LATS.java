@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_LATS {
 
 	private static final long serialVersionUID = -5434973108213523011L;

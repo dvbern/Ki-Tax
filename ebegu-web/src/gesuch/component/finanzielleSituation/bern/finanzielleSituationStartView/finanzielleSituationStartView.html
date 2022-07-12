@@ -28,165 +28,153 @@
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" unsaved-warning-form novalidate>
 
-                <div class="row" ng-if="vm.areThereOnlyFerieninsel">
-                    <div class="col-md-12">
-                        <p>
-                            <span data-translate="FIN_SIT_NOT_REQUIRED">
-                            </span>
+                <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
+                                                  verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
+                                                  finanzielle-situation-required="vm.finanzielleSituationRequired"
+                                                  are-there-any-bg-betreuungen="!vm.areThereOnlySchulamtangebote"
+                                                  form="vm.form">
+                </dv-finanzielle-situation-require>
+
+                <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">
+                    <!-- Gemeinsame Steuererklaerung -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span data-translate="FINANZIELLE_SITUATION_STEK_GEMEINSAM"
+                                  translate-values="{basisjahr: vm.getBasisjahr(), namegs2: vm.extractFullNameGS2()}"></span>
+                        </span>
+                                <dv-radio-container name="gemeinsameSteuererklaerung"
+                                                    class="input-element"
+                                                    ng-model="vm.model.gemeinsameSteuererklaerung"
+                                                    ng-required="true"
+                                                    class="radio"
+                                                    ng-change="vm.gemeinsameStekClicked()"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEK_GEMEINSAM' |translate}}"
+                                                    aria-described-by="gemeinsameSteuererklaerung-error">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="gemeinsameSteuererklaerung"
+                                                   for="vm.form.gemeinsameSteuererklaerung.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zugriff auf Steuerdaten -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question"
+                             ng-if="vm.showZugriffAufSteuerdaten()">
+                            <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF"></span>
+                           <dv-tooltip text="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP' | translate"></dv-tooltip>
+                        </span>
+                                <dv-radio-container name="steuerdatenzugriff"
+                                                    class="input-element radio"
+                                                    ng-model="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
+                                                    false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
+                                                    dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
+                                                    aria-described-by="steuerdatenzugriff-error"
+                                                    ng-change="vm.steuerdatenzugriffClicked()">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="steuerdatenzugriff"
+                                                   for="vm.form.steuerdatenzugriff.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
+                        <div class="col-xs-12">
+                            <dv-loading-button
+                                    button-disabled="!vm.isGesuchsteller()"
+                                    type="button"
+                                    button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                {{'STEUERDATEN_ABHOLEN' | translate}}
+                            </dv-loading-button>
+                            <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
+                                <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
+                            </div>
+                        </div>
+                        <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
+                            <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
+                        </div>
+                    </div>
+                    <div ng-if="vm.showWarningSteuerschnittstelleNotYetActive()"
+                         class="well well-status-warten minus-margin">
+                        <p class="ebegu-h3">
+                            {{'FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE' | translate:{date: vm.steuerSchnittstelleAktivAbStr} }}
                         </p>
                     </div>
-                </div>
+                    <dv-steuerabfrage-response-hints
+                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                        [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
 
-                <div ng-if="!vm.areThereOnlyFerieninsel">
-                    <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
-                                                      verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
-                                                      finanzielle-situation-required="vm.finanzielleSituationRequired"
-                                                      are-there-any-bg-betreuungen="!vm.areThereOnlySchulamtangebote"
-                                                      form="vm.form">
-                    </dv-finanzielle-situation-require>
-
-                    <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">
-                        <!-- Gemeinsame Steuererklaerung -->
-                        <div class="row">
-                            <div class="col-xs-12 dv-input-container-question">
-                                <div class="form-group">
-                            <span class="ebegu-h1 required">
-                                <span data-translate="FINANZIELLE_SITUATION_STEK_GEMEINSAM"
-                                      translate-values="{basisjahr: vm.getBasisjahr(), namegs2: vm.extractFullNameGS2()}"></span>
-                            </span>
-                                    <dv-radio-container name="gemeinsameSteuererklaerung"
-                                                        class="input-element"
-                                                        ng-model="vm.model.gemeinsameSteuererklaerung"
-                                                        ng-required="true"
-                                                        class="radio"
-                                                        ng-change="vm.gemeinsameStekClicked()"
-                                                        dv-enable-element
-                                                        dv-enable-allowed-roles="vm.allowedRoles"
-                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEK_GEMEINSAM' |translate}}"
-                                                        aria-described-by="gemeinsameSteuererklaerung-error">
-                                    </dv-radio-container>
-                                    <dv-error-messages input-id="gemeinsameSteuererklaerung"
-                                                       for="vm.form.gemeinsameSteuererklaerung.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
+                    <!-- Steuerveranlagung -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
+                                          translate-values="{basisjahr: vm.getBasisjahr()}"></span>
+                                </span>
+                                <dv-radio-container name="steuerveranlagung"
+                                                    class="input-element radio"
+                                                    ng-model="vm.getFinanzielleSituationGS1().steuerveranlagungErhalten"
+                                                    ng-required="true"
+                                                    ng-change="vm.steuerveranlagungClicked()"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' |translate}}"
+                                                    aria-described-by="steuerveranlagung-error">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="steuerveranlagung"
+                                                   for="vm.form.steuerveranlagung.$error"
+                                                   class="error"></dv-error-messages>
                             </div>
                         </div>
+                    </div>
+                    <!-- Steuererklärung -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question"
+                             ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
+                            <div class="form-group">
+                        <span class="ebegu-h1 required">
+                            <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
+                                  translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></span>
+                        </span>
+                                <dv-radio-container name="steuererklaerung"
+                                                    class="input-element radio"
+                                                    ng-model="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt"
+                                                    ng-required="true"
+                                                    ng-change="vm.steuererklaerungClicked()"
+                                                    dv-enable-element
+                                                    false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
+                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
+                                                    aria-described-by="steuererklaerung-error">
+                                </dv-radio-container>
+                                <dv-error-messages input-id="steuererklaerung"
+                                                   for="vm.form.steuererklaerung.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Zugriff auf Steuerdaten -->
-                        <div class="row">
-                            <div class="col-xs-12 dv-input-container-question"
-                                 ng-if="vm.showZugriffAufSteuerdaten()">
-                                <div class="form-group">
-                            <span class="ebegu-h1 required">
-                                <span data-translate="FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF"></span>
-                               <dv-tooltip text="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP' | translate"></dv-tooltip>
-                            </span>
-                                    <dv-radio-container name="steuerdatenzugriff"
-                                                        class="input-element radio"
-                                                        ng-model="vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                                                        ng-required="true"
-                                                        dv-enable-element
-                                                        true-option-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA' | translate}}"
-                                                        false-option-label="{{'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN' | translate}}"
-                                                        dv-enable-allowed-roles="['SUPER_ADMIN', 'GESUCHSTELLER']"
-                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"
-                                                        aria-described-by="steuerdatenzugriff-error"
-                                                        ng-change="vm.steuerdatenzugriffClicked()">
-                                    </dv-radio-container>
-                                    <dv-error-messages input-id="steuerdatenzugriff"
-                                                       for="vm.form.steuerdatenzugriff.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
-                            <div class="col-xs-12">
-                                <dv-loading-button
-                                        button-disabled="!vm.isGesuchsteller()"
-                                        type="button"
-                                        button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
-                                    {{'STEUERDATEN_ABHOLEN' | translate}}
-                                </dv-loading-button>
-                                <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
-                                    <i>{{'NOT_ALLOWED_FOR_SUPER_ADMIN' | translate}}</i>
-                                </div>
-                            </div>
-                            <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
-                                <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
-                            </div>
-                        </div>
-                        <div ng-if="vm.showWarningSteuerschnittstelleNotYetActive()"
-                             class="well well-status-warten minus-margin">
-                            <p class="ebegu-h3">
-                                {{'FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE' | translate:{date: vm.steuerSchnittstelleAktivAbStr} }}
-                            </p>
-                        </div>
-                        <dv-steuerabfrage-response-hints
-                            ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                            (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                            [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
-
-                        <!-- Steuerveranlagung -->
-                        <div class="row">
-                            <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
-                                <div class="form-group">
-                                    <span class="ebegu-h1 required">
-                                        <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
-                                              translate-values="{basisjahr: vm.getBasisjahr()}"></span>
-                                    </span>
-                                    <dv-radio-container name="steuerveranlagung"
-                                                        class="input-element radio"
-                                                        ng-model="vm.getFinanzielleSituationGS1().steuerveranlagungErhalten"
-                                                        ng-required="true"
-                                                        ng-change="vm.steuerveranlagungClicked()"
-                                                        dv-enable-element
-                                                        dv-enable-allowed-roles="vm.allowedRoles"
-                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' |translate}}"
-                                                        aria-described-by="steuerveranlagung-error">
-                                    </dv-radio-container>
-                                    <dv-error-messages input-id="steuerveranlagung"
-                                                       for="vm.form.steuerveranlagung.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Steuererklärung -->
-                        <div class="row">
-                            <div class="col-xs-12 dv-input-container-question"
-                                 ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
-                                <div class="form-group">
-                            <span class="ebegu-h1 required">
-                                <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
-                                      translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></span>
-                            </span>
-                                    <dv-radio-container name="steuererklaerung"
-                                                        class="input-element radio"
-                                                        ng-model="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt"
-                                                        ng-required="true"
-                                                        ng-change="vm.steuererklaerungClicked()"
-                                                        dv-enable-element
-                                                        false-option-label="{{'FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN' | translate}}"
-                                                        dv-enable-allowed-roles="vm.allowedRoles"
-                                                        dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                        aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
-                                                        aria-described-by="steuererklaerung-error">
-                                    </dv-radio-container>
-                                    <dv-error-messages input-id="steuererklaerung"
-                                                       for="vm.form.steuererklaerung.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
-                             class="well well-status-warten minus-margin">
-                            <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
-                            <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
-                        </div>
-
+                    <div ng-if="vm.getFinanzielleSituationGS1().steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
+                         class="well well-status-warten minus-margin">
+                        <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
+                        <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                     </div>
                 </div>
 

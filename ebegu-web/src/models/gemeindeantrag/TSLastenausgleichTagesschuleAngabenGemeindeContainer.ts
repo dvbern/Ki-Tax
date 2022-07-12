@@ -25,6 +25,7 @@ import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from './TSLaste
 
 export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbstractEntity {
     public status: TSLastenausgleichTagesschuleAngabenGemeindeStatus;
+    public zurueckAnGemeinde: boolean;
     public gemeinde: TSGemeinde;
     public gesuchsperiode: TSGesuchsperiode;
     public alleAngabenInKibonErfasst: boolean;
@@ -37,16 +38,17 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
      */
     public getAngabenToWorkWith(): TSLastenausgleichTagesschuleAngabenGemeinde {
-        if (this.isInBearbeitungGemeinde()) {
-            return this.angabenDeklaration;
+        if (this.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
+            return this.angabenKorrektur;
         }
-        return this.angabenKorrektur;
+        return this.angabenDeklaration;
     }
 
     public isInBearbeitungGemeinde(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
         ].includes(this.status);
     }
 
@@ -62,7 +64,13 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return ![
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE
         ].includes(this.status);
+    }
+
+    public isAtLeastInBearbeitungKantonOrZurueckgegeben(): boolean {
+        return this.isAtLeastInBearbeitungKanton()
+            || this.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
     }
 
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {

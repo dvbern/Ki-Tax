@@ -368,7 +368,7 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public isFinanzielleSituationRequired(): boolean {
-        return this.gesuchModelManager.isFinanzielleSituationEnabled() && this.gesuchModelManager.isFinanzielleSituationRequired();
+        return this.gesuchModelManager.isFinanzielleSituationRequired();
     }
 
     public warningEinkommenTooHighVisible(): boolean {

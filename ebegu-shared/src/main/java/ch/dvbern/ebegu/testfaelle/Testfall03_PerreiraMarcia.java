@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/3
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/3
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 
 	private final BigDecimal VERMOEGEN_GS1 = MathUtil.DEFAULT.from(15730);

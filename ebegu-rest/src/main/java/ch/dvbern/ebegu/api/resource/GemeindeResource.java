@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -90,6 +91,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.ExternalClientService;
@@ -97,6 +99,7 @@ import ch.dvbern.ebegu.services.FerieninselStammdatenService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PDFService;
 import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.Image;
 import io.swagger.annotations.Api;
@@ -150,6 +153,9 @@ public class GemeindeResource {
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
+
+	@Inject
+	private PDFService pdfService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -336,10 +342,12 @@ public class GemeindeResource {
 
 
 	private Optional<GemeindeStammdaten> initGemeindeStammdaten(String gemeindeId) {
+		GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz = new GemeindeStammdatenKorrespondenz();
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
 		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
 		stammdaten.setAdresse(getInitAdresse());
+		stammdaten.setGemeindeStammdatenKorrespondenz(gemeindeStammdatenKorrespondenz);
 		stammdaten.setMail("");
 		return Optional.of(stammdaten);
 	}
@@ -571,10 +579,10 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				String name = stammdaten.get().getLogoName();
-				String type = stammdaten.get().getLogoType();
+				String name = stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoName();
+				String type = stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoType();
 				return RestUtil.buildDownloadResponse(false, name == null ? "logo" : name,
-					type == null ? "image/*" : type, stammdaten.get().getLogoContent());
+					type == null ? "image/*" : type, stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
@@ -971,5 +979,46 @@ public class GemeindeResource {
 	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT} ) // Oeffentliche Daten
 	public Long getNextBfsnummer() {
 		return gemeindeService.getNextBesondereVolksschuleBfsNummer();
+	}
+
+	@ApiOperation(value = "Gibt alle Gemeinden zurück, für welche ein Lastenausgleich Tagescchule existiert",
+		response = Long.class)
+	@Nullable
+	@GET
+	@Path("/gemeinden-with-lats")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed( {SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxGemeinde> getGemeindenWithLats() {
+		return gemeindeService.getGemeindenWithLats()
+				.stream()
+				.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+				.collect(Collectors.toList());
+	}
+
+	@ApiOperation("Erstellt ein Musterdokument, damit die Korrespondenz-Einstellungen geprueft werden koennen")
+	@GET
+	@Path("/musterdokument/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response downloadMusterDokument(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId
+	) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"GemeindeStammdaten",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		try {
+			final byte[] content = pdfService.generateMusterdokument(gemeindeStammdaten);
+			if (content.length > 0) {
+				return RestUtil.buildDownloadResponse(true, "Musterdokument.pdf",
+						"application/octet-stream", content);
+			}
+		} catch (IOException | MergeDocException e) {
+			return Response.status(Status.NOT_FOUND).entity("Musterdokument kann nicht gelesen werden").build();
+		}
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

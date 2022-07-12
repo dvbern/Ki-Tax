@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
@@ -97,6 +98,11 @@ public interface PDFService {
 	byte[] generateDefinitiveVerfuegungRuckforderungformular(
 		@Nonnull RueckforderungFormular rueckforderungFormular,
 		boolean writeProtected
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateMusterdokument(
+		@Nonnull GemeindeStammdaten gemeindeStammdaten
 	) throws MergeDocException;
 
 	@Nonnull

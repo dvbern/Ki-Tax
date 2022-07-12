@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * -> Regel 3
  * -> Kita A wird zuerst bedient, weil sie bei gleichem Beginn und gleichem Pensum zuerst eingegeben wurde, auch ab 1.1., wo Kita B höher wäre!
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 
 	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(53265);

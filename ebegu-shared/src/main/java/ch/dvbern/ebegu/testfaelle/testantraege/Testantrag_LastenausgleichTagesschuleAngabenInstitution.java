@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 
 	private LastenausgleichTagesschuleAngabenInstitution angabenInstitution;

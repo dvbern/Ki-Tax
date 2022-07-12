@@ -51,7 +51,7 @@ export class FerienbetreuungComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.ferienbetreuungId);
+        this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.ferienbetreuungId);
         this.subscription = this.ferienbetreuungService.getFerienbetreuungContainer()
             .subscribe(container => {
                 this.ferienbetreuungContainer = container;
@@ -66,6 +66,6 @@ export class FerienbetreuungComponent implements OnInit {
 
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        this.ferienbetreuungService.emptyStore();
+        this.ferienbetreuungService.emptyStores();
     }
 }

@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/4
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/4
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall04_WaltherLaura extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Walther";

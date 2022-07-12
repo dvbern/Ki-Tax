@@ -74,12 +74,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 	@Test
 	public void createLastenausgleichTagesschuleGemeinde() {
 		List<? extends GemeindeAntrag> gemeindeAntragList =
-			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode1920);
+			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode1920, List.of(gemeindeParis));
 		Assert.assertNotNull(gemeindeAntragList);
-		Assert.assertEquals("Wir erwarten keinen Antrag für die GP 19/20", 0, gemeindeAntragList.size());
+		Assert.assertEquals("Wir erwarten einen Antrag für die GP 19/20 obwohl es gibt keine TS Angebot aktiviert", 1, gemeindeAntragList.size());
 
 		gemeindeAntragList =
-			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode2021);
+			angabenGemeindeService.createLastenausgleichTagesschuleGemeinde(gesuchsperiode2021, List.of(gemeindeParis));
 		Assert.assertNotNull(gemeindeAntragList);
 		Assert.assertEquals("Wir erwarten einen Antrag für die GP 20/21", 1, gemeindeAntragList.size());
 
@@ -207,7 +207,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 		// zurück an Gemeinde
 		angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(latsGemeindeContainer);
 		Assert.assertEquals(
-			LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+			LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
 			latsGemeindeContainer.getStatus()
 		);
 		// es sollen immer noch beide Container vorhanden sein

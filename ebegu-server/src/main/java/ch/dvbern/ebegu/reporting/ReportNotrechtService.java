@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -31,5 +32,5 @@ public interface ReportNotrechtService {
 	List<NotrechtDataRow> getReportNotrecht(boolean zahlungenAusloesen);
 
 	@Nonnull
-	UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportNotrecht(boolean zahlungenAusloesen) throws ExcelMergeException, IOException;
 }

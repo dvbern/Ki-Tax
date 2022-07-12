@@ -35,6 +35,10 @@ dv-radio-container-x {
         display: flex;
         flex-direction: column;
 
+        &.ng-invalid.ng-touched {
+            background-color: @background-error-color;
+        }
+
         > mat-radio-button {
             height: auto;
             margin: 0 0 0.2rem 0;

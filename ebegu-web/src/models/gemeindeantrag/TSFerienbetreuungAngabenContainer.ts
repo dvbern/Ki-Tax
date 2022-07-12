@@ -88,12 +88,18 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         ].includes(this.status);
     }
 
+    public isAtLeastInPruefungKantonOrZurueckgegeben(): boolean {
+        return this.isAtLeastInPruefungKanton()
+        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
+    }
+
     public isInPruefungKanton(): boolean {
         return this.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
     }
 
     public isInBearbeitungGemeinde(): boolean {
-        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
     }
 
     public isGeprueft(): boolean {
@@ -122,6 +128,11 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         if (!this.angabenKorrektur.nutzung.isAbgeschlossen()) {
             throw new Error('Nutzung muss abgeschlossen sein um die Berchnungen durchzuführen');
         }
+        if (!this.angabenKorrektur.angebot.isAbgeschlossen()) {
+            throw new Error('Angebot muss abgeschlossen sein um die Berchnungen durchzuführen');
+        }
+        berechnungen.isDelegationsmodell = this.angabenKorrektur.isDelegationsmodell();
+
         const kostenEinnahmen = this.angabenKorrektur.kostenEinnahmen;
         const nutzung = this.angabenKorrektur.nutzung;
 
@@ -129,6 +140,10 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         berechnungen.sachkosten = kostenEinnahmen.sachkosten;
         berechnungen.verpflegungskosten = kostenEinnahmen.verpflegungskosten;
         berechnungen.weitereKosten = kostenEinnahmen.weitereKosten;
+        berechnungen.sockelbeitrag = kostenEinnahmen.sockelbeitrag;
+        berechnungen.beitraegeNachAnmeldungen = kostenEinnahmen.beitraegeNachAnmeldungen;
+        berechnungen.vorfinanzierteKantonsbeitraege = kostenEinnahmen.vorfinanzierteKantonsbeitraege;
+        berechnungen.eigenleistungenGemeinde = kostenEinnahmen.eigenleistungenGemeinde;
 
         berechnungen.anzahlBetreuungstageKinderBern = nutzung.anzahlBetreuungstageKinderBern;
         berechnungen.betreuungstageKinderDieserGemeinde = nutzung.betreuungstageKinderDieserGemeinde;

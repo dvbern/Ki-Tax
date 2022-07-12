@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationAufteilungDTO} from '../models/dto/TSFinanzielleSituationAufteilungDTO';
@@ -28,7 +27,6 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
-import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -125,6 +123,7 @@ import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenKorrespondenz} from '../models/TSGemeindeStammdatenKorrespondenz';
 import {TSGemeindeStammdatenLite} from '../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
@@ -1019,6 +1018,9 @@ export class EbeguRestUtil {
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }
+            restStammdaten.gemeindeStammdatenKorrespondenz = this.gemeindeStammdatenKorrespondenzToRestObject(
+                {},
+                stammdaten.gemeindeStammdatenKorrespondenz);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -1077,6 +1079,9 @@ export class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.gemeindeStammdatenKorrespondenz = this.parseGemeindeStammdatenKorrespondenz(
+                new TSGemeindeStammdatenKorrespondenz(),
+                stammdatenFromServer.gemeindeStammdatenKorrespondenz);
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;
@@ -1154,6 +1159,42 @@ export class EbeguRestUtil {
         tsAbstractGemeindeStammdaten.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
         tsAbstractGemeindeStammdaten.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
         tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
+    }
+
+    public gemeindeStammdatenKorrespondenzToRestObject(
+        restStammdaten: any,
+        stammdaten: TSGemeindeStammdatenKorrespondenz
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+            restStammdaten.senderAddressSpacingLeft = stammdaten.senderAddressSpacingLeft;
+            restStammdaten.senderAddressSpacingTop = stammdaten.senderAddressSpacingTop;
+            restStammdaten.receiverAddressSpacingLeft = stammdaten.receiverAddressSpacingLeft;
+            restStammdaten.receiverAddressSpacingTop = stammdaten.receiverAddressSpacingTop;
+            restStammdaten.logoWidth = stammdaten.logoWidth;
+            restStammdaten.logoSpacingLeft = stammdaten.logoSpacingLeft;
+            restStammdaten.logoSpacingTop = stammdaten.logoSpacingTop;
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdatenKorrespondenz(
+        stammdatenTS: TSGemeindeStammdatenKorrespondenz,
+        stammdatenFromServer: any,
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            stammdatenTS.senderAddressSpacingLeft = stammdatenFromServer.senderAddressSpacingLeft;
+            stammdatenTS.senderAddressSpacingTop = stammdatenFromServer.senderAddressSpacingTop;
+            stammdatenTS.receiverAddressSpacingLeft = stammdatenFromServer.receiverAddressSpacingLeft;
+            stammdatenTS.receiverAddressSpacingTop = stammdatenFromServer.receiverAddressSpacingTop;
+            stammdatenTS.logoWidth = stammdatenFromServer.logoWidth;
+            stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
+            stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
+            return stammdatenTS;
+        }
+        return undefined;
     }
 
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
@@ -2506,13 +2547,11 @@ export class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
-        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        restAbweichung.multiplier = abweichung.multiplier;
 
-        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
-            ? restAbweichung.vertraglichesPensum / multiplier
+            ? restAbweichung.vertraglichesPensum / restAbweichung.multiplier
             : undefined;
 
         restAbweichung.vertraglichesPensum = originalPensum;
@@ -2665,12 +2704,11 @@ export class EbeguRestUtil {
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
-        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        abweichungTS.multiplier = abweichungFromServer.multiplier;
 
-        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
-        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
+        const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
+            .toFixed(2));
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
@@ -5399,6 +5437,10 @@ export class EbeguRestUtil {
         restKostenEinnahmen.bemerkungenKosten = kostenEinnahmenTS.bemerkungenKosten;
         restKostenEinnahmen.elterngebuehren = kostenEinnahmenTS.elterngebuehren;
         restKostenEinnahmen.weitereEinnahmen = kostenEinnahmenTS.weitereEinnahmen;
+        restKostenEinnahmen.sockelbeitrag = kostenEinnahmenTS.sockelbeitrag;
+        restKostenEinnahmen.beitraegeNachAnmeldungen = kostenEinnahmenTS.beitraegeNachAnmeldungen;
+        restKostenEinnahmen.vorfinanzierteKantonsbeitraege = kostenEinnahmenTS.vorfinanzierteKantonsbeitraege;
+        restKostenEinnahmen.eigenleistungenGemeinde = kostenEinnahmenTS.eigenleistungenGemeinde;
         return restKostenEinnahmen;
     }
 
@@ -5564,6 +5606,10 @@ export class EbeguRestUtil {
         kostenEinnahmenTS.bemerkungenKosten = kostenEinnahmenFromServer.bemerkungenKosten;
         kostenEinnahmenTS.elterngebuehren = kostenEinnahmenFromServer.elterngebuehren;
         kostenEinnahmenTS.weitereEinnahmen = kostenEinnahmenFromServer.weitereEinnahmen;
+        kostenEinnahmenTS.sockelbeitrag = kostenEinnahmenFromServer.sockelbeitrag;
+        kostenEinnahmenTS.beitraegeNachAnmeldungen = kostenEinnahmenFromServer.beitraegeNachAnmeldungen;
+        kostenEinnahmenTS.vorfinanzierteKantonsbeitraege = kostenEinnahmenFromServer.vorfinanzierteKantonsbeitraege;
+        kostenEinnahmenTS.eigenleistungenGemeinde = kostenEinnahmenFromServer.eigenleistungenGemeinde;
         return kostenEinnahmenTS;
     }
 

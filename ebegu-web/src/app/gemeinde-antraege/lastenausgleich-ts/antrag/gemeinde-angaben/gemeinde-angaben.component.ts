@@ -635,7 +635,7 @@ export class GemeindeAngabenComponent implements OnInit {
             return;
         }
         // tslint:disable-next-line:max-line-length
-        if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
+        if (this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
             Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {
@@ -663,7 +663,7 @@ export class GemeindeAngabenComponent implements OnInit {
         }
 
         // tslint:disable-next-line:max-line-length
-        if (this.lATSAngabenGemeindeContainer.isinPruefungKanton()) {
+        if (this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
             Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
         } else {

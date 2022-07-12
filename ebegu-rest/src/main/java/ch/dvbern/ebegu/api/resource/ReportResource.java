@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -98,7 +99,7 @@ public class ReportResource {
 	public Response getZahlungsauftragReportExcel(
 		@QueryParam("zahlungsauftragID") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException, IOException {
 
 		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);
@@ -125,7 +126,7 @@ public class ReportResource {
 	public Response getZahlungReportExcel(
 		@QueryParam("zahlungID") @Nonnull @Valid JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException {
+		throws ExcelMergeException, EbeguRuntimeException, IOException {
 
 		Objects.requireNonNull(jaxId);
 		String ip = downloadResource.getIP(request);

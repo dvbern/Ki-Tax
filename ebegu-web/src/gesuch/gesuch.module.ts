@@ -16,7 +16,7 @@
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
-import {FileUploadComponent} from '../app/shared/component/file-upload/file-upload.component';
+import {MultipleFileUploadComponent} from '../app/shared/component/multpile-file-upload/multiple-file-upload.component';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
@@ -43,7 +43,7 @@ import {EinkommensverschlechterungSolothurnResultateViewComponent} from './compo
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
-import {FallCreationViewComponentConfig} from './component/fallCreationView/fallCreationView';
+import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
@@ -102,6 +102,8 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
         .component('einkommensverschlechterungSolothurnResultateView',
             downgradeComponent({component: EinkommensverschlechterungSolothurnResultateViewComponent}))
+        .component('dvFallCreationViewX',
+            downgradeComponent({component: FallCreationViewXComponent}))
         .component('kindView', new KindViewComponentConfig())
         .component('betreuungListView', new BetreuungListViewComponentConfig())
         .component('betreuungView', new BetreuungViewComponentConfig())
@@ -110,7 +112,6 @@ export const GESUCH_JS_MODULE =
         .component('abwesenheitView', new AbwesenheitViewComponentConfig())
         .component('erwerbspensumListView', new ErwerbspensumListViewComponentConfig())
         .component('erwerbspensumView', new ErwerbspensumViewComponentConfig())
-        .component('fallCreationView', new FallCreationViewComponentConfig())
         .component('verfuegenListView', new VerfuegenListViewComponentConfig())
         .component('verfuegenView', new VerfuegenViewComponentConfig())
         .component('dossierToolbar', new DossierToolbarComponentConfig())
@@ -133,7 +134,7 @@ export const GESUCH_JS_MODULE =
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
         .directive('dvFileUpload',
             downgradeComponent({
-                component: FileUploadComponent,
+                component: MultipleFileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
                 outputs: ['download', 'delete', 'uploadFile'],
             }))

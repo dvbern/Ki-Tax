@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * - Wohnadresse in Bern
  * - Umzugsadresse ab 15.06.2016 aus Bern <- vor Gesuchsperiode
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall10_UmzugVorGesuchsperiode extends AbstractTestfall {
 
 	static final int VERMOEGEN = 12147;

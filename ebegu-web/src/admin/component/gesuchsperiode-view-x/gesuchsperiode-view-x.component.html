@@ -1,0 +1,312 @@
+<div flex="auto" class="parameter-view admin-modul overflow-auto">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+
+            <form name="form"
+                  [ngClass]="{'ng-submitted': form.submitted}"
+                  #form="ngForm"
+                  role="form"
+                  novalidate>
+                <fieldset [disabled]="isReadonly()">
+                    <!-- Gesuchsperiode Detail -->
+                    <div *ngIf="gesuchsperiode">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="md-no-float" translate="GESUCHSPERIODE_GUELTIG_AB"
+                                               for="gueltigAb_ID"></label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text"
+                                               name="gueltigAb" id="gueltigAb_ID"
+                                               [value]="gesuchsperiode.gueltigkeit.gueltigAb | date:'dd.MM.yyyy'"
+                                               disabled
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="md-no-float" translate="GESUCHSPERIODE_GUELTIG_BIS"
+                                               for="gueltigBis_ID"></label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text"
+                                               name="gueltigBis" id="gueltigBis_ID"
+                                               [value]="gesuchsperiode.gueltigkeit.gueltigBis | date:'dd.MM.yyyy'"
+                                               disabled
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label translate="STATUS" for="gpstatus">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8 dv-select-style">
+                                        <select name="gpstatus" id="gpstatus"
+                                                [(ngModel)]="gesuchsperiode.status"
+                                                class="form-control"
+                                                [disabled]="gesuchsperiode.isNew()"
+                                                required>
+                                            <option *ngFor="let gpstatus of getTSGesuchsperiodeStatusValues()"
+                                                    [ngValue]="gpstatus"> {{gpstatus | translate}}
+                                            </option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-4">
+                                        <dv-error-messages for="form.gpstatus.$error"></dv-error-messages>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Gesuchsperiode Buttons -->
+                    <div class="row" *ngIf="!isReadonly()">
+                        <div class="col-md-2" *ngIf="gesuchsperiode">
+                            <dv-loading-button type="button"
+                                               (buttonClick)="saveGesuchsperiode()"
+                                               buttonClass="color-success">
+                                <span>{{gesuchsperiode.isNew() ? ('SAVE' | translate) : ('UPDATE' | translate)}}</span>
+                            </dv-loading-button>
+                        </div>
+                        <div class="col-md-2" *ngIf="gesuchsperiode">
+                            <a href="#" id="cancelLink" class="dv-btn" unsaved-warning-clear
+                               (click)="cancelGesuchsperiode(); form.form.markAsPristine();form.form.markAsUntouched(); $event.preventDefault();">
+                                <span translate="CANCEL"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!--Erläuterungen zur Verfügung-->
+                    <div class="row view-title margin-top-30" *ngIf="gesuchsperiode && !gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span translate="ERLAEUTERUNG_VERFUEGUNG"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                    <dv-single-file-upload
+                                        [title]="'ERLAEUTERUNG_VERFUEGUNG_DE'"
+                                        (download)="downloadGesuchsperiodeDokument(DEUTSCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        (delete)="removeGesuchsperiodeDokument(DEUTSCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        (uploadFile)="uploadGesuchsperiodeDokument($event, DEUTSCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        [allowedMimetypes]="'application/pdf'"
+                                        [hasFile]="isErlaeuterungDE">
+                                    </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                    <dv-single-file-upload
+                                        [title]="'ERLAEUTERUNG_VERFUEGUNG_FR'"
+                                        (download)="downloadGesuchsperiodeDokument(FRANZOESISCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        (delete)="removeGesuchsperiodeDokument(FRANZOESISCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        (uploadFile)="uploadGesuchsperiodeDokument($event, FRANZOESISCH, ERLAUTERUNG_ZUR_VERFUEGUNG)"
+                                        [allowedMimetypes]="'application/pdf'"
+                                        [hasFile]="isErlaeuterungFR">
+                                    </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--Merkblatt Anmeldung Tagesschule-->
+                    <div class="row view-title margin-top-30" *ngIf="gesuchsperiode && !gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span translate="MERKBLATT_ANMELDUNG_TAGESSCHULE"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                    <dv-single-file-upload
+                                        [title]="'VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE'"
+                                        (download)="downloadGesuchsperiodeDokument(DEUTSCH, VORLAGE_MERKBLATT_TS)"
+                                        (delete)="removeGesuchsperiodeDokument(DEUTSCH, VORLAGE_MERKBLATT_TS)"
+                                        (uploadFile)="uploadGesuchsperiodeDokument($event, DEUTSCH, VORLAGE_MERKBLATT_TS)"
+                                        [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                        [hasFile]="isVorlageMerkblattDE">
+                                    </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <dv-single-file-upload
+                                        [title]="'VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR'"
+                                        (download)="downloadGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_MERKBLATT_TS)"
+                                        (delete)="removeGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_MERKBLATT_TS)"
+                                        (uploadFile)="uploadGesuchsperiodeDokument($event, FRANZOESISCH, VORLAGE_MERKBLATT_TS)"
+                                        [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                        [hasFile]="isVorlageMerkblattFR">
+                                    </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--Vorlage Verfügung Lastenausgleich Tagesschulen -->
+                    <div class="row view-title margin-top-30" *ngIf="gesuchsperiode && !gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span translate="VORLAGE_VERFUEGUNG_LATS"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <dv-single-file-upload
+                                            [title]="'VORLAGE_VERFUEGUNG_LATS_DE'"
+                                            (download)="downloadGesuchsperiodeDokument(DEUTSCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            (delete)="removeGesuchsperiodeDokument(DEUTSCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            (uploadFile)="uploadGesuchsperiodeDokument($event, DEUTSCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                            [hasFile]="isVorlageVerfuegungLatsDE">
+                                        </dv-single-file-upload>
+                                    </td>
+                                    </tr>
+                                <tr>
+                                    <td>
+                                        <dv-single-file-upload
+                                            [title]="'VORLAGE_VERFUEGUNG_LATS_FR'"
+                                            (download)="downloadGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            (delete)="removeGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            (uploadFile)="uploadGesuchsperiodeDokument($event, FRANZOESISCH, VORLAGE_VERFUEGUNG_LATS)"
+                                            [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                            [hasFile]="isVorlageVerfuegungLatsFR">
+                                        </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!--Vorlage Verfügung Ferienbetreuung -->
+                    <div class="row view-title margin-top-30" *ngIf="gesuchsperiode && !gesuchsperiode.isNew()">
+                        <div class="col-md-12">
+                            <h1>
+                                <span translate="VORLAGE_VERFUEGUNG_FERIENBETREUUNG"></span>
+                            </h1>
+                            <hr class="header"/>
+                            <table class="table table-striped" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <dv-single-file-upload
+                                            [title]="'VORLAGE_VERFUEGUNG_FERIENBETREUUNG_DE'"
+                                            (download)="downloadGesuchsperiodeDokument(DEUTSCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                            (delete)="removeGesuchsperiodeDokument(DEUTSCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                            (uploadFile)="uploadGesuchsperiodeDokument($event, DEUTSCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                            [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                            [hasFile]="isVorlageVerfuegungFerienbetreuungDE">
+                                        </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <dv-single-file-upload
+                                                [title]="'VORLAGE_VERFUEGUNG_FERIENBETREUUNG_FR'"
+                                                (download)="downloadGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                                (delete)="removeGesuchsperiodeDokument(FRANZOESISCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                                (uploadFile)="uploadGesuchsperiodeDokument($event, FRANZOESISCH, VORLAGE_VERFUEGUNG_FERIENBETREUUNG)"
+                                                [allowedMimetypes]="'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                                [hasFile]="isVorlageVerfuegungFerienbetreuungFR">
+                                            </dv-single-file-upload>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Liste der Parameter der Gesuchsperiode -->
+                    <div *ngIf="gesuchsperiode && !gesuchsperiode.isNew()" class="row margin-top-30">
+                        <div class="col-md-12">
+                            <div class="row view-title">
+                                <div class="col-md-12">
+                                    <h1>
+                                        <span translate="PARAMETER_PRO_GESUCHSPERIODE"></span>
+                                        <span> {{gesuchsperiode.gueltigkeit.gueltigAb | date:'dd.MM.yyyy'}}</span>
+                                        <span> bis </span>
+                                        <span>{{gesuchsperiode.gueltigkeit.gueltigBis | date:'dd.MM.yyyy'}}</span>
+                                    </h1>
+                                    <hr class="header"/>
+                                </div>
+                            </div>
+
+                            <div class="filter">
+                                <input class="filter"
+                                       matInput
+                                       type="text"
+                                       (keyup)="doFilter($event.target.value)"
+                                       placeholder="{{'SUCHBEGRIFF_EINGEBEN' | translate}}">
+                            </div>
+
+                            <!-- Parameter-Liste (repeater) -->
+                            <mat-table [dataSource]="einstellungenGesuchsperiode">
+
+                                <ng-container matColumnDef="key">
+                                    <td class="key" *matCellDef="let item">
+                                        <label>
+                                            {{item.key | translate}}
+                                        </label>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="value">
+                                    <td class="value" *matCellDef="let item">
+                                        <input id="propertyValue_{{item.key}}" type="text"
+                                               [name]="'propertyValue_'+item.key"
+                                               [(ngModel)]="item.value"
+                                               dv-max-length class="input-element" required
+                                               [disabled]="!periodenParamsEditable()">
+                                    </td>
+                                </ng-container>
+
+                                <dv-error-messages for="form['propertyName_' + paramgp.name].$error"
+                                                   class="error"></dv-error-messages>
+
+                                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+                            </mat-table>
+                            <!-- Parameter pro Gesuchsperiode Buttons-->
+                            <div class="row" *ngIf="!isReadonly()">
+                                <div class="col-md-12" *ngIf="gesuchsperiode">
+                                    <dv-loading-button type="button"
+                                                       (buttonClick)="saveParameterByGesuchsperiode()"
+                                                       buttonClass="color-success">
+                                            <span>{{(einstellungenGesuchsperiode && einstellungenGesuchsperiode.data[0].isNew())
+                                                             ? ('SAVE' | translate) : ('UPDATE' | translate)}}</span>
+                                    </dv-loading-button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

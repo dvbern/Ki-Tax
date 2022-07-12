@@ -56,12 +56,14 @@ public class GemeindeAntragServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private Gemeinde gemeindeLondon;
 
+	private Gemeinde gemeindeParis;
+
 	@Before
 	public void init() {
 		gesuchsperiode2021 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2020, 2021);
 		TestDataUtil.prepareParameters(gesuchsperiode2021, persistence);
 		insertInstitutionen();
-		TestDataUtil.getGemeindeParis(persistence);
+		gemeindeParis = TestDataUtil.getGemeindeParis(persistence);
 		gemeindeLondon = TestDataUtil.getGemeindeLondon(persistence);
 	}
 
@@ -69,7 +71,7 @@ public class GemeindeAntragServiceBeanTest extends AbstractEbeguLoginTest {
 	public void createAllGemeindeAntraege() {
 		final List<? extends GemeindeAntrag> gemeindeAntragList = gemeindeAntragService.createAllGemeindeAntraege(
 			gesuchsperiode2021,
-			GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN);
+			GemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, List.of(gemeindeParis));
 		Assert.assertNotNull(gemeindeAntragList);
 		Assert.assertEquals("Wir erwarten einen Antrag für die GP 20/21", 1, gemeindeAntragList.size());
 	}

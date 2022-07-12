@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,7 +31,8 @@ public interface ReportTagesschuleService {
 	UploadFileInfo generateExcelReportTagesschuleAnmeldungen(
 		@Nonnull String stammdatenId,
 		@Nonnull String gesuchsperiodeId,
-		@Nonnull Locale locale) throws ExcelMergeException;
+		@Nonnull Locale locale
+	) throws ExcelMergeException, IOException;
 
 	@Nonnull
 	List<TagesschuleAnmeldungenDataRow> getReportDataTagesschuleAnmeldungen(
@@ -38,5 +40,7 @@ public interface ReportTagesschuleService {
 		@Nonnull String gesuchsperiodeID);
 
 	@Nonnull
-	UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(
+		@Nonnull Locale locale
+	) throws ExcelMergeException, IOException;
 }

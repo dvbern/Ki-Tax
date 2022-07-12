@@ -102,11 +102,11 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	 * @return Liste der normalizierten und um wildcards ergaenzten suchstrings
 	 */
 	private List<String> tokenizeAndAndAddWildcardToQuery(@Nonnull String searchText) {
-		@SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-		Analyzer analyzer = new EBEGUGermanAnalyzer();
-		List<String> tokenizedStrings = LuceneUtil.tokenizeString(new EBEGUGermanAnalyzer(), searchText);
-		analyzer.close();
-		return tokenizedStrings.stream().map(term -> term + WILDCARD).collect(Collectors.toList());
+		try (Analyzer analyzer = new EBEGUGermanAnalyzer()) {
+			List<String> tokenizedStrings = LuceneUtil.tokenizeString(new EBEGUGermanAnalyzer(), searchText);
+			analyzer.close();
+			return tokenizedStrings.stream().map(term -> term + WILDCARD).collect(Collectors.toList());
+		}
 	}
 
 	/**

@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.testfaelle.testantraege;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_FerienbetreuungAngaben {
 
 	private FerienbetreuungAngaben angaben;

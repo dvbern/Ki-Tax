@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -61,17 +62,22 @@ public class BfsGemeindenInsertCreator {
 	}
 
 	private void readExcel() throws IOException {
-		InputStream resourceAsStream = BfsGemeindenInsertCreator.class.getResourceAsStream(INPUT_FILE);
-		XSSFWorkbook myWorkBook = new XSSFWorkbook(resourceAsStream);
-		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-		Iterator<Row> rowIterator = mySheet.iterator();
-		rowIterator.next(); // Titelzeile
-		while (rowIterator.hasNext()) {
-			Row row = rowIterator.next();
-			readRow(row);
+		try (
+			InputStream resourceAsStream = BfsGemeindenInsertCreator.class.getResourceAsStream(INPUT_FILE);
+			XSSFWorkbook myWorkBook = new XSSFWorkbook(Objects.requireNonNull(resourceAsStream));
+		) {
+			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+			Iterator<Row> rowIterator = mySheet.iterator();
+			rowIterator.next(); // Titelzeile
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+				readRow(row);
+			}
+			printWriter.flush();
+
+		} finally {
+			printWriter.close();
 		}
-		printWriter.flush();
-		printWriter.close();
 	}
 
 	@SuppressWarnings("OverlyComplexMethod")
@@ -136,7 +142,7 @@ public class BfsGemeindenInsertCreator {
 	}
 
 	// this class is not really a part of the software itself. For this reason it is not important that some code is duplicated
-	@SuppressWarnings("Duplicates")
+	@SuppressWarnings({"Duplicates", "PMD.CloseResource"})
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			try {

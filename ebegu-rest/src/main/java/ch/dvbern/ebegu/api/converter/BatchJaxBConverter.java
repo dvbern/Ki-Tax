@@ -84,6 +84,7 @@ public class BatchJaxBConverter {
 	}
 
 	@Nonnull
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // Die Methode ist verwendet
 	private <T extends JaxAbstractDTO> T convertAbstractVorgaengerFieldsToJAX(@Nonnull final AbstractEntity abstEntity, @Nonnull final T jaxDTOToConvertTo) {
 		jaxDTOToConvertTo.setTimestampErstellt(abstEntity.getTimestampErstellt());
 		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());

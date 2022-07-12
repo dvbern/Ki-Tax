@@ -20,18 +20,20 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 																							 '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway',
 																							 'flyway', 0, null, '2018-01-01', '9999-01-01', 'Luzern', '1',
 																							 'CH', 'Gemeinde', 'Luzern', '3072', 'Schiessplatzweg', null);
+INSERT IGNORE INTO gemeinde_stammdaten_korrespondenz (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, logo_content, logo_name, logo_spacing_left, logo_spacing_top, logo_type, logo_width, receiver_address_spacing_left, receiver_address_spacing_top, sender_address_spacing_left, sender_address_spacing_top)
+VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0be', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, null, 123, 15, null, null, 123, 47, 20, 47);
 
 INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 										default_benutzer_id, default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite,
 										beschwerde_adresse_id, korrespondenzsprache,
-										logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
+										bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 										benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
-										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen)
+										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen, gemeinde_stammdaten_korrespondenz_id)
 VALUES (UNHEX(REPLACE('fd91477c-3263-11ec-a17e-b89a2ae4a038', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0,
         UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')),
         UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
-        'luzern@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.luzern.ch', null, 'DE', null, 'BIC', 'CH93 0077 2011 6238 5295 7',
-        'Luzern Kontoinhaber', true, true, true, true, false);
+        'luzern@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.luzern.ch', null, 'DE', 'BIC', 'CH93 0077 2011 6238 5295 7',
+        'Luzern Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0be', '-', '')));
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
@@ -202,7 +204,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  gp.id   							 as gesuchsperiode_id,
 		  UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
-	  from gesuchsperiode as gp) as tmp;
+	  from gesuchsperiode as gp where gp.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))) as tmp;
 
 # Tagis fuer Paris aktivieren
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,

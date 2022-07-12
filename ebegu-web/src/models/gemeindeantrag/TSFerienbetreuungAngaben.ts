@@ -16,6 +16,7 @@
  */
 
 import {TSFerienbetreuungBerechnung} from '../../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSFerienbetreuungAngabenAngebot} from './TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from './TSFerienbetreuungAngabenKostenEinnahmen';
@@ -85,5 +86,15 @@ export class TSFerienbetreuungAngaben extends TSAbstractEntity {
 
     public set gemeindebeitrag(value: number) {
         this._gemeindebeitrag = value;
+    }
+
+    // Delegationsmodell liegt dann vor, wenn die Gemeinde externe Anbieter beauftragt und das Angebot nicht
+    // selber durchführt
+    public isDelegationsmodell(): boolean {
+        if (!this._angebot) {
+            return false;
+        }
+        return EbeguUtil.isNotNullAndFalse(this._angebot.gemeindeFuehrtAngebotSelber)
+            && this._angebot.gemeindeBeauftragtExterneAnbieter;
     }
 }

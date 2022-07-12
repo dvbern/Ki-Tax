@@ -730,6 +730,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return false;
     }
 
+    public showTarifeTable(): boolean {
+        return !this.isInstitutionenRoleAndTSModuleAkzeptiert();
+    }
+
+    private isInstitutionenRoleAndTSModuleAkzeptiert(): boolean {
+        return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION])
+          && this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+    }
+
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled();
     }

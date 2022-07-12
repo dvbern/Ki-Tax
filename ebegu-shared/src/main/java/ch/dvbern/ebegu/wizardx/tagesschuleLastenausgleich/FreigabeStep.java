@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.wizardx.WizardStateEnum;
 import ch.dvbern.ebegu.wizardx.WizardStep;
 import ch.dvbern.ebegu.wizardx.WizardTyp;
@@ -72,10 +73,24 @@ public class FreigabeStep implements WizardStep<TagesschuleWizard> {
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer();
 		UserRole role = wizard.getRole();
 
-		return container.isInStatusNeu() ||
-			container.isInBearbeitungGemeinde() && (role.isRoleMandant()
-				|| !(container.isAngabenDeklarationAbgeschlossen()
-				&& container.allInstitutionenGeprueft()));
+		if (container.isInStatusNeu()) {
+			return true;
+		}
+		if (container.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE) {
+			if (role.isRoleMandant()) {
+				return true;
+			}
+			return !(container.isAngabenDeklarationAbgeschlossen()
+				&& container.allInstitutionenGeprueft());
+		}
+		if (container.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE) {
+			if (role.isRoleMandant()) {
+				return true;
+			}
+			return !(container.isAngabenKorrekturAbgeschlossen()
+				&& container.allInstitutionenGeprueft());
+		}
+		return false;
 	}
 
 	@Override

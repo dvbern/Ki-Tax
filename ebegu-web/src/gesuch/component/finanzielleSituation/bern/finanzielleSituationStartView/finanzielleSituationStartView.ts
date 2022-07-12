@@ -71,7 +71,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public finanzielleSituationRequired: boolean;
     public areThereOnlySchulamtangebote: boolean;
-    public areThereOnlyFerieninsel: boolean;
     public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
@@ -117,7 +116,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.areThereOnlySchulamtangebote = this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
                                                                                                     // just once
-        this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
     }
@@ -174,7 +172,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         if (!this.form.$dirty) {
-            if (this.updateStepDueToOnlyFerieninsel() || this.updateStepDueToSozialhilfeOhneBenoetigteZeitraeume()) {
+            if (this.updateStepDueToSozialhilfeOhneBenoetigteZeitraeume()) {
                 return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
                     TSWizardStepStatus.OK).then(() => {
                     return this.gesuchModelManager.getGesuch();
@@ -193,15 +191,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             });
         }
         return this.save();
-    }
-
-    /**
-     * If the Step is still in status IN_BEARBEITUNG and there are only Ferieninsel, the Gesuch must be updated.
-     */
-    private updateStepDueToOnlyFerieninsel(): boolean {
-        return this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG)
-            && this.gesuchModelManager.getGesuch().areThereOnlyFerieninsel();
     }
 
     /**
