@@ -217,7 +217,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  gp.id   							 as gesuchsperiode_id,
 		  UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
-	  from gesuchsperiode as gp) as tmp;
+	  from gesuchsperiode as gp where gp.mandant_id = @mandant_id_solothurn) as tmp;
 
 INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															 user_mutiert, version, gemeinde_id, gesuchsperiode_id,

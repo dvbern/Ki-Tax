@@ -99,8 +99,7 @@
                             <dv-radio-container name="finSitStatus" class="input-element"
                                                 ng-required="vm.isFinSitStatusRequired()" items="vm.finSitStatus"
                                                 ng-model="vm.getGesuch().finSitStatus" dv-enable-element
-                                                dv-enable-allowed-roles="vm.allowedRoles"
-                                                dv-enable-expression="!vm.isGesuchReadonly()"
+                                                dv-enable-expression="!vm.isGesuchReadonly() && !vm.isInstitutionRoles()"
                                                 ng-change="vm.changeFinSitStatus()">
                             </dv-radio-container>
                             <dv-error-messages input-id="finSitStatus" for="vm.form.finSitStatus.$error"
