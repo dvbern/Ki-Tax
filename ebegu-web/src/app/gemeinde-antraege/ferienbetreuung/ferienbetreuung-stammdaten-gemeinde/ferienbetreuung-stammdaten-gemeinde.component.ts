@@ -94,7 +94,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
             this.authServiceRS.principal$,
         ]).subscribe(([container, principal]) => {
             this.container = container;
-            this.stammdaten = container.isAtLeastInPruefungKanton() ?
+            this.stammdaten = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
                 container.angabenKorrektur?.stammdaten : container.angabenDeklaration?.stammdaten;
             this.setupFormAndPermissions(container, this.stammdaten, principal);
             this.unsavedChangesService.registerForm(this.form);
@@ -319,7 +319,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.ferienbetreuungService.saveStammdaten(this.container.id, this.extractFormValues())
             .subscribe(() => {
                 this.formValidationTriggered = false;
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));

@@ -45,6 +45,7 @@ describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
     gemeindeAntragServiceSpy.getAllVisibleTagesschulenAngabenForTSLastenausgleich.and.returnValue(of([]));
+    authServiceSpy.isOneOfRoles.and.returnValue(true);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

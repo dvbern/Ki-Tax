@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -293,4 +294,25 @@ public class FerienbetreuungAngabenStammdaten extends AbstractEntity {
 		return status == FerienbetreuungFormularStatus.ABGESCHLOSSEN;
 	}
 
+	public void copyForErneuerung(FerienbetreuungAngabenStammdaten target) {
+		target.setTraegerschaft(getTraegerschaft());
+		target.setAmAngebotBeteiligteGemeinden(new HashSet<>(getAmAngebotBeteiligteGemeinden()));
+		target.setSeitWannFerienbetreuungen(getSeitWannFerienbetreuungen());
+		// Adresse
+		if (getStammdatenAdresse() != null) {
+			target.setStammdatenAdresse(getStammdatenAdresse().copyAdresse(new Adresse(), AntragCopyType.ERNEUERUNG));
+		}
+		// Kontaktperson
+		target.setStammdatenKontaktpersonEmail(getStammdatenKontaktpersonEmail());
+		target.setStammdatenKontaktpersonVorname(getStammdatenKontaktpersonVorname());
+		target.setStammdatenKontaktpersonNachname(getStammdatenKontaktpersonNachname());
+		target.setStammdatenKontaktpersonTelefon(getStammdatenKontaktpersonTelefon());
+		target.setStammdatenKontaktpersonFunktion(getStammdatenKontaktpersonFunktion());
+		target.setVermerkAuszahlung(getVermerkAuszahlung());
+		// Auszahlung
+		if (getAuszahlungsdaten() != null) {
+			target.setAuszahlungsdaten(getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), AntragCopyType.ERNEUERUNG));
+		}
+
+	}
 }

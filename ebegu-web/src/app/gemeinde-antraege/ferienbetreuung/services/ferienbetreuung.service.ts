@@ -17,7 +17,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, of, ReplaySubject} from 'rxjs';
-import {map, mergeMap, tap} from 'rxjs/operators';
+import {filter, map, mergeMap, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -25,7 +25,7 @@ import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemein
 import {TSFerienbetreuungAngabenNutzung} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
-import {CONSTANTS} from '../../../core/constants/CONSTANTS';
+import {CONSTANTS, HTTP_CODES} from '../../../core/constants/CONSTANTS';
 import {LogFactory} from '../../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('FerienbetreuungService');
@@ -41,17 +41,46 @@ export class FerienbetreuungService {
     private ferienbetreuungAngabenContainerStore =
         new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
 
+    private ferienbetreuungAngabenContainerVorjahrStore =
+        new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
+
     public constructor(
         private readonly http: HttpClient,
         private readonly einstellungRS: EinstellungRS
     ) {
     }
 
-    public updateFerienbetreuungContainerStore(id: string): void {
+    public updateFerienbetreuungContainerStores(id: string): void {
+        this.updateFerienBetreuungContainerStore(id);
+        this.updateFerienBetreuungVorgaengerContainerStore(id);
+    }
+
+    private updateFerienBetreuungContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
         this.http.get<TSFerienbetreuungAngabenContainer>(url)
+            .pipe(
+                map(restContainer => this.ebeguRestUtil.parseFerienbetreuungContainer(
+                    new TSFerienbetreuungAngabenContainer(),
+                    restContainer,
+                )),
+            )
             .subscribe(container => {
-                this.next(container);
+                this.ferienbetreuungAngabenContainerStore.next(container);
+            }, error => LOG.error(error));
+    }
+
+    private updateFerienBetreuungVorgaengerContainerStore(id: string): void {
+        const url = `${this.API_BASE_URL}/vorgaenger/${encodeURIComponent(id)}`;
+        this.http.get<TSFerienbetreuungAngabenContainer>(url, {observe: 'response'})
+            .pipe(
+                filter( response => response.status === HTTP_CODES.OK),
+                map(response => this.ebeguRestUtil.parseFerienbetreuungContainer(
+                    new TSFerienbetreuungAngabenContainer(),
+                    response.body,
+                )),
+            )
+            .subscribe(container => {
+                this.ferienbetreuungAngabenContainerVorjahrStore.next(container);
             }, error => LOG.error(error));
     }
 
@@ -59,16 +88,13 @@ export class FerienbetreuungService {
         return this.ferienbetreuungAngabenContainerStore.asObservable();
     }
 
-    public emptyStore(): void {
-        this.ferienbetreuungAngabenContainerStore = new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
+    public getFerienbetreuungVorgaengerContainer(): Observable<TSFerienbetreuungAngabenContainer> {
+        return this.ferienbetreuungAngabenContainerVorjahrStore.asObservable();
     }
 
-    private next(restContainer: TSFerienbetreuungAngabenContainer): void {
-        const container = this.ebeguRestUtil.parseFerienbetreuungContainer(
-            new TSFerienbetreuungAngabenContainer(),
-            restContainer,
-        );
-        this.ferienbetreuungAngabenContainerStore.next(container);
+    public emptyStores(): void {
+        this.ferienbetreuungAngabenContainerStore = new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
+        this.ferienbetreuungAngabenContainerVorjahrStore = new ReplaySubject<TSFerienbetreuungAngabenContainer>(1);
     }
 
     public saveKommentar(containerId: string, kommentar: string): Observable<void> {
@@ -140,7 +166,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungAngebotToRestObject({}, angebot),
         ).pipe(
             map(restAngebot => this.parseRestAngebot(restAngebot)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -153,7 +179,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungAngebotToRestObject({}, angebot),
         ).pipe(
             map(restAngebot => this.parseRestAngebot(restAngebot)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -173,7 +199,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
         ).pipe(
             map(restNutzung => this.parseRestNutzung(restNutzung)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -186,7 +212,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungNutzungToRestObject({}, nutzung),
         ).pipe(
             map(restNutzung => this.parseRestNutzung(restNutzung)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -199,7 +225,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
         ).pipe(
             map(restNutzung => this.parseRestKostenEinnahmen(restNutzung)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -212,7 +238,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen),
         ).pipe(
             map(restNutzung => this.parseRestKostenEinnahmen(restNutzung)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -225,7 +251,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
         ).pipe(
             map(restStammdaten => this.parseRestStammdaten(restStammdaten)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -238,7 +264,7 @@ export class FerienbetreuungService {
             this.ebeguRestUtil.ferienbetreuungStammdatenToRestObject({}, stammdaten),
         ).pipe(
             map(restStammdaten => this.parseRestStammdaten(restStammdaten)),
-            tap(() => this.updateFerienbetreuungContainerStore(containerId)),
+            tap(() => this.updateFerienbetreuungContainerStores(containerId)),
         );
     }
 
@@ -255,7 +281,7 @@ export class FerienbetreuungService {
                 mergeMap(containerUpdated => {
                     return this.setContainerToGeprueft(containerUpdated);
                 }),
-                tap(() => this.updateFerienbetreuungContainerStore(container.id))
+                tap(() => this.updateFerienbetreuungContainerStores(container.id))
             );
 
     }
@@ -278,7 +304,7 @@ export class FerienbetreuungService {
                 restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                     restAngaben),
             ),
-            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+            tap(() => this.updateFerienbetreuungContainerStores(container.id)),
         );
     }
 
@@ -291,7 +317,7 @@ export class FerienbetreuungService {
         ).pipe(
             map(restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                 restAngaben)),
-            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+            tap(() => this.updateFerienbetreuungContainerStores(container.id)),
         );
 
     }
@@ -304,7 +330,7 @@ export class FerienbetreuungService {
         ).pipe(
             map(restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                 restAngaben)),
-            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+            tap(() => this.updateFerienbetreuungContainerStores(container.id)),
         );
     }
 
@@ -316,7 +342,7 @@ export class FerienbetreuungService {
         ).pipe(
             map(restAngaben => this.ebeguRestUtil.parseFerienbetreuungContainer(new TSFerienbetreuungAngabenContainer(),
                 restAngaben)),
-            tap(() => this.updateFerienbetreuungContainerStore(container.id)),
+            tap(() => this.updateFerienbetreuungContainerStores(container.id)),
         );
     }
 }

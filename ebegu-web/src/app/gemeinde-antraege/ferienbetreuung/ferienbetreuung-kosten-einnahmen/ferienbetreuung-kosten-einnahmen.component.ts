@@ -22,6 +22,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -43,7 +44,8 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     OnDestroy {
 
     private kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen;
-    private subscription: Subscription;
+    private readonly unsubscribe$ = new Subject();
+    public vorgaenger$: Observable<TSFerienbetreuungAngabenContainer>;
     public isDelegationsmodell: boolean = false;
 
     public constructor(
@@ -62,24 +64,28 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     }
 
     public ngOnInit(): void {
-        this.subscription = combineLatest([
+        combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
             this.authService.principal$,
-        ]).subscribe(([container, principal]) => {
+        ]).pipe(takeUntil(this.unsubscribe$))
+            .subscribe(([container, principal]) => {
             this.container = container;
+            this.kostenEinnahmen = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
             const angaben = container.isAtLeastInPruefungKanton() ?
                 container.angabenKorrektur : container.angabenDeklaration;
-            this.kostenEinnahmen = angaben?.kostenEinnahmen;
             this.isDelegationsmodell = angaben?.isDelegationsmodell();
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
         }, error => {
             LOG.error(error);
         });
+        this.vorgaenger$ = this.ferienbetreuungService.getFerienbetreuungVorgaengerContainer()
+            .pipe(takeUntil(this.unsubscribe$));
     }
 
     public ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.unsubscribe$.next();
     }
 
     protected setupForm(kostenEinnahmen: TSFerienbetreuungAngabenKostenEinnahmen): void {
@@ -201,7 +207,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }
         this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
             .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStore(this.container.id);
+                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));

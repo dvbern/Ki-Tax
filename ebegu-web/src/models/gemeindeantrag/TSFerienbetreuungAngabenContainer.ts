@@ -88,12 +88,18 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         ].includes(this.status);
     }
 
+    public isAtLeastInPruefungKantonOrZurueckgegeben(): boolean {
+        return this.isAtLeastInPruefungKanton()
+        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
+    }
+
     public isInPruefungKanton(): boolean {
         return this.status === FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
     }
 
     public isInBearbeitungGemeinde(): boolean {
-        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
+        return this.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+        || this.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
     }
 
     public isGeprueft(): boolean {

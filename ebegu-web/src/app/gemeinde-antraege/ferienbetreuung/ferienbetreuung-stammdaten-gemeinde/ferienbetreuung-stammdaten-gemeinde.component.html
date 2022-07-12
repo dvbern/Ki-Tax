@@ -49,7 +49,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.stammdaten?.traegerschaft"
                         [korrektur]="form.get('traegerschaft').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -74,7 +74,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.stammdaten?.amAngebotBeteiligteGemeinden?.join(', ')"
                         [korrektur]="form.get('amAngebotBeteiligteGemeinden').value?.sort().join(', ')"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -99,7 +99,7 @@
                 <dv-bisher-x
                     [deklaration]="container?.angabenDeklaration?.stammdaten?.seitWannFerienbetreuungen"
                     [korrektur]="form.get('seitWannFerienbetreuungen').value"
-                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                 </dv-bisher-x>
             </div>
@@ -145,7 +145,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.organisation"
                             [korrektur]="form.get('stammdatenAdresse').get('organisation').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -171,7 +171,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.strasse"
                                 [korrektur]="form.get('stammdatenAdresse').get('strasse').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -191,7 +191,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.hausnummer"
                             [korrektur]="form.get('stammdatenAdresse').get('hausnummer').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </dv-input-container-x>
@@ -209,7 +209,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.zusatzzeile"
                             [korrektur]="form.get('stammdatenAdresse').get('zusatzzeile').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -236,7 +236,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.plz"
                             [korrektur]="form.get('stammdatenAdresse').get('plz').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </dv-input-container-x>
@@ -260,7 +260,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenAdresse?.ort"
                                 [korrektur]="form.get('stammdatenAdresse').get('ort').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </mat-form-field>
@@ -311,7 +311,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonVorname"
                             [korrektur]="form.get('stammdatenKontaktpersonVorname').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -336,7 +336,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonNachname"
                             [korrektur]="form.get('stammdatenKontaktpersonNachname').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -356,7 +356,7 @@
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonFunktion"
                         [korrektur]="form.get('stammdatenKontaktpersonFunktion').value"
-                        [showBisher]="container.isAtLeastInPruefungKanton()"
+                        [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
                 </mat-form-field>
@@ -387,7 +387,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonTelefon"
                             [korrektur]="form.get('stammdatenKontaktpersonTelefon').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -416,7 +416,7 @@
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.stammdaten?.stammdatenKontaktpersonEmail"
                             [korrektur]="form.get('stammdatenKontaktpersonEmail').value"
-                            [showBisher]="container.isAtLeastInPruefungKanton()"
+                            [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
                     </mat-form-field>
@@ -459,7 +459,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.kontoinhaber"
                                     [korrektur]="form.get('auszahlungsdaten').get('kontoinhaber').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -488,7 +488,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.strasse"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('strasse').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -508,7 +508,7 @@
                             <dv-bisher-x
                                 [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.hausnummer"
                                 [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('hausnummer').value"
-                                [showBisher]="container.isAtLeastInPruefungKanton()"
+                                [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                 [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                             </dv-bisher-x>
                         </dv-input-container-x>
@@ -527,7 +527,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.zusatzzeile"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('zusatzzeile').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -553,7 +553,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.plz"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('plz').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -578,7 +578,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.adresseKontoinhaber?.ort"
                                     [korrektur]="form.get('auszahlungsdaten').get('adresseKontoinhaber').get('ort').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -614,7 +614,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.iban"
                                     [korrektur]="form.get('auszahlungsdaten').get('iban').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>
@@ -636,7 +636,7 @@
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.vermerkAuszahlung"
                                     [korrektur]="form.get('auszahlungsdaten').get('vermerkAuszahlung').value"
-                                    [showBisher]="container.isAtLeastInPruefungKanton()"
+                                    [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                                     [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                                 </dv-bisher-x>
                             </mat-form-field>

@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities.gemeindeantrag;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -571,5 +572,28 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 
 	public void setGemeindeFuehrtAngebotInKooperation(@Nullable Boolean gemeindeFuehrtAngebotInKooperation) {
 		this.gemeindeFuehrtAngebotInKooperation = gemeindeFuehrtAngebotInKooperation;
+	}
+
+	public void copyForErneuerung(FerienbetreuungAngabenAngebot target) {
+		target.setAngebot(getAngebot());
+		// Kontaktperson
+		target.setAngebotKontaktpersonVorname(getAngebotKontaktpersonVorname());
+		target.setAngebotKontaktpersonNachname(getAngebotKontaktpersonNachname());
+		// Adresse
+		if (getAngebotAdresse() != null) {
+			target.setAngebotAdresse(getAngebotAdresse().copyAdresse(new Adresse(), AntragCopyType.ERNEUERUNG));
+		}
+		// Kooperation
+		target.setGemeindeFuehrtAngebotSelber(getGemeindeFuehrtAngebotSelber());
+		target.setGemeindeFuehrtAngebotInKooperation(getGemeindeFuehrtAngebotInKooperation());
+		target.setGemeindeBeauftragtExterneAnbieter(getGemeindeBeauftragtExterneAnbieter());
+		target.setFinanziellBeteiligteGemeinden(new HashSet<>(getFinanziellBeteiligteGemeinden()));
+		target.setAngebotVereineUndPrivateIntegriert(getAngebotVereineUndPrivateIntegriert());
+		// Tarife
+		target.setTagesschuleTarifGiltFuerFerienbetreuung(getTagesschuleTarifGiltFuerFerienbetreuung());
+		target.setFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet(getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet());
+		target.setEinkommensabhaengigerTarifKinderDerGemeinde(getEinkommensabhaengigerTarifKinderDerGemeinde());
+		target.setFixerTarifKinderDerGemeinde(getFixerTarifKinderDerGemeinde());
+		target.setKinderAusAnderenGemeindenZahlenAnderenTarif(getKinderAusAnderenGemeindenZahlenAnderenTarif());
 	}
 }
