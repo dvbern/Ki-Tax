@@ -44,11 +44,15 @@ public class AngabenGemeindeStep implements WizardStep<TagesschuleWizard> {
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer();
 		final LastenausgleichTagesschuleAngabenGemeindeStatus containerStatus = container.getStatus();
 
-		switch (containerStatus) {
+			switch (containerStatus) {
 		case NEU:
 			return WizardStateEnum.IN_BEARBEITUNG;
 		case IN_BEARBEITUNG_GEMEINDE:
 			return container.isAngabenDeklarationAbgeschlossen() ?
+				WizardStateEnum.OK :
+				WizardStateEnum.IN_BEARBEITUNG;
+		case ZURUECK_AN_GEMEINDE:
+			return container.isAngabenKorrekturAbgeschlossen() ?
 				WizardStateEnum.OK :
 				WizardStateEnum.IN_BEARBEITUNG;
 		case IN_PRUEFUNG_KANTON:

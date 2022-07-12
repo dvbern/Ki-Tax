@@ -79,6 +79,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 		BigDecimal gutscheinVorZuschlagUndSelbstbehalt = calculateGutscheinVorZuschlagUndSelbstbehalt();
 		BigDecimal vollkostenGekuerzt = calculateVollkosten();
+		// Vollkosten duerfen nie null oder negativ sein
+		vollkostenGekuerzt = MathUtil.assertNotNullAndNotNegative(vollkostenGekuerzt);
 		BigDecimal differenzVollkostenUndGutschein = EXACT.subtract(vollkostenGekuerzt,gutscheinVorZuschlagUndSelbstbehalt);
 
 		BigDecimal minimalerSelbstbehalt = calculateMinimalerSelbstbehalt();
@@ -90,6 +92,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinVorAbzugSelbstbehalt = EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, zuschlag);
 
 		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehalt, selbstbehaltDerEltern);
+		// Gutschein darf nie null oder negativ sein
+		gutschein = MathUtil.assertNotNullAndNotNegative(gutschein);
 		BigDecimal gutscheinProMonat = calculateGutscheinProMonat(gutschein);
 		BigDecimal vollkostenProMonat = calculateVollkostenProMonat(vollkostenGekuerzt);
 

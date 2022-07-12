@@ -279,7 +279,7 @@ export class KommentarViewController implements IController {
     public freigebenSTV(): void {
         this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'ZURUECK_AN_GEMEINDE_TITLE',
-            deleteText: 'ZURUECK_AN_GEMEINDE',
+            deleteText: 'ZURUECK_AN_GEMEINDE_GEBEN',
             parentController: undefined,
             elementID: undefined,
         }).then(() => {

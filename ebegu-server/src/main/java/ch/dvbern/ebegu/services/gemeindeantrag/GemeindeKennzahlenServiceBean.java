@@ -74,18 +74,14 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private GemeindeService gemeindeService;
-
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
 
 	@Nonnull
 	@Override
 	public List<GemeindeKennzahlen> createGemeindeKennzahlen(
-			@Nonnull Gesuchsperiode gesuchsperiode) {
-		return gemeindeService.getAktiveGemeinden(gesuchsperiode.getMandant())
+			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gemeinde> gemeindeList) {
+		return gemeindeList
 				.stream()
-				.filter(Gemeinde::isAngebotBG)
 				.filter(gemeinde -> !antragAlreadyExisting(gemeinde, gesuchsperiode))
 				.map(gemeinde -> {
 					GemeindeKennzahlen gemeindeKennzahlen = new GemeindeKennzahlen();

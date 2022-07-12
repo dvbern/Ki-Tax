@@ -131,4 +131,6 @@ public interface FerienbetreuungService {
 	@Nonnull FerienbetreuungAngabenContainer antragAbschliessen(@Nonnull FerienbetreuungAngabenContainer container);
 
 	@Nonnull FerienbetreuungAngabenContainer zurueckAnKanton(@Nonnull FerienbetreuungAngabenContainer container);
+
+	Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenVorgaengerContainer(@Nonnull FerienbetreuungAngabenContainer container);
 }

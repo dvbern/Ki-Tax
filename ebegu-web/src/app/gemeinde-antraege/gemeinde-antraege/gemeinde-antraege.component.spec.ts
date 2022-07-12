@@ -61,7 +61,7 @@ const user = new TSBenutzer();
 user.currentBerechtigung = new TSBerechtigung();
 user.currentBerechtigung.role = TSRole.ADMIN_MANDANT;
 
-const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithPreExistingLATS']);
 
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
     ApplicationPropertyRS.name,
@@ -125,6 +125,7 @@ describe('GemeindeAntraegeComponent', () => {
 
         gesuchPeriodeSpy.getAllActiveGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
+        gemeindeRSSpy.getGemeindenWithPreExistingLATS.and.returnValue(Promise.resolve([]));
         gemeindeAntragServiceSpy.getFilterableTypesForRole.and.returnValue([
             TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
             TSGemeindeAntragTyp.FERIENBETREUUNG

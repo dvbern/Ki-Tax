@@ -42,10 +42,6 @@ export const CONSTANTS = {
     BERN_BFS_NUMMER: 351,
     MANDANT_LOCAL_STORAGE_KEY: 'mandant',
 };
-// 100% = 20 days => 1% = 0.2 days
-export const MULTIPLIER_KITA = 0.2;
-// 100% = 220 hours => 1% = 2.2 hours
-export const MULTIPLIER_TAGESFAMILIEN = 2.2;
 
 export const DEFAULT_LOCALE = 'de-CH';
 export const LOCALSTORAGE_LANGUAGE_KEY = 'kibonLanguage';
@@ -101,7 +97,8 @@ export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string 
     }
 }
 
-export const HTTP_ERROR_CODES = {
+export const HTTP_CODES = {
+    OK: 200,
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,

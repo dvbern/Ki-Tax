@@ -27,6 +27,7 @@ export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
     private _vertraglicheNebenmahlzeiten: number;
     private _vertraglicherTarifHaupt: number;
     private _vertraglicherTarifNeben: number;
+    private _multiplier: number;
 
     public constructor() {
         super();
@@ -86,5 +87,13 @@ export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
 
     public set vertraglicherTarifNeben(value: number) {
         this._vertraglicherTarifNeben = value;
+    }
+
+    public get multiplier(): number {
+        return this._multiplier;
+    }
+
+    public set multiplier(value: number) {
+        this._multiplier = value;
     }
 }

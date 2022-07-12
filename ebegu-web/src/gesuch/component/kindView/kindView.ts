@@ -446,8 +446,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
                 CONSTANTS.END_OF_TIME_STRING;
             const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
+            const fachstellenname = fachstelle.fachstelle ? fachstelle.fachstelle.name : '';
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
-                name: fachstelle.fachstelle.name,
+                name: fachstellenname,
                 integration: integrationTyp,
                 pensum: fachstelle.pensum,
                 von: vonText,

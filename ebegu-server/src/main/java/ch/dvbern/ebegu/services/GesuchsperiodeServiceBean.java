@@ -650,6 +650,13 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		return new byte[0];
 	}
 
+	@Override
+	public Optional<Gesuchsperiode> getVorjahrGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+		return getGesuchsperiodeAm(
+				gesuchsperiode.getGueltigkeit().getGueltigAb().minusYears(1),
+				gesuchsperiode.getMandant());
+	}
+
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {
 		if (GesuchsperiodeStatus.ENTWURF == statusBefore) {
 			return GesuchsperiodeStatus.AKTIV == statusAfter;

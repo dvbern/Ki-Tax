@@ -36,7 +36,7 @@ import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung.compone
 
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer'],
+    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer'],
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -56,7 +56,9 @@ describe('FerienbetreuungNutzungComponent', () => {
 
     const container = new TSFerienbetreuungAngabenContainer();
     container.angabenDeklaration = new TSFerienbetreuungAngaben();
+    container.angabenKorrektur = new TSFerienbetreuungAngaben();
     container.angabenDeklaration.nutzung = new TSFerienbetreuungAngabenNutzung();
+    container.angabenKorrektur.nutzung = new TSFerienbetreuungAngabenNutzung();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -81,6 +83,7 @@ describe('FerienbetreuungNutzungComponent', () => {
 
     beforeEach(() => {
         ferienbetreuungServiceSpy.getFerienbetreuungContainer.and.returnValue(of(container));
+        ferienbetreuungServiceSpy.getFerienbetreuungVorgaengerContainer.and.returnValue(of(container));
         authServiceSpy.principal$ = of(new TSBenutzer());
         fixture = TestBed.createComponent(FerienbetreuungNutzungComponent);
         component = fixture.componentInstance;
