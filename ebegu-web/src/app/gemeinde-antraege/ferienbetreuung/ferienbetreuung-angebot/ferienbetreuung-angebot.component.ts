@@ -20,10 +20,12 @@ import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
-import {combineLatest, Observable, Subject} from 'rxjs';
+import {combineLatest, of, Observable, Subject} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSFerienbetreuungFormularStatus} from '../../../../models/enums/TSFerienbetreuungFormularStatus';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSAdresse} from '../../../../models/TSAdresse';
@@ -277,17 +279,28 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         this.form.get('leitungDurchPersonMitAusbildung').setValidators(Validators.required);
         this.form.get('betreuungDurchPersonenMitErfahrung').setValidators(Validators.required);
         this.form.get('anzahlKinderAngemessen').setValidators(Validators.required);
-        this.form.get('betreuungsschluessel')
-            .setValidators([Validators.required]);
+        this.form.get('betreuungsschluessel').setValidators([Validators.required]);
+
+        this.form.get('gemeindeFuehrtAngebotSelber').setValidators([Validators.required]);
+        this.form.get('gemeindeBeauftragtExterneAnbieter').setValidators([Validators.required]);
     }
 
-    public save(): void {
+    public async save(): Promise<void> {
         this.formAbschliessenTriggered = false;
         this.setBasicValidation();
 
         if (!this.form.valid) {
             this.showValidierungFehlgeschlagenErrorMessage();
-            return;
+            return of<void>().toPromise();
+        }
+        try {
+            await this.modifyValuesDelegationsModellIfNecessary();
+        } catch (e) {
+            if (e instanceof UserDidNotAcceptError) {
+                // user did not accept saving.
+                return of<void>().toPromise();
+            }
+            throw e;
         }
         this.ferienbetreuungService.saveAngebot(this.container.id, this.formToObject())
             .subscribe(() => {
@@ -296,6 +309,68 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 this.errorService.clearAll();
                 this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
             }, err => this.handleSaveErrors(err));
+    }
+
+    // falls es sich nicht mehr um das Delegationsmodell handelt müssen in diesem Schritt
+    // alle Werte gelöscht werden, die spezifisch für das Delegationsmodell angegeben wurden.
+    private modifyValuesDelegationsModellIfNecessary(): Promise<any> {
+        if (!this.container) {
+            return of().toPromise();
+        }
+        const angaben = this.container.isAtLeastInPruefungKanton()
+            ? this.container.angabenKorrektur
+            : this.container.angabenDeklaration;
+        if (!angaben.kostenEinnahmen) {
+            return of().toPromise();
+        }
+        // falls es sich NICHT um das Delegationsmodell handelt und einige Werte, die nur für das Delegationsmodell
+        // notwendig sind, schon ausgefüllt sind, dann werden diese gelöscht
+        if (!this.isDelegationsmodell()) {
+            return this.deleteAngabenDelegationsmodellIfNecessary(angaben);
+        }
+        // falls es sich um das Delegationsmodell handelt wird der Step KostenEinnahmen invalidiert, falls dieser
+        // schon valid ist
+        return this.invalidateKostenEinnahmenBecauseOfDelegationsmodell(angaben);
+    }
+
+    private async deleteAngabenDelegationsmodellIfNecessary(angaben: TSFerienbetreuungAngaben): Promise<any> {
+        if (angaben.kostenEinnahmen.sockelbeitrag
+            || angaben.kostenEinnahmen.beitraegeNachAnmeldungen
+            || angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege
+            || angaben.kostenEinnahmen.eigenleistungenGemeinde) {
+            const confirmed = await this.confirmDialog('FERIENBETREUUNG_DELETE_KOSTEN_NUTZEN_DELEGATIONSMODELL');
+            if (!confirmed) {
+                throw new UserDidNotAcceptError();
+            }
+            angaben.kostenEinnahmen.sockelbeitrag = null;
+            angaben.kostenEinnahmen.beitraegeNachAnmeldungen = null;
+            angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege = null;
+            angaben.kostenEinnahmen.eigenleistungenGemeinde = null;
+            return this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, angaben.kostenEinnahmen)
+                .toPromise();
+        }
+        return of().toPromise();
+    }
+
+    private async invalidateKostenEinnahmenBecauseOfDelegationsmodell(angaben: TSFerienbetreuungAngaben): Promise<any> {
+        // step muss nur updated werden, wenn schon abgeschlossen
+        if (angaben.kostenEinnahmen.status !== TSFerienbetreuungFormularStatus.ABGESCHLOSSEN) {
+            return of().toPromise();
+        }
+        if (!angaben.kostenEinnahmen.sockelbeitrag
+            || !angaben.kostenEinnahmen.beitraegeNachAnmeldungen
+            || !angaben.kostenEinnahmen.vorfinanzierteKantonsbeitraege
+            || !angaben.kostenEinnahmen.eigenleistungenGemeinde) {
+            const confirmed = await this.confirmDialog('FERIENBETREUUNG_INVALIDATE_KOSTEN_NUTZEN_DELEGATIONSMODELL');
+            if (!confirmed) {
+                throw new UserDidNotAcceptError();
+            }
+            return this.ferienbetreuungService.falscheAngabenKostenEinnahmen(
+                this.container.id,
+                angaben.kostenEinnahmen
+            ).toPromise();
+        }
+        return of().toPromise();
     }
 
     private formToObject(): TSFerienbetreuungAngabenAngebot {
@@ -313,10 +388,20 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     }
 
     public async onAbschliessen(): Promise<void> {
-        if (await this.checkReadyForAbschliessen()) {
-            this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
+        if (!await this.checkReadyForAbschliessen()) {
+            return of<void>().toPromise();
         }
+        try {
+            await this.modifyValuesDelegationsModellIfNecessary();
+        } catch (e) {
+            if (e instanceof UserDidNotAcceptError) {
+                // user did not accept saving.
+                return of<void>().toPromise();
+            }
+            throw e;
+        }
+        this.ferienbetreuungService.angebotAbschliessen(this.container.id, this.formToObject())
+            .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 
     public onFalscheAngaben(): void {
@@ -374,4 +459,11 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
 
         this.triggerFormValidation();
     }
+
+    private isDelegationsmodell(): boolean {
+        return EbeguUtil.isNotNullAndFalse(this.form.get('gemeindeFuehrtAngebotSelber').value)
+            && this.form.get('gemeindeBeauftragtExterneAnbieter').value;
+    }
 }
+
+class UserDidNotAcceptError extends Error {}
