@@ -21,7 +21,7 @@ import {Observable, Subject} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {AuthLifeCycleService} from '../../../authentication/service/authLifeCycle.service';
 import {TSAuthEvent} from '../../../models/enums/TSAuthEvent';
-import {CONSTANTS, HTTP_ERROR_CODES} from '../constants/CONSTANTS';
+import {CONSTANTS, HTTP_CODES} from '../constants/CONSTANTS';
 import {HttpErrorInterceptorX} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
@@ -39,7 +39,7 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
         .pipe(
             catchError((err: HttpErrorResponse) => {
                 switch (err.status) {
-                    case HTTP_ERROR_CODES.UNAUTHORIZED:
+                    case HTTP_CODES.UNAUTHORIZED:
                         // exclude requests from the login form
                         if (req.url === `${CONSTANTS.REST_API}auth/login`) {
                             throw err;
@@ -53,7 +53,7 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                         const deferred$ = new Subject<HttpEvent<any>>();
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, err.message);
                         return deferred$;
-                    case HTTP_ERROR_CODES.FORBIDDEN:
+                    case HTTP_CODES.FORBIDDEN:
                         this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, err.message);
                         throw err;
                     default:

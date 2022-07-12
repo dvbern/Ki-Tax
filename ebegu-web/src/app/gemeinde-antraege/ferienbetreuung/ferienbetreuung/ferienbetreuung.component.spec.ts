@@ -18,7 +18,7 @@
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(FerienbetreuungService.name,
-    ['updateFerienbetreuungContainerStore', 'getFerienbetreuungContainer', 'emptyStore']);
+    ['updateFerienbetreuungContainerStores', 'getFerienbetreuungContainer', 'emptyStores']);
 const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
     ['updateSteps']);
 

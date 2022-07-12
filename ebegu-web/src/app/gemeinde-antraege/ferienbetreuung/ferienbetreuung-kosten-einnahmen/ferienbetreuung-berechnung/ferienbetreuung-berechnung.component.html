@@ -4,7 +4,7 @@
     </h3>
 
     <div class="berechnung-container">
-        <div class="section">
+        <div class="section" *ngIf="!berechnung.isDelegationsmodell">
             <div>
                 <p>{{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
@@ -43,6 +43,49 @@
                 <p>
                     <span>{{'CHF' | translate}}</span>
                     <span>{{berechnung.totalKosten}}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section" *ngIf="berechnung.isDelegationsmodell">
+            <div>
+                <p>{{'FERIENBETREUUNG_SOCKELBEITRAG' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.sockelbeitrag}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.beitraegeNachAnmeldungen}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.vorfinanzierteKantonsbeitraege}}</span>
+                </p>
+            </div>
+            <div>
+                <p>{{'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.eigenleistungenGemeinde}}</span>
+                </p>
+            </div>
+            <div class="result">
+                <p>{{'FERIENBETREUUNG_TOTAL_LEISTUNGSVERTRAG' | translate}}</p>
+                <span class="flex-whitespace-item"></span>
+                <p>
+                    <span>{{'CHF' | translate}}</span>
+                    <span>{{berechnung.totalLeistungenLeistungsvertrag}}</span>
                 </p>
             </div>
         </div>
@@ -132,7 +175,7 @@
             </div>
         </div>
 
-        <div class="section">
+        <div class="section" *ngIf="!berechnung.isDelegationsmodell">
             <div>
                 <p>{{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate}}</p>
                 <span class="flex-whitespace-item"></span>
