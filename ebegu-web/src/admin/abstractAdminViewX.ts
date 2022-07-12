@@ -25,6 +25,10 @@ export class AbstractAdminViewX implements OnInit {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
     }
 
+    public isSuperadmin(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles());
+    }
+
     public periodenParamsEditableForPeriode(gesuchsperiode: TSGesuchsperiode): boolean {
         if (gesuchsperiode && gesuchsperiode.status) {
             // Fuer SuperAdmin immer auch editierbar, wenn AKTIV oder INAKTIV, sonst nur ENTWURF
