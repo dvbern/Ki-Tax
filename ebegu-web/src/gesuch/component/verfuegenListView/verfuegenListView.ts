@@ -256,7 +256,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.BESTAETIGT,
             TSBetreuungsstatus.VERFUEGT,
             TSBetreuungsstatus.NICHT_EINGETRETEN,
-            TSBetreuungsstatus.STORNIERT
+            TSBetreuungsstatus.STORNIERT,
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -266,7 +266,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
-            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
+            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -806,5 +806,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public $postLink(): void {
         // tslint:disable-next-line:no-magic-numbers
         this.doPostLinkActions(500);
+    }
+
+    public isInstitutionRoles(): boolean {
+        return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION]);
     }
 }
