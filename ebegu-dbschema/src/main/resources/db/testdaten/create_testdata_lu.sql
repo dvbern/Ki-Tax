@@ -204,7 +204,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  gp.id   							 as gesuchsperiode_id,
 		  UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
-	  from gesuchsperiode as gp) as tmp;
+	  from gesuchsperiode as gp where gp.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))) as tmp;
 
 # Tagis fuer Paris aktivieren
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
