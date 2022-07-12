@@ -207,7 +207,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBeanTest extends Ab
 		// zurück an Gemeinde
 		angabenGemeindeService.lastenausgleichTagesschuleGemeindeZurueckAnGemeinde(latsGemeindeContainer);
 		Assert.assertEquals(
-			LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
+			LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
 			latsGemeindeContainer.getStatus()
 		);
 		// es sollen immer noch beide Container vorhanden sein
