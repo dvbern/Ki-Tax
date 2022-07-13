@@ -187,9 +187,6 @@
 
                 <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
                 <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
-                <p class="sub-header-explanation green">{{'LATS_COVID_INFORMATION' | translate}}
-                    <dv-tooltip [text]="'LATS_COVID_ABRECHNUNG_INFO' | translate"></dv-tooltip>
-                </p>
                 <dv-input-container-x>
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
@@ -386,7 +383,7 @@
                     </mat-form-field>
                 </dv-input-container-x>
 
-                <dv-input-container-x>
+                <dv-input-container-x *ngIf="showCornonaFrage()">
                     <label required class="green"
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
                         {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}

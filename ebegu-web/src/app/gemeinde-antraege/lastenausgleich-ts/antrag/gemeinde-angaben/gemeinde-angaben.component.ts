@@ -323,8 +323,10 @@ export class GemeindeAngabenComponent implements OnInit {
                 Validators.required, this.numberValidator(),
                 Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
             ]);
-        this.angabenForm.get('tagesschuleTeilweiseGeschlossen')
-            .setValidators([Validators.required]);
+        if (this.showCornonaFrage()) {
+            this.angabenForm.get('tagesschuleTeilweiseGeschlossen')
+                .setValidators([Validators.required]);
+        }
         this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
             .setValidators([
                 Validators.required, this.numberValidator(),
@@ -978,6 +980,10 @@ export class GemeindeAngabenComponent implements OnInit {
     public controllingActive(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
             && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton();
+    }
+
+    public showCornonaFrage(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.angabenForm.get('tagesschuleTeilweiseGeschlossen').value);
     }
 
     private initControlling(): void {
