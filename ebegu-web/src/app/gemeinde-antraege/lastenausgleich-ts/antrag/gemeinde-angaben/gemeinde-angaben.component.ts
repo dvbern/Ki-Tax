@@ -244,16 +244,29 @@ export class GemeindeAngabenComponent implements OnInit {
             // E
             betreuungsstundenDokumentiertUndUeberprueft:
                 [initialGemeindeAngaben?.betreuungsstundenDokumentiertUndUeberprueft],
+            betreuungsstundenDokumentiertUndUeberprueftBemerkung:
+                [initialGemeindeAngaben?.betreuungsstundenDokumentiertUndUeberprueftBemerkung],
             elterngebuehrenGemaessVerordnungBerechnet:
                 [initialGemeindeAngaben?.elterngebuehrenGemaessVerordnungBerechnet],
+            elterngebuehrenGemaessVerordnungBerechnetBemerkung:
+                [initialGemeindeAngaben?.elterngebuehrenGemaessVerordnungBerechnetBemerkung],
             einkommenElternBelegt: [initialGemeindeAngaben?.einkommenElternBelegt],
+            einkommenElternBelegtBemerkung: [initialGemeindeAngaben?.einkommenElternBelegtBemerkung],
             maximalTarif: [initialGemeindeAngaben?.maximalTarif],
+            maximalTarifBemerkung: [initialGemeindeAngaben?.maximalTarifBemerkung],
             mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal:
                 [
                     initialGemeindeAngaben?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal,
                 ],
+            mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung:
+                [
+                    initialGemeindeAngaben?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung,
+                ],
             ausbildungenMitarbeitendeBelegt: [
                 {value: initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegt, disabled: false},
+            ],
+            ausbildungenMitarbeitendeBelegtBemerkung: [
+                {value: initialGemeindeAngaben?.ausbildungenMitarbeitendeBelegtBemerkung, disabled: false},
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
@@ -285,13 +298,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('angebotFuerFerienbetreuungVorhanden').setValidators([Validators.required]);
 
         this.angabenForm.get('angebotVerfuegbarFuerAlleSchulstufen').valueChanges.subscribe(value => {
-            if (value === false) {
-                this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
-                    .setValidators([Validators.required]);
-            } else {
-                this.angabenForm.get('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen')
-                    .setValidators(null);
-            }
+            this.setValidatorRequiredIfFalse('begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
 
         // B
@@ -373,12 +380,48 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // E
         this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').setValidators([Validators.required]);
+        this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').valueChanges.subscribe(value => {
+                this.setValidatorRequiredIfFalse('betreuungsstundenDokumentiertUndUeberprueftBemerkung', value);
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant(
+                'betreuungsstundenDokumentiertUndUeberprueftBemerkung Subscribe Error')));
+
         this.angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').setValidators([Validators.required]);
+        this.angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').valueChanges.subscribe(value => {
+                this.setValidatorRequiredIfFalse('elterngebuehrenGemaessVerordnungBerechnetBemerkung', value);
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant(
+                'elterngebuehrenGemaessVerordnungBerechnetBemerkung ValueChanges Error')));
+
         this.angabenForm.get('einkommenElternBelegt').setValidators([Validators.required]);
+        this.angabenForm.get('einkommenElternBelegt').valueChanges.subscribe(value => {
+                this.setValidatorRequiredIfFalse('einkommenElternBelegtBemerkung', value);
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant(
+                'einkommenElternBelegtBemerkung ValueChanges error')));
+
         this.angabenForm.get('maximalTarif').setValidators([Validators.required]);
+        this.angabenForm.get('maximalTarif').valueChanges.subscribe(value => {
+            this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
+        }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
+
         this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal')
             .setValidators([Validators.required]);
+        this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal')
+            .valueChanges
+            .subscribe(value => {
+                    this.setValidatorRequiredIfFalse('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung',
+                        value);
+                },
+                () => this.errorService.addMesageAsError(this.translateService.instant(
+                    'mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal ValueChanges error')));
+
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').setValidators([Validators.required]);
+        this.angabenForm.get('ausbildungenMitarbeitendeBelegt').valueChanges.subscribe(value => {
+                this.setValidatorRequiredIfFalse('ausbildungenMitarbeitendeBelegtBemerkung', value);
+            },
+            () => this.errorService.addMesageAsError(this.translateService.instant(
+                'AusbildungMitarbeitendeBelegt ValueChanges error')));
     }
 
     private numberValidator(): ValidatorFn {
@@ -473,6 +516,14 @@ export class GemeindeAngabenComponent implements OnInit {
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete')
                 .updateValueAndValidity({onlySelf: true, emitEvent: false});
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
+    }
+
+    private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
+        if (value === false) {
+            this.angabenForm.get(fieldname).setValidators([Validators.required]);
+        } else {
+            this.angabenForm.get(fieldname).setValidators(null);
+        }
     }
 
     // tslint:disable-next-line:max-line-length
@@ -851,11 +902,17 @@ export class GemeindeAngabenComponent implements OnInit {
 
         // E
         this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').clearValidators();
+        this.angabenForm.get('betreuungsstundenDokumentiertUndUeberprueftBemerkung').clearValidators();
         this.angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').clearValidators();
+        this.angabenForm.get('elterngebuehrenGemaessVerordnungBerechnetBemerkung').clearValidators();
         this.angabenForm.get('einkommenElternBelegt').clearValidators();
+        this.angabenForm.get('einkommenElternBelegtBemerkung').clearValidators();
         this.angabenForm.get('maximalTarif').clearValidators();
+        this.angabenForm.get('maximalTarifBemerkung').clearValidators();
         this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').clearValidators();
+        this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung').clearValidators();
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').clearValidators();
+        this.angabenForm.get('ausbildungenMitarbeitendeBelegtBemerkung').clearValidators();
 
         this.triggerFormValidation();
     }
@@ -920,7 +977,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     public controllingActive(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
-        && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton();
+            && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton();
     }
 
     private initControlling(): void {
@@ -929,13 +986,13 @@ export class GemeindeAngabenComponent implements OnInit {
         }
         combineLatest([
             this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
-            this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)
+            this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer),
         ]).subscribe(results => {
-                this.previousAntrag = results[0];
-                this.erwarteteBetreuungsstunden = results[1];
-                this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
-                this.cd.markForCheck();
-            }, err => {
+            this.previousAntrag = results[0];
+            this.erwarteteBetreuungsstunden = results[1];
+            this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
+            this.cd.markForCheck();
+        }, err => {
             LOG.error(err);
             console.error(err);
         });

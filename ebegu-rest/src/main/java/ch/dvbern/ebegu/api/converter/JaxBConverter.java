@@ -6235,11 +6235,17 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setBemerkungenWeitereKostenUndErtraege(angabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
 		jaxAngabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		jaxAngabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueftBemerkung(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueftBemerkung());
 		jaxAngabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		jaxAngabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnetBemerkung(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnetBermerkung());
 		jaxAngabenGemeinde.setEinkommenElternBelegt(angabenGemeinde.getEinkommenElternBelegt());
+		jaxAngabenGemeinde.setEinkommenElternBelegtBemerkung(angabenGemeinde.getEinkommenElternBelegtBermerkung());
 		jaxAngabenGemeinde.setMaximalTarif(angabenGemeinde.getMaximalTarif());
+		jaxAngabenGemeinde.setMaximalTarifBemerkung(angabenGemeinde.getMaximalTarifBermerkung());
 		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung());
 		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegtBemerkung(angabenGemeinde.getAusbildungenMitarbeitendeBelegtBermerkung());
 		// Bemerkungen
 		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
 		// Berechnungen
@@ -6293,11 +6299,17 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setBemerkungenWeitereKostenUndErtraege(jaxAngabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
 		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(jaxAngabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueftBemerkung(jaxAngabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueftBemerkung());
 		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(jaxAngabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnetBermerkung(jaxAngabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnetBemerkung());
 		angabenGemeinde.setEinkommenElternBelegt(jaxAngabenGemeinde.getEinkommenElternBelegt());
+		angabenGemeinde.setEinkommenElternBelegtBermerkung(jaxAngabenGemeinde.getEinkommenElternBelegtBemerkung());
 		angabenGemeinde.setMaximalTarif(jaxAngabenGemeinde.getMaximalTarif());
+		angabenGemeinde.setMaximalTarifBermerkung(jaxAngabenGemeinde.getMaximalTarifBemerkung());
 		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung());
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		angabenGemeinde.setAusbildungenMitarbeitendeBelegtBermerkung(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegtBemerkung());
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
 		// Berechnungen

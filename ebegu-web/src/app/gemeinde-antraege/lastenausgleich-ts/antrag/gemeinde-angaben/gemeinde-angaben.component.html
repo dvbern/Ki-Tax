@@ -800,6 +800,26 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+            <div class="max-width-container-750" *ngIf="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="betreuungsstundenDokumentiertUndUeberprueftBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.betreuungsstundenDokumentiertUndUeberprueftBemerkung"
+                            [korrektur]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueftBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
+
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
@@ -827,6 +847,24 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+            <div class="max-width-container-750" *ngIf="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="elterngebuehrenGemaessVerordnungBerechnetBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.elterngebuehrenGemaessVerordnungBerechnetBemerkung"
+                            [korrektur]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnetBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -864,6 +902,25 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+            <div class="max-width-container-750" *ngIf="angabenForm.get('einkommenElternBelegt').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="einkommenElternBelegtBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einkommenElternBelegtBemerkung"
+                            [korrektur]="angabenForm.get('einkommenElternBelegtBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('maximalTarif').errors}"
@@ -890,7 +947,24 @@
                     </dv-bisher-x>
                 </dv-radio-container-x>
             </dv-input-container-x>
+            <div class="max-width-container-750" *ngIf="angabenForm.get('maximalTarif').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="maximalTarifBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.maximalTarifBemerkung"
+                            [korrektur]="angabenForm.get('maximalTarifBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -924,6 +998,25 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+            <div class="max-width-container-750" *ngIf="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
+                            [korrektur]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
@@ -951,6 +1044,24 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+            <div class="max-width-container-750" *ngIf="angabenForm.get('ausbildungenMitarbeitendeBelegt').value === false">
+                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
+
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              formControlName="ausbildungenMitarbeitendeBelegtBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ausbildungenMitarbeitendeBelegtBemerkung"
+                            [korrektur]="angabenForm.get('ausbildungenMitarbeitendeBelegtBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+            </div>
         </div>
 
         <mat-divider></mat-divider>

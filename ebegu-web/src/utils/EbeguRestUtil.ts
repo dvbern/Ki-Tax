@@ -4921,16 +4921,28 @@ export class EbeguRestUtil {
             // E: Kontrollfragen
             gemeindeTS.betreuungsstundenDokumentiertUndUeberprueft =
                 gemeindeFromServer.betreuungsstundenDokumentiertUndUeberprueft;
+            gemeindeTS.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
+                gemeindeFromServer.betreuungsstundenDokumentiertUndUeberprueftBemerkung;
             gemeindeTS.elterngebuehrenGemaessVerordnungBerechnet =
                 gemeindeFromServer.elterngebuehrenGemaessVerordnungBerechnet;
+            gemeindeTS.elterngebuehrenGemaessVerordnungBerechnetBemerkung =
+                gemeindeFromServer.elterngebuehrenGemaessVerordnungBerechnetBemerkung;
             gemeindeTS.einkommenElternBelegt =
                 gemeindeFromServer.einkommenElternBelegt;
+            gemeindeTS.einkommenElternBelegtBemerkung =
+                gemeindeFromServer.einkommenElternBelegtBemerkung;
             gemeindeTS.maximalTarif =
                 gemeindeFromServer.maximalTarif;
+            gemeindeTS.maximalTarifBemerkung =
+                gemeindeFromServer.maximalTarifBemerkung;
             gemeindeTS.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
                 gemeindeFromServer.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            gemeindeTS.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+                gemeindeFromServer.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
             gemeindeTS.ausbildungenMitarbeitendeBelegt =
                 gemeindeFromServer.ausbildungenMitarbeitendeBelegt;
+            gemeindeTS.ausbildungenMitarbeitendeBelegtBemerkung =
+                gemeindeFromServer.ausbildungenMitarbeitendeBelegtBemerkung;
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
