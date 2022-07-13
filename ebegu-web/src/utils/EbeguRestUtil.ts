@@ -4892,6 +4892,8 @@ export class EbeguRestUtil {
                 gemeindeFromServer.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
             gemeindeTS.geleisteteBetreuungsstundenBesondereBeduerfnisse =
                 gemeindeFromServer.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            gemeindeTS.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+                gemeindeFromServer.geleisteteBetreuungsstundenBesondereVolksschulangebot;
             gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
                 gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
             gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
@@ -4992,6 +4994,8 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
             restAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse =
                 tsAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            restAngabenGemeinde.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+                tsAngabenGemeinde.geleisteteBetreuungsstundenBesondereVolksschulangebot;
             restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
                 tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
             restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
@@ -5021,16 +5025,28 @@ export class EbeguRestUtil {
             // E: Kontrollfragen
             restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft =
                 tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft;
+            restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
+                tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung
             restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet =
                 tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet;
+            restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnetBemerkung =
+                tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnetBemerkung;
             restAngabenGemeinde.einkommenElternBelegt =
                 tsAngabenGemeinde.einkommenElternBelegt;
+            restAngabenGemeinde.einkommenElternBelegtBemerkung =
+                tsAngabenGemeinde.einkommenElternBelegtBemerkung;
             restAngabenGemeinde.maximalTarif =
                 tsAngabenGemeinde.maximalTarif;
+            restAngabenGemeinde.maximalTarifBemerkung =
+                tsAngabenGemeinde.maximalTarifBemerkung;
             restAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
                 tsAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            restAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+                tsAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
             restAngabenGemeinde.ausbildungenMitarbeitendeBelegt =
                 tsAngabenGemeinde.ausbildungenMitarbeitendeBelegt;
+            restAngabenGemeinde.ausbildungenMitarbeitendeBelegtBemerkung =
+                tsAngabenGemeinde.ausbildungenMitarbeitendeBelegtBemerkung;
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;

@@ -191,7 +191,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                     <span
-                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
+                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString, jahrPlus: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
                         <dv-tooltip class="green"
                                     [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
                     </label>
@@ -240,6 +240,36 @@
                         <dv-bisher-x
                             [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.geleisteteBetreuungsstundenBesondereBeduerfnisse"
                             [korrektur]="angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x>
+                    <label required
+                           [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
+                    <span
+                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
+                        <dv-tooltip class="green"
+                                    [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></dv-tooltip>
+                    </label>
+
+                    <mat-form-field floatLabel="always">
+                        <input matInput
+                               formControlName="geleisteteBetreuungsstundenBesondereVolksschulangebot"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors?.isNotPositiveInteger"
+                            translate>ERROR_POSITIVE_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.geleisteteBetreuungsstundenBesondereVolksschulangebot"
+                            [korrektur]="angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').value"
                             [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -797,11 +827,9 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <div class="max-width-container-750" *ngIf="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
-
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="betreuungsstundenDokumentiertUndUeberprueftBemerkung"
                               class="form-control dv-input"></textarea>
@@ -813,8 +841,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
 
 
             <dv-input-container-x>
@@ -844,11 +870,11 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <div class="max-width-container-750" *ngIf="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="elterngebuehrenGemaessVerordnungBerechnetBemerkung"
                               class="form-control dv-input"></textarea>
@@ -860,8 +886,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -899,11 +923,9 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <div class="max-width-container-750" *ngIf="angabenForm.get('einkommenElternBelegt').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
-
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('einkommenElternBelegt').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="einkommenElternBelegtBemerkung"
                               class="form-control dv-input"></textarea>
@@ -915,8 +937,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
 
             <dv-input-container-x>
                 <label required
@@ -944,11 +964,10 @@
                     </dv-bisher-x>
                 </dv-radio-container-x>
             </dv-input-container-x>
-            <div class="max-width-container-750" *ngIf="angabenForm.get('maximalTarif').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('maximalTarif').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="maximalTarifBemerkung"
                               class="form-control dv-input"></textarea>
@@ -960,8 +979,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -995,11 +1012,9 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <div class="max-width-container-750" *ngIf="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
-
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
                               class="form-control dv-input"></textarea>
@@ -1011,8 +1026,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
 
             <dv-input-container-x>
                 <label required
@@ -1041,11 +1054,9 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
-            <div class="max-width-container-750" *ngIf="angabenForm.get('ausbildungenMitarbeitendeBelegt').value === false">
-                <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
-
-                <dv-input-container-x [verticalAlign]="true">
-                    <mat-form-field floatLabel="always" class="no-margin-left">
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('ausbildungenMitarbeitendeBelegt').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="ausbildungenMitarbeitendeBelegtBemerkung"
                               class="form-control dv-input"></textarea>
@@ -1057,8 +1068,6 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-
-            </div>
         </div>
 
         <mat-divider></mat-divider>

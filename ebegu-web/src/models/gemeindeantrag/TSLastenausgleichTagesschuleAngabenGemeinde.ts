@@ -31,6 +31,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     // B: Abrechnung
     public geleisteteBetreuungsstundenOhneBesondereBeduerfnisse: number;
     public geleisteteBetreuungsstundenBesondereBeduerfnisse: number;
+    public geleisteteBetreuungsstundenBesondereVolksschulangebot: number;
     public davonStundenZuNormlohnMehrAls50ProzentAusgebildete: number;
     public davonStundenZuNormlohnWenigerAls50ProzentAusgebildete: number;
     public einnahmenElterngebuehren: number;

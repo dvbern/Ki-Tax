@@ -77,6 +77,10 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 
 	@Nullable
@@ -148,7 +152,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String elterngebuehrenGemaessVerordnungBerechnetBermerkung;
+	private String elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -157,7 +161,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String einkommenElternBelegtBermerkung;
+	private String einkommenElternBelegtBemerkung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -166,7 +170,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String maximalTarifBermerkung;
+	private String maximalTarifBemerkung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -174,8 +178,8 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Column(nullable = true)
-	private String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung;
+	@Column(name="mindestens50prozent_betreuungszeit_bemerkung", nullable = true)
+	private String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
 
 	@Nullable
 	@Column(nullable = true)
@@ -184,7 +188,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
-	private String ausbildungenMitarbeitendeBelegtBermerkung;
+	private String ausbildungenMitarbeitendeBelegtBemerkung;
 
 	// Bemerkungen
 
@@ -632,51 +636,61 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	}
 
 	@Nullable
-	public String getElterngebuehrenGemaessVerordnungBerechnetBermerkung() {
-		return elterngebuehrenGemaessVerordnungBerechnetBermerkung;
+	public BigDecimal getGeleisteteBetreuungsstundenBesondereVolksschulangebot() {
+		return geleisteteBetreuungsstundenBesondereVolksschulangebot;
 	}
 
-	public void setElterngebuehrenGemaessVerordnungBerechnetBermerkung(
-		@Nullable String elterngebuehrenGemaessVerordnungBerechnetBermerkung) {
-		this.elterngebuehrenGemaessVerordnungBerechnetBermerkung = elterngebuehrenGemaessVerordnungBerechnetBermerkung;
-	}
-
-	@Nullable
-	public String getEinkommenElternBelegtBermerkung() {
-		return einkommenElternBelegtBermerkung;
-	}
-
-	public void setEinkommenElternBelegtBermerkung(@Nullable String einkommenElternBelegtBermerkung) {
-		this.einkommenElternBelegtBermerkung = einkommenElternBelegtBermerkung;
+	public void setGeleisteteBetreuungsstundenBesondereVolksschulangebot(
+		@Nullable BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot) {
+		this.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+			geleisteteBetreuungsstundenBesondereVolksschulangebot;
 	}
 
 	@Nullable
-	public String getMaximalTarifBermerkung() {
-		return maximalTarifBermerkung;
+	public String getElterngebuehrenGemaessVerordnungBerechnetBemerkung() {
+		return elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 	}
 
-	public void setMaximalTarifBermerkung(@Nullable String maximalTarifBermerkung) {
-		this.maximalTarifBermerkung = maximalTarifBermerkung;
-	}
-
-	@Nullable
-	public String getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung() {
-		return mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung;
-	}
-
-	public void setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung(
-		@Nullable String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung) {
-		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung =
-			mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBermerkung;
+	public void setElterngebuehrenGemaessVerordnungBerechnetBemerkung(
+		@Nullable String elterngebuehrenGemaessVerordnungBerechnetBemerkung) {
+		this.elterngebuehrenGemaessVerordnungBerechnetBemerkung = elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 	}
 
 	@Nullable
-	public String getAusbildungenMitarbeitendeBelegtBermerkung() {
-		return ausbildungenMitarbeitendeBelegtBermerkung;
+	public String getEinkommenElternBelegtBemerkung() {
+		return einkommenElternBelegtBemerkung;
 	}
 
-	public void setAusbildungenMitarbeitendeBelegtBermerkung(
-		@Nullable String ausbildungenMitarbeitendeBelegtBermerkung) {
-		this.ausbildungenMitarbeitendeBelegtBermerkung = ausbildungenMitarbeitendeBelegtBermerkung;
+	public void setEinkommenElternBelegtBemerkung(@Nullable String einkommenElternBelegtBemerkung) {
+		this.einkommenElternBelegtBemerkung = einkommenElternBelegtBemerkung;
+	}
+
+	@Nullable
+	public String getMaximalTarifBemerkung() {
+		return maximalTarifBemerkung;
+	}
+
+	public void setMaximalTarifBemerkung(@Nullable String maximalTarifBemerkung) {
+		this.maximalTarifBemerkung = maximalTarifBemerkung;
+	}
+
+	@Nullable
+	public String getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung() {
+		return mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
+	}
+
+	public void setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung(
+		@Nullable String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung) {
+		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+			mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
+	}
+
+	@Nullable
+	public String getAusbildungenMitarbeitendeBelegtBemerkung() {
+		return ausbildungenMitarbeitendeBelegtBemerkung;
+	}
+
+	public void setAusbildungenMitarbeitendeBelegtBemerkung(@Nullable String ausbildungenMitarbeitendeBelegtBemerkung) {
+		this.ausbildungenMitarbeitendeBelegtBemerkung = ausbildungenMitarbeitendeBelegtBemerkung;
 	}
 }

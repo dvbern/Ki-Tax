@@ -189,6 +189,11 @@ export class GemeindeAngabenComponent implements OnInit {
                     initialGemeindeAngaben?.geleisteteBetreuungsstundenBesondereBeduerfnisse,
                     numberValidator(ValidationType.POSITIVE_INTEGER),
                 ],
+            geleisteteBetreuungsstundenBesondereVolksschulangebot:
+                [
+                    initialGemeindeAngaben?.geleisteteBetreuungsstundenBesondereVolksschulangebot,
+                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                ],
             davonStundenZuNormlohnMehrAls50ProzentAusgebildete:
                 [
                     initialGemeindeAngaben?.davonStundenZuNormlohnMehrAls50ProzentAusgebildete,
@@ -305,6 +310,8 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
             .setValidators([
@@ -490,10 +497,14 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').valueChanges.pipe(
                     startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenBesondereBeduerfnisse),
                 ),
+                this.angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').valueChanges.pipe(
+                    startWith(gemeindeAngabenFromServer?.geleisteteBetreuungsstundenBesondereVolksschulangebot),
+                ),
             ],
         ).subscribe(formValues => {
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-                .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0));
+                .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0)
+                    + parseFloat(formValues[2] || 0));
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
@@ -845,6 +856,8 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse')
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse')
+            .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot')
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete')
             .setValidators([

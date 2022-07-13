@@ -56,6 +56,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	private BigDecimal geleisteteBetreuungsstundenBesondereBeduerfnisse;
 
 	@NotNull @Nonnull
+	private BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot;
+
+	@NotNull @Nonnull
 	private BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 
 	@NotNull @Nonnull
@@ -542,5 +545,16 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setAusbildungenMitarbeitendeBelegtBemerkung(@Nonnull String ausbildungenMitarbeitendeBelegtBemerkung) {
 		this.ausbildungenMitarbeitendeBelegtBemerkung = ausbildungenMitarbeitendeBelegtBemerkung;
+	}
+
+	@Nonnull
+	public BigDecimal getGeleisteteBetreuungsstundenBesondereVolksschulangebot() {
+		return geleisteteBetreuungsstundenBesondereVolksschulangebot;
+	}
+
+	public void setGeleisteteBetreuungsstundenBesondereVolksschulangebot(
+		@Nonnull BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot) {
+		this.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+			geleisteteBetreuungsstundenBesondereVolksschulangebot;
 	}
 }
