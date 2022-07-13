@@ -841,7 +841,6 @@ public class JaxBConverter extends AbstractConverter {
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {
 			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.extractIbanAsString());
-			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdaten.getInfomaKreditorennummer());
 			jaxFamiliensituation.setKontoinhaberMahlzeiten(persistedAuszahlungsdaten.getKontoinhaber());
 			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));

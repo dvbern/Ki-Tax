@@ -14,7 +14,7 @@ import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.decimalF
 
 public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
-	public InfomaStammdatenFinanzbuchhaltung(
+	private InfomaStammdatenFinanzbuchhaltung(
 		@NonNull Zahlung zahlung,
 		long belegnummer
 	) {
