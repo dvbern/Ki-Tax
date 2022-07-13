@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -92,7 +93,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -268,9 +268,11 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			row.setSozialhilfeBezueger(sozialhilfeBezueger);
 
 			// IBAN-Nummer
-			if (gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten() != null) {
-				IBAN iban = gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten().getIban();
-				row.setIban(iban.getIban());
+			final Auszahlungsdaten auszahlungsdatenMahlzeiten =
+				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten();
+			if (auszahlungsdatenMahlzeiten != null) {
+				// "IBAN" ist entweder die tatsaechliche IBAN oder die InfomaKontonummer
+				row.setIban(auszahlungsdatenMahlzeiten.getIbanOrInfomaKreditorennummer());
 			}
 		}
 
