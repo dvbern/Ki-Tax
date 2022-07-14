@@ -16,27 +16,36 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 
 import {GesuchsperiodeListViewXComponent} from './gesuchsperiode-list-view-x.component';
 
 describe('GesuchsperiodeListViewXComponent', () => {
-  let component: GesuchsperiodeListViewXComponent;
-  let fixture: ComponentFixture<GesuchsperiodeListViewXComponent>;
+    let component: GesuchsperiodeListViewXComponent;
+    let fixture: ComponentFixture<GesuchsperiodeListViewXComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ GesuchsperiodeListViewXComponent ]
-    })
-    .compileComponents();
-  });
+    const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
+        ['getAllGesuchsperioden']);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GesuchsperiodeListViewXComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [
+                GesuchsperiodeListViewXComponent
+            ],
+            providers: [
+                {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
+            ]
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(GesuchsperiodeListViewXComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

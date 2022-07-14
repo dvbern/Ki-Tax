@@ -37,6 +37,9 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
 
     public ngOnInit(): void {
         this.initData();
+        if (!this.config) {
+            return;
+        }
         const initialSort: Sort = {
             active: this.config.initialSortColumn,
             direction: this.config.initialSortDirection
