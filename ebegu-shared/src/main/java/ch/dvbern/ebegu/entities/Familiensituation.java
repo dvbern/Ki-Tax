@@ -54,8 +54,9 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Entity
 @Table(uniqueConstraints = {
 	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id",
-	name = "UK_familiensituation_auszahlungsdaten_id"),
-	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id", name = "UK_familiensituation_auszahlungsdaten_infoma_id")
+		name = "UK_familiensituation_auszahlungsdaten_id"),
+	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id",
+		name = "UK_familiensituation_auszahlungsdaten_infoma_id")
 })
 public class Familiensituation extends AbstractMutableEntity {
 
@@ -116,17 +117,6 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresseInfoma = false;
-
-	@Nullable
-	@Column(nullable = true)
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String infomaKreditorennummer;
-
-	@Nullable
-	@Column(nullable = true)
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String infomaBankcode;
-
 
 	@Enumerated(value = EnumType.STRING)
 	@Nullable
@@ -284,24 +274,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public String getInfomaKreditorennummer() {
-		return infomaKreditorennummer;
-	}
-
-	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
-		this.infomaKreditorennummer = infomaKreditorennummer;
-	}
-
-	@Nullable
-	public String getInfomaBankcode() {
-		return infomaBankcode;
-	}
-
-	public void setInfomaBankcode(@Nullable String infomaBankcode) {
-		this.infomaBankcode = infomaBankcode;
-	}
-
-	@Nullable
 	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
 		return gesuchstellerKardinalitaet;
 	}
@@ -427,8 +399,6 @@ public class Familiensituation extends AbstractMutableEntity {
 				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
-			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
-			target.setInfomaBankcode(this.getInfomaBankcode());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
@@ -449,8 +419,6 @@ public class Familiensituation extends AbstractMutableEntity {
 				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
-			target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
-			target.setInfomaBankcode(this.getInfomaBankcode());
 			break;
 		}
 		return target;
