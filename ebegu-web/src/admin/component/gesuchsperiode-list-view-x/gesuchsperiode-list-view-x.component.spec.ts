@@ -16,7 +16,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService} from '@uirouter/angular';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 
 import {GesuchsperiodeListViewXComponent} from './gesuchsperiode-list-view-x.component';
 
@@ -26,6 +28,10 @@ describe('GesuchsperiodeListViewXComponent', () => {
 
     const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['getAllGesuchsperioden']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+        ['go']);
+    const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isOneOfRoles']);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -34,9 +40,12 @@ describe('GesuchsperiodeListViewXComponent', () => {
             ],
             providers: [
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: StateService, useValue: stateServiceSpy},
             ]
         })
             .compileComponents();
+        gesuchsperiodeRSSpy.getAllGesuchsperioden.and.resolveTo([]);
     });
 
     beforeEach(() => {

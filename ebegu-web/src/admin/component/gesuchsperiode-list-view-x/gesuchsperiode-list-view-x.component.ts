@@ -16,7 +16,6 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
@@ -60,7 +59,6 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly $translate: TranslateService,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef,
