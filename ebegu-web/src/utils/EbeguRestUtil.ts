@@ -611,12 +611,12 @@ export class EbeguRestUtil {
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
-            restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
-            restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
-            restFamiliensituation.abweichendeZahlungsadresseMahlzeiten =
-                familiensituation.abweichendeZahlungsadresseMahlzeiten;
-            restFamiliensituation.zahlungsadresseMahlzeiten =
-                this.adresseToRestObject({}, familiensituation.zahlungsadresseMahlzeiten);
+            restFamiliensituation.iban = familiensituation.iban;
+            restFamiliensituation.kontoinhaber = familiensituation.kontoinhaber;
+            restFamiliensituation.abweichendeZahlungsadresse =
+                familiensituation.abweichendeZahlungsadresse;
+            restFamiliensituation.zahlungsadresse =
+                this.adresseToRestObject({}, familiensituation.zahlungsadresse);
             restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
             restFamiliensituation.kontoinhaberInfoma = familiensituation.kontoinhaberInfoma;
             restFamiliensituation.abweichendeZahlungsadresseInfoma = familiensituation.abweichendeZahlungsadresseInfoma;
@@ -696,12 +696,12 @@ export class EbeguRestUtil {
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
-            familiensituation.ibanMahlzeiten = familiensituationFromServer.ibanMahlzeiten;
-            familiensituation.kontoinhaberMahlzeiten = familiensituationFromServer.kontoinhaberMahlzeiten;
-            familiensituation.abweichendeZahlungsadresseMahlzeiten =
-                familiensituationFromServer.abweichendeZahlungsadresseMahlzeiten;
-            familiensituation.zahlungsadresseMahlzeiten =
-                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseMahlzeiten);
+            familiensituation.iban = familiensituationFromServer.iban;
+            familiensituation.kontoinhaber = familiensituationFromServer.kontoinhaber;
+            familiensituation.abweichendeZahlungsadresse =
+                familiensituationFromServer.abweichendeZahlungsadresse;
+            familiensituation.zahlungsadresse =
+                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
             familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
             familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
             familiensituation.abweichendeZahlungsadresseInfoma =
@@ -1305,13 +1305,13 @@ export class EbeguRestUtil {
         if (gesuch.familiensituationContainer && gesuch.familiensituationContainer.familiensituationJA) {
             restProperties.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.familiensituationContainer.familiensituationJA.keineMahlzeitenverguenstigungBeantragt;
-            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.ibanMahlzeiten;
-            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaberMahlzeiten;
+            restProperties.iban = gesuch.familiensituationContainer.familiensituationJA.iban;
+            restProperties.kontoinhaber = gesuch.familiensituationContainer.familiensituationJA.kontoinhaber;
             restProperties.abweichendeZahlungsadresse =
-                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresseMahlzeiten;
+                gesuch.familiensituationContainer.familiensituationJA.abweichendeZahlungsadresse;
             restProperties.zahlungsadresse =
                 this.adresseToRestObject({},
-                    gesuch.familiensituationContainer.familiensituationJA.zahlungsadresseMahlzeiten);
+                    gesuch.familiensituationContainer.familiensituationJA.zahlungsadresse);
         }
 
         return restProperties;

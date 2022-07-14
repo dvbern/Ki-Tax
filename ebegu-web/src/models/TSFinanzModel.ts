@@ -150,21 +150,21 @@ export class TSFinanzModel {
         }
 
         this.zahlungsinformationen = new TSZahlungsinformationen();
-        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaberMahlzeiten;
-        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().ibanMahlzeiten;
+        this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaber;
+        this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().iban;
         this.zahlungsinformationen.abweichendeZahlungsadresse =
-            gesuch.extractFamiliensituation().abweichendeZahlungsadresseMahlzeiten;
-        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresseMahlzeiten;
+            gesuch.extractFamiliensituation().abweichendeZahlungsadresse;
+        this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
         this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
             gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
 
         if (gesuch.extractFamiliensituationGS()) {
             this.zahlungsinformationenGS = new TSZahlungsinformationen();
-            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaberMahlzeiten;
-            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().ibanMahlzeiten;
+            this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaber;
+            this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().iban;
             this.zahlungsinformationenGS.abweichendeZahlungsadresse =
-                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresseMahlzeiten;
-            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresseMahlzeiten;
+                gesuch.extractFamiliensituationGS().abweichendeZahlungsadresse;
+            this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
         }
@@ -235,11 +235,11 @@ export class TSFinanzModel {
         }
         this.resetSteuerveranlagungErhaltenAndSteuererklaerungAusgefuellt(gesuch);
 
-        familiensituation.kontoinhaberMahlzeiten = this.zahlungsinformationen.kontoinhaber;
-        familiensituation.ibanMahlzeiten = this.zahlungsinformationen.iban?.toLocaleUpperCase();
-        familiensituation.abweichendeZahlungsadresseMahlzeiten =
+        familiensituation.kontoinhaber = this.zahlungsinformationen.kontoinhaber;
+        familiensituation.iban = this.zahlungsinformationen.iban?.toLocaleUpperCase();
+        familiensituation.abweichendeZahlungsadresse =
             this.zahlungsinformationen.abweichendeZahlungsadresse;
-        familiensituation.zahlungsadresseMahlzeiten = this.zahlungsinformationen.zahlungsadresse;
+        familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
         familiensituation.keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
 
