@@ -53,7 +53,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Audited
 @Entity
 @Table(uniqueConstraints = {
-	@UniqueConstraint(columnNames = "auszahlungsdaten_id",
+	@UniqueConstraint(columnNames = "auszahlungsdaten_mahlzeiten_id",
 		name = "UK_familiensituation_auszahlungsdaten_id"),
 	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id",
 		name = "UK_familiensituation_auszahlungsdaten_infoma_id")
@@ -103,11 +103,11 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_id"), nullable = true)
-	private Auszahlungsdaten auszahlungsdaten;
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_mahlzeiten_id"), nullable = true)
+	private Auszahlungsdaten auszahlungsdatenMahlzeiten;
 
 	@Column(nullable = false)
-	private boolean abweichendeZahlungsadresse;
+	private boolean abweichendeZahlungsadresseMahlzeiten;
 
 	@Nullable
 	@Valid
@@ -240,20 +240,20 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Auszahlungsdaten getAuszahlungsdaten() {
-		return auszahlungsdaten;
+	public Auszahlungsdaten getAuszahlungsdatenMahlzeiten() {
+		return auszahlungsdatenMahlzeiten;
 	}
 
-	public void setAuszahlungsdaten(@Nullable Auszahlungsdaten auszahlungsdaten) {
-		this.auszahlungsdaten = auszahlungsdaten;
+	public void setAuszahlungsdatenMahlzeiten(@Nullable Auszahlungsdaten auszahlungsdaten) {
+		this.auszahlungsdatenMahlzeiten = auszahlungsdaten;
 	}
 
-	public boolean isAbweichendeZahlungsadresse() {
-		return abweichendeZahlungsadresse;
+	public boolean isAbweichendeZahlungsadresseMahlzeiten() {
+		return abweichendeZahlungsadresseMahlzeiten;
 	}
 
-	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
-		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
 	}
 
 	@Nullable
@@ -390,11 +390,11 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setZustaendigeAmtsstelle(this.getZustaendigeAmtsstelle());
 			target.setNameBetreuer(this.getNameBetreuer());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten()
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			if (this.getAuszahlungsdatenInfoma() != null) {
 				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
@@ -407,11 +407,11 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setZustaendigeAmtsstelle(this.getZustaendigeAmtsstelle());
 			target.setNameBetreuer(this.getNameBetreuer());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
-			if (this.getAuszahlungsdaten() != null) {
-				target.setAuszahlungsdaten(this.getAuszahlungsdaten()
+			if (this.getAuszahlungsdatenMahlzeiten() != null) {
+				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setAbweichendeZahlungsadresseMahlzeiten(this.isAbweichendeZahlungsadresseMahlzeiten());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

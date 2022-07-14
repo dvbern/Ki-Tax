@@ -603,7 +603,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
 
-		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdaten();
+		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
 		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
 		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
 			throw new EbeguRuntimeException(

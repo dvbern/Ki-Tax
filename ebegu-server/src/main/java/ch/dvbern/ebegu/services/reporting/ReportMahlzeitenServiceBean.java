@@ -269,7 +269,7 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 
 			// IBAN-Nummer
 			final Auszahlungsdaten auszahlungsdatenMahlzeiten =
-				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten();
+				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten();
 			if (auszahlungsdatenMahlzeiten != null) {
 				// "IBAN" ist entweder die tatsaechliche IBAN oder die InfomaKontonummer
 				row.setIban(auszahlungsdatenMahlzeiten.getIbanOrInfomaKreditorennummer());

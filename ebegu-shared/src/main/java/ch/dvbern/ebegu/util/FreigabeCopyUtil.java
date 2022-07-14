@@ -134,18 +134,18 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setNameBetreuer(familiensituationJA.getNameBetreuer());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
-		familiensituationGS.setAbweichendeZahlungsadresse(familiensituationJA.isAbweichendeZahlungsadresse());
+		familiensituationGS.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten());
 		familiensituationGS.setFkjvFamSit(familiensituationJA.isFkjvFamSit());
 		familiensituationGS.setMinDauerKonkubinat(familiensituationJA.getMinDauerKonkubinat());
 		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 
-		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdaten();
+		Auszahlungsdaten auszahlungsdatenJA = familiensituationJA.getAuszahlungsdatenMahlzeiten();
 		Auszahlungsdaten auszahlungsdatenGS = null;
 		if (auszahlungsdatenJA != null) {
 			auszahlungsdatenGS = new Auszahlungsdaten();
 			copyAuszahlungsdaten(auszahlungsdatenGS, auszahlungsdatenJA);
 		}
-		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
+		familiensituationGS.setAuszahlungsdatenMahlzeiten(auszahlungsdatenGS);
 
 		Auszahlungsdaten auszahlungsdatenJAMZV = familiensituationJA.getAuszahlungsdatenInfoma();
 		Auszahlungsdaten auszahlungsdatenGSMZV = null;
