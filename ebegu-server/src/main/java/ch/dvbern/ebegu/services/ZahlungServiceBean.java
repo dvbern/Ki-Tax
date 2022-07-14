@@ -282,21 +282,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte =
 				getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
 					zeitabschnittBis);
-			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) { // TODO hier ist es der GUELTIGE abschnitt
-				LOGGER.info("Zahlungslauf fuer " + zeitabschnitt.getId());
-				Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
-				if (!letztesGueltigesGesuch.isGueltig()) {
-					letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
-						.stream()
-						.filter(gesuchFound -> gesuchFound.isGueltig())
-						.findFirst()
-						.orElseThrow(() ->
-							new EbeguRuntimeException(
-								"createZahlungsposition",
-								"Zahlungposition hat keine gueltige Gesuch")
-						);
-				}
-
+			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
+				Gesuch letztesGueltigesGesuch = getLetztesGueltigesGesuch(zeitabschnitt);
 				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt, letztesGueltigesGesuch) && zahlungslaufHelper.getZahlungsstatus(
 					zeitabschnitt).isNeu()) {
 					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, letztesGueltigesGesuch, zahlungsauftrag, zahlungProInstitution);
@@ -319,20 +306,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
 				zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
-			LOGGER.info("Zahlungslauf fuer " + zeitabschnitt.getId());
-			Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
-			if (!letztesGueltigesGesuch.isGueltig()) {
-				letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
-					.stream()
-					.filter(gesuchFound -> gesuchFound.isGueltig())
-					.findFirst()
-					.orElseThrow(() ->
-						new EbeguRuntimeException(
-							"createZahlungsposition",
-							"Zahlungposition hat keine gueltige Gesuch")
-					);
-			}
-
+			Gesuch letztesGueltigesGesuch = getLetztesGueltigesGesuch(zeitabschnitt);
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
 			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt, letztesGueltigesGesuch)
 				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
@@ -357,6 +331,23 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Zahlungsauftrag persistedAuftrag = persistence.merge(zahlungsauftrag);
 
 		return persistedAuftrag;
+	}
+
+	@Nonnull
+	private Gesuch getLetztesGueltigesGesuch(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+		Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
+		if (!letztesGueltigesGesuch.isGueltig()) {
+			letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
+				.stream()
+				.filter(gesuchFound -> gesuchFound.isGueltig())
+				.findFirst()
+				.orElseThrow(() ->
+					new EbeguRuntimeException(
+						"createZahlungsposition",
+						"Zahlungposition hat keine gueltige Gesuch")
+				);
+		}
+		return letztesGueltigesGesuch;
 	}
 
 	/**
@@ -600,7 +591,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	private Zahlung findZahlungForAntragstellerOrCreate(
-		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution
@@ -609,25 +600,25 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// von mehreren Mutation derselben Familie kommen, daher waere die Gesuch-ID oder die Gesuchsteller-ID
 		// nicht geeignet. Da auch Korrekturzahlungen ueber die Periode hinaus moeglich sind, faellt auch
 		// die Dossier-ID weg.
-		String fallId = gesuch.getDossier().getFall().getId();
+		String fallId = letztesGueltigesGesuch.getDossier().getFall().getId();
 		if (zahlungProInstitution.containsKey(fallId)) {
 			return zahlungProInstitution.get(fallId);
 		}
 		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
 		Zahlung zahlung =
-			createZahlungForAntragsteller(gesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag);
+			createZahlungForAntragsteller(letztesGueltigesGesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag);
 		zahlungProInstitution.put(fallId, zahlung);
 		return zahlung;
 	}
 
 	@Nonnull
 	private Zahlung createZahlungForAntragsteller(
-		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull String fallId,
 		@Nonnull Zahlungsauftrag zahlungsauftrag
 	) {
-		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		final Familiensituation familiensituation = letztesGueltigesGesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
 
 		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
@@ -637,19 +628,19 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				KibonLogLevel.INFO,
 				"createZahlung",
 				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
-				gesuch.getJahrFallAndGemeindenummer());
+				letztesGueltigesGesuch.getJahrFallAndGemeindenummer());
 		}
 
 		Objects.requireNonNull(auszahlungsdaten, "Die Auszahlungsdaten muessen zu diesem Zeitpunkt definiert sein");
 
-		final Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
+		final Gesuchsteller gesuchsteller1 = letztesGueltigesGesuch.extractGesuchsteller1()
 			.orElseThrow(() -> new EbeguRuntimeException(
 				"createZahlung",
-				"GS1 not found for Gesuch " + gesuch.getId()));
+				"GS1 not found for Gesuch " + letztesGueltigesGesuch.getId()));
 		Gesuchsteller gesuchsteller2 = null;
 
-		if (gesuch.getGesuchsteller2() != null) {
-			gesuchsteller2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+		if (letztesGueltigesGesuch.getGesuchsteller2() != null) {
+			gesuchsteller2 = letztesGueltigesGesuch.getGesuchsteller2().getGesuchstellerJA();
 		}
 
 		Zahlung zahlung = new Zahlung();
