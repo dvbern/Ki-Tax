@@ -848,6 +848,7 @@
     "MUTATION": "Mutation",
     "ALLE": "alle",
     "GESUCHSPERIODEN": "Periode",
+    "GESUCHSPERIODEN_MENU": "Perioden",
     "GESUCHSPERIODE": "Periode {{gesuchsperiode}}",
     "GESUCHSPERIODE_GUELTIG_AB": "Beginn",
     "GESUCHSPERIODE_GUELTIG_BIS": "Ende",

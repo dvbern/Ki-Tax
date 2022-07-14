@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div flex="auto" class="parameter-view admin-modul overflow-auto">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <!-- Gesuchsperioden -->
+            <div class="view-title">
+                <h1>
+                    <span translate>GESUCHSPERIODEN</span>
+                </h1>
+            </div>
+            <!-- Gesuchsperioden Tabelle -->
+            <div class="row" *ngIf="simpleTableData">
+                <div class="col-xs-12">
+                    <dv-simple-table
+                        [columns]="simpleTableColumns"
+                        [data]="simpleTableData"
+                        (rowClicked)="gesuchsperiodeClicked($event.id)"
+                        [config]="simpleTableConfig"
+                    ></dv-simple-table>
+                </div>
+            </div>
+            <div class="row margin-top-20" *ngIf="isSuperadmin()">
+                <div class="col-md-12">
+                    <dv-loading-button type="button" (buttonClick)="createGesuchsperiode()">
+                        <i class="glyphicon glyphicon-plus"></i>&nbsp;
+                        <span translate>GESUCHSPERIODE_HINZUFUEGEN</span>
+                    </dv-loading-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
