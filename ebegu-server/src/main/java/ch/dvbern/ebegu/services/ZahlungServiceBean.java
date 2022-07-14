@@ -282,10 +282,24 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte =
 				getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
 					zeitabschnittBis);
-			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
-				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(
+			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) { // TODO hier ist es der GUELTIGE abschnitt
+				LOGGER.info("Zahlungslauf fuer " + zeitabschnitt.getId());
+				Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
+				if (!letztesGueltigesGesuch.isGueltig()) {
+					letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
+						.stream()
+						.filter(gesuchFound -> gesuchFound.isGueltig())
+						.findFirst()
+						.orElseThrow(() ->
+							new EbeguRuntimeException(
+								"createZahlungsposition",
+								"Zahlungposition hat keine gueltige Gesuch")
+						);
+				}
+
+				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt, letztesGueltigesGesuch) && zahlungslaufHelper.getZahlungsstatus(
 					zeitabschnitt).isNeu()) {
-					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, letztesGueltigesGesuch, zahlungsauftrag, zahlungProInstitution);
 				}
 			}
 		}
@@ -305,14 +319,29 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
 				zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
+			LOGGER.info("Zahlungslauf fuer " + zeitabschnitt.getId());
+			Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
+			if (!letztesGueltigesGesuch.isGueltig()) {
+				letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
+					.stream()
+					.filter(gesuchFound -> gesuchFound.isGueltig())
+					.findFirst()
+					.orElseThrow(() ->
+						new EbeguRuntimeException(
+							"createZahlungsposition",
+							"Zahlungposition hat keine gueltige Gesuch")
+					);
+			}
+
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
-			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt)
+			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt, letztesGueltigesGesuch)
 				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
 				|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt)
 				== VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
 				createZahlungspositionenKorrekturUndNachzahlung(
 					zahlungslaufHelper,
 					zeitabschnitt,
+					letztesGueltigesGesuch,
 					zahlungsauftrag,
 					zahlungProInstitution);
 			}
@@ -475,21 +504,25 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	private void createZahlungsposition(
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution
 	) {
-		Zahlungsposition zahlungsposition = new Zahlungsposition();
-		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
-		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
-		zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
-		Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
-			helper,
-			zeitabschnitt,
-			zahlungsauftrag,
-			zahlungProInstitution);
-		zahlungsposition.setZahlung(zahlung);
-		zahlung.getZahlungspositionen().add(zahlungsposition);
-		helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+		if (helper.isAuszuzahlen(zeitabschnitt, letztesGueltigesGesuch)) {
+			Zahlungsposition zahlungsposition = new Zahlungsposition();
+			zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
+			zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
+			zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
+			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
+				helper,
+				zeitabschnitt,
+				letztesGueltigesGesuch,
+				zahlungsauftrag,
+				zahlungProInstitution);
+			zahlungsposition.setZahlung(zahlung);
+			zahlung.getZahlungspositionen().add(zahlungsposition);
+			helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+		}
 	}
 
 	/**
@@ -499,6 +532,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	private void createZahlungspositionenKorrekturUndNachzahlung(
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution
 	) {
@@ -514,8 +548,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			verfuegung.getBetreuung(),
 			zeitabschnittOnVorgaengerVerfuegung);
 
-		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
-			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(helper, zeitabschnittNeu, zahlungsauftrag,
+		// Korrekturen
+		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()
+			&& helper.isAuszuzahlen(zeitabschnittNeu, letztesGueltigesGesuch)) {
+			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(helper, zeitabschnittNeu, letztesGueltigesGesuch, zahlungsauftrag,
 				zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
@@ -536,40 +572,31 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				}
 			}
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
-			createZahlungsposition(helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
+			createZahlungsposition(
+				helper,
+				zeitabschnittNeu,
+				letztesGueltigesGesuch,
+				zahlungsauftrag, zahlungProInstitution);
 		}
 	}
 
 	private Zahlung findZahlungForEmpfaengerOrCreate(
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution) {
+		@Nonnull Map<String, Zahlung> zahlungProInstitution
+	) {
 		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 		Objects.requireNonNull(betreuung);
 		if (helper.getZahlungslaufTyp().equals(ZahlungslaufTyp.GEMEINDE_INSTITUTION)) {
 			return findZahlungForInstitutionOrCreate(betreuung, zahlungsauftrag, zahlungProInstitution);
 		}
-
-		Gesuch gesuch = betreuung.extractGesuch();
-		if (!gesuch.isGueltig()) {
-			gesuch = gesuchService.getAllGesuchForDossier(gesuch.getDossier().getId())
-				.stream()
-				.filter(gesuchFound -> gesuchFound.isGueltig())
-				.findFirst()
-				.orElseThrow(() ->
-					new EbeguRuntimeException(
-						"createZahlungsposition",
-						"Zahlungposition hat keine gueltige Gesuch")
-				);
-		}
-
 		return findZahlungForAntragstellerOrCreate(
-			gesuch,
+			letztesGueltigesGesuch,
 			betreuung,
 			zahlungsauftrag,
 			zahlungProInstitution);
-
 	}
 
 	private Zahlung findZahlungForAntragstellerOrCreate(

@@ -19,17 +19,14 @@ package ch.dvbern.ebegu.util.zahlungslauf;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 
@@ -89,5 +86,7 @@ public interface ZahlungslaufHelper extends Serializable {
 	/**
 	 * Gibt zurueck, ob fuer diesen Zeitabschnitt grundsaetzlich eine Auszahlung in Frage kommt.
 	 */
-	boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt);
+	boolean isAuszuzahlen(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull Gesuch letztesGueltigesGesuch);
 }

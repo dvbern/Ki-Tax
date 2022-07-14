@@ -1,8 +1,10 @@
 package ch.dvbern.ebegu.services.zahlungen;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -45,12 +47,16 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
-		for (Zahlung zahlung : zahlungsauftrag.getZahlungen()) {
+		final List<Zahlung> zahlungenSorted = zahlungsauftrag.getZahlungen()
+			.stream()
+			.sorted()
+			.collect(Collectors.toList());
+		for (Zahlung zahlung : zahlungenSorted) {
 			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer));
 			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer));
 			nextInfomaBelegnummer++;
 		}
-		sb.append(InfomaFooter.with(zahlungsauftrag.getZahlungen().size(), zahlungsauftrag.getBetragTotalAuftrag()));
+		sb.append(InfomaFooter.with(zahlungenSorted.size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.US_ASCII);
 	}
 

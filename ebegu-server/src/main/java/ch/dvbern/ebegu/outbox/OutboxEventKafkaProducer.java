@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -77,7 +78,9 @@ public class OutboxEventKafkaProducer {
 	 */
 	@Schedule(info = "publish outbox events", minute = "*", hour = "*", persistent = true)
 	public void publishEvents() {
-		if (ebeguConfiguration.getKafkaURL().isEmpty()) {
+		if (ebeguConfiguration.getKafkaURL().isEmpty()
+			|| (ebeguConfiguration.getKafkaURL().isPresent()
+				&& StringUtils.isEmpty(ebeguConfiguration.getKafkaURL().get()))) {
 			LOG.debug("Kafka URL not set, not publishing events.");
 			return;
 		}
