@@ -27,7 +27,8 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     @Input() public columns: DvSimpleTableColumnDefinition[];
     @Input() public config: DvSimpleTableConfig;
 
-    @Output() public readonly rowClicked: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public readonly rowClicked: EventEmitter<{element: any, event: Event}>
+        = new EventEmitter<{element: any, event: Event}>();
 
     public datasource: MatTableDataSource<any>;
     private sortedData: any[];

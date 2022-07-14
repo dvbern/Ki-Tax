@@ -24,6 +24,7 @@ import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batc
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
+import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 
 const states: Ng2StateDeclaration[] = [
@@ -65,6 +66,14 @@ const states: Ng2StateDeclaration[] = [
         name: 'admin.gesuchsperioden',
         url: '/gesuchsperioden',
         component: GesuchsperiodeListViewXComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
+    {
+        name: 'admin.gesuchsperiode',
+        url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
+        component: GesuchsperiodeViewXComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
         },

@@ -56,17 +56,6 @@ const ng1States: Ng1StateDeclaration[] = [
             roles: TSRoleUtil.getAllAdministratorRevisorRole(),
         },
     },
-    {
-        name: 'admin.gesuchsperiode',
-        component: 'dvGesuchsperiodeViewX',
-        url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
-        params: {
-            gesuchsperiodeId: '',
-        },
-        data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
-    },
 ];
 
 adminRun.$inject = ['RouterHelper'];
