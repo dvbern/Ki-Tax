@@ -376,6 +376,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		return ausbezahlteAbschnitte;
 	}
 
+	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Nonnull
 	private BigDecimal getBetragSoll(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
 		BigDecimal betragSoll = BigDecimal.ZERO;
