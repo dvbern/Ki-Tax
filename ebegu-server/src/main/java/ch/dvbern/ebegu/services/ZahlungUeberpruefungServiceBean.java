@@ -381,9 +381,11 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		BigDecimal betragSoll = BigDecimal.ZERO;
 		if (betreuung.getVerfuegung() != null) {
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
-				if (!verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(dateAusbezahltBis)) {
-					// Dieser Zeitabschnitt muesste ausbezahlt sein
-					betragSoll = DEFAULT.add(betragSoll, zahlungslaufHelper.getAuszahlungsbetrag(verfuegungZeitabschnitt));
+				if (zahlungslaufHelper.isAuszuzahlen(verfuegungZeitabschnitt, betreuung.extractGesuch())) {
+					if (!verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(dateAusbezahltBis)) {
+						// Dieser Zeitabschnitt muesste ausbezahlt sein
+						betragSoll = DEFAULT.add(betragSoll, zahlungslaufHelper.getAuszahlungsbetrag(verfuegungZeitabschnitt));
+					}
 				}
 			}
 		}
