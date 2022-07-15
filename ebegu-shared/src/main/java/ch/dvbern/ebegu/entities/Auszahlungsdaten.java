@@ -139,9 +139,14 @@ public class Auszahlungsdaten extends AbstractEntity {
 		return target;
 	}
 
-	public boolean isZahlungsinformationValid() {
-		return StringUtils.isNotEmpty(kontoinhaber)
+	public boolean isZahlungsinformationValid(boolean isInfomaZahlung) {
+		final boolean valid = StringUtils.isNotEmpty(kontoinhaber)
 			&& StringUtils.isNotEmpty(getIbanOrInfomaKreditorennummer());
+		if (isInfomaZahlung) {
+			final boolean validForInfomaZahlung = StringUtils.isNotEmpty(infomaKreditorennummer);
+			return valid && validForInfomaZahlung;
+		}
+		return valid;
 	}
 
 	@Nullable

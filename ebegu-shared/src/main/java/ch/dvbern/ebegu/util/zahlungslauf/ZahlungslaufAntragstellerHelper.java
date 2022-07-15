@@ -23,11 +23,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
-import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -67,32 +67,41 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 	@Nonnull
 	@Override
 	public BigDecimal getAuszahlungsbetrag(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		BigDecimal auszahlungsbetrag = zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigungMahlzeitenTotal();
-		if (auszahlungsbetrag == null) {
-			auszahlungsbetrag = BigDecimal.ZERO;
+		BigDecimal total = BigDecimal.ZERO;
+		if (zeitabschnitt.isAuszahlungAnEltern()) {
+			total = MathUtil.DEFAULT.addNullSafe(total, ZahlungslaufGutscheinUtil.getAuszahlungsbetrag(zeitabschnitt));
 		}
-		return auszahlungsbetrag;
+		if (ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(zeitabschnitt)) {
+			total = MathUtil.DEFAULT.addNullSafe(total, ZahlungslaufMahlzeitenverguenstigungUtil.getAuszahlungsbetrag(zeitabschnitt));
+		}
+		return total;
 	}
 
 	@Nonnull
 	@Override
 	public Adresse getAuszahlungsadresseOrDefaultadresse(@Nonnull Zahlung zahlung) {
-		// In erster Prio nehmen wir die speziell definierte Zahlungsadresse
+		final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
 		Adresse auszahlungsadresse = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
-		if (auszahlungsadresse == null) {
-			// Falls keine spezifische Adresse definiert ist, nehmen wir die Wohnadresse des Gesuchstellers
-			final Optional<Zahlungsposition> firstZahlungsposition = zahlung.getZahlungspositionen().stream().findFirst();
-			if (firstZahlungsposition.isPresent()) {
-				final GesuchstellerContainer gesuchsteller1 =
-					firstZahlungsposition.get().getVerfuegungZeitabschnitt().getVerfuegung().getPlatz().extractGesuch().getGesuchsteller1();
-				Objects.requireNonNull(gesuchsteller1);
-				auszahlungsadresse =
-					gesuchsteller1.getWohnadresseAm(LocalDate.now());
-			}
+		// Wenn jeweils keine spezifische Adresse gesetzt ist, nehmen wir die Wohnadresse GS1
+		if (auszahlungsadresse == null && firstZahlungsposition.isPresent()) {
+			auszahlungsadresse = extractWohnadresseGS1(firstZahlungsposition.get());
 		}
 		// Jetzt muss zwingend eine Adresse vorhanden sein
 		Objects.requireNonNull(auszahlungsadresse);
 		return auszahlungsadresse;
+	}
+
+	@Nullable
+	protected static Adresse extractWohnadresseGS1(@Nonnull Zahlungsposition zahlungsposition) {
+		final GesuchstellerContainer gesuchsteller1 =
+			zahlungsposition
+				.getVerfuegungZeitabschnitt()
+				.getVerfuegung()
+				.getPlatz()
+				.extractGesuch()
+				.getGesuchsteller1();
+		Objects.requireNonNull(gesuchsteller1);
+		return gesuchsteller1.getWohnadresseAm(LocalDate.now());
 	}
 
 	@Override
@@ -103,14 +112,14 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		if (oldSameZeitabschnittOptional.isPresent()) {
 			VerfuegungZeitabschnitt oldSameZeitabschnitt = oldSameZeitabschnittOptional.get();
 			// Der Vergleich muuss fuer ASIV und Gemeinde separat erfolgen
-			setIsSameAusbezahlteVerguenstigungMahlzeiten(
+			setIsSameAusbezahlteVerguenstigung(
 				newZeitabschnitt.getBgCalculationInputAsiv(),
 				newZeitabschnitt.getBgCalculationResultAsiv(),
 				oldSameZeitabschnitt.getBgCalculationResultAsiv());
 			if (newZeitabschnitt.isHasGemeindeSpezifischeBerechnung()) {
 				Objects.requireNonNull(newZeitabschnitt.getBgCalculationResultGemeinde());
 				Objects.requireNonNull(oldSameZeitabschnitt.getBgCalculationResultGemeinde());
-				setIsSameAusbezahlteVerguenstigungMahlzeiten(
+				setIsSameAusbezahlteVerguenstigung(
 					newZeitabschnitt.getBgCalculationInputGemeinde(),
 					newZeitabschnitt.getBgCalculationResultGemeinde(),
 					oldSameZeitabschnitt.getBgCalculationResultGemeinde());
@@ -121,29 +130,36 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		}
 	}
 
-	private void setIsSameAusbezahlteVerguenstigungMahlzeiten(
+	private void setIsSameAusbezahlteVerguenstigung(
 		@Nonnull BGCalculationInput inputNeu,
 		@Nonnull BGCalculationResult resultNeu,
 		@Nonnull BGCalculationResult resultBisher
 	) {
-		inputNeu.setSameAusbezahlteMahlzeiten(MathUtil.isSame(resultNeu.getVerguenstigungMahlzeitenTotal(), resultBisher.getVerguenstigungMahlzeitenTotal()));
+		boolean result = true;
+		if (inputNeu.getParent().isAuszahlungAnEltern()) {
+			boolean sameGutschein = ZahlungslaufGutscheinUtil.isSameAusbezahlterBetrag(resultNeu, resultBisher);
+			result = sameGutschein;
+		}
+		if (ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(inputNeu.getParent())) {
+			boolean sameMahlzeitenverguenstigung = ZahlungslaufMahlzeitenverguenstigungUtil.isSameAusbezahlterBetrag(
+				resultNeu, resultBisher);
+			result = result && sameMahlzeitenverguenstigung;
+		}
+		inputNeu.setSameAusbezahlteMahlzeiten(result);
 	}
 
 	@Override
 	public boolean isSamePersistedValues(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull VerfuegungZeitabschnitt otherAbschnitt) {
-		// Fuer die Antragsteller-Auszahlungen koennen wir nicht die normale isSamePersistedValues verwenden. Dort werden die
-		// Mahlzeiten nicht verglichen
-		boolean isSame = MathUtil.isSame(
-			abschnitt.getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal(),
-			otherAbschnitt.getBgCalculationResultAsiv().getVerguenstigungMahlzeitenTotal())
-			&& (!abschnitt.isHasGemeindeSpezifischeBerechnung()
-				|| (abschnitt.getBgCalculationResultGemeinde() != null
-					&& 	otherAbschnitt.getBgCalculationResultGemeinde() != null
-					&& MathUtil.isSame(
-						abschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal(),
-						otherAbschnitt.getBgCalculationResultGemeinde().getVerguenstigungMahlzeitenTotal())))
-					&& abschnitt.getGueltigkeit().compareTo(otherAbschnitt.getGueltigkeit()) == 0;
-		return isSame;
+		boolean result = true;
+		if (abschnitt.isAuszahlungAnEltern()) {
+			boolean sameGutschein = ZahlungslaufGutscheinUtil.isSamePersistedValues(abschnitt, otherAbschnitt);
+			result = sameGutschein;
+		}
+		if (ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(abschnitt)) {
+			boolean sameMahlzeiten = ZahlungslaufMahlzeitenverguenstigungUtil.isSamePersistedValues(abschnitt, otherAbschnitt);
+			result = result && sameMahlzeiten;
+		}
+		return result;
 	}
 
 	@Override
@@ -151,8 +167,8 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Gesuch letztesGueltigesGesuch
 	) {
-		// Nur auszuzahlen, wenn Mahlzeitenverguenstigung beantragt
-		final Familiensituation familiensituation = letztesGueltigesGesuch.extractFamiliensituation();
-		return familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
+		boolean isAuszuzahlenGutschein = zeitabschnitt.isAuszahlungAnEltern();
+		boolean isAuszuzahlenMahlzeiten = ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(letztesGueltigesGesuch);
+		return isAuszuzahlenGutschein || isAuszuzahlenMahlzeiten;
 	}
 }

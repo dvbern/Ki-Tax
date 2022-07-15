@@ -15,7 +15,11 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaFooter;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaHeader;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaStammdatenFinanzbuchhaltung;
@@ -49,9 +53,20 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
 		final List<Zahlung> zahlungenSorted = zahlungsauftrag.getZahlungen()
 			.stream()
+			.filter(zahlung -> zahlung.getBetragTotalZahlung().signum() == 1)
 			.sorted()
 			.collect(Collectors.toList());
 		for (Zahlung zahlung : zahlungenSorted) {
+			// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+			if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid(true)) {
+				throw new EbeguRuntimeException(KibonLogLevel.INFO,
+					"wrapZahlungsauftrag",
+					zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION
+						? ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE
+						: ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+					zahlung.getEmpfaengerName());
+			}
+
 			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer));
 			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer));
 			nextInfomaBelegnummer++;

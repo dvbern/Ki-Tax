@@ -131,7 +131,6 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Gesuch letztesGueltigesGesuch
 	) {
-		// An Institutionen wird immer ausbezahlt
-		return true;
+		return !zeitabschnitt.isAuszahlungAnEltern();
 	}
 }

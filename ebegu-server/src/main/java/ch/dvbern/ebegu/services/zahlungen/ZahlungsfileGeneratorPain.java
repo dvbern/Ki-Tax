@@ -12,10 +12,10 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -91,12 +91,13 @@ public class ZahlungsfileGeneratorPain implements IZahlungsfileGenerator {
 			.filter(zahlung -> zahlung.getBetragTotalZahlung().signum() == 1)
 			.forEach(zahlung -> {
 				// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-				if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid()) {
-					final Institution institution = zahlung.extractInstitution();
+				if (!zahlung.getAuszahlungsdaten().isZahlungsinformationValid(false)) {
 					throw new EbeguRuntimeException(KibonLogLevel.INFO,
 						"wrapZahlungsauftrag",
-						ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE,
-						institution.getName());
+						zahlungsauftrag.getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_INSTITUTION
+							? ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INSTITUTION_INCOMPLETE
+							: ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+						zahlung.getEmpfaengerName());
 				}
 
 				AuszahlungDTO auszahlungDTO = new AuszahlungDTO();
