@@ -26,6 +26,7 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSPaginationResultDTO} from '../../../models/TSPaginationResultDTO';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSZahlungsauftrag} from '../../../models/TSZahlungsauftrag';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -78,7 +79,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    private showMahlzeitenZahlungslaeufe: boolean = false;
+    private hasMahlzeitenZahlungslaeufe: boolean = false;
+    private hasAuszahlungAnEltern: boolean = false;
 
     public principal: TSBenutzer;
 
@@ -118,7 +120,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.zahlungslaufTyp = isMahlzeitenzahlungen
             ? TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
             : TSZahlungslaufTyp.GEMEINDE_INSTITUTION;
-        this.updateShowMahlzeitenZahlungslaeufe();
+        this.updateHasMahlzeitenZahlungslaeufe();
+        this.updateHasAuszahlungAnElternZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
@@ -386,11 +389,11 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         }
     }
 
-    private updateShowMahlzeitenZahlungslaeufe(): void {
-        this.showMahlzeitenZahlungslaeufe = false;
+    private updateHasMahlzeitenZahlungslaeufe(): void {
+        this.hasMahlzeitenZahlungslaeufe = false;
         // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-            this.showMahlzeitenZahlungslaeufe = false;
+            this.hasMahlzeitenZahlungslaeufe = false;
             return;
         }
         // Abfragen, welche meiner berechtigten Gemeinden Mahlzeitenverguenstigung haben
@@ -400,10 +403,23 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             }
             // Sobald mindestens eine Gemeinde in mindestens einer Gesuchsperiode die
             // Mahlzeiten aktiviert hat, wird der Toggle angezeigt
-            this.showMahlzeitenZahlungslaeufe = true;
+            this.hasMahlzeitenZahlungslaeufe = true;
             this.berechtigteGemeindenMitMahlzeitenList = value;
             this.cd.markForCheck();
         });
+    }
+
+    private updateHasAuszahlungAnElternZahlungslaeufe(): void {
+        this.hasAuszahlungAnEltern = false;
+        // Grundsaetzliche nur fuer Superadmin und Gemeinde-Mitarbeiter
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+            this.hasAuszahlungAnEltern = false;
+            return;
+        }
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.hasAuszahlungAnEltern = response.infomaZahlungen;
+            });
     }
 
     public toggleAuszahlungslaufTyp(): void {
@@ -418,7 +434,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public getMsgKeyForToggleRight(): string {
-        if (this.showMahlzeitenZahlungslaeufe) {
+        if (this.hasMahlzeitenZahlungslaeufe) {
             return 'GEMEINDE_MAHLZEITENVERGUENSTIGUNGEN';
         }
         return 'GEMEINDE_ANTRAGSTELLER';
@@ -446,7 +462,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public showAuszahlungsTypToggle(): boolean {
-        return this.showMahlzeitenZahlungslaeufe;
+        // Wenn entweder Mahlzeitenzahlungslaeufe oder Auszahlungen an Eltern aktiviert sind,
+        // soll der zweite Tab angezeigt werden
+        return !!this.hasMahlzeitenZahlungslaeufe || !!this.hasAuszahlungAnEltern;
     }
 
     public getLabelZahlungslaufErstellen(): string {
