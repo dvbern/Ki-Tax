@@ -417,6 +417,13 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.updateZahlungsauftrag();
     }
 
+    public getMsgKeyForToggleRight(): string {
+        if (this.showMahlzeitenZahlungslaeufe) {
+            return 'GEMEINDE_MAHLZEITENVERGUENSTIGUNGEN';
+        }
+        return 'GEMEINDE_ANTRAGSTELLER';
+    }
+
     public sortData($event: Sort): void {
         this.sort.active = $event.active;
         this.sort.direction = $event.direction;

@@ -54,6 +54,9 @@ export class DvSwitchComponent<T> implements OnChanges {
     @Input() public switchValue: T;
     @Input() public readonly switchOptionLeft: T;
     @Input() public readonly switchOptionRight: T;
+    // labels: if empty, the switch options are used
+    @Input() public readonly switchOptionLabelLeft: string;
+    @Input() public readonly switchOptionLabelRight: string;
 
     @HostBinding('class.disabled')
     @Input() public disabled: boolean = false;
@@ -103,5 +106,26 @@ export class DvSwitchComponent<T> implements OnChanges {
     private emitAndSetValue(value: T): void {
         this.switchValue = value;
         this.switchValueChange.emit(value);
+    }
+
+    public getSwitchLabelLeft() {
+        if (!!this.switchOptionLabelLeft) {
+            return this.switchOptionLabelLeft;
+        }
+       return this.switchOptionLeft;
+    }
+
+    public getSwitchLabelRight() {
+        if (!!this.switchOptionLabelRight) {
+            return this.switchOptionLabelRight;
+        }
+        return this.switchOptionRight;
+    }
+
+    public getActiveSwitchLabel(switchValue: any) {
+        if (switchValue == this.switchOptionLeft) {
+            return this.getSwitchLabelLeft();
+        }
+        return this.getSwitchLabelRight();
     }
 }

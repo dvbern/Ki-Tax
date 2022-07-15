@@ -20,6 +20,7 @@
         <dv-switch
             [switchOptionLeft]="'GEMEINDE_INSTITUTION'"
             [switchOptionRight]="'GEMEINDE_ANTRAGSTELLER'"
+            [switchOptionLabelRight]="getMsgKeyForToggleRight()"
             [(switchValue)]="zahlungslaufTyp"
             (switchValueChange)="toggleAuszahlungslaufTyp()"
         ></dv-switch>
