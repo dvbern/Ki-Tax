@@ -528,6 +528,15 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public showGemeindeFilter(): boolean {
-        return this.gemeindenList.length > 1;
+        return this.getGemeindenList().length > 1;
+    }
+
+    public getGemeindenList(): TSGemeinde[] {
+        if (this.hasMahlzeitenZahlungslaeufe &&
+            TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER === this.zahlungslaufTyp) {
+            return this.berechtigteGemeindenMitMahlzeitenList;
+        }
+
+        return this.berechtigteGemeindenList;
     }
 }
