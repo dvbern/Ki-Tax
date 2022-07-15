@@ -468,7 +468,10 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public getLabelZahlungslaufErstellen(): string {
-        return this.translate.instant('BUTTON_' + this.zahlungslaufTyp);
+        if (this.zahlungslaufTyp == TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER && this.hasMahlzeitenZahlungslaeufe) {
+            return this.translate.instant('BUTTON_GEMEINDE_ZAHLUNGSLAUF_MAHLZEITEN');
+        }
+        return this.translate.instant('BUTTON_GEMEINDE_ZAHLUNGSLAUF_GUTSCHEIN');
     }
 
     public showInfotext(): boolean {
