@@ -108,22 +108,22 @@ export class DvSwitchComponent<T> implements OnChanges {
         this.switchValueChange.emit(value);
     }
 
-    public getSwitchLabelLeft() {
+    public getSwitchLabelLeft(): string {
         if (!!this.switchOptionLabelLeft) {
             return this.switchOptionLabelLeft;
         }
-       return this.switchOptionLeft;
+        return this.switchOptionLeft.toString();
     }
 
-    public getSwitchLabelRight() {
+    public getSwitchLabelRight(): string {
         if (!!this.switchOptionLabelRight) {
             return this.switchOptionLabelRight;
         }
-        return this.switchOptionRight;
+        return this.switchOptionRight.toString();
     }
 
-    public getActiveSwitchLabel(switchValue: any) {
-        if (switchValue == this.switchOptionLeft) {
+    public getActiveSwitchLabel(switchValue: T) {
+        if (switchValue === this.switchOptionLeft) {
             return this.getSwitchLabelLeft();
         }
         return this.getSwitchLabelRight();
