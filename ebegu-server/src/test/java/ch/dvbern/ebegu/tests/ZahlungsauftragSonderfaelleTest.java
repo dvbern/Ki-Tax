@@ -232,7 +232,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 	private void assertZahlungsstatus(List<VerfuegungZeitabschnitt> alleZeitabschnitte, int startIndex, int endIndex,
 			VerfuegungsZeitabschnittZahlungsstatus status) {
 		for (int i = startIndex; i < endIndex; i++) {
-			Assert.assertSame(status, alleZeitabschnitte.get(i).getZahlungsstatus());
+			Assert.assertSame(status, alleZeitabschnitte.get(i).getZahlungsstatusInstitution());
 		}
 	}
 
@@ -241,18 +241,18 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : alleZeitabschnitte) {
 			LOG.warn(verfuegungZeitabschnitt.toStringWithoutBemerkung());
 		}
-		Assert.assertSame(statusFirstMonth, alleZeitabschnitte.get(startIndex).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+1).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+2).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+3).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+4).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+5).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+6).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+7).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+8).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+9).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+10).getZahlungsstatus());
-		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+11).getZahlungsstatus());
+		Assert.assertSame(statusFirstMonth, alleZeitabschnitte.get(startIndex).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+1).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+2).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+3).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+4).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+5).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+6).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+7).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+8).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+9).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+10).getZahlungsstatusInstitution());
+		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+11).getZahlungsstatusInstitution());
 	}
 
 	private List<VerfuegungZeitabschnitt> getAllZeitabschnitteOrderedByGesuchAndDatum() {

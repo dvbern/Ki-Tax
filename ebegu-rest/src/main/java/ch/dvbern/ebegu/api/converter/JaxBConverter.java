@@ -3912,8 +3912,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
-		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setZahlungsstatusMahlzeitenverguenstigung(zeitabschnitt.getZahlungsstatusMahlzeitenverguenstigung());
+		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatusInstitution());
+		jaxZeitabschn.setZahlungsstatusMahlzeitenverguenstigung(zeitabschnitt.getZahlungsstatusAntragsteller());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()

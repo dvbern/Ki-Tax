@@ -152,7 +152,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		VerfuegungZeitabschnitt aktuellerAbschnitt,
 		VerfuegungZeitabschnitt vorangehenderAbschnitt) {
 
-		if (vorangehenderAbschnitt.getZahlungsstatus().isVerrechnet() || vorangehenderAbschnitt.getZahlungsstatus().isVerrechnend()) {
+		if (vorangehenderAbschnitt.getZahlungsstatusInstitution().isVerrechnet() || vorangehenderAbschnitt.getZahlungsstatusInstitution().isVerrechnend()) {
 			aktuellerAbschnitt.setAuszahlungAnEltern(vorangehenderAbschnitt.isAuszahlungAnEltern());
 		}
 	}
