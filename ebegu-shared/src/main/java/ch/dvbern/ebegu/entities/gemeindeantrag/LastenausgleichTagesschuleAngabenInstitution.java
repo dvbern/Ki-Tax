@@ -133,6 +133,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderSekundarstufe = source.anzahlEingeschriebeneKinderSekundarstufe;
 		this.anzahlEingeschriebeneKinderPrimarstufe = source.anzahlEingeschriebeneKinderPrimarstufe;
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = source.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+		this.anzahlEingeschriebeneKinderVolksschulangebot = source.anzahlEingeschriebeneKinderVolksschulangebot;
 		this.durchschnittKinderProTagFruehbetreuung = source.durchschnittKinderProTagFruehbetreuung;
 		this.durchschnittKinderProTagMittag = source.durchschnittKinderProTagMittag;
 		this.durchschnittKinderProTagNachmittag1 = source.durchschnittKinderProTagNachmittag1;
@@ -146,6 +147,8 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.ernaehrungsGrundsaetzeEingehalten = source.ernaehrungsGrundsaetzeEingehalten;
 		// Bemerkungen
 		this.bemerkungen = source.bemerkungen;
+		// Oeffnungszeiten
+		this.oeffnungszeiten = source.oeffnungszeiten;
 	}
 
 	@Nullable

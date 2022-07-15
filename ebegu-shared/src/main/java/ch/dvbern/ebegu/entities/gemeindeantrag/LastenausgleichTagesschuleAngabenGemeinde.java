@@ -255,6 +255,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete = source.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
 		this.ersteRateAusbezahlt = source.ersteRateAusbezahlt;
 		this.einnahmenElterngebuehren = source.einnahmenElterngebuehren;
+		this.geleisteteBetreuungsstundenBesondereVolksschulangebot = source.geleisteteBetreuungsstundenBesondereVolksschulangebot;
 		// C: Kostenbeteiligung Gemeinde
 		this.gesamtKostenTagesschule = source.gesamtKostenTagesschule;
 		this.einnnahmenVerpflegung = source.einnnahmenVerpflegung;
@@ -265,11 +266,17 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.bemerkungenWeitereKostenUndErtraege = source.bemerkungenWeitereKostenUndErtraege;
 		// E: Kontrollfragen
 		this.betreuungsstundenDokumentiertUndUeberprueft = source.betreuungsstundenDokumentiertUndUeberprueft;
+		this.betreuungsstundenDokumentiertUndUeberprueftBemerkung = source.betreuungsstundenDokumentiertUndUeberprueftBemerkung;
 		this.elterngebuehrenGemaessVerordnungBerechnet = source.elterngebuehrenGemaessVerordnungBerechnet;
+		this.elterngebuehrenGemaessVerordnungBerechnetBemerkung = source.elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 		this.einkommenElternBelegt = source.einkommenElternBelegt;
+		this.einkommenElternBelegtBemerkung = source.einkommenElternBelegtBemerkung;
 		this.maximalTarif = source.maximalTarif;
+		this.maximalTarifBemerkung = source.maximalTarifBemerkung;
 		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal = source.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung = source.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
 		this.ausbildungenMitarbeitendeBelegt = source.ausbildungenMitarbeitendeBelegt;
+		this.ausbildungenMitarbeitendeBelegtBemerkung = source.ausbildungenMitarbeitendeBelegtBemerkung;
 		// Bemerkungen
 		this.bemerkungen = source.bemerkungen;
 	}
