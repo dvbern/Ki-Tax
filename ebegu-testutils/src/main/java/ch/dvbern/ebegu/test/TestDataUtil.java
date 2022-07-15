@@ -2662,6 +2662,7 @@ public final class TestDataUtil {
 		angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(true);
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(null);
+		angabenInstitution.setOeffnungszeiten("[]");
 		return angabenInstitution;
 	}
 

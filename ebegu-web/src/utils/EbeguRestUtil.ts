@@ -43,6 +43,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/ge
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
@@ -1163,7 +1164,7 @@ export class EbeguRestUtil {
 
     public gemeindeStammdatenKorrespondenzToRestObject(
         restStammdaten: any,
-        stammdaten: TSGemeindeStammdatenKorrespondenz
+        stammdaten: TSGemeindeStammdatenKorrespondenz,
     ): TSGemeindeStammdatenKorrespondenz {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
@@ -3403,7 +3404,8 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
-            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit = zeitabschnittFromServer.verguenstigungProZeiteinheit;
+            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit =
+                zeitabschnittFromServer.verguenstigungProZeiteinheit;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
                 zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =
@@ -5026,7 +5028,7 @@ export class EbeguRestUtil {
             restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft =
                 tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft;
             restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
-                tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung
+                tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung;
             restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet =
                 tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet;
             restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnetBemerkung =
@@ -5163,6 +5165,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5186,9 +5190,33 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             angabenInstitutionTS.bemerkungen = angabenInstitutionFromServer.bemerkungen;
+
+            angabenInstitutionTS.oeffnungszeiten =
+                this.parseOeffnungszeitenTagesschuleList(angabenInstitutionFromServer.oeffnungszeiten);
+
             return angabenInstitutionTS;
         }
         return undefined;
+    }
+
+    private parseOeffnungszeitenTagesschuleList(oeffnungszeiten: any): TSOeffnungszeitenTagesschule[] {
+        if (!oeffnungszeiten) {
+            return [];
+        }
+        return Array.isArray(oeffnungszeiten)
+            ? oeffnungszeiten.map(item => this.parseOeffnungszeitenTagesschule(item))
+            : [this.parseOeffnungszeitenTagesschule(oeffnungszeiten)];
+    }
+
+    private parseOeffnungszeitenTagesschule(oeffnungszeiten: any): TSOeffnungszeitenTagesschule {
+        const oeffnungszeitenTagesschule = new TSOeffnungszeitenTagesschule();
+        oeffnungszeitenTagesschule.type = oeffnungszeiten.type;
+        oeffnungszeitenTagesschule.montag = oeffnungszeiten.montag;
+        oeffnungszeitenTagesschule.dienstag = oeffnungszeiten.dienstag;
+        oeffnungszeitenTagesschule.mittwoch = oeffnungszeiten.mittwoch;
+        oeffnungszeitenTagesschule.donnerstag = oeffnungszeiten.donnerstag;
+        oeffnungszeitenTagesschule.freitag = oeffnungszeiten.freitag;
+        return oeffnungszeitenTagesschule;
     }
 
     public lastenausgleichTagesschuleAngabenInstitutionToRestObject(
@@ -5209,6 +5237,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
@@ -5231,6 +5261,9 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             restAngabenInstitution.bemerkungen = tsAngabenInstitution.bemerkungen;
+
+            restAngabenInstitution.oeffnungszeiten = tsAngabenInstitution.oeffnungszeiten;
+
             return restAngabenInstitution;
         }
         return undefined;

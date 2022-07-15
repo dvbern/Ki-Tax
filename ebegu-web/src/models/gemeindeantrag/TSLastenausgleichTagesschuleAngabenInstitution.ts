@@ -16,6 +16,7 @@
  */
 
 import {TSAbstractEntity} from '../TSAbstractEntity';
+import {TSOeffnungszeitenTagesschule} from './TSOeffnungszeitenTagesschule';
 
 export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEntity {
 
@@ -28,6 +29,7 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     public anzahlEingeschriebeneKinderSekundarstufe: number;
     public anzahlEingeschriebeneKinderPrimarstufe: number;
     public anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: number;
+    public anzahlEingeschriebeneKinderVolksschulangebot: number;
     public durchschnittKinderProTagFruehbetreuung: number;
     public durchschnittKinderProTagMittag: number;
     public durchschnittKinderProTagNachmittag1: number;
@@ -43,4 +45,6 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
 
     // Bemerkungen
     public bemerkungen: string;
+
+    public oeffnungszeiten: TSOeffnungszeitenTagesschule[];
 }

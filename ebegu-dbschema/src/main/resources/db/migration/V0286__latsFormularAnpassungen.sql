@@ -36,3 +36,10 @@ alter table lastenausgleich_tagesschule_angaben_gemeinde_aud add column ausbildu
 alter table lastenausgleich_tagesschule_angaben_gemeinde add column geleistete_betreuungsstunden_besondere_volksschulangebot decimal(19,2) default 0;
 alter table lastenausgleich_tagesschule_angaben_gemeinde_aud add column geleistete_betreuungsstunden_besondere_volksschulangebot decimal(19,2);
 alter table lastenausgleich_tagesschule_angaben_gemeinde modify column geleistete_betreuungsstunden_besondere_volksschulangebot decimal(19,2);
+
+alter table lastenausgleich_tagesschule_angaben_institution add column anzahl_eingeschriebene_kinder_volksschulangebot decimal(19,2) default 0;
+alter table lastenausgleich_tagesschule_angaben_institution_aud add column anzahl_eingeschriebene_kinder_volksschulangebot decimal(19,2);
+alter table lastenausgleich_tagesschule_angaben_institution modify column anzahl_eingeschriebene_kinder_volksschulangebot decimal(19,2);
+
+alter table lastenausgleich_tagesschule_angaben_institution add column oeffnungszeiten JSON;
+alter table lastenausgleich_tagesschule_angaben_institution_aud add column oeffnungszeiten JSON;

@@ -532,7 +532,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
-        if (value === false) {
+        if (!value) {
             this.angabenForm.get(fieldname).setValidators([Validators.required]);
         } else {
             this.angabenForm.get(fieldname).setValidators(null);

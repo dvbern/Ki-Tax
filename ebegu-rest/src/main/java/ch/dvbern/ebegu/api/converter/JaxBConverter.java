@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -150,6 +151,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -305,6 +307,11 @@ import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -3715,7 +3722,9 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
-		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung)).stream().map(this::betreuungspensumAbweichungToJax)
+		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung))
+			.stream()
+			.map(this::betreuungspensumAbweichungToJax)
 			.collect(Collectors.toList());
 	}
 
@@ -5115,7 +5124,9 @@ public class JaxBConverter extends AbstractConverter {
 		belegungFerieninsel.setFerienname(belegungFerieninselJAX.getFerienname());
 		belegungFerieninsel.setNotfallAngaben(belegungFerieninselJAX.getNotfallAngaben());
 		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTage(), belegungFerieninsel.getTage());
-		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTageMorgenmodul(), belegungFerieninsel.getTageMorgenmodul());
+		belegungFerieninselTageListToEntity(
+			belegungFerieninselJAX.getTageMorgenmodul(),
+			belegungFerieninsel.getTageMorgenmodul());
 
 		return belegungFerieninsel;
 	}
@@ -5537,14 +5548,18 @@ public class JaxBConverter extends AbstractConverter {
 			);
 		}
 		Optional<Einstellung> erwerbspensumMiminumVorschuleMax =
-			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gesuchsperiode);
+			einstellungService.getEinstellungByMandant(
+				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+				gesuchsperiode);
 		if (erwerbspensumMiminumVorschuleMax.isPresent()) {
 			konfiguration.setErwerbspensumMiminumVorschuleMax(
 				erwerbspensumMiminumVorschuleMax.get().getValueAsInteger()
 			);
 		}
 		Optional<Einstellung> erwerbspensumMiminumSchulkinderMax =
-			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
+			einstellungService.getEinstellungByMandant(
+				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
+				gesuchsperiode);
 		if (erwerbspensumMiminumSchulkinderMax.isPresent()) {
 			konfiguration.setErwerbspensumMiminumSchulkinderMax(
 				erwerbspensumMiminumSchulkinderMax.get().getValueAsInteger()
@@ -6437,11 +6452,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(angabenInstitution.getAnzahlEingeschriebeneKinderVolksschulangebot());
 		jaxAngabenInstitution.setDurchschnittKinderProTagFruehbetreuung(angabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
 		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
-		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		jaxAngabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
@@ -6452,7 +6467,25 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		jaxAngabenInstitution.setBemerkungen(angabenInstitution.getBemerkungen());
 
+		// Oeffnungszeiten
+		jaxAngabenInstitution.setOeffnungszeiten(angabenInstitution.getOeffnungszeiten() != null
+			&& angabenInstitution.getOeffnungszeiten().length() > 2 ?
+			new ArrayList(Arrays.asList(convert(angabenInstitution.getOeffnungszeiten()))) :
+			new ArrayList<>());
+
 		return jaxAngabenInstitution;
+	}
+
+	@Nonnull
+	private OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		try {
+			return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
+		} catch(JsonProcessingException e) {
+			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
+			return new OeffnungszeitenTagesschuleDTO[]{};
+		}
 	}
 
 	@Nonnull
@@ -6479,6 +6512,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		angabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderVolksschulangebot());
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(jaxAngabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
 		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
@@ -6492,8 +6526,37 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(jaxAngabenInstitution.getErnaehrungsGrundsaetzeEingehalten());
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
+		// Oeffnungszeiten
+		angabenInstitution.setOeffnungszeiten(toOeffnungszeiten(jaxAngabenInstitution.getOeffnungszeiten()).toString());
 
 		return angabenInstitution;
+	}
+
+	@Nonnull
+	private ArrayNode toOeffnungszeiten(@Nullable List<OeffnungszeitenTagesschuleDTO> oeffnungszeitenTagesschuleDTOS) {
+		ObjectMapper mapper = new ObjectMapper();
+		if (oeffnungszeitenTagesschuleDTOS == null) {
+			return mapper.createArrayNode();
+		}
+
+		List<ObjectNode> mapped = oeffnungszeitenTagesschuleDTOS.stream()
+			.map(this::toOeffnungszeit)
+			.collect(Collectors.toList());
+
+		return mapper.createArrayNode()
+			.addAll(mapped);
+	}
+
+	@Nonnull
+	private ObjectNode toOeffnungszeit(@Nonnull OeffnungszeitenTagesschuleDTO oeffnungszeitenTagesschuleDTO) {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.createObjectNode()
+			.put("type", oeffnungszeitenTagesschuleDTO.getType().name())
+			.put("montag", oeffnungszeitenTagesschuleDTO.isMontag())
+			.put("dienstag", oeffnungszeitenTagesschuleDTO.isDienstag())
+			.put("mittwoch", oeffnungszeitenTagesschuleDTO.isMittwoch())
+			.put("donnerstag", oeffnungszeitenTagesschuleDTO.isDonnerstag())
+			.put("freitag", oeffnungszeitenTagesschuleDTO.isFreitag());
 	}
 
 	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(
@@ -6552,8 +6615,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	public List<Gemeinde> gemeindeListToEntity(List<JaxGemeinde> jaxGemeinden) {
 		return jaxGemeinden
-				.stream()
-				.map(jaxGemeinde -> this.gemeindeToEntity(jaxGemeinde, new Gemeinde()))
-				.collect(Collectors.toList());
+			.stream()
+			.map(jaxGemeinde -> this.gemeindeToEntity(jaxGemeinde, new Gemeinde()))
+			.collect(Collectors.toList());
 	}
 }

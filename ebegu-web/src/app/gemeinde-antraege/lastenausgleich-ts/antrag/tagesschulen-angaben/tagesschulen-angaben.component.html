@@ -214,6 +214,33 @@
                 </mat-form-field>
             </dv-input-container-x>
 
+            <dv-input-container-x>
+                <label
+                    required
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors}">
+                    {{'LATS_ANZAHL_KINDER_BESONDERE_VOLKSSCHULANGEBOT' | translate}}
+                    <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate"></dv-tooltip>
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderVolksschulangebot"
+                           class="form-control dv-input"/>
+                    <mat-error
+                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors?.required"
+                        translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error
+                        *ngIf="form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors?.isNotPositiveInteger"
+                        translate>ERROR_POSITIVE_NUMBER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderVolksschulangebot"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderVolksschulangebot').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -341,7 +368,7 @@
                 required>
                     {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
                     <dv-tooltip
-                        [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{year: gemeindeAntragContainer?.gesuchsperiode?.gesuchsperiodeString}"></dv-tooltip>
+                        [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{jahr: gemeindeAntragContainer?.gesuchsperiode?.getBasisJahrPlus3()}"></dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
                     <input matInput
@@ -527,6 +554,57 @@
                 </mat-form-field>
             </dv-input-container-x>
 
+        </div>
+
+        <mat-divider></mat-divider>
+        <div class="max-width-container-750">
+            <h3 translate class="uppercase">TAGESSCHULE_OEFFNUNGSZEITEN</h3>
+            <table class="tagesschule-oeffnungszeiten">
+                <tr class="head">
+                    <th></th>
+                    <th translate>MONDAY</th>
+                    <th translate>TUESDAY</th>
+                    <th translate>WEDNESDAY</th>
+                    <th translate>THURSDAY</th>
+                    <th translate>FRIDAY</th>
+                </tr>
+                <tr>
+                    <td translate class="big-border-left">OEFFNUNGSZEIT_FRUEHBETREUUNG</td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.montag" (change)="fruehbetreuungOeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.dienstag" (change)="fruehbetreuungOeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.mittwoch" (change)="fruehbetreuungOeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.donnerstag" (change)="fruehbetreuungOeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.freitag" (change)="fruehbetreuungOeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                </tr>
+                <tr class="dunkel">
+                    <td class="big-border-left"></td>
+                    <td colspan="5" class="big-border-right" translate>OEFFNUNGSZEIT_UNTERRICHT_BLOCKZEITEN</td>
+                </tr>
+                <tr>
+                    <td translate class="big-border-left">OEFFNUNGSZEIT_MITTAGSBETREUUNG</td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.montag" (change)="mittagsbetreuungOeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.dienstag" (change)="mittagsbetreuungOeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.mittwoch" (change)="mittagsbetreuungOeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.donnerstag" (change)="mittagsbetreuungOeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.freitag" (change)="mittagsbetreuungOeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                </tr>
+                <tr>
+                    <td [innerHTML]="'OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_1' | translate" class="big-border-left"></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.montag" (change)="nachmittagsbetreuung1Oeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung1Oeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung1Oeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                </tr>
+                <tr>
+                    <td [innerHTML]="'OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_2' | translate" class="big-border-left"></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.montag" (change)="nachmittagsbetreuung2Oeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung2Oeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung2Oeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                </tr>
+            </table>
         </div>
 
         <div class="row" *ngIf="canSeeFalscheAngaben | async">

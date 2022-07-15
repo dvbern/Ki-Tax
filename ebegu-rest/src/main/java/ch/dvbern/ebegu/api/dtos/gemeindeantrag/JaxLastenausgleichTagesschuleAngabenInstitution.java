@@ -18,10 +18,12 @@
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
 
 public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstractDTO {
 
@@ -48,6 +50,9 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+
+	@Nullable
+	private BigDecimal anzahlEingeschriebeneKinderVolksschulangebot;
 
 	@Nullable
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
@@ -85,6 +90,9 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	@Nullable
 	private String bemerkungen;
+
+	@Nullable
+	private  List<OeffnungszeitenTagesschuleDTO> oeffnungszeiten;
 
 	@Nullable
 	public Boolean getLehrbetrieb() {
@@ -239,5 +247,24 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 		@Nullable BigDecimal betreuungsstundenEinschliesslichBesondereBeduerfnisse) {
 		this.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
 			betreuungsstundenEinschliesslichBesondereBeduerfnisse;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlEingeschriebeneKinderVolksschulangebot() {
+		return anzahlEingeschriebeneKinderVolksschulangebot;
+	}
+
+	public void setAnzahlEingeschriebeneKinderVolksschulangebot(
+		@Nullable BigDecimal anzahlEingeschriebeneKinderVolksschulangebot) {
+		this.anzahlEingeschriebeneKinderVolksschulangebot = anzahlEingeschriebeneKinderVolksschulangebot;
+	}
+
+	@Nullable
+	public List<OeffnungszeitenTagesschuleDTO> getOeffnungszeiten() {
+		return oeffnungszeiten;
+	}
+
+	public void setOeffnungszeiten(@Nullable  List<OeffnungszeitenTagesschuleDTO> oeffnungszeiten) {
+		this.oeffnungszeiten = oeffnungszeiten;
 	}
 }
