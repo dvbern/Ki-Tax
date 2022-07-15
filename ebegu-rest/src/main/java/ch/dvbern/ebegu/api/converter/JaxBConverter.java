@@ -3917,9 +3917,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteVerguenstigung());
+			.isSameAusbezahlterBetragInstitution());
 		jaxZeitabschn.setSameAusbezahlteMahlzeiten(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteMahlzeiten());
+			.isSameAusbezahlterBetragAntragsteller());
 		jaxZeitabschn.setSameVerfuegteMahlzeitenVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteMahlzeitenVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(

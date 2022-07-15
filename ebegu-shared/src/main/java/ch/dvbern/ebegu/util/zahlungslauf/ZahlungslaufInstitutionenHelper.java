@@ -107,8 +107,8 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 					oldSameZeitabschnitt.getBgCalculationResultGemeinde());
 			}
 		} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(false);
-			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(false);
+			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlterBetragInstitution(false);
+			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlterBetragInstitution(false);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		@Nonnull BGCalculationResult resultNeu,
 		@Nonnull BGCalculationResult resultBisher
 	) {
-		inputNeu.setSameAusbezahlteVerguenstigung(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
+		inputNeu.setSameAusbezahlterBetragInstitution(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
 	}
 
 	@Override

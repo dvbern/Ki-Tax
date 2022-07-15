@@ -79,8 +79,8 @@ public final class VerfuegungUtil {
 		} else {
 			// Wenn es noch gar nie eine Auszahlung gab, gibt es auch nichts zu ignorieren
 			for (VerfuegungZeitabschnitt newZeitabschnitt : verfuegung.getZeitabschnitte()) {
-				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(true);
-				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(true);
+				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlterBetragInstitution(true);
+				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlterBetragInstitution(true);
 			}
 		}
 		// Dasselbe auch fuer Mahlzeiten, jedoch nur, wenn diese fuer die Gemeinde enabled sind
@@ -91,8 +91,8 @@ public final class VerfuegungUtil {
 		} else {
 			// Wenn es noch gar nie eine Auszahlung gab, gibt es auch nichts zu ignorieren
 			for (VerfuegungZeitabschnitt newZeitabschnitt : verfuegung.getZeitabschnitte()) {
-				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(true);
-				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(true);
+				newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlterBetragAntragsteller(true);
+				newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlterBetragAntragsteller(true);
 			}
 		}
 	}

@@ -125,8 +125,8 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 					oldSameZeitabschnitt.getBgCalculationResultGemeinde());
 			}
 		} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteMahlzeiten(false);
-			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteMahlzeiten(false);
+			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlterBetragAntragsteller(false);
+			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlterBetragAntragsteller(false);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 				resultNeu, resultBisher);
 			result = result && sameMahlzeitenverguenstigung;
 		}
-		inputNeu.setSameAusbezahlteMahlzeiten(result);
+		inputNeu.setSameAusbezahlterBetragAntragsteller(result);
 	}
 
 	@Override
