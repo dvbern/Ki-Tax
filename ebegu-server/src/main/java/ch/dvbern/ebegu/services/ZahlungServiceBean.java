@@ -330,23 +330,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		return persistedAuftrag;
 	}
 
-	@Nonnull
-	private Gesuch getLetztesGueltigesGesuch(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		Gesuch letztesGueltigesGesuch = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch();
-		if (!letztesGueltigesGesuch.isGueltig()) {
-			letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
-				.stream()
-				.filter(gesuchFound -> gesuchFound.isGueltig())
-				.findFirst()
-				.orElseThrow(() ->
-					new EbeguRuntimeException(
-						"createZahlungsposition",
-						"Zahlungposition hat keine gueltige Gesuch")
-				);
-		}
-		return letztesGueltigesGesuch;
-	}
-
 	/**
 	 * Zahlungsauftrag wird einmalig berechnet. Danach koennen nur noch die Stammdaten der Institutionen
 	 * geaendert werden.
@@ -494,7 +477,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution) {
-		if (helper.isAuszuzahlen(zeitabschnitt)) {
 			Zahlungsposition zahlungsposition = new Zahlungsposition();
 			zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
 			zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
@@ -507,7 +489,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsposition.setZahlung(zahlung);
 			zahlung.getZahlungspositionen().add(zahlungsposition);
 			helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
-		}
+
 	}
 
 	/**
@@ -533,8 +515,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zeitabschnittOnVorgaengerVerfuegung);
 
 		// Korrekturen
-		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()
-			&& helper.isAuszuzahlen(zeitabschnittNeu)) {
+		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) {
 			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
 			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
