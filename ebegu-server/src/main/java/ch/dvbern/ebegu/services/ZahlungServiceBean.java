@@ -557,7 +557,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		Gesuch letztesGueltigesGesuch = betreuung.extractGesuch();
 		if (!letztesGueltigesGesuch.isGueltig()) {
-			letztesGueltigesGesuch = gesuchService.getAllGesuchForDossier(letztesGueltigesGesuch.getDossier().getId())
+			letztesGueltigesGesuch = gesuchService
+				.getAllGesucheForDossierAndPeriod(letztesGueltigesGesuch.getDossier(), letztesGueltigesGesuch.getGesuchsperiode())
 				.stream()
 				.filter(gesuchFound -> gesuchFound.isGueltig())
 				.findFirst()
@@ -567,18 +568,56 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 						"Zahlungposition hat keine gueltige Gesuch")
 				);
 		}
+
+		Auszahlungsdaten auszahlungsdaten = getAuszahlungsdatenFromGesuchOrBetreuung(letztesGueltigesGesuch, betreuung);
+
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"createZahlung",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+				letztesGueltigesGesuch.getJahrFallAndGemeindenummer());
+		}
+
 		return findZahlungForAntragstellerOrCreate(
 			letztesGueltigesGesuch,
 			betreuung,
 			zahlungsauftrag,
-			zahlungProInstitution);
+			zahlungProInstitution,
+			auszahlungsdaten
+			);
+
+	}
+
+	private Auszahlungsdaten getAuszahlungsdatenFromGesuchOrBetreuung(Gesuch gesuch, Betreuung betreuung) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+
+		//Zuerste werden immer die Auszahlungsdaten aus dem Gesuch bevorzugt
+		Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
+
+		if (auszahlungsdaten == null) {
+			// Falls auf dem Gesuch keine Auszahlungsdaten vorhanden sind, werden die Auszahlungsdaten von der Betreuung genommen.
+			// Beim Gesuch handelt es sich um das Aktuell gültige Gesuch, bei der Betreuung um die Betruung die Ausbezahltw werden soll.
+			// Es gibt Fälle auf welchen beim gültigen Gesuch keine Auszahlungsdaten vorhanden sind
+			// -> Mutation 1 MZV gewünscht, Auszahlungsdaten vorhanden auf Betreuung (diese soll ausbezahlt werden)
+			// -> Mutation 2 MZV nicht mehr gewünscht, keine Auszahlungdaten mehr auf dem gültigen Gesuch vorhanden,
+			// also nehmen wir die Daten aus der Betreuung
+			Familiensituation familiensituationBetreuung =  betreuung.extractGesuch().extractFamiliensituation();
+			Objects.requireNonNull(familiensituationBetreuung, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+			auszahlungsdaten = familiensituationBetreuung.getAuszahlungsdatenMahlzeiten();
+		}
+
+		return auszahlungsdaten;
 	}
 
 	private Zahlung findZahlungForAntragstellerOrCreate(
 		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		@Nonnull Auszahlungsdaten auszahlungsdaten
 	) {
 		// Wir setzen als "Empfaenger-ID" die ID des Falles: In selben Zahlungslauf kann es zu Auszahlungen
 		// von mehreren Mutation derselben Familie kommen, daher waere die Gesuch-ID oder die Gesuchsteller-ID
@@ -590,7 +629,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
 		Zahlung zahlung =
-			createZahlungForAntragsteller(letztesGueltigesGesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag);
+			createZahlungForAntragsteller(letztesGueltigesGesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag, auszahlungsdaten);
 		zahlungProInstitution.put(fallId, zahlung);
 		return zahlung;
 	}
@@ -600,23 +639,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull String fallId,
-		@Nonnull Zahlungsauftrag zahlungsauftrag
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Auszahlungsdaten auszahlungsdaten
 	) {
-		final Familiensituation familiensituation = letztesGueltigesGesuch.extractFamiliensituation();
-		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
-
-		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
-		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
-			throw new EbeguRuntimeException(
-				KibonLogLevel.INFO,
-				"createZahlung",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
-				letztesGueltigesGesuch.getJahrFallAndGemeindenummer());
-		}
-
-		Objects.requireNonNull(auszahlungsdaten, "Die Auszahlungsdaten muessen zu diesem Zeitpunkt definiert sein");
-
 		final Gesuchsteller gesuchsteller1 = letztesGueltigesGesuch.extractGesuchsteller1()
 			.orElseThrow(() -> new EbeguRuntimeException(
 				"createZahlung",
