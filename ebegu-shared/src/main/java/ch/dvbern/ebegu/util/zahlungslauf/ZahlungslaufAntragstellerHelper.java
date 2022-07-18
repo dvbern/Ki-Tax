@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.util.zahlungslauf;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,15 +27,24 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.enums.ZahlungStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -147,12 +157,9 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 	}
 
 	@Override
-	public boolean isAuszuzahlen(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull Gesuch letztesGueltigesGesuch
-	) {
+	public boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		// Nur auszuzahlen, wenn Mahlzeitenverguenstigung beantragt
-		final Familiensituation familiensituation = letztesGueltigesGesuch.extractFamiliensituation();
+		final Familiensituation familiensituation = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch().extractFamiliensituation();
 		return familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
 	}
 }
