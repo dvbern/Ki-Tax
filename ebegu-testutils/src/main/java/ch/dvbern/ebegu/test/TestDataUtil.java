@@ -2621,6 +2621,7 @@ public final class TestDataUtil {
 		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(BigDecimal.TEN);
 		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(BigDecimal.TEN);
 		angabenGemeinde.setEinnahmenElterngebuehren(BigDecimal.TEN);
+		angabenGemeinde.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(BigDecimal.ZERO);
 		// C: Kostenbeteiligung Gemeinde
 		angabenGemeinde.setGesamtKostenTagesschule(BigDecimal.TEN);
 		angabenGemeinde.setEinnnahmenVerpflegung(BigDecimal.TEN);
@@ -2650,6 +2651,7 @@ public final class TestDataUtil {
 		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(BigDecimal.TEN);
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(BigDecimal.TEN);
+		angabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(BigDecimal.ZERO);
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(BigDecimal.TEN);
 		angabenInstitution.setDurchschnittKinderProTagMittag(BigDecimal.TEN);
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(BigDecimal.TEN);
