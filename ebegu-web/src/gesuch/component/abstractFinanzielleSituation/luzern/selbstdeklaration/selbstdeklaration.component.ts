@@ -62,6 +62,9 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public isKorrekturModusJungendamtOrFreigegeben: boolean;
 
+    @Input()
+    public isQuellenbesteuert: boolean = false;
+
     public resultate: TSFinanzielleSituationResultateDTO;
 
     public constructor(

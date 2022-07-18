@@ -96,8 +96,10 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 			document.add(createGesuchstellerTable());
 			document.add(PdfUtil.createSubTitle(translate(BETREUUNGSANGEBOTE)));
 			document.add(createBetreuungsangeboteTable());
-			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
-			createParagraphBenoetigteUnterlagenInfo(document);
+			if (!dokumente.isEmpty()) {
+				document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
+				createParagraphBenoetigteUnterlagenInfo(document);
+			}
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
