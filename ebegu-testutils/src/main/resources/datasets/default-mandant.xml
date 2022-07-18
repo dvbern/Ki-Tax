@@ -27,5 +27,6 @@
 			 mandant_identifier="BERN"
 			 angebotts="false"
 			 angebotfi="false"
-			 activated="true"/>
+			 activated="true"
+			 next_infoma_belegnummer="1"/>
 </dataset>

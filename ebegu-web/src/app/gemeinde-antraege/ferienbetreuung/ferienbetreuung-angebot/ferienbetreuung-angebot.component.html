@@ -599,7 +599,8 @@
 			<p class="margin-bottom-30">{{'FERIENBETREUUNG_WIE_ORGANISIERT' | translate }}</p>
 
 			<dv-input-container-x>
-				<label>
+				<label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('gemeindeFuehrtAngebotSelber').errors}">
 					{{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
 				</label>
 				<dv-radio-container-x>
@@ -645,7 +646,8 @@
 			</dv-input-container-x>
 
 			<dv-input-container-x>
-				<label>
+				<label required
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('gemeindeBeauftragtExterneAnbieter').errors}">
 					{{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
 				</label>
 				<dv-radio-container-x>

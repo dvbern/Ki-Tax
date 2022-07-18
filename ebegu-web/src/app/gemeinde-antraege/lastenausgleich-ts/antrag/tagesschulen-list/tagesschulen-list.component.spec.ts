@@ -33,7 +33,7 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
-    'addMesageAsError'
+    'addMesageAsError',
 ]);
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'

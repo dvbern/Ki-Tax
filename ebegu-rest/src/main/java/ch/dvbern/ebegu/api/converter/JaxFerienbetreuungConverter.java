@@ -127,10 +127,10 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 			ferienbetreuungAngaben.getFerienbetreuungAngabenKostenEinnahmen()
 		));
 
-		if(principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles()) && jaxContainer.getBerechnungen() != null) {
+		if (principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles()) && jaxContainer.getBerechnungen() != null) {
 			ferienbetreuungAngaben.setFerienbetreuungBerechnungen(ferienbetreuungBerechnungentoEntity(
-					jaxContainer.getBerechnungen(),
-					new FerienbetreuungBerechnungen()
+				jaxContainer.getBerechnungen(),
+				new FerienbetreuungBerechnungen()
 			));
 		}
 
@@ -141,8 +141,8 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	}
 
 	public FerienbetreuungBerechnungen ferienbetreuungBerechnungentoEntity(
-			@Nonnull JaxFerienbetreuungBerechnungen jaxBerechnungen,
-			@Nonnull FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
+		@Nonnull JaxFerienbetreuungBerechnungen jaxBerechnungen,
+		@Nonnull FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
 		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			throw new ForbiddenException("Die Berechnungen dürfen nur von Nutzenden mit der Rolle Mandant gespeichert werden");
 		}
@@ -317,6 +317,10 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		kostenEinnahmen.setBemerkungenKosten(jaxKostenEinnahmen.getBemerkungenKosten());
 		kostenEinnahmen.setElterngebuehren(jaxKostenEinnahmen.getElterngebuehren());
 		kostenEinnahmen.setWeitereEinnahmen(jaxKostenEinnahmen.getWeitereEinnahmen());
+		kostenEinnahmen.setSockelbeitrag(jaxKostenEinnahmen.getSockelbeitrag());
+		kostenEinnahmen.setBeitraegeNachAnmeldungen(jaxKostenEinnahmen.getBeitraegeNachAnmeldungen());
+		kostenEinnahmen.setVorfinanzierteKantonsbeitraege(jaxKostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		kostenEinnahmen.setEigenleistungenGemeinde(jaxKostenEinnahmen.getEigenleistungenGemeinde());
 
 		return kostenEinnahmen;
 	}
@@ -378,7 +382,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		// berechnungen
 		if (ferienbetreuungAngaben.getFerienbetreuungBerechnungen() != null) {
 			JaxFerienbetreuungBerechnungen berechnungen = ferienbetreuungBerechnungenToJax(
-					ferienbetreuungAngaben.getFerienbetreuungBerechnungen()
+				ferienbetreuungAngaben.getFerienbetreuungBerechnungen()
 			);
 			jaxFerienbetreuungAngaben.setBerechnungen(berechnungen);
 		}
@@ -541,6 +545,10 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxKostenEinnahmen.setBemerkungenKosten(kostenEinnahmen.getBemerkungenKosten());
 		jaxKostenEinnahmen.setElterngebuehren(kostenEinnahmen.getElterngebuehren());
 		jaxKostenEinnahmen.setWeitereEinnahmen(kostenEinnahmen.getWeitereEinnahmen());
+		jaxKostenEinnahmen.setSockelbeitrag(kostenEinnahmen.getSockelbeitrag());
+		jaxKostenEinnahmen.setBeitraegeNachAnmeldungen(kostenEinnahmen.getBeitraegeNachAnmeldungen());
+		jaxKostenEinnahmen.setVorfinanzierteKantonsbeitraege(kostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		jaxKostenEinnahmen.setEigenleistungenGemeinde(kostenEinnahmen.getEigenleistungenGemeinde());
 
 		jaxKostenEinnahmen.setStatus(kostenEinnahmen.getStatus());
 

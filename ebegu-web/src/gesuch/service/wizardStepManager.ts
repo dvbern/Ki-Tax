@@ -21,6 +21,7 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfVerfuegtOrKeinKontingent, TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
+import {TSBetreuungsstatus} from '../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../models/enums/TSRole';
@@ -403,6 +404,7 @@ export class WizardStepManager {
             // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
                 !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle()) &&
+                !this.isInstitutionenRoleAndTSModuleAkzeptiert(gesuch) &&
                 !this.isMandantRoleAndInBearbeitungGemeinde(gesuch) &&
                 !isAnyStatusOfVerfuegtOrKeinKontingent(gesuch.status)) {
                 return false;
@@ -607,5 +609,13 @@ export class WizardStepManager {
                 gesuch.status === TSAntragStatus.ZWEITE_MAHNUNG ||
                 gesuch.status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN) &&
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
+    }
+
+    private isInstitutionenRoleAndTSModuleAkzeptiert(gesuch: TSGesuch): boolean {
+        if (!this.authServiceRS.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION])) {
+            return false;
+        }
+
+        return gesuch.checkForBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
     }
 }

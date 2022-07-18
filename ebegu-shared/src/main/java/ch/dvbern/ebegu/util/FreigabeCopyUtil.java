@@ -166,6 +166,7 @@ public final class FreigabeCopyUtil {
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {
 		auszahlungsdatenGS.setIban(auszahlungsdatenJA.getIban());
 		auszahlungsdatenGS.setKontoinhaber(auszahlungsdatenJA.getKontoinhaber());
+		auszahlungsdatenGS.setInfomaKreditorennummer(auszahlungsdatenJA.getInfomaKreditorennummer());
 		Adresse zahlungsadresseJA = auszahlungsdatenJA.getAdresseKontoinhaber();
 		Adresse zahlungsadresseGS = null;
 		if (zahlungsadresseJA != null) {

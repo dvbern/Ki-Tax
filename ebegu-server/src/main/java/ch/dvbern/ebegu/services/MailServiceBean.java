@@ -663,7 +663,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		if (StringUtils.isNotEmpty(empfaengerMail)) {
 			Mandant mandant = mitteilung.getAbsender().getMandant();
 			String mail = mailTemplateConfig.getNotrechtGenerischeMitteilung(
-				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt(), mandant.getMandantIdentifier());
+				empfaengerMail, mitteilung.getBetreff(), mitteilung.getInhalt(), mandant);
 			String statusAsString = statusList.stream()
 				.map(RueckforderungStatus::name)
 				.collect(Collectors.joining(","));

@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -36,7 +37,6 @@ import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
 import ch.dvbern.ebegu.reporting.zahlungsauftrag.ZahlungDataRow;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -94,7 +94,9 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 				final String traegerschaft = zahlungDataRow.getZahlung().getTraegerschaftName();
 
 				final Zahlung zahlung = zahlungDataRow.getZahlung();
-				final IBAN iban = zahlung.getAuszahlungsdaten().getIban();
+				final Auszahlungsdaten auszahlungsdaten = zahlung.getAuszahlungsdaten();
+				// "IBAN" ist entweder die tatsaechliche IBAN oder die InfomaKontonummer
+				String kontonummer = auszahlungsdaten.getIbanOrInfomaKreditorennummer();
 				final Institution institution = zahlung.extractInstitution();
 
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, institution.getName());
@@ -110,9 +112,9 @@ public class ZahlungAuftragTotalsExcelConverter implements ExcelConverter {
 					excelRowGroup.addValue(MergeFieldZahlungAuftrag.antragsteller2, zahlung.getEmpfaenger2Name());
 				}
 				excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragAusbezahlt, zahlung.getBetragTotalZahlung());
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(iban.getIban()));
-				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, zahlung.getAuszahlungsdaten().getKontoinhaber());
-				Adresse adresse = zahlung.getAuszahlungsdaten().getAdresseKontoinhaber();
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.iban, EbeguUtil.removeWhiteSpaces(kontonummer));
+				excelRowGroup.addValue(MergeFieldZahlungAuftrag.kontoinhaber, auszahlungsdaten.getKontoinhaber());
+				Adresse adresse = auszahlungsdaten.getAdresseKontoinhaber();
 				if (adresse == null) {
 					adresse = zahlungDataRow.getAdresseKontoinhaber();
 				}

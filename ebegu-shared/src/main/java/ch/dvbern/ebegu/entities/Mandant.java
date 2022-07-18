@@ -22,12 +22,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.bridge.builtin.LongBridge;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -58,6 +62,12 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	@Column(nullable = false)
 	private boolean activated = false;
+
+	@NotNull
+	@Column(nullable = false)
+	@Min(1)
+	@Field(bridge = @FieldBridge(impl = LongBridge.class))
+	private long nextInfomaBelegnummer = 1L;
 
 	public Mandant() {
 	}
@@ -102,6 +112,14 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setActivated(boolean activated) {
 		this.activated = activated;
+	}
+
+	public long getNextInfomaBelegnummer() {
+		return nextInfomaBelegnummer;
+	}
+
+	public void setNextInfomaBelegnummer(long nextInfomaBelegnummer) {
+		this.nextInfomaBelegnummer = nextInfomaBelegnummer;
 	}
 
 	@Override

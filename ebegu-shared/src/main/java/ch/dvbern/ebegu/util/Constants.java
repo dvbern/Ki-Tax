@@ -53,6 +53,7 @@ public final class Constants {
 	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
+	public static final Locale DEUTSCH_FRENCH_LOCALE = new Locale("defr", "CH");
 
 	public static final Character LINE_BREAK = '\n';
 	public static final String DATA = "Data";

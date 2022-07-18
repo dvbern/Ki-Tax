@@ -756,6 +756,8 @@ public class JaxBConverter extends AbstractConverter {
 						.setIban(new IBAN(familiensituationJAXP.getIbanMahlzeiten()));
 					familiensituation.getAuszahlungsdatenMahlzeiten()
 						.setKontoinhaber(familiensituationJAXP.getKontoinhaberMahlzeiten());
+					familiensituation.getAuszahlungsdatenMahlzeiten()
+						.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
 					Adresse convertedAdresse = null;
 					if (familiensituationJAXP.getZahlungsadresseMahlzeiten() != null) {
 						Adresse a =
@@ -809,6 +811,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
 		familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
+		familiensituation.getAuszahlungsdatenInfoma().setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
 		Adresse convertedAdresse = null;
 		if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
 			Adresse a =
@@ -837,7 +840,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {
-			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.getIban().getIban());
+			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.extractIbanAsString());
 			jaxFamiliensituation.setKontoinhaberMahlzeiten(persistedAuszahlungsdaten.getKontoinhaber());
 			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
@@ -846,7 +849,8 @@ public class JaxBConverter extends AbstractConverter {
 		final Auszahlungsdaten persistedAuszahlungsdatenInfoma =
 			persistedFamiliensituation.getAuszahlungsdatenInfoma();
 		if (persistedAuszahlungsdatenInfoma != null) {
-			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.getIban().getIban());
+			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.extractIbanAsString());
+			jaxFamiliensituation.setInfomaKreditorennummer(persistedAuszahlungsdatenInfoma.getInfomaKreditorennummer());
 			jaxFamiliensituation.setKontoinhaberInfoma(persistedAuszahlungsdatenInfoma.getKontoinhaber());
 			if (persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseInfoma(adresseToJAX(persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber()));
@@ -1857,6 +1861,7 @@ public class JaxBConverter extends AbstractConverter {
 			}
 			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+			institutionStammdaten.getAuszahlungsdaten().setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
 			Adresse convertedAdresse = null;
 			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
 				Adresse a = Optional.ofNullable(institutionStammdaten.getAuszahlungsdaten().getAdresseKontoinhaber())

@@ -132,7 +132,7 @@ export const GESUCH_JS_MODULE =
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
-        .directive('dvFileUpload',
+        .directive('dvMultipleFileUpload',
             downgradeComponent({
                 component: MultipleFileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
