@@ -558,10 +558,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Gesuch letztesGueltigesGesuch = betreuung.extractGesuch();
 		if (!letztesGueltigesGesuch.isGueltig()) {
 			letztesGueltigesGesuch = gesuchService
-				.getAllGesucheForDossierAndPeriod(letztesGueltigesGesuch.getDossier(), letztesGueltigesGesuch.getGesuchsperiode())
-				.stream()
-				.filter(gesuchFound -> gesuchFound.isGueltig())
-				.findFirst()
+				.getNeustesVerfuegtesGesuchFuerGesuch(
+					letztesGueltigesGesuch.getGesuchsperiode(),
+					letztesGueltigesGesuch.getDossier(),
+					false)
 				.orElseThrow(() ->
 					new EbeguRuntimeException(
 						"createZahlungsposition",
