@@ -52,10 +52,4 @@ public final class ZahlungslaufMahlzeitenverguenstigungUtil {
 		final Familiensituation familiensituation = zeitabschnitt.getVerfuegung().getPlatz().extractGesuch().extractFamiliensituation();
 		return familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
 	}
-
-	public static boolean isAuszuzahlen(@Nonnull Gesuch letztesGueltigesGesuch) {
-		// Nur auszuzahlen, wenn Mahlzeitenverguenstigung auf dem aktuell gueltigen Gesuch beantragt
-		final Familiensituation familiensituation = letztesGueltigesGesuch.extractFamiliensituation();
-		return familiensituation != null && !familiensituation.isKeineMahlzeitenverguenstigungBeantragt();
-	}
 }

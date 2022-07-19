@@ -174,11 +174,9 @@ public class ZahlungslaufAntragstellerHelper implements ZahlungslaufHelper {
 	}
 
 	@Override
-	public boolean isAuszuzahlen(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
-	) {
+	public boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		boolean isAuszuzahlenGutschein = zeitabschnitt.isAuszahlungAnEltern();
-		boolean isAuszuzahlenMahlzeiten = ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(letztesGueltigesGesuch);
+		boolean isAuszuzahlenMahlzeiten = ZahlungslaufMahlzeitenverguenstigungUtil.isAuszuzahlen(zeitabschnitt);
 		return isAuszuzahlenGutschein || isAuszuzahlenMahlzeiten;
 	}
 }
