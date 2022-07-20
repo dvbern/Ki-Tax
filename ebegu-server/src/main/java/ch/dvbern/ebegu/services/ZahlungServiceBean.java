@@ -615,7 +615,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
 
 		//Zuerste werden immer die Auszahlungsdaten aus dem Gesuch bevorzugt
-		Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
+		Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdaten();
 
 		if (auszahlungsdaten == null) {
 			// Falls auf dem Gesuch keine Auszahlungsdaten vorhanden sind, werden die Auszahlungsdaten von der Betreuung genommen.
@@ -626,7 +626,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			// also nehmen wir die Daten aus der Betreuung
 			Familiensituation familiensituationBetreuung =  betreuung.extractGesuch().extractFamiliensituation();
 			Objects.requireNonNull(familiensituationBetreuung, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
-			auszahlungsdaten = familiensituationBetreuung.getAuszahlungsdatenMahlzeiten();
+			auszahlungsdaten = familiensituationBetreuung.getAuszahlungsdaten();
 		}
 
 		return auszahlungsdaten;
