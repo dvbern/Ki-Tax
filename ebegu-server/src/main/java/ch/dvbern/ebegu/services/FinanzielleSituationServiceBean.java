@@ -185,8 +185,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		auszahlungsdatenInfoma.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresseInfoma());
 		// gesuchsteller is not allowed to set those fields
 		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
-			familiensituation.getAuszahlungsdatenInfoma().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
-			familiensituation.getAuszahlungsdatenInfoma().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
+			auszahlungsdatenInfoma.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+			auszahlungsdatenInfoma.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 		}
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}
