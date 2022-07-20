@@ -150,6 +150,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				auszahlungsdaten.setIban(new IBAN(finSitStartDTO.getIban()));
 				auszahlungsdaten.setKontoinhaber(finSitStartDTO.getKontoinhaber());
 				auszahlungsdaten.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+				auszahlungsdaten.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 				auszahlungsdaten.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresse());
 				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
 			}
@@ -182,11 +183,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		auszahlungsdatenInfoma.setKontoinhaber(finSitStartDTO.getKontoinhaberInfoma());
 		familiensituation.setAbweichendeZahlungsadresseInfoma(finSitStartDTO.isAbweichendeZahlungsadresseInfoma());
 		auszahlungsdatenInfoma.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresseInfoma());
-		auszahlungsdatenInfoma.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 		// gesuchsteller is not allowed to set those fields
 		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
-			familiensituation.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
-			familiensituation.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
+			familiensituation.getAuszahlungsdatenInfoma().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+			familiensituation.getAuszahlungsdatenInfoma().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 		}
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}

@@ -61,7 +61,13 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true, length = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String infomaKreditorennummer;
+
+	@Nullable
+	@Column(nullable = true, length = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaBankcode;
 
 	@NotNull
 	@Nonnull
@@ -90,6 +96,15 @@ public class Auszahlungsdaten extends AbstractEntity {
 
 	public void setInfomaKreditorennummer(@Nullable String infomaKontonummer) {
 		this.infomaKreditorennummer = infomaKontonummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
 	}
 
 	@Nonnull
@@ -124,6 +139,7 @@ public class Auszahlungsdaten extends AbstractEntity {
 		final Auszahlungsdaten otherZahlung = (Auszahlungsdaten) other;
 		return Objects.equals(getIban(), otherZahlung.getIban()) &&
 			Objects.equals(getInfomaKreditorennummer(), otherZahlung.getInfomaKreditorennummer()) &&
+			Objects.equals(getInfomaBankcode(), otherZahlung.getInfomaBankcode()) &&
 			Objects.equals(getKontoinhaber(), otherZahlung.getKontoinhaber()) &&
 			Objects.equals(getAdresseKontoinhaber(), otherZahlung.getAdresseKontoinhaber());
 	}
@@ -136,6 +152,7 @@ public class Auszahlungsdaten extends AbstractEntity {
 			target.setAdresseKontoinhaber(this.getAdresseKontoinhaber().copyAdresse(new Adresse(), copyType));
 		}
 		target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+		target.setInfomaBankcode(this.getInfomaBankcode());
 		return target;
 	}
 
