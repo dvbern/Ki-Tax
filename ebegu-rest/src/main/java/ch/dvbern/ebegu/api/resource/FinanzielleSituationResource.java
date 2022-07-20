@@ -61,15 +61,20 @@ import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -117,6 +122,9 @@ public class FinanzielleSituationResource {
 
 	@Inject
 	private KibonAnfrageHandler kibonAnfrageHandler;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -208,6 +216,23 @@ public class FinanzielleSituationResource {
 
 		if (familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten()) {
 			requireNonNull(familiensituationJA.getZahlungsadresseMahlzeiten());
+		}
+
+		Gesuch gesuch = gesuchService
+			.findGesuch(gesuchId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"saveFinanzielleSituationStart",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchId));
+
+		final Einstellung einstellung = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
+
+		if (!mahlzeitenverguenstigungEnabled) {
+			familiensituationJA.setKeineMahlzeitenverguenstigungBeantragt(true);
 		}
 
 		if (familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt()) {
