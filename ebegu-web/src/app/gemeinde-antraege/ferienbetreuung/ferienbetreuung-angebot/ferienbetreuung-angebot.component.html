@@ -275,7 +275,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenHerbstferien}}</span>
 			</div>
 		</div>
@@ -308,7 +308,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenWinterferien}}</span>
 			</div>
 		</div>
@@ -335,7 +335,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenSportferien}}</span>
 			</div>
 		</div>
@@ -368,7 +368,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenFruehlingsferien}}</span>
 			</div>
 		</div>
@@ -401,7 +401,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlFerienwochenSommerferien}}</span>
 			</div>
 		</div>
@@ -434,7 +434,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlTage}}</span>
 			</div>
 		</div>
@@ -459,7 +459,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.angebot?.bemerkungenAnzahlFerienwochen"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.bemerkungenAnzahlFerienwochen}}</span>
 			</div>
 		</div>
@@ -499,7 +499,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.anzahlStundenProBetreuungstag}}</span>
 			</div>
 		</div>
@@ -530,11 +530,6 @@
 					</dv-bisher-x>
 				</dv-radio-container-x>
 			</dv-input-container-x>
-			<div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
-					: {{(vorgaenger.angabenKorrektur.angebot?.betreuungErfolgtTagsueber ? 'LABEL_JA' : 'LABEL_NEIN') | translate}}</span>
-			</div>
 		</div>
 
 		<div class="flex-row">
@@ -557,7 +552,7 @@
 			</dv-input-container-x>
 			<div class="flex-row-start-center margin-bottom-3rem margin-left-10" *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.angebot?.bemerkungenOeffnungszeiten"
-					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahr()} }}
+					  class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
 					: {{vorgaenger.angabenKorrektur.angebot?.bemerkungenOeffnungszeiten}}</span>
 			</div>
 		</div>
