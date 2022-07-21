@@ -187,16 +187,12 @@
 
                 <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
                 <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
-                <p class="sub-header-explanation green">{{'LATS_COVID_INFORMATION' | translate}}
-                    <dv-tooltip [text]="'LATS_COVID_ABRECHNUNG_INFO' | translate"></dv-tooltip>
-                </p>
                 <dv-input-container-x>
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                     <span
-                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
-                        <dv-tooltip class="green"
-                                    [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
+                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString, jahrPlus: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
+                        <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
@@ -224,8 +220,7 @@
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
                     <span
                         [innerHtml]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
-                        <dv-tooltip class="green"
-                                    [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
+                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
                     </label>
 
                     <mat-form-field floatLabel="always">
@@ -243,6 +238,35 @@
                         <dv-bisher-x
                             [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.geleisteteBetreuungsstundenBesondereBeduerfnisse"
                             [korrektur]="angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x>
+                    <label required
+                           [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
+                    <span
+                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
+                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></dv-tooltip>
+                    </label>
+
+                    <mat-form-field floatLabel="always">
+                        <input matInput
+                               formControlName="geleisteteBetreuungsstundenBesondereVolksschulangebot"
+                               class="form-control dv-input"/>
+                        <mat-error
+                            *ngIf="abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors?.required"
+                            translate>ERROR_REQUIRED
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors?.isNotPositiveInteger"
+                            translate>ERROR_POSITIVE_NUMBER
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.geleisteteBetreuungsstundenBesondereVolksschulangebot"
+                            [korrektur]="angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').value"
                             [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -386,8 +410,8 @@
                     </mat-form-field>
                 </dv-input-container-x>
 
-                <dv-input-container-x>
-                    <label required class="green"
+                <dv-input-container-x *ngIf="showCornonaFrage()">
+                    <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
                         {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
                         <dv-tooltip [text]="'LATS_TAGESSCHULE_GESCHLOSSEN_INFO' | translate"></dv-tooltip>
@@ -413,7 +437,7 @@
                 </dv-input-container-x>
 
                 <dv-input-container-x *ngIf="angabenForm.get('tagesschuleTeilweiseGeschlossen').value">
-                    <label class="green" required
+                    <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors}">
                         {{'LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
                     </label>
@@ -786,6 +810,7 @@
                         class=""
                         name="betreuungsstundenDokumentiertUndUeberprueft"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'betreuungsstundenDokumentiertUndUeberprueftBemerkung')"
                         [disabled]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').disabled"
                         formControlName="betreuungsstundenDokumentiertUndUeberprueft">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -800,6 +825,22 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="betreuungsstundenDokumentiertUndUeberprueftBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.betreuungsstundenDokumentiertUndUeberprueftBemerkung"
+                            [korrektur]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueftBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').errors}"
@@ -813,6 +854,7 @@
                         class=""
                         name="elterngebuehrenGemaessVerordnungBerechnet"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'elterngebuehrenGemaessVerordnungBerechnetBemerkung')"
                         [disabled]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').disabled"
                         formControlName="elterngebuehrenGemaessVerordnungBerechnet">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -827,6 +869,22 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+
+
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="elterngebuehrenGemaessVerordnungBerechnetBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.elterngebuehrenGemaessVerordnungBerechnetBemerkung"
+                            [korrektur]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnetBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -850,6 +908,7 @@
                         class=""
                         name="einkommenElternBelegt"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'einkommenElternBelegtBemerkung')"
                         [disabled]="angabenForm.get('einkommenElternBelegt').disabled"
                         formControlName="einkommenElternBelegt">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -864,6 +923,21 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('einkommenElternBelegt').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="einkommenElternBelegtBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einkommenElternBelegtBemerkung"
+                            [korrektur]="angabenForm.get('einkommenElternBelegtBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('maximalTarif').errors}"
@@ -877,6 +951,7 @@
                         class=""
                         name="maximalTarif"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'maximalTarifBemerkung')"
                         [disabled]="angabenForm.get('maximalTarif').disabled"
                         formControlName="maximalTarif">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -891,6 +966,20 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('maximalTarif').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="maximalTarifBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.maximalTarifBemerkung"
+                            [korrektur]="angabenForm.get('maximalTarifBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
         </div>
 
         <mat-divider class="margin-bottom-20"></mat-divider>
@@ -910,6 +999,7 @@
                         class=""
                         name="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung')"
                         [disabled]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').disabled"
                         formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -924,6 +1014,21 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
+                            [korrektur]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
             <dv-input-container-x>
                 <label required
                        [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('ausbildungenMitarbeitendeBelegt').errors}"
@@ -937,6 +1042,7 @@
                         class=""
                         name="ausbildungenMitarbeitendeBelegt"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'ausbildungenMitarbeitendeBelegtBemerkung')"
                         [disabled]="angabenForm.get('ausbildungenMitarbeitendeBelegt').disabled"
                         formControlName="ausbildungenMitarbeitendeBelegt">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -951,6 +1057,20 @@
                 </dv-radio-container-x>
             </dv-input-container-x>
 
+                <dv-input-container-x [verticalAlign]="true" *ngIf="angabenForm.get('ausbildungenMitarbeitendeBelegt').value === false">
+                    <mat-form-field floatLabel="always">
+                        <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <textarea matInput
+                              formControlName="ausbildungenMitarbeitendeBelegtBemerkung"
+                              class="form-control dv-input"></textarea>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.ausbildungenMitarbeitendeBelegtBemerkung"
+                            [korrektur]="angabenForm.get('ausbildungenMitarbeitendeBelegtBemerkung').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
         </div>
 
         <mat-divider></mat-divider>

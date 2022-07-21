@@ -113,6 +113,12 @@ export class TSControllingCalculator {
                         startWith(this._angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value),
                         map(parseFloat),
                     ),
+                this._angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot')
+                    .valueChanges
+                    .pipe(
+                        startWith(this._angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').value),
+                        map(parseFloat),
+                    ),
             this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
                 .valueChanges
                 .pipe(
@@ -121,11 +127,11 @@ export class TSControllingCalculator {
                 ),
             ],
         ).subscribe(values => {
-            if (values[0] === 0) {
+            if ((values[0] + values[1]) === 0) {
                 this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next('0');
                 return;
             }
-            const result = values[0] / 3 / values[1];
+            const result = (values[0] + values[1]) / 3 / values[2];
             this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next(this.toPercent(result));
         }, err => this.handleError(err));
     }
@@ -135,7 +141,8 @@ export class TSControllingCalculator {
             this._anteilStundenBesondereBeduerfnissePreviousPeriode.next('?');
             return;
         }
-        const result = this._previousAntrag.angabenKorrektur.geleisteteBetreuungsstundenBesondereBeduerfnisse / 3 /
+        const result = (this._previousAntrag.angabenKorrektur.geleisteteBetreuungsstundenBesondereBeduerfnisse +
+            this._previousAntrag.angabenKorrektur.geleisteteBetreuungsstundenBesondereVolksschulangebot) / 3 /
             this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
         this._anteilStundenBesondereBeduerfnissePreviousPeriode.next(this.toPercent(result));
     }

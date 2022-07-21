@@ -56,6 +56,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	private BigDecimal geleisteteBetreuungsstundenBesondereBeduerfnisse;
 
 	@NotNull @Nonnull
+	private BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot;
+
+	@NotNull @Nonnull
 	private BigDecimal davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
 
 	@NotNull @Nonnull
@@ -101,19 +104,37 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	private Boolean betreuungsstundenDokumentiertUndUeberprueft;
 
 	@NotNull @Nonnull
+	private String betreuungsstundenDokumentiertUndUeberprueftBemerkung;
+
+	@NotNull @Nonnull
 	private Boolean elterngebuehrenGemaessVerordnungBerechnet;
+
+	@NotNull @Nonnull
+	private String elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 
 	@NotNull @Nonnull
 	private Boolean einkommenElternBelegt;
 
 	@NotNull @Nonnull
+	private String einkommenElternBelegtBemerkung;
+
+	@NotNull @Nonnull
 	private Boolean maximalTarif;
+
+	@NotNull @Nonnull
+	private String maximalTarifBemerkung;
 
 	@NotNull @Nonnull
 	private Boolean mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
 
 	@NotNull @Nonnull
+	private String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
+
+	@NotNull @Nonnull
 	private Boolean ausbildungenMitarbeitendeBelegt;
+
+	@NotNull @Nonnull
+	private String ausbildungenMitarbeitendeBelegtBemerkung;
 
 	// Bemerkungen
 
@@ -466,5 +487,74 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setSchlusszahlung(@Nullable BigDecimal schlusszahlung) {
 		this.schlusszahlung = schlusszahlung;
+	}
+	@Nonnull
+	public String getBetreuungsstundenDokumentiertUndUeberprueftBemerkung() {
+		return betreuungsstundenDokumentiertUndUeberprueftBemerkung;
+	}
+
+	public void setBetreuungsstundenDokumentiertUndUeberprueftBemerkung(
+		@Nonnull String betreuungsstundenDokumentiertUndUeberprueftBemerkung) {
+		this.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
+			betreuungsstundenDokumentiertUndUeberprueftBemerkung;
+	}
+
+	@Nonnull
+	public String getElterngebuehrenGemaessVerordnungBerechnetBemerkung() {
+		return elterngebuehrenGemaessVerordnungBerechnetBemerkung;
+	}
+
+	public void setElterngebuehrenGemaessVerordnungBerechnetBemerkung(
+		@Nonnull String elterngebuehrenGemaessVerordnungBerechnetBemerkung) {
+		this.elterngebuehrenGemaessVerordnungBerechnetBemerkung = elterngebuehrenGemaessVerordnungBerechnetBemerkung;
+	}
+
+	@Nonnull
+	public String getEinkommenElternBelegtBemerkung() {
+		return einkommenElternBelegtBemerkung;
+	}
+
+	public void setEinkommenElternBelegtBemerkung(@Nonnull String einkommenElternBelegtBemerkung) {
+		this.einkommenElternBelegtBemerkung = einkommenElternBelegtBemerkung;
+	}
+
+	@Nonnull
+	public String getMaximalTarifBemerkung() {
+		return maximalTarifBemerkung;
+	}
+
+	public void setMaximalTarifBemerkung(@Nonnull String maximalTarifBemerkung) {
+		this.maximalTarifBemerkung = maximalTarifBemerkung;
+	}
+
+	@Nonnull
+	public String getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung() {
+		return mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
+	}
+
+	public void setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung(
+		@Nonnull String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung) {
+		this.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+			mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
+	}
+
+	@Nonnull
+	public String getAusbildungenMitarbeitendeBelegtBemerkung() {
+		return ausbildungenMitarbeitendeBelegtBemerkung;
+	}
+
+	public void setAusbildungenMitarbeitendeBelegtBemerkung(@Nonnull String ausbildungenMitarbeitendeBelegtBemerkung) {
+		this.ausbildungenMitarbeitendeBelegtBemerkung = ausbildungenMitarbeitendeBelegtBemerkung;
+	}
+
+	@Nonnull
+	public BigDecimal getGeleisteteBetreuungsstundenBesondereVolksschulangebot() {
+		return geleisteteBetreuungsstundenBesondereVolksschulangebot;
+	}
+
+	public void setGeleisteteBetreuungsstundenBesondereVolksschulangebot(
+		@Nonnull BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot) {
+		this.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+			geleisteteBetreuungsstundenBesondereVolksschulangebot;
 	}
 }

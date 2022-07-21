@@ -74,6 +74,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(500));
 		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
 		this.angaben.setErsteRateAusbezahlt(new BigDecimal(350));
+		this.angaben.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(BigDecimal.ZERO);
 		// C
 		this.angaben.setGesamtKostenTagesschule(new BigDecimal(15000));
 		this.angaben.setEinnnahmenVerpflegung(new BigDecimal(1500));

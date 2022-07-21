@@ -629,6 +629,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null");
 		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderVolksschulangebot())) {
+			throw new EbeguRuntimeException(
+				functionName,
+				ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+				"anzahlEingeschriebeneKinderVolksschulangebot must not be null");
+		}
 		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
 			throw new EbeguRuntimeException(
 					functionName,

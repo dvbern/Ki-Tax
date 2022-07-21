@@ -68,6 +68,10 @@ export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
         return this.getBasisJahr() + 2;
     }
 
+    public getBasisJahrPlus3(): number {
+        return this.getBasisJahr() + 3;
+    }
+
     public isBefore(moment: Moment): boolean {
         return this.gueltigkeit.gueltigBis.isBefore(moment);
     }
