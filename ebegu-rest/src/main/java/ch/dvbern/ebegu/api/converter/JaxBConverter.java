@@ -3911,14 +3911,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
-		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setZahlungsstatusMahlzeitenverguenstigung(zeitabschnitt.getZahlungsstatusMahlzeitenverguenstigung());
+		jaxZeitabschn.setZahlungsstatusInstitution(zeitabschnitt.getZahlungsstatusInstitution());
+		jaxZeitabschn.setZahlungsstatusAntragsteller(zeitabschnitt.getZahlungsstatusAntragsteller());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteVerguenstigung());
+			.isSameAusbezahlterBetragInstitution());
 		jaxZeitabschn.setSameAusbezahlteMahlzeiten(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteMahlzeiten());
+			.isSameAusbezahlterBetragAntragsteller());
 		jaxZeitabschn.setSameVerfuegteMahlzeitenVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteMahlzeitenVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(

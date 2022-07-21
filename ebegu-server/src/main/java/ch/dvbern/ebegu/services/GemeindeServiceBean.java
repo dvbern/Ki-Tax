@@ -40,6 +40,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.BfsGemeinde_;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -659,9 +660,13 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		Predicate predicateValue = cb.equal(root.get(Einstellung_.value), Boolean.TRUE.toString());
 		predicatesToUse.add(predicateValue);
 
+		final Benutzer currentBenutzer = principalBean.getBenutzer();
+		Predicate predicateMandant = root.get(Einstellung_.mandant).in(currentBenutzer.getMandant());
+		predicatesToUse.add(predicateMandant);
+
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// Berechtigte Gemeinden im Sinne von "zustaendig fuer"
-			Set<Gemeinde> gemeindenBerechtigt = principalBean.getBenutzer().extractGemeindenForUser();
+			Set<Gemeinde> gemeindenBerechtigt = currentBenutzer.extractGemeindenForUser();
 			//wenn der Benutzer ist fuer keine Gemeinde Berechtigt gibt man eine Empty Liste zurueck
 			// in kann keine empty Collection als Parameter nehmen sonst => Exception
 			if(gemeindenBerechtigt.isEmpty()){

@@ -33,13 +33,9 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.entities.Zahlung;
-import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
-import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -553,7 +549,7 @@ public class MutationsMergerTest {
 	public void test_Mutation_AuszahlungAnEltern_Aenderung_mit_Auszahlung() {
 		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
 		VerfuegungZeitabschnitt verfuegterZaAugust = findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST);
-		verfuegterZaAugust.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+		verfuegterZaAugust.setZahlungsstatusInstitution(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
