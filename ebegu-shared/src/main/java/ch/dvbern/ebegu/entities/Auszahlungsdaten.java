@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.validators.CheckAnyAuszahlungskontoSet;
 import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -46,17 +47,27 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
+@CheckAnyAuszahlungskontoSet
 public class Auszahlungsdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = 1991251126987562205L;
 
-	@NotNull
-	@Nonnull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	@Embedded
 	@CheckIBANUppercase
 	@Valid
 	private IBAN iban;
+
+	@Nullable
+	@Column(nullable = true, length = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaKreditorennummer;
+
+	@Nullable
+	@Column(nullable = true, length = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	private String infomaBankcode;
 
 	@NotNull
 	@Nonnull
@@ -69,13 +80,31 @@ public class Auszahlungsdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_auszahlungsdaten_adressekontoinhaber_id"), nullable = true)
 	private Adresse adresseKontoinhaber;
 
-	@Nonnull
+	@Nullable
 	public IBAN getIban() {
 		return iban;
 	}
 
-	public void setIban(@Nonnull IBAN iban) {
+	public void setIban(@Nullable IBAN iban) {
 		this.iban = iban;
+	}
+
+	@Nullable
+	public String getInfomaKreditorennummer() {
+		return infomaKreditorennummer;
+	}
+
+	public void setInfomaKreditorennummer(@Nullable String infomaKontonummer) {
+		this.infomaKreditorennummer = infomaKontonummer;
+	}
+
+	@Nullable
+	public String getInfomaBankcode() {
+		return infomaBankcode;
+	}
+
+	public void setInfomaBankcode(@Nullable String infomaBankcode) {
+		this.infomaBankcode = infomaBankcode;
 	}
 
 	@Nonnull
@@ -109,6 +138,8 @@ public class Auszahlungsdaten extends AbstractEntity {
 		}
 		final Auszahlungsdaten otherZahlung = (Auszahlungsdaten) other;
 		return Objects.equals(getIban(), otherZahlung.getIban()) &&
+			Objects.equals(getInfomaKreditorennummer(), otherZahlung.getInfomaKreditorennummer()) &&
+			Objects.equals(getInfomaBankcode(), otherZahlung.getInfomaBankcode()) &&
 			Objects.equals(getKontoinhaber(), otherZahlung.getKontoinhaber()) &&
 			Objects.equals(getAdresseKontoinhaber(), otherZahlung.getAdresseKontoinhaber());
 	}
@@ -120,10 +151,34 @@ public class Auszahlungsdaten extends AbstractEntity {
 		if (this.getAdresseKontoinhaber() != null) {
 			target.setAdresseKontoinhaber(this.getAdresseKontoinhaber().copyAdresse(new Adresse(), copyType));
 		}
+		target.setInfomaKreditorennummer(this.getInfomaKreditorennummer());
+		target.setInfomaBankcode(this.getInfomaBankcode());
 		return target;
 	}
 
-	public boolean isZahlungsinformationValid() {
-		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(iban.getIban());
+	public boolean isZahlungsinformationValid(boolean isInfomaZahlung) {
+		final boolean valid = StringUtils.isNotEmpty(kontoinhaber)
+			&& StringUtils.isNotEmpty(getIbanOrInfomaKreditorennummer());
+		if (isInfomaZahlung) {
+			final boolean validForInfomaZahlung = StringUtils.isNotEmpty(infomaKreditorennummer);
+			return valid && validForInfomaZahlung;
+		}
+		return valid;
+	}
+
+	@Nullable
+	public String extractIbanAsString() {
+		return iban != null ? iban.getIban() : null;
+	}
+
+	@Nonnull
+	public String getIbanOrInfomaKreditorennummer() {
+		String kontonr = extractIbanAsString();
+		if (StringUtils.isNotEmpty(kontonr)) {
+			return kontonr;
+		}
+		kontonr = getInfomaKreditorennummer();
+		Objects.requireNonNull(kontonr);
+		return kontonr;
 	}
 }

@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -81,6 +82,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.entities.Zahlungsposition_;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -167,6 +169,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Inject
 	private GesuchService gesuchService;
 
+	@Inject
+	private MandantService mandantService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	@Override
 	@Nonnull
 	public Zahlungsauftrag zahlungsauftragErstellen(
@@ -201,6 +209,16 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			.orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		authorizer.checkWriteAuthorization(gemeinde);
+
+		// Damit wir spaeter die Auszahlungsdaten valdieren koennen, muessen wir wissen, ob es eine PAIN oder
+		// eine INFOMA Zahlung ist. Wir lesen es hier einmalig fuer den ganzen Auftrag.
+		ApplicationProperty infomaZahlungen  =
+			this.applicationPropertyService.readApplicationProperty(
+					ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
+					mandant)
+				.orElse(null);
+		boolean isInfomaZahlung = infomaZahlungen != null
+			&& Boolean.parseBoolean(infomaZahlungen.getValue());
 
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
@@ -282,7 +300,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
 				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(
 					zeitabschnitt).isNeu()) {
-					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
+					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution, isInfomaZahlung);
 				}
 			}
 		}
@@ -311,7 +329,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 					zahlungslaufHelper,
 					zeitabschnitt,
 					zahlungsauftrag,
-					zahlungProInstitution);
+					zahlungProInstitution,
+					isInfomaZahlung);
 			}
 		}
 
@@ -473,20 +492,21 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
-	) {
-		Zahlungsposition zahlungsposition = new Zahlungsposition();
-		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
-		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
-		zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
-		Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
-			helper,
-			zeitabschnitt,
-			zahlungsauftrag,
-			zahlungProInstitution);
-		zahlungsposition.setZahlung(zahlung);
-		zahlung.getZahlungspositionen().add(zahlungsposition);
-		helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		boolean isInfomaZahlung) {
+			Zahlungsposition zahlungsposition = new Zahlungsposition();
+			zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
+			zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
+			zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
+			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
+				helper,
+				zeitabschnitt,
+				zahlungsauftrag,
+				zahlungProInstitution,
+				isInfomaZahlung);
+			zahlungsposition.setZahlung(zahlung);
+			zahlung.getZahlungspositionen().add(zahlungsposition);
+			helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 	}
 
 	/**
@@ -497,7 +517,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		boolean isInfomaZahlung
 	) {
 		// Ermitteln, ob die Vollkosten geaendert haben, seit der letzten Verfuegung, die auch verrechnet wurde!
 		List<VerfuegungZeitabschnitt> zeitabschnittOnVorgaengerVerfuegung = new ArrayList<>();
@@ -511,9 +532,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			verfuegung.getBetreuung(),
 			zeitabschnittOnVorgaengerVerfuegung);
 
-		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) { // Korrekturen
-			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(helper, zeitabschnittNeu, zahlungsauftrag,
-				zahlungProInstitution);
+		// Korrekturen
+		if (!zeitabschnittOnVorgaengerVerfuegung.isEmpty()) {
+			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
+				helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution, isInfomaZahlung);
 			createZahlungspositionKorrekturNeuerWert(helper, zeitabschnittNeu, zahlung); // Dies braucht man immer
 			for (VerfuegungZeitabschnitt vorgaengerZeitabschnitt : zeitabschnittOnVorgaengerVerfuegung) {
 				// Fuer die "alten" Verfuegungszeitabschnitte muessen Korrekturbuchungen erstellt werden
@@ -533,7 +555,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				}
 			}
 		} else { // Nachzahlungen bzw. Erstgesuche die rueckwirkend ausbezahlt werden muessen
-			createZahlungsposition(helper, zeitabschnittNeu, zahlungsauftrag, zahlungProInstitution);
+			createZahlungsposition(
+				helper,
+				zeitabschnittNeu,
+				zahlungsauftrag, zahlungProInstitution, isInfomaZahlung);
 		}
 	}
 
@@ -541,19 +566,22 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull ZahlungslaufHelper helper,
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution) {
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		boolean isInfomaZahlung
+	) {
 		final Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 		Objects.requireNonNull(betreuung);
 		if (helper.getZahlungslaufTyp().equals(ZahlungslaufTyp.GEMEINDE_INSTITUTION)) {
-			return findZahlungForInstitutionOrCreate(betreuung, zahlungsauftrag, zahlungProInstitution);
+			return findZahlungForInstitutionOrCreate(betreuung, zahlungsauftrag, zahlungProInstitution, isInfomaZahlung);
 		}
 
-		Gesuch gesuch = betreuung.extractGesuch();
-		if (!gesuch.isGueltig()) {
-			gesuch = gesuchService.getAllGesuchForDossier(gesuch.getDossier().getId())
-				.stream()
-				.filter(gesuchFound -> gesuchFound.isGueltig())
-				.findFirst()
+		Gesuch letztesGueltigesGesuch = betreuung.extractGesuch();
+		if (!letztesGueltigesGesuch.isGueltig()) {
+			letztesGueltigesGesuch = gesuchService
+				.getNeustesVerfuegtesGesuchFuerGesuch(
+					letztesGueltigesGesuch.getGesuchsperiode(),
+					letztesGueltigesGesuch.getDossier(),
+					false)
 				.orElseThrow(() ->
 					new EbeguRuntimeException(
 						"createZahlungsposition",
@@ -561,65 +589,87 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				);
 		}
 
+		Auszahlungsdaten auszahlungsdaten = getAuszahlungsdatenFromGesuchOrBetreuung(letztesGueltigesGesuch, betreuung);
+
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid(isInfomaZahlung)) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				"createZahlung",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
+				letztesGueltigesGesuch.getJahrFallAndGemeindenummer());
+		}
+
 		return findZahlungForAntragstellerOrCreate(
-			gesuch,
+			letztesGueltigesGesuch,
 			betreuung,
 			zahlungsauftrag,
-			zahlungProInstitution);
+			zahlungProInstitution,
+			auszahlungsdaten
+			);
 
 	}
 
+	private Auszahlungsdaten getAuszahlungsdatenFromGesuchOrBetreuung(Gesuch gesuch, Betreuung betreuung) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+
+		//Zuerste werden immer die Auszahlungsdaten aus dem Gesuch bevorzugt
+		Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdaten();
+
+		if (auszahlungsdaten == null) {
+			// Falls auf dem Gesuch keine Auszahlungsdaten vorhanden sind, werden die Auszahlungsdaten von der Betreuung genommen.
+			// Beim Gesuch handelt es sich um das Aktuell gültige Gesuch, bei der Betreuung um die Betruung die Ausbezahltw werden soll.
+			// Es gibt Fälle auf welchen beim gültigen Gesuch keine Auszahlungsdaten vorhanden sind
+			// -> Mutation 1 MZV gewünscht, Auszahlungsdaten vorhanden auf Betreuung (diese soll ausbezahlt werden)
+			// -> Mutation 2 MZV nicht mehr gewünscht, keine Auszahlungdaten mehr auf dem gültigen Gesuch vorhanden,
+			// also nehmen wir die Daten aus der Betreuung
+			Familiensituation familiensituationBetreuung =  betreuung.extractGesuch().extractFamiliensituation();
+			Objects.requireNonNull(familiensituationBetreuung, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+			auszahlungsdaten = familiensituationBetreuung.getAuszahlungsdaten();
+		}
+
+		return auszahlungsdaten;
+	}
+
 	private Zahlung findZahlungForAntragstellerOrCreate(
-		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		@Nonnull Auszahlungsdaten auszahlungsdaten
 	) {
 		// Wir setzen als "Empfaenger-ID" die ID des Falles: In selben Zahlungslauf kann es zu Auszahlungen
 		// von mehreren Mutation derselben Familie kommen, daher waere die Gesuch-ID oder die Gesuchsteller-ID
 		// nicht geeignet. Da auch Korrekturzahlungen ueber die Periode hinaus moeglich sind, faellt auch
 		// die Dossier-ID weg.
-		String fallId = gesuch.getDossier().getFall().getId();
+		String fallId = letztesGueltigesGesuch.getDossier().getFall().getId();
 		if (zahlungProInstitution.containsKey(fallId)) {
 			return zahlungProInstitution.get(fallId);
 		}
 		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
 		Zahlung zahlung =
-			createZahlungForAntragsteller(gesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag);
+			createZahlungForAntragsteller(letztesGueltigesGesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag, auszahlungsdaten);
 		zahlungProInstitution.put(fallId, zahlung);
 		return zahlung;
 	}
 
 	@Nonnull
 	private Zahlung createZahlungForAntragsteller(
-		@Nonnull Gesuch gesuch,
+		@Nonnull Gesuch letztesGueltigesGesuch,
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull String fallId,
-		@Nonnull Zahlungsauftrag zahlungsauftrag
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Auszahlungsdaten auszahlungsdaten
 	) {
-		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		Objects.requireNonNull(familiensituation, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
-
-		final Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdatenMahlzeiten();
-		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
-			throw new EbeguRuntimeException(
-				KibonLogLevel.INFO,
-				"createZahlung",
-				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_ANTRAGSTELLER_INCOMPLETE,
-				gesuch.getJahrFallAndGemeindenummer());
-		}
-
-		Objects.requireNonNull(auszahlungsdaten, "Die Auszahlungsdaten muessen zu diesem Zeitpunkt definiert sein");
-
-		final Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
+		final Gesuchsteller gesuchsteller1 = letztesGueltigesGesuch.extractGesuchsteller1()
 			.orElseThrow(() -> new EbeguRuntimeException(
 				"createZahlung",
-				"GS1 not found for Gesuch " + gesuch.getId()));
+				"GS1 not found for Gesuch " + letztesGueltigesGesuch.getId()));
 		Gesuchsteller gesuchsteller2 = null;
 
-		if (gesuch.getGesuchsteller2() != null) {
-			gesuchsteller2 = gesuch.getGesuchsteller2().getGesuchstellerJA();
+		if (letztesGueltigesGesuch.getGesuchsteller2() != null) {
+			gesuchsteller2 = letztesGueltigesGesuch.getGesuchsteller2().getGesuchstellerJA();
 		}
 
 		Zahlung zahlung = new Zahlung();
@@ -639,14 +689,15 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	private Zahlung findZahlungForInstitutionOrCreate(
 		@Nonnull Betreuung betreuung,
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Map<String, Zahlung> zahlungProInstitution
+		@Nonnull Map<String, Zahlung> zahlungProInstitution,
+		boolean isInfomaZahlung
 	) {
 		InstitutionStammdaten institution = betreuung.getInstitutionStammdaten();
 		if (zahlungProInstitution.containsKey(institution.getId())) {
 			return zahlungProInstitution.get(institution.getId());
 		}
 		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
-		Zahlung zahlung = createZahlungForInstitution(institution, zahlungsauftrag);
+		Zahlung zahlung = createZahlungForInstitution(institution, zahlungsauftrag, isInfomaZahlung);
 		zahlungProInstitution.put(institution.getId(), zahlung);
 		return zahlung;
 	}
@@ -654,7 +705,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	private Zahlung createZahlungForInstitution(
 		@Nonnull InstitutionStammdaten institutionStammdaten,
-		@Nonnull Zahlungsauftrag zahlungsauftrag
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		boolean isInfomaZahlung
 	) {
 		Zahlung zahlung = new Zahlung();
 		zahlung.setStatus(ZahlungStatus.ENTWURF);
@@ -663,7 +715,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Objects.requireNonNull(stammdatenBG, "Die Stammdaten muessen zu diesem Zeitpunkt definiert sein");
 		final Auszahlungsdaten auszahlungsdaten = stammdatenBG.getAuszahlungsdaten();
 		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid()) {
+		if (auszahlungsdaten == null || !auszahlungsdaten.isZahlungsinformationValid(isInfomaZahlung)) {
 			throw new EbeguRuntimeException(
 				KibonLogLevel.INFO,
 				"createZahlung",
@@ -810,6 +862,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlung.setStatus(ZahlungStatus.AUSGELOEST);
 			persistence.merge(zahlung);
 		}
+		// Die nextBelegnummerInfoma hochzaehlen
+		final Mandant mandant = zahlungsauftrag.getMandant();
+		Objects.requireNonNull(mandant);
+		final long oldNextNummer = mandant.getNextInfomaBelegnummer();
+		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
+		mandantService.updateNextInfomaBelegnummer(mandant, oldNextNummer + anzahlNeueZahlungen);
 		return persistence.merge(zahlungsauftrag);
 	}
 

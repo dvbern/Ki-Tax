@@ -219,6 +219,7 @@
 									  [finanzModel]="model"
 									  [model]="getModel().finanzielleSituationJA"
                                       [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
+                                      [isQuellenbesteuert]="getModel().finanzielleSituationJA?.quellenbesteuert"
                 ></dv-selbstdeklaration>
 				<dv-veranlagung *ngIf="showVeranlagung()"
 								[antragstellerNummer]="getAntragstellerNummer()"

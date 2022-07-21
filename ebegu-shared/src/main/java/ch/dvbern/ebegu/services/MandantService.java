@@ -51,4 +51,6 @@ public interface MandantService {
 
 	@Nonnull
 	Collection<Mandant> getAll();
+
+	void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, long nextNumber);
 }

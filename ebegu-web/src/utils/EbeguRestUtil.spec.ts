@@ -545,7 +545,7 @@ describe('EbeguRestUtil', () => {
                     .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
                 expect(verfuegungTS.bemerkungen[0].bemerkung).toEqual(restVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList[0].bemerkung);
-                expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);
+                expect(verfuegungTS.zahlungsstatusInstitution).toEqual(restVerfuegungZeitabschnitt.zahlungsstatusInstitution);
             });
         });
         describe('parseFinanzielleSituationTyp', () => {

@@ -20,7 +20,7 @@
         <mat-divider class="margin-bottom-50"></mat-divider>
         <h3 class="uppercase ebegu-h1" *ngIf="isGemeinsam">{{'SELBSTDEKLARATION_GEMEINSAM_TITLE' | translate:{gs1: antragsteller1Name(), gs2: antragsteller2Name(), year: basisJahr} }}</h3>
         <h3 class="uppercase ebegu-h1" *ngIf="!isGemeinsam">{{'SELBSTDEKLARATION_ALLEINE_TITLE' | translate: {gs1: getCurrentAntragstellerName(), year: basisJahr} }}</h3>
-        <p class="inline-hint margin-top-10" translate>SELBSTDEKLARATION_SUBTITLE</p>
+        <p class="inline-hint margin-top-10" *ngIf="!isQuellenbesteuert" translate>SELBSTDEKLARATION_SUBTITLE</p>
     </div>
 </div>
 

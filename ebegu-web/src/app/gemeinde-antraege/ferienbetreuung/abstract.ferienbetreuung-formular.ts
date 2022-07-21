@@ -27,6 +27,7 @@ import {TSFerienbetreuungAbstractAngaben} from '../../../models/gemeindeantrag/T
 import {TSFerienbetreuungAngabenContainer} from '../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -98,6 +99,14 @@ export abstract class AbstractFerienbetreuungFormular {
         this.errorService.clearAll();
         this.errorService.addMesageAsError(
             this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+        );
+    }
+
+    // tslint:disable-next-line:no-identical-functions
+    protected showUnerwarteteErrorMessage(): void {
+        this.errorService.clearAll();
+        this.errorService.addMesageAsError(
+            this.translate.instant('ERROR_UNEXPECTED'),
         );
     }
 
@@ -190,9 +199,12 @@ export abstract class AbstractFerienbetreuungFormular {
 
     protected handleSaveErrors(errors: TSExceptionReport[]): void {
         this.errorService.clearAll();
-        if (errors.find(error => error.customMessage.includes('Not all required properties are set'))) {
+        if (errors.find(error => EbeguUtil.isNotNullOrUndefined(error.customMessage) && error.customMessage.includes(
+            'Not all required properties are set'))) {
             this.enableAndTriggerFormValidation();
             this.showValidierungFehlgeschlagenErrorMessage();
+        } else {
+            this.showUnerwarteteErrorMessage();
         }
     }
 

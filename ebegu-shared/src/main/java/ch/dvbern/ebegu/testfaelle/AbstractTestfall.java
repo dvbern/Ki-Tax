@@ -239,10 +239,9 @@ public abstract class AbstractTestfall {
 		} else {
 			auszahlungsdatenInforma.setKontoinhaber("kiBon Test");
 		}
+		auszahlungsdatenInforma.setInfomaKreditorennummer("0010");
+		auszahlungsdatenInforma.setInfomaBankcode("00-1-00");
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInforma);
-		familiensituation.setInfomaKreditorennummer("0010");
-		familiensituation.setInfomaBankcode("00-1-00");
-
 	}
 
 	protected Gesuch createAlleinerziehend() {
