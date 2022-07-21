@@ -192,8 +192,7 @@
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                     <span
                         [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString, jahrPlus: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
-                        <dv-tooltip class="green"
-                                    [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
+                        <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
@@ -221,8 +220,7 @@
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').errors}">
                     <span
                         [innerHtml]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
-                        <dv-tooltip class="green"
-                                    [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
+                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_SCHULJAHR_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
                     </label>
 
                     <mat-form-field floatLabel="always">
@@ -251,8 +249,7 @@
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
                     <span
                         [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3()}"></span>
-                        <dv-tooltip class="green"
-                                    [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></dv-tooltip>
+                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus3(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></dv-tooltip>
                     </label>
 
                     <mat-form-field floatLabel="always">
@@ -414,7 +411,7 @@
                 </dv-input-container-x>
 
                 <dv-input-container-x *ngIf="showCornonaFrage()">
-                    <label required class="green"
+                    <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
                         {{'LATS_TAGESSCHULE_GESCHLOSSEN' | translate:{periode: lATSAngabenGemeindeContainer?.gesuchsperiode?.gesuchsperiodeString} }}
                         <dv-tooltip [text]="'LATS_TAGESSCHULE_GESCHLOSSEN_INFO' | translate"></dv-tooltip>
@@ -440,7 +437,7 @@
                 </dv-input-container-x>
 
                 <dv-input-container-x *ngIf="angabenForm.get('tagesschuleTeilweiseGeschlossen').value">
-                    <label class="green" required
+                    <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('rueckerstattungenElterngebuehrenSchliessung').errors}">
                         {{'LATS_RUECKERSTATTUNG_TS_GESCHLOSSEN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
                     </label>
