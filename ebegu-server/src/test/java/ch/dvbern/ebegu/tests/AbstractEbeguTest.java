@@ -146,7 +146,7 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("mail/templates/WarnungGesuchNichtFreigegeben_de.ftl", "mail/templates/WarnungGesuchNichtFreigegeben_de.ftl")
 			.addAsResource("mail/templates/WarnungFreigabequittungFehlt_de.ftl", "mail/templates/WarnungFreigabequittungFehlt_de.ftl")
 			.addAsResource("mail/templates/InfoGesuchGeloescht_de.ftl", "mail/templates/InfoGesuchGeloescht_de.ftl")
-			.addAsResource("mail/templates/BenutzerEinladung.ftl", "mail/templates/BenutzerEinladung.ftl")
+			.addAsResource("mail/templates/BenutzerEinladung_de.ftl", "mail/templates/BenutzerEinladung_de.ftl")
 			.addAsResource("font/sRGB.profile", "font/sRGB.profile")
 			.addAsWebInfResource("META-INF/test-beans.xml", "beans.xml")
 			.addAsResource("META-INF/test-orm.xml", "META-INF/orm.xml")
