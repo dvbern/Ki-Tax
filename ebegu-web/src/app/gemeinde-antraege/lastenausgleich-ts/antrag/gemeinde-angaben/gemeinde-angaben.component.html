@@ -810,6 +810,7 @@
                         class=""
                         name="betreuungsstundenDokumentiertUndUeberprueft"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'betreuungsstundenDokumentiertUndUeberprueftBemerkung')"
                         [disabled]="angabenForm.get('betreuungsstundenDokumentiertUndUeberprueft').disabled"
                         formControlName="betreuungsstundenDokumentiertUndUeberprueft">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -853,6 +854,7 @@
                         class=""
                         name="elterngebuehrenGemaessVerordnungBerechnet"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'elterngebuehrenGemaessVerordnungBerechnetBemerkung')"
                         [disabled]="angabenForm.get('elterngebuehrenGemaessVerordnungBerechnet').disabled"
                         formControlName="elterngebuehrenGemaessVerordnungBerechnet">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -906,6 +908,7 @@
                         class=""
                         name="einkommenElternBelegt"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'einkommenElternBelegtBemerkung')"
                         [disabled]="angabenForm.get('einkommenElternBelegt').disabled"
                         formControlName="einkommenElternBelegt">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -948,6 +951,7 @@
                         class=""
                         name="maximalTarif"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'maximalTarifBemerkung')"
                         [disabled]="angabenForm.get('maximalTarif').disabled"
                         formControlName="maximalTarif">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -995,6 +999,7 @@
                         class=""
                         name="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung')"
                         [disabled]="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').disabled"
                         formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -1037,6 +1042,7 @@
                         class=""
                         name="ausbildungenMitarbeitendeBelegt"
                         horizontal
+                        (change)="clearFormFieldOnChangeToTrue($event, 'ausbildungenMitarbeitendeBelegtBemerkung')"
                         [disabled]="angabenForm.get('ausbildungenMitarbeitendeBelegt').disabled"
                         formControlName="ausbildungenMitarbeitendeBelegt">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>

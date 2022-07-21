@@ -1016,4 +1016,12 @@ export class GemeindeAngabenComponent implements OnInit {
             console.error(err);
         });
     }
+
+    public clearFormFieldOnChangeToTrue(event: MatRadioChange, formFieldToClear: string): void {
+        if (event.value !== true) {
+            return;
+        }
+
+        this.angabenForm.get(formFieldToClear).setValue(undefined);
+    }
 }
