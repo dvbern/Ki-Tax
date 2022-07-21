@@ -254,8 +254,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Wieweit soll ausbezahlt werden? Normalerweise nicht in die Zukunft, d.h. 0 Monate voraus (z.b. 15.08. ausloesen
 		// ergibt eine Zahlung bis 31.08.). Bei Luzern z.B. 1 Monat in Zukunft, d.h. ausloesen am 15.8. ergibt eine
 		// Zahlung bis 30.09.
-		// TODO Anzahl Monate muss konfigurierbar sein
-		int anzahlMonateInZukunft = 0;
+		ApplicationProperty anzahlMonateInZukunftProperty  =
+			this.applicationPropertyService.readApplicationProperty(
+					ApplicationPropertyKey.ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
+					mandant)
+				.orElse(null);
+		int anzahlMonateInZukunft = anzahlMonateInZukunftProperty != null ?
+			Integer.parseInt(anzahlMonateInZukunftProperty.getValue()) : 0;
 
 		// Falls es eine Wiederholung des Auftrags ist, muessen nur noch die Korrekturen beruecksichtigt werden, welche
 		// seit dem letzten Auftrag erstellt wurden
