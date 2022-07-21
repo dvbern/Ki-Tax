@@ -239,11 +239,9 @@ public abstract class AbstractTestfall {
 		} else {
 			auszahlungsdatenInforma.setKontoinhaber("kiBon Test");
 		}
-		auszahlungsdatenInforma.setInfomaKreditorennummer("CH39 0900 0000 3066 3817 2");
+		auszahlungsdatenInforma.setInfomaKreditorennummer("0010");
+		auszahlungsdatenInforma.setInfomaBankcode("00-1-00");
 		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInforma);
-		familiensituation.setInfomaKreditorennummer("0010");
-		familiensituation.setInfomaBankcode("00-1-00");
-
 	}
 
 	protected Gesuch createAlleinerziehend() {

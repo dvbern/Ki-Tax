@@ -156,8 +156,6 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setAuszahlungsdatenInfoma(auszahlungsdatenGSMZV);
 
 		familiensituationGS.setAbweichendeZahlungsadresseInfoma(familiensituationJA.isAbweichendeZahlungsadresseInfoma());
-		familiensituationGS.setInfomaKreditorennummer(familiensituationJA.getInfomaKreditorennummer());
-		familiensituationGS.setInfomaBankcode(familiensituationJA.getInfomaBankcode());
 		familiensituationGS.setUnterhaltsvereinbarung(familiensituationJA.getUnterhaltsvereinbarung());
 		familiensituationGS.setUnterhaltsvereinbarungBemerkung(familiensituationJA.getUnterhaltsvereinbarungBemerkung());
 		familiensituationGS.setGeteilteObhut(familiensituationJA.getGeteilteObhut());
@@ -167,6 +165,7 @@ public final class FreigabeCopyUtil {
 		auszahlungsdatenGS.setIban(auszahlungsdatenJA.getIban());
 		auszahlungsdatenGS.setKontoinhaber(auszahlungsdatenJA.getKontoinhaber());
 		auszahlungsdatenGS.setInfomaKreditorennummer(auszahlungsdatenJA.getInfomaKreditorennummer());
+		auszahlungsdatenGS.setInfomaBankcode(auszahlungsdatenJA.getInfomaBankcode());
 		Adresse zahlungsadresseJA = auszahlungsdatenJA.getAdresseKontoinhaber();
 		Adresse zahlungsadresseGS = null;
 		if (zahlungsadresseJA != null) {

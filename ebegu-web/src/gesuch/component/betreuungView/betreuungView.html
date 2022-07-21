@@ -494,7 +494,8 @@
                                 <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
                                              id="eingewoehnung"
                                              name="eingewoehnung"
-                                             aria-label="{{'EINGEWOEHNUNG'| translate}}">
+                                             aria-label="{{'EINGEWOEHNUNG'| translate}}"
+                                             ng-disabled="vm.isGesuchReadonly()">
                                     <span data-translate="EINGEWOEHNUNG"></span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="eingewoehnung"
