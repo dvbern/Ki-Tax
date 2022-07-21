@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.ZahlungslaufUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -221,8 +222,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			&& Boolean.parseBoolean(infomaZahlungen.getValue());
 
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
-		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
-		if (lastZahlungsauftrag.isPresent() && lastZahlungsauftrag.get().getStatus().isEntwurf()) {
+		Optional<Zahlungsauftrag> lastZahlungsauftragOptional = findLastZahlungsauftrag(zahlungslaufTyp, gemeinde);
+		if (lastZahlungsauftragOptional.isPresent() && lastZahlungsauftragOptional.get().getStatus().isEntwurf()) {
 			throw new EbeguRuntimeException(
 				KibonLogLevel.DEBUG,
 				"zahlungsauftragErstellen",
@@ -250,6 +251,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// 		Auftrags!)
 		// Den letzten Zahlungsauftrag lesen
 		LocalDateTime lastZahlungErstellt = Constants.START_OF_DATETIME; // Default, falls dies der erste Auftrag ist
+		// Wieweit soll ausbezahlt werden? Normalerweise nicht in die Zukunft, d.h. 0 Monate voraus (z.b. 15.08. ausloesen
+		// ergibt eine Zahlung bis 31.08.). Bei Luzern z.B. 1 Monat in Zukunft, d.h. ausloesen am 15.8. ergibt eine
+		// Zahlung bis 30.09.
+		// TODO Anzahl Monate muss konfigurierbar sein
+		int anzahlMonateInZukunft = 0;
+
 		// Falls es eine Wiederholung des Auftrags ist, muessen nur noch die Korrekturen beruecksichtigt werden, welche
 		// seit dem letzten Auftrag erstellt wurden
 		boolean isRepetition = false;
@@ -257,24 +264,15 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// DatumVon nicht
 		// einfach an den letzten Auftrag anschliessen
 		LocalDate zeitabschnittVon;
-		LocalDate zeitabschnittBis =
-			zahlungsauftrag.getDatumGeneriert().toLocalDate().with(TemporalAdjusters.lastDayOfMonth());
+		LocalDate zeitabschnittBis = ZahlungslaufUtil.ermittleZahlungslaufGueltigBis(zahlungsauftrag, anzahlMonateInZukunft);
 
-		if (lastZahlungsauftrag.isPresent()) {
-			lastZahlungErstellt = lastZahlungsauftrag.get().getDatumGeneriert();
-			if (zahlungsauftrag.getDatumGeneriert()
-				.toLocalDate()
-				.isAfter(lastZahlungsauftrag.get().getGueltigkeit().getGueltigBis())) {
-				// Wir beginnen am Anfang des Folgemonats des letzten Auftrags
-				zeitabschnittVon =
-					lastZahlungErstellt.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).toLocalDate();
-			} else {
-				// Repetition, dh.der Monat ist schon ausgeloest. Wir nehmen den Anfang des Monats
-				zeitabschnittVon = lastZahlungErstellt.with(TemporalAdjusters.firstDayOfMonth()).toLocalDate();
-				isRepetition = true;
-			}
+		if (lastZahlungsauftragOptional.isPresent()) {
+			final Zahlungsauftrag lastZahlungsauftrag = lastZahlungsauftragOptional.get();
+			lastZahlungErstellt = lastZahlungsauftrag.getDatumGeneriert();
+			zeitabschnittVon = ZahlungslaufUtil.ermittleZahlungslaufGueltigVon(zeitabschnittBis, lastZahlungsauftrag);
+			isRepetition = ZahlungslaufUtil.isZahlunglaufRepetition(zeitabschnittBis, lastZahlungsauftrag);
 		} else {
-			zeitabschnittVon = lastZahlungErstellt.toLocalDate();
+			zeitabschnittVon =  Constants.START_OF_DATETIME.toLocalDate(); // Default, falls dies der erste Auftrag ist
 		}
 
 		zahlungsauftrag.setGueltigkeit(new DateRange(zeitabschnittVon, zeitabschnittBis));
