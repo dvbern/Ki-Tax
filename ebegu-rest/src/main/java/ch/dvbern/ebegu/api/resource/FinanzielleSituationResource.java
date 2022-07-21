@@ -184,6 +184,7 @@ public class FinanzielleSituationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public JaxGesuch saveFinanzielleSituationStart(
 		@Nonnull @NotNull @Valid JaxGesuch gesuchJAXP,
 		@Context UriInfo uriInfo,
