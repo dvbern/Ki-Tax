@@ -114,10 +114,10 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	private List<JaxVerfuegungZeitabschnittBemerkung> verfuegungZeitabschnittBemerkungList = new ArrayList<>();
 
 	@NotNull @Nonnull
-	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusInstitution = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	@NotNull @Nonnull
-	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusAntragsteller = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	private boolean kategorieMaxEinkommen = false;
 
@@ -328,21 +328,22 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	}
 
 	@Nonnull
-	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
-		return zahlungsstatus;
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusInstitution() {
+		return zahlungsstatusInstitution;
 	}
 
-	public void setZahlungsstatus(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
-		this.zahlungsstatus = zahlungsstatus;
+	public void setZahlungsstatusInstitution(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusInstitution) {
+		this.zahlungsstatusInstitution = zahlungsstatusInstitution;
 	}
 
 	@Nonnull
-	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
-		return zahlungsstatusMahlzeitenverguenstigung;
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusAntragsteller() {
+		return zahlungsstatusAntragsteller;
 	}
 
-	public void setZahlungsstatusMahlzeitenverguenstigung(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
-		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
+	public void setZahlungsstatusAntragsteller(
+		@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusAntragsteller) {
+		this.zahlungsstatusAntragsteller = zahlungsstatusAntragsteller;
 	}
 
 	public boolean isKategorieMaxEinkommen() {
