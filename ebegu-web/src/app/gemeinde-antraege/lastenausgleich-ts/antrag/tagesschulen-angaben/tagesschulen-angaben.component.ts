@@ -353,19 +353,7 @@ export class TagesschulenAngabenComponent {
             );
             return;
         }
-        const oeffnungszeiten = [
-            this.fruehbetreuungOeffnungszeiten,
-            this.mittagsbetreuungOeffnungszeiten,
-            this.nachmittagsbetreuung1Oeffnungszeiten,
-            this.nachmittagsbetreuung2Oeffnungszeiten,
-        ];
-        if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
-            this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
-            this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = oeffnungszeiten;
-        } else {
-            this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
-            this.latsAngabenInstitutionContainer.angabenDeklaration.oeffnungszeiten = oeffnungszeiten;
-        }
+        this.setFormValuesToAngaben();
         this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
@@ -376,6 +364,29 @@ export class TagesschulenAngabenComponent {
         }, error => {
             this.manageSaveErrorCodes(error);
         });
+    }
+
+    private setFormValuesToAngaben(): void {
+        if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
+            this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+            this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = this.getOeffnungszeitenArray();
+        } else {
+           this.setFormValuesToAngabenDeklaration();
+        }
+    }
+
+    private getOeffnungszeitenArray(): TSOeffnungszeitenTagesschule[] {
+        return [
+            this.fruehbetreuungOeffnungszeiten,
+            this.mittagsbetreuungOeffnungszeiten,
+            this.nachmittagsbetreuung1Oeffnungszeiten,
+            this.nachmittagsbetreuung2Oeffnungszeiten,
+        ];
+    }
+
+    private setFormValuesToAngabenDeklaration(): void {
+        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.latsAngabenInstitutionContainer.angabenDeklaration.oeffnungszeiten = this.getOeffnungszeitenArray();
     }
 
     public async onFreigeben(): Promise<void> {
@@ -391,7 +402,7 @@ export class TagesschulenAngabenComponent {
         if (!await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_FREIGEBEN')) {
             return;
         }
-        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.setFormValuesToAngabenDeklaration();
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(freigegeben => {
@@ -434,7 +445,7 @@ export class TagesschulenAngabenComponent {
             return;
         }
 
-        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        this.setFormValuesToAngabenDeklaration();
 
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(geprueft => {
