@@ -206,6 +206,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -5309,6 +5310,10 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
+		stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
+		convertAbstractFieldsToJAX(
+			stammdaten.getGemeindeStammdatenKorrespondenz(),
+			jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
 
 		return stammdaten;
@@ -5404,6 +5409,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
+		convertAbstractFieldsToJAX(stammdaten.getGemeindeStammdatenKorrespondenz(), jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 
 		return jaxStammdaten;
 	}
