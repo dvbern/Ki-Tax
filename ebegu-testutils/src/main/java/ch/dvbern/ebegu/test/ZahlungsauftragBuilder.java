@@ -21,6 +21,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 /**
@@ -52,6 +53,11 @@ public class ZahlungsauftragBuilder {
 
 	public ZahlungsauftragBuilder withDatumGeneriert(@Nonnull LocalDate datumGeneriert) {
 		zahlungsauftrag.setDatumGeneriert(datumGeneriert.atTime(LocalTime.of(12, 15)));
+		return this;
+	}
+
+	public ZahlungsauftragBuilder withGueltigkeit(@Nonnull DateRange gueltigkeit) {
+		zahlungsauftrag.setGueltigkeit(gueltigkeit);
 		return this;
 	}
 

@@ -186,6 +186,13 @@ public enum ApplicationPropertyKey {
 	 * Wenn TRUE koennen die Schnittstelle events z.B. AnmeldungTagesschuleEvent, BetreuungAnfrageAddedEvent
 	 * werden veröffentlicht
 	 */
-	SCHNITTSTELLE_EVENTS_AKTIVIERT
+	SCHNITTSTELLE_EVENTS_AKTIVIERT,
+
+	/**
+	 * Anzahl Monate in die Zukunft, welche im Zahlungslauf ausbezahlt werden sollen.
+	 * Beispiel: 0 => Generiert am 15.08. => Ausbezahlt bis 31.08.
+	 * 			 1 => Generiert am 15.08. => Ausbezahlt bis 30.09.
+	 */
+	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
 
 }
