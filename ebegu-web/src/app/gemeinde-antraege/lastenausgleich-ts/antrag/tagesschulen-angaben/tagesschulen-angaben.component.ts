@@ -368,8 +368,7 @@ export class TagesschulenAngabenComponent {
 
     private setFormValuesToAngaben(): void {
         if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
-            this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
-            this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = this.getOeffnungszeitenArray();
+            this.setFormValuesToAngabenKorrektur();
         } else {
            this.setFormValuesToAngabenDeklaration();
         }
@@ -382,6 +381,11 @@ export class TagesschulenAngabenComponent {
             this.nachmittagsbetreuung1Oeffnungszeiten,
             this.nachmittagsbetreuung2Oeffnungszeiten,
         ];
+    }
+
+    private setFormValuesToAngabenKorrektur(): void {
+        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = this.getOeffnungszeitenArray();
     }
 
     private setFormValuesToAngabenDeklaration(): void {
@@ -445,7 +449,7 @@ export class TagesschulenAngabenComponent {
             return;
         }
 
-        this.setFormValuesToAngabenDeklaration();
+        this.setFormValuesToAngabenKorrektur();
 
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(geprueft => {
