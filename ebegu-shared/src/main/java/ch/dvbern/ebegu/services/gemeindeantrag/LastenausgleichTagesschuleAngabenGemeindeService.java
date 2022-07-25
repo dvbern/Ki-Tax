@@ -98,9 +98,10 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	/**
 	 * Gibt alle Lastenausgleiche der Tagesschulen für die Benutzerin zurück
 	 * @return
+	 * @param gesuchPeriodeId
 	 */
 	@Nonnull
-	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen();
+	List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen(String gesuchPeriodeId);
 
 	/**
 	 * Gibt die gefilterten Lastenausgleiche der Tagesschulen für die Benutzerin zurück

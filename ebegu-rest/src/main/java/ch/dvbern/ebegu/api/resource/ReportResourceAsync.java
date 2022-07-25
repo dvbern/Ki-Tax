@@ -882,6 +882,7 @@ public class ReportResourceAsync {
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getLastenausgleichTagesschulenExcelReport(
+		@QueryParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo) {
 
@@ -894,7 +895,7 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN,
 			null,
 			null,
-			null,
+			gesuchsperiodeId,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
