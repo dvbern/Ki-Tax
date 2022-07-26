@@ -2972,5 +2972,6 @@
     "OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_1": "Nachmittagsbetreuung 1 <br>(erste Nachmittagshälfte)",
     "OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_2": "Nachmittagsbetreuung 2 <br>(zweite Nachmittagshälfte)",
     "OEFFNUNGSZEIT_UNTERRICHT_BLOCKZEITEN": "Unterricht nach Blockzeiten",
+    "PDF_EXPORTIEREN": "PDF exportieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

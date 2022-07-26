@@ -22,6 +22,7 @@ import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -46,7 +47,8 @@ export class FerienbetreuungComponent implements OnInit {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
-        private readonly wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS,
+        private readonly downloadRS: DownloadRS
     ) {
     }
 
@@ -67,5 +69,17 @@ export class FerienbetreuungComponent implements OnInit {
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
         this.ferienbetreuungService.emptyStores();
+    }
+
+    public downloadFerienbetreuungReport(): void {
+        this.ferienbetreuungService.generateFerienbetreuungReport(this.ferienbetreuungContainer).subscribe(res => this.openDownloadForFile(res));
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = "henlo";
+        this.downloadRS.openDownload(file, filename);
     }
 }
