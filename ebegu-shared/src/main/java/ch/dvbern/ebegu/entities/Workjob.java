@@ -117,7 +117,7 @@ public class Workjob extends AbstractMutableEntity {
 		this.status = status;
 	}
 
-	@SuppressWarnings("ObjectEquality")
+	@SuppressWarnings({"ObjectEquality", "PMD.CompareObjectsWithEquals"})
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	@Override
 	public boolean isSame(AbstractEntity o) {

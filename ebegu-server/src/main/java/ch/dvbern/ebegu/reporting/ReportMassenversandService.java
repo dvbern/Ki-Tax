@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -53,5 +54,5 @@ public interface ReportMassenversandService {
 		boolean ohneErneuerungsgesuch,
 		@Nullable String text,
 		@Nonnull Locale locale
-	) throws ExcelMergeException;
+	) throws ExcelMergeException, IOException;
 }

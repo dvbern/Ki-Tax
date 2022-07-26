@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -91,11 +93,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
-import org.apache.commons.lang3.Validate;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -129,34 +128,40 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 		@Nonnull LocalDate datumBis,
 		@Nonnull Locale locale,
 		@Nonnull String gemeindeId
-	) throws ExcelMergeException {
+	) throws ExcelMergeException, IOException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG;
 
-		InputStream is = ReportMahlzeitenServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Validate.notNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportMahlzeitenServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+			Gemeinde gemeinde =
+				gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"getReportDataMahlzeitenverguenstigung", gemeindeId));
 
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getReportDataMahlzeitenverguenstigung", gemeindeId));
-
-		List<MahlzeitenverguenstigungDataRow> reportData = getReportMahlzeitenverguenstigung(datumVon, datumBis, gemeinde);
-		ExcelMergerDTO excelMergerDTO =
-			mahlzeitenverguenstigungExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
+			List<MahlzeitenverguenstigungDataRow> reportData =
+				getReportMahlzeitenverguenstigung(datumVon, datumBis, gemeinde);
+			ExcelMergerDTO excelMergerDTO =
+				mahlzeitenverguenstigungExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis,
 					Objects.requireNonNull(gemeinde.getMandant()));
 
-		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		mahlzeitenverguenstigungExcelConverter.applyAutoSize(sheet);
+			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+			mahlzeitenverguenstigungExcelConverter.applyAutoSize(sheet);
 
-		byte[] bytes = createWorkbook(workbook);
+			byte[] bytes = createWorkbook(workbook);
 
-		return fileSaverService.save(
-			bytes,
-			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), Locale.GERMAN, gemeinde.getMandant()) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(
+					reportVorlage.getDefaultExportFilename(),
+					Locale.GERMAN,
+					gemeinde.getMandant()) + ".xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	@Nonnull
@@ -263,9 +268,11 @@ public class ReportMahlzeitenServiceBean extends AbstractReportServiceBean imple
 			row.setSozialhilfeBezueger(sozialhilfeBezueger);
 
 			// IBAN-Nummer
-			if (gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten() != null) {
-				IBAN iban = gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten().getIban();
-				row.setIban(iban.getIban());
+			final Auszahlungsdaten auszahlungsdatenMahlzeiten =
+				gueltigeGesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenMahlzeiten();
+			if (auszahlungsdatenMahlzeiten != null) {
+				// "IBAN" ist entweder die tatsaechliche IBAN oder die InfomaKontonummer
+				row.setIban(auszahlungsdatenMahlzeiten.getIbanOrInfomaKreditorennummer());
 			}
 		}
 

@@ -17,13 +17,15 @@ package ch.dvbern.ebegu.enums;
 
 import java.util.Locale;
 
+import ch.dvbern.ebegu.util.Constants;
+
 /**
  * Enum fuer die Sprache
  */
 public enum Sprache {
 
-	DEUTSCH(Locale.GERMAN),
-	FRANZOESISCH(Locale.FRENCH);
+	DEUTSCH(Constants.DEUTSCH_LOCALE),
+	FRANZOESISCH(Constants.FRENCH_LOCALE);
 
 	private Locale locale;
 

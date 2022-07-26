@@ -259,7 +259,7 @@ public final class EbeguUtil {
 		if (wizardStepName == null || wizardStepName.isFinSitWizardStepName()) {
 			if (!isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller1()
 				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA(), gesuch.getFinSitTyp())) {
+				.getFinanzielleSituationJA(), gesuch.getFinSitTyp(), gesuch)) {
 				return false;
 			}
 			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
@@ -273,7 +273,7 @@ public final class EbeguUtil {
 					(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null
 						&& !isFinanzielleSituationVollstaendig(gesuch.getGesuchsteller2()
 						.getFinanzielleSituationContainer()
-						.getFinanzielleSituationJA(), gesuch.getFinSitTyp())))
+						.getFinanzielleSituationJA(), gesuch.getFinSitTyp(), gesuch)))
 			) {
 				return false;
 			}
@@ -304,7 +304,7 @@ public final class EbeguUtil {
 				}
 				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())) {
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp(), gesuch)) {
 					return false;
 				}
 				if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
@@ -317,7 +317,7 @@ public final class EbeguUtil {
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
 					&& !isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp())
+					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp(), gesuch)
 				) {
 					return false;
 				}
@@ -334,14 +334,14 @@ public final class EbeguUtil {
 				}
 				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
 					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp())) {
+					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp(), gesuch)) {
 					return false;
 				}
 				if (gesuch.getGesuchsteller2() != null
 					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
 					return isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
 						.getEinkommensverschlechterungContainer()
-						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp());
+						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp(), gesuch);
 				}
 			}
 		}
@@ -351,7 +351,8 @@ public final class EbeguUtil {
 
 	private static boolean isFinanzielleSituationVollstaendig(
 		@Nonnull FinanzielleSituation finanzielleSituation,
-		FinanzielleSituationTyp finSitTyp) {
+		FinanzielleSituationTyp finSitTyp,
+		@Nonnull Gesuch gesuch) {
 		boolean valid = false;
 		// Solothurn hat nur einen Teil von seiner Feldern in der Abstract Methode so wir muessen
 		if (finSitTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
@@ -362,7 +363,7 @@ public final class EbeguUtil {
 					&& finanzielleSituation.getAbzuegeKinderAusbildung() != null
 					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
 		} else {
-			valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp);
+			valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp, gesuch);
 		}
 
 		if (!valid) {
@@ -381,7 +382,8 @@ public final class EbeguUtil {
 
 	private static boolean isEinkommensverschlechterungVollstaendig(
 		@Nonnull Einkommensverschlechterung einkommensverschlechterung,
-		FinanzielleSituationTyp finSitTyp) {
+		FinanzielleSituationTyp finSitTyp,
+		@Nonnull Gesuch gesuch) {
 		if (finSitTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
 			return einkommensverschlechterung.getBruttolohnAbrechnung1() != null
 				&& einkommensverschlechterung.getBruttolohnAbrechnung2() != null
@@ -390,13 +392,33 @@ public final class EbeguUtil {
 				&& einkommensverschlechterung.getNettoVermoegen() != null;
 		}
 
-		return isAbstractFinanzielleSituationVollstaendig(einkommensverschlechterung, finSitTyp);
+		return isAbstractFinanzielleSituationVollstaendig(einkommensverschlechterung, finSitTyp, gesuch);
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // FalsePositive: Die Methode ist benutzt
 	private static boolean isAbstractFinanzielleSituationVollstaendig(
 		@Nonnull AbstractFinanzielleSituation finanzielleSituation,
-		FinanzielleSituationTyp finSitTyp) {
+		FinanzielleSituationTyp finSitTyp,
+		@Nonnull Gesuch gesuch) {
+		if (finSitTyp.equals(FinanzielleSituationTyp.LUZERN)) {
+			return isInfomaZahlungenVollstaendig(gesuch) && finanzielleSituation.isVollstaendig(finSitTyp);
+		}
 		return finanzielleSituation.isVollstaendig(finSitTyp);
+	}
+
+	private static boolean isInfomaZahlungenVollstaendig(Gesuch gesuch) {
+		boolean valid = true;
+		if(gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt()){
+			valid = gesuch.getFamiliensituationContainer() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getInfomaBankcode() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getInfomaKreditorennummer() != null;
+		}
+		return valid && gesuch.getFamiliensituationContainer() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getIban() != null;
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {

@@ -35,9 +35,12 @@ import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/T
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {TSOeffnungszeitenTagesschule} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
+import {TSOeffnungszeitenTagesschuleTyp} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschuleTyp';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
@@ -79,6 +82,12 @@ export class TagesschulenAngabenComponent {
 
     public autoFilled: boolean = false;
     public isInstiUser: boolean = false;
+
+    // Oeffnungszeiten:
+    public fruehbetreuungOeffnungszeiten: TSOeffnungszeitenTagesschule;
+    public mittagsbetreuungOeffnungszeiten: TSOeffnungszeitenTagesschule;
+    public nachmittagsbetreuung1Oeffnungszeiten: TSOeffnungszeitenTagesschule;
+    public nachmittagsbetreuung2Oeffnungszeiten: TSOeffnungszeitenTagesschule;
 
     public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -134,10 +143,38 @@ export class TagesschulenAngabenComponent {
             this.isInstiUser = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.unsavedChangesService.registerForm(this.form);
+            this.fruehbetreuungOeffnungszeiten =
+                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.FRUEHBETREUUNG);
+            this.mittagsbetreuungOeffnungszeiten =
+                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.MITTAGSBETREUUNG);
+            this.nachmittagsbetreuung1Oeffnungszeiten =
+                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_1);
+            this.nachmittagsbetreuung2Oeffnungszeiten =
+                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_2);
+            this.initOeffnungszeiten();
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR'));
         });
+    }
+
+    private initOeffnungszeiten(): void {
+        if (EbeguUtil.isNullOrUndefined(this.fruehbetreuungOeffnungszeiten)) {
+            this.fruehbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
+            this.fruehbetreuungOeffnungszeiten.type = TSOeffnungszeitenTagesschuleTyp.FRUEHBETREUUNG;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.mittagsbetreuungOeffnungszeiten)) {
+            this.mittagsbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
+            this.mittagsbetreuungOeffnungszeiten.type = TSOeffnungszeitenTagesschuleTyp.MITTAGSBETREUUNG;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.nachmittagsbetreuung1Oeffnungszeiten)) {
+            this.nachmittagsbetreuung1Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
+            this.nachmittagsbetreuung1Oeffnungszeiten.type = TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_1;
+        }
+        if (EbeguUtil.isNullOrUndefined(this.nachmittagsbetreuung2Oeffnungszeiten)) {
+            this.nachmittagsbetreuung2Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
+            this.nachmittagsbetreuung2Oeffnungszeiten.type = TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_2;
+        }
     }
 
     // tslint:disable-next-line:cognitive-complexity
@@ -232,6 +269,10 @@ export class TagesschulenAngabenComponent {
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
                 numberValidator(ValidationType.POSITIVE_INTEGER),
             ],
+            anzahlEingeschriebeneKinderVolksschulangebot: [
+                latsAngabenInstiution?.anzahlEingeschriebeneKinderVolksschulangebot,
+                numberValidator(ValidationType.POSITIVE_INTEGER),
+            ],
             durchschnittKinderProTagFruehbetreuung: [
                 latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
                 Validators.compose([
@@ -312,12 +353,7 @@ export class TagesschulenAngabenComponent {
             );
             return;
         }
-
-        if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
-            this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
-        } else {
-            this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
-        }
+        this.setFormValuesToAngaben();
         this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
             this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
@@ -328,6 +364,33 @@ export class TagesschulenAngabenComponent {
         }, error => {
             this.manageSaveErrorCodes(error);
         });
+    }
+
+    private setFormValuesToAngaben(): void {
+        if (this.latsAngabenInstitutionContainer.isAtLeastInBearbeitungGemeinde()) {
+            this.setFormValuesToAngabenKorrektur();
+        } else {
+           this.setFormValuesToAngabenDeklaration();
+        }
+    }
+
+    private getOeffnungszeitenArray(): TSOeffnungszeitenTagesschule[] {
+        return [
+            this.fruehbetreuungOeffnungszeiten,
+            this.mittagsbetreuungOeffnungszeiten,
+            this.nachmittagsbetreuung1Oeffnungszeiten,
+            this.nachmittagsbetreuung2Oeffnungszeiten,
+        ];
+    }
+
+    private setFormValuesToAngabenKorrektur(): void {
+        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = this.getOeffnungszeitenArray();
+    }
+
+    private setFormValuesToAngabenDeklaration(): void {
+        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.latsAngabenInstitutionContainer.angabenDeklaration.oeffnungszeiten = this.getOeffnungszeitenArray();
     }
 
     public async onFreigeben(): Promise<void> {
@@ -343,7 +406,7 @@ export class TagesschulenAngabenComponent {
         if (!await this.confirmDialog('LATS_FRAGE_INSTITUTION_FORMULAR_FREIGEBEN')) {
             return;
         }
-        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.setFormValuesToAngabenDeklaration();
 
         this.tagesschulenAngabenRS.tagesschuleAngabenFreigeben(this.latsAngabenInstitutionContainer)
             .subscribe(freigegeben => {
@@ -386,7 +449,7 @@ export class TagesschulenAngabenComponent {
             return;
         }
 
-        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        this.setFormValuesToAngabenKorrektur();
 
         this.tagesschulenAngabenRS.tagesschuleAngabenGeprueft(this.latsAngabenInstitutionContainer)
             .subscribe(geprueft => {
@@ -438,6 +501,8 @@ export class TagesschulenAngabenComponent {
         this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.form.get('anzahlEingeschriebeneKinderVolksschulangebot')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
         // C
@@ -563,6 +628,8 @@ export class TagesschulenAngabenComponent {
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
         this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+            .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.form.get('anzahlEingeschriebeneKinderVolksschulangebot')
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
         this.form.get('schuleAufBasisOrganisatorischesKonzept').clearValidators();

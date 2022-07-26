@@ -25,6 +25,7 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSOeffnungszeitenTagesschule} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
@@ -88,6 +89,10 @@ describe('TagesschulenAngabenComponent', () => {
         );
         fixture = TestBed.createComponent(TagesschulenAngabenComponent);
         component = fixture.componentInstance;
+        component.fruehbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
+        component.mittagsbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();
+        component.nachmittagsbetreuung1Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
+        component.nachmittagsbetreuung2Oeffnungszeiten = new TSOeffnungszeitenTagesschule();
         fixture.detectChanges();
     });
 

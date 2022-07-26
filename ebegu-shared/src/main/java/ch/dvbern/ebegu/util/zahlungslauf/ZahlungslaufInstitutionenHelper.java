@@ -61,7 +61,7 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 	@Nonnull
 	@Override
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		return zeitabschnitt.getZahlungsstatus();
+		return zeitabschnitt.getZahlungsstatusInstitution();
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungsZeitabschnittZahlungsstatus status
 	) {
-		zeitabschnitt.setZahlungsstatus(status);
+		zeitabschnitt.setZahlungsstatusInstitution(status);
 	}
 
 	@Nonnull
@@ -117,8 +117,8 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 					oldSameZeitabschnitt.getBgCalculationResultGemeinde());
 			}
 		} else { // no Zeitabschnitt with the same Gueltigkeit has been found, so it must be different
-			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlteVerguenstigung(false);
-			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlteVerguenstigung(false);
+			newZeitabschnitt.getBgCalculationInputAsiv().setSameAusbezahlterBetragInstitution(false);
+			newZeitabschnitt.getBgCalculationInputGemeinde().setSameAusbezahlterBetragInstitution(false);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 		@Nonnull BGCalculationResult resultNeu,
 		@Nonnull BGCalculationResult resultBisher
 	) {
-		inputNeu.setSameAusbezahlteVerguenstigung(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
+		inputNeu.setSameAusbezahlterBetragInstitution(MathUtil.isSame(resultNeu.getVerguenstigung(), resultBisher.getVerguenstigung()));
 	}
 
 	@Override
@@ -138,7 +138,6 @@ public class ZahlungslaufInstitutionenHelper implements ZahlungslaufHelper {
 
 	@Override
 	public boolean isAuszuzahlen(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		// An Institutionen wird immer ausbezahlt
-		return true;
+		return !zeitabschnitt.isAuszahlungAnEltern();
 	}
 }

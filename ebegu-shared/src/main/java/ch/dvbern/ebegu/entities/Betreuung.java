@@ -285,6 +285,8 @@ public class Betreuung extends AbstractPlatz {
 		return this.isSame(other, false, false);
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other, boolean inklAbwesenheiten, boolean inklStatus) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -294,9 +296,6 @@ public class Betreuung extends AbstractPlatz {
 			return false;
 		}
 		if (!super.isSame(other)) {
-			return false;
-		}
-		if (!(other instanceof Betreuung)) {
 			return false;
 		}
 		final Betreuung otherBetreuung = (Betreuung) other;
@@ -461,8 +460,8 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 
-	public List<BetreuungspensumAbweichung> fillAbweichungen() {
-		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen();
+	public List<BetreuungspensumAbweichung> fillAbweichungen(@Nonnull BigDecimal multiplier) {
+		List<BetreuungspensumAbweichung> initialAbweichungen = initAbweichungen(multiplier);
 
 		for (BetreuungspensumAbweichung abweichung : initialAbweichungen) {
 			extractOriginalPensum(this.getBetreuungspensumContainers(), abweichung);
@@ -505,7 +504,7 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
-	private List<BetreuungspensumAbweichung> initAbweichungen() {
+	private List<BetreuungspensumAbweichung> initAbweichungen(@Nonnull BigDecimal multiplier) {
 		Gesuchsperiode gp = this.extractGesuchsperiode();
 		LocalDate from = gp.getGueltigkeit().getGueltigAb();
 		LocalDate to = gp.getGueltigkeit().getGueltigBis();
@@ -514,14 +513,16 @@ public class Betreuung extends AbstractPlatz {
 		Set<BetreuungspensumAbweichung> abweichungenFromDb = this.getBetreuungspensumAbweichungen();
 
 		while (from.isBefore(to)) {
-
+			BetreuungspensumAbweichung abweichung;
 			// check if we already stored something in the database
 			if (abweichungenFromDb != null) {
 				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
-				abweichungen.add(existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien())));
+				abweichung = existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
 			} else {
-				abweichungen.add(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
+				abweichung = createEmptyAbweichung(from, this.isAngebotTagesfamilien());
 			}
+			abweichung.setMultiplier(multiplier);
+			abweichungen.add(abweichung);
 			from = from.plusMonths(1);
 		}
 

@@ -110,4 +110,10 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 		query.select(root);
 		return persistence.getCriteriaResults(query);
 	}
+
+	@Override
+	public void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, long nextNumber) {
+		mandant.setNextInfomaBelegnummer(nextNumber);
+		persistence.merge(mandant);
+	}
 }

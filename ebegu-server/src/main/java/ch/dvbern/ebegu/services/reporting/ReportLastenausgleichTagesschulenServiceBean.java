@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen.LastenausgleichGemeindenDataRow;
@@ -40,12 +42,9 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-
-import static java.util.Objects.requireNonNull;
 
 @Stateless
 @Local(ReportLastenausgleichTagesschulenService.class)
@@ -65,31 +64,32 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 
 	@Nonnull
 	@Override
-	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException, IOException {
 
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN;
-		InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
-		requireNonNull(is, VORLAGE + vorlage.getTemplatePath() + NICHT_GEFUNDEN);
+		try (
+			InputStream is = ReportServiceBean.class.getResourceAsStream(vorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, vorlage);
+		) {
+			Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
+			Sheet secondSheet = workbook.getSheet(TAGESSCHULEN_SHEET_NAME);
 
-		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
-		Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
-		Sheet secondSheet = workbook.getSheet(TAGESSCHULEN_SHEET_NAME);
+			List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
 
-		List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
+			ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
+			mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
+			mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
+			lastenausgleichTagesschulenExcelConverter.applyAutoSize(sheet);
+			lastenausgleichTagesschulenExcelConverter.applyAutoSize(secondSheet);
 
-		ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
-		mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
-		mergeData(secondSheet, excelMergerDTO, vorlage.getMergeFields());
-		lastenausgleichTagesschulenExcelConverter.applyAutoSize(sheet);
-		lastenausgleichTagesschulenExcelConverter.applyAutoSize(secondSheet);
+			byte[] bytes = createWorkbook(workbook);
 
-		byte[] bytes = createWorkbook(workbook);
-
-		return fileSaverService.save(
-			bytes,
-			"LastenausgleichTagesschulen.xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
+			return fileSaverService.save(
+				bytes,
+				"LastenausgleichTagesschulen.xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
+		}
 	}
 
 	private List<LastenausgleichGemeindenDataRow> getReportDataLastenausgleichTagesschulen() {
@@ -98,9 +98,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 			lastenausgleichTagesschuleAngabenGemeindeContainerList =
 			lastenausgleichTagesschuleAngabenGemeindeService.getAllLastenausgleicheTagesschulen();
 		return lastenausgleichTagesschuleAngabenGemeindeContainerList.stream()
-			.filter(lastenausgleichTagesschuleAngabenGemeindeContainer -> lastenausgleichTagesschuleAngabenGemeindeContainer
-				.getStatus()
-				.atLeastInPruefungKanton()).map(
+			.filter(LastenausgleichTagesschuleAngabenGemeindeContainer::isAtLeastInPruefungKantonOrZurueckgegeben).map(
 				lastenausgleichTagesschuleAngabenGemeindeContainer -> {
 					LastenausgleichGemeindenDataRow dataRow = new LastenausgleichGemeindenDataRow();
 					dataRow.setNameGemeinde(lastenausgleichTagesschuleAngabenGemeindeContainer.getGemeinde().getName());
@@ -117,11 +115,11 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 					dataRow.setAlleAnmeldungenKibon(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst());
 					dataRow.setBetreuungsstundenPrognose(lastenausgleichTagesschuleAngabenGemeindeContainer.getBetreuungsstundenPrognose());
 					//wir nehmen die korrektur als in pruefung kanton mindestens
-					LastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeindeKorrektur =
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
+					LastenausgleichTagesschuleAngabenGemeinde lastenausgleichTagesschuleAngabenGemeinde =
+						getLastenausgleichTagesschuleAngabenBasedOnStatus(lastenausgleichTagesschuleAngabenGemeindeContainer);
 
-					mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(
-						lastenausgleichTagesschuleAngabenGemeindeKorrektur,
+					mapLastenausgleichTagesschuleAngabenGemeindeToDataRow(
+						lastenausgleichTagesschuleAngabenGemeinde,
 						dataRow);
 
 					lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenInstitutionContainers().forEach(
@@ -145,6 +143,15 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 					return dataRow;
 				}
 			).collect(Collectors.toList());
+	}
+
+	// falls der Antrag zurück an die Gemeinde gegeben wurde, ist dieser zwar in der Statistik sichtbar, allerdings
+	// sollen dort nur die Werte der Deklaration erscheinen. Ansonsten returnieren wir die Angaben Korrektur
+	private LastenausgleichTagesschuleAngabenGemeinde getLastenausgleichTagesschuleAngabenBasedOnStatus(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) {
+		if (container.getStatus() == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE) {
+			return container.getAngabenDeklaration();
+		}
+		return container.getAngabenKorrektur();
 	}
 
 	private void mapLastenausgleichTagesschuleAngabenInstitutionKorrekturToDataRow(
@@ -173,40 +180,40 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBemerkungenTagesschule(angabenTagesschuleKorrektur.getBemerkungen());
 	}
 
-	private void mapLastenausgleichTagesschuleAngabenGemeindeKorrekturToDataRow(
-		@Nullable LastenausgleichTagesschuleAngabenGemeinde angabenGemeindeKorrektur,
+	private void mapLastenausgleichTagesschuleAngabenGemeindeToDataRow(
+		@Nullable LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde,
 		LastenausgleichGemeindenDataRow dataRow) {
-		if (angabenGemeindeKorrektur == null) {
+		if (angabenGemeinde == null) {
 			return;
 		}
-		dataRow.setBedarfAbgeklaert(angabenGemeindeKorrektur.getBedarfBeiElternAbgeklaert());
-		dataRow.setFerienbetreuung(angabenGemeindeKorrektur.getAngebotFuerFerienbetreuungVorhanden());
-		dataRow.setZugangAlle(angabenGemeindeKorrektur.getAngebotVerfuegbarFuerAlleSchulstufen());
-		dataRow.setGrundZugangEingeschraenkt(angabenGemeindeKorrektur.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
-		dataRow.setBetreuungsstundenFaktor1(angabenGemeindeKorrektur.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
-		dataRow.setBetreuungsstundenFaktor15(angabenGemeindeKorrektur.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
-		dataRow.setBetreuungsstundenPaed(angabenGemeindeKorrektur.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
-		dataRow.setBetreuungsstundenNichtPaed(angabenGemeindeKorrektur.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+		dataRow.setBedarfAbgeklaert(angabenGemeinde.getBedarfBeiElternAbgeklaert());
+		dataRow.setFerienbetreuung(angabenGemeinde.getAngebotFuerFerienbetreuungVorhanden());
+		dataRow.setZugangAlle(angabenGemeinde.getAngebotVerfuegbarFuerAlleSchulstufen());
+		dataRow.setGrundZugangEingeschraenkt(angabenGemeinde.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
+		dataRow.setBetreuungsstundenFaktor1(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
+		dataRow.setBetreuungsstundenFaktor15(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		dataRow.setBetreuungsstundenPaed(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
+		dataRow.setBetreuungsstundenNichtPaed(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 
-		dataRow.setElterngebuehrenBetreuung(angabenGemeindeKorrektur.getEinnahmenElterngebuehren());
-		dataRow.setSchliessungCovid(angabenGemeindeKorrektur.getTagesschuleTeilweiseGeschlossen());
-		dataRow.setElterngebuehrenCovid(angabenGemeindeKorrektur.getRueckerstattungenElterngebuehrenSchliessung());
-		dataRow.setErsteRate(angabenGemeindeKorrektur.getErsteRateAusbezahlt());
-		dataRow.setGesamtkosten(angabenGemeindeKorrektur.getGesamtKostenTagesschule());
-		dataRow.setElterngebuehrenVerpflegung(angabenGemeindeKorrektur.getEinnnahmenVerpflegung());
+		dataRow.setElterngebuehrenBetreuung(angabenGemeinde.getEinnahmenElterngebuehren());
+		dataRow.setSchliessungCovid(angabenGemeinde.getTagesschuleTeilweiseGeschlossen());
+		dataRow.setElterngebuehrenCovid(angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
+		dataRow.setErsteRate(angabenGemeinde.getErsteRateAusbezahlt());
+		dataRow.setGesamtkosten(angabenGemeinde.getGesamtKostenTagesschule());
+		dataRow.setElterngebuehrenVerpflegung(angabenGemeinde.getEinnnahmenVerpflegung());
 
-		dataRow.setEinnahmenDritte(angabenGemeindeKorrektur.getEinnahmenSubventionenDritter());
-		dataRow.setUeberschussVorjahr(angabenGemeindeKorrektur.getUeberschussErzielt());
-		dataRow.setUeberschussVerwendung(angabenGemeindeKorrektur.getUeberschussVerwendung());
-		dataRow.setBemerkungenKosten(angabenGemeindeKorrektur.getBemerkungenWeitereKostenUndErtraege());
+		dataRow.setEinnahmenDritte(angabenGemeinde.getEinnahmenSubventionenDritter());
+		dataRow.setUeberschussVorjahr(angabenGemeinde.getUeberschussErzielt());
+		dataRow.setUeberschussVerwendung(angabenGemeinde.getUeberschussVerwendung());
+		dataRow.setBemerkungenKosten(angabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 
-		dataRow.setBetreuungsstundenDokumentiert(angabenGemeindeKorrektur.getBetreuungsstundenDokumentiertUndUeberprueft());
-		dataRow.setElterngebuehrenTSV(angabenGemeindeKorrektur.getElterngebuehrenGemaessVerordnungBerechnet());
-		dataRow.setElterngebuehrenBelege(angabenGemeindeKorrektur.getEinkommenElternBelegt());
-		dataRow.setElterngebuehrenMaximaltarif(angabenGemeindeKorrektur.getMaximalTarif());
-		dataRow.setBetreuungPaedagogisch(angabenGemeindeKorrektur.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
-		dataRow.setAusbildungBelegt(angabenGemeindeKorrektur.getAusbildungenMitarbeitendeBelegt());
-		dataRow.setBemerkungenGemeinde(angabenGemeindeKorrektur.getBemerkungen());
+		dataRow.setBetreuungsstundenDokumentiert(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		dataRow.setElterngebuehrenTSV(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		dataRow.setElterngebuehrenBelege(angabenGemeinde.getEinkommenElternBelegt());
+		dataRow.setElterngebuehrenMaximaltarif(angabenGemeinde.getMaximalTarif());
+		dataRow.setBetreuungPaedagogisch(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		dataRow.setAusbildungBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		dataRow.setBemerkungenGemeinde(angabenGemeinde.getBemerkungen());
 
 		// dataRow.setBetreuungsstundenPrognoseKibon(); berechnete Wert
 	}

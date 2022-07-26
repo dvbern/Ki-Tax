@@ -323,7 +323,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
      */
     public areThereOnlyFerieninsel(): boolean {
         return this.areThereOnlyAngeboteOfType([TSBetreuungsangebotTyp.FERIENINSEL])
-            && !this.areThereNoBetreuungenAtAll;
+            && !this.areThereNoBetreuungenAtAll();
     }
 
     /**

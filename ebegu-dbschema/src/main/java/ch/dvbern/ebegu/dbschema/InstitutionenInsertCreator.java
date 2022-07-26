@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -74,29 +75,33 @@ public class InstitutionenInsertCreator {
 	}
 
 	private void readExcel() throws IOException {
-		InputStream resourceAsStream = InstitutionenInsertCreator.class.getResourceAsStream(INPUT_FILE);
-		XSSFWorkbook myWorkBook = new XSSFWorkbook(resourceAsStream);
-		XSSFSheet mySheet = myWorkBook.getSheetAt(0);
-		Iterator<Row> rowIterator = mySheet.iterator();
-		rowIterator.next(); // Titelzeile
-		while (rowIterator.hasNext()) {
-			Row row = rowIterator.next();
-			readRow(row);
+		try (
+			InputStream resourceAsStream = InstitutionenInsertCreator.class.getResourceAsStream(INPUT_FILE);
+			XSSFWorkbook myWorkBook = new XSSFWorkbook(Objects.requireNonNull(resourceAsStream));
+		) {
+			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+			Iterator<Row> rowIterator = mySheet.iterator();
+			rowIterator.next(); // Titelzeile
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+				readRow(row);
+			}
+			for (String s : insertTraegerschaften) {
+				println(s);
+			}
+			for (String s : insertAdressen) {
+				println(s);
+			}
+			for (String s : insertInstitutionen) {
+				println(s);
+			}
+			for (String s : insertInstitutionsStammdaten) {
+				println(s);
+			}
+			printWriter.flush();
+		} finally {
+			printWriter.close();
 		}
-		for (String s : insertTraegerschaften) {
-			println(s);
-		}
-		for (String s : insertAdressen) {
-			println(s);
-		}
-		for (String s : insertInstitutionen) {
-			println(s);
-		}
-		for (String s : insertInstitutionsStammdaten) {
-			println(s);
-		}
-		printWriter.flush();
-		printWriter.close();
 	}
 
 	@SuppressWarnings("OverlyComplexMethod")
@@ -326,7 +331,7 @@ public class InstitutionenInsertCreator {
 	}
 
 	// this class is not really a part of the software itself. For this reason it is not important that some code is duplicated
-	@SuppressWarnings("Duplicates")
+	@SuppressWarnings({"Duplicates", "PMD.CloseResource"})
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			try {

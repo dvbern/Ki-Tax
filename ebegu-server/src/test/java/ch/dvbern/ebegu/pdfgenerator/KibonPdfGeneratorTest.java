@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,24 +50,28 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
-import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.ebegu.util.TestUtils;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Erstellt pro Brief ein Exemplar für Einzelpersonen und Paare. Jeweils das Beispiel für Alleinstehende wird als Draft
  * generiert.
  */
 @SuppressWarnings("JUnitTestMethodWithNoAssertions") // some tests will check that the file is created. no assertion is needed
-public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
+public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 
 	private GemeindeStammdaten stammdaten;
 	private List<DokumentGrund> benoetigteUnterlagen;
@@ -79,18 +84,20 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
 
-	private String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
+	private final String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
 
-	private boolean stadtBernAsivConfiguered = false;
+	private static final boolean STADT_BERN_ASIV_CONFIGUERED = false;
 
-	private TagesschuleBernRechner rechner = new TagesschuleBernRechner(Collections.emptyList());
+	private final TagesschuleBernRechner rechner = new TagesschuleBernRechner(Collections.emptyList());
 
 
-	@Before
+	@BeforeEach
 	public void init() throws IOException {
-		final byte[] gemeindeLogo = IOUtils.toByteArray(KibonPdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
+		final InputStream inputStream = KibonPdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png");
+		assertNotNull(inputStream);
+		final byte[] gemeindeLogo = IOUtils.toByteArray(inputStream);
 		stammdaten = TestDataUtil.createGemeindeWithStammdaten();
-		stammdaten.setLogoContent(gemeindeLogo);
+		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
 		Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
 		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
@@ -110,172 +117,206 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_alleinstehend, LocalDate.now().plusDays(20), 4);
 		mahnung_2_Verheiratet =
 			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_verheiratet, LocalDate.now().plusDays(20), 4);
+
+		// Verzeichnis pro Mandant erstellen
 		FileUtils.forceMkdir(new File(pfad));
+		for (MandantIdentifier mandant : MandantIdentifier.values()) {
+			FileUtils.forceMkdir(new File(pfad + '/' + mandant.name()));
+		}
 
 		gesuch_tagesschule = TestDataUtil.createTestfall11_SchulamtOnly();
 		gesuch_tagesschule.getDossier().setVerantwortlicherTS(defaultBenutzer);
 	}
 
-	private void createFreigabequittung(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws InvoiceGeneratorException, IOException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void freigabequittungTest(@Nonnull MandantIdentifier mandant) throws IOException, InvoiceGeneratorException {
+		createFreigabequittung(mandant, gesuch_alleinstehend, Sprache.DEUTSCH, "Freigabequittung_alleinstehend_de.pdf");
+		createFreigabequittung(mandant, gesuch_alleinstehend, Sprache.FRANZOESISCH,  "Freigabequittung_alleinstehend_fr.pdf");
+		createFreigabequittung(mandant, gesuch_verheiratet, Sprache.DEUTSCH,  "Freigabequittung_verheiratet_de.pdf");
+		createFreigabequittung(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH,  "Freigabequittung_verheiratet_fr.pdf");
+	}
+
+	private void createFreigabequittung(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws InvoiceGeneratorException, IOException {
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AbstractFreigabequittungPdfGenerator
 				generator = new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
 		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
-	@Test
-	public void begleitschreibenTest() throws InvoiceGeneratorException, IOException {
-		createBegleitschreiben(gesuch_alleinstehend, Sprache.DEUTSCH, "Begleitschreiben_alleinstehend_de.pdf");
-		createBegleitschreiben(gesuch_alleinstehend, Sprache.FRANZOESISCH, "Begleitschreiben_alleinstehend_fr.pdf");
-		createBegleitschreiben(gesuch_verheiratet, Sprache.DEUTSCH, "Begleitschreiben_verheiratet_de.pdf");
-		createBegleitschreiben(gesuch_verheiratet, Sprache.FRANZOESISCH, "Begleitschreiben_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void musterPdfTest(@Nonnull MandantIdentifier mandant) throws IOException, InvoiceGeneratorException {
+		createMusterPdf(mandant);
 	}
 
-	private void createBegleitschreiben(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+	public void createMusterPdf(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		assertNotNull(gesuch_alleinstehend.getGesuchsteller1());
+		final MusterPdfGenerator generator = new MusterPdfGenerator(stammdaten);
+		generateTestDocument(generator, mandant, "MusterPdf");
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void begleitschreibenTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createBegleitschreiben(mandant, gesuch_alleinstehend, Sprache.DEUTSCH, "Begleitschreiben_alleinstehend_de.pdf");
+		createBegleitschreiben(mandant, gesuch_alleinstehend, Sprache.FRANZOESISCH,  "Begleitschreiben_alleinstehend_fr.pdf");
+		createBegleitschreiben(mandant, gesuch_verheiratet, Sprache.DEUTSCH,  "Begleitschreiben_verheiratet_de.pdf");
+		createBegleitschreiben(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH,  "Begleitschreiben_verheiratet_fr.pdf");
+	}
+
+	private void createBegleitschreiben(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final BegleitschreibenPdfGenerator generator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
-		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.DEUTSCH, "Verfügung_alleinstehend_de.pdf");
-		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "Verfügung_alleinstehend_fr.pdf");
-		createNormaleVerfuegung(gesuch_verheiratet, false, Sprache.DEUTSCH, "Verfügung_verheiratet_de.pdf");
-		createNormaleVerfuegung(gesuch_verheiratet, false, Sprache.FRANZOESISCH, "Verfügung_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void normaleVerfuegungTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createNormaleVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.DEUTSCH, "Verfügung_alleinstehend_de.pdf");
+		createNormaleVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "Verfügung_alleinstehend_fr.pdf");
+		createNormaleVerfuegung(mandant, gesuch_verheiratet, false, Sprache.DEUTSCH, "Verfügung_verheiratet_de.pdf");
+		createNormaleVerfuegung(mandant, gesuch_verheiratet, false, Sprache.FRANZOESISCH, "Verfügung_verheiratet_fr.pdf");
 	}
 
-	private void createNormaleVerfuegung(@Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createNormaleVerfuegung(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		evaluator.evaluate(gesuch, getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, TestUtils.getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void keinAnspruchVerfuegungTest() throws InvoiceGeneratorException, IOException {
-		createKeinAnspruchVerfuegung(gesuch_alleinstehend, true, Sprache.DEUTSCH, "KeinAnspruchVerfügung_alleinstehend_de.pdf");
-		createKeinAnspruchVerfuegung(gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "KeinAnspruchVerfügung_alleinstehend_fr.pdf");
-		createKeinAnspruchVerfuegung(gesuch_verheiratet, false, Sprache.DEUTSCH, "KeinAnspruchVerfügung_verheiratet_de.pdf");
-		createKeinAnspruchVerfuegung(gesuch_verheiratet, false, Sprache.FRANZOESISCH, "KeinAnspruchVerfügung_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void keinAnspruchVerfuegungTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createKeinAnspruchVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.DEUTSCH, "KeinAnspruchVerfügung_alleinstehend_de.pdf");
+		createKeinAnspruchVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "KeinAnspruchVerfügung_alleinstehend_fr.pdf");
+		createKeinAnspruchVerfuegung(mandant, gesuch_verheiratet, false, Sprache.DEUTSCH, "KeinAnspruchVerfügung_verheiratet_de.pdf");
+		createKeinAnspruchVerfuegung(mandant, gesuch_verheiratet, false, Sprache.FRANZOESISCH, "KeinAnspruchVerfügung_verheiratet_fr.pdf");
 	}
 
-	private void createKeinAnspruchVerfuegung(@Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createKeinAnspruchVerfuegung(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void nichtEintretenVerfuegungTest() throws InvoiceGeneratorException, IOException {
-		createNichtEintretenVerfuegung(gesuch_alleinstehend, true, Sprache.DEUTSCH, "NichtEintretenVerfügung_alleinstehend_de.pdf");
-		createNichtEintretenVerfuegung(gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "NichtEintretenVerfügung_alleinstehend_fr.pdf");
-		createNichtEintretenVerfuegung(gesuch_verheiratet, false, Sprache.DEUTSCH, "NichtEintretenVerfügung_verheiratet_de.pdf");
-		createNichtEintretenVerfuegung(gesuch_verheiratet, false, Sprache.FRANZOESISCH, "NichtEintretenVerfügung_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void nichtEintretenVerfuegungTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createNichtEintretenVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.DEUTSCH, "NichtEintretenVerfügung_alleinstehend_de.pdf");
+		createNichtEintretenVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "NichtEintretenVerfügung_alleinstehend_fr.pdf");
+		createNichtEintretenVerfuegung(mandant, gesuch_verheiratet, false, Sprache.DEUTSCH, "NichtEintretenVerfügung_verheiratet_de.pdf");
+		createNichtEintretenVerfuegung(mandant, gesuch_verheiratet, false, Sprache.FRANZOESISCH, "NichtEintretenVerfügung_verheiratet_fr.pdf");
 	}
 
-	private void createNichtEintretenVerfuegung(@Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale,
+	private void createNichtEintretenVerfuegung(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, boolean entwurfMitKontingentierung, @Nonnull Sprache locale,
 		@Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, stadtBernAsivConfiguered, false);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void finanzielleSituationTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
 		// FinSit Typ Bern basic
-		createFinanzielleSituation(gesuch_alleinstehend, Sprache.DEUTSCH, "FinanzielleSituation_alleinstehend_de.pdf");
-		createFinanzielleSituation(gesuch_alleinstehend, Sprache.FRANZOESISCH, "FinanzielleSituation_alleinstehend_fr.pdf");
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_de.pdf");
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fr.pdf");
+		createFinanzielleSituation(mandant, gesuch_alleinstehend, Sprache.DEUTSCH, "FinanzielleSituation_alleinstehend_de.pdf");
+		createFinanzielleSituation(mandant, gesuch_alleinstehend, Sprache.FRANZOESISCH, "FinanzielleSituation_alleinstehend_fr.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_de.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fr.pdf");
 		gesuch_verheiratet.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
 		// FinSit Typ Bern FKJV, FKJV Feldern sind null
-		assert gesuch_verheiratet.getGesuchsteller1() != null;
-		assert gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+		assertNotNull(gesuch_verheiratet.getGesuchsteller1());
+		assertNotNull(gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_de.pdf");
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_fr.pdf");
-		assert gesuch_verheiratet.getGesuchsteller2() != null;
-		assert gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer() != null;
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_de.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_fr.pdf");
+		assertNotNull(gesuch_verheiratet.getGesuchsteller2());
+		assertNotNull(gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_de.pdf");
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_fr.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_de.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_fr.pdf");
 		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(null);
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_de.pdf");
-		createFinanzielleSituation(gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_fr.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_de.pdf");
+		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_fr.pdf");
 	}
 
-	private void createFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createFinanzielleSituation(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
 			new FinanzielleSituationBernRechner());
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void mahnung1Test() throws InvoiceGeneratorException, IOException {
-		createMahnung1(mahnung_1_Alleinstehend, Sprache.DEUTSCH, "Mahnung1_alleinstehend_de.pdf");
-		createMahnung1(mahnung_1_Alleinstehend, Sprache.FRANZOESISCH, "Mahnung1_alleinstehend_fr.pdf");
-		createMahnung1(mahnung_1_Verheiratet, Sprache.DEUTSCH, "Mahnung1_verheiratet_de.pdf");
-		createMahnung1(mahnung_1_Verheiratet, Sprache.FRANZOESISCH, "Mahnung1_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void mahnung1Test(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createMahnung1(mandant, mahnung_1_Alleinstehend, Sprache.DEUTSCH, "Mahnung1_alleinstehend_de.pdf");
+		createMahnung1(mandant, mahnung_1_Alleinstehend, Sprache.FRANZOESISCH, "Mahnung1_alleinstehend_fr.pdf");
+		createMahnung1(mandant, mahnung_1_Verheiratet, Sprache.DEUTSCH, "Mahnung1_verheiratet_de.pdf");
+		createMahnung1(mandant, mahnung_1_Verheiratet, Sprache.FRANZOESISCH, "Mahnung1_verheiratet_fr.pdf");
 	}
 
-	private void createMahnung1(@Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createMahnung1(@Nonnull MandantIdentifier mandant, @Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(mahnung.getGesuch().getGesuchsteller1());
+		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final MahnungPdfGenerator generator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void mahnung2Test() throws InvoiceGeneratorException, IOException {
-		createMahnung2(mahnung_2_Alleinstehend, Sprache.DEUTSCH, "Mahnung2_alleinstehend_de.pdf");
-		createMahnung2(mahnung_2_Alleinstehend, Sprache.FRANZOESISCH, "Mahnung2_alleinstehend_fr.pdf");
-		createMahnung2(mahnung_2_Verheiratet, Sprache.DEUTSCH, "Mahnung2_verheiratet_de.pdf");
-		createMahnung2(mahnung_2_Verheiratet, Sprache.FRANZOESISCH, "Mahnung2_verheiratet_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void mahnung2Test(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+		createMahnung2(mandant, mahnung_2_Alleinstehend, Sprache.DEUTSCH, "Mahnung2_alleinstehend_de.pdf");
+		createMahnung2(mandant, mahnung_2_Alleinstehend, Sprache.FRANZOESISCH, "Mahnung2_alleinstehend_fr.pdf");
+		createMahnung2(mandant, mahnung_2_Verheiratet, Sprache.DEUTSCH, "Mahnung2_verheiratet_de.pdf");
+		createMahnung2(mandant, mahnung_2_Verheiratet, Sprache.FRANZOESISCH, "Mahnung2_verheiratet_fr.pdf");
 	}
 
-	private void createMahnung2(@Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createMahnung2(@Nonnull MandantIdentifier mandant, @Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
-		Assert.assertNotNull(mahnung.getGesuch().getGesuchsteller1());
+		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final MahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
-	@Test
-	public void createAnmeldebestaetigungenTagesschule() throws FileNotFoundException, InvoiceGeneratorException {
-		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_de.pdf");
-		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_fr.pdf");
-		createAnmeldebestaetigungenTagesschule(Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_de.pdf");
-		createAnmeldebestaetigungenTagesschule(Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_fr.pdf");
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void createAnmeldebestaetigungenTagesschule(@Nonnull MandantIdentifier mandant) throws FileNotFoundException, InvoiceGeneratorException {
+		createAnmeldebestaetigungenTagesschule(mandant, Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(mandant, Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.OHNE_TARIF, "Anmeldebestaetigung_test_ohneTarif_fr.pdf");
+		createAnmeldebestaetigungenTagesschule(mandant, Sprache.DEUTSCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_de.pdf");
+		createAnmeldebestaetigungenTagesschule(mandant, Sprache.FRANZOESISCH, AnmeldebestaetigungTSPDFGenerator.Art.MIT_TARIF, "Anmeldebestaetigung_test_mitTarif_fr.pdf");
 	}
 
-	public void createAnmeldebestaetigungenTagesschule(@Nonnull Sprache locale, @Nonnull AnmeldebestaetigungTSPDFGenerator.Art art, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
+	public void createAnmeldebestaetigungenTagesschule(@Nonnull MandantIdentifier mandant, @Nonnull Sprache locale, @Nonnull AnmeldebestaetigungTSPDFGenerator.Art art, @Nonnull String dokumentname) throws FileNotFoundException, InvoiceGeneratorException {
 		AnmeldungTagesschule anmeldungTagesschule = prepareAnmeldungTagesschuleWithModule();
-		Assert.assertNotNull(gesuch_tagesschule.getGesuchsteller1());
+		assertNotNull(gesuch_tagesschule.getGesuchsteller1());
 		gesuch_tagesschule.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AnmeldebestaetigungTSPDFGenerator generator = new AnmeldebestaetigungTSPDFGenerator(gesuch_tagesschule,
 			stammdaten, art, anmeldungTagesschule, false);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
 	private AnmeldungTagesschule prepareAnmeldungTagesschuleWithModule() {
@@ -283,7 +324,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createAnmeldungTagesschuleWithModules(kindContainer, gesuch_tagesschule.getGesuchsperiode());
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			rechner.calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), getParameter());
+			rechner.calculateAsiv(verfuegungZeitabschnitt.getBgCalculationInputAsiv(), TestUtils.getParameter());
 		}
 		Verfuegung verfuegungPreview = new Verfuegung();
 		verfuegungPreview.setZeitabschnitte(zeitabschnitte);
@@ -291,16 +332,17 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		return anmeldungTagesschule;
 	}
 
-	@Test
-	public void normaleVerfuegungFusszeileTest() throws InvoiceGeneratorException, IOException {
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	public void normaleVerfuegungFusszeileTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
 		stammdaten.setStandardDokSignature(false);
 		stammdaten.setStandardDokTitle("RESSORT SOZIALES");
 		stammdaten.setStandardDokUnterschriftTitel("Departementsvorsteher Soziales");
 		stammdaten.setStandardDokUnterschriftName("Pascal Lerch");
 		stammdaten.setStandardDokUnterschriftTitel2("Höhere Sachbearbeiterin Soziales");
 		stammdaten.setStandardDokUnterschriftName2("Katja Furrer");
-		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.DEUTSCH, "Verfügung_alternativ_fusszeile_de.pdf");
-		createNormaleVerfuegung(gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "Verfügung_alternativ_fusszeile_fr.pdf");
+		createNormaleVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.DEUTSCH, "Verfügung_alternativ_fusszeile_de.pdf");
+		createNormaleVerfuegung(mandant, gesuch_alleinstehend, true, Sprache.FRANZOESISCH, "Verfügung_alternativ_fusszeile_fr.pdf");
 		stammdaten.setStandardDokSignature(true);
 	}
 
@@ -310,6 +352,11 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private Verfuegung getFamiliensituationsVerfuegung(@Nonnull Gesuch gesuch) {
 		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
+	}
+
+	private void generateTestDocument(@Nonnull KibonPdfGenerator generator, @Nonnull MandantIdentifier mandant, @Nonnull String dokumentname)
+		throws FileNotFoundException, InvoiceGeneratorException {
+		generator.generate(new FileOutputStream(pfad + mandant + '/' +  dokumentname));
 	}
 }
 

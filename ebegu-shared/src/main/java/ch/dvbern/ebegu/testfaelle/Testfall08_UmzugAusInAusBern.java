@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * PS: Die Daten von Waelti Dagmar werden direkt kopiert anstatt die Methoden aufzurufen. Dieses dupliziert Code aber
  * macht einfacher, diesen Fall einzeln betrachten und verwalten zu koennen, anstatt vom Test von Waelti Dagmar abzuhaengen
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 
 	static final int VERMOEGEN = 12147;

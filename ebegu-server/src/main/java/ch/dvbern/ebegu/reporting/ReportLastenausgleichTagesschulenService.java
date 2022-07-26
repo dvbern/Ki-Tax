@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -25,5 +27,5 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 public interface ReportLastenausgleichTagesschulenService {
 
 	@Nonnull
-	UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException;
+	UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException, IOException;
 }

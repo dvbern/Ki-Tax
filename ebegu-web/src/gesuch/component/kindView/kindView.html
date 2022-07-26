@@ -551,8 +551,10 @@
                                                      ng-change="vm.showAusserordentlicherAnspruchClicked()">
                                             <span data-translate="AUSSERORDENTLICHER_ANSPRUCH"></span>
                                         </md-checkbox>
-                                        <dv-tooltip input-id="showAusserordentlicherAnspruch"
+                                        <dv-tooltip ng-if="!vm.gesuchModelManager.isFKJVTexte" input-id="showAusserordentlicherAnspruch"
                                                     text="'AUSSERORDENTLICHER_ANSPRUCH_HINT' | translate"></dv-tooltip>
+                                        <dv-tooltip ng-if="vm.gesuchModelManager.isFKJVTexte" input-id="showAusserordentlicherAnspruch"
+                                                    text="'AUSSERORDENTLICHER_ANSPRUCH_HINT_FKJV' | translate"></dv-tooltip>
                                         <dv-error-messages for="vm.form.showAusserordentlicherAnspruch.$error"
                                                            class="error"></dv-error-messages>
                                     </div>

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests.reporting;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -386,7 +387,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void generateZemisExcel() throws ExcelMergeException {
+	public void generateZemisExcel() throws ExcelMergeException, IOException {
 
 		int lastenausgleichJahr = 2018;
 

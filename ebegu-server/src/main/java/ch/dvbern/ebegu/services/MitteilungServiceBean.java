@@ -887,7 +887,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// convert BetreuungspensumAbweichung to MitteilungPensum
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
-		List<BetreuungspensumAbweichung> initialAbweichungen = betreuung.fillAbweichungen();
+		List<BetreuungspensumAbweichung> initialAbweichungen = betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
 		// (2) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
 			.stream()
@@ -1065,12 +1065,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	) {
 
 		Mandant mandant = principalBean.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException(
-				"searchMitteilungen",
-				"mandant not found for principal " + principalBean.getPrincipal().getName());
-		}
-
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 

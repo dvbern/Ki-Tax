@@ -301,4 +301,17 @@ export class GemeindeRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/next-vollksschule-bfsnummer`)
             .then(response => response.data as number);
     }
+
+    public downloadMusterDokument(gemeindeId: string): IPromise<BlobPart> {
+        return this.$http.get(`${this.serviceURL}/musterdokument/${encodeURIComponent(gemeindeId)}`,
+            {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
+            .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
 }

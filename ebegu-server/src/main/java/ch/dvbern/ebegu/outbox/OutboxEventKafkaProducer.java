@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -77,11 +78,14 @@ public class OutboxEventKafkaProducer {
 	 */
 	@Schedule(info = "publish outbox events", minute = "*", hour = "*", persistent = true)
 	public void publishEvents() {
-		if (ebeguConfiguration.getKafkaURL().isEmpty()) {
+		if (ebeguConfiguration.getKafkaURL().isEmpty()
+			|| (ebeguConfiguration.getKafkaURL().isPresent()
+				&& StringUtils.isEmpty(ebeguConfiguration.getKafkaURL().get()))) {
 			LOG.debug("Kafka URL not set, not publishing events.");
 			return;
 		}
 
+		Producer<String, GenericRecord> producer = null;
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<OutboxEvent> query = cb.createQuery(OutboxEvent.class);
@@ -108,17 +112,19 @@ public class OutboxEventKafkaProducer {
 			props.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
 			props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
 
-			Producer<String, GenericRecord> producer = new KafkaProducer<>(props);
+			producer = new KafkaProducer<>(props);
 			Consumer<OutboxEvent> outboxEventConsumer = sendBlocking(producer);
 
 			events.forEach(outboxEventConsumer);
-
-			producer.close();
 
 		} catch (RuntimeException e) {
 			// When a timer fails, it's called again sometime later. If that timer fails as well, the schedule is
 			// cancelled: https://stackoverflow.com/a/10598938
 			LOG.error("Kafka export failed", e);
+		} finally {
+			if (producer != null) {
+				producer.close();
+			}
 		}
 	}
 

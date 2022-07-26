@@ -50,8 +50,8 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public verguenstigungOhneBeruecksichtigungMinimalbeitrag: number;
     public verguenstigungOhneBeruecksichtigungVollkosten: number;
     public vollkosten: number;
-    public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
-    public zahlungsstatusMahlzeitenverguenstigung: TSVerfuegungZeitabschnittZahlungsstatus;
+    public zahlungsstatusInstitution: TSVerfuegungZeitabschnittZahlungsstatus;
+    public zahlungsstatusAntragsteller: TSVerfuegungZeitabschnittZahlungsstatus;
     public zeiteinheit: TSPensumUnits;
     public zuSpaetEingereicht: boolean;
     public tsCalculationResultMitPaedagogischerBetreuung: TSTsCalculationResult;

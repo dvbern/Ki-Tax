@@ -43,6 +43,7 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
@@ -68,7 +69,8 @@ import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picke
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
-import {FileUploadComponent} from './component/file-upload/file-upload.component';
+import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
+import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
@@ -132,6 +134,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
+        DvNgMultiSelectDialog,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
@@ -148,7 +151,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgGesuchstellerDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent,
+        MultipleFileUploadComponent,
+        SingleFileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,
@@ -208,6 +212,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
+        DvNgMultiSelectDialog,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
@@ -220,7 +225,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         TooltipDirective,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
-        FileUploadComponent,
+        MultipleFileUploadComponent,
+        SingleFileUploadComponent,
         DvNgConfirmDialogComponent,
         DvMonthPickerComponent,
         EbeguDatePipe,

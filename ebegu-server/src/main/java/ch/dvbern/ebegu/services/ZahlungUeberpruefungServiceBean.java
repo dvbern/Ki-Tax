@@ -376,14 +376,17 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		return ausbezahlteAbschnitte;
 	}
 
+	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Nonnull
 	private BigDecimal getBetragSoll(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
 		BigDecimal betragSoll = BigDecimal.ZERO;
 		if (betreuung.getVerfuegung() != null) {
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
-				if (!verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(dateAusbezahltBis)) {
-					// Dieser Zeitabschnitt muesste ausbezahlt sein
-					betragSoll = DEFAULT.add(betragSoll, zahlungslaufHelper.getAuszahlungsbetrag(verfuegungZeitabschnitt));
+				if (zahlungslaufHelper.isAuszuzahlen(verfuegungZeitabschnitt)) {
+					if (!verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(dateAusbezahltBis)) {
+						// Dieser Zeitabschnitt muesste ausbezahlt sein
+						betragSoll = DEFAULT.add(betragSoll, zahlungslaufHelper.getAuszahlungsbetrag(verfuegungZeitabschnitt));
+					}
 				}
 			}
 		}

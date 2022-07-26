@@ -118,7 +118,7 @@ public abstract class KibonPdfGenerator {
 	}
 
 	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten) {
-		this.pdfGenerator = PdfGenerator.create(stammdaten.getLogoContent(), getAbsenderAdresse(), false);
+		this.pdfGenerator = PdfGenerator.create(stammdaten.getGemeindeStammdatenKorrespondenz(), getAbsenderAdresse(), false);
 	}
 
 	@Nonnull

@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -127,14 +128,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusInstitution = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	@NotNull
 	@Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung =
-		VerfuegungsZeitabschnittZahlungsstatus.NEU;
+	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusAntragsteller = VerfuegungsZeitabschnittZahlungsstatus.NEU;
 
 	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Object
@@ -167,8 +167,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.verfuegung = null;
 		this.bemerkungenDTOList.mergeBemerkungenMap(toCopy.bemerkungenDTOList);
 		this.verfuegungZeitabschnittBemerkungList = toCopy.verfuegungZeitabschnittBemerkungList;
-		this.zahlungsstatus = toCopy.zahlungsstatus;
-		this.zahlungsstatusMahlzeitenverguenstigung = toCopy.zahlungsstatusMahlzeitenverguenstigung;
+		this.zahlungsstatusInstitution = toCopy.zahlungsstatusInstitution;
+		this.zahlungsstatusAntragsteller = toCopy.zahlungsstatusAntragsteller;
 	}
 
 	/**
@@ -640,21 +640,21 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	@Nonnull
-	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
-		return zahlungsstatus;
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusInstitution() {
+		return zahlungsstatusInstitution;
 	}
 
-	public void setZahlungsstatus(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
-		this.zahlungsstatus = zahlungsstatus;
+	public void setZahlungsstatusInstitution(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		this.zahlungsstatusInstitution = zahlungsstatus;
 	}
 
 	@Nonnull
-	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusMahlzeitenverguenstigung() {
-		return zahlungsstatusMahlzeitenverguenstigung;
+	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatusAntragsteller() {
+		return zahlungsstatusAntragsteller;
 	}
 
-	public void setZahlungsstatusMahlzeitenverguenstigung(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatusMahlzeitenverguenstigung) {
-		this.zahlungsstatusMahlzeitenverguenstigung = zahlungsstatusMahlzeitenverguenstigung;
+	public void setZahlungsstatusAntragsteller(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+		this.zahlungsstatusAntragsteller = zahlungsstatus;
 	}
 
 	@Nonnull
@@ -696,14 +696,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " bgCalculationResultAsiv: " + bgCalculationResultAsiv+ '\t'
 			+ " bgCalculationResultGemeinde: " + bgCalculationResultGemeinde + '\t'
 			+ " Regelwerk: " + regelwerk + '\t'
-			+ " Status: " + zahlungsstatus + '\t'
-			+ " Status Mahlzeitenverguenstigung: " + zahlungsstatusMahlzeitenverguenstigung;
+			+ " Zahlungsstatus Institution: " + zahlungsstatusInstitution + '\t'
+			+ " Zahlungsstatus Antragsteller: " + zahlungsstatusAntragsteller;
 		return sb;
 	}
 
-	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
-		"OverlyComplexMethod" })
 	@Override
+	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
+		"OverlyComplexMethod", "PMD.CompareObjectsWithEquals" })
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -722,12 +723,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			(!this.isHasGemeindeSpezifischeBerechnung() || bgCalculationInputGemeinde.isSame(((VerfuegungZeitabschnitt) other).getBgCalculationInputGemeinde())) &&
 			EbeguUtil.isSame(bgCalculationResultAsiv, otherVerfuegungZeitabschnitt.bgCalculationResultAsiv) &&
 			EbeguUtil.isSame(bgCalculationResultGemeinde, otherVerfuegungZeitabschnitt.bgCalculationResultGemeinde) &&
-			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
-			zahlungsstatusMahlzeitenverguenstigung == otherVerfuegungZeitabschnitt.zahlungsstatusMahlzeitenverguenstigung &&
+			zahlungsstatusInstitution == otherVerfuegungZeitabschnitt.zahlungsstatusInstitution &&
+			zahlungsstatusAntragsteller == otherVerfuegungZeitabschnitt.zahlungsstatusAntragsteller &&
 			this.bemerkungenDTOList.isSame(((VerfuegungZeitabschnitt) other).bemerkungenDTOList) &&
 			Objects.equals(verfuegungZeitabschnittBemerkungList, otherVerfuegungZeitabschnitt.verfuegungZeitabschnittBemerkungList);
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

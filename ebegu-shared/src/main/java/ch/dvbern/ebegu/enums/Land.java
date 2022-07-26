@@ -245,21 +245,21 @@ public enum Land {
 	private static final int SORTIERUNG_GELOESCHT = 0;
 	private static final int SORTIERUNG_DEFAULT = 100;
 
-	private Land(final String bsvCode, final boolean valid, final int sortierung) {
+	Land(final String bsvCode, final boolean valid, final int sortierung) {
 		this.bsvCode = bsvCode;
 		this.valid = valid;
 		this.sortierung = valid ? sortierung : SORTIERUNG_GELOESCHT;
 	}
 
-	private Land(final String bsvCode, final boolean valid) {
+	Land(final String bsvCode, final boolean valid) {
 		this(bsvCode, valid, valid ? SORTIERUNG_DEFAULT : SORTIERUNG_GELOESCHT);
 	}
 
-	private Land(final String bsvCode, final int sortierung) {
+	Land(final String bsvCode, final int sortierung) {
 		this(bsvCode, true, sortierung);
 	}
 
-	private Land(final String bsvCode) {
+	Land(final String bsvCode) {
 		this(bsvCode, true, SORTIERUNG_DEFAULT);
 	}
 

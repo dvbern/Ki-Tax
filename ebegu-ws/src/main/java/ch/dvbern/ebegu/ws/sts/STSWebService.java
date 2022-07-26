@@ -177,6 +177,7 @@ public class STSWebService {
 
 	private static KeyStore readKeystoreFromFile(String pathToKeyStore, String keyStorePassword)
 		throws STSZertifikatServiceException {
+		InputStream inputStream = null;
 		try {
 			KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 			if (!Files.exists(Paths.get(pathToKeyStore))) {
@@ -184,7 +185,7 @@ public class STSWebService {
 					"Keystore for GERES seems does not exists, did you set the relevant System Property correctly? "
 						+ "ebegu.personensuche.sts.keystore.path ");
 			}
-			InputStream inputStream = Files.newInputStream(Paths.get(pathToKeyStore));
+			inputStream = Files.newInputStream(Paths.get(pathToKeyStore));
 			keystore.load(inputStream, keyStorePassword.toCharArray());
 			inputStream.close();
 			return keystore;
@@ -193,6 +194,13 @@ public class STSWebService {
 				"readKeyStoreFromFile",
 				"Something went wrong reading keystore from " + pathToKeyStore,
 				e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException ignore) {
+				}
+			}
 		}
 	}
 

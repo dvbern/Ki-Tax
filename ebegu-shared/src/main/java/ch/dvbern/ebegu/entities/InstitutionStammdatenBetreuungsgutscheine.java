@@ -48,6 +48,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -175,16 +176,6 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@Column(nullable = false)
 	private boolean uebernachtungMoeglich = false;
 
-	@Nullable
-	@Column(nullable = true)
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String infomaKreditorennummer;
-
-	@Nullable
-	@Column(nullable = true)
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String infomaBankcode;
-
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
 	}
@@ -218,6 +209,22 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	public Adresse extractAdresseKontoinhaber() {
 		if (auszahlungsdaten != null) {
 			return auszahlungsdaten.getAdresseKontoinhaber();
+		}
+		return null;
+	}
+
+	@Nullable
+	public String extractInfomaKreditorennummer() {
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getInfomaKreditorennummer();
+		}
+		return null;
+	}
+
+	@Nullable
+	public String extractInfomaBankcode() {
+		if (auszahlungsdaten != null) {
+			return auszahlungsdaten.getInfomaBankcode();
 		}
 		return null;
 	}
@@ -353,15 +360,14 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof InstitutionStammdatenBetreuungsgutscheine)) {
 			return false;
 		}
 		final InstitutionStammdatenBetreuungsgutscheine otherInstStammdaten = (InstitutionStammdatenBetreuungsgutscheine) other;
@@ -450,23 +456,5 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setUebernachtungMoeglich(boolean uebernachtungMoeglich) {
 		this.uebernachtungMoeglich = uebernachtungMoeglich;
-	}
-
-	@Nullable
-	public String getInfomaKreditorennummer() {
-		return infomaKreditorennummer;
-	}
-
-	public void setInfomaKreditorennummer(@Nullable String infomaKreditorennummer) {
-		this.infomaKreditorennummer = infomaKreditorennummer;
-	}
-
-	@Nullable
-	public String getInfomaBankcode() {
-		return infomaBankcode;
-	}
-
-	public void setInfomaBankcode(@Nullable String infomaBankcode) {
-		this.infomaBankcode = infomaBankcode;
 	}
 }

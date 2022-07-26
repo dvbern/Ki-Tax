@@ -21,6 +21,7 @@ public enum LastenausgleichTagesschuleAngabenGemeindeStatus {
 
 	NEU, // Bis die erste Frage nach "alle Anmeldungen in kiBon" beantwortet ist
 	IN_BEARBEITUNG_GEMEINDE,
+	ZURUECK_AN_GEMEINDE,
 	IN_PRUEFUNG_KANTON,
 	ZWEITPRUEFUNG, // Zufaellig ausgewaehlte werden zur Zweitpruefung gesetzt
 	GEPRUEFT,
@@ -30,7 +31,7 @@ public enum LastenausgleichTagesschuleAngabenGemeindeStatus {
 		return this.equals(GEPRUEFT) || this.equals(ABGESCHLOSSEN);
 	}
 
-	public boolean atLeastInPruefungKanton() {
+	public boolean atLeastInPruefungKantonOrZurueckgegeben() {
 		return !this.equals(NEU) && !this.equals(IN_BEARBEITUNG_GEMEINDE);
 	}
 }

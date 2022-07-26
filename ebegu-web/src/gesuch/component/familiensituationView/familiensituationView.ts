@@ -26,7 +26,7 @@ import {
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer
+    TSUnterhaltsvereinbarungAnswer,
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -228,11 +228,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
      */
     private isConfirmationRequired(): boolean {
         return (!this.isKorrekturModusJugendamt()
-            || (this.isKorrekturModusJugendamt()
-                && this.getGesuch().gesuchsteller2
-                && !this.getGesuch().gesuchsteller2.gesuchstellerGS))
+            || (this.isKorrekturModusJugendamt() && this.getGesuch().gesuchsteller2))
             && ((!this.isMutation() && this.checkChanged2To1GS())
-                || (this.isMutation() && this.checkChanged2To1GSMutation()));
+                || (this.isMutation() && (this.isChanged1To2Reverted() || this.checkChanged2To1GSMutation())));
     }
 
     private checkChanged2To1GS(): boolean {
@@ -243,13 +241,22 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             && this.isScheidung();
     }
 
-    private checkChanged2To1GSMutation(): boolean {
+    private isChanged1To2Reverted(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.getGesuch().gesuchsteller2
             && this.getGesuch().gesuchsteller2.id
             && this.isScheidung()
             && this.model.familiensituationErstgesuch
             && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
+    }
+
+    private checkChanged2To1GSMutation(): boolean {
+        const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
+        return (this.model.familiensituationJA.aenderungPer.isBefore(ab)
+            && ((EbeguUtil.isNotNullOrUndefined(this.getGesuch().regelnGueltigAb)
+                && this.getGesuch().regelnGueltigAb.isBefore(ab))
+                || (EbeguUtil.isNullOrUndefined(this.getGesuch().regelnGueltigAb)
+                    && this.getGesuch().eingangsdatum.isBefore(ab))));
     }
 
     private isScheidung(): boolean {
@@ -342,7 +349,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return true;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation()
+                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
@@ -350,7 +358,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             return false;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation().konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+            && this.getFamiliensituation()
+                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     public frageGeteiltObhutClicked(): void {

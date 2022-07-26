@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.api.av;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -67,15 +66,14 @@ public class AVClient {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
-		try {
-			InputStream is = new FileInputStream(fileMetadata.getFilepfad());
+		try (InputStream is = new FileInputStream(fileMetadata.getFilepfad())) {
 			ScanResult result = client.scan(is);
 
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, fileMetadata);
 				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			throw new EbeguEntityNotFoundException(METHOD_NAME,
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, e, fileMetadata.getId());
 		}
@@ -86,7 +84,7 @@ public class AVClient {
 			return;
 		}
 		try (
-			final ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
 		) {
 			ScanResult result = client.scan(inputStream);
 			if (result instanceof ScanResult.VirusFound) {

@@ -133,7 +133,7 @@ public class VerfuegungEventConverter {
 	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
-			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend()));
+			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatusInstitution().isIgnoriertIgnorierend()));
 
 		List<VerfuegungZeitabschnitt> ignoredAbschnitte = abschnitteByIgnored.getOrDefault(true, emptyList());
 		List<VerfuegungZeitabschnitt> verrechnetAbschnitte = abschnitteByIgnored.getOrDefault(false, emptyList());

@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
  * http://localhost:8080/ebegu/api/v1/testfaelle/testfall/6
  * https://ebegu.dvbern.ch/ebegu/api/v1/testfaelle/testfall/6
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall06_BeckerNora extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Becker";

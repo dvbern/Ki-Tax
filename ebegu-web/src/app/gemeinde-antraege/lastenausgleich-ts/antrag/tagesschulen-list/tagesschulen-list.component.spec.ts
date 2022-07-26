@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/angular';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {WindowRef} from '../../../../core/service/windowRef.service';
@@ -32,15 +33,19 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
-    'addMesageAsError'
+    'addMesageAsError',
 ]);
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
 ]);
+
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
+
 describe('TagesschulenListComponent', () => {
     let component: TagesschulenListComponent;
     let fixture: ComponentFixture<TagesschulenListComponent>;
     gemeindeAntragServiceSpy.getAllVisibleTagesschulenAngabenForTSLastenausgleich.and.returnValue(of([]));
+    authServiceSpy.isOneOfRoles.and.returnValue(true);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -62,6 +67,10 @@ describe('TagesschulenListComponent', () => {
                 {
                     provide: GemeindeAntragService,
                     useValue: gemeindeAntragServiceSpy
+                },
+                {
+                    provide: AuthServiceRS,
+                    useValue: authServiceSpy
                 }
             ],
             declarations: [TagesschulenListComponent],

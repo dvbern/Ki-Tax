@@ -500,7 +500,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(betrag), zahlungsposition.getBetrag());
 		Assert.assertEquals(
 			VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
-			zahlungsposition.getVerfuegungZeitabschnitt().getZahlungsstatus());
+			zahlungsposition.getVerfuegungZeitabschnitt().getZahlungsstatusInstitution());
 	}
 
 	private void assertZahlungErstgesuch(long countMonate, Zahlungsauftrag zahlungsauftrag) {

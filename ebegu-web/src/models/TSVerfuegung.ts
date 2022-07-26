@@ -110,7 +110,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
             // tslint:disable-next-line:early-exit
-            if (zeitabschnitt.zahlungsstatus !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
+            if (zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                     && !zeitabschnitt.sameAusbezahlteVerguenstigung) {
                 // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                 // gestellt werden
@@ -130,7 +130,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
             // tslint:disable-next-line:early-exit
-            if (zeitabschnitt.zahlungsstatusMahlzeitenverguenstigung !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
+            if (zeitabschnitt.zahlungsstatusAntragsteller !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                 && !zeitabschnitt.sameAusbezahlteMahlzeiten) {
                 // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                 // gestellt werden
@@ -145,8 +145,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
-            const alreadyIgnored = abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                || abschnitt.zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            const alreadyIgnored = abschnitt.zahlungsstatusInstitution === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
+                || abschnitt.zahlungsstatusInstitution === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
@@ -159,8 +159,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
-            const alreadyIgnored = abschnitt.zahlungsstatusMahlzeitenverguenstigung === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                || abschnitt.zahlungsstatusMahlzeitenverguenstigung === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            const alreadyIgnored = abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
+                || abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }

@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 
 	private LastenausgleichTagesschuleAngabenInstitution angabenInstitution;
@@ -35,6 +36,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(new BigDecimal(5));
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(new BigDecimal(5));
+		this.angabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(BigDecimal.ZERO);
 		this.angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(new BigDecimal(5));
 		this.angabenInstitution.setDurchschnittKinderProTagMittag(new BigDecimal(5));
 		this.angabenInstitution.setDurchschnittKinderProTagNachmittag1(new BigDecimal(5));
@@ -46,6 +48,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 		this.angabenInstitution.setRaeumlicheVoraussetzungenEingehalten(true);
 		this.angabenInstitution.setBetreuungsverhaeltnisEingehalten(true);
 		this.angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(true);
+		this.angabenInstitution.setOeffnungszeiten("[]");
 	}
 
 	public LastenausgleichTagesschuleAngabenInstitution getAngabenInstitution() {

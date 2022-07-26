@@ -138,8 +138,7 @@ export class FreigabeComponent implements OnInit {
 
     public isInBearbeitungGemeinde(): Observable<boolean> {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
-            map(latsContainer => latsContainer.status ===
-                TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE),
+            map(latsContainer => latsContainer.isInBearbeitungGemeinde()),
         );
     }
 
@@ -170,7 +169,7 @@ export class FreigabeComponent implements OnInit {
     public async zurueckAnGemeinde(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('ZURUECK_AN_GEMEINDE'),
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN'),
         };
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
             .afterClosed()

@@ -66,6 +66,10 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal anzahlEingeschriebeneKinderVolksschulangebot;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
 
 	@Nullable
@@ -113,6 +117,10 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 	@Column(nullable = true)
 	private String bemerkungen;
 
+	@Nullable
+	@Column(nullable = true)
+	private String oeffnungszeiten;
+
 	public LastenausgleichTagesschuleAngabenInstitution() {
 	}
 
@@ -125,6 +133,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.anzahlEingeschriebeneKinderSekundarstufe = source.anzahlEingeschriebeneKinderSekundarstufe;
 		this.anzahlEingeschriebeneKinderPrimarstufe = source.anzahlEingeschriebeneKinderPrimarstufe;
 		this.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen = source.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+		this.anzahlEingeschriebeneKinderVolksschulangebot = source.anzahlEingeschriebeneKinderVolksschulangebot;
 		this.durchschnittKinderProTagFruehbetreuung = source.durchschnittKinderProTagFruehbetreuung;
 		this.durchschnittKinderProTagMittag = source.durchschnittKinderProTagMittag;
 		this.durchschnittKinderProTagNachmittag1 = source.durchschnittKinderProTagNachmittag1;
@@ -138,6 +147,8 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.ernaehrungsGrundsaetzeEingehalten = source.ernaehrungsGrundsaetzeEingehalten;
 		// Bemerkungen
 		this.bemerkungen = source.bemerkungen;
+		// Oeffnungszeiten
+		this.oeffnungszeiten = source.oeffnungszeiten;
 	}
 
 	@Nullable
@@ -298,5 +309,24 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		return getId().equals(other.getId());
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlEingeschriebeneKinderVolksschulangebot() {
+		return anzahlEingeschriebeneKinderVolksschulangebot;
+	}
+
+	public void setAnzahlEingeschriebeneKinderVolksschulangebot(
+		@Nullable BigDecimal anzahlEingeschriebeneKinderVolksschulangebot) {
+		this.anzahlEingeschriebeneKinderVolksschulangebot = anzahlEingeschriebeneKinderVolksschulangebot;
+	}
+
+	@Nullable
+	public String getOeffnungszeiten() {
+		return oeffnungszeiten;
+	}
+
+	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
+		this.oeffnungszeiten = oeffnungszeiten;
 	}
 }

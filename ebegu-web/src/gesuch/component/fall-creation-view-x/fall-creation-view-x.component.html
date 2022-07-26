@@ -13,7 +13,7 @@
 			<form role="form" name="form" class="" novalidate unsaved-warning-form>
 				<fieldset [disabled]="isGesuchReadonly()">
 
-					<!-- Bei neuen Gesuchen für inaktive Periode: Warnen -->
+					<!-- Bei neuen Gesuchen fï¿½r inaktive Periode: Warnen -->
 					<div *ngIf="isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
 						<p class="ebegu-h3" translate>GESUCHSPERIODE_INAKTIV_HINT</p>
 					</div>
@@ -25,8 +25,11 @@
 
 					<!--Willkommnstext bei Erstgesuch-->
 					<div *ngIf="gesuchModelManager.isGesuch()">
-						<p>
-							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
+						<p *ngIf="isTagesschuleEnabledForMandant">
+							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
+						</p>
+                        <p *ngIf="!isTagesschuleEnabledForMandant">
+							{{"ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS"|translate}} {{"ERSTGESUCH_WILLKOMMEN_TEXT_3"|translate}}
 						</p>
 					</div>
 

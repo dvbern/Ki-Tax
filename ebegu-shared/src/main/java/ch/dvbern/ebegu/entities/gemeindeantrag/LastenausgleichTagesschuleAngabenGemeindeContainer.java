@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenIns
 import ch.dvbern.ebegu.validators.CheckLastenausgleichTagesschuleAngabenGemeinde;
 import com.google.common.base.Preconditions;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -183,6 +184,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
@@ -203,23 +206,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	public void copyForFreigabe() {
 		// Nur moeglich, wenn noch nicht freigegeben und ueberhaupt Daten zum kopieren vorhanden
 		// Wir kopieren nicht, wenn Kanton bereits Daten erfasst hat
-		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
-			&& angabenDeklaration != null) {
+		// falls der Antrag zurück an die Gemeinde gegeben wurde, werden durch die Gemeinde direkt die
+		// angabenkorrektur bearbeitet. In diesem Fall muss nicht kopiert werden.
+		if (status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE) {
 			angabenKorrektur = new LastenausgleichTagesschuleAngabenGemeinde(angabenDeklaration);
 		}
-	}
-
-	public void copyForZurueckAnGemeinde() {
-		Preconditions.checkState(
-			angabenKorrektur != null,
-			"angabenKorrektur must not be null"
-		);
-		Preconditions.checkState(
-			status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
-				status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
-			"container must be in state IN_PRUEFUNG_KANTON"
-		);
-		angabenDeklaration = new LastenausgleichTagesschuleAngabenGemeinde(angabenKorrektur);
 	}
 
 	@Nonnull
@@ -271,6 +262,21 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			return false;
 		}
 		LastenausgleichTagesschuleAngabenGemeinde deklaration = getAngabenDeklaration();
+		return angabenComplete(deklaration);
+	}
+
+	public boolean angabenKorrekturComplete() {
+		if (Objects.isNull(getAlleAngabenInKibonErfasst())) {
+			return false;
+		}
+		if (Objects.isNull(getAngabenKorrektur())) {
+			return false;
+		}
+		LastenausgleichTagesschuleAngabenGemeinde korrektur = getAngabenKorrektur();
+		return angabenComplete(korrektur);
+	}
+
+	private boolean angabenComplete(LastenausgleichTagesschuleAngabenGemeinde deklaration) {
 		if (Objects.isNull(deklaration.getBedarfBeiElternAbgeklaert())) {
 			return false;
 		}
@@ -322,7 +328,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean plausibilisierungTagesschulenStundenHoldsForDeklaration() {
 		LastenausgleichTagesschuleAngabenGemeinde formular;
-		if (isAtLeastInBearbeitungKanton()) {
+		if (isAtLeastInBearbeitungKantonOrZuerueckgegeben()) {
 			formular = getAngabenKorrektur();
 		} else {
 			formular = getAngabenDeklaration();
@@ -356,6 +362,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG;
 	}
 
+	public boolean isAtLeastInBearbeitungKantonOrZuerueckgegeben() {
+		return isAtLeastInBearbeitungKanton()
+			|| status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
+	}
+
 	public boolean isAngabenDeklarationAbgeschlossen() {
 		return angabenDeklaration != null
 			&& angabenDeklaration.getStatus() == LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
@@ -367,7 +378,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	}
 
 	public boolean isInBearbeitungGemeinde() {
-		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE;
+		return status == LastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE
+			|| status == LastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE;
 	}
 
 	public boolean isAntragGeprueft() {
@@ -394,5 +406,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
 		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
+	}
+
+	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
+		return this.status.atLeastInPruefungKantonOrZurueckgegeben();
 	}
 }

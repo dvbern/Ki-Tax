@@ -33,11 +33,6 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public final class Constants {
 
-	// 100% = 20 days => 1% = 0.2 days
-	public static final BigDecimal MULTIPLIER_KITA = MathUtil.EINE_NACHKOMMASTELLE.from(0.2);
-	// 100% = 220 hours => 1% = 2.2 hours
-	public static final BigDecimal MULTIPLIER_TAGESFAMILIEN = MathUtil.EINE_NACHKOMMASTELLE.from(2.2);
-
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
 	public static final int DB_RUECKFORDERUNGSMITTEILUNG_LENGTH = 10000;
@@ -58,6 +53,7 @@ public final class Constants {
 	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
+	public static final Locale DEUTSCH_FRENCH_LOCALE = new Locale("defr", "CH");
 
 	public static final Character LINE_BREAK = '\n';
 	public static final String DATA = "Data";

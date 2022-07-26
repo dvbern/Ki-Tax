@@ -1786,7 +1786,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 		switch (antrag.getStatus()) {
 		case NEU:
-		case IN_BEARBEITUNG_GEMEINDE: {
+		case IN_BEARBEITUNG_GEMEINDE:
+		case ZURUECK_AN_GEMEINDE: {
 			if (principalBean.isCallerInAnyOfRole(UserRole.getTsAndGemeindeRoles())
 				&& principalBean.belongsToGemeinde(antrag.getGemeinde())) {
 				return;
@@ -1977,7 +1978,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		Objects.requireNonNull(container);
 		checkMandantMatches(container.getGemeinde());
 		switch (container.getStatus()) {
-		case IN_BEARBEITUNG_GEMEINDE: {
+		case IN_BEARBEITUNG_GEMEINDE:
+		case ZURUECK_AN_GEMEINDE: {
 			if (principalBean.isCallerInRole(SUPER_ADMIN)) {
 				return;
 			}
@@ -2018,6 +2020,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkMandantMatches(container.getGemeinde());
 		switch (container.getStatus()) {
 		case IN_BEARBEITUNG_GEMEINDE:
+		case ZURUECK_AN_GEMEINDE:
 		case IN_PRUEFUNG_KANTON:
 		case GEPRUEFT:
 		case ABGESCHLOSSEN:
@@ -2135,8 +2138,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	private boolean isSameMandant(@Nonnull HasMandant entity) {
-		return principalBean.getMandant() != null
-				&& principalBean.getMandant().equals(entity.getMandant());
+		return principalBean.getMandant().equals(entity.getMandant());
 	}
 
 	@Override

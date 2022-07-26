@@ -29,7 +29,8 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 public interface ReportKinderMitZemisNummerService {
 
 	@Nonnull
-	UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale german) throws ExcelMergeException;
+	UploadFileInfo generateZemisReport(@Nonnull Integer lastenausgleichJahr, @Nonnull Locale german
+	) throws ExcelMergeException, IOException;
 
 	void setFlagAndSaveZemisExcel(@Nonnull byte[] fileContent) throws IOException, MailException;
 }

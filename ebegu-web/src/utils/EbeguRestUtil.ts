@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {MULTIPLIER_KITA, MULTIPLIER_TAGESFAMILIEN} from '../app/core/constants/CONSTANTS';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationAufteilungDTO} from '../models/dto/TSFinanzielleSituationAufteilungDTO';
@@ -28,7 +27,6 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
-import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -45,6 +43,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/ge
 import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
 import {TSSozialdienst} from '../models/sozialdienst/TSSozialdienst';
@@ -125,6 +124,7 @@ import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
 import {TSGemeindeStammdaten} from '../models/TSGemeindeStammdaten';
+import {TSGemeindeStammdatenKorrespondenz} from '../models/TSGemeindeStammdatenKorrespondenz';
 import {TSGemeindeStammdatenLite} from '../models/TSGemeindeStammdatenLite';
 import {TSGesuch} from '../models/TSGesuch';
 import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
@@ -1019,6 +1019,9 @@ export class EbeguRestUtil {
             if (stammdaten.gemeinde.angebotBG) {
                 restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             }
+            restStammdaten.gemeindeStammdatenKorrespondenz = this.gemeindeStammdatenKorrespondenzToRestObject(
+                {},
+                stammdaten.gemeindeStammdatenKorrespondenz);
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -1077,6 +1080,9 @@ export class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.gemeindeStammdatenKorrespondenz = this.parseGemeindeStammdatenKorrespondenz(
+                new TSGemeindeStammdatenKorrespondenz(),
+                stammdatenFromServer.gemeindeStammdatenKorrespondenz);
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;
@@ -1154,6 +1160,42 @@ export class EbeguRestUtil {
         tsAbstractGemeindeStammdaten.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
         tsAbstractGemeindeStammdaten.hasAltGemeindeKontakt = stammdatenFromServer.hasAltGemeindeKontakt;
         tsAbstractGemeindeStammdaten.altGemeindeKontaktText = stammdatenFromServer.altGemeindeKontaktText;
+    }
+
+    public gemeindeStammdatenKorrespondenzToRestObject(
+        restStammdaten: any,
+        stammdaten: TSGemeindeStammdatenKorrespondenz,
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+            restStammdaten.senderAddressSpacingLeft = stammdaten.senderAddressSpacingLeft;
+            restStammdaten.senderAddressSpacingTop = stammdaten.senderAddressSpacingTop;
+            restStammdaten.receiverAddressSpacingLeft = stammdaten.receiverAddressSpacingLeft;
+            restStammdaten.receiverAddressSpacingTop = stammdaten.receiverAddressSpacingTop;
+            restStammdaten.logoWidth = stammdaten.logoWidth;
+            restStammdaten.logoSpacingLeft = stammdaten.logoSpacingLeft;
+            restStammdaten.logoSpacingTop = stammdaten.logoSpacingTop;
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdatenKorrespondenz(
+        stammdatenTS: TSGemeindeStammdatenKorrespondenz,
+        stammdatenFromServer: any,
+    ): TSGemeindeStammdatenKorrespondenz {
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+            stammdatenTS.senderAddressSpacingLeft = stammdatenFromServer.senderAddressSpacingLeft;
+            stammdatenTS.senderAddressSpacingTop = stammdatenFromServer.senderAddressSpacingTop;
+            stammdatenTS.receiverAddressSpacingLeft = stammdatenFromServer.receiverAddressSpacingLeft;
+            stammdatenTS.receiverAddressSpacingTop = stammdatenFromServer.receiverAddressSpacingTop;
+            stammdatenTS.logoWidth = stammdatenFromServer.logoWidth;
+            stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
+            stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
+            return stammdatenTS;
+        }
+        return undefined;
     }
 
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
@@ -2506,13 +2548,11 @@ export class EbeguRestUtil {
 
         restAbweichung.status = abweichung.status;
 
-        const multiplier = restAbweichung.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        restAbweichung.multiplier = abweichung.multiplier;
 
-        const pensum = restAbweichung.pensum ? restAbweichung.pensum / multiplier : undefined;
+        const pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
-            ? restAbweichung.vertraglichesPensum / multiplier
+            ? restAbweichung.vertraglichesPensum / restAbweichung.multiplier
             : undefined;
 
         restAbweichung.vertraglichesPensum = originalPensum;
@@ -2665,12 +2705,11 @@ export class EbeguRestUtil {
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
 
-        const multiplier = abweichungTS.unitForDisplay === TSPensumUnits.DAYS ?
-            MULTIPLIER_KITA :
-            MULTIPLIER_TAGESFAMILIEN;
+        abweichungTS.multiplier = abweichungFromServer.multiplier;
 
-        const pensum = Number((abweichungFromServer.pensum * multiplier).toFixed(2));
-        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * multiplier).toFixed(2));
+        const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
+        const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
+            .toFixed(2));
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
@@ -3365,15 +3404,16 @@ export class EbeguRestUtil {
             verfuegungZeitabschnittTS.verfuegteAnzahlZeiteinheiten =
                 zeitabschnittFromServer.verfuegteAnzahlZeiteinheiten;
             verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
-            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit = zeitabschnittFromServer.verguenstigungProZeiteinheit;
+            verfuegungZeitabschnittTS.verguenstigungProZeiteinheit =
+                zeitabschnittFromServer.verguenstigungProZeiteinheit;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag =
                 zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
             verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten =
                 zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
-            verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
-            verfuegungZeitabschnittTS.zahlungsstatusMahlzeitenverguenstigung =
-                zeitabschnittFromServer.zahlungsstatusMahlzeitenverguenstigung;
+            verfuegungZeitabschnittTS.zahlungsstatusInstitution = zeitabschnittFromServer.zahlungsstatusInstitution;
+            verfuegungZeitabschnittTS.zahlungsstatusAntragsteller =
+                zeitabschnittFromServer.zahlungsstatusAntragsteller;
             verfuegungZeitabschnittTS.zeiteinheit = zeitabschnittFromServer.zeiteinheit;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;
             verfuegungZeitabschnittTS.tsCalculationResultMitPaedagogischerBetreuung =
@@ -4854,6 +4894,8 @@ export class EbeguRestUtil {
                 gemeindeFromServer.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
             gemeindeTS.geleisteteBetreuungsstundenBesondereBeduerfnisse =
                 gemeindeFromServer.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            gemeindeTS.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+                gemeindeFromServer.geleisteteBetreuungsstundenBesondereVolksschulangebot;
             gemeindeTS.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
                 gemeindeFromServer.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
             gemeindeTS.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
@@ -4883,16 +4925,28 @@ export class EbeguRestUtil {
             // E: Kontrollfragen
             gemeindeTS.betreuungsstundenDokumentiertUndUeberprueft =
                 gemeindeFromServer.betreuungsstundenDokumentiertUndUeberprueft;
+            gemeindeTS.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
+                gemeindeFromServer.betreuungsstundenDokumentiertUndUeberprueftBemerkung;
             gemeindeTS.elterngebuehrenGemaessVerordnungBerechnet =
                 gemeindeFromServer.elterngebuehrenGemaessVerordnungBerechnet;
+            gemeindeTS.elterngebuehrenGemaessVerordnungBerechnetBemerkung =
+                gemeindeFromServer.elterngebuehrenGemaessVerordnungBerechnetBemerkung;
             gemeindeTS.einkommenElternBelegt =
                 gemeindeFromServer.einkommenElternBelegt;
+            gemeindeTS.einkommenElternBelegtBemerkung =
+                gemeindeFromServer.einkommenElternBelegtBemerkung;
             gemeindeTS.maximalTarif =
                 gemeindeFromServer.maximalTarif;
+            gemeindeTS.maximalTarifBemerkung =
+                gemeindeFromServer.maximalTarifBemerkung;
             gemeindeTS.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
                 gemeindeFromServer.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            gemeindeTS.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+                gemeindeFromServer.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
             gemeindeTS.ausbildungenMitarbeitendeBelegt =
                 gemeindeFromServer.ausbildungenMitarbeitendeBelegt;
+            gemeindeTS.ausbildungenMitarbeitendeBelegtBemerkung =
+                gemeindeFromServer.ausbildungenMitarbeitendeBelegtBemerkung;
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
@@ -4942,6 +4996,8 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.geleisteteBetreuungsstundenOhneBesondereBeduerfnisse;
             restAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse =
                 tsAngabenGemeinde.geleisteteBetreuungsstundenBesondereBeduerfnisse;
+            restAngabenGemeinde.geleisteteBetreuungsstundenBesondereVolksschulangebot =
+                tsAngabenGemeinde.geleisteteBetreuungsstundenBesondereVolksschulangebot;
             restAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete =
                 tsAngabenGemeinde.davonStundenZuNormlohnMehrAls50ProzentAusgebildete;
             restAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete =
@@ -4971,16 +5027,28 @@ export class EbeguRestUtil {
             // E: Kontrollfragen
             restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft =
                 tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueft;
+            restAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung =
+                tsAngabenGemeinde.betreuungsstundenDokumentiertUndUeberprueftBemerkung;
             restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet =
                 tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnet;
+            restAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnetBemerkung =
+                tsAngabenGemeinde.elterngebuehrenGemaessVerordnungBerechnetBemerkung;
             restAngabenGemeinde.einkommenElternBelegt =
                 tsAngabenGemeinde.einkommenElternBelegt;
+            restAngabenGemeinde.einkommenElternBelegtBemerkung =
+                tsAngabenGemeinde.einkommenElternBelegtBemerkung;
             restAngabenGemeinde.maximalTarif =
                 tsAngabenGemeinde.maximalTarif;
+            restAngabenGemeinde.maximalTarifBemerkung =
+                tsAngabenGemeinde.maximalTarifBemerkung;
             restAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal =
                 tsAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
+            restAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung =
+                tsAngabenGemeinde.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
             restAngabenGemeinde.ausbildungenMitarbeitendeBelegt =
                 tsAngabenGemeinde.ausbildungenMitarbeitendeBelegt;
+            restAngabenGemeinde.ausbildungenMitarbeitendeBelegtBemerkung =
+                tsAngabenGemeinde.ausbildungenMitarbeitendeBelegtBemerkung;
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
@@ -5097,6 +5165,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderPrimarstufe;
             angabenInstitutionTS.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5120,9 +5190,33 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             angabenInstitutionTS.bemerkungen = angabenInstitutionFromServer.bemerkungen;
+
+            angabenInstitutionTS.oeffnungszeiten =
+                this.parseOeffnungszeitenTagesschuleList(angabenInstitutionFromServer.oeffnungszeiten);
+
             return angabenInstitutionTS;
         }
         return undefined;
+    }
+
+    private parseOeffnungszeitenTagesschuleList(oeffnungszeiten: any): TSOeffnungszeitenTagesschule[] {
+        if (!oeffnungszeiten) {
+            return [];
+        }
+        return Array.isArray(oeffnungszeiten)
+            ? oeffnungszeiten.map(item => this.parseOeffnungszeitenTagesschule(item))
+            : [this.parseOeffnungszeitenTagesschule(oeffnungszeiten)];
+    }
+
+    private parseOeffnungszeitenTagesschule(oeffnungszeiten: any): TSOeffnungszeitenTagesschule {
+        const oeffnungszeitenTagesschule = new TSOeffnungszeitenTagesschule();
+        oeffnungszeitenTagesschule.type = oeffnungszeiten.type;
+        oeffnungszeitenTagesschule.montag = oeffnungszeiten.montag;
+        oeffnungszeitenTagesschule.dienstag = oeffnungszeiten.dienstag;
+        oeffnungszeitenTagesschule.mittwoch = oeffnungszeiten.mittwoch;
+        oeffnungszeitenTagesschule.donnerstag = oeffnungszeiten.donnerstag;
+        oeffnungszeitenTagesschule.freitag = oeffnungszeiten.freitag;
+        return oeffnungszeitenTagesschule;
     }
 
     public lastenausgleichTagesschuleAngabenInstitutionToRestObject(
@@ -5143,6 +5237,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderPrimarstufe;
             restAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+            restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
@@ -5165,6 +5261,9 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.ernaehrungsGrundsaetzeEingehalten;
             // Bemerkungen
             restAngabenInstitution.bemerkungen = tsAngabenInstitution.bemerkungen;
+
+            restAngabenInstitution.oeffnungszeiten = tsAngabenInstitution.oeffnungszeiten;
+
             return restAngabenInstitution;
         }
         return undefined;
@@ -5399,6 +5498,10 @@ export class EbeguRestUtil {
         restKostenEinnahmen.bemerkungenKosten = kostenEinnahmenTS.bemerkungenKosten;
         restKostenEinnahmen.elterngebuehren = kostenEinnahmenTS.elterngebuehren;
         restKostenEinnahmen.weitereEinnahmen = kostenEinnahmenTS.weitereEinnahmen;
+        restKostenEinnahmen.sockelbeitrag = kostenEinnahmenTS.sockelbeitrag;
+        restKostenEinnahmen.beitraegeNachAnmeldungen = kostenEinnahmenTS.beitraegeNachAnmeldungen;
+        restKostenEinnahmen.vorfinanzierteKantonsbeitraege = kostenEinnahmenTS.vorfinanzierteKantonsbeitraege;
+        restKostenEinnahmen.eigenleistungenGemeinde = kostenEinnahmenTS.eigenleistungenGemeinde;
         return restKostenEinnahmen;
     }
 
@@ -5564,6 +5667,10 @@ export class EbeguRestUtil {
         kostenEinnahmenTS.bemerkungenKosten = kostenEinnahmenFromServer.bemerkungenKosten;
         kostenEinnahmenTS.elterngebuehren = kostenEinnahmenFromServer.elterngebuehren;
         kostenEinnahmenTS.weitereEinnahmen = kostenEinnahmenFromServer.weitereEinnahmen;
+        kostenEinnahmenTS.sockelbeitrag = kostenEinnahmenFromServer.sockelbeitrag;
+        kostenEinnahmenTS.beitraegeNachAnmeldungen = kostenEinnahmenFromServer.beitraegeNachAnmeldungen;
+        kostenEinnahmenTS.vorfinanzierteKantonsbeitraege = kostenEinnahmenFromServer.vorfinanzierteKantonsbeitraege;
+        kostenEinnahmenTS.eigenleistungenGemeinde = kostenEinnahmenFromServer.eigenleistungenGemeinde;
         return kostenEinnahmenTS;
     }
 

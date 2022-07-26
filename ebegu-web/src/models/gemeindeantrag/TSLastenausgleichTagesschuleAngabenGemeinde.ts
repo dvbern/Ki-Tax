@@ -31,6 +31,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     // B: Abrechnung
     public geleisteteBetreuungsstundenOhneBesondereBeduerfnisse: number;
     public geleisteteBetreuungsstundenBesondereBeduerfnisse: number;
+    public geleisteteBetreuungsstundenBesondereVolksschulangebot: number;
     public davonStundenZuNormlohnMehrAls50ProzentAusgebildete: number;
     public davonStundenZuNormlohnWenigerAls50ProzentAusgebildete: number;
     public einnahmenElterngebuehren: number;
@@ -50,11 +51,17 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
 
     // E: Kontrollfragen
     public betreuungsstundenDokumentiertUndUeberprueft: boolean;
+    public betreuungsstundenDokumentiertUndUeberprueftBemerkung: string;
     public elterngebuehrenGemaessVerordnungBerechnet: boolean;
+    public elterngebuehrenGemaessVerordnungBerechnetBemerkung: string;
     public einkommenElternBelegt: boolean;
+    public einkommenElternBelegtBemerkung: string;
     public maximalTarif: boolean;
+    public maximalTarifBemerkung: string;
     public mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal: boolean;
+    public mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung: string;
     public ausbildungenMitarbeitendeBelegt: boolean;
+    public ausbildungenMitarbeitendeBelegtBemerkung: string;
 
     // Bemerkungen
     public bemerkungen: string;

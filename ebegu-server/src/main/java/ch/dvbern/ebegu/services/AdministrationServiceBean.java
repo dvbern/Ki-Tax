@@ -16,11 +16,11 @@
 package ch.dvbern.ebegu.services;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -90,9 +90,10 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 	@Override
 	public void createSQLSkriptInstutionsstammdaten() {
-		try {
+		try (
 			InputStream resourceAsStream = AdministrationServiceBean.class.getResourceAsStream(INPUT_FILE);
 			XSSFWorkbook myWorkBook = new XSSFWorkbook(resourceAsStream);
+		) {
 			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
 			Iterator<Row> rowIterator = mySheet.iterator();
 			rowIterator.next(); // Titelzeile
@@ -389,12 +390,11 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 	@SuppressWarnings("Duplicates")
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
-			try {
-				File output = new File(OUTPUT_FILE);
-				FileOutputStream fos = new FileOutputStream(output.getAbsolutePath());
-				printWriter = new PrintWriter(fos);
+			File output = new File(OUTPUT_FILE);
+			try (FileOutputStream fos = new FileOutputStream(output.getAbsolutePath())) {
+				printWriter = new PrintWriter(fos, false, StandardCharsets.UTF_8);
 				LOG.info("File generiert: {}", output.getAbsolutePath());
-			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
 				LOG.error("Konnte Outputfile nicht erstellen", e);
 			}
 		}
@@ -410,9 +410,8 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY.MM.dd");
 
-		try {
-			File fos = new File("Institutionen_" + formatter.format(LocalDate.now()) + ".csv");
-			PrintWriter pw = new PrintWriter(fos);
+		File fos = new File("Institutionen_" + formatter.format(LocalDate.now()) + ".csv");
+		try (PrintWriter pw = new PrintWriter(fos, StandardCharsets.UTF_8)) {
 			LOG.info("Writing File to: {}", fos.getAbsolutePath());
 
 			pw.println("TrägerschaftId,Trägerschaft,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN");

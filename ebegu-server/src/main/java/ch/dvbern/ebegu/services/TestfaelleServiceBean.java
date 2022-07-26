@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -783,6 +784,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
 		stammdaten.setBic("BIC123");
 		stammdaten.setKontoinhaber("Inhaber");
+		GemeindeStammdatenKorrespondenz gemeindeStammdatenKorrespondenz = new GemeindeStammdatenKorrespondenz();
+		stammdaten.setGemeindeStammdatenKorrespondenz(gemeindeStammdatenKorrespondenz);
 		gemeindeService.saveGemeindeStammdaten(stammdaten);
 	}
 

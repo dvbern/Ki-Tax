@@ -46,18 +46,20 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 																							 '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway',
 																							 'flyway', 0, null, '2018-01-01', '9999-01-01', 'Solothurn', '1',
 																							 'CH', 'Gemeinde', 'Solothurn', '4500', 'Berfüssergasse', null);
+INSERT IGNORE INTO gemeinde_stammdaten_korrespondenz (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, logo_content, logo_name, logo_spacing_left, logo_spacing_top, logo_type, logo_width, receiver_address_spacing_left, receiver_address_spacing_top, sender_address_spacing_left, sender_address_spacing_top)
+VALUES(UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bf', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, null, 123, 15, null, null, 123, 47, 20, 47);
 
 INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 										default_benutzer_id, default_benutzerts_id, gemeinde_id, adresse_id, mail, telefon, webseite,
 										beschwerde_adresse_id, korrespondenzsprache,
-										logo_content, bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
+										bic, iban, kontoinhaber, standard_rechtsmittelbelehrung,
 										benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
-										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen)
+										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen, gemeinde_stammdaten_korrespondenz_id)
 VALUES (UNHEX(REPLACE('b5171d87-537a-11ec-98e8-f4390979fa3e', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0,
         UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')),
         @testgemeinde_solothurn_id, UNHEX(REPLACE('7ebfc8dc-537a-11ec-98e8-f4390979fa3e', '-', '')),
-        'solothurn@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.solothurn.ch', null, 'DE', null, 'BIC', 'CH2089144969768441935',
-        'Solothurn Kontoinhaber', true, true, true, true, false);
+        'solothurn@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.solothurn.ch', null, 'DE', 'BIC', 'CH2089144969768441935',
+        'Solothurn Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0bf', '-', '')));
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
@@ -215,7 +217,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  gp.id   							 as gesuchsperiode_id,
 		  UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
-	  from gesuchsperiode as gp) as tmp;
+	  from gesuchsperiode as gp where gp.mandant_id = @mandant_id_solothurn) as tmp;
 
 INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															 user_mutiert, version, gemeinde_id, gesuchsperiode_id,

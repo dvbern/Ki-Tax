@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.BelegungTagesschule_;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
@@ -77,6 +78,8 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.util.Constants.LATS_NUMBER_WEEKS_PER_YEAR;
 
@@ -103,6 +106,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 	@Inject
 	private EinstellungService einstellungService;
 
+	private static final Logger LOG =
+		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenInstitutionServiceBean.class);
+
 	@Override
 	public void createLastenausgleichTagesschuleInstitution(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer
@@ -113,20 +119,42 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			institutionStammdatenService.getAllTagesschulenForGesuchsperiodeAndGemeinde(
 				gemeindeContainer.getGesuchsperiode(),
 				gemeindeContainer.getGemeinde());
+
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
-			LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer =
-				new LastenausgleichTagesschuleAngabenInstitutionContainer();
-			institutionContainer.setInstitution(institutionStammdaten.getInstitution());
-			institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
-			institutionContainer.setAngabenKorrektur(null); // Wird bei Freigabe rueber kopiert
-			institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
-			institutionContainer.setAngabenGemeinde(gemeindeContainer);
-
-			final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
-				saveLastenausgleichTagesschuleInstitution(institutionContainer);
-
-			gemeindeContainer.addLastenausgleichTagesschuleAngabenInstitutionContainer(saved);
+			createLatsInstitutionContainerIfNotExisting(gemeindeContainer, institutionStammdaten);
 		}
+	}
+
+	private void createLatsInstitutionContainerIfNotExisting(
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeContainer,
+		@Nonnull InstitutionStammdaten institutionStammdaten
+	) {
+		Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> existingOptional =
+			findLastenausgleichTagesschuleAngabenInstitutionContainer(
+				gemeindeContainer.getGemeinde(),
+				gemeindeContainer.getGesuchsperiode(),
+				institutionStammdaten
+			);
+		if (existingOptional.isPresent()) {
+			LOG.info(
+				"LastenausgleichTagesschule Institution Angaben existieren für Gemeinde {}, Institution {} und periode {} bereits",
+				gemeindeContainer.getGemeinde(),
+				existingOptional.get().getInstitution().getName(),
+				existingOptional.get().getGesuchsperiode().getGesuchsperiodeString());
+			return;
+		}
+		LastenausgleichTagesschuleAngabenInstitutionContainer institutionContainer =
+			new LastenausgleichTagesschuleAngabenInstitutionContainer();
+		institutionContainer.setInstitution(institutionStammdaten.getInstitution());
+		institutionContainer.setStatus(LastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
+		institutionContainer.setAngabenKorrektur(null); // Wird bei Freigabe rueber kopiert
+		institutionContainer.setAngabenDeklaration(new LastenausgleichTagesschuleAngabenInstitution());
+		institutionContainer.setAngabenGemeinde(gemeindeContainer);
+
+		final LastenausgleichTagesschuleAngabenInstitutionContainer saved =
+			saveLastenausgleichTagesschuleInstitution(institutionContainer);
+
+		gemeindeContainer.addLastenausgleichTagesschuleAngabenInstitutionContainer(saved);
 	}
 
 	@Nonnull
@@ -139,6 +167,37 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		LastenausgleichTagesschuleAngabenInstitutionContainer container =
 			persistence.find(LastenausgleichTagesschuleAngabenInstitutionContainer.class, id);
 		return Optional.ofNullable(container);
+	}
+
+	@Nonnull
+	private Optional<LastenausgleichTagesschuleAngabenInstitutionContainer> findLastenausgleichTagesschuleAngabenInstitutionContainer(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull InstitutionStammdaten institutionStammdaten) {
+		Objects.requireNonNull(gemeinde, "gemeinde muss gesetzt sein");
+		Objects.requireNonNull(gesuchsperiode, "gesuchsperiode muss gesetzt sein");
+		Objects.requireNonNull(institutionStammdaten, "institutionStammdaten müssen gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<LastenausgleichTagesschuleAngabenInstitutionContainer> query =
+			cb.createQuery(LastenausgleichTagesschuleAngabenInstitutionContainer.class);
+		Root<LastenausgleichTagesschuleAngabenInstitutionContainer> root =
+			query.from(LastenausgleichTagesschuleAngabenInstitutionContainer.class);
+
+		Predicate gemeindePredicate =
+			cb.equal(root.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.angabenGemeinde)
+				.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde), gemeinde);
+		Predicate gesuchsperiodePredicate =
+			cb.equal(root.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.angabenGemeinde)
+				.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode), gesuchsperiode);
+		Predicate institutionPredicate =
+			cb.equal(
+				root.get(LastenausgleichTagesschuleAngabenInstitutionContainer_.institution),
+				institutionStammdaten.getInstitution()
+			);
+
+		query.where(cb.and(gemeindePredicate, gesuchsperiodePredicate, institutionPredicate));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Override
@@ -569,6 +628,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen must not be null");
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderVolksschulangebot())) {
+			throw new EbeguRuntimeException(
+				functionName,
+				ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+				"anzahlEingeschriebeneKinderVolksschulangebot must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getBetreuungsverhaeltnisEingehalten())) {
 			throw new EbeguRuntimeException(

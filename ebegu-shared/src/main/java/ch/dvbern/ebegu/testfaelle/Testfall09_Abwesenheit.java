@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.util.MathUtil;
  * Dieser TestFall ist eine Kopie von Waelti Dagmar (im Status vom 10.11.2016) aber mit einer Abwesenheit fuer das Kind Julio
  * und die KITA Weissenstein. Die Abwesenheit laeuft von 11.10.2016 bis 25.11.2016. Deshalb muss ab dem 03.10.2016 Volltarif eintretten
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall09_Abwesenheit extends AbstractTestfall {
 
 	static final int VERMOEGEN = 12147;

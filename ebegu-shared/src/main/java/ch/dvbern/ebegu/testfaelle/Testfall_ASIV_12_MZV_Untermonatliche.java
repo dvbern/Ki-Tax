@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 /**
  * Wechsel von 2 auf 1. Mit nachheriger EKV, nach der Trennung (GS2 nicht mehr relevant)
  */
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testfall_ASIV_12_MZV_Untermonatliche extends AbstractASIVTestfall {
 
 	private static final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(20000);

@@ -20,6 +20,7 @@
         <dv-switch
             [switchOptionLeft]="'GEMEINDE_INSTITUTION'"
             [switchOptionRight]="'GEMEINDE_ANTRAGSTELLER'"
+            [switchOptionLabelRight]="getMsgKeyForToggleRight()"
             [(switchValue)]="zahlungslaufTyp"
             (switchValueChange)="toggleAuszahlungslaufTyp()"
         ></dv-switch>
@@ -42,7 +43,7 @@
                                         name="gemeinde"
                                         required>
                                     <option [ngValue]="null"></option>
-                                    <option *ngFor="let gemeindeEntry of gemeindenList" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
+                                    <option *ngFor="let gemeindeEntry of getGemeindenList()" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
                                 </select>
                                 <dv-error-messages [errorObject]="form?.form.get('gemeinde')?.errors"
                                                    class="error"></dv-error-messages>

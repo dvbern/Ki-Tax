@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 @SuppressWarnings("InstanceVariableMayNotBeInitialized")
@@ -116,15 +117,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
+	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
 		if (this == other) {
 			return true;
 		}
 		if (other == null || !getClass().equals(other.getClass())) {
-			return false;
-		}
-		if (!(other instanceof ErweiterteBetreuung)) {
 			return false;
 		}
 		final ErweiterteBetreuung otherErwBetr = (ErweiterteBetreuung) other;

@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 
 	private final BigDecimal GELEISTETE_BETREUUNGSSTUNDEN_OHNE_BESONDERE_BEDUERFNISSE = new BigDecimal(5);
@@ -73,6 +74,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(500));
 		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
 		this.angaben.setErsteRateAusbezahlt(new BigDecimal(350));
+		this.angaben.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(BigDecimal.ZERO);
 		// C
 		this.angaben.setGesamtKostenTagesschule(new BigDecimal(15000));
 		this.angaben.setEinnnahmenVerpflegung(new BigDecimal(1500));

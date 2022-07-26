@@ -74,18 +74,14 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private GemeindeService gemeindeService;
-
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
 
 	@Nonnull
 	@Override
 	public List<GemeindeKennzahlen> createGemeindeKennzahlen(
-			@Nonnull Gesuchsperiode gesuchsperiode) {
-		return gemeindeService.getAktiveGemeinden(gesuchsperiode.getMandant())
+			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gemeinde> gemeindeList) {
+		return gemeindeList
 				.stream()
-				.filter(Gemeinde::isAngebotBG)
 				.filter(gemeinde -> !antragAlreadyExisting(gemeinde, gesuchsperiode))
 				.map(gemeinde -> {
 					GemeindeKennzahlen gemeindeKennzahlen = new GemeindeKennzahlen();
@@ -204,10 +200,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			@Nullable String timestampMutiert) {
 
 		Mandant mandant = principal.getMandant();
-		if (mandant == null) {
-			throw new EbeguRuntimeException("getGemeindeKennzahlen", "mandant not found for principal " + principal.getPrincipal().getName());
-		}
-
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
 		Set<Predicate> predicates = new HashSet<>();

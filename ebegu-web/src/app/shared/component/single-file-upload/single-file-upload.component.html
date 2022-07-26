@@ -1,0 +1,63 @@
+<!--
+  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="container" (click)="click(fileInput)">
+    <div class="file-title">{{title | translate}}
+        <dv-tooltip style="white-space: normal;" *ngIf="tooltipText?.length > 0" [text]="tooltipText" (click)="$event.stopPropagation()"></dv-tooltip>
+    </div>
+    <div class="spacer"> </div>
+    <div class="symbol-container">
+        <div width="2%"
+             class="symbol"
+             ng-click="$event.stopPropagation()">
+            <input type="file" style="display: none"
+                   #fileInput
+                   [value]="uploadInputValue"
+                   [accept]="allowedMimetypes"
+                   (change)="onUploadFile($event);$event.stopPropagation()"/>
+            <button mat-raised-button
+                    type="button"
+                    class="dv-btn fa fa-upload dv-btn-operation"
+                    title="{{'GS_DOKUMENT_HOCHLADEN' | translate}}"
+                    [attr.aria-label]="'GS_DOKUMENT_HOCHLADEN' | translate"
+                    [disabled]="readOnly">
+            </button>
+        </div>
+        <div width="2%"
+             class="symbol">
+            <button type="button"
+                    (click)="onDownload(file, false);$event.stopPropagation()"
+                    class="dv-btn fa fa-eye dv-btn-operation"
+                    title="{{'DOKUMENT_LOOK' | translate}}"
+                    [attr.aria-label]="'DOKUMENT_LOOK' | translate"
+                    aria-hidden="true"
+                    [disabled]="!hasFile"></button>
+        </div>
+        <div width="2%"
+             class="symbol">
+            <button type="button"
+                    (click)="onDelete(file);$event.stopPropagation()"
+                    class="dv-btn fa fa-trash dv-btn-operation"
+                    title="{{'DOKUMENT_DELETE' | translate}}"
+                    [attr.aria-label]="'DOKUMENT_DELETE' | translate"
+                    aria-hidden="true"
+                    [disabled]="!hasFile"></button>
+        </div>
+    </div>
+
+</div>
+

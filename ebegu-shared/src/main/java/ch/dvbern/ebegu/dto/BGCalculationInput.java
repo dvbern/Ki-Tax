@@ -50,9 +50,9 @@ public class BGCalculationInput {
 
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant fuer die Zahlungen ist, da nur wenn die
 	// Verguenstigung sich geaendert hat, muss man die Korrektur beruecksichtigen
-	// Wird nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, muss fuer Mahlzeiten separat berechnet werden!
-	private boolean sameAusbezahlteVerguenstigung;
-	private boolean sameAusbezahlteMahlzeiten;
+	// Wird nur benoetigt, um clientseitig die frage nach ignorieren zu stellen, muss pro Zahlungslauftyp separat berechnet werden!
+	private boolean sameAusbezahlterBetragInstitution;
+	private boolean sameAusbezahlterBetragAntragsteller;
 	// Dieser Wert wird gebraucht, um zu wissen ob die Korrektur relevant für den Verfügungsprozessist, da die Mutation nicht
 	// ohne Verfügung geschlossen werden darf, wenn sich die MZV ändern. Ansonsten würden diese bei den Zahlungen ignoriert
 	private boolean sameVerfuegteMahlzeitenVerguenstigung;
@@ -434,20 +434,20 @@ public class BGCalculationInput {
 		this.sameVerfuegteVerfuegungsrelevanteDaten = sameVerfuegteVerfuegungsrelevanteDaten;
 	}
 
-	public boolean isSameAusbezahlteVerguenstigung() {
-		return sameAusbezahlteVerguenstigung;
+	public boolean isSameAusbezahlterBetragInstitution() {
+		return sameAusbezahlterBetragInstitution;
 	}
 
-	public void setSameAusbezahlteVerguenstigung(boolean sameAusbezahlteVerguenstigung) {
-		this.sameAusbezahlteVerguenstigung = sameAusbezahlteVerguenstigung;
+	public void setSameAusbezahlterBetragInstitution(boolean sameAusbezahlterBetragInstitution) {
+		this.sameAusbezahlterBetragInstitution = sameAusbezahlterBetragInstitution;
 	}
 
-	public boolean isSameAusbezahlteMahlzeiten() {
-		return sameAusbezahlteMahlzeiten;
+	public boolean isSameAusbezahlterBetragAntragsteller() {
+		return sameAusbezahlterBetragAntragsteller;
 	}
 
-	public void setSameAusbezahlteMahlzeiten(boolean sameAusbezahlteMahlzeiten) {
-		this.sameAusbezahlteMahlzeiten = sameAusbezahlteMahlzeiten;
+	public void setSameAusbezahlterBetragAntragsteller(boolean sameAusbezahlterBetragAntragsteller) {
+		this.sameAusbezahlterBetragAntragsteller = sameAusbezahlterBetragAntragsteller;
 	}
 
 	public boolean isAbschnittLiegtNachBEGUStartdatum() {
@@ -949,6 +949,7 @@ public class BGCalculationInput {
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSameSichtbareDaten(BGCalculationInput that) {
 		//noinspection ObjectEquality,SimplifiableIfStatement
 		if (this == that) {

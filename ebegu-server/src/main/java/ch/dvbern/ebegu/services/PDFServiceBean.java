@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
@@ -60,6 +61,7 @@ import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MusterPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
@@ -270,7 +272,7 @@ public class PDFServiceBean implements PDFService {
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
 
-		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		Art art = evaluateArt(betreuung);
 
 		Mandant mandant = stammdaten.getGemeinde().getMandant();
 		assert mandant != null;
@@ -286,6 +288,14 @@ public class PDFServiceBean implements PDFService {
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
+	}
+
+	private Art evaluateArt(Betreuung betreuung) {
+		if (betreuung.hasAnspruch()) {
+			return Art.NORMAL;
+		}
+
+		return betreuung.isAngebotTagesfamilien() ? Art.KEIN_ANSCHRUCH_TFO : Art.KEIN_ANSPRUCH;
 	}
 
 	@Nonnull
@@ -358,6 +368,18 @@ public class PDFServiceBean implements PDFService {
 		return generateDokument(pdfGenerator, !writeProtected, rueckforderungFormular.getKorrespondenzSprache().getLocale(),
 				Objects.requireNonNull(rueckforderungFormular.getInstitutionStammdaten().getInstitution()
 						.getMandant()));
+	}
+
+	@Override
+	@Nonnull
+	public byte[] generateMusterdokument(
+		@Nonnull GemeindeStammdaten gemeindeStammdaten
+	) throws MergeDocException {
+		Objects.requireNonNull(gemeindeStammdaten, "Das Argument 'gemeindeStammdaten' darf nicht leer sein");
+		authorizer.checkReadAuthorization(gemeindeStammdaten.getGemeinde());
+
+		MusterPdfGenerator pdfGenerator = new MusterPdfGenerator(gemeindeStammdaten);
+		return generateDokument(pdfGenerator, false, LocaleThreadLocal.get(), gemeindeStammdaten.getGemeinde().getMandant());
 	}
 
 	/**

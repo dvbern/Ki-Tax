@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -101,6 +102,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -149,6 +151,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAnga
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -203,6 +206,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -304,6 +308,11 @@ import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -755,6 +764,10 @@ public class JaxBConverter extends AbstractConverter {
 						.setIban(new IBAN(familiensituationJAXP.getIbanMahlzeiten()));
 					familiensituation.getAuszahlungsdatenMahlzeiten()
 						.setKontoinhaber(familiensituationJAXP.getKontoinhaberMahlzeiten());
+					familiensituation.getAuszahlungsdatenMahlzeiten()
+						.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
+					familiensituation.getAuszahlungsdatenMahlzeiten()
+						.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
 					Adresse convertedAdresse = null;
 					if (familiensituationJAXP.getZahlungsadresseMahlzeiten() != null) {
 						Adresse a =
@@ -808,6 +821,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		familiensituation.getAuszahlungsdatenInfoma().setIban(new IBAN(familiensituationJAXP.getIbanInfoma()));
 		familiensituation.getAuszahlungsdatenInfoma().setKontoinhaber(familiensituationJAXP.getKontoinhaberInfoma());
+		familiensituation.getAuszahlungsdatenInfoma().setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
+		familiensituation.getAuszahlungsdatenInfoma().setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
 		Adresse convertedAdresse = null;
 		if (familiensituationJAXP.getZahlungsadresseInfoma() != null) {
 			Adresse a =
@@ -817,8 +832,6 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		familiensituation.getAuszahlungsdatenInfoma().setAdresseKontoinhaber(convertedAdresse);
 		familiensituation.setAbweichendeZahlungsadresseInfoma(familiensituationJAXP.isAbweichendeZahlungsadresseInfoma());
-		familiensituation.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
-		familiensituation.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
 	}
 
 	public JaxFamiliensituation familiensituationToJAX(@Nonnull final Familiensituation persistedFamiliensituation) {
@@ -836,7 +849,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {
-			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.getIban().getIban());
+			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.extractIbanAsString());
 			jaxFamiliensituation.setKontoinhaberMahlzeiten(persistedAuszahlungsdaten.getKontoinhaber());
 			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
@@ -845,15 +858,15 @@ public class JaxBConverter extends AbstractConverter {
 		final Auszahlungsdaten persistedAuszahlungsdatenInfoma =
 			persistedFamiliensituation.getAuszahlungsdatenInfoma();
 		if (persistedAuszahlungsdatenInfoma != null) {
-			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.getIban().getIban());
+			jaxFamiliensituation.setIbanInfoma(persistedAuszahlungsdatenInfoma.extractIbanAsString());
+			jaxFamiliensituation.setInfomaKreditorennummer(persistedAuszahlungsdatenInfoma.getInfomaKreditorennummer());
+			jaxFamiliensituation.setInfomaBankcode(persistedAuszahlungsdatenInfoma.getInfomaBankcode());
 			jaxFamiliensituation.setKontoinhaberInfoma(persistedAuszahlungsdatenInfoma.getKontoinhaber());
 			if (persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber() != null) {
 				jaxFamiliensituation.setZahlungsadresseInfoma(adresseToJAX(persistedAuszahlungsdatenInfoma.getAdresseKontoinhaber()));
 			}
 		}
 		jaxFamiliensituation.setAbweichendeZahlungsadresseInfoma(persistedFamiliensituation.isAbweichendeZahlungsadresseInfoma());
-		jaxFamiliensituation.setInfomaKreditorennummer(persistedFamiliensituation.getInfomaKreditorennummer());
-		jaxFamiliensituation.setInfomaBankcode(persistedFamiliensituation.getInfomaBankcode());
 		jaxFamiliensituation.setGesuchstellerKardinalitaet(persistedFamiliensituation.getGesuchstellerKardinalitaet());
 		jaxFamiliensituation.setFkjvFamSit(persistedFamiliensituation.isFkjvFamSit());
 		jaxFamiliensituation.setMinDauerKonkubinat(persistedFamiliensituation.getMinDauerKonkubinat());
@@ -1809,8 +1822,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSpaetEroeffnung(persistedInstStammdaten.isSpaetEroeffnung());
 		jaxInstStammdaten.setWochenendeEroeffnung(persistedInstStammdaten.isWochenendeEroeffnung());
 		jaxInstStammdaten.setUebernachtungMoeglich(persistedInstStammdaten.isUebernachtungMoeglich());
-		jaxInstStammdaten.setInfomaKreditorennummer(persistedInstStammdaten.getInfomaKreditorennummer());
-		jaxInstStammdaten.setInfomaBankcode(persistedInstStammdaten.getInfomaBankcode());
+		jaxInstStammdaten.setInfomaKreditorennummer(persistedInstStammdaten.extractInfomaKreditorennummer());
+		jaxInstStammdaten.setInfomaBankcode(persistedInstStammdaten.extractInfomaBankcode());
 
 		return jaxInstStammdaten;
 	}
@@ -1856,6 +1869,8 @@ public class JaxBConverter extends AbstractConverter {
 			}
 			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+			institutionStammdaten.getAuszahlungsdaten().setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
+			institutionStammdaten.getAuszahlungsdaten().setInfomaBankcode(institutionStammdatenJAXP.getInfomaBankcode());
 			Adresse convertedAdresse = null;
 			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
 				Adresse a = Optional.ofNullable(institutionStammdaten.getAuszahlungsdaten().getAdresseKontoinhaber())
@@ -1899,8 +1914,6 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSpaetEroeffnung(institutionStammdatenJAXP.isSpaetEroeffnung());
 		institutionStammdaten.setWochenendeEroeffnung(institutionStammdatenJAXP.isWochenendeEroeffnung());
 		institutionStammdaten.setUebernachtungMoeglich(institutionStammdatenJAXP.isUebernachtungMoeglich());
-		institutionStammdaten.setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
-		institutionStammdaten.setInfomaBankcode(institutionStammdatenJAXP.getInfomaBankcode());
 
 		return institutionStammdaten;
 	}
@@ -3239,6 +3252,7 @@ public class JaxBConverter extends AbstractConverter {
 		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
 		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
 		abweichung.setStatus(jaxAbweichung.getStatus());
+		abweichung.setMultiplier(jaxAbweichung.getMultiplier());
 
 		return abweichung;
 	}
@@ -3548,8 +3562,6 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
 		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
-		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
-		betreuungspensum.setStuendlicheVollkosten(jaxBetreuungspensum.getStuendlicheVollkosten());
 		return betreuungspensum;
 	}
 
@@ -3715,7 +3727,9 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
-		return betreuung.fillAbweichungen().stream().map(this::betreuungspensumAbweichungToJax)
+		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung))
+			.stream()
+			.map(this::betreuungspensumAbweichungToJax)
 			.collect(Collectors.toList());
 	}
 
@@ -3735,6 +3749,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setTarifProNebenmahlzeit(abweichung.getTarifProNebenmahlzeit());
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
+		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
 
 		return jaxAbweichung;
 	}
@@ -3906,14 +3921,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.getRelevantBgCalculationInput().isKategorieMaxEinkommen());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setMinimalesEwpUnterschritten(zeitabschnitt.isMinimalesEwpUnterschritten());
-		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
-		jaxZeitabschn.setZahlungsstatusMahlzeitenverguenstigung(zeitabschnitt.getZahlungsstatusMahlzeitenverguenstigung());
+		jaxZeitabschn.setZahlungsstatusInstitution(zeitabschnitt.getZahlungsstatusInstitution());
+		jaxZeitabschn.setZahlungsstatusAntragsteller(zeitabschnitt.getZahlungsstatusAntragsteller());
 		jaxZeitabschn.setSameVerfuegteVerfuegungsrelevanteDaten(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteVerfuegungsrelevanteDaten());
 		jaxZeitabschn.setSameAusbezahlteVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteVerguenstigung());
+			.isSameAusbezahlterBetragInstitution());
 		jaxZeitabschn.setSameAusbezahlteMahlzeiten(zeitabschnitt.getRelevantBgCalculationInput()
-			.isSameAusbezahlteMahlzeiten());
+			.isSameAusbezahlterBetragAntragsteller());
 		jaxZeitabschn.setSameVerfuegteMahlzeitenVerguenstigung(zeitabschnitt.getRelevantBgCalculationInput()
 			.isSameVerfuegteMahlzeitenVerguenstigung());
 		jaxZeitabschn.setTsCalculationResultMitPaedagogischerBetreuung(
@@ -5114,7 +5129,9 @@ public class JaxBConverter extends AbstractConverter {
 		belegungFerieninsel.setFerienname(belegungFerieninselJAX.getFerienname());
 		belegungFerieninsel.setNotfallAngaben(belegungFerieninselJAX.getNotfallAngaben());
 		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTage(), belegungFerieninsel.getTage());
-		belegungFerieninselTageListToEntity(belegungFerieninselJAX.getTageMorgenmodul(), belegungFerieninsel.getTageMorgenmodul());
+		belegungFerieninselTageListToEntity(
+			belegungFerieninselJAX.getTageMorgenmodul(),
+			belegungFerieninsel.getTageMorgenmodul());
 
 		return belegungFerieninsel;
 	}
@@ -5293,6 +5310,12 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
+		stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
+		convertAbstractFieldsToJAX(
+			stammdaten.getGemeindeStammdatenKorrespondenz(),
+			jaxStammdaten.getGemeindeStammdatenKorrespondenz());
+		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
+
 		return stammdaten;
 	}
 
@@ -5384,6 +5407,9 @@ public class JaxBConverter extends AbstractConverter {
 		if (stammdaten.getGemeindeAusgabestelle() != null) {
 			jaxStammdaten.setGemeindeAusgabestelle(gemeindeToJAX(stammdaten.getGemeindeAusgabestelle()));
 		}
+
+		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
+		convertAbstractFieldsToJAX(stammdaten.getGemeindeStammdatenKorrespondenz(), jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 
 		return jaxStammdaten;
 	}
@@ -5532,14 +5558,18 @@ public class JaxBConverter extends AbstractConverter {
 			);
 		}
 		Optional<Einstellung> erwerbspensumMiminumVorschuleMax =
-			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, gesuchsperiode);
+			einstellungService.getEinstellungByMandant(
+				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+				gesuchsperiode);
 		if (erwerbspensumMiminumVorschuleMax.isPresent()) {
 			konfiguration.setErwerbspensumMiminumVorschuleMax(
 				erwerbspensumMiminumVorschuleMax.get().getValueAsInteger()
 			);
 		}
 		Optional<Einstellung> erwerbspensumMiminumSchulkinderMax =
-			einstellungService.getEinstellungByMandant(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, gesuchsperiode);
+			einstellungService.getEinstellungByMandant(
+				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
+				gesuchsperiode);
 		if (erwerbspensumMiminumSchulkinderMax.isPresent()) {
 			konfiguration.setErwerbspensumMiminumSchulkinderMax(
 				erwerbspensumMiminumSchulkinderMax.get().getValueAsInteger()
@@ -6214,6 +6244,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Abrechnung
 		jaxAngabenGemeinde.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		jaxAngabenGemeinde.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		jaxAngabenGemeinde.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setEinnahmenElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
@@ -6230,11 +6261,17 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setBemerkungenWeitereKostenUndErtraege(angabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
 		jaxAngabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		jaxAngabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueftBemerkung(angabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueftBemerkung());
 		jaxAngabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		jaxAngabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnetBemerkung(angabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnetBemerkung());
 		jaxAngabenGemeinde.setEinkommenElternBelegt(angabenGemeinde.getEinkommenElternBelegt());
+		jaxAngabenGemeinde.setEinkommenElternBelegtBemerkung(angabenGemeinde.getEinkommenElternBelegtBemerkung());
 		jaxAngabenGemeinde.setMaximalTarif(angabenGemeinde.getMaximalTarif());
+		jaxAngabenGemeinde.setMaximalTarifBemerkung(angabenGemeinde.getMaximalTarifBemerkung());
 		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		jaxAngabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung());
 		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegtBemerkung(angabenGemeinde.getAusbildungenMitarbeitendeBelegtBemerkung());
 		// Bemerkungen
 		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
 		// Berechnungen
@@ -6272,6 +6309,7 @@ public class JaxBConverter extends AbstractConverter {
 		// B: Abrechnung
 		angabenGemeinde.setGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse(jaxAngabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		angabenGemeinde.setGeleisteteBetreuungsstundenBesondereBeduerfnisse(jaxAngabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		angabenGemeinde.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(jaxAngabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
 		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		angabenGemeinde.setEinnahmenElterngebuehren(jaxAngabenGemeinde.getEinnahmenElterngebuehren());
@@ -6288,11 +6326,17 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setBemerkungenWeitereKostenUndErtraege(jaxAngabenGemeinde.getBemerkungenWeitereKostenUndErtraege());
 		// E: Kontrollfragen
 		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueft(jaxAngabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueft());
+		angabenGemeinde.setBetreuungsstundenDokumentiertUndUeberprueftBemerkung(jaxAngabenGemeinde.getBetreuungsstundenDokumentiertUndUeberprueftBemerkung());
 		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnet(jaxAngabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnet());
+		angabenGemeinde.setElterngebuehrenGemaessVerordnungBerechnetBemerkung(jaxAngabenGemeinde.getElterngebuehrenGemaessVerordnungBerechnetBemerkung());
 		angabenGemeinde.setEinkommenElternBelegt(jaxAngabenGemeinde.getEinkommenElternBelegt());
+		angabenGemeinde.setEinkommenElternBelegtBemerkung(jaxAngabenGemeinde.getEinkommenElternBelegtBemerkung());
 		angabenGemeinde.setMaximalTarif(jaxAngabenGemeinde.getMaximalTarif());
+		angabenGemeinde.setMaximalTarifBemerkung(jaxAngabenGemeinde.getMaximalTarifBemerkung());
 		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
+		angabenGemeinde.setMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung(jaxAngabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung());
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegt(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegt());
+		angabenGemeinde.setAusbildungenMitarbeitendeBelegtBemerkung(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegtBemerkung());
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
 		// Berechnungen
@@ -6418,11 +6462,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(angabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(angabenInstitution.getAnzahlEingeschriebeneKinderVolksschulangebot());
 		jaxAngabenInstitution.setDurchschnittKinderProTagFruehbetreuung(angabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
 		jaxAngabenInstitution.setDurchschnittKinderProTagMittag(angabenInstitution.getDurchschnittKinderProTagMittag());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag1(angabenInstitution.getDurchschnittKinderProTagNachmittag1());
 		jaxAngabenInstitution.setDurchschnittKinderProTagNachmittag2(angabenInstitution.getDurchschnittKinderProTagNachmittag2());
-		jaxAngabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(angabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
 		jaxAngabenInstitution.setBetreuungsstundenEinschliesslichBesondereBeduerfnisse(angabenInstitution.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		jaxAngabenInstitution.setSchuleAufBasisOrganisatorischesKonzept(angabenInstitution.getSchuleAufBasisOrganisatorischesKonzept());
@@ -6433,7 +6477,25 @@ public class JaxBConverter extends AbstractConverter {
 		// Bemerkungen
 		jaxAngabenInstitution.setBemerkungen(angabenInstitution.getBemerkungen());
 
+		// Oeffnungszeiten
+		jaxAngabenInstitution.setOeffnungszeiten(angabenInstitution.getOeffnungszeiten() != null
+			&& angabenInstitution.getOeffnungszeiten().length() > 2 ?
+			new ArrayList(Arrays.asList(convert(angabenInstitution.getOeffnungszeiten()))) :
+			new ArrayList<>());
+
 		return jaxAngabenInstitution;
+	}
+
+	@Nonnull
+	private OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		try {
+			return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
+		} catch(JsonProcessingException e) {
+			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
+			return new OeffnungszeitenTagesschuleDTO[]{};
+		}
 	}
 
 	@Nonnull
@@ -6460,6 +6522,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderSekundarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderPrimarstufe());
 		angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		angabenInstitution.setAnzahlEingeschriebeneKinderVolksschulangebot(jaxAngabenInstitution.getAnzahlEingeschriebeneKinderVolksschulangebot());
 		angabenInstitution.setDurchschnittKinderProTagFruehbetreuung(jaxAngabenInstitution.getDurchschnittKinderProTagFruehbetreuung());
 		angabenInstitution.setDurchschnittKinderProTagMittag(jaxAngabenInstitution.getDurchschnittKinderProTagMittag());
 		angabenInstitution.setDurchschnittKinderProTagNachmittag1(jaxAngabenInstitution.getDurchschnittKinderProTagNachmittag1());
@@ -6473,8 +6536,37 @@ public class JaxBConverter extends AbstractConverter {
 		angabenInstitution.setErnaehrungsGrundsaetzeEingehalten(jaxAngabenInstitution.getErnaehrungsGrundsaetzeEingehalten());
 		// Bemerkungen
 		angabenInstitution.setBemerkungen(jaxAngabenInstitution.getBemerkungen());
+		// Oeffnungszeiten
+		angabenInstitution.setOeffnungszeiten(toOeffnungszeiten(jaxAngabenInstitution.getOeffnungszeiten()).toString());
 
 		return angabenInstitution;
+	}
+
+	@Nonnull
+	private ArrayNode toOeffnungszeiten(@Nullable List<OeffnungszeitenTagesschuleDTO> oeffnungszeitenTagesschuleDTOS) {
+		ObjectMapper mapper = new ObjectMapper();
+		if (oeffnungszeitenTagesschuleDTOS == null) {
+			return mapper.createArrayNode();
+		}
+
+		List<ObjectNode> mapped = oeffnungszeitenTagesschuleDTOS.stream()
+			.map(this::toOeffnungszeit)
+			.collect(Collectors.toList());
+
+		return mapper.createArrayNode()
+			.addAll(mapped);
+	}
+
+	@Nonnull
+	private ObjectNode toOeffnungszeit(@Nonnull OeffnungszeitenTagesschuleDTO oeffnungszeitenTagesschuleDTO) {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.createObjectNode()
+			.put("type", oeffnungszeitenTagesschuleDTO.getType().name())
+			.put("montag", oeffnungszeitenTagesschuleDTO.isMontag())
+			.put("dienstag", oeffnungszeitenTagesschuleDTO.isDienstag())
+			.put("mittwoch", oeffnungszeitenTagesschuleDTO.isMittwoch())
+			.put("donnerstag", oeffnungszeitenTagesschuleDTO.isDonnerstag())
+			.put("freitag", oeffnungszeitenTagesschuleDTO.isFreitag());
 	}
 
 	public JaxLastenausgleichTagesschulenStatusHistory latsStatusHistoryToJAX(
@@ -6529,5 +6621,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungMonitoring.setRefNummer(betreuungMonitoring.getRefNummer());
 		jaxBetreuungMonitoring.setTimestamp(betreuungMonitoring.getTimestamp());
 		return jaxBetreuungMonitoring;
+	}
+
+	public List<Gemeinde> gemeindeListToEntity(List<JaxGemeinde> jaxGemeinden) {
+		return jaxGemeinden
+			.stream()
+			.map(jaxGemeinde -> this.gemeindeToEntity(jaxGemeinde, new Gemeinde()))
+			.collect(Collectors.toList());
 	}
 }

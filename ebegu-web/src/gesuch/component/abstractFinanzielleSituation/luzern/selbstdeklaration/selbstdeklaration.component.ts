@@ -62,6 +62,9 @@ export class SelbstdeklarationComponent implements OnInit {
     @Input()
     public isKorrekturModusJungendamtOrFreigegeben: boolean;
 
+    @Input()
+    public isQuellenbesteuert: boolean = false;
+
     public resultate: TSFinanzielleSituationResultateDTO;
 
     public constructor(
@@ -90,6 +93,14 @@ export class SelbstdeklarationComponent implements OnInit {
         } else {
             this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
         }
+    }
+
+    public getCurrentAntragstellerName(): string {
+        if (this.antragstellerNummer === 2) {
+            return this.antragsteller2Name();
+        }
+
+        return this.antragsteller1Name();
     }
 
     public antragsteller1Name(): string {

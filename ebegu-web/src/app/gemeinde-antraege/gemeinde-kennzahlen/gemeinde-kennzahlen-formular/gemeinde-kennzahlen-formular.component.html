@@ -83,7 +83,7 @@
 					<label required
 						   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
 						   for="nachfrageAnzahl_id">
-						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate }}
+						{{'GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL' | translate: {jahr: antragAndPrincipal[0].gesuchsperiode.getBasisJahrPlus2()} }}
 					</label>
 					<mat-form-field floatLabel="always">
 						<input matInput

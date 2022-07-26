@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.testfaelle;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -27,11 +26,11 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 
+@SuppressWarnings("PMD.ClassNamingConventions")
 public class TestFall12_Mischgesuch extends AbstractTestfall {
 
 	private static final String FAMILIENNAME = "Schmid";

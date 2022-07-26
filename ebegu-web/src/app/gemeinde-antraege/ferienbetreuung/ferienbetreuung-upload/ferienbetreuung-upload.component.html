@@ -27,7 +27,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12">
-        <dv-file-upload
+        <dv-multiple-file-upload
             (download)="download($event[0],$event[1])"
             [title]="'FERIENBETREUUNG_DOKUMENT_UPLOAD_TITLE'"
             (delete)="onDelete($event)"
@@ -36,7 +36,7 @@
             [readOnly]="isReadonly()"
             [readOnlyDelete]="isReadonly()"
         >
-        </dv-file-upload>
+        </dv-multiple-file-upload>
         <div class="dv-error-messages" *ngFor="let file of filesTooBig">
             <span>
                 {{'FEHLER_BEIM_HOCHLADEN_VON_DOKUMENT' | translate:{dokumentName:file.name} }} {{'ERROR_FILE_TOO_LARGE' | translate}}
