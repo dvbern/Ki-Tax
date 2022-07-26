@@ -228,7 +228,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportService.generateExcelReportFerienbetreuung(locale);
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN: {
-				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen();
+				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen(gesuchPeriodeId);
 			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
