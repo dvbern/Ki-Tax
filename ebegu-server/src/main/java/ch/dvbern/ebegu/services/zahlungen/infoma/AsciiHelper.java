@@ -33,6 +33,7 @@ public final class AsciiHelper {
 	}
 
 	@NonNull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private static String replaceKnownNonAsciiCharacters(@NonNull String message) {
 		message = message.replace("Ä", "Ae");
 		message = message.replace("Á", "A");
