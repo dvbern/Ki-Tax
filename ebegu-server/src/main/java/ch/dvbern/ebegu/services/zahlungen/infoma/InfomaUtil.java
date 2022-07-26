@@ -26,7 +26,7 @@ public final class InfomaUtil {
 		}
 		// Konvertierung nach ASCII. Muss VOR dem eventuellen Kuerzen auf die MaxLaenge passieren.
 		// TODO Wie genau??? Warte auf Antwort.
-		text = text.replaceAll("\\P{ASCII}", "");
+		text = AsciiHelper.transformToAsciiString(text);
 		// Der Separator (|) darf im Text nicht vorkommen. Es gibt kein Escaping
 		text = text.replaceAll("\\|", "");
 		// Kuerzen auf die maximal zugelassene Laenge
