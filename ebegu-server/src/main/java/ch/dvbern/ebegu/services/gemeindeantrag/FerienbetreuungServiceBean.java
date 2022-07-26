@@ -42,6 +42,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
@@ -60,9 +61,12 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.PDFService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -97,6 +101,12 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private PDFService pdfService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Nonnull
 	@Override
@@ -686,6 +696,13 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		}
 
 		return findFerienbetreuungAngabenContainer(container.getGemeinde(), vorgaengerGesuchperiode.get());
+	}
+
+	@Override
+	public byte[] generateFerienbetreuungReportDokument(
+			@Nonnull FerienbetreuungAngabenContainer container) throws MergeDocException {
+		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId()).orElseThrow();
+		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, false, Constants.DEFAULT_LOCALE) ;
 	}
 }
 

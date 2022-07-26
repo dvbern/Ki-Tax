@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -109,5 +110,13 @@ public interface PDFService {
 	byte[] generateVollmachtSozialdienst(
 		@Nonnull SozialdienstFall sozialdienstFall,
 		@Nonnull Sprache sprache
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateFerienbetreuungReport(
+		@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
+		@Nonnull GemeindeStammdaten gemeindeStammdaten,
+		boolean writeProtected,
+		@Nonnull Locale locale
 	) throws MergeDocException;
 }

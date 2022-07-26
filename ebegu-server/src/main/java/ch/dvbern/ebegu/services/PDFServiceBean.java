@@ -42,6 +42,8 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -57,6 +59,7 @@ import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
@@ -468,5 +471,21 @@ public class PDFServiceBean implements PDFService {
 			throw new MergeDocException("generateDokument()",
 				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
 		}
+	}
+
+
+	@Override
+	@Nonnull
+	public byte[] generateFerienbetreuungReport(
+			@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
+			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			boolean writeProtected,
+			@Nonnull Locale locale
+	) throws MergeDocException {
+
+		Objects.requireNonNull(ferienbetreuung, "Das Argument 'ferienbetreuung' darf nicht leer sein");
+
+		FerienbetreuungReportPdfGenerator pdfGenerator = new FerienbetreuungReportPdfGenerator(ferienbetreuung, gemeindeStammdaten);
+		return generateDokument(pdfGenerator, !writeProtected, locale, gemeindeStammdaten.getGemeinde().getMandant());
 	}
 }

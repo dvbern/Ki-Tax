@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
@@ -47,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContaine
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
@@ -55,6 +58,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import com.google.common.base.Preconditions;
@@ -847,6 +851,48 @@ public class FerienbetreuungResource {
 		FerienbetreuungAngabenKostenEinnahmen persisted =
 			ferienbetreuungService.ferienbetreuungAngabenKostenEinnahmenFalscheAngaben(kostenEinnahmen);
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
+	}
+
+	@ApiOperation("Öffnet FerienbetreuungAngabenKostenEinnahmen zur Wiederbearbeitung als Gemeinde")
+	@Nonnull
+	@GET
+	@Path("/{containerId}/report")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+			ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+			SACHBEARBEITER_FERIENBETREUUNG })
+	public Response ferienbetreuungKostenEinnahmenFalscheAngaben(
+			@Context UriInfo uriInfo,
+			@Context HttpServletResponse response,
+			@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) throws MergeDocException {
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+				ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"ferienbetreuungKostenEinnahmenFalscheAngaben",
+								containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		final byte[] content = ferienbetreuungService.generateFerienbetreuungReportDokument(container);
+
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
+						"application/octet-stream", content);
+
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND)
+						.entity("Vollmacht Dokument fuer SozialdienstFall: "
+								+ " kann nicht generiert werden")
+						.build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 	}
 
 }
