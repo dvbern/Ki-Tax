@@ -115,6 +115,7 @@ public class JaxGesuch extends JaxAbstractDTO {
 	private FinanzielleSituationTyp finSitTyp;
 
 	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate finSitAenderungGueltigAbDatum;
 
 	private boolean gesperrtWegenBeschwerde;

@@ -45,6 +45,26 @@
                 </div>
             </div>
 
+            <!--Datum Finanzielle Situtaion gueltig ab-->
+            <div class="row">
+                <div class="col-md-12 dv-input-container-medium margin-bottom-20">
+                    <dv-input-container class="form-group">
+                        <label class="md-no-float" for="finSitGueltigAbDatum">
+                            <span [translate]="'FINANZIELLE_SITUATION_GUELTIG_AB'"></span>
+                        </label>
+                        <div class="dv-input-container-medium-label">
+                            <dv-date-picker-x [(date)]="gesuchModelManager.getGesuch().finSitAenderungGueltigAbDatum"
+                                              [required]="false"
+                                              [inputId]="'finSitGueltigAbDatum'"
+                                              id="finSitGueltigAbDatum"
+                                              [datePickerEnabled]="false"
+                                              class="input-element">
+                            </dv-date-picker-x>
+                        </div>
+                    </dv-input-container>
+                </div>
+            </div>
+
 			<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
                                                 [hideSozialhilfeQuestion]="!isGS1()"
 												[(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
