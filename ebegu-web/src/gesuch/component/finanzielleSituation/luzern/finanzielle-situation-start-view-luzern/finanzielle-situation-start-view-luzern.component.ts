@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {IPromise} from 'angular';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -45,9 +46,10 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
-        protected finSitLuService: FinanzielleSituationLuzernService
+        protected finSitLuService: FinanzielleSituationLuzernService,
+        protected authServiceRS: AuthServiceRS
     ) {
-        super(gesuchModelManager, wizardStepManager, 1, finSitLuService);
+        super(gesuchModelManager, wizardStepManager, 1, finSitLuService, authServiceRS);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
             TSWizardStepStatus.IN_BEARBEITUNG);
