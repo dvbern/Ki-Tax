@@ -289,7 +289,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		// Nur Gesuche, die VOR der letzten Zahlung verfuegt wurden, sind relevant
 		if (gesuch.getTimestampVerfuegt().isBefore(datumLetzteZahlung)) {
-			// TODO hier plus x monate
 			LocalDate dateAusbezahltBis = datumLetzteZahlung.toLocalDate()
 				.plusMonths(anzahlMonateInZukunft)
 				.with(TemporalAdjusters.lastDayOfMonth());
