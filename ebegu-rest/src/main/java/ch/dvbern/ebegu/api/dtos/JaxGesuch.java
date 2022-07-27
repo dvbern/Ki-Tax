@@ -114,6 +114,9 @@ public class JaxGesuch extends JaxAbstractDTO {
 	@Nonnull
 	private FinanzielleSituationTyp finSitTyp;
 
+	@Nullable
+	private LocalDate finSitAenderungGueltigAbDatum;
+
 	private boolean gesperrtWegenBeschwerde;
 
 	@Nullable
@@ -386,6 +389,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setFinSitTyp(@Nonnull FinanzielleSituationTyp finSitTyp) {
 		this.finSitTyp = finSitTyp;
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungGueltigAbDatum() {
+		return finSitAenderungGueltigAbDatum;
+	}
+
+	public void setFinSitAenderungGueltigAbDatum(@Nullable LocalDate finSitAenderungGueltigAbDatum) {
+		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
 	}
 }
 

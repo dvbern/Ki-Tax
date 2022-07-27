@@ -236,6 +236,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	private FinanzielleSituationTyp finSitTyp = FinanzielleSituationTyp.BERN;
 
+	@Column(nullable = true)
+	@Nullable
+	private LocalDate finSitAenderungGueltigAbDatum;
+
 	@Column(nullable = false)
 	private boolean gesperrtWegenBeschwerde = false;
 
@@ -1370,5 +1374,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungGueltigAbDatum() {
+		return finSitAenderungGueltigAbDatum;
+	}
+
+	public void setFinSitAenderungGueltigAbDatum(@Nullable LocalDate finSitAenderungGueltigAbDatum) {
+		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
 	}
 }
