@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckAnyAuszahlungskontoSet;
 import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -180,5 +181,17 @@ public class Auszahlungsdaten extends AbstractEntity {
 		kontonr = getInfomaKreditorennummer();
 		Objects.requireNonNull(kontonr);
 		return kontonr;
+	}
+
+	public String getAuszahlungsdatenAsString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getKontoinhaber());
+		sb.append(Constants.LINE_BREAK);
+		if (getAdresseKontoinhaber() != null) {
+			sb.append(getAdresseKontoinhaber().getAddressAsString());
+			sb.append(Constants.LINE_BREAK);
+		}
+		sb.append(getIban());
+		return sb.toString();
 	}
 }

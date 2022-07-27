@@ -92,19 +92,15 @@ public class SimplePDFTable {
 		this.rows.add(row);
 	}
 
-	public void addRow(@Nonnull String label, @Nonnull String value) {
-		this.addRow(new SimplePDFTableRow(label, value));
+	public void addRow(@Nonnull String label, @Nullable String value) {
+		this.addRow(new SimplePDFTableRow(label, value != null ? value : ""));
 	}
 
-	public void addHeaderRow(@Nonnull String label, @Nonnull String value) {
-		this.addRow(new SimplePDFTableRow(label, value, true));
+	public void addHeaderRow(@Nonnull String label, @Nullable String value) {
+		this.addRow(new SimplePDFTableRow(label, value != null ? value : "", true));
 	}
 
 	public void addRow(@Nonnull String label, @Nonnull BigDecimal value) {
 		this.addRow(new SimplePDFTableRow(label, value));
-	}
-
-	public void addHeaderRow(@Nonnull String label, @Nonnull BigDecimal value) {
-		this.addRow(new SimplePDFTableRow(label, value, true));
 	}
 }
