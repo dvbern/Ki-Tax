@@ -49,13 +49,12 @@ class ZahlungsfileGeneratorInfomaTest {
 		Zahlung zahlung = auftrag.getZahlungen().get(0);
 
 		final String actualZahlung = InfomaStammdatenZahlung.with(zahlung, 200001);
-		// TODO sobald bekannt ist, was mit den Sonderzeichen geschehen soll, 'Brnnen' wieder korrigieren!
 		final String externeId = "21.000001.002.1.1";
-		final String expectedZahlung = "1|2|BGR200001|" + externeId + "|31.08.2022||2|419081||||Kita Brnnen - Zahlungslauf August 2022|1|215|||||||||||||||||-423.25||31.08.2022|||||||||||||||||||||||||||||||RB IBAN|||||BG 2022, 8, Kita Brnnen|||\n";
+		final String expectedZahlung = "1|2|BGR200001|" + externeId + "|31.08.2022||2|419081||||Kita Bruennen - Zahlungslauf August 2022|1|215|||||||||||||||||-423.25||31.08.2022|||||||||||||||||||||||||||||||RB IBAN|||||BG 2022, 8, Kita Bruennen|||\n";
 		Assertions.assertEquals(expectedZahlung, actualZahlung);
 
 		final String actualFinanzbuchhaltung = InfomaStammdatenFinanzbuchhaltung.with(zahlung, 200001);
-		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3636.022||||Kita Brnnen - Zahlungslauf August 2022|1|215|||2158303||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||BG 2022, 8, Kita Brnnen|||\n";
+		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3636.022||||Kita Bruennen - Zahlungslauf August 2022|1|215|||2158303||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||BG 2022, 8, Kita Bruennen|||\n";
 		Assertions.assertEquals(expectedFinanzbuchhaltung, actualFinanzbuchhaltung);
 	}
 }
