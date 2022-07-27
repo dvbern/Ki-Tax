@@ -329,7 +329,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
-                this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel()
+                this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel(this.statistikParameter.gesuchsperiode)
                     .subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);

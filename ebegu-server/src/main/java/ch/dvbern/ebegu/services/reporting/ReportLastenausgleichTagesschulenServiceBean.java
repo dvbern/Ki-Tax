@@ -64,7 +64,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 
 	@Nonnull
 	@Override
-	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException, IOException {
+	public UploadFileInfo generateExcelReportLastenausgleichTagesschulen(String gesuchPeriodeId) throws ExcelMergeException, IOException {
 
 		ReportVorlage vorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN;
 		try (
@@ -74,7 +74,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 			Sheet sheet = workbook.getSheet(vorlage.getDataSheetName());
 			Sheet secondSheet = workbook.getSheet(TAGESSCHULEN_SHEET_NAME);
 
-			List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen();
+			List<LastenausgleichGemeindenDataRow> reportData = getReportDataLastenausgleichTagesschulen(gesuchPeriodeId);
 
 			ExcelMergerDTO excelMergerDTO = lastenausgleichTagesschulenExcelConverter.toExcelMergerDTO(reportData);
 			mergeData(sheet, excelMergerDTO, vorlage.getMergeFields());
@@ -92,11 +92,11 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		}
 	}
 
-	private List<LastenausgleichGemeindenDataRow> getReportDataLastenausgleichTagesschulen() {
+	private List<LastenausgleichGemeindenDataRow> getReportDataLastenausgleichTagesschulen(String gesuchPeriodeId) {
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer>
 			lastenausgleichTagesschuleAngabenGemeindeContainerList =
-			lastenausgleichTagesschuleAngabenGemeindeService.getAllLastenausgleicheTagesschulen();
+			lastenausgleichTagesschuleAngabenGemeindeService.getAllLastenausgleicheTagesschulen(gesuchPeriodeId);
 		return lastenausgleichTagesschuleAngabenGemeindeContainerList.stream()
 			.filter(LastenausgleichTagesschuleAngabenGemeindeContainer::isAtLeastInPruefungKantonOrZurueckgegeben).map(
 				lastenausgleichTagesschuleAngabenGemeindeContainer -> {

@@ -731,11 +731,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showTarifeTable(): boolean {
-        return !this.isInstitutionenRoleAndTSModuleAkzeptiert();
+        return !this.isInstitutionenTraegerschaftRoleAndTSModuleAkzeptiert();
     }
 
-    private isInstitutionenRoleAndTSModuleAkzeptiert(): boolean {
-        return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION])
+    private isInstitutionenTraegerschaftRoleAndTSModuleAkzeptiert(): boolean {
+        return this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
           && this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
     }
 

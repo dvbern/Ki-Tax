@@ -945,7 +945,23 @@
                                   (ngSubmit)="generateStatistik(lastenausgleichTagesschulenRef, TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN)"
                                   novalidate>
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div class="col-xs-offset-6 col-xs-3">
+                                        <label class="md-no-float" for="lats_gp_name"
+                                               translate>GESUCHSPERIODEN</label>
+                                        <div class="dv-select-style">
+                                            <select name="lats_gp_name" id="lats_gp_name"
+                                                    [(ngModel)]="statistikParameter.gesuchsperiode"
+                                                    #latsGP='ngModel'
+                                                    class="form-control">
+                                                <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
+                                                <option *ngFor="let gesuchsperiode of gesuchsperioden"
+                                                        [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                            </select>
+                                            <dv-error-messages [errorObject]="latsGP.errors"
+                                                               class="error"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3 statistik-button statistik-no-fields">
                                         <dv-loading-button type="submit">
                                             <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>

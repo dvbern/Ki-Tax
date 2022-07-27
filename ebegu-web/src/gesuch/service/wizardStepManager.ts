@@ -612,7 +612,7 @@ export class WizardStepManager {
     }
 
     private isInstitutionenRoleAndTSModuleAkzeptiert(gesuch: TSGesuch): boolean {
-        if (!this.authServiceRS.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION])) {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             return false;
         }
 
