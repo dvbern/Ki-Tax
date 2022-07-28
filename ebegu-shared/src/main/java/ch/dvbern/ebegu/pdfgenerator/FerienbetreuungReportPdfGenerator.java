@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +26,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -48,6 +51,38 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String ADRESSE = "PdfGeneration_adresse";
 	protected static final String AUSZAHLUNG = "PdfGeneration_auszahlung";
 
+	protected static final String ANGEBOT = "PdfGeneration_angebot";
+	protected static final String NAME_ANGEBOT = "PdfGeneration_nameAngebot";
+	protected static final String FERIENWOCHEN_HERBST = "PdfGeneration_ferienwochenHerbst";
+	protected static final String FERIENWOCHEN_WINTER = "PdfGeneration_ferienwochenWinter";
+	protected static final String FERIENWOCHEN_SPORT = "PdfGeneration_ferienwochenSport";
+	protected static final String FERIENWOCHEN_FRUEHLING = "PdfGeneration_ferienwochenFruehling";
+	protected static final String FERIENWOCHEN_SOMMER = "PdfGeneration_ferienwochenSommer";
+	protected static final String TAGE_IM_SCHULJAHR = "PdfGeneration_tageImSchuljahr";
+	protected static final String ANGEBOT_BEMERKUNG = "PdfGeneration_angebotBemerkung";
+	protected static final String STUNDEN_PRO_BETREUUNGSTAG = "PdfGeneration_stundenProBetreuungstag";
+	protected static final String BETREUUNG_AUSSCHLIESSLICH_TAGSUEBER =
+			"PdfGeneration_betreungAusschliesslichTagsueber";
+	protected static final String OEFFNUNGSZEITEN_BEMEKERUNG = "PdfGeneration_oeffnungszeitenBemerkung";
+	protected static final String KOOPERATION_GEMEINDEN = "PdfGeneration_kooperationGemeinden";
+	protected static final String GEMEINDE_FUEHRT_SELBER = "PdfGeneration_gemeindeFuehrtSelber";
+	protected static final String GEMEINDE_FUEHRT_KOOPERATION = "PdfGeneration_gemeindeFuehrtKooperation";
+	protected static final String GEMEINDE_BEAUFTRAGT = "PdfGeneration_gemeindeBeauftragt";
+	protected static final String GEMEINDE_INTEGRIERT = "PdfGeneration_gemeindeIntegriert";
+	protected static final String KOOPERATION_BEMERKUNG = "PdfGeneration_kooperationBemerkung";
+	protected static final String LEITUNG_AUSGEBILDET = "PdfGeneration_leitungAusgebildet";
+	protected static final String BETREUUNGSPERSONEN_EIGNUNG = "PdfGeneration_betreuungspersonenEignung";
+	protected static final String ANZAHL_KINDER_ANGEMESSEN = "PdfGeneration_anzahlKinderAngemessen";
+	protected static final String FERIENBETREUUNG_SCHLUESSEL = "PdfGeneration_ferienbetreuungSchluessel";
+	protected static final String PERSONAL_QUALITAET_BEMERKUNG = "PdfGeneration_personalQualitaetBemerkung";
+	protected static final String UNTERSCHIEDLICHE_TARIFSYSTEME = "PdfGeneration_unterschiedlicheTarifsysteme";
+	protected static final String RABATT_WIRTSCHAFTLICHE_SITUATION = "PdfGeneration_rabattWirtschaftlicheSituation";
+	protected static final String TARIF_TS_FUER_FB = "PdfGeneration_tarifTsFuerFB";
+	protected static final String TARIF_FB_AUS_TS_AGELEITET = "PdfGeneration_tarifFbAusTsAgeleitet";
+	protected static final String ANDERER_TARIF_ANDERE_GEMEINDE = "PdfGeneration_andererTarifAndereGemeinde";
+	protected static final String TARIFSYSTEM_BEMERKUNGEN = "PdfGeneration_tarifsystemBemerkungen";
+	private static final float TABLE_SPACING_AFTER = 20;
+
 	@Nonnull
 	private PdfGenerator pdfGenerator;
 
@@ -59,7 +94,9 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 
 	protected Locale sprache;
 
-	public FerienbetreuungReportPdfGenerator(@Nonnull FerienbetreuungAngabenContainer gemeindeAntrag, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
+	public FerienbetreuungReportPdfGenerator(
+			@Nonnull FerienbetreuungAngabenContainer gemeindeAntrag,
+			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
 		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
 		this.ferienbetreuungAngabenContainer = gemeindeAntrag;
 		this.gemeindeStammdaten = gemeindeStammdaten;
@@ -76,13 +113,15 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	}
 
 	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten) {
-		this.pdfGenerator = PdfGenerator.create(stammdaten.getGemeindeStammdatenKorrespondenz(), getAbsenderAdresse(), false);
+		this.pdfGenerator =
+				PdfGenerator.create(stammdaten.getGemeindeStammdatenKorrespondenz(), getAbsenderAdresse(), false);
 	}
 
 	private PdfPTable createTableStammdaten() {
-		FerienbetreuungAngabenStammdaten stammdaten = (Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-				ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-				ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenStammdaten();
+		FerienbetreuungAngabenStammdaten stammdaten =
+				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
+						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
+						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenStammdaten();
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
 		table.addHeaderRow(translate(STAMMDATEN, mandant), "");
 		table.addRow(
@@ -90,7 +129,9 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				stammdaten.getAmAngebotBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).get());
 		table.addRow(
 				translate(SEIT_WANN_FB, mandant),
-				stammdaten.getSeitWannFerienbetreuungen() != null ? stammdaten.getSeitWannFerienbetreuungen().toString() : ""
+				stammdaten.getSeitWannFerienbetreuungen() != null ?
+						stammdaten.getSeitWannFerienbetreuungen().toString() :
+						""
 		);
 		table.addRow(
 				translate(TRAEGERSCHAFT, mandant),
@@ -109,7 +150,133 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				getFBAuszahlungAsString(stammdaten)
 		);
 
-		return table.createTable();
+		PdfPTable pdfPTable = table.createTable();
+		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
+
+		return pdfPTable;
+	}
+
+	private PdfPTable createTableAngebot() {
+		FerienbetreuungAngabenAngebot angebot =
+				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
+						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
+						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenAngebot();
+		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		table.addHeaderRow(translate(ANGEBOT, mandant), "");
+		table.addRow(
+				translate(NAME_ANGEBOT, mandant),
+				angebot.getAngebot());
+		table.addRow(
+				translate(KONTAKTPERSON, mandant),
+				getKontaktpersonAsString(angebot));
+		table.addRow(
+				translate(FERIENWOCHEN_HERBST, mandant),
+				getIntValue(angebot.getAnzahlFerienwochenHerbstferien()));
+		table.addRow(
+				translate(FERIENWOCHEN_WINTER, mandant),
+				getIntValue(angebot.getAnzahlFerienwochenWinterferien()));
+		table.addRow(
+				translate(FERIENWOCHEN_SPORT, mandant),
+				getIntValue(angebot.getAnzahlFerienwochenSportferien()));
+		table.addRow(
+				translate(FERIENWOCHEN_FRUEHLING, mandant),
+				getIntValue(angebot.getAnzahlFerienwochenFruehlingsferien()));
+		table.addRow(
+				translate(FERIENWOCHEN_SOMMER, mandant),
+				getIntValue(angebot.getAnzahlFerienwochenSommerferien()));
+		table.addRow(
+				translate(TAGE_IM_SCHULJAHR, mandant),
+				getIntValue(angebot.getAnzahlTage()));
+		table.addRow(
+				translate(ANGEBOT_BEMERKUNG, mandant),
+				angebot.getBemerkungenAnzahlFerienwochen());
+
+		table.addRow(
+				translate(STUNDEN_PRO_BETREUUNGSTAG, mandant),
+				angebot.getAnzahlStundenProBetreuungstag());
+		table.addRow(
+				translate(BETREUUNG_AUSSCHLIESSLICH_TAGSUEBER, mandant),
+				getBooleanAsString(angebot.getBetreuungErfolgtTagsueber()));
+		table.addRow(
+				translate(OEFFNUNGSZEITEN_BEMEKERUNG, mandant),
+				angebot.getBemerkungenOeffnungszeiten());
+
+		table.addRow(
+				translate(AM_ANGEBOT_BETEILIGTE_GEMEINDEN, mandant),
+				angebot.getFinanziellBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).orElse(""));
+		table.addRow(
+				translate(GEMEINDE_FUEHRT_SELBER, mandant),
+				getBooleanAsString(angebot.getGemeindeFuehrtAngebotSelber()));
+		table.addRow(
+				translate(GEMEINDE_FUEHRT_KOOPERATION, mandant),
+				getBooleanAsString(angebot.getGemeindeFuehrtAngebotInKooperation()));
+		table.addRow(
+				translate(GEMEINDE_BEAUFTRAGT, mandant),
+				getBooleanAsString(angebot.getGemeindeBeauftragtExterneAnbieter()));
+		table.addRow(
+				translate(GEMEINDE_INTEGRIERT, mandant),
+				getBooleanAsString(angebot.getAngebotVereineUndPrivateIntegriert()));
+		table.addRow(
+				translate(KOOPERATION_BEMERKUNG, mandant),
+				angebot.getBemerkungenKooperation());
+
+		table.addRow(
+				translate(LEITUNG_AUSGEBILDET, mandant),
+				getBooleanAsString(angebot.getLeitungDurchPersonMitAusbildung()));
+		table.addRow(
+				translate(BETREUUNGSPERSONEN_EIGNUNG, mandant),
+				getBooleanAsString(angebot.getBetreuungDurchPersonenMitErfahrung()));
+		table.addRow(
+				translate(ANZAHL_KINDER_ANGEMESSEN, mandant),
+				getBooleanAsString(angebot.getAnzahlKinderAngemessen()));
+		table.addRow(
+				translate(FERIENBETREUUNG_SCHLUESSEL, mandant),
+				angebot.getBetreuungsschluessel());
+		table.addRow(
+				translate(PERSONAL_QUALITAET_BEMERKUNG, mandant),
+				angebot.getBemerkungenPersonal());
+
+		table.addRow(
+				translate(UNTERSCHIEDLICHE_TARIFSYSTEME, mandant),
+				getBooleanAsString(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde()));
+		table.addRow(
+				translate(RABATT_WIRTSCHAFTLICHE_SITUATION, mandant),
+				getBooleanAsString(angebot.getFixerTarifKinderDerGemeinde()));
+		table.addRow(
+				translate(TARIF_TS_FUER_FB, mandant),
+				getBooleanAsString(angebot.getTagesschuleTarifGiltFuerFerienbetreuung()));
+		table.addRow(
+				translate(TARIF_FB_AUS_TS_AGELEITET, mandant),
+				getBooleanAsString(angebot.getFerienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet()));
+		table.addRow(
+				translate(ANDERER_TARIF_ANDERE_GEMEINDE, mandant),
+				angebot.getKinderAusAnderenGemeindenZahlenAnderenTarif() != null ?
+						translate("KinderAusAnderenGemeindenZahlenAnderenTarifAnswer_" + angebot.getKinderAusAnderenGemeindenZahlenAnderenTarif().name(), mandant) :
+						"");
+		table.addRow(
+				translate(TARIFSYSTEM_BEMERKUNGEN, mandant),
+				angebot.getBemerkungenTarifsystem()
+		);
+
+		PdfPTable pdfPTable = table.createTable();
+		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
+
+		return pdfPTable;
+	}
+
+	@Nullable
+	private Integer getIntValue(@Nullable BigDecimal value) {
+		return value == null ? null : value.intValue();
+	}
+
+	private String getBooleanAsString(@Nullable Boolean value) {
+		if (value == null) {
+			return "";
+		}
+		if (Boolean.TRUE.equals(value)) {
+			return translate("label_true", mandant);
+		}
+		return translate("label_false", mandant);
 	}
 
 	private String getFBAuszahlungAsString(FerienbetreuungAngabenStammdaten stammdaten) {
@@ -137,6 +304,20 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 			sb.append(stammdaten.getStammdatenKontaktpersonEmail());
 			sb.append(Constants.LINE_BREAK);
 			sb.append(stammdaten.getStammdatenKontaktpersonTelefon());
+		}
+		return sb.toString();
+	}
+
+	public String getKontaktpersonAsString(FerienbetreuungAngabenAngebot stammdaten) {
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotEmpty(stammdaten.getAngebotKontaktpersonVorname())) {
+			sb.append(stammdaten.getAngebotKontaktpersonVorname());
+			sb.append(Constants.LINE_BREAK);
+			sb.append(stammdaten.getAngebotKontaktpersonNachname());
+			if (stammdaten.getAngebotAdresse() != null) {
+				sb.append(Constants.LINE_BREAK);
+				sb.append(stammdaten.getAngebotAdresse().getAddressAsString());
+			}
 		}
 		return sb.toString();
 	}
@@ -175,8 +356,10 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph("hello"));
 			document.add(this.createTableStammdaten());
+			document.add(this.createTableAngebot());
 		};
 	}
+
 	@Nonnull
 	protected String getDocumentTitle() {
 		return "test";

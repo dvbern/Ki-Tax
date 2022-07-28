@@ -60,6 +60,11 @@ public class SimplePDFTableRow {
 		this.isHeader = isHeader;
 	}
 
+	public SimplePDFTableRow(@Nonnull String label, @Nullable Integer value) {
+		this.label = label;
+		this.value = value != null? String.valueOf(value) : "";
+	}
+
 	@Nonnull
 	public String getLabel() {
 		return label;

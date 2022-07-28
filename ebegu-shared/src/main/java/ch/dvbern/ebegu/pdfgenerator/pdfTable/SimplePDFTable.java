@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import com.lowagie.text.DocumentException;
@@ -100,7 +101,11 @@ public class SimplePDFTable {
 		this.addRow(new SimplePDFTableRow(label, value != null ? value : "", true));
 	}
 
-	public void addRow(@Nonnull String label, @Nonnull BigDecimal value) {
+	public void addRow(@Nonnull String label, @Nullable BigDecimal value) {
+		this.addRow(new SimplePDFTableRow(label, value));
+	}
+
+	public void addRow(@Nonnull String label, @Nullable Integer value) {
 		this.addRow(new SimplePDFTableRow(label, value));
 	}
 }
