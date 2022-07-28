@@ -41,6 +41,14 @@ public class InfomaStammdatenZahlung extends InfomaStammdaten {
 		return infomaKontonummer;
 	}
 
+	@Nonnull
+	@Override
+	protected String getBankCode(@Nonnull Zahlung zahlung) {
+		final String infomaBankcode = zahlung.getAuszahlungsdaten().getInfomaBankcode();
+		Objects.requireNonNull(infomaBankcode);
+		return infomaBankcode;
+	}
+
 	@Nullable
 	@Override
 	protected String getDimensionswert3() {
