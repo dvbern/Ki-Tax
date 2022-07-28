@@ -7,7 +7,6 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BANKCODE;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BELEGNUMMER_PRAEFIX;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BUCHUNGSKREIS;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DATE_FORMAT;
@@ -31,6 +30,7 @@ public abstract class InfomaStammdaten {
 	private final String dimensionswert3;
 	private final String betrag;
 	private final String faelligkeitsdatum;
+	private final String bankcode;
 	private final String kundenspezifischesFeld2;
 
 	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer) {
@@ -43,6 +43,7 @@ public abstract class InfomaStammdaten {
 		this.dimensionswert3 = getDimensionswert3();
 		this.betrag = getBetrag(zahlung);
 		this.faelligkeitsdatum = getFaelligkeitsdatum(zahlung);
+		this.bankcode = getBankCode(zahlung);
 		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung);
 	}
 
@@ -60,6 +61,9 @@ public abstract class InfomaStammdaten {
 
 	@Nullable
 	protected abstract String getFaelligkeitsdatum(@Nonnull Zahlung zahlung);
+
+	@Nonnull
+	protected abstract String getBankCode(@Nonnull Zahlung zahlung);
 
 	@Nonnull
 	private String getBuchungstext(Zahlung zahlung) {
@@ -105,7 +109,7 @@ public abstract class InfomaStammdaten {
 		args[16] = normalizeAndAbbreviate(dimensionswert3, 20);
 		args[30] = betrag;
 		args[32] = faelligkeitsdatum;
-		args[63] = BANKCODE;
+		args[63] = bankcode;
 		args[68] = normalize(kundenspezifischesFeld2);
 
 		return StringUtils.join(args, SEPARATOR) + NEWLINE;
