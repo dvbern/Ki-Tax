@@ -40,6 +40,8 @@ import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.SimpleTable;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
 
@@ -52,6 +54,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String KONTAKTPERSON = "PdfGeneration_kontaktperson";
 	protected static final String ADRESSE = "PdfGeneration_adresse";
 	protected static final String AUSZAHLUNG = "PdfGeneration_auszahlung";
+	protected static final String GEMEINDE = "Reports_gemeindeTitle";
+	protected static final String ADRESSE_GEMEINDE = "PdfGeneration_adresseGemeinde";
 
 	protected static final String ANGEBOT = "PdfGeneration_angebot";
 	protected static final String NAME_ANGEBOT = "PdfGeneration_nameAngebot";
@@ -83,6 +87,10 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String TARIF_FB_AUS_TS_AGELEITET = "PdfGeneration_tarifFbAusTsAgeleitet";
 	protected static final String ANDERER_TARIF_ANDERE_GEMEINDE = "PdfGeneration_andererTarifAndereGemeinde";
 	protected static final String TARIFSYSTEM_BEMERKUNGEN = "PdfGeneration_tarifsystemBemerkungen";
+	protected static final String TARIFSYSTEM = "PdfGeneration_tarifsystem";
+	protected static final String PERSONAL_UND_QUALITAET = "PdfGeneration_personalUndQualitaet";
+	protected static final String KOOPERATION = "PdfGeneration_kooperation";
+	protected static final String OEFFNUNGSZEITEN = "PdfGeneration_oeffnungszeiten";
 
 	protected static final String NUTZUNG = "PdfGeneration_nutzung";
 	protected static final String ANZAHL_BETREUUNGSTAGE = "PdfGeneration_anzahlBetreuungstage";
@@ -94,8 +102,12 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String DAVON_1_ZYKLUS = "PdfGeneration_davon1Zyklus";
 	protected static final String DAVON_2_ZYKLUS = "PdfGeneration_davon2Zyklus";
 	protected static final String DAVON_3_ZYKLUS = "PdfGeneration_davon3Zyklus";
+	protected static final String BETREUUNGSTAGE = "PdfGeneration_betreuungstage";
+	protected static final String KINDER = "Reports_kinderTitle";
 
 	protected static final String KOSTEN_EINNAHMEN = "PdfGeneration_kostenEinnahmen";
+	protected static final String EINNAHMEN = "PdfGeneration_einnahmen";
+	protected static final String KOSTEN = "PdfGeneration_kosten";
 	protected static final String PERSONALKOSTEN = "PdfGeneration_personalkosten";
 	protected static final String DAVON_LEITUNG_ADMINISTRATION = "PdfGeneration_davonLeitungAdministration";
 	protected static final String SACHKOSTEN = "PdfGeneration_sachkosten";
@@ -107,6 +119,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 
 
 	private static final float TABLE_SPACING_AFTER = 20;
+	private static final float SUB_HEADER_SPACING_AFTER = 10;
 
 	@Nonnull
 	private PdfGenerator pdfGenerator;
@@ -186,14 +199,18 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenAngebot();
+
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
-		table.addHeaderRow(translate(ANGEBOT, mandant), "");
+
+		table.addHeaderRow(" ", "");
 		table.addRow(
 				translate(NAME_ANGEBOT, mandant),
 				angebot.getAngebot());
+		table.addHeaderRow(translate(KONTAKTPERSON, mandant), "");
 		table.addRow(
 				translate(KONTAKTPERSON, mandant),
 				getKontaktpersonAsString(angebot));
+		table.addHeaderRow(translate(ANGEBOT, mandant), "");
 		table.addRow(
 				translate(FERIENWOCHEN_HERBST, mandant),
 				getIntValue(angebot.getAnzahlFerienwochenHerbstferien()));
@@ -216,6 +233,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(ANGEBOT_BEMERKUNG, mandant),
 				angebot.getBemerkungenAnzahlFerienwochen());
 
+		table.addHeaderRow(translate(OEFFNUNGSZEITEN, mandant), "");
 		table.addRow(
 				translate(STUNDEN_PRO_BETREUUNGSTAG, mandant),
 				angebot.getAnzahlStundenProBetreuungstag());
@@ -226,6 +244,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(OEFFNUNGSZEITEN_BEMEKERUNG, mandant),
 				angebot.getBemerkungenOeffnungszeiten());
 
+		table.addHeaderRow(translate(KOOPERATION, mandant), "");
 		table.addRow(
 				translate(AM_ANGEBOT_BETEILIGTE_GEMEINDEN, mandant),
 				angebot.getFinanziellBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).orElse(""));
@@ -245,6 +264,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(KOOPERATION_BEMERKUNG, mandant),
 				angebot.getBemerkungenKooperation());
 
+		table.addHeaderRow(translate(PERSONAL_UND_QUALITAET, mandant), "");
 		table.addRow(
 				translate(LEITUNG_AUSGEBILDET, mandant),
 				getBooleanAsString(angebot.getLeitungDurchPersonMitAusbildung()));
@@ -261,6 +281,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(PERSONAL_QUALITAET_BEMERKUNG, mandant),
 				angebot.getBemerkungenPersonal());
 
+		table.addHeaderRow(translate(TARIFSYSTEM, mandant), "");
 		table.addRow(
 				translate(UNTERSCHIEDLICHE_TARIFSYSTEME, mandant),
 				getBooleanAsString(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde()));
@@ -294,8 +315,10 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenNutzung();
+
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
-		table.addHeaderRow(translate(NUTZUNG, mandant), "");
+
+		table.addHeaderRow(translate(BETREUUNGSTAGE, mandant), "");
 		table.addRow(
 				translate(ANZAHL_BETREUUNGSTAGE, mandant),
 				nutzung.getAnzahlBetreuungstageKinderBern());
@@ -312,6 +335,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(DAVON_BEDARF_VOLKSSCHULANGEBOT, mandant),
 				nutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
 
+		table.addHeaderRow(translate(KINDER, mandant), "");
 		table.addRow(
 				translate(ANZAHL_BETREUTE_KINDER, mandant),
 				getIntValue(nutzung.getAnzahlBetreuteKinder()));
@@ -342,7 +366,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
 
-		table.addHeaderRow(translate(KOSTEN_EINNAHMEN, mandant), "");
+		table.addHeaderRow(translate(EINNAHMEN, mandant), "");
 
 		table.addRow(
 				translate(PERSONALKOSTEN, mandant),
@@ -363,6 +387,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				translate(BEMERKUNGEN_KOSTEN, mandant),
 				kostenEinnahmen.getBemerkungenKosten());
 
+		table.addHeaderRow(translate(KOSTEN, mandant), "");
 		table.addRow(
 				translate(EINNAHMEN_ELTERNBEITRAEGE, mandant),
 				kostenEinnahmen.getElterngebuehren());
@@ -467,9 +492,25 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph("hello"));
+
+			Paragraph stammdatenHeader = new Paragraph(translate(STAMMDATEN, mandant));
+			stammdatenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(stammdatenHeader);
 			document.add(this.createTableStammdaten());
+
+			Paragraph angebotHeader = new Paragraph(translate(ANGEBOT, mandant));
+			angebotHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(angebotHeader);
 			document.add(this.createTableAngebot());
+
+			Paragraph nutzungHeader = new Paragraph(translate(NUTZUNG, mandant));
+			nutzungHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(nutzungHeader);
 			document.add(this.createTableNutzung());
+
+			Paragraph kostenEinnahmenHeader = new Paragraph(translate(KOSTEN_EINNAHMEN, mandant));
+			kostenEinnahmenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(kostenEinnahmenHeader);
 			document.add(this.createTableKostenEinnahmen());
 		};
 	}
