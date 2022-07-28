@@ -165,7 +165,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 			return fileSaverService.save(
 				bytes,
-				getFileName(reportVorlage, locale),
+				getFileName(reportVorlage, locale, institutionStammdaten.getInstitution().getName()),
 				Constants.TEMP_REPORT_FOLDERNAME,
 				getContentTypeForExport());
 		}
@@ -299,9 +299,13 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	}
 
 	@Nonnull
-	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale) {
-		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale,
-				requireNonNull(principalBean.getMandant())) + ".xlsx";
+	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale, String... args) {
+		return ServerMessageUtil.translateEnumValue(
+			reportVorlage.getDefaultExportFilename(),
+			locale,
+			requireNonNull(principalBean.getMandant()),
+			args
+		) + ".xlsx";
 	}
 
 	@Override
