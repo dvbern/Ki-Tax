@@ -1377,7 +1377,7 @@ export class EbeguRestUtil {
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
             gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
-            gesuchTS.finSitAenderungGueltigAbDatum = gesuchFromServer.finSitAenderungGueltigAbDatum;
+            gesuchTS.finSitAenderungGueltigAbDatum = DateUtil.localDateToMoment(gesuchFromServer.finSitAenderungGueltigAbDatum);
             return gesuchTS;
         }
         return undefined;
