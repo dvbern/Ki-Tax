@@ -93,8 +93,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			return zeitabschnitte;
 		}
 		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
-		Objects.requireNonNull(mutationsEingansdatum);
 
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 
@@ -106,46 +104,58 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
-				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
-				LocalDateTime timestampVerfuegtVorgaenger = null;
-				if (finSitAbgelehnt) {
-					// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
-					timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
-					Objects.requireNonNull(timestampVerfuegtVorgaenger);
-					handleAbgelehnteFinsit(inputAsiv, resultAsivVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
-				} else {
-					// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-					handleVerminderungEinkommen(inputAsiv,
-						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-				}
-				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-
-				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
+				handleMutation(inputAsiv, resultAsivVorangehenderAbschnitt, platz);
 				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt, vorangehenderAbschnitt);
 
 				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
 					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
 				}
 
-				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
 				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
-					if (finSitAbgelehnt) {
-						// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
-						handleAbgelehnteFinsit(inputGemeinde, resultGemeindeVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
-					} else {
-						// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-						handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
-					}
-					handleAnpassungErweiterteBeduerfnisse(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
-					handleAnpassungAnspruch(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+					handleMutation(inputGemeinde, resultGemeindeVorangehenderAbschnitt, platz);
 				}
 			}
 		}
 		return zeitabschnitte;
+	}
+
+	private void handleMutation(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz) {
+
+		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
+		Objects.requireNonNull(mutationsEingansdatum);
+
+		handleFinanzielleSituation(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		handleEinreichfrist(inputAktuel, mutationsEingansdatum);
+		handleAnpassungAnspruch(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+	}
+
+	private void handleFinanzielleSituation(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz,
+		LocalDate mutationsEingansdatum) {
+
+		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+		Objects.requireNonNull(vorgaengerVerfuegung);
+
+		LocalDateTime timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
+		Objects.requireNonNull(timestampVerfuegtVorgaenger);
+
+		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
+		if (finSitAbgelehnt) {
+			// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
+			handleAbgelehnteFinsit(inputAktuel, resultVorgaenger, timestampVerfuegtVorgaenger);
+		} else {
+			// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
+			handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		}
 	}
 
 	private void handleAuszahlungAnElternFlag(
@@ -158,10 +168,10 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		}
 	}
 
-	private void handleEinreichfrist(BGCalculationInput inputAsiv, LocalDate mutationsEingansdatum) {
+	private void handleEinreichfrist(BGCalculationInput input, LocalDate mutationsEingansdatum) {
 		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag ZuSpaetEingereicht gesetzt werden
-		if(isMeldungZuSpaet(inputAsiv.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			inputAsiv.setZuSpaetEingereicht(true);
+		if(isMeldungZuSpaet(input.getParent().getGueltigkeit(), mutationsEingansdatum)) {
+			input.setZuSpaetEingereicht(true);
 		}
 	}
 
