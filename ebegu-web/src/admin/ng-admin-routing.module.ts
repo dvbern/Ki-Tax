@@ -74,6 +74,9 @@ const states: Ng2StateDeclaration[] = [
         name: 'admin.gesuchsperiode',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         component: GesuchsperiodeViewXComponent,
+        params: {
+            gesuchsperiodeId: '',
+        },
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
         },
