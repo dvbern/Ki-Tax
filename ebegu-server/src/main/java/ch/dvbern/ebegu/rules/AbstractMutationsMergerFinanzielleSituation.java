@@ -42,51 +42,15 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 			// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
 			handleAbgelehnteFinsit(inputAktuel, resultVorgaenger, timestampVerfuegtVorgaenger);
 		} else {
-			// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-			handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+			// Der Spezialfall bei Änderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
+			handleEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		}
 	}
 
-	private void handleVerminderungEinkommen(
-		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
-	) {
-		// Massgebendes Einkommen
-		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
-		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) <= 0) {
-			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
-			if (!inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
-				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
-				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
-				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
-				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
-				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
-
-				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
-					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
-						getValueOrZero(
-							resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
-				} else {
-					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
-				}
-				if (resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
-					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(
-						getValueOrZero(
-							resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
-				} else {
-					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
-				}
-				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
-				}
-			}
-		}
-	}
-
+	protected abstract void handleEinkommen(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		LocalDate mutationsEingansdatum);
 
 	private void handleAbgelehnteFinsit(
 		@Nonnull BGCalculationInput inputData,
@@ -110,11 +74,14 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 	}
 
 	@Nonnull
-	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
+	protected BigDecimal getValueOrZero(@Nullable BigDecimal value) {
 		if (value == null) {
 			return BigDecimal.ZERO;
 		}
 		return value;
 	}
 
+	protected Locale getLocale() {
+		return locale;
+	}
 }
