@@ -74,7 +74,8 @@ export class FerienbetreuungComponent implements OnInit {
     }
 
     public downloadFerienbetreuungReport(): void {
-        this.ferienbetreuungService.generateFerienbetreuungReport(this.ferienbetreuungContainer).subscribe(res => this.openDownloadForFile(res));
+        this.ferienbetreuungService.generateFerienbetreuungReport(this.ferienbetreuungContainer)
+            .subscribe(res => this.openDownloadForFile(res), err => LOG.error(err));
     }
 
     private openDownloadForFile(response: BlobPart): void {

@@ -18,21 +18,16 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
-import ch.dvbern.lib.invoicegenerator.dto.BaseLayoutConfiguration;
 
 public class NoAdressPdfGenerator extends PdfGenerator{
 
-	@Nonnull
-	private final BaseLayoutConfiguration configuration;
 
 	public NoAdressPdfGenerator(@Nonnull PdfLayoutConfiguration configuration) {
 		super(configuration);
-		this.configuration = configuration;
 	}
 
 	@Nonnull
