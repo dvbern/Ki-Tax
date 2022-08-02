@@ -150,6 +150,66 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				NoAdressPdfGenerator.create();
 	}
 
+	@Override
+	@Nonnull
+	protected String getDocumentTitle() {
+		return translate(
+				FERIENBETREUUNG_TITLE,
+				mandant,
+				ferienbetreuungAngabenContainer.getGemeinde().getName(),
+				ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
+	}
+
+	@Override
+	@Nonnull
+	protected List<String> getEmpfaengerAdresse() {
+		return List.of("");
+	}
+
+	@Override
+	@Nonnull
+	protected PdfGenerator getPdfGenerator() {
+		return pdfGenerator;
+	}
+
+	@Override
+	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
+		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
+	}
+
+	@Override
+	@Nonnull
+	protected CustomGenerator getCustomGenerator() {
+		return (generator, ctx) -> {
+			Document document = generator.getDocument();
+
+			document.add(this.createStatus());
+
+			Paragraph stammdatenHeader = new Paragraph(translate(STAMMDATEN, mandant));
+			stammdatenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(stammdatenHeader);
+			document.add(this.createTableStammdaten());
+
+			Paragraph angebotHeader = new Paragraph(translate(ANGEBOT, mandant));
+			angebotHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(angebotHeader);
+			document.add(this.createTableAngebot());
+
+			Paragraph nutzungHeader = new Paragraph(translate(NUTZUNG, mandant));
+			nutzungHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(nutzungHeader);
+			document.add(this.createTableNutzung());
+
+			document.newPage();
+
+			Paragraph kostenEinnahmenHeader = new Paragraph(translate(KOSTEN_EINNAHMEN, mandant));
+			kostenEinnahmenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(kostenEinnahmenHeader);
+			document.add(this.createTableKostenEinnahmen());
+		};
+	}
+
+	@Nonnull
 	private PdfPTable createTableStammdaten() {
 		FerienbetreuungAngabenStammdaten stammdaten =
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
@@ -189,6 +249,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private PdfPTable createTableAngebot() {
 		FerienbetreuungAngabenAngebot angebot =
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
@@ -305,6 +366,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private PdfPTable createTableNutzung() {
 		FerienbetreuungAngabenNutzung nutzung =
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
@@ -353,6 +415,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private PdfPTable createTableKostenEinnahmen() {
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
@@ -401,6 +464,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return value == null ? null : value.intValue();
 	}
 
+	@Nonnull
 	private String getBooleanAsString(@Nullable Boolean value) {
 		if (value == null) {
 			return "";
@@ -411,7 +475,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return translate("label_false", mandant);
 	}
 
-	private String getFBAuszahlungAsString(FerienbetreuungAngabenStammdaten stammdaten) {
+	@Nonnull
+	private String getFBAuszahlungAsString(@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		if (stammdaten.getAuszahlungsdaten() == null) {
 			return "";
 		}
@@ -424,7 +489,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return sb.toString();
 	}
 
-	private String getKontaktpersonAsString(FerienbetreuungAngabenStammdaten stammdaten) {
+	@Nonnull
+	private String getKontaktpersonAsString(@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getStammdatenKontaktpersonVorname())) {
 			sb.append(stammdaten.getStammdatenKontaktpersonVorname());
@@ -440,7 +506,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return sb.toString();
 	}
 
-	private String getKontaktpersonAsString(FerienbetreuungAngabenAngebot stammdaten) {
+	@Nonnull
+	private String getKontaktpersonAsString(@Nonnull FerienbetreuungAngabenAngebot stammdaten) {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getAngebotKontaktpersonVorname())) {
 			sb.append(stammdaten.getAngebotKontaktpersonVorname());
@@ -478,63 +545,13 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		);
 	}
 
-	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
-	}
 
 	@Nonnull
-	protected CustomGenerator getCustomGenerator() {
-		return (generator, ctx) -> {
-			Document document = generator.getDocument();
-
-			document.add(this.createStatus());
-
-			Paragraph stammdatenHeader = new Paragraph(translate(STAMMDATEN, mandant));
-			stammdatenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
-			document.add(stammdatenHeader);
-			document.add(this.createTableStammdaten());
-
-			Paragraph angebotHeader = new Paragraph(translate(ANGEBOT, mandant));
-			angebotHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
-			document.add(angebotHeader);
-			document.add(this.createTableAngebot());
-
-			Paragraph nutzungHeader = new Paragraph(translate(NUTZUNG, mandant));
-			nutzungHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
-			document.add(nutzungHeader);
-			document.add(this.createTableNutzung());
-
-			document.newPage();
-
-			Paragraph kostenEinnahmenHeader = new Paragraph(translate(KOSTEN_EINNAHMEN, mandant));
-			kostenEinnahmenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
-			document.add(kostenEinnahmenHeader);
-			document.add(this.createTableKostenEinnahmen());
-		};
-	}
-
 	private Element createStatus() {
 		Paragraph paragraph = new Paragraph(translate("FerienbetreuungAngabenStatus_" + this.ferienbetreuungAngabenContainer.getStatusString(), mandant));
 		paragraph.setSpacingAfter(TABLE_SPACING_AFTER);
 		return paragraph;
 	}
 
-	@Nonnull
-	protected String getDocumentTitle() {
-		return translate(
-				FERIENBETREUUNG_TITLE,
-				mandant,
-				ferienbetreuungAngabenContainer.getGemeinde().getName(),
-				ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
-	}
 
-	@Nonnull
-	protected List<String> getEmpfaengerAdresse() {
-		return List.of("");
-	}
-
-	@Nonnull
-	protected PdfGenerator getPdfGenerator() {
-		return pdfGenerator;
-	}
 }
