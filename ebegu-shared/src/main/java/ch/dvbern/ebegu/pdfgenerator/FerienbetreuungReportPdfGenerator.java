@@ -127,8 +127,6 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	@Nonnull
 	protected final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
 
-	protected Locale sprache;
-
 	public FerienbetreuungReportPdfGenerator(
 			@Nonnull FerienbetreuungAngabenContainer gemeindeAntrag,
 			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
