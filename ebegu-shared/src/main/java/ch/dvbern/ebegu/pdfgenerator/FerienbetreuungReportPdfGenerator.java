@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
@@ -486,6 +487,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 
+			document.add(this.createStatus());
+
 			Paragraph stammdatenHeader = new Paragraph(translate(STAMMDATEN, mandant));
 			stammdatenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(stammdatenHeader);
@@ -501,11 +504,19 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 			document.add(nutzungHeader);
 			document.add(this.createTableNutzung());
 
+			document.newPage();
+
 			Paragraph kostenEinnahmenHeader = new Paragraph(translate(KOSTEN_EINNAHMEN, mandant));
 			kostenEinnahmenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(kostenEinnahmenHeader);
 			document.add(this.createTableKostenEinnahmen());
 		};
+	}
+
+	private Element createStatus() {
+		Paragraph paragraph = new Paragraph(translate("FerienbetreuungAngabenStatus_" + this.ferienbetreuungAngabenContainer.getStatusString(), mandant));
+		paragraph.setSpacingAfter(TABLE_SPACING_AFTER);
+		return paragraph;
 	}
 
 	@Nonnull
