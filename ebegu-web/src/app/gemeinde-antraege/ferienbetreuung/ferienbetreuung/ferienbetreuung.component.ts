@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
@@ -48,7 +49,8 @@ export class FerienbetreuungComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly wizardStepXRS: WizardStepXRS,
-        private readonly downloadRS: DownloadRS
+        private readonly downloadRS: DownloadRS,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -79,7 +81,11 @@ export class FerienbetreuungComponent implements OnInit {
         let file;
         let filename;
         file = new Blob([response], {type: 'application/pdf'});
-        filename = "henlo";
+        filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
+            {
+                gemeinde: this.ferienbetreuungContainer.gemeinde.name,
+                gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString,
+            });
         this.downloadRS.openDownload(file, filename);
     }
 }

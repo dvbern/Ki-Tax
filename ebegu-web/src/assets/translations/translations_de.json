@@ -2973,5 +2973,6 @@
     "OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_2": "Nachmittagsbetreuung 2 <br>(zweite Nachmittagshälfte)",
     "OEFFNUNGSZEIT_UNTERRICHT_BLOCKZEITEN": "Unterricht nach Blockzeiten",
     "PDF_EXPORTIEREN": "PDF exportieren",
+    "FERIENBETREUUNG_REPORT_NAME": "Ferienbetreuung {{gemeinde}} {{gp}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

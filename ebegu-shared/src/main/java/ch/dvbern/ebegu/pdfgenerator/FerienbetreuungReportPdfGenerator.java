@@ -280,10 +280,10 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		table.addHeaderRow(translate(TARIFSYSTEM, mandant), "");
 		table.addRow(
 				translate(UNTERSCHIEDLICHE_TARIFSYSTEME, mandant),
-				getBooleanAsString(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde()));
+				getBooleanAsString(angebot.getFixerTarifKinderDerGemeinde()));
 		table.addRow(
 				translate(RABATT_WIRTSCHAFTLICHE_SITUATION, mandant),
-				getBooleanAsString(angebot.getFixerTarifKinderDerGemeinde()));
+				getBooleanAsString(angebot.getEinkommensabhaengigerTarifKinderDerGemeinde()));
 		table.addRow(
 				translate(TARIF_TS_FUER_FB, mandant),
 				getBooleanAsString(angebot.getTagesschuleTarifGiltFuerFerienbetreuung()));
@@ -429,7 +429,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getStammdatenKontaktpersonVorname())) {
 			sb.append(stammdaten.getStammdatenKontaktpersonVorname());
-			sb.append(Constants.LINE_BREAK);
+			sb.append(Constants.SPACE);
 			sb.append(stammdaten.getStammdatenKontaktpersonNachname());
 			sb.append(Constants.LINE_BREAK);
 			sb.append(stammdaten.getStammdatenKontaktpersonFunktion());
@@ -445,7 +445,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getAngebotKontaktpersonVorname())) {
 			sb.append(stammdaten.getAngebotKontaktpersonVorname());
-			sb.append(Constants.LINE_BREAK);
+			sb.append(Constants.SPACE);
 			sb.append(stammdaten.getAngebotKontaktpersonNachname());
 			if (stammdaten.getAngebotAdresse() != null) {
 				sb.append(Constants.LINE_BREAK);

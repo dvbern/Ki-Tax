@@ -816,7 +816,7 @@ public class FerienbetreuungResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
 		SACHBEARBEITER_FERIENBETREUUNG })
-	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenFalscheAngaben(
+	public JaxFerienbetreuungAngabenKostenEinnahmen getFerienbetreuungReport(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response,
@@ -862,7 +862,7 @@ public class FerienbetreuungResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 			ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
 			SACHBEARBEITER_FERIENBETREUUNG })
-	public Response ferienbetreuungKostenEinnahmenFalscheAngaben(
+	public Response getFerienbetreuungReport(
 			@Context UriInfo uriInfo,
 			@Context HttpServletResponse response,
 			@Nonnull @NotNull @PathParam("containerId") JaxId containerId
@@ -875,7 +875,7 @@ public class FerienbetreuungResource {
 								"ferienbetreuungKostenEinnahmenFalscheAngaben",
 								containerId.getId()));
 
-		authorizer.checkWriteAuthorization(container);
+		authorizer.checkReadAuthorization(container);
 
 		final byte[] content = ferienbetreuungService.generateFerienbetreuungReportDokument(container);
 
