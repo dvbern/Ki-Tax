@@ -479,13 +479,12 @@ public class PDFServiceBean implements PDFService {
 	public byte[] generateFerienbetreuungReport(
 			@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
 			@Nonnull GemeindeStammdaten gemeindeStammdaten,
-			boolean writeProtected,
 			@Nonnull Locale locale
 	) throws MergeDocException {
 
 		Objects.requireNonNull(ferienbetreuung, "Das Argument 'ferienbetreuung' darf nicht leer sein");
 
 		FerienbetreuungReportPdfGenerator pdfGenerator = new FerienbetreuungReportPdfGenerator(ferienbetreuung, gemeindeStammdaten);
-		return generateDokument(pdfGenerator, !writeProtected, locale, gemeindeStammdaten.getGemeinde().getMandant());
+		return generateDokument(pdfGenerator, false, locale, gemeindeStammdaten.getGemeinde().getMandant());
 	}
 }

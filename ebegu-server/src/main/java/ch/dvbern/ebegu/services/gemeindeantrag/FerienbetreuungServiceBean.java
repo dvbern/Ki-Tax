@@ -702,7 +702,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public byte[] generateFerienbetreuungReportDokument(
 			@Nonnull FerienbetreuungAngabenContainer container) throws MergeDocException {
 		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId()).orElseThrow();
-		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, false, Constants.DEFAULT_LOCALE) ;
+		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE) ;
 	}
 }
 

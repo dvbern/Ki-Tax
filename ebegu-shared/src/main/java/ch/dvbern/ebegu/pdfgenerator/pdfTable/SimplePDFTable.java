@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import com.lowagie.text.DocumentException;
@@ -58,7 +57,6 @@ public class SimplePDFTable {
 		} catch (DocumentException e) {
 		}
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
-		table.setHeaderRows(1);
 		for (int i = 0; i < rows.size(); i++) {
 			SimplePDFTableRow row = rows.get(i);
 

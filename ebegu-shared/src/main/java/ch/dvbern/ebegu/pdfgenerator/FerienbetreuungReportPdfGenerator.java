@@ -41,18 +41,18 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
-import com.lowagie.text.SimpleTable;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
 
 public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
+
+	protected static final String FERIENBETREUUNG_TITLE = "PdfGeneration_ferienbetruungTitle";
 
 	protected static final String AM_ANGEBOT_BETEILIGTE_GEMEINDEN = "PdfGeneration_amAngebotBeteiligteGemeinden";
 	protected static final String STAMMDATEN = "PdfGeneration_stammdaten";
 	protected static final String SEIT_WANN_FB = "PdfGeneration_seitWannFerienbetreuungen";
 	protected static final String TRAEGERSCHAFT = "Reports_traegerschaftTitle";
 	protected static final String KONTAKTPERSON = "PdfGeneration_kontaktperson";
-	protected static final String ADRESSE = "PdfGeneration_adresse";
 	protected static final String AUSZAHLUNG = "PdfGeneration_auszahlung";
 	protected static final String GEMEINDE = "Reports_gemeindeTitle";
 	protected static final String ADRESSE_GEMEINDE = "PdfGeneration_adresseGemeinde";
@@ -122,13 +122,10 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	private static final float SUB_HEADER_SPACING_AFTER = 10;
 
 	@Nonnull
-	private PdfGenerator pdfGenerator;
+	private NoAdressPdfGenerator pdfGenerator;
 
 	@Nonnull
 	protected final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
-
-	@Nonnull
-	private GemeindeStammdaten gemeindeStammdaten;
 
 	protected Locale sprache;
 
@@ -137,9 +134,8 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
 		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
 		this.ferienbetreuungAngabenContainer = gemeindeAntrag;
-		this.gemeindeStammdaten = gemeindeStammdaten;
 		initLocale(gemeindeStammdaten);
-		initGenerator(gemeindeStammdaten);
+		initGenerator();
 	}
 
 	private void initLocale(@Nonnull GemeindeStammdaten stammdaten) {
@@ -150,9 +146,9 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		}
 	}
 
-	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten) {
+	private void initGenerator() {
 		this.pdfGenerator =
-				PdfGenerator.create(stammdaten.getGemeindeStammdatenKorrespondenz(), getAbsenderAdresse(), false);
+				NoAdressPdfGenerator.create();
 	}
 
 	private PdfPTable createTableStammdaten() {
@@ -176,7 +172,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				stammdaten.getTraegerschaft()
 		);
 		table.addRow(
-				translate(ADRESSE, mandant),
+				translate(ADRESSE_GEMEINDE, mandant),
 				stammdaten.getStammdatenAdresse() != null ? stammdaten.getStammdatenAdresse().getAddressAsString() : ""
 		);
 		table.addRow(
@@ -246,7 +242,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 
 		table.addHeaderRow(translate(KOOPERATION, mandant), "");
 		table.addRow(
-				translate(AM_ANGEBOT_BETEILIGTE_GEMEINDEN, mandant),
+				translate(KOOPERATION_GEMEINDEN, mandant),
 				angebot.getFinanziellBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).orElse(""));
 		table.addRow(
 				translate(GEMEINDE_FUEHRT_SELBER, mandant),
@@ -429,7 +425,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return sb.toString();
 	}
 
-	public String getKontaktpersonAsString(FerienbetreuungAngabenStammdaten stammdaten) {
+	private String getKontaktpersonAsString(FerienbetreuungAngabenStammdaten stammdaten) {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getStammdatenKontaktpersonVorname())) {
 			sb.append(stammdaten.getStammdatenKontaktpersonVorname());
@@ -445,7 +441,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return sb.toString();
 	}
 
-	public String getKontaktpersonAsString(FerienbetreuungAngabenAngebot stammdaten) {
+	private String getKontaktpersonAsString(FerienbetreuungAngabenAngebot stammdaten) {
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotEmpty(stammdaten.getAngebotKontaktpersonVorname())) {
 			sb.append(stammdaten.getAngebotKontaktpersonVorname());
@@ -491,7 +487,6 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected CustomGenerator getCustomGenerator() {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
-			document.add(PdfUtil.createParagraph("hello"));
 
 			Paragraph stammdatenHeader = new Paragraph(translate(STAMMDATEN, mandant));
 			stammdatenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
@@ -517,7 +512,11 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 
 	@Nonnull
 	protected String getDocumentTitle() {
-		return "test";
+		return translate(
+				FERIENBETREUUNG_TITLE,
+				mandant,
+				ferienbetreuungAngabenContainer.getGemeinde().getName(),
+				ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
 	}
 
 	@Nonnull

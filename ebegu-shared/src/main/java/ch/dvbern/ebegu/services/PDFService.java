@@ -116,7 +116,6 @@ public interface PDFService {
 	byte[] generateFerienbetreuungReport(
 		@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
 		@Nonnull GemeindeStammdaten gemeindeStammdaten,
-		boolean writeProtected,
 		@Nonnull Locale locale
 	) throws MergeDocException;
 }
