@@ -31,7 +31,6 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
-import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFall} from '../../../models/TSFall';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
