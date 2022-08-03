@@ -24,8 +24,8 @@ public final class InfomaConstants {
 	public static final String KONTOART_ZAHLUNG = "2";
 	public static final String KONTOART_FINANZBUCHHALTUNG = "0";
 
-	public static final String KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION = "3636.022";
-	public static final String KONTONUMMER_FINANZBUCHHALTUNG_ELTERN = "3637.014";
+	public static final String KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION = "3637.010";
+	public static final String KONTONUMMER_FINANZBUCHHALTUNG_ELTERN = "3637.010";
 
 	public static final String BUCHUNGSKREIS = "1";
 	public static final String INSTITUTIONELLE_GLIEDERUNG = "215";
