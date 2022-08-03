@@ -157,21 +157,24 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
-        // Die Einstellung bezueglich Kontingentierung lesen
+        // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
         // tslint:disable-next-line:early-exit
         if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
-            this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+                this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
-            ).then((response: TSEinstellung[]) => {
-                response.filter(r => r.key === TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED)
-                    .forEach(einstellung => {
-                        this.kontingentierungEnabled = JSON.parse(einstellung.value);
-                    });
-                response.filter(r => r.key === TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT)
-                    .forEach(einstellung => {
-                        this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(einstellung.value);
-                    });
-            });
+            ).then(response => {
+                    this.kontingentierungEnabled = JSON.parse(response.value);
+                });
+
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id,
+            ).then(response => {
+                    this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
+                });
         }
     }
 
@@ -613,8 +616,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public showKeinKontingent(): boolean {
         return this.getGesuch() ? (this.getGesuch().typ !== TSAntragTyp.MUTATION
-            && this.showVerfuegenStarten()
-            && this.kontingentierungEnabled) : false;
+                && this.showVerfuegenStarten()
+                && this.kontingentierungEnabled)
+            : false;
     }
 
     public showKontingentVorhanden(): boolean {
