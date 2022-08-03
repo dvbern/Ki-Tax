@@ -124,7 +124,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 					found = true;
 				}
 				// wenn die erste Betreuung Abschnitt ist schon vorbei, eingewoehnung macht weniger Sinn
-				if (!found && zeitabschnitt.getRelevantBgCalculationInput().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
+				if (!found && vorherigerZeitabschnitt.getRelevantBgCalculationInput().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
 					found = true;
 				}
 				if (vorherigerZeitabschnitt != null) {
