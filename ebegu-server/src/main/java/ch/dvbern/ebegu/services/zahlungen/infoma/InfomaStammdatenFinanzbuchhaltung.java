@@ -7,6 +7,7 @@ import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.BANKCODE;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.DIMENSIONSWERT_3_FINANZBUCHHALTUNG;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.KONTONUMMER_FINANZBUCHHALTUNG_ELTERN;
 import static ch.dvbern.ebegu.services.zahlungen.infoma.InfomaConstants.KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION;
@@ -40,6 +41,12 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 			return KONTONUMMER_FINANZBUCHHALTUNG_INSTITUTION;
 		}
 		return KONTONUMMER_FINANZBUCHHALTUNG_ELTERN;
+	}
+
+	@Nonnull
+	@Override
+	protected String getBankCode(@Nonnull Zahlung zahlung) {
+		return BANKCODE;
 	}
 
 	@Nullable

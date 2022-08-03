@@ -48,6 +48,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -356,7 +357,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Nonnull
 	@Override
-	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen() {
+	public List<LastenausgleichTagesschuleAngabenGemeindeContainer> getAllLastenausgleicheTagesschulen(String gesuchPeriodeId) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -378,6 +379,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			Predicate gemeindeIn =
 				root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gemeinde).in(gemeinden);
 			predicates.add(gemeindeIn);
+		}
+		if (gesuchPeriodeId != null) {
+			Predicate gesuchsperiodeEquals =
+					cb.equal(root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.gesuchsperiode).get(
+							AbstractEntity_.ID), gesuchPeriodeId);
+			predicates.add(gesuchsperiodeEquals);
 		}
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 

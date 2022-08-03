@@ -27,5 +27,5 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 public interface ReportLastenausgleichTagesschulenService {
 
 	@Nonnull
-	UploadFileInfo generateExcelReportLastenausgleichTagesschulen() throws ExcelMergeException, IOException;
+	UploadFileInfo generateExcelReportLastenausgleichTagesschulen(String gesuchPeriodeId) throws ExcelMergeException, IOException;
 }

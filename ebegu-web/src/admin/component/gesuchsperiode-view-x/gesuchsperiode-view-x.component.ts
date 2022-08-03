@@ -122,7 +122,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     public cancelGesuchsperiode(): void {
-        this.$state.go('admin.parameter');
+        this.$state.go('admin.gesuchsperioden');
     }
 
     public saveGesuchsperiode(): void {

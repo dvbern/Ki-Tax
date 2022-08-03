@@ -779,6 +779,7 @@
     "MUTATION": "Changement",
     "ALLE": "Tous",
     "GESUCHSPERIODEN": "Période couverte par la demande",
+    "GESUCHSPERIODEN_MENU": "Périodes",
     "GESUCHSPERIODE": "Période couverte par la demande {{gesuchsperiode}}",
     "GESUCHSPERIODE_GUELTIG_AB": "Début",
     "GESUCHSPERIODE_GUELTIG_BIS": "Fin",

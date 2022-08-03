@@ -218,6 +218,7 @@ public class BetreuungsgutscheinEvaluator {
 				// die Berechnung in einer (transienten) Preview-Verfügung geschrieben
 				Verfuegung verfuegungPreview = new Verfuegung();
 				platz.setVerfuegungPreview(verfuegungPreview);
+				verfuegungPreview.setPlatz(platz);
 
 				executor.calculateRechner(bgRechnerParameterDTO, kitaxParameter, locale, rechnerRulesForGemeinde, platz, zeitabschnitte);
 
