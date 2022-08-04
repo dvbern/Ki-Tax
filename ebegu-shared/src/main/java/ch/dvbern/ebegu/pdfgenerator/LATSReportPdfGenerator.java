@@ -38,6 +38,7 @@ import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
 public class LATSReportPdfGenerator extends MandantPdfGenerator {
@@ -65,6 +66,8 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String NORMLOHNKOSTEN_BETREUUNG = "PdfGeneration_normlohnkostenBetreuung";
 	protected static final String TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN =
 			"PdfGeneration_tatsachlicheEinnahmenElterngebuehren";
+	protected static final String RUCKERSTATTUNG_ELTERN = "PdfGeneration_ruckerstattungEltern";
+	protected static final String TS_TEILWEISE_GESCHLOSSEN = "PdfGeneration_tsTeilweiseGeschlossen";
 
 	protected static final String LATS_BETRAG = "PdfGeneration_latsBetrag";
 	protected static final String ERSTE_RATE = "PdfGeneration_ersteRate";
@@ -78,6 +81,7 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String EINNAHMEN_SUBVENTIONEN = "PdfGeneration_einnahmenSubventionen";
 	protected static final String KOSTENBEITRAG_GEMEINDE = "PdfGeneration_kostenbeitragGemeinde";
 	protected static final String ERTRAGSUBERSCHUSS_GEMEINDE = "PdfGeneration_ertragsuberschussGemeinde";
+	protected static final String ERTRAGSUBERSCHUSS_GEMEINDE_VERWENDUNG = "PdfGeneration_ertragsuberschussGemeindeVerwendung";
 	protected static final String ERWARTETER_KOSTENBEITRAG_GEMEINDE = "PdfGeneration_erwarteterKostenbeitragGemeinde";
 	protected static final String UBERSCHUSS_VORJAHR = "PdfGeneration_uberschussVorjahr";
 
@@ -192,6 +196,11 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 			kontrollfragenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(kontrollfragenHeader);
 			document.add(this.createTableKontrollfragen());
+
+			Paragraph bemerkungenHeader = new Paragraph(translate(BEMERKUNGEN, mandant));
+			kontrollfragenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
+			document.add(bemerkungenHeader);
+			document.add(getBemerkungenPhrase());
 		};
 	}
 
@@ -210,6 +219,9 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		table.addRow(
+				translate(ALLE_TS_ANMELDUNGEN_IN_KIBON, mandant),
+				getBooleanAsString(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst()));
 		table.addHeaderRow(translate(ALLGEMEINE_ANGABEN_GEMEINDE, mandant), "");
 		table.addRow(
 				translate(BEDARF_TS_ANGEBOT_ELTERN_ABGEKLAERT, mandant),
@@ -236,9 +248,6 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
-				translate(ALLE_TS_ANMELDUNGEN_IN_KIBON, mandant),
-				getBooleanAsString(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst()));
-		table.addRow(
 				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		table.addRow(
@@ -262,6 +271,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		table.addRow(
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
+		table.addRow(
+				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getNextSchuljahrAsString()),
+				getBooleanAsString(angabenGemeinde.getTagesschuleTeilweiseGeschlossen()));
+		if(Boolean.TRUE.equals(angabenGemeinde.getTagesschuleTeilweiseGeschlossen())) {
+			table.addRow(
+					translate(RUCKERSTATTUNG_ELTERN, mandant),
+					angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
+		}
 
 		table.addRow(
 				translate(LATS_BETRAG, mandant, getSchuljahrAsString()),
@@ -290,18 +307,21 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		table.addRow(
 				translate(GESAMTKOSTEN_TS, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getGesamtKostenTagesschule());
-		table.addRow(translate(EINNAHMEN_LASTENAUSGLEICH, mandant), "");
+		table.addRow(translate(EINNAHMEN_LASTENAUSGLEICH, mandant), angabenGemeinde.getLastenausgleichsberechtigerBetrag());
 		table.addRow(translate(EINNAHMEN_ELTERNGEBUEHREN, mandant), angabenGemeinde.getEinnahmenElterngebuehren());
 		table.addRow(translate(EINNAHMEN_VERPFLEGUNG, mandant), angabenGemeinde.getEinnnahmenVerpflegung());
 		table.addRow(translate(EINNAHMEN_SUBVENTIONEN, mandant), angabenGemeinde.getEinnahmenSubventionenDritter());
 		table.addRow(translate(KOSTENBEITRAG_GEMEINDE, mandant), angabenGemeinde.getKostenbeitragGemeinde());
-		table.addRow(translate(ERTRAGSUBERSCHUSS_GEMEINDE, mandant), angabenGemeinde.getUeberschussVerwendung());
+		table.addRow(translate(ERTRAGSUBERSCHUSS_GEMEINDE, mandant), angabenGemeinde.getKostenueberschussGemeinde());
 		table.addRow(
 				translate(ERWARTETER_KOSTENBEITRAG_GEMEINDE, mandant),
 				angabenGemeinde.getErwarteterKostenbeitragGemeinde());
 		table.addRow(
 				translate(UBERSCHUSS_VORJAHR, mandant, getPreviousSchuljahrAsString()),
 				getBooleanAsString(angabenGemeinde.getUeberschussErzielt()));
+		if(Boolean.TRUE.equals(angabenGemeinde.getUeberschussErzielt())) {
+			table.addRow(translate(ERTRAGSUBERSCHUSS_GEMEINDE_VERWENDUNG, mandant), angabenGemeinde.getUeberschussVerwendung());
+		}
 
 		PdfPTable pdfPTable = table.createTable();
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
@@ -386,6 +406,17 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
 
 		return pdfPTable;
+	}
+
+	@Nonnull
+	private Phrase getBemerkungenPhrase() {
+		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
+				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
+						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
+						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
+
+
+		return new Phrase(angabenGemeinde.getBemerkungen(), getPageConfiguration().getFonts().getFont());
 	}
 
 	private String getPreviousSchuljahrAsString() {
