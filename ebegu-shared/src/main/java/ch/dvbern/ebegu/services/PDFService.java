@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -124,6 +125,7 @@ public interface PDFService {
 	byte[] generateLATSReport(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
 			@Nonnull GemeindeStammdaten gemeindeStammdaten,
-			@Nonnull Locale locale
-	) throws MergeDocException;
+			@Nonnull Locale locale,
+			Einstellung lohnnormkosten,
+			Einstellung lohnnormkostenLessThan50) throws MergeDocException;
 }

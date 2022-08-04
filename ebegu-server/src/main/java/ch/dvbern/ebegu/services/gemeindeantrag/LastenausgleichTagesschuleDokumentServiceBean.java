@@ -114,7 +114,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		GemeindeStammdaten gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
 						.orElse(new GemeindeStammdaten());
-		return pdfService.generateLATSReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE);
+		Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
+		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
+		return pdfService.generateLATSReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE, lohnnormkosten, lohnnormkostenLessThan50);
 
 	}
 

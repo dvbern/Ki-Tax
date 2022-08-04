@@ -27,6 +27,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -103,12 +104,18 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 	@Nonnull
 	private final LastenausgleichTagesschuleAngabenGemeindeContainer
 			lastenausgleichTagesschuleAngabenGemeindeContainer;
+	private final Einstellung lohnnormkosten;
+	private final Einstellung lohnnormkostenLessThan50;
 
 	public LATSReportPdfGenerator(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeAntrag,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
+			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nonnull Einstellung lohnnormkosten,
+			@Nonnull Einstellung lohnnormkostenLessThan50) {
 		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = gemeindeAntrag;
+		this.lohnnormkosten = lohnnormkosten;
+		this.lohnnormkostenLessThan50 = lohnnormkostenLessThan50;
 		initLocale(gemeindeStammdaten);
 		initGenerator();
 	}
@@ -244,10 +251,10 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 				translate(LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN, mandant),
 				angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
 		table.addRow(
-				translate(ZU_NORMLOHNKOSTEN_HOCH, mandant),
+				translate(ZU_NORMLOHNKOSTEN_HOCH, mandant, lohnnormkosten.getValue()),
 				angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		table.addRow(
-				translate(ZU_NORMLOHNKOSTEN_TIEF, mandant),
+				translate(ZU_NORMLOHNKOSTEN_TIEF, mandant, lohnnormkostenLessThan50.getValue()),
 				angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		table.addRow(
 				translate(NORMLOHNKOSTEN_BETREUUNG, mandant),
