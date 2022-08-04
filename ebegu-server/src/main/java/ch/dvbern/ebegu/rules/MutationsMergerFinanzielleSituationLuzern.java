@@ -16,6 +16,7 @@ public class MutationsMergerFinanzielleSituationLuzern extends AbstractMutations
 	protected void handleEinkommen(
 		BGCalculationInput inputAktuel,
 		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
 	}

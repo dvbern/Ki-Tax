@@ -43,13 +43,14 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 			handleAbgelehnteFinsit(inputAktuel, resultVorgaenger, timestampVerfuegtVorgaenger);
 		} else {
 			// Der Spezialfall bei Änderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-			handleEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+			handleEinkommen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		}
 	}
 
 	protected abstract void handleEinkommen(
 		BGCalculationInput inputAktuel,
 		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum);
 
 	private void handleAbgelehnteFinsit(
