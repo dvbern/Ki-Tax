@@ -17,16 +17,9 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
@@ -34,18 +27,16 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
 
-public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
+public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	protected static final String FERIENBETREUUNG_TITLE = "PdfGeneration_ferienbetruungTitle";
 
@@ -118,36 +109,14 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String EINNAHMEN_ELTERNBEITRAEGE = "PdfGeneration_einnahmenElternbeitraege";
 	protected static final String WEITERE_EINNAHMEN = "PdfGeneration_weitereEinnahmen";
 
-
-	private static final float TABLE_SPACING_AFTER = 20;
-	private static final float SUB_HEADER_SPACING_AFTER = 10;
-
 	@Nonnull
-	private NoAdressPdfGenerator pdfGenerator;
-
-	@Nonnull
-	protected final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
+	private final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
 
 	public FerienbetreuungReportPdfGenerator(
 			@Nonnull FerienbetreuungAngabenContainer gemeindeAntrag,
 			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
-		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
+		super(gemeindeAntrag, gemeindeStammdaten);
 		this.ferienbetreuungAngabenContainer = gemeindeAntrag;
-		initLocale(gemeindeStammdaten);
-		initGenerator();
-	}
-
-	private void initLocale(@Nonnull GemeindeStammdaten stammdaten) {
-		this.sprache = Locale.GERMAN; // Default, falls nichts gesetzt ist
-		Sprache[] korrespondenzsprachen = stammdaten.getKorrespondenzsprache().getSprache();
-		if (korrespondenzsprachen.length > 0) {
-			sprache = korrespondenzsprachen[0].getLocale();
-		}
-	}
-
-	private void initGenerator() {
-		this.pdfGenerator =
-				NoAdressPdfGenerator.create();
 	}
 
 	@Override
@@ -159,24 +128,6 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 				ferienbetreuungAngabenContainer.getGemeinde().getName(),
 				ferienbetreuungAngabenContainer.getGesuchsperiode().getGesuchsperiodeString());
 	}
-
-	@Override
-	@Nonnull
-	protected List<String> getEmpfaengerAdresse() {
-		return List.of("");
-	}
-
-	@Override
-	@Nonnull
-	protected PdfGenerator getPdfGenerator() {
-		return pdfGenerator;
-	}
-
-	@Override
-	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
-	}
-
 	@Override
 	@Nonnull
 	protected CustomGenerator getCustomGenerator() {
@@ -210,16 +161,23 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 	}
 
 	@Nonnull
+	private Element createStatus() {
+		Paragraph paragraph = new Paragraph(translate("FerienbetreuungAngabenStatus_" + this.ferienbetreuungAngabenContainer.getStatusString(), mandant));
+		paragraph.setSpacingAfter(TABLE_SPACING_AFTER);
+		return paragraph;
+	}
+
+	@Nonnull
 	private PdfPTable createTableStammdaten() {
 		FerienbetreuungAngabenStammdaten stammdaten =
 				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenStammdaten();
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(STAMMDATEN, mandant), "");
 		table.addRow(
 				translate(AM_ANGEBOT_BETEILIGTE_GEMEINDEN, mandant),
-				stammdaten.getAmAngebotBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).get());
+				stammdaten.getAmAngebotBeteiligteGemeinden().stream().reduce((a, b) -> a + ", " + b).orElse(""));
 		table.addRow(
 				translate(SEIT_WANN_FB, mandant),
 				stammdaten.getSeitWannFerienbetreuungen() != null ?
@@ -256,7 +214,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenAngebot();
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
 		table.addHeaderRow(" ", "");
 		table.addRow(
@@ -373,7 +331,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenNutzung();
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
 		table.addHeaderRow(translate(BETREUUNGSTAGE, mandant), "");
 		table.addRow(
@@ -422,7 +380,7 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
 						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenKostenEinnahmen();
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
 		table.addHeaderRow(translate(EINNAHMEN, mandant), "");
 
@@ -457,22 +415,6 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
 
 		return pdfPTable;
-	}
-
-	@Nullable
-	private Integer getIntValue(@Nullable BigDecimal value) {
-		return value == null ? null : value.intValue();
-	}
-
-	@Nonnull
-	private String getBooleanAsString(@Nullable Boolean value) {
-		if (value == null) {
-			return "";
-		}
-		if (Boolean.TRUE.equals(value)) {
-			return translate("label_true", mandant);
-		}
-		return translate("label_false", mandant);
 	}
 
 	@Nonnull
@@ -521,37 +463,6 @@ public class FerienbetreuungReportPdfGenerator extends MandantPdfGenerator {
 		return sb.toString();
 	}
 
-	@Nonnull
-	protected final List<String> getAbsenderAdresse() {
-		List<String> absender = new ArrayList<>();
-		absender.addAll(getGemeindeAdresse());
-		absender.addAll(getGemeindeKontaktdaten());
-		return absender;
-	}
-
-	@Nonnull
-	protected List<String> getGemeindeAdresse() {
-		List<String> gemeindeHeader = Arrays.asList(
-				""
-		);
-		return gemeindeHeader;
-	}
-
-	@Nonnull
-	protected List<String> getGemeindeKontaktdaten() {
-		return Arrays.asList(
-				"",
-				""
-		);
-	}
-
-
-	@Nonnull
-	private Element createStatus() {
-		Paragraph paragraph = new Paragraph(translate("FerienbetreuungAngabenStatus_" + this.ferienbetreuungAngabenContainer.getStatusString(), mandant));
-		paragraph.setSpacingAfter(TABLE_SPACING_AFTER);
-		return paragraph;
-	}
 
 
 }

@@ -17,31 +17,23 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 
-public class LATSReportPdfGenerator extends MandantPdfGenerator {
+public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	protected static final String LATS_TITLE = "PdfGeneration_latsTitle";
 
@@ -99,12 +91,6 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 	protected static final String AUSBILDUNGEN_ZERTIFIZIERT = "PdfGeneration_ausbildungenZertifiziert";
 	protected static final String BEMERKUNGEN = "Reports_bemerkungTitle";
 
-	private static final float TABLE_SPACING_AFTER = 20;
-	private static final float SUB_HEADER_SPACING_AFTER = 10;
-
-	@Nonnull
-	private NoAdressPdfGenerator pdfGenerator;
-
 	@Nonnull
 	private final LastenausgleichTagesschuleAngabenGemeindeContainer
 			lastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -116,25 +102,10 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 			@Nonnull GemeindeStammdaten gemeindeStammdaten,
 			@Nonnull Einstellung lohnnormkosten,
 			@Nonnull Einstellung lohnnormkostenLessThan50) {
-		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
+		super(gemeindeAntrag, gemeindeStammdaten);
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = gemeindeAntrag;
 		this.lohnnormkosten = lohnnormkosten;
 		this.lohnnormkostenLessThan50 = lohnnormkostenLessThan50;
-		initLocale(gemeindeStammdaten);
-		initGenerator();
-	}
-
-	private void initLocale(@Nonnull GemeindeStammdaten stammdaten) {
-		this.sprache = Locale.GERMAN; // Default, falls nichts gesetzt ist
-		Sprache[] korrespondenzsprachen = stammdaten.getKorrespondenzsprache().getSprache();
-		if (korrespondenzsprachen.length > 0) {
-			sprache = korrespondenzsprachen[0].getLocale();
-		}
-	}
-
-	private void initGenerator() {
-		this.pdfGenerator =
-				NoAdressPdfGenerator.create();
 	}
 
 	@Override
@@ -145,23 +116,6 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 				mandant,
 				lastenausgleichTagesschuleAngabenGemeindeContainer.getGemeinde().getName(),
 				lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode().getGesuchsperiodeString());
-	}
-
-	@Override
-	@Nonnull
-	protected List<String> getEmpfaengerAdresse() {
-		return List.of("");
-	}
-
-	@Override
-	@Nonnull
-	protected PdfGenerator getPdfGenerator() {
-		return pdfGenerator;
-	}
-
-	@Override
-	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
 	}
 
 	@Override
@@ -212,13 +166,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		return paragraph;
 	}
 
+	@Nonnull
 	private Element createTableAllgemeineAngaben() {
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
 				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addRow(
 				translate(ALLE_TS_ANMELDUNGEN_IN_KIBON, mandant),
 				getBooleanAsString(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst()));
@@ -239,13 +194,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private Element createTableAbrechnung() {
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
 				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
@@ -296,13 +252,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private Element createTableKostenbeteiligung() {
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
 				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(KOSTENBETEILIGUNG_GEMEINDE, mandant), "");
 		table.addRow(
 				translate(GESAMTKOSTEN_TS, mandant, getSchuljahrAsString()),
@@ -329,13 +286,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private Element createTableWeitereKostenEtraege() {
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
 				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(WEITERE_KOSTEN_ETRAGE, mandant), "");
 		table.addRow(
 				translate(BEMERKUNGEN_KOSTEN_ETRAGE, mandant),
@@ -347,13 +305,14 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 		return pdfPTable;
 	}
 
+	@Nonnull
 	private Element createTableKontrollfragen() {
 		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
 				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
 						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
 
-		SimplePDFTable table = new SimplePDFTable(pdfGenerator.getConfiguration(), false);
+		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(KONTROLLFRAGEN, mandant), "");
 
 		table.addRow(
@@ -445,41 +404,6 @@ public class LATSReportPdfGenerator extends MandantPdfGenerator {
 	private String getSchuljahrBasisjahrPlus1AsString() {
 		return String.valueOf(this.lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode()
 				.getBasisJahrPlus2());
-	}
-
-	@Nonnull
-	private String getBooleanAsString(@Nullable Boolean value) {
-		if (value == null) {
-			return "";
-		}
-		if (Boolean.TRUE.equals(value)) {
-			return translate("label_true", mandant);
-		}
-		return translate("label_false", mandant);
-	}
-
-	@Nonnull
-	protected final List<String> getAbsenderAdresse() {
-		List<String> absender = new ArrayList<>();
-		absender.addAll(getGemeindeAdresse());
-		absender.addAll(getGemeindeKontaktdaten());
-		return absender;
-	}
-
-	@Nonnull
-	protected List<String> getGemeindeAdresse() {
-		List<String> gemeindeHeader = Arrays.asList(
-				""
-		);
-		return gemeindeHeader;
-	}
-
-	@Nonnull
-	protected List<String> getGemeindeKontaktdaten() {
-		return Arrays.asList(
-				"",
-				""
-		);
 	}
 
 }
