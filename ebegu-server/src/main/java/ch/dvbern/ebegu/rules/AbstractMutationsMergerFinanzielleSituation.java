@@ -31,16 +31,11 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
-		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-		Objects.requireNonNull(vorgaengerVerfuegung);
-
-		LocalDateTime timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
-		Objects.requireNonNull(timestampVerfuegtVorgaenger);
-
 		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
+
 		if (finSitAbgelehnt) {
 			// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
-			handleAbgelehnteFinsit(inputAktuel, resultVorgaenger, timestampVerfuegtVorgaenger);
+			handleAbgelehnteFinsit(inputAktuel, resultVorgaenger, platz);
 		} else {
 			// Der Spezialfall bei Änderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
 			handleEinkommen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
@@ -56,8 +51,14 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 	private void handleAbgelehnteFinsit(
 		@Nonnull BGCalculationInput inputData,
 		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDateTime timestampVerfuegtVorgaenger
+		@Nonnull AbstractPlatz platz
 	) {
+		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+		Objects.requireNonNull(vorgaengerVerfuegung);
+
+		LocalDateTime timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
+		Objects.requireNonNull(timestampVerfuegtVorgaenger);
+
 		// Falls die FinSit in der Mutation abgelehnt wurde, muss grundsaetzlich das Einkommen der Vorverfuegung genommen werden,
 		// unabhaengig davon, ob das Einkommen steigt oder sinkt und ob es rechtzeitig gemeldet wurde
 		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
