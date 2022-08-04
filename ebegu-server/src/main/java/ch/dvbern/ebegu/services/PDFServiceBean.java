@@ -42,8 +42,8 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.LATSReportPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MusterPdfGenerator;
@@ -485,6 +486,18 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(ferienbetreuung, "Das Argument 'ferienbetreuung' darf nicht leer sein");
 
 		FerienbetreuungReportPdfGenerator pdfGenerator = new FerienbetreuungReportPdfGenerator(ferienbetreuung, gemeindeStammdaten);
+		return generateDokument(pdfGenerator, false, locale, gemeindeStammdaten.getGemeinde().getMandant());
+	}
+
+	@Nonnull
+	@Override
+	public byte[] generateLATSReport(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nonnull Locale locale) throws MergeDocException {
+		Objects.requireNonNull(container, "Das Argument 'container' darf nicht leer sein");
+
+		LATSReportPdfGenerator pdfGenerator = new LATSReportPdfGenerator(container, gemeindeStammdaten);
 		return generateDokument(pdfGenerator, false, locale, gemeindeStammdaten.getGemeinde().getMandant());
 	}
 }

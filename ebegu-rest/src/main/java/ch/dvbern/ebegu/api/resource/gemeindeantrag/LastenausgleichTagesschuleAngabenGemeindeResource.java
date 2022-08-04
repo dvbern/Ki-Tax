@@ -43,6 +43,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -59,6 +61,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
@@ -69,12 +72,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -626,5 +631,47 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 			.orElseThrow(() -> new EbeguEntityNotFoundException("createMissingInstitutions", gemeindeAngabenId.getId()));
 
 		angabenInstitutionService.createLastenausgleichTagesschuleInstitution(container);
+	}
+
+
+	@ApiOperation("Generiert den Report des LATS Containers")
+	@Nonnull
+	@GET
+	@Path("/{containerId}/report")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+			ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+			SACHBEARBEITER_FERIENBETREUUNG })
+	public Response getLATSReport(
+			@Context UriInfo uriInfo,
+			@Context HttpServletResponse response,
+			@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) throws MergeDocException {
+		Objects.requireNonNull(containerId.getId());
+
+		LastenausgleichTagesschuleAngabenGemeindeContainer container =
+				angabenGemeindeService.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId.getId())
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"getLATSReport",
+								containerId.getId()));
+
+		authorizer.checkReadAuthorization(container);
+
+		final byte[] content = latsDokumentService.generateLATSReportDokument(container);
+
+		if (content != null && content.length > 0) {
+			try {
+				return RestUtil.buildDownloadResponse(true, "report.pdf",
+						"application/octet-stream", content);
+
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND)
+						.entity("LATS Report kann nicht generiert werden")
+						.build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }

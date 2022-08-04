@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -117,5 +118,12 @@ public interface PDFService {
 		@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
 		@Nonnull GemeindeStammdaten gemeindeStammdaten,
 		@Nonnull Locale locale
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateLATSReport(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nonnull Locale locale
 	) throws MergeDocException;
 }
