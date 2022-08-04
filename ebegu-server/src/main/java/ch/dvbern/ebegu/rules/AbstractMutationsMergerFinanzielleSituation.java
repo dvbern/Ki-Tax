@@ -63,15 +63,22 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
 		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
 
-		inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-		inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
-		inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
-		inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+		setFinSitDataFromResultToInput(inputData, resultVorangehenderAbschnitt);
 		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
 			// Die Bemerkung immer dann setzen, wenn das Einkommen (egal in welche Richtung) geaendert haette
 			String datumLetzteVerfuegung = Constants.DATE_FORMATTER.format(timestampVerfuegtVorgaenger);
 			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
 		}
+	}
+
+	protected void setFinSitDataFromResultToInput(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGCalculationResult result
+	) {
+		input.setMassgebendesEinkommenVorAbzugFamgr(result.getMassgebendesEinkommenVorAbzugFamgr());
+		input.setEinkommensjahr(result.getEinkommensjahr());
+		input.setFamGroesse(result.getFamGroesse());
+		input.setAbzugFamGroesse(result.getAbzugFamGroesse());
 	}
 
 	@Nonnull

@@ -5,10 +5,13 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.types.DateRange;
 
 public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMergerFinanzielleSituation {
 
@@ -40,10 +43,7 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
-				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
-				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
+				setFinSitDataFromResultToInput(inputData, resultVorangehenderAbschnitt);
 
 				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
 					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
