@@ -2893,5 +2893,6 @@
     "OEFFNUNGSZEIT_UNTERRICHT_BLOCKZEITEN": "Cours selon les heures groupées",
     "PDF_EXPORTIEREN": "PDF exportieren",
     "FERIENBETREUUNG_REPORT_NAME": "Ferienbetreuung {{gemeinde}} {{gp}}",
+    "LATS_REPORT_NAME": "Lastenausgleich Tagesschule {{gemeinde}} {{gp}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

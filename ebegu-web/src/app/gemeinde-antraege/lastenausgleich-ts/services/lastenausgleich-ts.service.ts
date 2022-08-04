@@ -242,4 +242,8 @@ export class LastenausgleichTSService {
             `${this.API_BASE_URL}/create-missing-institutions/${gemeindeAngabenId}`, {}
         );
     }
+
+    public generateLATSReport(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<BlobPart> {
+        return this.http.get(`${this.API_BASE_URL}/${container.id}/report`, {responseType: 'blob'});
+    }
 }
