@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -72,7 +73,9 @@ public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 			zeitabschnittList.add(createZeitabschnitt(abschnittBaby, true, einschulungTyp));
 
 			DateRange abschnittKind = new DateRange(stichtagBabyTarifEnde.plusDays(1), gesuchsperiode.getGueltigBis());
-			zeitabschnittList.add(createZeitabschnitt(abschnittKind, false, einschulungTyp));
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnitt(abschnittKind, false, einschulungTyp);
+			zeitabschnitt.getRelevantBgCalculationInput().addBemerkung(MsgKey.KLEINKIND_TARIF, getLocale(), dauerBabyTarif);
+			zeitabschnittList.add(zeitabschnitt);
 		} else {
 			boolean baby = stichtagBabyTarifEnde.isAfter(gesuchsperiode.getGueltigBis());
 			zeitabschnittList.add(createZeitabschnitt(gesuchsperiode, baby, einschulungTyp));
