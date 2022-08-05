@@ -881,13 +881,12 @@ public class FerienbetreuungResource {
 
 		if (content != null && content.length > 0) {
 			try {
-				return RestUtil.buildDownloadResponse(true, "vollmacht.pdf",
+				return RestUtil.buildDownloadResponse(true, "ferienbetreuungReport.pdf",
 						"application/octet-stream", content);
 
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND)
-						.entity("Vollmacht Dokument fuer SozialdienstFall: "
-								+ " kann nicht generiert werden")
+						.entity("Ferienbetreuung PDF Export kann nicht generiert werden")
 						.build();
 			}
 		}
