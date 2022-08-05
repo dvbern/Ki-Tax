@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SortedSetMultimap;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class is supposed to find the longest timeperiods for which bemerkungen in {@link VerfuegungZeitabschnitt}en exists.
@@ -121,6 +122,9 @@ public final class BemerkungsMerger {
 		List<VerfuegungsBemerkungDTO> bemerkungen = verfuegungZeitabschnitt.getBemerkungenDTOList().getRequiredBemerkungen(isTexteForFKJV);
 		List<VerfuegungZeitabschnittBemerkung> zeitabschnittBemerkungList = bemerkungen.stream()
 				.map(bemerkung -> new VerfuegungZeitabschnittBemerkung(bemerkung ,verfuegungZeitabschnitt, mandant))
+			 // Leere Bemerkungen sollen gelöscht werden. Bemerkungen welche für bestimmte Mandanten nicht angezeigt
+			 // werden sollen, können so gefiltert werden
+				.filter(bemerkung -> StringUtils.isNotBlank(bemerkung.getBemerkung()))
 				.collect(Collectors.toList());
 		verfuegungZeitabschnitt.setVerfuegungZeitabschnittBemerkungList(zeitabschnittBemerkungList);
 	}
