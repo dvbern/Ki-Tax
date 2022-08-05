@@ -17,14 +17,20 @@
 
 <div class="lastenausgleich-ts-container">
     <div class="antrag-container">
-        <dv-wizard-side-nav
-            [status]="lATSAngabenGemeindeContainer?.status | translate"
-            [subHeader]="'AFA_ABRECHNUNG_REPORTING' | translate"
-            [id]="lastenausgleichId"
-            [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde"
-            [gesuchsperiode]="lATSAngabenGemeindeContainer?.gesuchsperiode"
-            [wizardTyp]="wizardTyp">
-        </dv-wizard-side-nav>
+        <div class="side-nav">
+            <dv-wizard-side-nav
+                    [status]="lATSAngabenGemeindeContainer?.status | translate"
+                    [subHeader]="'AFA_ABRECHNUNG_REPORTING' | translate"
+                    [id]="lastenausgleichId"
+                    [gemeinde]="lATSAngabenGemeindeContainer?.gemeinde"
+                    [gesuchsperiode]="lATSAngabenGemeindeContainer?.gesuchsperiode"
+                    [wizardTyp]="wizardTyp">
+            </dv-wizard-side-nav>
+            <div class="flex-spacing-6"></div>
+            <div class="padding-left-20">
+                <dv-loading-button (buttonClick)="downloadFerienbetreuungReport()">{{'PDF_EXPORTIEREN' | translate}}</dv-loading-button>
+            </div>
+        </div>
         <div class="antrag">
             <ui-view></ui-view>
         </div>

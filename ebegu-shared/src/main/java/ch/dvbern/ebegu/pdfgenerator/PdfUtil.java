@@ -66,6 +66,7 @@ import static com.lowagie.text.pdf.BaseFont.IDENTITY_H;
 
 public final class PdfUtil {
 
+
 	// Muss vor den FontFactory.getFont aufrufen definiert werden
 	static {
 		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
@@ -100,6 +101,7 @@ public final class PdfUtil {
 	private static final String WATERMARK = "PdfGeneration_Watermark";
 	private static final float FONT_SIZE_WATERMARK = 40.0f;
 	public static final float DEFAULT_CELL_LEADING = 1.0F;
+	public static final float NO_ADRESS_MARGIN_TOP = 40.0F;
 
 	private PdfUtil() {
 		// nop

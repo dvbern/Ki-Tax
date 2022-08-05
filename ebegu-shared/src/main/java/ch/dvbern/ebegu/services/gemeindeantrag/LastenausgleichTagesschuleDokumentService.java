@@ -21,11 +21,15 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.MergeDocException;
 
 public interface LastenausgleichTagesschuleDokumentService {
 
 	@Nonnull
 	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose);
 
+	byte[] generateLATSReportDokument(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) throws
+			MergeDocException;
 }

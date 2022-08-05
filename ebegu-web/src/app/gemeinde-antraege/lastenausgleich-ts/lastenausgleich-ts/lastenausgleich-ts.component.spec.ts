@@ -26,6 +26,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../models/ge
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../../models/TSGesuchsperiode';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {WizardstepXModule} from '../../../wizardstepX/wizardstep-x.module';
@@ -44,6 +45,8 @@ describe('LastenausgleichTSComponent', () => {
             'updateLATSAngabenGemeindeContainerStore',
             'emptyStore'
         ]);
+    const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
+        ['getAccessTokenDokument']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -57,6 +60,10 @@ describe('LastenausgleichTSComponent', () => {
                     provide: LastenausgleichTSService,
                     useValue: latsTSServiceSpy,
                 },
+                {
+                    provide: DownloadRS,
+                    useValue: downloadRSSpy
+                }
             ],
             declarations: [
                 LastenausgleichTSComponent,

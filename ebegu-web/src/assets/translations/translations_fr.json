@@ -2891,5 +2891,8 @@
     "OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_1": "Modules de l'après-midi 1  <br>(1<sup>re</sup> moitié de l'après-midi)",
     "OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_2": "Modules de l'après-midi 2 <br>(2<sup>re</sup> moitié de l'après-midi)",
     "OEFFNUNGSZEIT_UNTERRICHT_BLOCKZEITEN": "Cours selon les heures groupées",
+    "PDF_EXPORTIEREN": "PDF exportieren",
+    "FERIENBETREUUNG_REPORT_NAME": "Ferienbetreuung {{gemeinde}} {{gp}}",
+    "LATS_REPORT_NAME": "Lastenausgleich Tagesschule {{gemeinde}} {{gp}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

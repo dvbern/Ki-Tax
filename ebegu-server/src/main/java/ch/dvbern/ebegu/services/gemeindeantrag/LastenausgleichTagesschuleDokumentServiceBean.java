@@ -41,10 +41,13 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.PDFService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -70,6 +73,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 	@Inject
 	EinstellungService einstellungService;
+
+	@Inject
+	private PDFService pdfService;
 
 	@Override
 	@Nonnull
@@ -100,6 +106,18 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		merger.addMergeFields(toLatsDocxDTO(container, betreuungsstundenPrognose, sprache));
 		merger.merge();
 		return document.getDocument();
+	}
+
+	@Override
+	public byte[] generateLATSReportDokument(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) throws MergeDocException {
+		GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
+						.orElse(new GemeindeStammdaten());
+		Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
+		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
+		return pdfService.generateLATSReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE, lohnnormkosten, lohnnormkostenLessThan50);
+
 	}
 
 	@Nonnull

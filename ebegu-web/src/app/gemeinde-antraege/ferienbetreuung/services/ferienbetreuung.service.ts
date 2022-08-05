@@ -345,4 +345,8 @@ export class FerienbetreuungService {
             tap(() => this.updateFerienbetreuungContainerStores(container.id)),
         );
     }
+
+    public generateFerienbetreuungReport(container: TSFerienbetreuungAngabenContainer): Observable<BlobPart> {
+        return this.http.get(`${this.API_BASE_URL}/${container.id}/report`, {responseType: 'blob'});
+    }
 }

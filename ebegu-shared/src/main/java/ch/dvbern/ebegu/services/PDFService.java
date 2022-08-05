@@ -24,11 +24,14 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -110,4 +113,19 @@ public interface PDFService {
 		@Nonnull SozialdienstFall sozialdienstFall,
 		@Nonnull Sprache sprache
 	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateFerienbetreuungReport(
+		@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
+		@Nonnull GemeindeStammdaten gemeindeStammdaten,
+		@Nonnull Locale locale
+	) throws MergeDocException;
+
+	@Nonnull
+	byte[] generateLATSReport(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nonnull Locale locale,
+			Einstellung lohnnormkosten,
+			Einstellung lohnnormkostenLessThan50) throws MergeDocException;
 }

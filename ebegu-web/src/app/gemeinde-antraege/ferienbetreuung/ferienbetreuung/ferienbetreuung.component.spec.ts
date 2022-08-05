@@ -21,6 +21,8 @@ const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(F
     ['updateFerienbetreuungContainerStores', 'getFerienbetreuungContainer', 'emptyStores']);
 const wizardStepXRSSpy = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name,
     ['updateSteps']);
+const downloadRSSpy = jasmine.createSpyObj<DownloadRS>(DownloadRS.name,
+    ['getAccessTokenDokument']);
 
 import {HttpClientModule} from '@angular/common/http';
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -29,6 +31,7 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {SharedModule} from '../../../shared/shared.module';
@@ -48,6 +51,7 @@ describe('FerienbetreuungComponent', () => {
                 { provide: AuthServiceRS, useValue: authServiceRSSpy },
                 { provide: WizardStepXRS, useValue: wizardStepXRSSpy },
                 { provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy },
+                { provide: DownloadRS, useValue: downloadRSSpy },
             ],
             imports: [
                 HttpClientModule,
