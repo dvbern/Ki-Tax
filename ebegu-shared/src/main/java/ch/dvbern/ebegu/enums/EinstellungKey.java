@@ -295,7 +295,10 @@ public enum EinstellungKey {
 	VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
 
 	// Erlaubt Abwesenheit zu erfassen in einer Mutation
-	ABWESENHEIT_AKTIV;
+	ABWESENHEIT_AKTIV,
+
+	// Aktiviert das Input Feld zur Eingabe einer Begründung einer Mutation (KIBON-2538)
+	BEGRUENDUNG_MUTATION_AKTIVIERT;
 
 
 	private EinstellungTyp typ;

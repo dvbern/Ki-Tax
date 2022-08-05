@@ -2129,6 +2129,7 @@
     "FACHSTELLEN_TYP": "Fachstellen Typ",
     "BETREUUNG_INPUT_SWITCH_ENABLED": "Wechsel des Betreuungspensum von Prozent zu Tagen erlauben",
     "VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT": "Verfügung eingeschrieben Versenden aktiv",
+    "BEGRUENDUNG_MUTATION_AKTIVIERT": "Mutationsbegründungs Feld aktiv",
     "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0",
     "BLOG_FOOTER_LINK": "Blog",
     "BLOG_NEUIGKEITEN_LINK": "https://blog.kibon.ch/category/neuigkeiten/",
