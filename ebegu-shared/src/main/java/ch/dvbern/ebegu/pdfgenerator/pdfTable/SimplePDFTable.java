@@ -34,6 +34,8 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SimplePDFTable {
 
@@ -42,6 +44,8 @@ public class SimplePDFTable {
 	private final boolean lastLineBold;
 	private final int[] alignement = { Element.ALIGN_LEFT,Element.ALIGN_RIGHT};
 	private List<SimplePDFTableRow> rows = new ArrayList<>();
+
+	private static final Logger LOG = LoggerFactory.getLogger(SimplePDFTable.class);
 
 	public SimplePDFTable(PageConfiguration pageConfiguration, boolean lastLineBold) {
 		this.pageConfiguration = pageConfiguration;
@@ -55,7 +59,9 @@ public class SimplePDFTable {
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
+			LOG.error("settin column widths failed", e);
 		}
+
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		for (int i = 0; i < rows.size(); i++) {
 			SimplePDFTableRow row = rows.get(i);
