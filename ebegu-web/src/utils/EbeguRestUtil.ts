@@ -2512,6 +2512,7 @@ export class EbeguRestUtil {
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
         restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
+        restBetreuung.begruendungAuszahlungAnInstitution = betreuung.begruendungAuszahlungAnInstitution;
         return restBetreuung;
     }
 
@@ -2685,6 +2686,7 @@ export class EbeguRestUtil {
                 this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
+            betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
             return betreuungTS;
         }
         return undefined;

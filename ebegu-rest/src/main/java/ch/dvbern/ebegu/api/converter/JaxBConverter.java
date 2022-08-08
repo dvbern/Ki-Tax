@@ -3213,6 +3213,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		betreuung.setEingewoehnung(betreuungJAXP.isEingewoehnung());
 		betreuung.setAuszahlungAnEltern(betreuungJAXP.isAuszahlungAnEltern());
+		betreuung.setBegruendungAuszahlungAnInstitution(betreuungJAXP.getBegruendungAuszahlungAnInstitution());
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
@@ -3714,6 +3715,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
 		jaxBetreuung.setEingewoehnung(betreuungFromServer.isEingewoehnung());
 		jaxBetreuung.setAuszahlungAnEltern(betreuungFromServer.isAuszahlungAnEltern());
+		jaxBetreuung.setBegruendungAuszahlungAnInstitution(betreuungFromServer.getBegruendungAuszahlungAnInstitution());
 		return jaxBetreuung;
 	}
 
