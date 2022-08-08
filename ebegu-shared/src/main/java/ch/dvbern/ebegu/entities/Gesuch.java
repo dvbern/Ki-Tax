@@ -236,6 +236,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	private FinanzielleSituationTyp finSitTyp = FinanzielleSituationTyp.BERN;
 
+	@Column(nullable = true)
+	@Nullable
+	private LocalDate finSitAenderungGueltigAbDatum;
+
 	@Column(nullable = false)
 	private boolean gesperrtWegenBeschwerde = false;
 
@@ -990,6 +994,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 				.getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
+			copyFinSitAenderungGueltigAbDatumIfNeeded(target);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -1010,6 +1015,16 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			break;
 		}
 		return target;
+	}
+
+	private void copyFinSitAenderungGueltigAbDatumIfNeeded(Gesuch target) {
+		if (finSitTyp != FinanzielleSituationTyp.LUZERN) {
+			return;
+		}
+
+		target.setFinSitAenderungGueltigAbDatum(
+			Objects.requireNonNullElseGet(finSitAenderungGueltigAbDatum,
+			() -> gesuchsperiode.getGueltigkeit().getGueltigAb()));
 	}
 
 	private void copyFamiliensituation(
@@ -1375,6 +1390,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungGueltigAbDatum() {
+		return finSitAenderungGueltigAbDatum;
+	}
+
+	public void setFinSitAenderungGueltigAbDatum(@Nullable LocalDate finSitAenderungGueltigAbDatum) {
+		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
 	}
 
 	@Nullable

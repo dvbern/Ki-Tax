@@ -173,6 +173,7 @@
     "ONBOARDING_INFO_GEMEINDE_LINK": "",
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "JA_KORREKTUR_FACHSTELLE": "{{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
+    "FINANZIELLE_SITUATION_GUELTIG_AB": "Änderung der finanziellen Situation ab",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"

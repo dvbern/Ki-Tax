@@ -132,6 +132,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		}
 
+		gesuch.setFinSitAenderungGueltigAbDatum(finSitStartDTO.getFinSitAenderungGueltigAbDatum());
+
 		familiensituation.setSozialhilfeBezueger(finSitStartDTO.getSozialhilfeBezueger());
 		familiensituation.setZustaendigeAmtsstelle(finSitStartDTO.getZustaendigeAmtsstelle());
 		familiensituation.setNameBetreuer(finSitStartDTO.getNameBetreuer());

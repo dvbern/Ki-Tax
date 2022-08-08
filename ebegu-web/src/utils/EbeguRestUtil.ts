@@ -1344,6 +1344,7 @@ export class EbeguRestUtil {
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
         restGesuch.finSitTyp = gesuch.finSitTyp;
+        restGesuch.finSitAenderungGueltigAbDatum = DateUtil.momentToLocalDate(gesuch.finSitAenderungGueltigAbDatum);
         return restGesuch;
     }
 
@@ -1378,6 +1379,7 @@ export class EbeguRestUtil {
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
             gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
+            gesuchTS.finSitAenderungGueltigAbDatum = DateUtil.localDateToMoment(gesuchFromServer.finSitAenderungGueltigAbDatum);
             return gesuchTS;
         }
         return undefined;

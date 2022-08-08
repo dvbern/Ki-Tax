@@ -93,8 +93,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			return zeitabschnitte;
 		}
 		final Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
-		Objects.requireNonNull(mutationsEingansdatum);
 
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
 
@@ -106,46 +104,46 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
-				boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus();
-				LocalDateTime timestampVerfuegtVorgaenger = null;
-				if (finSitAbgelehnt) {
-					// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
-					timestampVerfuegtVorgaenger = vorgaengerVerfuegung.getPlatz().extractGesuch().getTimestampVerfuegt();
-					Objects.requireNonNull(timestampVerfuegtVorgaenger);
-					handleAbgelehnteFinsit(inputAsiv, resultAsivVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
-				} else {
-					// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-					handleVerminderungEinkommen(inputAsiv,
-						resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-				}
-				handleAnpassungErweiterteBeduerfnisse(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-
-				handleEinreichfrist(inputAsiv, mutationsEingansdatum);
+				handleMutation(inputAsiv, resultAsivVorangehenderAbschnitt, platz);
 				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt, vorangehenderAbschnitt);
 
 				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
 					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
 				}
 
-				handleAnpassungAnspruch(inputAsiv, resultAsivVorangehenderAbschnitt, mutationsEingansdatum);
-
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
 				if (vorangehenderAbschnitt.isHasGemeindeSpezifischeBerechnung() && resultGemeindeVorangehenderAbschnitt != null) {
-					if (finSitAbgelehnt) {
-						// Wenn FinSit abgelehnt, muss immer das letzte verfuegte Einkommen genommen werden
-						handleAbgelehnteFinsit(inputGemeinde, resultGemeindeVorangehenderAbschnitt, timestampVerfuegtVorgaenger);
-					} else {
-						// Der Spezialfall bei Verminderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
-						handleVerminderungEinkommen(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
-					}
-					handleAnpassungErweiterteBeduerfnisse(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
-					handleAnpassungAnspruch(inputGemeinde, resultGemeindeVorangehenderAbschnitt, mutationsEingansdatum);
+					handleMutation(inputGemeinde, resultGemeindeVorangehenderAbschnitt, platz);
 				}
 			}
 		}
 		return zeitabschnitte;
+	}
+
+	private void handleMutation(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz) {
+
+		final LocalDate mutationsEingansdatum = platz.extractGesuch().getRegelStartDatum();
+		Objects.requireNonNull(mutationsEingansdatum);
+
+		handleFinanzielleSituation(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		handleEinreichfrist(inputAktuel, mutationsEingansdatum);
+	}
+
+	private void handleFinanzielleSituation(
+		BGCalculationInput inputAktuel,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz,
+		LocalDate mutationsEingansdatum) {
+
+		new MutationsMergerFinanzielleSituationVisitor(locale)
+			.getMutationsMergerFinanzielleSituation(platz.extractGesuch().getFinSitTyp())
+			.handleFinanzielleSituation(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 	}
 
 	private void handleAuszahlungAnElternFlag(
@@ -158,10 +156,10 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		}
 	}
 
-	private void handleEinreichfrist(BGCalculationInput inputAsiv, LocalDate mutationsEingansdatum) {
+	private void handleEinreichfrist(BGCalculationInput input, LocalDate mutationsEingansdatum) {
 		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag ZuSpaetEingereicht gesetzt werden
-		if(isMeldungZuSpaet(inputAsiv.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			inputAsiv.setZuSpaetEingereicht(true);
+		if(isMeldungZuSpaet(input.getParent().getGueltigkeit(), mutationsEingansdatum)) {
+			input.setZuSpaetEingereicht(true);
 		}
 	}
 
@@ -180,119 +178,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
 			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
-	}
-
-	private void handleVerminderungEinkommen(
-		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
-	) {
-		// Massgebendes Einkommen
-		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
-		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) <= 0) {
-			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
-			if (!inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
-				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
-				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
-				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
-				inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-				inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
-				inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
-				inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
-
-				if (resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung() != null) {
-					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(
-						getValueOrZero(
-							resultVorangehenderAbschnitt.getTsCalculationResultMitPaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
-				} else {
-					inputData.getTsInputMitBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
-				}
-				if (resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung() != null) {
-					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(
-						getValueOrZero(
-							resultVorangehenderAbschnitt.getTsCalculationResultOhnePaedagogischerBetreuung().getVerpflegungskostenVerguenstigt()));
-				} else {
-					inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
-				}
-				if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
-				}
-			}
-		}
-	}
-
-	@Nonnull
-	private BigDecimal getValueOrZero(@Nullable BigDecimal value) {
-		if (value == null) {
-			return BigDecimal.ZERO;
-		}
-		return value;
-	}
-
-	private void handleAbgelehnteFinsit(
-		@Nonnull BGCalculationInput inputData,
-		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDateTime timestampVerfuegtVorgaenger
-	) {
-		// Falls die FinSit in der Mutation abgelehnt wurde, muss grundsaetzlich das Einkommen der Vorverfuegung genommen werden,
-		// unabhaengig davon, ob das Einkommen steigt oder sinkt und ob es rechtzeitig gemeldet wurde
-		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
-
-		inputData.setMassgebendesEinkommenVorAbzugFamgr(resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr());
-		inputData.setEinkommensjahr(resultVorangehenderAbschnitt.getEinkommensjahr());
-		inputData.setFamGroesse(resultVorangehenderAbschnitt.getFamGroesse());
-		inputData.setAbzugFamGroesse(resultVorangehenderAbschnitt.getAbzugFamGroesse());
-		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
-			// Die Bemerkung immer dann setzen, wenn das Einkommen (egal in welche Richtung) geaendert haette
-			String datumLetzteVerfuegung = Constants.DATE_FORMATTER.format(timestampVerfuegtVorgaenger);
-			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
-		}
-	}
-
-	private void handleAnpassungAnspruch(
-		@Nonnull BGCalculationInput inputData,
-		@Nullable BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
-	) {
-		final int anspruchberechtigtesPensum = inputData.getAnspruchspensumProzent();
-		final int anspruchAufVorgaengerVerfuegung = resultVorangehenderAbschnitt == null
-			? 0
-			: resultVorangehenderAbschnitt.getAnspruchspensumProzent();
-
-		DateRange gueltigkeit = inputData.getParent().getGueltigkeit();
-
-		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
-			//Anspruch wird erhöht
-			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
-				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-				inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
-				inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
-				//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
-				//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
-				if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {
-					inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
-				}
-			}
-		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
-			// Anspruch wird kleiner
-			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-			if (isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
-				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-				inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
-			}
-		}
-	}
-
-	private boolean isAnspruchZeroBecauseVorgaengerZuSpaet(BGCalculationResult resultVorangehenderAbschnitt) {
-		if(resultVorangehenderAbschnitt == null) {
-			return false;
-		}
-
-		boolean anspruchsPensumZero = resultVorangehenderAbschnitt.getAnspruchspensumProzent() == 0;
-		return anspruchsPensumZero && resultVorangehenderAbschnitt.isZuSpaetEingereicht();
 	}
 
 	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {

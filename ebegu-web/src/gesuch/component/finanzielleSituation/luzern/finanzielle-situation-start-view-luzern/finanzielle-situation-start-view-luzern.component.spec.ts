@@ -19,6 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
@@ -48,6 +49,7 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
@@ -71,7 +73,8 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
             imports: [
                 SharedModule,

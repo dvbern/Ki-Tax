@@ -26,7 +26,8 @@
            [max]="maxDate"
            [matDatepicker]="datePicker"
            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-           [required]="required">
+           [required]="required"
+           [disabled]="disabled">
     <mat-datepicker-toggle *ngIf="datePickerEnabled" matSuffix
                            [for]="datePicker"></mat-datepicker-toggle>
     <mat-datepicker #datePicker></mat-datepicker>
