@@ -583,9 +583,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
-    public isAuszahlungAnElternAndInstitutionRole(): boolean {
-        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern
-        && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+    public hasBetreuungOnlyAuszahlungenAnElternAndInstitutionRole(): boolean {
+        if (!this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return false;
+        }
+        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern && EbeguUtil.isEmptyArrayNullOrUndefined(this.getVerfuegungZeitabschnitte());
     }
 
     public showVerfuegungPdfLink(): boolean {
