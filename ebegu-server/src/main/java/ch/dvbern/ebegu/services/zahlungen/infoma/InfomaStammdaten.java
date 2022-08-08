@@ -72,10 +72,18 @@ public abstract class InfomaStammdaten {
 
 	@Nonnull
 	private String getKundenspezifischesFeld2(Zahlung zahlung) {
+		final int monthValueVon = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonthValue();
+		final int monthValueBis = zahlung.getZahlungsauftrag().getGueltigkeit().getGueltigBis().getMonthValue();
+		String monthBezeichnung = "";
+		if (monthValueVon == monthValueBis) {
+			monthBezeichnung = String.valueOf(monthValueVon);
+		} else {
+			monthBezeichnung = monthValueVon + "/" + monthValueBis;
+		}
 		return "BG "
 			+ zahlung.getZahlungsauftrag().getDatumGeneriert().getYear()
 			+ ", "
-			+ zahlung.getZahlungsauftrag().getDatumGeneriert().getMonthValue()
+			+ monthBezeichnung
 			+ ", "
 			+ zahlung.getEmpfaengerName();
 	}
