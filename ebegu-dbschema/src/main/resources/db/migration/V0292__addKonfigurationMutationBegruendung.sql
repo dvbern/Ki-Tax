@@ -40,3 +40,17 @@ alter table gesuch_aud add if not exists begruendung_mutation text;
 
 alter table betreuung add if not EXISTS  begruendung_auszahlung_an_institution VARCHAR(4000);
 alter table betreuung_aud add if not EXISTS  begruendung_auszahlung_an_institution VARCHAR(4000);
+
+/*Bei bereits erfassten Betreuungen mit Auszahlung an Institution
+  darf die Begründung nicht null sein, da sonst das Gesuch nicht valid ist */
+update betreuung
+set begruendung_auszahlung_an_institution = ' '
+where id in (
+	select betreuung.id from betreuung
+				  join kind_container kc on betreuung.kind_id = kc.id
+				  join gesuch on kc.gesuch_id = gesuch.id
+				  join dossier d ON gesuch.dossier_id = d.id
+				  join fall ON d.fall_id = fall.id
+				  JOIN mandant m ON fall.mandant_id = m.id
+	where mandant_identifier = 'LUZERN'
+) and auszahlung_an_eltern = false;
