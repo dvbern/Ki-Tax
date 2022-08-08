@@ -503,6 +503,7 @@
     "ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG": "Kinder mit Betreuungungen können nicht Volljährig sein. Prüfen Sie das Gebrutsdatum oder löschen Sie die Betreuung",
     "SPRICHT_AMTSSPRACHE": "Votre famille parle-t-elle {{amtssprache}} ?",
     "EINSCHULUNG": "Quelle classe fréquentera l'enfant à partir d'août {{jahr}} ?",
+    "EINSCHULUNG_HINT": "",
     "FACHSTELLE": "Service spécialisé",
     "BETREUUNG_INPUT_SWITCH_ENABLED": "Wechsel des Betreuungspensum von Prozent zu Tagen erlauben",
     "INVOLVIERTE_FACHSTELLE": "Le besoin linguistique ou social de l'enfant a été confirmé par un service spécialisé (requis uniquement pour les demandes de bons de garde).",

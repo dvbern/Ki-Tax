@@ -575,6 +575,7 @@
     "ERROR_KIND_VOLLJAEHRIG_AND_HAS_BETREUNG": "Kinder mit Betreuungen können nicht Volljährig sein. Prüfen Sie das Geburtsdatum oder löschen Sie die Betreuung",
     "SPRICHT_AMTSSPRACHE": "Wird in Ihrer Familie {{amtssprache}} gesprochen?",
     "EINSCHULUNG": "Welche Klasse wird das Kind ab August {{jahr}} besuchen?",
+    "EINSCHULUNG_HINT": "",
     "FACHSTELLE": "Fachstelle",
     "INVOLVIERTE_FACHSTELLE": "Das Kind verfügt über eine Fachstellenbestätigung zur sprachlichen oder sozialen Integration (nur anzugeben bei Antrag für Betreuungsgutscheine)",
     "KIND_AUS_ASYLWESEN": "Das Kind verfügt über eine ZEMIS-Nummer (ist bei Ausländerinnen oder Ausländern, Asylsuchenden, vorläufig Aufgenommenen und Flüchtlingen möglich - nur anzugeben bei Antrag für Betreuungsgutscheine)",
