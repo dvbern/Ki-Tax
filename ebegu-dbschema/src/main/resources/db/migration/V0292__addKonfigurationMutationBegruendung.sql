@@ -37,3 +37,6 @@ WHERE einstellung_key = 'BEGRUENDUNG_MUTATION_AKTIVIERT' AND mandant_identifier 
 
 alter table gesuch add if not exists begruendung_mutation text;
 alter table gesuch_aud add if not exists begruendung_mutation text;
+
+alter table betreuung add if not EXISTS  begruendung_auszahlung_an_institution VARCHAR(4000);
+alter table betreuung_aud add if not EXISTS  begruendung_auszahlung_an_institution VARCHAR(4000);
