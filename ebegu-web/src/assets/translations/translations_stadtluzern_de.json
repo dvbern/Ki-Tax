@@ -173,5 +173,6 @@
     "ONBOARDING_INFO_GEMEINDE_LINK": "",
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "JA_KORREKTUR_FACHSTELLE": "{{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
+    "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -1665,4 +1665,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.mandant === KiBonMandant.LU
         && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
+
+    public showAuszahlungAnInstituion(): boolean {
+        return !this.getBetreuungModel().auszahlungAnEltern;
+    }
+
+    public onChangeAbrechnungGutscheine(): void {
+        this.getBetreuungModel().begruendungAuszahlungAnInstitution = null;
+    }
 }
