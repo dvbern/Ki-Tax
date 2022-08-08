@@ -2895,5 +2895,6 @@
     "PDF_EXPORTIEREN": "PDF exportieren",
     "FERIENBETREUUNG_REPORT_NAME": "Ferienbetreuung {{gemeinde}} {{gp}}",
     "LATS_REPORT_NAME": "Lastenausgleich Tagesschule {{gemeinde}} {{gp}}",
+    "BEGRUENDUNG_MUTATION": "Begründung für Mutation",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

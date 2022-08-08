@@ -2,10 +2,12 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -35,6 +37,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     public isTagesschuleEnabledForMandant: boolean;
 
+    private isBegruendungMutationActiv: boolean;
+
     public constructor(
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
@@ -44,6 +48,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly cd: ChangeDetectorRef,
         private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly einstellungService: EinstellungRS
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -79,6 +84,14 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
             .then((response: TSGesuchsperiode[]) => {
                 this.yetUnusedGesuchsperiodenListe = response;
+                this.cd.markForCheck();
+            });
+
+        this.einstellungService.findEinstellung(TSEinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id)
+            .then(einstellung => {
+                this.isBegruendungMutationActiv = einstellung.value === 'true';
                 this.cd.markForCheck();
             });
     }
@@ -241,4 +254,10 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     public getGesuchstellerOnlyRoles(): ReadonlyArray<TSRole> {
         return TSRoleUtil.getGesuchstellerOnlyRoles();
     }
+
+    public isShowInputBegruendungMutation(): boolean {
+        return this.isBegruendungMutationActiv &&
+            this.getGesuchModel().isMutation();
+    }
+
 }
