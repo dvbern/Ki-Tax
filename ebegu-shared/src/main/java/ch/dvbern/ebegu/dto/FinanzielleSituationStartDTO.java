@@ -22,6 +22,8 @@
 
 package ch.dvbern.ebegu.dto;
 
+import java.time.LocalDate;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -57,6 +59,8 @@ public class FinanzielleSituationStartDTO {
 	String infomaKreditorennummer;
 	final private @Nullable
 	String infomaBankcode;
+	final private @Nullable
+	LocalDate finSitAenderungGueltigAbDatum;
 
 	public FinanzielleSituationStartDTO(
 		@Nonnull Boolean sozialhilfeBezueger,
@@ -74,7 +78,8 @@ public class FinanzielleSituationStartDTO {
 		boolean abweichendeZahlungsadresseInfoma,
 		@Nullable Adresse zahlungsadresseInfoma,
 		@Nullable String infomaKreditorennummer,
-		@Nullable String infomaBankcode
+		@Nullable String infomaBankcode,
+		@Nullable LocalDate finSitAenderungGueltigAbDatum
 	) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
 		this.zustaendigeAmtsstelle = zustaendigeAmtsstelle;
@@ -92,6 +97,7 @@ public class FinanzielleSituationStartDTO {
 		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
 		this.infomaKreditorennummer = infomaKreditorennummer;
 		this.infomaBankcode = infomaBankcode;
+		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
 	}
 
 	@Nonnull
@@ -168,5 +174,10 @@ public class FinanzielleSituationStartDTO {
 	@Nullable
 	public String getInfomaBankcode() {
 		return infomaBankcode;
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungGueltigAbDatum() {
+		return finSitAenderungGueltigAbDatum;
 	}
 }

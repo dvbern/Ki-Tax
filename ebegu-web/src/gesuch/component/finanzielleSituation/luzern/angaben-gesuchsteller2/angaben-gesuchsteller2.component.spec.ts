@@ -20,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {StateService} from '@uirouter/angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
@@ -57,6 +58,8 @@ const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(F
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
+const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+    ['isOneOfRoles']);
 
 const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
 berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
@@ -74,7 +77,8 @@ describe('AngabenGesuchsteller2Component', () => {
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BerechnungsManager, useValue: berechnungsManagerSpy}
+                {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
             imports: [
                 FormsModule,

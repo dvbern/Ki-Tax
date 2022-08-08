@@ -303,7 +303,8 @@ public class FinanzielleSituationResource {
 			familiensituationJA.getZahlungsadresseInfoma() == null ? null :
 				converter.adresseToEntity(familiensituationJA.getZahlungsadresseInfoma(), storedAdresseInfoma),
 			familiensituationJA.getInfomaKreditorennummer(),
-			familiensituationJA.getInfomaBankcode()
+			familiensituationJA.getInfomaBankcode(),
+			gesuchJAXP.getFinSitAenderungGueltigAbDatum()
 		);
 
 		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(

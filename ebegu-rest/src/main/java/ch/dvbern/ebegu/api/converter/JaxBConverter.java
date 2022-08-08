@@ -1264,6 +1264,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
 		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
+		antrag.setFinSitAenderungGueltigAbDatum(antragJAXP.getFinSitAenderungGueltigAbDatum());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
 	}
@@ -1435,6 +1436,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setDokumenteHochgeladen(persistedGesuch.getDokumenteHochgeladen());
 		jaxGesuch.setFinSitStatus(persistedGesuch.getFinSitStatus());
 		jaxGesuch.setFinSitTyp(persistedGesuch.getFinSitTyp());
+		jaxGesuch.setFinSitAenderungGueltigAbDatum(persistedGesuch.getFinSitAenderungGueltigAbDatum());
 		return jaxGesuch;
 	}
 
