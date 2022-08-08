@@ -1,12 +1,14 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -39,10 +41,12 @@ describe('FallCreationViewXComponent', () => {
         ['saveFinanzielleSituation']);
     const stateService = jasmine.createSpyObj<StateService>(StateService.name, ['transition']);
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
+    const einstellungenRS = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
     const gesuch = new TSGesuch();
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
     authServiceSpy.isOneOfRoles.and.returnValue(false);
+    einstellungenRS.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -57,6 +61,7 @@ describe('FallCreationViewXComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
+                {provide: EinstellungRS, useValue: einstellungenRS},
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
