@@ -22,7 +22,6 @@ import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
 
 export class TSAntragDTO extends TSAbstractAntragDTO {
-
     private static readonly YEAR_2000 = 2000;
 
     private _antragId: string;
@@ -54,6 +53,7 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     private _fallId: string;
     private _gemeindeId: string;
     private _isSozialdienst: boolean;
+    private _begruendungMutation: string;
 
     public constructor() {
         super();
@@ -330,5 +330,13 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
 
     public set internePendenzAbgelaufen(value: boolean) {
         this._internePendenzAbgelaufen = value;
+    }
+
+    public get begruendungMutation(): string {
+        return this._begruendungMutation;
+    }
+
+    public set begruendungMutation(value: string) {
+        this._begruendungMutation = value;
     }
 }

@@ -419,6 +419,7 @@ export class EbeguRestUtil {
         restObj.status = antragEntity.status;
         restObj.typ = antragEntity.typ;
         restObj.eingangsart = antragEntity.eingangsart;
+        restObj.begruendungMutation = antragEntity.begruendungMutation;
     }
 
     private parseAbstractAntragEntity(antragTS: TSAbstractAntragEntity, antragFromServer: any): void {
@@ -431,6 +432,7 @@ export class EbeguRestUtil {
         antragTS.status = antragFromServer.status;
         antragTS.typ = antragFromServer.typ;
         antragTS.eingangsart = antragFromServer.eingangsart;
+        antragTS.begruendungMutation = antragFromServer.begruendungMutation;
     }
 
     public adresseToRestObject(restAdresse: any, adresse: TSAdresse): TSAdresse {
@@ -3007,6 +3009,7 @@ export class EbeguRestUtil {
         antragTS.fallId = antragFromServer.fallId;
         antragTS.gemeindeId = antragFromServer.gemeindeId;
         antragTS.isSozialdienst = antragFromServer.isSozialdienst;
+        antragTS.begruendungMutation = antragFromServer.begruendungMutation;
         return antragTS;
     }
 

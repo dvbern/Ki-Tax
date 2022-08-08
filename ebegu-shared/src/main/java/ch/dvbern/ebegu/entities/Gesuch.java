@@ -267,6 +267,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private Boolean internePendenz = false;
 
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	private String begruendungMutation;
+
 
 	public Gesuch() {
 	}
@@ -1370,5 +1375,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
+	}
+
+	@Nullable
+	public String getBegruendungMutation() {
+		return begruendungMutation;
+	}
+
+	public void setBegruendungMutation(@Nullable String begruendungMutation) {
+		this.begruendungMutation = begruendungMutation;
 	}
 }

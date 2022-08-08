@@ -105,6 +105,8 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean geprueftSTV;
 
+	@Nullable
+	private String begruendungMutation;
 
 	private boolean verfuegungEingeschrieben;
 
@@ -386,6 +388,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setFinSitTyp(@Nonnull FinanzielleSituationTyp finSitTyp) {
 		this.finSitTyp = finSitTyp;
+	}
+
+	@Nullable
+	public String getBegruendungMutation() {
+		return begruendungMutation;
+	}
+
+	public void setBegruendungMutation(@Nullable String begruendungMutation) {
+		this.begruendungMutation = begruendungMutation;
 	}
 }
 

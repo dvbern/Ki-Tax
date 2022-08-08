@@ -33,3 +33,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 SET value = 'true'
 WHERE einstellung_key = 'BEGRUENDUNG_MUTATION_AKTIVIERT' AND mandant_identifier = 'LUZERN';
+
+
+alter table gesuch add if not exists begruendung_mutation text;
+alter table gesuch_aud add if not exists begruendung_mutation text;

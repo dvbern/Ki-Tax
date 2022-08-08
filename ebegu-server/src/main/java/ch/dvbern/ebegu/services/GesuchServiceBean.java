@@ -248,6 +248,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (regelnGueltigAb != null) {
 			gesuchToPersist.setRegelnGueltigAb(regelnGueltigAb);
 		}
+		gesuchToPersist.setBegruendungMutation(gesuchToCreate.getBegruendungMutation());
 
 		updateGesuchWithConfiguration(gesuchToPersist);
 

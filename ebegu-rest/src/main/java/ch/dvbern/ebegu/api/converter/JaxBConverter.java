@@ -1170,6 +1170,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		antrag.setEingangsdatum(antragJAXP.getEingangsdatum());
 		antrag.setRegelnGueltigAb(antragJAXP.getRegelnGueltigAb());
+		antrag.setBegruendungMutation(antragJAXP.getBegruendungMutation());
 		antrag.setFreigabeDatum(antragJAXP.getFreigabeDatum());
 		antrag.setStatus(AntragStatusConverterUtil.convertStatusToEntity(antragJAXP.getStatus()));
 		if (antragJAXP.getTyp() != null) {
@@ -1396,6 +1397,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxGesuch.setEingangsdatum(persistedGesuch.getEingangsdatum());
 		jaxGesuch.setRegelnGueltigAb(persistedGesuch.getRegelnGueltigAb());
+		jaxGesuch.setBegruendungMutation(persistedGesuch.getBegruendungMutation());
 		jaxGesuch.setFreigabeDatum(persistedGesuch.getFreigabeDatum());
 		jaxGesuch.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
 			persistedGesuch,
@@ -4676,6 +4678,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
 		antrag.setRegelnGueltigAb(gesuch.getRegelnGueltigAb());
+		antrag.setBegruendungMutation(gesuch.getBegruendungMutation());
 		antrag.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
 		antrag.setAenderungsdatum(gesuch.getTimestampMutiert());
 		antrag.setAntragTyp(gesuch.getTyp());

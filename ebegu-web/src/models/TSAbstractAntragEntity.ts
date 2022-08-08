@@ -31,6 +31,7 @@ export class TSAbstractAntragEntity extends TSAbstractMutableEntity {
     private _status: TSAntragStatus;
     private _typ: TSAntragTyp;
     private _eingangsart: TSEingangsart;
+    private _begruendungMutation: string;
 
     public get dossier(): TSDossier {
         return this._dossier;
@@ -94,5 +95,13 @@ export class TSAbstractAntragEntity extends TSAbstractMutableEntity {
 
     public set eingangsart(value: TSEingangsart) {
         this._eingangsart = value;
+    }
+
+    public get begruendungMutation(): string {
+        return this._begruendungMutation;
+    }
+
+    public set begruendungMutation(value: string) {
+        this._begruendungMutation = value;
     }
 }
