@@ -198,6 +198,7 @@ public class VerfuegungEventConverter {
 			.setAnspruchsberechtigteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()))
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
 			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
+			.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern())
 			.build();
 	}
 }
