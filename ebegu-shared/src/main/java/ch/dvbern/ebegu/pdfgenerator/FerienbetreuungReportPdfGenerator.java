@@ -439,8 +439,11 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 			sb.append(Constants.SPACE);
 			sb.append(stammdaten.getStammdatenKontaktpersonNachname());
 			sb.append(Constants.LINE_BREAK);
-			sb.append(stammdaten.getStammdatenKontaktpersonFunktion());
-			sb.append(Constants.LINE_BREAK);
+			final String kontaktpersonFunktion = stammdaten.getStammdatenKontaktpersonFunktion();
+			if (StringUtils.isNotEmpty(kontaktpersonFunktion)) {
+				sb.append(kontaktpersonFunktion);
+				sb.append(Constants.LINE_BREAK);
+			}
 			sb.append(stammdaten.getStammdatenKontaktpersonEmail());
 			sb.append(Constants.LINE_BREAK);
 			sb.append(stammdaten.getStammdatenKontaktpersonTelefon());
