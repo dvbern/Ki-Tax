@@ -52,6 +52,6 @@ export class EditGemeindeComponentKorrespondenz  {
     }
 
     public escapeSignatur(standardSignatur: string): string {
-        return standardSignatur.replace(/\n/g, '<br />');
+        return standardSignatur?.replace(/\n/g, '<br />');
     }
 }
