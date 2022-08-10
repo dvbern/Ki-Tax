@@ -21,6 +21,10 @@
         <fieldset ngModelGroup="dv-edit-gemeinde-stammdaten">
             <div class="row margin-top-20">
 
+                <div class="col-sm-12">
+                    <h2 translate>PDF_GENERIERUNG</h2>
+                </div>
+
                 <!-- senderAddress -->
                 <div class="col-sm-12">
                     <h3 translate>KORRESPONDENZ_SENDER_ADDRESS</h3>
@@ -124,6 +128,10 @@
 
                     </div>
                 </div>
+
+                <div class="col-sm-12">
+                    <h2 translate>KIBON_MITTEILUNGEN</h2>
+                </div>
                 <!-- standardSignatur -->
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -148,6 +156,11 @@
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
+
+                <div class="col-sm-12">
+                    <h2 translate>PDF_GENERIERUNG</h2>
+                </div>
+
                 <!-- Absender -->
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -185,6 +198,10 @@
                     <a role="button"
                        (click)="downloadMusterdokument(stammdaten.gemeinde.id);$event.stopPropagation()">
                         {{'KORRESPONDENZ_MUSTERDOKUMENT_LINK' | translate}}</a>
+                </div>
+
+                <div class="col-sm-12">
+                    <h2 translate>KIBON_MITTEILUNGEN</h2>
                 </div>
 
                 <div class="col-sm-12">
