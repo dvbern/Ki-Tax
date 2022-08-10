@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class SimplePDFTable {
 
-	private final float[] columnWidths = { 10, 4, 4 };
+	private final float[] columnWidths = { 14, 4 };
 	private final PageConfiguration pageConfiguration;
 	private final boolean lastLineBold;
 	private final int[] alignement = { Element.ALIGN_LEFT,Element.ALIGN_RIGHT};
@@ -52,10 +52,10 @@ public class SimplePDFTable {
 		this.lastLineBold = lastLineBold;
 	}
 
+
 	@Nonnull
 	public PdfPTable createTable() {
-		int numberOfColumns = 2;
-		PdfPTable table = new PdfPTable(numberOfColumns);
+		PdfPTable table = new PdfPTable(columnWidths.length);
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
