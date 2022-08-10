@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -143,6 +144,8 @@ public final class RestUtil {
 			purgeSingleKindAndBetreuungenOfInstitutionen(kind, userInstitutionen);
 			if (kind.getBetreuungen().isEmpty()) {
 				kindsIterator.remove();
+			} else {
+				cleanZeitabschnitteForInsitutionTraegerschaft(kind.getBetreuungen());
 			}
 		}
 	}
@@ -176,6 +179,19 @@ public final class RestUtil {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Entfernt alle Zeitabschnitte, welche an die Eltern ausbezahlt wurden oder werden aus dem Gesuch
+	 */
+	private static void cleanZeitabschnitteForInsitutionTraegerschaft(Collection<JaxBetreuung> betreuungen) {
+		betreuungen.forEach(betreuung -> {
+				if (betreuung.getVerfuegung() != null) {
+					betreuung.getVerfuegung()
+						.getZeitabschnitte()
+						.removeIf(JaxVerfuegungZeitabschnitt::isAuszahlungAnEltern);
+				}
+		});
 	}
 
 	public static Response sendErrorNotAuthorized() {
