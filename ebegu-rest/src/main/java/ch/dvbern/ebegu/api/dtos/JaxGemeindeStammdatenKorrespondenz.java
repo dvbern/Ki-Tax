@@ -1,5 +1,6 @@
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,6 +43,9 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 	@NotNull
 	private Integer logoSpacingTop;
 
+	@Nullable
+	private String standardSignatur;
+
 	@NotNull
 	public static JaxGemeindeStammdatenKorrespondenz from(@NotNull GemeindeStammdatenKorrespondenz stammdaten) {
 		return new JaxGemeindeStammdatenKorrespondenz(
@@ -51,7 +55,8 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 			stammdaten.getReceiverAddressSpacingTop(),
 			stammdaten.getLogoWidth(),
 			stammdaten.getLogoSpacingLeft(),
-			stammdaten.getLogoSpacingTop()
+			stammdaten.getLogoSpacingTop(),
+			stammdaten.getStandardSignatur()
 		);
 	}
 
@@ -63,5 +68,6 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 		entity.setLogoWidth(logoWidth);
 		entity.setLogoSpacingLeft(logoSpacingLeft);
 		entity.setLogoSpacingTop(logoSpacingTop);
+		entity.setStandardSignatur(standardSignatur);
 	}
 }

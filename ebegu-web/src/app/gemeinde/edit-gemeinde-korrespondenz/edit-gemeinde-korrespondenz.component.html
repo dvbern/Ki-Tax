@@ -21,6 +21,10 @@
         <fieldset ngModelGroup="dv-edit-gemeinde-stammdaten">
             <div class="row margin-top-20">
 
+                <div class="col-sm-12">
+                    <h2 translate>PDF_GENERIERUNG</h2>
+                </div>
+
                 <!-- senderAddress -->
                 <div class="col-sm-12">
                     <h3 translate>KORRESPONDENZ_SENDER_ADDRESS</h3>
@@ -124,6 +128,27 @@
 
                     </div>
                 </div>
+
+                <div class="col-sm-12">
+                    <h2 translate>KIBON_MITTEILUNGEN</h2>
+                </div>
+                <!-- standardSignatur -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label translate for="standardSignatur_id">KORRESPONDENZ_STANDARD_SIGNATUR
+                            <dv-tooltip id="standardSignatur_tooltip"
+                                        [text]="'KORRESPONDENZ_STANDARD_SIGNATUR_HELP' | translate"></dv-tooltip></label>
+
+                        <textarea id="standardSignatur_id" name="standardSignatur"
+                               #standardSignatur="ngModel"
+                               [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.standardSignatur"
+                                  class="form-control"></textarea>
+
+                        <dv-error-messages [errorObject]="standardSignatur.errors"
+                                           inputId="standardSignatur_id"></dv-error-messages>
+
+                    </div>
+                </div>
             </div>
         </fieldset>
     </div>
@@ -131,6 +156,11 @@
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
+
+                <div class="col-sm-12">
+                    <h2 translate>PDF_GENERIERUNG</h2>
+                </div>
+
                 <!-- Absender -->
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -168,6 +198,16 @@
                     <a role="button"
                        (click)="downloadMusterdokument(stammdaten.gemeinde.id);$event.stopPropagation()">
                         {{'KORRESPONDENZ_MUSTERDOKUMENT_LINK' | translate}}</a>
+                </div>
+
+                <div class="col-sm-12">
+                    <h2 translate>KIBON_MITTEILUNGEN</h2>
+                </div>
+
+                <div class="col-sm-12">
+                    <h3 translate>KORRESPONDENZ_STANDARD_SIGNATUR</h3>
+                    <p [innerHTML]="escapeSignatur(stammdaten.gemeindeStammdatenKorrespondenz.standardSignatur)"></p>
+
                 </div>
             </div>
         </fieldset>

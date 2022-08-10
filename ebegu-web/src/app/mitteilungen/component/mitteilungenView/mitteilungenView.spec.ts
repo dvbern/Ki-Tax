@@ -16,6 +16,7 @@
 import * as angular from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
@@ -25,6 +26,7 @@ import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSFall} from '../../../../models/TSFall';
 import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSGemeindeStammdaten} from '../../../../models/TSGemeindeStammdaten';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
@@ -52,6 +54,7 @@ describe('mitteilungenView', () => {
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
     let institutionRS: InstitutionRS;
+    let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(MITTEILUNGEN_JS_MODULE.name));
 
@@ -70,6 +73,7 @@ describe('mitteilungenView', () => {
         $q = $injector.get('$q');
         institutionRS = $injector.get('InstitutionRS');
         scope = $rootScope.$new();
+        gemeindeRS = $injector.get('GemeindeRS');
 
         // prepare fall
         stateParams.dossierId = '123';
@@ -83,6 +87,7 @@ describe('mitteilungenView', () => {
         fall.besitzer = besitzer;
         dossier.fall.besitzer = besitzer;
         dossier.gemeinde = new TSGemeinde();
+        dossier.gemeinde.id = '11111111-1111-1111-1111-111111111111';
         verantwortlicher = new TSBenutzerNoDetails();
         verantwortlicher.nachname = 'Arnaldo Verantwortlicher';
         dossier.verantwortlicherBG = verantwortlicher;
@@ -90,6 +95,8 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
+        // tslint:disable-next-line:no-object-literal-type-assertion
+        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({} as TSGemeindeStammdaten));
     }));
 
     const assertMitteilungContent = () => {
@@ -203,7 +210,7 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.resolve([]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
             $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
-            dossierRS, undefined, institutionRS);
+            dossierRS, undefined, institutionRS, gemeindeRS);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();

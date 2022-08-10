@@ -18,6 +18,7 @@ import {IComponentOptions, IOnInit, IPromise} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {TSMitteilungEvent} from '../../../../models/enums/TSMitteilungEvent';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
@@ -77,6 +78,7 @@ export class DVMitteilungListController implements IOnInit {
         'DossierRS',
         'PosteingangService',
         'InstitutionRS',
+        'GemeindeRS'
     ];
 
     public dossier: TSDossier;
@@ -110,6 +112,7 @@ export class DVMitteilungListController implements IOnInit {
         private readonly dossierRS: DossierRS,
         private readonly posteingangService: PosteingangService,
         private readonly institutionRS: InstitutionRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 
@@ -156,32 +159,39 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     private initMitteilungForCurrentBenutzer(): void {
-        const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
-        const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
-            TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
-        );
-        const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
-        const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
-        if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser || isSozialdienst)) {
-            return;
+        this.gemeindeRS.getGemeindeStammdaten(this.dossier.gemeinde.id).then(gemeindeStammdaten => {
+
+            const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+            const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
+            );
+            const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+            const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
+            if (!(isGesuchsteller || isJugendamtOrSchulamtAndFallHasBesitzer || isInstitutionsUser || isSozialdienst)) {
+                return;
+            }
+            const currentUser = this.authServiceRS.getPrincipal();
+            // common attributes
+            this.currentMitteilung = new TSMitteilung();
+            this.currentMitteilung.dossier = this.dossier;
+            if (this.betreuung) {
+                this.currentMitteilung.betreuung = this.betreuung;
+            }
+            this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
+            this.currentMitteilung.sender = currentUser;
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
+                .concat(TSRoleUtil.getTraegerschaftOnlyRoles()))) {
+                this.initReceiverList();
+            }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
+                this.currentMitteilung.institution = currentUser.currentBerechtigung.institution;
+            }
+
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+                this.currentMitteilung.message = gemeindeStammdaten.gemeindeStammdatenKorrespondenz?.standardSignatur;
+            }
+        });
         }
-        const currentUser = this.authServiceRS.getPrincipal();
-        // common attributes
-        this.currentMitteilung = new TSMitteilung();
-        this.currentMitteilung.dossier = this.dossier;
-        if (this.betreuung) {
-            this.currentMitteilung.betreuung = this.betreuung;
-        }
-        this.currentMitteilung.mitteilungStatus = TSMitteilungStatus.NEU;
-        this.currentMitteilung.sender = currentUser;
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
-            .concat(TSRoleUtil.getTraegerschaftOnlyRoles()))) {
-            this.initReceiverList();
-        }
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
-            this.currentMitteilung.institution = currentUser.currentBerechtigung.institution;
-        }
-    }
 
     private initReceiverList(): void {
         this.empfaengerValues = new Array();

@@ -2979,5 +2979,9 @@
     "FERIENBETREUUNG_REPORT_NAME": "Ferienbetreuung {{gemeinde}} {{gp}}",
     "LATS_REPORT_NAME": "Lastenausgleich Tagesschule {{gemeinde}} {{gp}}",
     "BEGRUENDUNG_MUTATION": "Begründung für Mutation",
+    "KORRESPONDENZ_STANDARD_SIGNATUR": "Nachrichten Standardsignatur",
+    "KORRESPONDENZ_STANDARD_SIGNATUR_HELP": "Diese Signatur wird bei jeder Nachricht, die Sie in kiBon versenden angefügt. Sie können diese in der Nachricht bearbeiten.",
+    "PDF_GENERIERUNG": "PDF-Generierung",
+    "KIBON_MITTEILUNGEN": "kiBon-Mitteilungen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
