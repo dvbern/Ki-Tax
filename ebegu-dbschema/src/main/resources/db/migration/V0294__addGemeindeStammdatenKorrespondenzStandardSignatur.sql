@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractEntity} from './TSAbstractEntity';
-
-export class TSGemeindeStammdatenKorrespondenz extends TSAbstractEntity {
-
-    public senderAddressSpacingLeft: number;
-    public senderAddressSpacingTop: number;
-    public receiverAddressSpacingLeft: number;
-    public receiverAddressSpacingTop: number;
-    public logoWidth: number;
-    public logoSpacingLeft: number;
-    public logoSpacingTop: number;
-    public standardSignatur: string;
-
-}
+ALTER TABLE gemeinde_stammdaten_korrespondenz ADD COLUMN IF NOT EXISTS standard_signatur TEXT;
+ALTER TABLE gemeinde_stammdaten_korrespondenz_aud ADD COLUMN IF NOT EXISTS standard_signatur TEXT;
