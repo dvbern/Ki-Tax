@@ -50,4 +50,8 @@ export class EditGemeindeComponentKorrespondenz  {
                 this.downloadRS.openDownload(file, filename);
             });
     }
+
+    public escapeSignatur(standardSignatur: string): string {
+        return standardSignatur.replace(/\n/g, '<br />');
+    }
 }
