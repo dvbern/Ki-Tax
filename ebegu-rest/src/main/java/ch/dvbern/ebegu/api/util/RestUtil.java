@@ -184,7 +184,7 @@ public final class RestUtil {
 	/**
 	 * Entfernt alle Zeitabschnitte, welche an die Eltern ausbezahlt wurden oder werden aus dem Gesuch
 	 */
-	public static void cleanZeitabschnitteForInsitutionTraegerschaft(Collection<JaxBetreuung> betreuungen) {
+	private static void cleanZeitabschnitteForInsitutionTraegerschaft(Collection<JaxBetreuung> betreuungen) {
 		betreuungen.forEach(betreuung -> {
 				if (betreuung.getVerfuegung() != null) {
 					betreuung.getVerfuegung()
