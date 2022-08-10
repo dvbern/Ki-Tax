@@ -186,7 +186,10 @@ export class DVMitteilungListController implements IOnInit {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
                 this.currentMitteilung.institution = currentUser.currentBerechtigung.institution;
             }
-            this.currentMitteilung.message = gemeindeStammdaten.gemeindeStammdatenKorrespondenz?.standardSignatur;
+
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+                this.currentMitteilung.message = gemeindeStammdaten.gemeindeStammdatenKorrespondenz?.standardSignatur;
+            }
         });
         }
 
