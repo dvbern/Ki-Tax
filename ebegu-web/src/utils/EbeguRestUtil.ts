@@ -1177,6 +1177,7 @@ export class EbeguRestUtil {
             restStammdaten.logoWidth = stammdaten.logoWidth;
             restStammdaten.logoSpacingLeft = stammdaten.logoSpacingLeft;
             restStammdaten.logoSpacingTop = stammdaten.logoSpacingTop;
+            restStammdaten.standardSignatur = stammdaten.standardSignatur;
             return restStammdaten;
         }
         return undefined;
@@ -1195,6 +1196,7 @@ export class EbeguRestUtil {
             stammdatenTS.logoWidth = stammdatenFromServer.logoWidth;
             stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
             stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
+            stammdatenTS.standardSignatur = stammdatenFromServer.standardSignatur;
             return stammdatenTS;
         }
         return undefined;
