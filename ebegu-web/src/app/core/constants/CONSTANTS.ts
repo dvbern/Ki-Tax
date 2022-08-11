@@ -41,6 +41,8 @@ export const CONSTANTS = {
     EARLIEST_DATE_OF_TS_ANMELDUNG: '2020-08-01',
     BERN_BFS_NUMMER: 351,
     MANDANT_LOCAL_STORAGE_KEY: 'mandant',
+    NUR_LATS_STARTDATUM: '2021-08-01',
+
 };
 
 export const DEFAULT_LOCALE = 'de-CH';

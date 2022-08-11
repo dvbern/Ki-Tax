@@ -33,4 +33,8 @@ export class TSMandant extends TSAbstractMutableEntity {
     public static get earliestDateOfTSAnmeldung(): moment.Moment {
         return moment(CONSTANTS.EARLIEST_DATE_OF_TS_ANMELDUNG);
     }
+
+    public static get nurLatsInstitutionenStartdatum(): moment.Moment {
+        return moment(CONSTANTS.NUR_LATS_STARTDATUM);
+    }
 }
