@@ -52,6 +52,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_HOSTDOMAIN = "ebegu.hostdomain";
 	private static final String EBEGU_DUMMY_LOGIN_ENABLED = "ebegu.dummy.login.enabled";
 	private static final String EBEGU_ZAHLUNGEN_TEST_MODE = "ebegu.zahlungen.test.mode";
+	private static final String EBEGU_ZAHLUNGEN_UEBERPRUEFUNG_WHITELIST = "ebegu.zahlungen.ueberpruefung.whitelist";
 	private static final String EBEGU_PERSONENSUCHE_DISABLED = "ebegu.personensuche.disabled";
 	private static final String EBEGU_PERSONENSUCHE_USE_DUMMY_SERVICE = "ebegu.personensuche.use.dummyservice";
 	private static final String EBEGU_PERSONENSUCHE_ENDPOINT = "ebegu.personensuche.endpoint";
@@ -192,6 +193,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public boolean getIsZahlungenTestMode() {
 		return getBoolean(EBEGU_ZAHLUNGEN_TEST_MODE, false) && getIsDevmode();
+	}
+
+	@Override
+	public String getEbeguZahlungenUeberpruefungWhitelist() {
+		return getString(EBEGU_ZAHLUNGEN_UEBERPRUEFUNG_WHITELIST);
 	}
 
 	@Override
