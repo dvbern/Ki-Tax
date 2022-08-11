@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -99,7 +100,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	public LATSReportPdfGenerator(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeAntrag,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nullable GemeindeStammdaten gemeindeStammdaten,
 			@Nonnull Einstellung lohnnormkosten,
 			@Nonnull Einstellung lohnnormkostenLessThan50) {
 		super(gemeindeAntrag, gemeindeStammdaten);
@@ -126,35 +127,37 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 			document.add(this.createStatus());
 
+			final LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde = getAngabenGemeinde();
+
 			Paragraph angabenGemeindeHeaeder = new Paragraph(translate(ANGABEN_GEMEINDE, mandant));
 			angabenGemeindeHeaeder.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(angabenGemeindeHeaeder);
-			document.add(this.createTableAllgemeineAngaben());
+			document.add(this.createTableAllgemeineAngaben(angabenGemeinde));
 
 			Paragraph abrechnungHeader = new Paragraph(translate(ABRECHNUNG, mandant));
 			abrechnungHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(abrechnungHeader);
-			document.add(this.createTableAbrechnung());
+			document.add(this.createTableAbrechnung(angabenGemeinde));
 
 			Paragraph kostenbeteilugungHeader = new Paragraph(translate(KOSTENBETEILIGUNG_GEMEINDE, mandant));
 			kostenbeteilugungHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(kostenbeteilugungHeader);
-			document.add(this.createTableKostenbeteiligung());
+			document.add(this.createTableKostenbeteiligung(angabenGemeinde));
 
 			Paragraph weitereKostenEtraegeHeader = new Paragraph(translate(WEITERE_KOSTEN_ETRAGE, mandant));
 			weitereKostenEtraegeHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(weitereKostenEtraegeHeader);
-			document.add(this.createTableWeitereKostenEtraege());
+			document.add(this.createTableWeitereKostenEtraege(angabenGemeinde));
 
 			Paragraph kontrollfragenHeader = new Paragraph(translate(KONTROLLFRAGEN, mandant));
 			kontrollfragenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(kontrollfragenHeader);
-			document.add(this.createTableKontrollfragen());
+			document.add(this.createTableKontrollfragen(angabenGemeinde));
 
 			Paragraph bemerkungenHeader = new Paragraph(translate(BEMERKUNGEN, mandant));
 			kontrollfragenHeader.setSpacingAfter(SUB_HEADER_SPACING_AFTER);
 			document.add(bemerkungenHeader);
-			document.add(getBemerkungenPhrase());
+			document.add(getBemerkungenPhrase(angabenGemeinde));
 		};
 	}
 
@@ -167,11 +170,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Element createTableAllgemeineAngaben() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
+	private Element createTableAllgemeineAngaben(LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addRow(
@@ -195,12 +194,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Element createTableAbrechnung() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
-
+	private Element createTableAbrechnung(@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
@@ -253,12 +247,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Element createTableKostenbeteiligung() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
-
+	private Element createTableKostenbeteiligung(@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(KOSTENBETEILIGUNG_GEMEINDE, mandant), "");
 		table.addRow(
@@ -287,12 +276,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Element createTableWeitereKostenEtraege() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
-
+	private Element createTableWeitereKostenEtraege(@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(WEITERE_KOSTEN_ETRAGE, mandant), "");
 		table.addRow(
@@ -306,12 +290,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Element createTableKontrollfragen() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
-
+	private Element createTableKontrollfragen(@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(KONTROLLFRAGEN, mandant), "");
 
@@ -368,13 +347,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	}
 
 	@Nonnull
-	private Phrase getBemerkungenPhrase() {
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-				(Objects.requireNonNull(lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde() ?
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-						lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur()));
-
-
+	private Phrase getBemerkungenPhrase(@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde) {
 		return new Phrase(angabenGemeinde.getBemerkungen(), getPageConfiguration().getFonts().getFont());
 	}
 
@@ -406,4 +379,15 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 				.getBasisJahrPlus2());
 	}
 
+	@Nonnull
+	private LastenausgleichTagesschuleAngabenGemeinde getAngabenGemeinde() {
+		boolean neuOrInBearbeitungGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.isInStatusNeu()
+			|| lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde();
+		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
+			neuOrInBearbeitungGemeinde ?
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
+		Objects.requireNonNull(angabenGemeinde);
+		return angabenGemeinde;
+	}
 }

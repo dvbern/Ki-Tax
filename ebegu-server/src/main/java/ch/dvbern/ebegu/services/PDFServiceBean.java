@@ -492,14 +492,15 @@ public class PDFServiceBean implements PDFService {
 	@Nonnull
 	@Override
 	public byte[] generateLATSReport(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten,
-			@Nonnull Locale locale,
-			Einstellung lohnnormkosten,
-			Einstellung lohnnormkostenLessThan50) throws MergeDocException {
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		@Nullable GemeindeStammdaten gemeindeStammdaten,
+		@Nonnull Locale locale,
+		@Nonnull Einstellung lohnnormkosten,
+		@Nonnull Einstellung lohnnormkostenLessThan50
+	) throws MergeDocException {
 		Objects.requireNonNull(container, "Das Argument 'container' darf nicht leer sein");
 
 		LATSReportPdfGenerator pdfGenerator = new LATSReportPdfGenerator(container, gemeindeStammdaten, lohnnormkosten, lohnnormkostenLessThan50);
-		return generateDokument(pdfGenerator, false, locale, gemeindeStammdaten.getGemeinde().getMandant());
+		return generateDokument(pdfGenerator, false, locale, container.getGemeinde().getMandant());
 	}
 }

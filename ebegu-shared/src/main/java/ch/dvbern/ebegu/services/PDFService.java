@@ -124,7 +124,7 @@ public interface PDFService {
 	@Nonnull
 	byte[] generateLATSReport(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten,
+			@Nullable GemeindeStammdaten gemeindeStammdaten,
 			@Nonnull Locale locale,
 			Einstellung lohnnormkosten,
 			Einstellung lohnnormkostenLessThan50) throws MergeDocException;

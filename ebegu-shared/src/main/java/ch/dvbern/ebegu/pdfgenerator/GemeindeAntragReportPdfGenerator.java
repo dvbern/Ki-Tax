@@ -23,25 +23,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
-import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfPTable;
 
 public abstract class GemeindeAntragReportPdfGenerator extends MandantPdfGenerator {
 
@@ -53,17 +43,20 @@ public abstract class GemeindeAntragReportPdfGenerator extends MandantPdfGenerat
 
 	public GemeindeAntragReportPdfGenerator(
 			@Nonnull GemeindeAntrag gemeindeAntrag,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
+			@Nullable GemeindeStammdaten gemeindeStammdaten
+	) {
 		super(Sprache.DEUTSCH, gemeindeAntrag.getGemeinde().getMandant());
 		initLocale(gemeindeStammdaten);
 		initGenerator();
 	}
 
-	private void initLocale(@Nonnull GemeindeStammdaten stammdaten) {
+	private void initLocale(@Nullable GemeindeStammdaten stammdaten) {
 		this.sprache = Locale.GERMAN; // Default, falls nichts gesetzt ist
-		Sprache[] korrespondenzsprachen = stammdaten.getKorrespondenzsprache().getSprache();
-		if (korrespondenzsprachen.length > 0) {
-			sprache = korrespondenzsprachen[0].getLocale();
+		if (stammdaten != null) {
+			Sprache[] korrespondenzsprachen = stammdaten.getKorrespondenzsprache().getSprache();
+			if (korrespondenzsprachen.length > 0) {
+				sprache = korrespondenzsprachen[0].getLocale();
+			}
 		}
 	}
 
@@ -137,5 +130,4 @@ public abstract class GemeindeAntragReportPdfGenerator extends MandantPdfGenerat
 				""
 		);
 	}
-
 }
