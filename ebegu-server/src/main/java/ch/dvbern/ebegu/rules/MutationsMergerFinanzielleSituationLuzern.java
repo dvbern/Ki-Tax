@@ -36,16 +36,10 @@ public class MutationsMergerFinanzielleSituationLuzern extends AbstractMutations
 	private boolean isFinSitGueltigInZeitabschnitt(LocalDate finSitGueltigAb, VerfuegungZeitabschnitt zeitabschnitt) {
 		Objects.requireNonNull(finSitGueltigAb);
 
-		//Wenn finSitGueltigAb während dem Monat, wird sie erst im Folgemonat berücksitigt
-		//e.g. finSitGueltigAb 01.09 = berücksichtigt ab 01.09
-		//e.g. finSitGueltigAb 02.09 = berücksichtigt ab 01.10
-		LocalDate firstDayWhenFitSitIsGueltig = finSitGueltigAb;
-
-		if (finSitGueltigAb.getDayOfMonth() != 1) {
-			firstDayWhenFitSitIsGueltig = finSitGueltigAb
-				.plusMonths(1)
-				.with(TemporalAdjusters.firstDayOfMonth());
-		}
+		//finSitGueltigAb, wird erst im Folgemonat berücksitigt
+		LocalDate firstDayWhenFitSitIsGueltig = finSitGueltigAb
+			.plusMonths(1)
+			.with(TemporalAdjusters.firstDayOfMonth());
 
 		return firstDayWhenFitSitIsGueltig.isBefore(zeitabschnitt.getGueltigkeit().getGueltigAb()) ||
 			firstDayWhenFitSitIsGueltig.isEqual(zeitabschnitt.getGueltigkeit().getGueltigAb());
