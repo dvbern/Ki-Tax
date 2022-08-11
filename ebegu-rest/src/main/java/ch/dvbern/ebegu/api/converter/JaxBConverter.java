@@ -746,6 +746,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Falls er eine wuenscht, muss er mindestens die IBAN Nummer sowie den Kontoinhaber ausfuellen.
 		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
+			// keineMahlzeitenverguenstigungBeantragtEditable darf nie vom Client uebernommen werden
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
 				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
@@ -846,6 +847,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setZustaendigeAmtsstelle(persistedFamiliensituation.getZustaendigeAmtsstelle());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
+		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragtEditable(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragtEditable());
 		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {

@@ -70,6 +70,8 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	private boolean keineMahlzeitenverguenstigungBeantragt;
 
+	private boolean keineMahlzeitenverguenstigungBeantragtEditable;
+
 	@Nullable
 	private String ibanMahlzeiten;
 
@@ -207,6 +209,14 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setKeineMahlzeitenverguenstigungBeantragt(boolean keineMahlzeitenverguenstigungBeantragt) {
 		this.keineMahlzeitenverguenstigungBeantragt = keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	public boolean isKeineMahlzeitenverguenstigungBeantragtEditable() {
+		return keineMahlzeitenverguenstigungBeantragtEditable;
+	}
+
+	public void setKeineMahlzeitenverguenstigungBeantragtEditable(boolean keineMahlzeitenverguenstigungBeantragtEditable) {
+		this.keineMahlzeitenverguenstigungBeantragtEditable = keineMahlzeitenverguenstigungBeantragtEditable;
 	}
 
 	@Nullable

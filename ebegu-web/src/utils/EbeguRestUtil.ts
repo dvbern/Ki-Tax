@@ -614,6 +614,7 @@ export class EbeguRestUtil {
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
+            // keineMahlzeitenverguenstigungBeantragtEditable wird nie vom Client zurueckgenommen
             restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
             restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
             restFamiliensituation.abweichendeZahlungsadresseMahlzeiten =
@@ -699,6 +700,8 @@ export class EbeguRestUtil {
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
+            familiensituation.keineMahlzeitenverguenstigungBeantragtEditable =
+                familiensituationFromServer.keineMahlzeitenverguenstigungBeantragtEditable;
             familiensituation.ibanMahlzeiten = familiensituationFromServer.ibanMahlzeiten;
             familiensituation.kontoinhaberMahlzeiten = familiensituationFromServer.kontoinhaberMahlzeiten;
             familiensituation.abweichendeZahlungsadresseMahlzeiten =

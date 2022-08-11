@@ -288,6 +288,14 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         return this.gesuchModelManager.isGesuchsteller2Required();
     }
 
+    public isMahlzeitenverguenstigungToggleDisabled(): boolean {
+        // In einer Mutation darf der Button nicht neu auf JA (d.h. wir beantragen KEINE...) gesetzt werden
+        if (this.gesuchModelManager.getGesuch().isMutation()) {
+            return !this.getGesuch().extractFamiliensituation().keineMahlzeitenverguenstigungBeantragtEditable;
+        }
+        return false;
+    }
+
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
             (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht)

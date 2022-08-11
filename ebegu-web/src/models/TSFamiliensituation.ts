@@ -32,6 +32,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _nameBetreuer: string;
     private _verguenstigungGewuenscht: boolean;
     private _keineMahlzeitenverguenstigungBeantragt: boolean;
+    private _keineMahlzeitenverguenstigungBeantragtEditable: boolean;
     private _ibanMahlzeiten: string;
     private _kontoinhaberMahlzeiten: string;
     private _abweichendeZahlungsadresseMahlzeiten: boolean;
@@ -124,6 +125,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set keineMahlzeitenverguenstigungBeantragt(value: boolean) {
         this._keineMahlzeitenverguenstigungBeantragt = value;
+    }
+
+    public get keineMahlzeitenverguenstigungBeantragtEditable(): boolean {
+        return this._keineMahlzeitenverguenstigungBeantragtEditable;
+    }
+
+    public set keineMahlzeitenverguenstigungBeantragtEditable(value: boolean) {
+        this._keineMahlzeitenverguenstigungBeantragtEditable = value;
     }
 
     public get ibanMahlzeiten(): string {
