@@ -225,6 +225,9 @@ export class AddInstitutionComponent implements OnInit {
     da Anmeldungen bei Tagesschulen frühstens ab der Periode 20/21 möglich sein können.
      */
     private getStartDate(): moment.Moment {
+        if (this.institution.status === TSInstitutionStatus.NUR_LATS) {
+            return TSMandant.nurLatsInstitutionenStartdatum;
+        }
         const nextMonthBegin = moment().add(1, 'M').startOf('month');
 
         if (this.isBGInstitution || nextMonthBegin >= TSMandant.earliestDateOfTSAnmeldung) {
