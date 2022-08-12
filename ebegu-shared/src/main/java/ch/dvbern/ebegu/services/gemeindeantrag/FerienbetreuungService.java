@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.errors.MergeDocException;
 
 /**
  * Service fuer die Ferienbetreuungen
@@ -133,4 +134,7 @@ public interface FerienbetreuungService {
 	@Nonnull FerienbetreuungAngabenContainer zurueckAnKanton(@Nonnull FerienbetreuungAngabenContainer container);
 
 	Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenVorgaengerContainer(@Nonnull FerienbetreuungAngabenContainer container);
+
+	byte[] generateFerienbetreuungReportDokument(@Nonnull FerienbetreuungAngabenContainer container)
+			throws MergeDocException;
 }

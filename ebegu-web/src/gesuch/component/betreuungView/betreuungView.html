@@ -476,6 +476,7 @@
                                                     false-option-label="{{'UEBER_INSTITUTION' | translate}}"
                                                     aria-described-by="abrechnungGutscheine-error"
                                                     ng-required="true"
+                                                    ng-change="vm.onChangeAbrechnungGutscheine()"
                                                     dv-enable-element
                                                     dv-enable-expression="vm.showAbrechnungGutscheine()">
                                     <dv-error-messages input-id="abrechnungGutscheine"
@@ -483,6 +484,30 @@
                                                        class="error">
                                     </dv-error-messages>
                                 </dv-radio-container>
+                            </div>
+                        </div>
+
+                        <!-- Begründung wenn Auszahlung an Institution -->
+                        <div class="row form-group margin-bottom-20" ng-if="vm.showAuszahlungAnInstituion()">
+                            <div class="col-xs-12">
+                                <span class="ebegu-h1 required">
+                                    <span data-translate="BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION"></span>
+                                </span>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <textarea
+                                    class="form-control"
+                                    rows="10"
+                                    id="begruendungAuszahlungInstitution"
+                                    maxlength="4000"
+                                    ng-required="true"
+                                    dv-enable-element
+                                   ng-disabled="!vm.showAbrechnungGutscheine()"
+                                    ng-model="vm.getBetreuungModel().begruendungAuszahlungAnInstitution"></textarea>
+                                <dv-error-messages input-id="begruendungAuszahlungInstitution"
+                                                   for="vm.form.begruendungAuszahlungInstitution.$error"
+                                                   class="error">
+                                </dv-error-messages>
                             </div>
                         </div>
                     </div>

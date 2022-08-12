@@ -100,6 +100,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean keineMahlzeitenverguenstigungBeantragt;
 
+	@Column(nullable = false)
+	private boolean keineMahlzeitenverguenstigungBeantragtEditable = true;
+
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -237,6 +240,14 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setKeineMahlzeitenverguenstigungBeantragt(boolean keineMahlzeitenverguenstigungBeantragt) {
 		this.keineMahlzeitenverguenstigungBeantragt = keineMahlzeitenverguenstigungBeantragt;
+	}
+
+	public boolean isKeineMahlzeitenverguenstigungBeantragtEditable() {
+		return keineMahlzeitenverguenstigungBeantragtEditable;
+	}
+
+	public void setKeineMahlzeitenverguenstigungBeantragtEditable(boolean keineMahlzeitenverguenstigungBeantragtEditable) {
+		this.keineMahlzeitenverguenstigungBeantragtEditable = keineMahlzeitenverguenstigungBeantragtEditable;
 	}
 
 	@Nullable
@@ -390,6 +401,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setZustaendigeAmtsstelle(this.getZustaendigeAmtsstelle());
 			target.setNameBetreuer(this.getNameBetreuer());
 			target.setKeineMahlzeitenverguenstigungBeantragt(this.isKeineMahlzeitenverguenstigungBeantragt());
+			// Wenn es mal beantragt war, kann es in einer Mutation nicht mehr nicht-beantragt werden
+			target.setKeineMahlzeitenverguenstigungBeantragtEditable(this.isKeineMahlzeitenverguenstigungBeantragt());
 			if (this.getAuszahlungsdatenMahlzeiten() != null) {
 				target.setAuszahlungsdatenMahlzeiten(this.getAuszahlungsdatenMahlzeiten()
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));

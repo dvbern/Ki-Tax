@@ -51,6 +51,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     private _verfuegungEingeschrieben: boolean = false;
     private _finSitStatus: TSFinSitStatus;
     private _finSitTyp: TSFinanzielleSituationTyp;
+    private _finSitAenderungGueltigAbDatum: moment.Moment;
     private _gesperrtWegenBeschwerde: boolean = false;
     private _datumGewarntNichtFreigegeben: moment.Moment;
     private _datumGewarntFehlendeQuittung: moment.Moment;
@@ -242,6 +243,14 @@ export class TSGesuch extends TSAbstractAntragEntity {
 
     public set finSitTyp(value: TSFinanzielleSituationTyp) {
         this._finSitTyp = value;
+    }
+
+    public get finSitAenderungGueltigAbDatum(): moment.Moment {
+        return this._finSitAenderungGueltigAbDatum;
+    }
+
+    public set finSitAenderungGueltigAbDatum(value: moment.Moment) {
+        this._finSitAenderungGueltigAbDatum = value;
     }
 
     /**

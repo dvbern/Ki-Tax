@@ -167,6 +167,10 @@ public class Betreuung extends AbstractPlatz {
 	@Column(nullable = false)
 	private boolean auszahlungAnEltern = false;
 
+	@Nullable
+	@Column(nullable = true)
+	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String begruendungAuszahlungAnInstitution;
+
 	public Betreuung() {
 	}
 
@@ -408,6 +412,7 @@ public class Betreuung extends AbstractPlatz {
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
 			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
+			target.setBegruendungAuszahlungAnInstitution(this.getBegruendungAuszahlungAnInstitution());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -577,5 +582,14 @@ public class Betreuung extends AbstractPlatz {
 
 	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
 		this.auszahlungAnEltern = auszahlungAnEltern;
+	}
+
+	@Nullable
+	public String getBegruendungAuszahlungAnInstitution() {
+		return begruendungAuszahlungAnInstitution;
+	}
+
+	public void setBegruendungAuszahlungAnInstitution(@Nullable String begruendungAuszahlungAnInstitution) {
+		this.begruendungAuszahlungAnInstitution = begruendungAuszahlungAnInstitution;
 	}
 }

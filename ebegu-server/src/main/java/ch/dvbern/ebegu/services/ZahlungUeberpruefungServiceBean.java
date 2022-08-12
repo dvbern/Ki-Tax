@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -123,6 +124,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	private List<String> potentielleFehlerList = new ArrayList<>();
 	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	private int anzahlMonateInZukunft;
+	private List<String> whiteListOfBgNummmern = new ArrayList<>();
 
 
 	@Asynchronous
@@ -138,6 +140,13 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		StopWatch stopWatch = logAndStartTimer(String.format(
 			"Starte Zahlungsüberprüfung für %s",
 			gemeinde.getName()));
+
+		// Die Whitelist lesen
+		final String whitelistString =
+			ebeguConfiguration.getEbeguZahlungenUeberpruefungWhitelist();
+		if (StringUtils.isNotEmpty(whitelistString)) {
+			whiteListOfBgNummmern = Arrays.asList(whitelistString.split(";"));
+		}
 
 		this.zahlungslaufHelper = ZahlungslaufHelperFactory.getZahlungslaufHelper(zahlungslaufTyp);
 		Objects.requireNonNull(gemeinde);
@@ -337,6 +346,14 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull LocalDate dateAusbezahltBis,
 		@Nonnull Map<String, List<Zahlungsposition>> zahlungenIstMap
 	) {
+		final String bgNummer = betreuung.getBGNummer();
+		if (whiteListOfBgNummmern.contains(bgNummer)) {
+			LOGGER.warn(
+				"ZAHLUNGSUEBERPRUEFUNG: Betreuung in Whitelist gefunden, breche Ueberpruefung ab: {}",
+				betreuung.getBGNummer());
+			return;
+		}
+
 		BigDecimal betragSoll = getBetragSoll(betreuung, dateAusbezahltBis);
 		BigDecimal betragIst = getBetragIst(betreuung, zahlungenIstMap);
 

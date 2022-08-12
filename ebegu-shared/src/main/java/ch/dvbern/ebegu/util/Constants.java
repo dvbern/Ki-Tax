@@ -161,6 +161,7 @@ public final class Constants {
 
 	public static final int MAX_MODULGROUPS_TAGESSCHULE = 20;
 	public static final int LATS_NUMBER_WEEKS_PER_YEAR = 39;
+	public static final String SPACE = " ";
 
 	private Constants() {
 		//this prevents even the native class from

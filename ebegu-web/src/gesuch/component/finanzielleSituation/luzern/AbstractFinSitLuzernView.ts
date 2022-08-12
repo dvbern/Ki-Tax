@@ -18,12 +18,15 @@
 import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
@@ -38,6 +41,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
         protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
+        protected authServiceRS: AuthServiceRS
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -192,6 +196,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public abstract getAntragstellerNummer(): number;
 
+    public getGesuch(): TSGesuch {
+        return this.gesuchModelManager.getGesuch();
+    }
+
     public showInfomaFields(): boolean {
         return this.getAntragstellerNummer() === 1;
     }
@@ -264,5 +272,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
                 TSWizardStepStatus.OK);
+    }
+
+    public isRoleGemeindeOrSuperAdmin(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 }

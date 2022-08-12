@@ -105,6 +105,8 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean geprueftSTV;
 
+	@Nullable
+	private String begruendungMutation;
 
 	private boolean verfuegungEingeschrieben;
 
@@ -113,6 +115,10 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	@Nonnull
 	private FinanzielleSituationTyp finSitTyp;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate finSitAenderungGueltigAbDatum;
 
 	private boolean gesperrtWegenBeschwerde;
 
@@ -386,6 +392,24 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setFinSitTyp(@Nonnull FinanzielleSituationTyp finSitTyp) {
 		this.finSitTyp = finSitTyp;
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungGueltigAbDatum() {
+		return finSitAenderungGueltigAbDatum;
+	}
+
+	public void setFinSitAenderungGueltigAbDatum(@Nullable LocalDate finSitAenderungGueltigAbDatum) {
+		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
+	}
+
+	@Nullable
+	public String getBegruendungMutation() {
+		return begruendungMutation;
+	}
+
+	public void setBegruendungMutation(@Nullable String begruendungMutation) {
+		this.begruendungMutation = begruendungMutation;
 	}
 }
 

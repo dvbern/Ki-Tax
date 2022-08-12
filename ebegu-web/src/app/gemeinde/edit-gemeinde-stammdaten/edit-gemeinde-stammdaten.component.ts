@@ -50,6 +50,9 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
     @Output() public readonly altGemeindeKontaktChange: EventEmitter<boolean> = new EventEmitter();
     public readonly CONSTANTS = CONSTANTS;
 
+    @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
+    @Input() public altTSAdresse: boolean;
+
     public korrespondenzsprache: string;
     public benutzerListe: Array<TSBenutzer>;
     public showMessageKeinAngebotSelected: boolean = false;
@@ -76,6 +79,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
                 stammdaten => this.initValues(stammdaten),
                 err => LOG.error(err)
             );
+    }
+
+    public altTSAdresseHasChange(newVal: boolean): void {
+        this.altTSAdresseChange.emit(newVal);
     }
 
     public ngOnDestroy(): void {

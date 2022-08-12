@@ -16,12 +16,14 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
@@ -46,7 +48,9 @@ export class FerienbetreuungComponent implements OnInit {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
-        private readonly wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -67,5 +71,22 @@ export class FerienbetreuungComponent implements OnInit {
     public ngOnDestroy(): void {
         this.subscription.unsubscribe();
         this.ferienbetreuungService.emptyStores();
+    }
+
+    public downloadFerienbetreuungReport(): void {
+        this.ferienbetreuungService.generateFerienbetreuungReport(this.ferienbetreuungContainer)
+            .subscribe(res => this.openDownloadForFile(res), err => LOG.error(err));
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
+            {
+                gemeinde: this.ferienbetreuungContainer.gemeinde.name,
+                gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString,
+            });
+        this.downloadRS.openDownload(file, filename);
     }
 }

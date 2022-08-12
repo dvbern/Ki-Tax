@@ -171,6 +171,9 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	private Boolean internePendenzAbgelaufen = false;
 
+	@Nullable
+	private String begruendungMutation;
+
 	public String getAntragId() {
 		return antragId;
 	}
@@ -410,5 +413,14 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setInternePendenzAbgelaufen(Boolean internePendenzAbgelaufen) {
 		this.internePendenzAbgelaufen = internePendenzAbgelaufen;
+	}
+
+	@Nullable
+	public String getBegruendungMutation() {
+		return begruendungMutation;
+	}
+
+	public void setBegruendungMutation(@Nullable String begruendungMutation) {
+		this.begruendungMutation = begruendungMutation;
 	}
 }

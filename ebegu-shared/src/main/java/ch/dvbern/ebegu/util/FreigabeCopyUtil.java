@@ -134,6 +134,7 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setNameBetreuer(familiensituationJA.getNameBetreuer());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt());
+		familiensituationGS.setKeineMahlzeitenverguenstigungBeantragtEditable(familiensituationJA.isKeineMahlzeitenverguenstigungBeantragtEditable());
 		familiensituationGS.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJA.isAbweichendeZahlungsadresseMahlzeiten());
 		familiensituationGS.setFkjvFamSit(familiensituationJA.isFkjvFamSit());
 		familiensituationGS.setMinDauerKonkubinat(familiensituationJA.getMinDauerKonkubinat());

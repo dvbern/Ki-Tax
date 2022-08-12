@@ -84,6 +84,29 @@
 						</div>
 					</div>
 
+                    <!-- Mutationsbegruendung -->
+                    <div class="row margin-bottom-20" *ngIf="isShowInputBegruendungMutation()">
+                        <dv-input-container class="form-group">
+                            <div class="col-sm-12">
+                            <label class="md-no-float required" for="begruendungMutation">
+                                <span [translate]="'BEGRUENDUNG_MUTATION'"></span>
+                            </label>
+                            </div>
+                            <div class="col-md-6">
+                              <textarea
+                                  class="form-control"
+                                  rows="10"
+                                  id="begruendungMutation"
+                                  maxlength="4000"
+                                  required="true"
+                                  name="begruendungMutation"
+                                  #begruendungMutation="ngModel"
+                                  [(ngModel)]="getGesuchModel().begruendungMutation"
+                              ></textarea>
+                            </div>
+                        </dv-input-container>
+                    </div>
+
 					<!-- Gesuchsperiode: Auswahl -->
 					<div *dvNgShowElement="canChangeGesuchsperiode(); roles: getAllRolesButGesuchstellerSozialdienst()">
 						<div class="row">

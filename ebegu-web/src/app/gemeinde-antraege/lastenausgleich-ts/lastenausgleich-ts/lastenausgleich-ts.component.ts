@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Observable, Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
@@ -23,6 +24,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../
 import {TSWizardStepX} from '../../../../models/TSWizardStepX';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
@@ -47,7 +49,9 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly lastenausgleichTSService: LastenausgleichTSService,
-        private readonly wizardStepXRS: WizardStepXRS
+        private readonly wizardStepXRS: WizardStepXRS,
+        private readonly downloadRS: DownloadRS,
+        private readonly translate: TranslateService
     ) {
     }
 
@@ -72,5 +76,22 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
 
     public showKommentare(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public downloadFerienbetreuungReport(): void {
+        this.lastenausgleichTSService.generateLATSReport(this.lATSAngabenGemeindeContainer)
+            .subscribe(res => this.openDownloadForFile(res), err => LOG.error(err));
+    }
+
+    private openDownloadForFile(response: BlobPart): void {
+        let file;
+        let filename;
+        file = new Blob([response], {type: 'application/pdf'});
+        filename = this.translate.instant('LATS_REPORT_NAME',
+            {
+                gemeinde: this.lATSAngabenGemeindeContainer.gemeinde.name,
+                gp: this.lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString,
+            });
+        this.downloadRS.openDownload(file, filename);
     }
 }

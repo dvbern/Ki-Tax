@@ -53,6 +53,9 @@ export class DvDatePickerXComponent implements OnInit {
     @Input()
     public inputId: string;
 
+    @Input()
+    public disabled: boolean = false;
+
     @Output()
     public readonly dateChange: EventEmitter<moment.Moment> = new EventEmitter<moment.Moment>();
 

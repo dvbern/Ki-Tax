@@ -746,6 +746,7 @@ public class JaxBConverter extends AbstractConverter {
 		// Falls er eine wuenscht, muss er mindestens die IBAN Nummer sowie den Kontoinhaber ausfuellen.
 		if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt());
+			// keineMahlzeitenverguenstigungBeantragtEditable darf nie vom Client uebernommen werden
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
 				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
@@ -846,6 +847,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setZustaendigeAmtsstelle(persistedFamiliensituation.getZustaendigeAmtsstelle());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
+		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragtEditable(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragtEditable());
 		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
 		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
 		if (persistedAuszahlungsdaten != null) {
@@ -1170,6 +1172,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		antrag.setEingangsdatum(antragJAXP.getEingangsdatum());
 		antrag.setRegelnGueltigAb(antragJAXP.getRegelnGueltigAb());
+		antrag.setBegruendungMutation(antragJAXP.getBegruendungMutation());
 		antrag.setFreigabeDatum(antragJAXP.getFreigabeDatum());
 		antrag.setStatus(AntragStatusConverterUtil.convertStatusToEntity(antragJAXP.getStatus()));
 		if (antragJAXP.getTyp() != null) {
@@ -1264,6 +1267,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
 		antrag.setGesperrtWegenBeschwerde(antragJAXP.isGesperrtWegenBeschwerde());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
+		antrag.setFinSitAenderungGueltigAbDatum(antragJAXP.getFinSitAenderungGueltigAbDatum());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
 	}
@@ -1396,6 +1400,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxGesuch.setEingangsdatum(persistedGesuch.getEingangsdatum());
 		jaxGesuch.setRegelnGueltigAb(persistedGesuch.getRegelnGueltigAb());
+		jaxGesuch.setBegruendungMutation(persistedGesuch.getBegruendungMutation());
 		jaxGesuch.setFreigabeDatum(persistedGesuch.getFreigabeDatum());
 		jaxGesuch.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
 			persistedGesuch,
@@ -1435,6 +1440,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setDokumenteHochgeladen(persistedGesuch.getDokumenteHochgeladen());
 		jaxGesuch.setFinSitStatus(persistedGesuch.getFinSitStatus());
 		jaxGesuch.setFinSitTyp(persistedGesuch.getFinSitTyp());
+		jaxGesuch.setFinSitAenderungGueltigAbDatum(persistedGesuch.getFinSitAenderungGueltigAbDatum());
 		return jaxGesuch;
 	}
 
@@ -3211,6 +3217,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		betreuung.setEingewoehnung(betreuungJAXP.isEingewoehnung());
 		betreuung.setAuszahlungAnEltern(betreuungJAXP.isAuszahlungAnEltern());
+		betreuung.setBegruendungAuszahlungAnInstitution(betreuungJAXP.getBegruendungAuszahlungAnInstitution());
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
@@ -3712,6 +3719,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitMutiert(betreuungFromServer.getAbwesenheitMutiert());
 		jaxBetreuung.setEingewoehnung(betreuungFromServer.isEingewoehnung());
 		jaxBetreuung.setAuszahlungAnEltern(betreuungFromServer.isAuszahlungAnEltern());
+		jaxBetreuung.setBegruendungAuszahlungAnInstitution(betreuungFromServer.getBegruendungAuszahlungAnInstitution());
 		return jaxBetreuung;
 	}
 
@@ -4676,6 +4684,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
 		antrag.setRegelnGueltigAb(gesuch.getRegelnGueltigAb());
+		antrag.setBegruendungMutation(gesuch.getBegruendungMutation());
 		antrag.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
 		antrag.setAenderungsdatum(gesuch.getTimestampMutiert());
 		antrag.setAntragTyp(gesuch.getTyp());

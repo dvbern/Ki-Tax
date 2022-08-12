@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -61,7 +62,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	public FamiliensituationContainer saveFamiliensituation(
 		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
-		Familiensituation loadedFamiliensituation
+		Familiensituation loadedFamiliensituation //OLD Familiensituation
 	) {
 		Objects.requireNonNull(familiensituationContainer);
 		Objects.requireNonNull(gesuch);
@@ -70,11 +71,17 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
 		Objects.requireNonNull(newFamiliensituation);
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		if (gesuch.isMutation() && EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis)) {
-
-			if (newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
+		if (gesuch.isMutation()) {
+			if (EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis) &&
+				newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
 				newFamiliensituation.setGemeinsameSteuererklaerung(false);
 			}
+
+			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+				isScheidung(loadedFamiliensituation, newFamiliensituation)) {
+				gesuch.setFinSitAenderungGueltigAbDatum(newFamiliensituation.getAenderungPer());
+			}
+
 		} else {
 			Familiensituation familiensituationErstgesuch =
 				familiensituationContainer.getFamiliensituationErstgesuch();
@@ -124,6 +131,17 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+
+	private boolean isScheidung(
+		@NotNull Familiensituation oldFamiliensituation,
+		@NotNull Familiensituation newFamiliensituation) {
+		if (oldFamiliensituation.getFamilienstatus() != EnumFamilienstatus.VERHEIRATET) {
+			return false;
+		}
+
+		return newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
 	}
 
 	private void changeFamSitLuzern(

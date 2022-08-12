@@ -126,6 +126,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@Nonnull
 	private Boolean auszahlungAnEltern;
 
+	@Nullable
+	private String begruendungAuszahlungAnInstitution;
+
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
@@ -378,5 +381,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setAuszahlungAnEltern(@Nonnull Boolean auszahlungAnEltern) {
 		this.auszahlungAnEltern = auszahlungAnEltern;
+	}
+
+	@Nullable
+	public String getBegruendungAuszahlungAnInstitution() {
+		return begruendungAuszahlungAnInstitution;
+	}
+
+	public void setBegruendungAuszahlungAnInstitution(@Nullable String begruendungAuszahlungAnInstitution) {
+		this.begruendungAuszahlungAnInstitution = begruendungAuszahlungAnInstitution;
 	}
 }

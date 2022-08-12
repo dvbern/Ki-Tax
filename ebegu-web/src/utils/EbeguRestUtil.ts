@@ -419,6 +419,7 @@ export class EbeguRestUtil {
         restObj.status = antragEntity.status;
         restObj.typ = antragEntity.typ;
         restObj.eingangsart = antragEntity.eingangsart;
+        restObj.begruendungMutation = antragEntity.begruendungMutation;
     }
 
     private parseAbstractAntragEntity(antragTS: TSAbstractAntragEntity, antragFromServer: any): void {
@@ -431,6 +432,7 @@ export class EbeguRestUtil {
         antragTS.status = antragFromServer.status;
         antragTS.typ = antragFromServer.typ;
         antragTS.eingangsart = antragFromServer.eingangsart;
+        antragTS.begruendungMutation = antragFromServer.begruendungMutation;
     }
 
     public adresseToRestObject(restAdresse: any, adresse: TSAdresse): TSAdresse {
@@ -612,6 +614,7 @@ export class EbeguRestUtil {
                 familiensituation.verguenstigungGewuenscht;
             restFamiliensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituation.keineMahlzeitenverguenstigungBeantragt;
+            // keineMahlzeitenverguenstigungBeantragtEditable wird nie vom Client zurueckgenommen
             restFamiliensituation.ibanMahlzeiten = familiensituation.ibanMahlzeiten;
             restFamiliensituation.kontoinhaberMahlzeiten = familiensituation.kontoinhaberMahlzeiten;
             restFamiliensituation.abweichendeZahlungsadresseMahlzeiten =
@@ -697,6 +700,8 @@ export class EbeguRestUtil {
                 familiensituationFromServer.verguenstigungGewuenscht;
             familiensituation.keineMahlzeitenverguenstigungBeantragt =
                 familiensituationFromServer.keineMahlzeitenverguenstigungBeantragt;
+            familiensituation.keineMahlzeitenverguenstigungBeantragtEditable =
+                familiensituationFromServer.keineMahlzeitenverguenstigungBeantragtEditable;
             familiensituation.ibanMahlzeiten = familiensituationFromServer.ibanMahlzeiten;
             familiensituation.kontoinhaberMahlzeiten = familiensituationFromServer.kontoinhaberMahlzeiten;
             familiensituation.abweichendeZahlungsadresseMahlzeiten =
@@ -1175,6 +1180,7 @@ export class EbeguRestUtil {
             restStammdaten.logoWidth = stammdaten.logoWidth;
             restStammdaten.logoSpacingLeft = stammdaten.logoSpacingLeft;
             restStammdaten.logoSpacingTop = stammdaten.logoSpacingTop;
+            restStammdaten.standardSignatur = stammdaten.standardSignatur;
             return restStammdaten;
         }
         return undefined;
@@ -1193,6 +1199,7 @@ export class EbeguRestUtil {
             stammdatenTS.logoWidth = stammdatenFromServer.logoWidth;
             stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
             stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
+            stammdatenTS.standardSignatur = stammdatenFromServer.standardSignatur;
             return stammdatenTS;
         }
         return undefined;
@@ -1342,6 +1349,7 @@ export class EbeguRestUtil {
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
         restGesuch.finSitTyp = gesuch.finSitTyp;
+        restGesuch.finSitAenderungGueltigAbDatum = DateUtil.momentToLocalDate(gesuch.finSitAenderungGueltigAbDatum);
         return restGesuch;
     }
 
@@ -1376,6 +1384,7 @@ export class EbeguRestUtil {
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
             gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
+            gesuchTS.finSitAenderungGueltigAbDatum = DateUtil.localDateToMoment(gesuchFromServer.finSitAenderungGueltigAbDatum);
             return gesuchTS;
         }
         return undefined;
@@ -2510,6 +2519,7 @@ export class EbeguRestUtil {
         restBetreuung.keineDetailinformationen = betreuung.keineDetailinformationen;
         restBetreuung.eingewoehnung = betreuung.eingewoehnung;
         restBetreuung.auszahlungAnEltern = betreuung.auszahlungAnEltern;
+        restBetreuung.begruendungAuszahlungAnInstitution = betreuung.begruendungAuszahlungAnInstitution;
         return restBetreuung;
     }
 
@@ -2683,6 +2693,7 @@ export class EbeguRestUtil {
                 this.parseAnmeldungTagesschuleZeitabschnitts(betreuungFromServer.anmeldungTagesschuleZeitabschnitts);
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
+            betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
             return betreuungTS;
         }
         return undefined;
@@ -3007,6 +3018,7 @@ export class EbeguRestUtil {
         antragTS.fallId = antragFromServer.fallId;
         antragTS.gemeindeId = antragFromServer.gemeindeId;
         antragTS.isSozialdienst = antragFromServer.isSozialdienst;
+        antragTS.begruendungMutation = antragFromServer.begruendungMutation;
         return antragTS;
     }
 

@@ -252,6 +252,10 @@ export class EbeguUtil {
         return !data;
     }
 
+    public static isEmptyArrayNullOrUndefined(data: any): boolean {
+        return data === null || data === undefined || data.length === 0;
+    }
+
     public static roundToFiveRappen(betrag: number): number {
         return Number((Math.ceil(betrag * 20 - 0.5) / 20).toFixed(2));
     }

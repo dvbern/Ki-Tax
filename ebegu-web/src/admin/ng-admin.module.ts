@@ -21,6 +21,7 @@ import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.compone
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
+import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
@@ -36,7 +37,8 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         DebuggingComponent,
         BetreuungMonitoringComponent,
         GesuchsperiodeViewXComponent,
-        AdminViewXComponent
+        AdminViewXComponent,
+        GesuchsperiodeListViewXComponent,
     ],
     providers: [],
 })

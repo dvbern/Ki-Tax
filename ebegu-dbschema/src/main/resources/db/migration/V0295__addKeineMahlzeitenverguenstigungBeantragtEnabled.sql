@@ -1,0 +1,2 @@
+ALTER TABLE familiensituation ADD COLUMN keine_mahlzeitenverguenstigung_beantragt_editable BIT NOT NULL DEFAULT TRUE;
+ALTER TABLE familiensituation_aud ADD COLUMN keine_mahlzeitenverguenstigung_beantragt_editable BIT;

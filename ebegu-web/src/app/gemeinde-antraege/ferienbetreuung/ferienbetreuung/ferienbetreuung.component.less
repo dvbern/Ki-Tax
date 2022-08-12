@@ -30,11 +30,19 @@
         flex-grow: 1;
         overflow: auto;
 
-        dv-wizard-side-nav {
-            background-color: @contrast-lightest;
-            display: flex;
-            flex-direction: column;
+        .side-nav {
+            background-color: #FFFFFF;
             width: 35.5rem;
+
+            dv-wizard-side-nav {
+                background-color: @contrast-lightest;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        .flex-spacing-6 {
+            height: 6rem;
         }
 
         .antrag {

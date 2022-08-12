@@ -104,7 +104,8 @@ public class VerfuegungEventConverter {
 			.setVersion(gesuch.getLaufnummer())
 			.setVerfuegtAm(verfuegtAm)
 			.setGemeindeBfsNr(gemeinde.getBfsNummer())
-			.setGemeindeName(gemeinde.getName());
+			.setGemeindeName(gemeinde.getName())
+			.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
 
 		setZeitabschnitte(verfuegung, builder);
 
@@ -197,6 +198,7 @@ public class VerfuegungEventConverter {
 			.setAnspruchsberechtigteAnzahlZeiteinheiten(ROUND.from(zeitabschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten()))
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
 			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
+			.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern())
 			.build();
 	}
 }

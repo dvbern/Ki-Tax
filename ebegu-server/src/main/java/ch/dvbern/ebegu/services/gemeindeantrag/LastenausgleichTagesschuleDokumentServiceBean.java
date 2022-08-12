@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -32,6 +33,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
@@ -41,10 +43,13 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.PDFService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -70,6 +75,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 	@Inject
 	EinstellungService einstellungService;
+
+	@Inject
+	private PDFService pdfService;
 
 	@Override
 	@Nonnull
@@ -102,6 +110,19 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		return document.getDocument();
 	}
 
+	@Override
+	public byte[] generateLATSReportDokument(
+			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container
+	) throws MergeDocException {
+		GemeindeStammdaten gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
+						.orElse(null);
+		Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
+		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
+		return pdfService.generateLATSReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE, lohnnormkosten, lohnnormkostenLessThan50);
+
+	}
+
 	@Nonnull
 	protected LatsDocxDTO toLatsDocxDTO(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
@@ -120,11 +141,15 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			new EbeguEntityNotFoundException("toLatsDocxDTO", container.getGemeinde().getId())
 		);
 
-		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
-		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
-		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
-		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
-		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		//Wenn TSAdresse vorhanden, soll diese verwendet werden, sonst 'normale' Gemeinde Adresse
+		Adresse adresseToUse = Optional.ofNullable(stammdaten.getTsAdresse())
+				.orElse(stammdaten.getAdresse());
+
+		dto.setGemeindeAnschrift(adresseToUse.getOrganisation());
+		dto.setGemeindeStrasse(adresseToUse.getStrasse());
+		dto.setGemeindeNr(adresseToUse.getHausnummer());
+		dto.setGemeindePLZ(adresseToUse.getPlz());
+		dto.setGemeindeOrt(adresseToUse.getOrt());
 		dto.setGemeindeName(container.getGemeinde().getName());
 		dto.setFallNummer(buildFallNummer(container, stammdaten));
 

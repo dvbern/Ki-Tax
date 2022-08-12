@@ -396,6 +396,8 @@ public abstract class AbstractTestfall {
 		erwBed.setBetreuungInGemeinde(Boolean.TRUE);
 		erwBedContainer.setErweiterteBetreuungJA(erwBed);
 		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
+		betreuung.setAuszahlungAnEltern(Boolean.FALSE);
+		betreuung.setBegruendungAuszahlungAnInstitution(" ");
 
 		// normalerweise kümmern uns die Vorgänger in den Tests nicht. Rufe init hier auf, damit man in tests ohne
 		// exception auf die Vorgänger zugreifen kann. Benötigt man Vorgänger kann man die init Methode nochmals
