@@ -94,6 +94,12 @@ public interface EbeguConfiguration {
 	boolean getIsZahlungenTestMode();
 
 	/**
+	 * Liste von BG-Nummern (getrennt mit ";"), welche bekanntermassen nicht korrekt berechnet wurden in der
+	 * Vergangenheit und deshalb von kuenftigen Ueberpruefungen ausgeschlossen werden sollen.
+	 */
+	String getEbeguZahlungenUeberpruefungWhitelist();
+
+	/**
 	 * Gibt zurueck, ob die Personensuche über GERES generell angeboten werden soll
 	 */
 	boolean isPersonenSucheDisabled();
