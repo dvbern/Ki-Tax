@@ -2057,6 +2057,7 @@
     "KEINE_GEMEINDE_KONFIGURATION": "Keine Ihrer Gemeinden hat das entsprechende Angebot aktiviert.",
     "INSTITUTION_ERSTELLEN": "Institution erstellen",
     "ALTERNATIVE_ADRESSE": "Alternative Kontaktadresse",
+    "ALTERNATIVE_ADRESSE_TS": "Alternative Kontaktadresse Tagesschule",
     "ALTERNATIVES_KONTAKTFELD": "Alternatives Kontaktfeld",
     "ALTERNATIVES_KONTAKTFELD_INFO": "Hier können Sie ein alternatives Kontaktfeld im HTML Format definieren. Dieses ist für die Antragstellenden sichtbar.",
     "ANGABEN_KONTAKTFELD": "Kontaktangaben",
