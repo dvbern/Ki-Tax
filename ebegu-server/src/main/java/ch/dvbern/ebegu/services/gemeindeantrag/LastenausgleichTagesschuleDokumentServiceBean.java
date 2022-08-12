@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -32,6 +33,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.docxmerger.DocxDocument;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
@@ -139,11 +141,15 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			new EbeguEntityNotFoundException("toLatsDocxDTO", container.getGemeinde().getId())
 		);
 
-		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
-		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
-		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
-		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());
-		dto.setGemeindeOrt(stammdaten.getAdresse().getOrt());
+		//Wenn TSAdresse vorhanden, soll diese verwendet werden, sonst 'normale' Gemeinde Adresse
+		Adresse adresseToUse = Optional.ofNullable(stammdaten.getTsAdresse())
+				.orElse(stammdaten.getAdresse());
+
+		dto.setGemeindeAnschrift(adresseToUse.getOrganisation());
+		dto.setGemeindeStrasse(adresseToUse.getStrasse());
+		dto.setGemeindeNr(adresseToUse.getHausnummer());
+		dto.setGemeindePLZ(adresseToUse.getPlz());
+		dto.setGemeindeOrt(adresseToUse.getOrt());
 		dto.setGemeindeName(container.getGemeinde().getName());
 		dto.setFallNummer(buildFallNummer(container, stammdaten));
 
