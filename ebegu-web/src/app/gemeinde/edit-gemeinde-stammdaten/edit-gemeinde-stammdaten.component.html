@@ -304,7 +304,7 @@
                          für die Verfügung LATS erfassen können ohne das TS Angebot aktivieren zu müssen, dies wird im nächsten Sprint in
                          einer sauberen Lösung verbessert und die Input Felder für die alternative Adresse TS können
                           danach von den Stammdaten wieder entfernt werden -->
-                <div class="col-sm-6"  *ngIf="tageschuleEnabledForMandant">
+                <div class="col-sm-6"  *ngIf="tageschuleEnabledForMandant && !stammdaten.gemeinde.angebotTS">
                     <div class="form-group mt-2">
                         <div class="form-group">
                             <mat-checkbox id="altTSAdresse_id" name="altTSAdresse_id"
@@ -482,7 +482,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div *ngIf="!stammdaten.gemeinde.angebotTS">
                     <div *ngIf="!altTSAdresse; else displayTSAdresse">
                     </div>
                     <ng-template #displayTSAdresse>
