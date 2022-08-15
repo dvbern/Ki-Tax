@@ -762,8 +762,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt nicht an die Eltern ausbezahlt wird soll die
         // Auszahlung an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnInstitutionen)) {
-            this.showAuszahlungAnInstitutionen = this.getVerfuegungZeitabschnitte()
-                .some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
+            this.showAuszahlungAnInstitutionen = EbeguUtil.isNotNullOrUndefined(this.getVerfuegungZeitabschnitte())
+                && this.getVerfuegungZeitabschnitte().some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
         }
 
         return this.showAuszahlungAnInstitutionen;
@@ -777,8 +777,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt an die Eltern ausbezahlt wird soll die Auszahlung
         // an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnEltern)) {
-            this.showAuszahlungAnEltern =  this.getVerfuegungZeitabschnitte()
-                .some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
+            this.showAuszahlungAnEltern =  EbeguUtil.isNotNullOrUndefined(this.getVerfuegungZeitabschnitte()) &&
+                this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
         }
 
         return this.showAuszahlungAnEltern;

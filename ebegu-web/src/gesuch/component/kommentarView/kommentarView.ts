@@ -303,8 +303,9 @@ export class KommentarViewController implements IController {
     }
 
     public showGeresAbfrage(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.isPersonensucheDisabled) && !this.isPersonensucheDisabled
-            && !this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
+        return EbeguUtil.isNotNullAndFalse(this.isPersonensucheDisabled)
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier()) &&
+            !this.gesuchModelManager.getDossier().gemeinde.besondereVolksschule;
     }
 
     public getRolesForInternePendenzen(): TSRole[] {
