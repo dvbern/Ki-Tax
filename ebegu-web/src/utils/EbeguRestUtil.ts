@@ -4852,7 +4852,7 @@ export class EbeguRestUtil {
             gemeindeContainerTS.angabenInstitutionContainers =
                 this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
             gemeindeContainerTS.verantwortlicher =
-                this.parseUser(new TSBenutzer(), gemeindeContainerFromServer.verantwortlicher);
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeContainerFromServer.verantwortlicher);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
@@ -4882,7 +4882,7 @@ export class EbeguRestUtil {
                 this.lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
                     tsGemeindeContainer.angabenInstitutionContainers);
             restGemeindeContainer.verantwortlicher =
-                this.parseUser(new TSBenutzer(), restGemeindeContainer.verantwortlicher);
+                this.benutzerNoDetailsToRestObject({}, restGemeindeContainer.verantwortlicher);
             return restGemeindeContainer;
         }
         return undefined;
@@ -5387,7 +5387,7 @@ export class EbeguRestUtil {
         restContainer.angabenDeklaration = this.ferienbetreuungToRestObject({}, containerTS.angabenDeklaration);
         restContainer.angabenKorrektur = this.ferienbetreuungToRestObject({}, containerTS.angabenKorrektur);
         restContainer.internerKommentar = containerTS.internerKommentar;
-        restContainer.verantwortlicher = this.userToRestObject({}, containerTS.verantwortlicher);
+        restContainer.verantwortlicher = this.benutzerNoDetailsToRestObject({}, containerTS.verantwortlicher);
         return restContainer;
     }
 
@@ -5538,7 +5538,8 @@ export class EbeguRestUtil {
         containerTS.angabenKorrektur =
             this.parseFerienbetreuung(new TSFerienbetreuungAngaben(), containerFromServer.angabenKorrektur);
         containerTS.internerKommentar = containerFromServer.internerKommentar;
-        containerTS.verantwortlicher = this.parseUser(new TSBenutzer(), containerFromServer.verantwortlicher);
+        containerTS.verantwortlicher =
+            this.parseUserNoDetails(new TSBenutzerNoDetails(), containerFromServer.verantwortlicher);
         return containerTS;
     }
 

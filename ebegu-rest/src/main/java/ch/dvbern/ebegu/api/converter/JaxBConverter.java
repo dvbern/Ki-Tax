@@ -6168,7 +6168,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
 		if (gemeindeContainer.getVerantwortlicher() != null) {
-			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzer(gemeindeContainer.getVerantwortlicher()));
+			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeContainer.getVerantwortlicher()));
 		}
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
@@ -6203,10 +6203,11 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
 		gemeindeContainer.setInternerKommentar(jaxGemeindeContainer.getInternerKommentar());
 
+
 		if (jaxGemeindeContainer.getVerantwortlicher() != null) {
-			gemeindeContainer.setVerantwortlicher(
-				jaxBenutzerToBenutzer(jaxGemeindeContainer.getVerantwortlicher(),
-				new Benutzer()));
+			benutzerService.findBenutzer(jaxGemeindeContainer.getVerantwortlicher().getUsername(),
+					gemeindeContainer.getGemeinde().getMandant())
+				.ifPresent(gemeindeContainer::setVerantwortlicher);
 		}
 
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {

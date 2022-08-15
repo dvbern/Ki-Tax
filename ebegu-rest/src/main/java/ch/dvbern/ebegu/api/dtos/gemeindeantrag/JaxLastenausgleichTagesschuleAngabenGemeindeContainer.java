@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
@@ -63,7 +64,7 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	private BigDecimal betreuungsstundenPrognose;
 
 	@Nullable
-	private JaxBenutzer verantwortlicher;
+	private JaxBenutzerNoDetails verantwortlicher;
 
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
@@ -147,11 +148,11 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	}
 
 	@Nullable
-	public JaxBenutzer getVerantwortlicher() {
+	public JaxBenutzerNoDetails getVerantwortlicher() {
 		return verantwortlicher;
 	}
 
-	public void setVerantwortlicher(@Nullable JaxBenutzer verantwortlicher) {
+	public void setVerantwortlicher(@Nullable JaxBenutzerNoDetails verantwortlicher) {
 		this.verantwortlicher = verantwortlicher;
 	}
 }

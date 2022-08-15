@@ -19,6 +19,7 @@ import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../enums/TSLast
 import {TSRole} from '../enums/TSRole';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSBenutzer} from '../TSBenutzer';
+import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from './TSLastenausgleichTagesschuleAngabenGemeinde';
@@ -34,7 +35,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
-    public verantwortlicher: TSBenutzer;
+    public verantwortlicher: TSBenutzerNoDetails;
     private _betreuungsstundenPrognose: number;
     /**
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
