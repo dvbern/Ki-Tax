@@ -6167,6 +6167,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
+		if (gemeindeContainer.getVerantwortlicher() != null) {
+			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzer(gemeindeContainer.getVerantwortlicher()));
+		}
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
 		}
@@ -6199,6 +6202,12 @@ public class JaxBConverter extends AbstractConverter {
 
 		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
 		gemeindeContainer.setInternerKommentar(jaxGemeindeContainer.getInternerKommentar());
+
+		if (jaxGemeindeContainer.getVerantwortlicher() != null) {
+			gemeindeContainer.setVerantwortlicher(
+				jaxBenutzerToBenutzer(jaxGemeindeContainer.getVerantwortlicher(),
+				new Benutzer()));
+		}
 
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
 			if (gemeindeContainer.getAngabenDeklaration() != null) {

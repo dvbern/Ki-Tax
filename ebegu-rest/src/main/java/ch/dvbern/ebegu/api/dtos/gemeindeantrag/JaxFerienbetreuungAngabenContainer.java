@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -46,6 +47,9 @@ public class JaxFerienbetreuungAngabenContainer extends JaxAbstractDTO {
 
 	@Nullable
 	private String internerKommentar;
+
+	@Nullable
+	private JaxBenutzer verantworlicher;
 
 	@Nonnull
 	public FerienbetreuungAngabenStatus getStatus() {
@@ -99,5 +103,14 @@ public class JaxFerienbetreuungAngabenContainer extends JaxAbstractDTO {
 
 	public void setInternerKommentar(@Nullable String internerKommentar) {
 		this.internerKommentar = internerKommentar;
+	}
+
+	@Nullable
+	public JaxBenutzer getVerantworlicher() {
+		return verantworlicher;
+	}
+
+	public void setVerantworlicher(@Nullable JaxBenutzer verantworlicher) {
+		this.verantworlicher = verantworlicher;
 	}
 }

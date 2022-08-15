@@ -4851,6 +4851,8 @@ export class EbeguRestUtil {
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenKorrektur);
             gemeindeContainerTS.angabenInstitutionContainers =
                 this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
+            gemeindeContainerTS.verantwortlicher =
+                this.parseUser(new TSBenutzer(), gemeindeContainerFromServer.verantwortlicher);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
@@ -4879,6 +4881,8 @@ export class EbeguRestUtil {
             restGemeindeContainer.angabenInstitutionContainers =
                 this.lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
                     tsGemeindeContainer.angabenInstitutionContainers);
+            restGemeindeContainer.verantwortlicher =
+                this.parseUser(new TSBenutzer(), restGemeindeContainer.verantwortlicher);
             return restGemeindeContainer;
         }
         return undefined;
@@ -5383,6 +5387,7 @@ export class EbeguRestUtil {
         restContainer.angabenDeklaration = this.ferienbetreuungToRestObject({}, containerTS.angabenDeklaration);
         restContainer.angabenKorrektur = this.ferienbetreuungToRestObject({}, containerTS.angabenKorrektur);
         restContainer.internerKommentar = containerTS.internerKommentar;
+        restContainer.verantwortlicher = this.userToRestObject({}, containerTS.verantwortlicher);
         return restContainer;
     }
 
@@ -5533,6 +5538,7 @@ export class EbeguRestUtil {
         containerTS.angabenKorrektur =
             this.parseFerienbetreuung(new TSFerienbetreuungAngaben(), containerFromServer.angabenKorrektur);
         containerTS.internerKommentar = containerFromServer.internerKommentar;
+        containerTS.verantwortlicher = this.parseUser(new TSBenutzer(), containerFromServer.verantwortlicher);
         return containerTS;
     }
 
