@@ -64,6 +64,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private JaxBConverter jaxBConverter;
+
 	/**
 	 * Behandlung des Version-Attributes fuer OptimisticLocking.
 	 * Nachdem die Business-Logik durchgefuehrt worden ist, stimmt moeglicherweise die
@@ -97,6 +100,11 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 
 		container.setInternerKommentar(jaxContainer.getInternerKommentar());
+
+		if (jaxContainer.getVerantworlicher() != null) {
+			container.setVerantwortlicher(jaxBConverter.jaxBenutzerToBenutzer(jaxContainer.getVerantworlicher(), new Benutzer()));
+		}
+
 		return container;
 	}
 
@@ -344,6 +352,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 		jaxContainer.setInternerKommentar(container.getInternerKommentar());
 
+		if (container.getVerantwortlicher() != null) {
+			jaxContainer.setVerantworlicher(jaxBConverter.benutzerToJaxBenutzer(container.getVerantwortlicher()));
+		}
 		return jaxContainer;
 	}
 
