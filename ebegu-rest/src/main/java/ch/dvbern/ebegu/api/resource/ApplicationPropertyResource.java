@@ -366,6 +366,10 @@ public class ApplicationPropertyResource {
 		ApplicationProperty zusatzinformationenInstitution =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION, mandant)
 						.orElseThrow(() -> notFound);
+		ApplicationProperty dashboardExchangeServiceAktiv =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.DASHBOARD_EXCHANGE_SERVICE_AKTIV,
+				mandant)
+				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -416,7 +420,8 @@ public class ApplicationPropertyResource {
 			stringToBool(geresEnabledForMandant.getValue()),
 			isEbeguKibonAnfrageTestGuiEnabled,
 			steuerschnittstelleAktivAb.getValue(),
-			stringToBool(zusatzinformationenInstitution.getValue())
+			stringToBool(zusatzinformationenInstitution.getValue()),
+			stringToBool(dashboardExchangeServiceAktiv.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

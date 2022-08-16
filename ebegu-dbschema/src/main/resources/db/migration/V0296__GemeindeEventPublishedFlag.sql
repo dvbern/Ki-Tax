@@ -15,6 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+# bern
+INSERT INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
+								  version, vorgaenger_id, name, value)
+VALUES (UNHEX(REPLACE('d4a81288-5cc7-11ec-93ed-f4390979fa3e', '-', '')),
+		UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), '2022-08-14 12:00:00', '2022-08-14 12:00:00',
+		'flyway', 'flyway', 0, NULL, 'DASHBOARD_EXCHANGE_SERVICE_AKTIV', 'false');
+
+# solothurn
+INSERT INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
+								  version, vorgaenger_id, name, value)
+VALUES (UNHEX(REPLACE('5d759f85-5cc8-11ec-93ed-f4390979fa3e', '-', '')),
+		UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', '')), '2022-08-14 12:00:00', '2022-08-14 12:00:00',
+		'flyway', 'flyway', 0, NULL, 'DASHBOARD_EXCHANGE_SERVICE_AKTIV', 'false');
+
+# luzern
+INSERT INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
+								  version, vorgaenger_id, name, value)
+VALUES (UNHEX(REPLACE('532c58af-5cc8-11ec-93ed-f4390979fa3e', '-', '')),
+		UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2022-08-14 12:00:00', '2022-08-14 12:00:00',
+		'flyway', 'flyway', 0, NULL, 'DASHBOARD_EXCHANGE_SERVICE_AKTIV', 'false');
+
 ALTER TABLE gemeinde
 	ADD COLUMN event_published BOOLEAN NOT NULL DEFAULT FALSE;
 

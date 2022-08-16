@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -48,6 +49,9 @@ public class GemeindeEventGenerator {
 	@Inject
 	private GemeindeEventConverter gemeindeEventConverter;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "5", persistent = true)
 	public void publishExistingGemeinden() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -62,9 +66,11 @@ public class GemeindeEventGenerator {
 			.getResultList();
 
 		gemeinden.forEach(gemeinde -> {
-			event.fire(gemeindeEventConverter.of(gemeinde));
-			gemeinde.setEventPublished(true);
-			persistence.merge(gemeinde);
+			if (applicationPropertyService.isDashboardEventsAktiviert(gemeinde.getMandant())) {
+				event.fire(gemeindeEventConverter.of(gemeinde));
+				gemeinde.setEventPublished(true);
+				persistence.merge(gemeinde);
+			}
 		});
 	}
 }
