@@ -91,6 +91,17 @@ export class LastenausgleichTSService {
         );
     }
 
+    public saveLATSVerantworlicher(containerId: string, username: string): void {
+        this.http.put<void>(
+            `${this.API_BASE_URL}/saveLATSVerantworlicher/${encodeURIComponent(containerId)}`,
+            username,
+        ).subscribe(result => {
+            this.next(result);
+        }, error => {
+            LOG.error(error);
+        });
+    }
+
     public emptyStore(): void {
         this.lATSAngabenGemeindeContainerStore =
             new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);

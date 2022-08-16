@@ -127,6 +127,11 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nonnull String kommentar
 	);
 
+	void saveVerantwortlicher(
+		@Nonnull String containerId,
+		@Nullable String username
+	);
+
 	/**
 	 * Schliesst das Angaben Gemeinde Formular ab
 	 */

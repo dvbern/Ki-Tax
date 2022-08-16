@@ -49,6 +49,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -74,6 +75,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -132,6 +134,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -597,6 +602,31 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 					containerId)
 				);
 		latsContainer.setInternerKommentar(kommentar);
+		persistence.persist(latsContainer);
+	}
+
+	@Override
+	public void saveVerantwortlicher(@Nonnull String containerId, @Nullable String username) {
+		LastenausgleichTagesschuleAngabenGemeindeContainer latsContainer =
+			this.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		Benutzer verantwortlicher = null;
+
+		if (username != null) {
+			verantwortlicher = benutzerService.findBenutzer(username, latsContainer.getGemeinde().getMandant())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					username)
+				);
+		}
+
+		latsContainer.setVerantwortlicher(verantwortlicher);
 		persistence.persist(latsContainer);
 	}
 
