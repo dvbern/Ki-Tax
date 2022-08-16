@@ -66,6 +66,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public datumGeneriert: moment.Moment;
     public itemsByPage: number = 12;
     public testMode: boolean = false;
+    private checkboxAuszahlungInZukunft: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
     // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
@@ -124,6 +125,9 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.updateHasAuszahlungAnElternZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
+        });
+        this.applicationPropertyRS.getCheckboxAuszahlungInZukunft().then((response: any) => {
+            this.checkboxAuszahlungInZukunft = response;
         });
         this.setupTableColumns();
         this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));

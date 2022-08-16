@@ -160,4 +160,10 @@ export class ApplicationPropertyRS {
             return response.zusatzinformationenInstitution;
         });
     }
+
+    public getCheckboxAuszahlungInZukunft(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.checkboxAuszahlungInZukunft;
+        });
+    }
 }
