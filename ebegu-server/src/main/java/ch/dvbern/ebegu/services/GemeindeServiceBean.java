@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -66,6 +67,8 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.gemeinde.GemeindeEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -96,6 +99,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private Event<ExportedEvent> event;
+
+	@Inject
+	private GemeindeEventConverter gemeindeEventConverter;
 
 	@Nonnull
 	@Override
@@ -707,5 +716,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 		List<Gemeinde> gde = persistence.getCriteriaResults(gemeindeQuery);
 		return gde;
+	}
+
+	@Override
+	public void fireGemeindeChangedEvent(@Nonnull Gemeinde gemeinde) {
+		event.fire(gemeindeEventConverter.of(gemeinde));
 	}
 }
