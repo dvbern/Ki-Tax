@@ -104,6 +104,16 @@ export class FerienbetreuungService {
         );
     }
 
+    public saveVerantwortlicher(containerId: string, username: string): void {
+        this.http.put<void>(
+            `${this.API_BASE_URL}/saveVerantworlicher/${encodeURIComponent(containerId)}`,
+            username,
+        ).subscribe(result => {
+        }, error => {
+            LOG.error(error);
+        });
+    }
+
     public saveStammdaten(containerId: string, stammdaten: TSFerienbetreuungAngabenStammdaten):
         Observable<TSFerienbetreuungAngabenStammdaten> {
         return this.http.put<any>(
