@@ -130,6 +130,6 @@ export class TagesschulenListComponent implements OnInit {
                 {displayedName: 'Tagesschule', attributeName: 'institutionName'},
                 {displayedName: 'STATUS', attributeName: 'status'}
             ];
-        });
+        }, error => console.error(error));
     }
 }
