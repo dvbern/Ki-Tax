@@ -256,7 +256,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Zahlung bis 30.09.
 		ApplicationProperty anzahlMonateInZukunftProperty  =
 			this.applicationPropertyService.readApplicationProperty(
-					ApplicationPropertyKey.ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
+					ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT,
 					mandant)
 				.orElse(null);
 		int anzahlMonateInZukunft = anzahlMonateInZukunftProperty != null ?

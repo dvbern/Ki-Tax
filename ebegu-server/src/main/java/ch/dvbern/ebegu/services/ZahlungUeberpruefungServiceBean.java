@@ -170,7 +170,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Objects.requireNonNull(zahlungsauftrag.getMandant());
 		ApplicationProperty anzahlMonateInZukunftProperty  =
 			this.applicationPropertyService.readApplicationProperty(
-					ApplicationPropertyKey.ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
+					ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT,
 					zahlungsauftrag.getMandant())
 				.orElse(null);
 		anzahlMonateInZukunft = anzahlMonateInZukunftProperty != null ?
