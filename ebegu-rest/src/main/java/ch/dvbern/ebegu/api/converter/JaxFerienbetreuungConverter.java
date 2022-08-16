@@ -371,7 +371,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxContainer.setInternerKommentar(container.getInternerKommentar());
 
 		if (container.getVerantwortlicher() != null) {
-			jaxContainer.setVerantworlicher(jaxBConverter.benutzerToJaxBenutzerNoDetails(container.getVerantwortlicher()));
+			jaxContainer.setVerantwortlicher(jaxBConverter.benutzerToJaxBenutzerNoDetails(container.getVerantwortlicher()));
 		}
 		return jaxContainer;
 	}

@@ -91,7 +91,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 
 	@Nullable
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_angaben_container_verantwortlicher_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_verantwortlicher_id"))
 	private Benutzer verantwortlicher = null;
 
 	@Nullable

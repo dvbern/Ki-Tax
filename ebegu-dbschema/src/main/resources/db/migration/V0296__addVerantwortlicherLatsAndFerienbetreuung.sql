@@ -33,6 +33,6 @@ ALTER TABLE ferienbetreuung_angaben_container_aud ADD COLUMN IF NOT EXISTS
 	verantwortlicher_id BINARY(16);
 
 ALTER TABLE ferienbetreuung_angaben_container
-ADD CONSTRAINT FK_ferienbetreuung_angaben_container_verantwortlicher_id
+ADD CONSTRAINT FK_ferienbetreuung_container_verantwortlicher_id
 	FOREIGN KEY (verantwortlicher_id)
 		REFERENCES benutzer(id);
