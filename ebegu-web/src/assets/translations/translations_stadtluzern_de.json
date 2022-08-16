@@ -176,5 +176,6 @@
     "FINANZIELLE_SITUATION_GUELTIG_AB": "Änderung der finanziellen Situation ab",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
+    "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
