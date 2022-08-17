@@ -685,6 +685,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.changeDetectorRef.markForCheck();
             });
         }
+
+        this.initBenutzerListGemeindeAntraege();
     }
 
     public isPendenzGemeindeRolle(): boolean {
