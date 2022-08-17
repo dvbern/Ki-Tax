@@ -91,15 +91,13 @@ export class LastenausgleichTSService {
         );
     }
 
-    public saveLATSVerantworlicher(containerId: string, username: string): void {
-        this.http.put<void>(
+    public saveLATSVerantworlicher(containerId: string, username: string): Observable<void> {
+        return this.http.put<void>(
             `${this.API_BASE_URL}/saveLATSVerantworlicher/${encodeURIComponent(containerId)}`,
             username,
-        ).subscribe(result => {
-            this.next(result);
-        }, error => {
-            LOG.error(error);
-        });
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
+        );
     }
 
     public emptyStore(): void {

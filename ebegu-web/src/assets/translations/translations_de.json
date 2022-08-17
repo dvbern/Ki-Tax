@@ -2476,6 +2476,7 @@
     "LATS_ANGABEN_TAGESSCHULEN": "Angaben zu den Tagesschulen",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Es existiert bereits ein Antrag dieses Typs für diese Periode",
     "ERROR_LATS_KOMMENTAR_SAVE": "Es gab ein Problem beim Speichern des Kommentars",
+    "ERROR_VERANTWORTLICHER_SAVE": "Es gab ein Problem beim Speichern des Verantwortlichen",
     "LATS_ALLGEMEINE_ANGABEN_GEMEINDE": "A) Allgemeine Angaben zur Gemeinde",
     "LATS_BEDARF_BEI_ELTERN_ABGEKLAERT": "Wurde der Bedarf an Tagesschulangeboten bei allen Eltern für alle Module an allen Wochentagen abgeklärt (Bedarfsumfrage oder Versand der Anmeldeunterlagen, Tagesschulverordnung TSV Art. 2)?",
     "LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN": "Besteht im laufenden Schuljahr {{jahr}} in der Gemeinde ein Angebot für die Betreuung von Schulkindern während der Schulferien?",

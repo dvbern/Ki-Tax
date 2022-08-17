@@ -79,11 +79,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
             this.kommentarControl.value
         ).subscribe(() => {
             this.saving$.next(false);
-        }, (error: HttpErrorResponse) => {
-            LOG.error(error);
-            const translated = this.translate.instant('ERROR_LATS_KOMMENTAR_SAVE');
-            this.errorService.addMesageAsError(translated);
-        });
+        }, (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_LATS_KOMMENTAR_SAVE'));
     }
 
     private initForm(): void {
@@ -105,7 +101,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
     }
 
     public getVerantwortlicherFullName(): string {
-        if (this.lATSAngabenGemeindeContainer.verantwortlicher) {
+        if (this.lATSAngabenGemeindeContainer?.verantwortlicher) {
             return this.lATSAngabenGemeindeContainer.verantwortlicher.getFullName();
         }
 
@@ -114,7 +110,16 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
 
     public saveVerantwortlicher(): void {
         this.lastenausgleichTSService.saveLATSVerantworlicher(this.lATSAngabenGemeindeContainer.id,
-            this.lATSAngabenGemeindeContainer.verantwortlicher?.username);
+            this.lATSAngabenGemeindeContainer.verantwortlicher?.username)
+            .subscribe(
+                () => {},
+                (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_VERANTWORTLICHER_SAVE'));
+    }
+
+    private handleErrorOnSave(error: HttpErrorResponse, errorMsgKey: string): void {
+        LOG.error(error);
+        const translated = this.translate.instant(errorMsgKey);
+        this.errorService.addMesageAsError(translated);
     }
 
     private loadUserList(): void {
