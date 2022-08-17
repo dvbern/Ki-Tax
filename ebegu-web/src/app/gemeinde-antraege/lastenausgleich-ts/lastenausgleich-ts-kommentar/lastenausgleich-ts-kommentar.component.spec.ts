@@ -25,6 +25,7 @@ import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
@@ -35,6 +36,8 @@ const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSServic
     ['getLATSAngabenGemeindeContainer']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
+    ['getAllBenutzerMandant']);
 
 describe('LastenausgleichTsKommentarComponent', () => {
     let component: LastenausgleichTsKommentarComponent;
@@ -58,6 +61,7 @@ describe('LastenausgleichTsKommentarComponent', () => {
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: BenutzerRSX, useValue: benuzerRSSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
