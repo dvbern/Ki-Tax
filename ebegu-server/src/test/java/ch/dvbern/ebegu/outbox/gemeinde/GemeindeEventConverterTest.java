@@ -19,8 +19,6 @@ package ch.dvbern.ebegu.outbox.gemeinde;
 
 import java.time.LocalDate;
 
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.kibon.exchange.commons.gemeinde.GemeindeEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
@@ -29,11 +27,9 @@ import org.junit.jupiter.api.Test;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 public class GemeindeEventConverterTest {
 
-	@Nonnull
 	private GemeindeEventConverter gemeindeEventConverter = new GemeindeEventConverter();
 
 	@Test
