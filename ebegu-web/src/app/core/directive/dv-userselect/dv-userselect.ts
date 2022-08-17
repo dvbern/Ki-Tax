@@ -65,6 +65,7 @@ export class UserselectController implements IController {
     public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
     public sachbearbeiterGemeinde: boolean;
+    public updateUserList: boolean = true;
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
@@ -74,7 +75,7 @@ export class UserselectController implements IController {
     }
 
     public $onInit(): void {
-        this.updateUserList();
+        this.doUpdateUserList();
         if (!this.initialAll) { // tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
             this.authServiceRS.principal$
                 .pipe(takeUntil(this.unsubscribe$))
@@ -99,7 +100,11 @@ export class UserselectController implements IController {
         this.unsubscribe$.complete();
     }
 
-    private updateUserList(): void {
+    private doUpdateUserList(): void {
+        if (!this.updateUserList) {
+            return;
+        }
+
         if (this.sachbearbeiterGemeinde) {
             this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
                 this.userList = response;

@@ -38,6 +38,7 @@ export interface DVAntragListItem {
     verantwortlicheBG?: string;
     isSozialdienst?: boolean;
     antragAbgeschlossen?: boolean;
+    verantwortlicherGemeindeantraege?: string;
 
     hasBesitzer?(): boolean;
 }

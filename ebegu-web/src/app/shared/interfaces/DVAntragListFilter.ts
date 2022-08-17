@@ -32,4 +32,5 @@ export interface DVAntragListFilter {
     verantwortlicherTS?: string;
     verantwortlicherBG?: string;
     verantwortlicherGemeinde?: string;
+    verantwortlicherGemeindeantraege?: string;
 }

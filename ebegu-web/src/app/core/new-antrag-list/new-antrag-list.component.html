@@ -166,6 +166,14 @@
                 </mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="verantwortlicherGemeindeantraege">
+                <mat-header-cell mat-sort-header="verantwortlicherGemeindeantraege" *matHeaderCellDef>
+                    <span translate>asdf</span></mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span [title]="element.verantwortlicherGemeindeantraege">{{element.verantwortlicherGemeindeantraege}}</span>
+                </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="fallNummer-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field">
@@ -352,6 +360,18 @@
                          (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="verantwortlicherGemeindeantraege-filter" st-table="">
+            <mat-header-cell *matHeaderCellDef="let column">
+                <div dvNewUserSelect
+                     [showSelectionAll]="true"
+                     [angular2]="true"
+                     [initialAll]="true"
+                     [userList]="userListGemeindeantraege"
+                     [updateUserList]="false"
+                     (onUserChanged)="filterVerantwortlicherGemeindeantraege($event.user)"></div>
+            </mat-header-cell>
             </ng-container>
 
             <ng-container matColumnDef="remove-filter">

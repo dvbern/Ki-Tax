@@ -47,6 +47,12 @@ export class NewUserSelectDirective extends UpgradeComponent {
     @Input()
     public schulamt: boolean;
 
+    @Input()
+    public userList: TSBenutzerNoDetails[];
+
+    @Input()
+    public updateUserList: boolean = true;
+
     // tslint:disable-next-line:no-output-on-prefix
     @Output()
     public readonly onUserChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
