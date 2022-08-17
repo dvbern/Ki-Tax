@@ -137,7 +137,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status,
-		@Nullable String timestampMutiert
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantwortlicher
 	) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
@@ -187,6 +188,14 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		if (timestampMutiert != null) {
 			Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
 			predicates.add(timestampMutiertPredicate);
+		}
+
+		if (verantwortlicher != null) {
+			predicates.add(
+				cb.equal(
+					root.get(FerienbetreuungAngabenContainer_.verantwortlicher),
+					verantwortlicher)
+			);
 		}
 
 		Predicate[] predicateArray = new Predicate[predicates.size()];
@@ -649,7 +658,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				"deleteFerienbetreuungAntragIfExists ist nur als SuperAdmin möglich");
 		}
 
-		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
+		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null, null)
 			.forEach(this::removeFerienbetreuungAngabenContainer);
 	}
 
@@ -664,7 +673,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
 		}
 
-		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null, null);
 		if (antragList.size() > 1) {
 			throw new EbeguRuntimeException(
 				"deleteAntragIfExistsAndIsNotAbgeschlossen",

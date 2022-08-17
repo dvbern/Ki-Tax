@@ -168,9 +168,9 @@
 
             <ng-container matColumnDef="verantwortlicherGemeindeantraege">
                 <mat-header-cell mat-sort-header="verantwortlicherGemeindeantraege" *matHeaderCellDef>
-                    <span translate>asdf</span></mat-header-cell>
+                    <span translate>VERANTWORTLICH</span></mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <span [title]="element.verantwortlicherGemeindeantraege">{{element.verantwortlicherGemeindeantraege}}</span>
+                    <span [title]="element.verantwortlicherGemeindeantraege?.getFullName()">{{element.verantwortlicherGemeindeantraege?.getFullName()}}</span>
                 </mat-cell>
             </ng-container>
 

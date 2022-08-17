@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+
 export interface DVAntragListFilter {
     fallNummer?: string;
     gemeinde?: string;
@@ -32,5 +34,5 @@ export interface DVAntragListFilter {
     verantwortlicherTS?: string;
     verantwortlicherBG?: string;
     verantwortlicherGemeinde?: string;
-    verantwortlicherGemeindeantraege?: string;
+    verantwortlicherGemeindeantraege?: TSBenutzerNoDetails;
 }

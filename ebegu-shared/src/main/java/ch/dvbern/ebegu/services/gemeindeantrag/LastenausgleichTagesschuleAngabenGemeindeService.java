@@ -23,7 +23,9 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
@@ -112,7 +114,8 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status,
-		@Nullable String timestampMutiert
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantwortlicher
 	);
 
 	@Nonnull

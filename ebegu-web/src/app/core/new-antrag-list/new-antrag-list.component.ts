@@ -573,7 +573,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public filterVerantwortlicherGemeindeantraege(verantwortliche: TSBenutzerNoDetails): void {
-        this.filterPredicate.verantwortlicherGemeindeantraege = verantwortliche ? verantwortliche.getFullName() : null;
+        this.filterPredicate.verantwortlicherGemeindeantraege = verantwortliche ? verantwortliche : null;
         this.applyFilter();
     }
 

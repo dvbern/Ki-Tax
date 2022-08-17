@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -402,7 +403,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status,
-		@Nullable String timestampMutiert) {
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantwortlicher) {
 		// institution users have much less permissions, so we handle this in on its own
 		if (principal.isCallerInAnyOfRole(
 			UserRole.ADMIN_INSTITUTION,
@@ -460,6 +462,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			final Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
 			predicates.add(
 				timestampMutiertPredicate
+			);
+		}
+		if (verantwortlicher != null) {
+			predicates.add(
+				cb.equal(
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.verantwortlicher),
+					verantwortlicher)
 			);
 		}
 
@@ -728,7 +737,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Override
 	public void deleteLastenausgleicheTagesschuleForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList =
-			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null);
+			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null, null);
 		if (containerList == null) {
 			return;
 		}
