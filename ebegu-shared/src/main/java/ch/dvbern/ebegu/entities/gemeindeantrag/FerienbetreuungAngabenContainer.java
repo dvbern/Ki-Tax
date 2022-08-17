@@ -254,6 +254,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	}
 
 	@Nullable
+	@Override
 	public Benutzer getVerantwortlicher() {
 		return verantwortlicher;
 	}
