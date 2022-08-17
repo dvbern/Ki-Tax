@@ -6145,7 +6145,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeAntrag.setAntragAbgeschlossen(gemeindeAntrag.isAntragAbgeschlossen());
 
 		if (gemeindeAntrag.getVerantwortlicher() != null) {
-			jaxGemeindeAntrag.setVerantworlicher(benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
+			jaxGemeindeAntrag.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
 		}
 
 		return jaxGemeindeAntrag;

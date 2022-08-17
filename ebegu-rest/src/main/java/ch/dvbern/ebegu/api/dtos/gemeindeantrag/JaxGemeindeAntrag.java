@@ -44,7 +44,7 @@ public class JaxGemeindeAntrag extends JaxAbstractDTO {
 
 	private boolean antragAbgeschlossen;
 
-	private JaxBenutzerNoDetails verantworlicher;
+	private JaxBenutzerNoDetails verantwortlicher;
 
 	@Nonnull
 	public GemeindeAntragTyp getGemeindeAntragTyp() {
@@ -90,11 +90,11 @@ public class JaxGemeindeAntrag extends JaxAbstractDTO {
 		this.antragAbgeschlossen = antragAbgeschlossen;
 	}
 
-	public JaxBenutzerNoDetails getVerantworlicher() {
-		return verantworlicher;
+	public JaxBenutzerNoDetails getVerantwortlicher() {
+		return verantwortlicher;
 	}
 
-	public void setVerantworlicher(JaxBenutzerNoDetails verantworlicher) {
-		this.verantworlicher = verantworlicher;
+	public void setVerantwortlicher(JaxBenutzerNoDetails verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 }

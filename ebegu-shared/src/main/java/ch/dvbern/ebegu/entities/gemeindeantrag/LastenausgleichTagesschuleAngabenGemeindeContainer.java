@@ -418,6 +418,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 		return this.status.atLeastInPruefungKantonOrZurueckgegeben();
 	}
 
+	@Override
 	@Nullable
 	public Benutzer getVerantwortlicher() {
 		return verantwortlicher;

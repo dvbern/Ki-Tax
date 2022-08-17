@@ -4825,7 +4825,7 @@ export class EbeguRestUtil {
                 this.parseGemeinde(new TSGemeinde(), gemeindeAntragFromServer.gemeinde);
             gemeindeAntragTS.statusString = gemeindeAntragFromServer.statusString;
             gemeindeAntragTS.antragAbgeschlossen = gemeindeAntragFromServer.antragAbgeschlossen;
-            if (gemeindeAntragFromServer.verantwortlicher) {
+            if (EbeguUtil.isNotNullOrUndefined(gemeindeAntragFromServer.verantwortlicher)) {
                 gemeindeAntragTS.verantworlicher =
                     this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeAntragFromServer.verantwortlicher);
             }
