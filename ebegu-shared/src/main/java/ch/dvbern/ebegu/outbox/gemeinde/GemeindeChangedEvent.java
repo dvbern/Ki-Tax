@@ -41,7 +41,7 @@ public class GemeindeChangedEvent implements ExportedEvent {
 		@Nonnull byte[] gemeinde,
 		@Nonnull Schema schema) {
 		this.gemeindeId = gemeindeId;
-		this.gemeinde = gemeinde;
+		this.gemeinde = Arrays.copyOf(gemeinde, gemeinde.length);;
 		this.schema = schema;
 	}
 
