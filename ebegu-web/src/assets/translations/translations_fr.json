@@ -2885,7 +2885,7 @@
     "KORRESPONDENZ_MUSTERDOKUMENT": "Modèle de document.pdf",
     "CREATE_MISSING_FORMULARE": "Fehlende Tagesschule erstellen",
     "ALL_TAGESSCHULE_FORMULARE_CREATED": "Alle Tagesschule Formulare wurden erstellt",
-    "ANGABEN_VORJAHR": "Donnée {{vorjahr}}",
+    "ANGABEN_VORJAHR": "Donnée {{gp}}",
     "ALLE_ABWAEHLEN": "Tout déselectionner",
     "ALLE_WAEHLEN": "Tout sélectionner",
     "OEFFNUNGSZEIT_FRUEHBETREUUNG": "Modules du matin",

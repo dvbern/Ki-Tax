@@ -2967,7 +2967,7 @@
     "KORRESPONDENZ_MUSTERDOKUMENT": "Musterdokument.pdf",
     "CREATE_MISSING_FORMULARE": "Fehlende Tagesschule erstellen",
     "ALL_TAGESSCHULE_FORMULARE_CREATED": "Alle Tagesschule Formulare wurden erstellt",
-    "ANGABEN_VORJAHR": "Angabe {{vorjahr}}",
+    "ANGABEN_VORJAHR": "Angabe {{gp}}",
     "ALLE_ABWAEHLEN": "Alle abwählen",
     "ALLE_WAEHLEN": "Alle auswählen",
     "TAGESSCHULE_OEFFNUNGSZEITEN": "Öffnungszeiten Tagesschule",
