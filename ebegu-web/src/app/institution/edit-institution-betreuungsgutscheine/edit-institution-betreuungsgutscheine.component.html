@@ -171,7 +171,7 @@
                                 <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
                                 <input id="iban_nr_id" type="text" name="iban_nr_id" #iban="ngModel"
                                        [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.iban"
-                                       [maxlength]="26" class="form-control" required ngxIban
+                                       [maxlength]="26" class="form-control" required ngxIban isNotQrIBAN
                                        placeholder="CHXX XXXX XXXX XXXX XXXX X">
                                 <dv-error-messages [errorObject]="iban.errors" inputId="iban_nr_id"></dv-error-messages>
                             </div>

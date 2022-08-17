@@ -1969,6 +1969,7 @@
     "GEMEINDE_TAB_FI_GP_TITLE": "{{fromTo}} accueil extrascolaire pendant les vacances paramètres {{status}}",
     "GEMEINDE_TAB_SAVE_WARNING": "Le formulaire ne semble pas avoir été rempli complètement. Veuillez vérifier tous les onglets.",
     "ERROR_IBAN": "IBAN a un format invalide",
+    "ERROR_QR_IBAN": "Bitte geben Sie die reguläre, statt die QR-IBAN an",
     "TAGESSCHULE_AKTIVIERUNGSDATUM": "Les inscriptions pour les écoles à journée continue sont acceptées dès le",
     "TAGESSCHULE_ERSTER_SCHULTAG": "Premier jour d'école",
     "ABWEICHUNGEN_MELDEN": "Annoncer les différences",
