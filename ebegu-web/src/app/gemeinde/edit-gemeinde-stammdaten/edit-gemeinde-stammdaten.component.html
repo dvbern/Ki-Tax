@@ -270,6 +270,10 @@
                                                    [errorObject]="tsStartDate.errors">
                                 </dv-error-messages>
                             </div>
+
+                            <mat-checkbox id="nurLats" name="nurLats"
+                                          [(ngModel)]="stammdaten.gemeinde.nurLats">
+                                {{'GEMEINDE_ANGEBOT_NUR_LATS'|translate}}</mat-checkbox>
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"

@@ -2984,5 +2984,6 @@
     "KORRESPONDENZ_STANDARD_SIGNATUR_HELP": "Diese Signatur wird bei jeder Nachricht, die Sie in kiBon versenden angefügt. Sie können diese in der Nachricht bearbeiten.",
     "PDF_GENERIERUNG": "PDF-Generierung",
     "KIBON_MITTEILUNGEN": "kiBon-Mitteilungen",
+    "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
