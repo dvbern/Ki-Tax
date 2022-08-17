@@ -369,11 +369,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
-	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value) {
+	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value, boolean nurLats) {
 		gemeinde.setAngebotTS(value);
+		gemeinde.setNurLats(nurLats);
 		persistence.merge(gemeinde);
 
-		if (value) {
+		if (value && !nurLats) {
 			mailService.sendInfoGemeineAngebotAktiviert(gemeinde, GemeindeAngebotTyp.TAGESSCHULE);
 		}
 	}
