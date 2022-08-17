@@ -42,6 +42,7 @@ public class GemeindeEventConverterTest {
 
 		GemeindeChangedEvent gemeindeChangedEvent = gemeindeEventConverter.of(gemeinde);
 
+		//noinspection deprecation
 		GemeindeEventDTO specificRecord = AvroConverter.fromAvroBinary(gemeindeChangedEvent.getSchema(), gemeindeChangedEvent.getPayload());
 
 		assertThat(specificRecord, is(pojo(GemeindeEventDTO.class)
