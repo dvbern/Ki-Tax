@@ -225,7 +225,7 @@ public class EingewoehnungFristRuleTest {
 
 	@Test
 	/**
-	 *  Eingewoehnung, 2 Gesuchstellende, unterschiedliche Erwerbspensen, Betreuung startet während Periode
+	 *  Eingewoehnung, 2 Gesuchstellende, unterschiedliche Erwerbspensen, Betreuung startet waehrend Periode
 	 */
 	public void testEingewoehnungFristRuleNachGPStart2Gesuchsteller() {
 		Betreuung betreuung = createGesuch(true, true);
