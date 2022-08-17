@@ -108,8 +108,7 @@ export class FerienbetreuungService {
         this.http.put<void>(
             `${this.API_BASE_URL}/saveVerantworlicher/${encodeURIComponent(containerId)}`,
             username,
-        ).subscribe(result => {
-        }, error => {
+        ).subscribe(() => {}, error => {
             LOG.error(error);
         });
     }
