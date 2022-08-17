@@ -228,6 +228,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     this.beschrieb,
                     this.faelligkeitsdatum,
                     this.datumGeneriert,
+                    this.auszahlungInZukunft
                 ).subscribe((response: TSZahlungsauftrag) => {
                         this.errorService.clearAll();
                         this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
