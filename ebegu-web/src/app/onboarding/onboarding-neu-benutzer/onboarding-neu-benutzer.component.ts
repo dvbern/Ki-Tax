@@ -64,7 +64,7 @@ export class OnboardingNeuBenutzerComponent {
         this.gemeindenBG$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.angebotBG)));
         this.gemeindenTS$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
-            gemeinde => gemeinde.angebotTS && !gemeinde.besondereVolksschule)));
+            gemeinde => gemeinde.angebotTS && !gemeinde.besondereVolksschule && !gemeinde.nurLats)));
         this.besondereVolksschulen$ = from(this.gemeinden$).pipe(map(gemeinden => gemeinden.filter(
             gemeinde => gemeinde.besondereVolksschule)));
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
