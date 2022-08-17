@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 
 public class GemeindeEventConverterTest {
 
-	private GemeindeEventConverter gemeindeEventConverter = new GemeindeEventConverter();
+	private final GemeindeEventConverter gemeindeEventConverter = new GemeindeEventConverter();
 
 	@Test
 	public void testChangedEvent() {
