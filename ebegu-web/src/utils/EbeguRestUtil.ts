@@ -944,6 +944,7 @@ export class EbeguRestUtil {
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
             restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
+            restGemeinde.nurLats = gemeinde.nurLats;
             return restGemeinde;
         }
         return undefined;
@@ -968,6 +969,7 @@ export class EbeguRestUtil {
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
             gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;
+            gemeindeTS.nurLats = gemeindeFromServer.nurLats;
             gemeindeTS.key = gemeindeFromServer.key;
             return gemeindeTS;
         }
