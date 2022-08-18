@@ -40,6 +40,7 @@ export class DvUserSelectConfig implements IComponentOptions {
         onUserChanged: '&',
         selectedUser: '=?',
         schulamt: '<',
+        useDefaultUserLists: '<',
         sachbearbeiterGemeinde: '=',
         angular2: '='
         // initialAll -> tritt nur ein, wenn explizit  { initial-all="true" } geschrieben ist
@@ -65,7 +66,7 @@ export class UserselectController implements IController {
     public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
     public sachbearbeiterGemeinde: boolean;
-    public updateUserList: boolean = true;
+    public useDefaultUserLists: boolean = true;
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
@@ -101,7 +102,7 @@ export class UserselectController implements IController {
     }
 
     private doUpdateUserList(): void {
-        if (!this.updateUserList) {
+        if (!this.useDefaultUserLists) {
             return;
         }
 

@@ -51,7 +51,7 @@ export class NewUserSelectDirective extends UpgradeComponent {
     public userList: TSBenutzerNoDetails[];
 
     @Input()
-    public updateUserList: boolean = true;
+    public useDefaultUserLists: boolean = true;
 
     // tslint:disable-next-line:no-output-on-prefix
     @Output()
