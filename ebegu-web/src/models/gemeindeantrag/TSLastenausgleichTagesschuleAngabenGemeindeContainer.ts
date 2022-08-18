@@ -34,6 +34,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
     private _betreuungsstundenPrognose: number;
+    private _bemerkungenBetreuungsstundenPrognose: string;
     /**
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
      */
@@ -128,6 +129,14 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
 
     public set betreuungsstundenPrognose(value: number) {
         this._betreuungsstundenPrognose = value;
+    }
+
+    public get bemerkungenBetreuungsstundenPrognose(): string {
+        return this._bemerkungenBetreuungsstundenPrognose;
+    }
+
+    public set bemerkungenBetreuungsstundenPrognose(value: string) {
+        this._bemerkungenBetreuungsstundenPrognose = value;
     }
 
     public isAbgeschlossen(): boolean {

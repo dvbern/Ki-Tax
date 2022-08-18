@@ -4852,6 +4852,8 @@ export class EbeguRestUtil {
             gemeindeContainerTS.angabenInstitutionContainers =
                 this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
+            gemeindeContainerTS.bemerkungenBetreuungsstundenPrognose =
+                gemeindeContainerFromServer.bemerkungenBetreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
         return undefined;

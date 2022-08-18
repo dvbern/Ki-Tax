@@ -108,6 +108,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@Column(nullable = true)
 	private BigDecimal betreuungsstundenPrognose;
 
+	@Nullable
+	@Column(nullable = true)
+	private String bemerkungenBetreuungsstundenPrognose;
+
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
 		return status;
@@ -410,5 +414,14 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
 		return this.status.atLeastInPruefungKantonOrZurueckgegeben();
+	}
+
+	@Nullable
+	public String getBemerkungenBetreuungsstundenPrognose() {
+		return bemerkungenBetreuungsstundenPrognose;
+	}
+
+	public void setBemerkungenBetreuungsstundenPrognose(@Nullable String bemerkungenBetreuungsstundenPrognose) {
+		this.bemerkungenBetreuungsstundenPrognose = bemerkungenBetreuungsstundenPrognose;
 	}
 }

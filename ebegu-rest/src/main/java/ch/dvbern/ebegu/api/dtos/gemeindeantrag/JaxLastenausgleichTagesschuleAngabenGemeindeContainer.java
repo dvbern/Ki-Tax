@@ -61,6 +61,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	@Nullable
 	private BigDecimal betreuungsstundenPrognose;
 
+	@Nullable
+	private String bemerkungenBetreuungsstundenPrognose;
+
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
 		return status;
@@ -140,5 +143,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setBetreuungsstundenPrognose(@Nullable BigDecimal betreuungsstundenPrognose) {
 		this.betreuungsstundenPrognose = betreuungsstundenPrognose;
+	}
+
+	@Nullable
+	public String getBemerkungenBetreuungsstundenPrognose() {
+		return bemerkungenBetreuungsstundenPrognose;
+	}
+
+	public void setBemerkungenBetreuungsstundenPrognose(@Nullable String bemerkungenBetreuungsstundenPrognose) {
+		this.bemerkungenBetreuungsstundenPrognose = bemerkungenBetreuungsstundenPrognose;
 	}
 }
