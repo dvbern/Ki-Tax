@@ -2039,7 +2039,7 @@
     "GEMEINDE_TAB_FI_GP_TITLE": "{{fromTo}} Ferieninsel Konfiguration {{status}}",
     "GEMEINDE_TAB_SAVE_WARNING": "Das Formular scheint nicht vollständig ausgefüllt zu sein. Bitte überprüfen Sie alle Register.",
     "ERROR_IBAN": "IBAN hat ein ungültiges Format",
-    "ERROR_QR_IBAN": "Bitte geben Sie die reguläre, statt die QR-IBAN an",
+    "ERROR_QR_IBAN": "Bitte geben Sie die reguläre statt der QR-IBAN an",
     "TAGESSCHULE_AKTIVIERUNGSDATUM": "Anmeldungen für Tagesschule akzeptieren ab",
     "TAGESSCHULE_ERSTER_SCHULTAG": "Erster Schultag",
     "ABWEICHUNGEN_MELDEN": "Abweichungen melden",
