@@ -254,4 +254,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant) {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.SCHNITTSTELLE_EVENTS_AKTIVIERT, mandant, true);
 	}
+
+	@Nonnull
+	@Override
+	public Boolean isDashboardEventsAktiviert(@Nonnull Mandant mandant) {
+		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.DASHBOARD_EXCHANGE_SERVICE_AKTIV, mandant, false);
+	}
 }
