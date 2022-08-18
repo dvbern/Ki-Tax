@@ -43,11 +43,12 @@ export class QrIbanValidatorDirective implements Validator {
 }
 
 export function qrIbanValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control): ValidationErrors | null => {
         const forbidden = isQrIbanLike(control.value);
         return forbidden ? {qrIban: {value: control.value}} : null;
     };
 }
+
 
 function isQrIbanLike(value: unknown): boolean {
     return typeof value === 'string' && value.length > 0 && CONSTANTS.QR_IBAN_PATTERN.test(stripWhiteSpaces(value));
