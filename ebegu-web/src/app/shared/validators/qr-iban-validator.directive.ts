@@ -17,6 +17,7 @@
 
 import {Directive} from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn} from '@angular/forms';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 /*
 Die Eingabe einer QR-IBAN soll verboten werden.
@@ -48,9 +49,8 @@ export function qrIbanValidator(): ValidatorFn {
     };
 }
 
-const QR_IBAN_PATTERN = /(LI|CH)[\d]{2}3[01][\d]{3}[\w]{12}/;
 function isQrIbanLike(value: unknown): boolean {
-    return typeof value === 'string' && value.length > 0 && QR_IBAN_PATTERN.test(stripWhiteSpaces(value));
+    return typeof value === 'string' && value.length > 0 && CONSTANTS.QR_IBAN_PATTERN.test(stripWhiteSpaces(value));
 }
 
 function stripWhiteSpaces(value: string): string {
