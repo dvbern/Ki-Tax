@@ -49,7 +49,6 @@ export function qrIbanValidator(): ValidatorFn {
     };
 }
 
-
 function isQrIbanLike(value: unknown): boolean {
     return typeof value === 'string' && value.length > 0 && CONSTANTS.QR_IBAN_PATTERN.test(stripWhiteSpaces(value));
 }
