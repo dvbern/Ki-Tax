@@ -127,6 +127,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert, verantwortlicher);
 			}
 			case "GEMEINDE_KENNZAHLEN": {
+				if (verantwortlicher != null) {
+					return List.of();
+				}
 				return gemeindeKennzahlenService.getGemeindeKennzahlen(gemeinde, periode, status, timestampMutiert);
 			}
 			default:
@@ -177,7 +180,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			return antraege;
 		}
 
-		if (principal.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+		if (principal.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles()) && verantworlicher == null) {
 			List<GemeindeKennzahlen> gemeindeKennzahlenAntraege =
 					gemeindeKennzahlenService.getGemeindeKennzahlen(gemeindeId, periodeId, status, timestampMutiert);
 			antraege.addAll(gemeindeKennzahlenAntraege);
