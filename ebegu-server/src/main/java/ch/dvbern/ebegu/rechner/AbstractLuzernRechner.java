@@ -112,7 +112,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		result.setBgPensumZeiteinheit(verfuegteZeiteinheit);
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		result.setVerguenstigungProZeiteinheit(gutschein);
-
+		result.setBabyTarif(input.isBabyTarif());
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);

@@ -22,6 +22,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -83,7 +84,8 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
 	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
-	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER));
+	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),
+	babyTarif(new SimpleMergeField<>("babyTarif", BOOLEAN_X_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;
