@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -915,7 +914,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	@Override
-	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose) {
+	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose, @Nullable String bemerkungen) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -926,6 +925,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		authorizer.checkWriteAuthorization(currentAntrag);
 
 		currentAntrag.setBetreuungsstundenPrognose(prognose);
+		currentAntrag.setBemerkungenBetreuungsstundenPrognose(bemerkungen);
 		persistence.merge(currentAntrag);
 	}
 
