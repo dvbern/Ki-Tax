@@ -60,7 +60,7 @@ public class GemeindeKennzahlenEventGenerator {
 	@Inject
 	private EinstellungService einstellungService;
 
-	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "*", minute = "*/5", persistent = true)
+	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox",  hour = "5", minute = "15", persistent = true)
 	public void publishExistingGemeinden() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<GemeindeKennzahlen> query = cb.createQuery(GemeindeKennzahlen.class);

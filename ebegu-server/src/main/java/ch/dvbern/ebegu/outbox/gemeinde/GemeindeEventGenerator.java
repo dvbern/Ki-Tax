@@ -52,7 +52,7 @@ public class GemeindeEventGenerator {
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
-	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "5", persistent = true)
+	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "5", minute = "5", persistent = true)
 	public void publishExistingGemeinden() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
