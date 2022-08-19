@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import org.hibernate.envers.Audited;
 
@@ -77,8 +78,10 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 
 	@Nullable
 	@Column
-	private String limitierungTfo;
-	
+	private EinschulungTyp limitierungTfo;
+
+	@Column(nullable = false)
+	private boolean eventPublished = true;
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -159,11 +162,11 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 	}
 
 	@Nullable
-	public String getLimitierungTfo() {
+	public EinschulungTyp getLimitierungTfo() {
 		return limitierungTfo;
 	}
 
-	public void setLimitierungTfo(@Nullable String welcheKostenlenkungsmassnahmen) {
+	public void setLimitierungTfo(@Nullable EinschulungTyp welcheKostenlenkungsmassnahmen) {
 		this.limitierungTfo = welcheKostenlenkungsmassnahmen;
 	}
 
@@ -174,5 +177,13 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 
 	public void setGemeindeKontingentiert(@Nullable Boolean gemeindeKontingentiert) {
 		this.gemeindeKontingentiert = gemeindeKontingentiert;
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 }

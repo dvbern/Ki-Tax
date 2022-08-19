@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -49,8 +50,10 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.gemeindekennzahlen.GemeindeKennzahlenEventConverter;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -73,6 +76,15 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private Event<ExportedEvent> event;
+
+	@Inject
+	private GemeindeKennzahlenEventConverter gemeindeKennzahlenEventConverter;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
 
@@ -150,6 +162,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			return;
 		}
 		persistence.remove(gemeindeKennzahlen);
+		if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlen.getGemeinde().getMandant())) {
+			event.fire(gemeindeKennzahlenEventConverter.removeEventOf(gemeindeKennzahlen));
+		}
 		LOG.warn(
 				"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
 				gemeindeKennzahlen.getGemeinde().getName(),
@@ -160,7 +175,11 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public GemeindeKennzahlen saveGemeindeKennzahlen(
 			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
-		return persistence.merge(gemeindeKennzahlen);
+		GemeindeKennzahlen gemeindeKennzahlenPersisted = persistence.merge(gemeindeKennzahlen);
+		if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlenPersisted.getGemeinde().getMandant())) {
+			event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlenPersisted));
+		}
+		return gemeindeKennzahlenPersisted;
 	}
 
 	@Nonnull
