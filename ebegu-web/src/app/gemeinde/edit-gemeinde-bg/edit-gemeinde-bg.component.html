@@ -78,7 +78,7 @@
                         <label class="required" translate for="iban_id">IBAN_NUMMER</label>
                         <input id="iban_id" type="text"
                                name="iban_id" #nameIBAN="ngModel"
-                               required ngxIban
+                               required ngxIban isNotQrIbanN
                                [(ngModel)]="stammdaten.iban"
                                [maxlength]="255" class="form-control">
                         <dv-error-messages [errorObject]="nameIBAN.errors"

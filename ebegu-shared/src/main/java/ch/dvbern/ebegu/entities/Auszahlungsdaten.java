@@ -35,6 +35,7 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckAnyAuszahlungskontoSet;
+import ch.dvbern.ebegu.validators.CheckIBANNotQR;
 import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -57,6 +58,7 @@ public class Auszahlungsdaten extends AbstractEntity {
 	@Column(nullable = true)
 	@Embedded
 	@CheckIBANUppercase
+	@CheckIBANNotQR
 	@Valid
 	private IBAN iban;
 

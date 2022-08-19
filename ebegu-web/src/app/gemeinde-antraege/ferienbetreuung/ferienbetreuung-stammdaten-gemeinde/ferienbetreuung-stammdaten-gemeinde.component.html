@@ -602,6 +602,7 @@
                                        id="iban_id"
                                        matInput
                                        formControlName="iban"
+                                       isNotQrIbanN
                                        class="form-control dv-input"/>
                                 <mat-error
                                     *ngIf="formValidationTriggered && form?.get('auszahlungsdaten').get('iban').errors?.required"
@@ -610,6 +611,10 @@
                                 <mat-error
                                     *ngIf="form?.get('auszahlungsdaten').get('iban').errors?.iban && form.get('auszahlungsdaten').get('iban').dirty"
                                     translate>ERROR_IBAN
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="form?.get('auszahlungsdaten').get('iban').errors?.qrIban && form.get('auszahlungsdaten').get('iban').dirty"
+                                    translate>ERROR_QR_IBAN
                                 </mat-error>
                                 <dv-bisher-x
                                     [deklaration]="container?.angabenDeklaration?.stammdaten?.iban"
