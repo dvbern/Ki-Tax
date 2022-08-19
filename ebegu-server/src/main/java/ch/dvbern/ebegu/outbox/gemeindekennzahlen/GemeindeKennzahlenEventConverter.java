@@ -23,8 +23,8 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
-import ch.dvbern.kibon.exchange.commons.Gemeindekennzahlen.GemeindeKennzahlenEventDTO;
-import ch.dvbern.kibon.exchange.commons.Gemeindekennzahlen.GemeindeKennzahlenEventDTO.Builder;
+import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO;
+import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO.Builder;
 import ch.dvbern.kibon.exchange.commons.types.EinschulungTyp;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
@@ -32,8 +32,11 @@ import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 public class GemeindeKennzahlenEventConverter {
 
 	@Nonnull
-	public GemeindeKennzahlenChangedEvent of(@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+	public GemeindeKennzahlenChangedEvent of(@Nonnull GemeindeKennzahlen gemeindeKennzahlen, @Nonnull
+		ch.dvbern.ebegu.enums.EinschulungTyp bgAusstellenBisUndMitStufe, @Nonnull BigDecimal erwerbspensumZuschlag) {
 		GemeindeKennzahlenEventDTO dto = toGemeindeKennzahlenEventDTO(gemeindeKennzahlen);
+		dto.setErwerbspensumZuschlag(erwerbspensumZuschlag);
+		dto.setLimitierungKita(EinschulungTyp.valueOf(bgAusstellenBisUndMitStufe.name()));
 
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
@@ -58,9 +61,9 @@ public class GemeindeKennzahlenEventConverter {
 			.setGesuchsperiodeStop(gemeindeKennzahlen.getGesuchsperiode().getGueltigkeit().getGueltigBis())
 			.setKontingentierung(gemeindeKennzahlen.getGemeindeKontingentiert())
 			.setKontingentierungAusgeschoepft(gemeindeKennzahlen.getNachfrageErfuellt())
-			.setAnzahlKinderWarteliste(new BigDecimal(gemeindeKennzahlen.getNachfrageAnzahl()))
+			.setAnzahlKinderWarteliste(gemeindeKennzahlen.getNachfrageAnzahl() != null ? new BigDecimal(gemeindeKennzahlen.getNachfrageAnzahl()) : null)
 			.setDauerWarteliste(gemeindeKennzahlen.getNachfrageDauer())
-			.setLimitierungTfo(EinschulungTyp.valueOf(gemeindeKennzahlen.getLimitierungTfo().name()));
+			.setLimitierungTfo(gemeindeKennzahlen.getLimitierungTfo() != null ? EinschulungTyp.valueOf(gemeindeKennzahlen.getLimitierungTfo().name()) : null);
 		return builder.build();
 	}
 }

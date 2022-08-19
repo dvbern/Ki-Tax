@@ -22,6 +22,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +42,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -48,12 +50,15 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.gemeindekennzahlen.GemeindeKennzahlenEventConverter;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -85,6 +90,9 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
 
@@ -177,7 +185,15 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
 		GemeindeKennzahlen gemeindeKennzahlenPersisted = persistence.merge(gemeindeKennzahlen);
 		if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlenPersisted.getGemeinde().getMandant())) {
-			event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlenPersisted));
+			Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
+				.getGemeindeEinstellungenOnlyAsMap(gemeindeKennzahlenPersisted.getGemeinde(), gemeindeKennzahlenPersisted.getGesuchsperiode());
+
+			Einstellung einstellungBgAusstellenBisStufe = gemeindeKonfigurationMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
+			EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+
+			Einstellung einstellungErwerbspensumZuschlag = gemeindeKonfigurationMap.get(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG);
+
+			event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlenPersisted, bgAusstellenBisUndMitStufe, einstellungErwerbspensumZuschlag.getValueAsBigDecimal()));
 		}
 		return gemeindeKennzahlenPersisted;
 	}

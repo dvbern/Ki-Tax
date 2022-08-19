@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.kibon.exchange.commons.Gemeindekennzahlen.GemeindeKennzahlenEventDTO;
+import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.junit.jupiter.api.Test;
 
@@ -56,7 +56,7 @@ public class GemeindeKennzahlenEventConverterTest {
 		gemeindeKennzahlen.setNachfrageErfuellt(true);
 		gemeindeKennzahlen.setGemeindeKontingentiert(true);
 
-		GemeindeKennzahlenChangedEvent gemeindeKennzahlenChangedEvent = gemeindeKennzahlenEventConverter.of(gemeindeKennzahlen);
+		GemeindeKennzahlenChangedEvent gemeindeKennzahlenChangedEvent = gemeindeKennzahlenEventConverter.of(gemeindeKennzahlen, EinschulungTyp.KINDERGARTEN1, new BigDecimal(20));
 
 		//noinspection deprecation
 		GemeindeKennzahlenEventDTO specificRecord = AvroConverter.fromAvroBinary(gemeindeKennzahlenChangedEvent.getSchema(), gemeindeKennzahlenChangedEvent.getPayload());
@@ -69,9 +69,11 @@ public class GemeindeKennzahlenEventConverterTest {
 			.where(GemeindeKennzahlenEventDTO::getGesuchsperiodeStop, is(gesuchsperiode.getGueltigkeit().getGueltigBis()))
 			.where(GemeindeKennzahlenEventDTO::getAnzahlKinderWarteliste, comparesEqualTo(BigDecimal.TEN))
 			.where(GemeindeKennzahlenEventDTO::getDauerWarteliste, comparesEqualTo(BigDecimal.ONE))
+			.where(GemeindeKennzahlenEventDTO::getErwerbspensumZuschlag, comparesEqualTo(new BigDecimal(20)))
 			.where(GemeindeKennzahlenEventDTO::getKontingentierung, is(true))
 			.where(GemeindeKennzahlenEventDTO::getKontingentierungAusgeschoepft, is(true))
 			.where(GemeindeKennzahlenEventDTO::getLimitierungTfo, is(ch.dvbern.kibon.exchange.commons.types.EinschulungTyp.KINDERGARTEN1))
+			.where(GemeindeKennzahlenEventDTO::getLimitierungKita, is(ch.dvbern.kibon.exchange.commons.types.EinschulungTyp.KINDERGARTEN1))
 		));
 	}
 }

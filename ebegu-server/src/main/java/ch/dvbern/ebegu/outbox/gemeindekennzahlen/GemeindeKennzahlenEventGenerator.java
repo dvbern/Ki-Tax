@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.outbox.gemeindekennzahlen;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
@@ -29,11 +30,15 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -52,7 +57,10 @@ public class GemeindeKennzahlenEventGenerator {
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
 
-	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "5", persistent = true)
+	@Inject
+	private EinstellungService einstellungService;
+
+	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "*", minute = "*/5", persistent = true)
 	public void publishExistingGemeinden() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<GemeindeKennzahlen> query = cb.createQuery(GemeindeKennzahlen.class);
@@ -67,7 +75,15 @@ public class GemeindeKennzahlenEventGenerator {
 
 		gemeinden.forEach(gemeindeKennzahlen -> {
 			if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlen.getGemeinde().getMandant())) {
-				event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlen));
+				Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
+					.getGemeindeEinstellungenOnlyAsMap(gemeindeKennzahlen.getGemeinde(), gemeindeKennzahlen.getGesuchsperiode());
+
+				Einstellung einstellungBgAusstellenBisStufe = gemeindeKonfigurationMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
+				EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+
+				Einstellung einstellungErwerbspensumZuschlag = gemeindeKonfigurationMap.get(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG);
+
+				event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlen, bgAusstellenBisUndMitStufe, einstellungErwerbspensumZuschlag.getValueAsBigDecimal()));
 				gemeindeKennzahlen.setEventPublished(true);
 				persistence.merge(gemeindeKennzahlen);
 			}
