@@ -112,6 +112,7 @@ import {DVDatepicker} from './directive/dv-datepicker/dv-datepicker';
 import {DvDialog} from './directive/dv-dialog/dv-dialog';
 import {DVDisplayElement} from './directive/dv-display-element/dv-display-element';
 import {DVEnableElement} from './directive/dv-enable-element/dv-enable-element';
+import {DvIsNotQrIban} from './directive/dv-is-not-qr-iban/dv-is-not-qr-iban';
 import {DVLoadingButton} from './directive/dv-loading-button/dv-loading-button';
 import {DVLoading} from './directive/dv-loading/dv-loading';
 import {DVMaxLength} from './directive/dv-max-length';
@@ -258,6 +259,7 @@ export const CORE_JS_MODULE = angular
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
+    .directive('dvIsNotQrIban', DvIsNotQrIban.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())

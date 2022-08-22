@@ -17,11 +17,8 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -57,101 +54,90 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		if (!platz.isAngebotSchulamt()) {
 			Betreuung betreuung = (Betreuung) platz;
 			if (betreuung.isEingewoehnung() && eingewoehnungAktiviert) {
-				return verlaengtAbschnitte(zeitabschnitte, betreuung.extractGesuch());
+				return abschnitteVerlaengern(zeitabschnitte, betreuung.extractGesuch());
 			}
 		}
 
 		return zeitabschnitte;
 	}
 
-	@Nonnull
-	private List<VerfuegungZeitabschnitt> verlaengtAbschnitte(
-		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
-		Gesuch gesuch) {
-		List<VerfuegungZeitabschnitt> result = new LinkedList<>();
-		VerfuegungZeitabschnitt vorherigerZeitabschnitt = null;
-		boolean found = false; //wenn wir eine erweitert haben es ist fertig als es kann wieder spaeter zu 0 sinken
-		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			if (vorherigerZeitabschnitt != null) {
-				VerfuegungZeitabschnitt eingewoehnung = null;
-				if (zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() > 0
-					&& vorherigerZeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0
-					&& !found) {
-					// wir verlaengern der Anspruch aber die Input muessen von vorgaenger kopiert werden
-					eingewoehnung = createEingewoehnungAbschnitt(vorherigerZeitabschnitt, zeitabschnitt, zeitabschnitt.getGueltigkeit());
-					if (gesuch.getGesuchsperiode()
-						.getGueltigkeit()
-						.getGueltigAb()
-						.isBefore(eingewoehnung.getGueltigkeit().getGueltigAb())) {
-						if (eingewoehnung.getGueltigkeit().getGueltigAb()
-							.minusMonths(1)
-							.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())) {
-							eingewoehnung.getGueltigkeit().setGueltigAb(eingewoehnung.getGueltigkeit().getGueltigAb().minusMonths(1));
-						} else {
-							eingewoehnung.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
-						}
-						eingewoehnung.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-						vorherigerZeitabschnitt.getGueltigkeit().setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
-						if (vorherigerZeitabschnitt.getGueltigkeit()
-							.getGueltigAb()
-							.compareTo(vorherigerZeitabschnitt.getGueltigkeit().getGueltigBis()) >= 0) {
-							//get the original Gueltigab
-							LocalDate gueltigAb = eingewoehnung.getGueltigkeit().getGueltigAb();
-							//set the new value for the eingewoehnung
-							eingewoehnung.getGueltigkeit().setGueltigAb(vorherigerZeitabschnitt.getGueltigkeit().getGueltigAb());
-							vorherigerZeitabschnitt = null;
-							List<VerfuegungZeitabschnitt> resultOld = result;
-							result = new ArrayList<>();
-							for(VerfuegungZeitabschnitt zeitabschnittResult: resultOld){
-								//Zeitabschnitt ist bevor den ersten Gueltigkeit OK
-								if(zeitabschnittResult.getGueltigkeit().getGueltigBis().isBefore(gueltigAb)){
-									result.add(zeitabschnittResult);
-								}
-								else {
-									VerfuegungZeitabschnitt zusaetzlicheEingewoehnung = createEingewoehnungAbschnitt(zeitabschnittResult, eingewoehnung, zeitabschnittResult.getGueltigkeit());
-									//Gueltigab ist bevor den Eingewoehnung setzen gueltigBis ab zu gueltigAb
-									if (zeitabschnittResult.getGueltigkeit().getGueltigAb().isBefore(gueltigAb)){
-										zeitabschnittResult.getGueltigkeit().setGueltigBis(gueltigAb.minusDays(1));
-										result.add(zeitabschnittResult);
-										//setzen der GueltigAb bei der zusaetzlicheEingewoehnung Abschnitt
-										zusaetzlicheEingewoehnung.getGueltigkeit().setGueltigAb(gueltigAb);
-									}
-									result.add(zusaetzlicheEingewoehnung);
-								}
-							}
-						}
-					}
-					found = true;
-				}
-				// wenn die erste Betreuung Abschnitt ist schon vorbei, eingewoehnung macht weniger Sinn
-				if (!found && vorherigerZeitabschnitt.getRelevantBgCalculationInput().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
-					found = true;
-				}
-				if (vorherigerZeitabschnitt != null) {
-					result.add(vorherigerZeitabschnitt);
-				}
-				if (eingewoehnung != null) {
-					result.add(eingewoehnung);
-				}
-			}
-			vorherigerZeitabschnitt = zeitabschnitt;
+	private List<VerfuegungZeitabschnitt> abschnitteVerlaengern(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitteList, Gesuch gesuch) {
+		if (zeitabschnitteList.size() < 2) {
+			return zeitabschnitteList;
 		}
-		result.add(vorherigerZeitabschnitt);
+		VerfuegungZeitabschnitt eingewoehnung = null;
 
-		return result;
+		for (int i = 1; i < zeitabschnitteList.size(); i++) {
+			VerfuegungZeitabschnitt current = zeitabschnitteList.get(i);
+			VerfuegungZeitabschnitt previous = zeitabschnitteList.get(i - 1);
+
+			if (isZeitabschnittEingewoehnung(current, previous)) {
+				eingewoehnung = createEingewoehnungAbschnitt(previous, current);
+				setEingewoehnungZeitabschnittGueltigkeit(gesuch, current, eingewoehnung);
+				zeitabschnitteList.add(i, eingewoehnung);
+				break;
+			}
+		}
+
+		if (eingewoehnung == null) {
+			return zeitabschnitteList;
+		}
+
+		adaptZeitabschnitteBeforeEingewoehnung(zeitabschnitteList, eingewoehnung);
+
+		return zeitabschnitteList;
 	}
 
-	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(@Nonnull VerfuegungZeitabschnitt baseAbschnitt, @Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch, @Nonnull DateRange gueltigkeit) {
+	private void adaptZeitabschnitteBeforeEingewoehnung(List<VerfuegungZeitabschnitt> zeitabschnitteList, VerfuegungZeitabschnitt eingewoehnung) {
+		ListIterator<VerfuegungZeitabschnitt> iterator = zeitabschnitteList.listIterator();
+		while (iterator.hasNext()) {
+			VerfuegungZeitabschnitt current = iterator.next();
+			if (current.equals(eingewoehnung)) {
+				break;
+			}
+
+			if (current.getGueltigkeit().endsBefore(eingewoehnung.getGueltigkeit())) {
+				continue;
+			}
+
+			current.getGueltigkeit().setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
+
+			if (!current.getGueltigkeit().isValid()) {
+				iterator.remove();
+			}
+		}
+	}
+
+	private boolean isZeitabschnittEingewoehnung(VerfuegungZeitabschnitt current, VerfuegungZeitabschnitt previous) {
+		return current.getRelevantBgCalculationInput().getAnspruchspensumProzent() > 0
+		&& previous.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0;
+	}
+
+	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(@Nonnull VerfuegungZeitabschnitt baseAbschnitt, @Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch) {
 		VerfuegungZeitabschnitt eingewoehnung = new VerfuegungZeitabschnitt(baseAbschnitt);
 		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getAnspruchspensumProzent());
 		eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getErwerbspensumGS1());
 		eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput().getErwerbspensumGS2());
-		eingewoehnung.setGueltigkeit(new DateRange(gueltigkeit));
+		eingewoehnung.setGueltigkeit(abschnittMitAnspruch.getGueltigkeit());
 		eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
 		if(eingewoehnung.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)){
 			eingewoehnung.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 		}
 		return  eingewoehnung;
+	}
+
+	private void setEingewoehnungZeitabschnittGueltigkeit(
+			Gesuch gesuch,
+			VerfuegungZeitabschnitt zeitabschnitt,
+			VerfuegungZeitabschnitt eingewoehnung) {
+		if (eingewoehnung.getGueltigkeit().getGueltigAb()
+				.minusMonths(1)
+				.isAfter(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb())) {
+			eingewoehnung.getGueltigkeit().setGueltigAb(zeitabschnitt.getGueltigkeit().getGueltigAb().minusMonths(1));
+		} else {
+			eingewoehnung.getGueltigkeit().setGueltigAb(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
+		}
+		eingewoehnung.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
 	}
 
 	@Override

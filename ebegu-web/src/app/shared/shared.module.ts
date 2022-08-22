@@ -69,11 +69,12 @@ import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picke
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
-import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
-import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
+import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
+import {WarningComponent} from './component/warning/warning.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {EnableElementDirective} from './directive/enable-element.directive';
@@ -90,7 +91,7 @@ import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
-import { WarningComponent } from './component/warning/warning.component';
+import {QrIbanValidatorDirective} from './validators/qr-iban-validator.directive';
 
 export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
@@ -119,6 +120,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         AccordionDirective,
         AccordionTabDirective,
         NumbersMinMaxDirective,
+        QrIbanValidatorDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
@@ -197,6 +199,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         AccordionDirective,
         AccordionTabDirective,
         NumbersMinMaxDirective,
+        QrIbanValidatorDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,

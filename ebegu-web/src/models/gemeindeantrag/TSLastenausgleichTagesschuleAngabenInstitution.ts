@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSAbstractEntity} from '../TSAbstractEntity';
 import {TSOeffnungszeitenTagesschule} from './TSOeffnungszeitenTagesschule';
 
@@ -47,4 +48,20 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     public bemerkungen: string;
 
     public oeffnungszeiten: TSOeffnungszeitenTagesschule[];
+
+    public areKontrollfragenAnswered(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.schuleAufBasisOrganisatorischesKonzept) &&
+            EbeguUtil.isNotNullOrUndefined(this.schuleAufBasisPaedagogischesKonzept) &&
+            EbeguUtil.isNotNullOrUndefined(this.raeumlicheVoraussetzungenEingehalten) &&
+            EbeguUtil.isNotNullOrUndefined(this.betreuungsverhaeltnisEingehalten) &&
+            EbeguUtil.isNotNullOrUndefined(this.ernaehrungsGrundsaetzeEingehalten);
+    }
+
+    public areKontrollfragenOk(): boolean {
+        return EbeguUtil.isNotNullAndTrue(this.schuleAufBasisOrganisatorischesKonzept) &&
+            EbeguUtil.isNotNullAndTrue(this.schuleAufBasisPaedagogischesKonzept) &&
+            EbeguUtil.isNotNullAndTrue(this.raeumlicheVoraussetzungenEingehalten) &&
+            EbeguUtil.isNotNullAndTrue(this.betreuungsverhaeltnisEingehalten) &&
+            EbeguUtil.isNotNullAndTrue(this.ernaehrungsGrundsaetzeEingehalten);
+    }
 }
