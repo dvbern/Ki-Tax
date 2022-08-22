@@ -47,7 +47,7 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
         angebote.push(TSBetreuungsangebotTyp.KITA);
         angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     }
-    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS
+    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS && !gemeinde.nurLats
         && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum)) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }

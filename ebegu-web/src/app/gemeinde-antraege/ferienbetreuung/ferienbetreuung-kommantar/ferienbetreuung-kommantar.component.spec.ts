@@ -22,6 +22,7 @@ import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar.component';
 
@@ -37,6 +38,9 @@ const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateServ
 const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
     ['getPauschalbetraegeFerienbetreuung']);
 
+const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
+    ['getAllBenutzerMandant']);
+
 describe('FerienbetreuungKommantarComponent', () => {
     let component: FerienbetreuungKommantarComponent;
     let fixture: ComponentFixture<FerienbetreuungKommantarComponent>;
@@ -49,6 +53,7 @@ describe('FerienbetreuungKommantarComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TranslateService, useValue: translateServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
+                {provide: BenutzerRSX, useValue: benuzerRSSpy}
             ],
             imports: [
                 HttpClientModule

@@ -258,6 +258,7 @@ public class GemeindeAntragResource {
 		@Nullable @QueryParam("typ") String typ,
 		@Nullable @QueryParam("status") String status,
 		@Nullable @QueryParam("timestampMutiert") String timestampMutiert,
+		@Nullable @QueryParam("verantwortlicher") String usernameVerantowrtlicher,
 		@Nonnull @QueryParam("paginationStart") String paginationStart,
 		@Nonnull @QueryParam("paginationNumber") String paginationNumber,
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
@@ -286,7 +287,8 @@ public class GemeindeAntragResource {
 			periode,
 			typ,
 			status,
-			timestampMutiert);
+			timestampMutiert,
+			usernameVerantowrtlicher);
 
 		/*
 		  Since we are fetching the data from different tables, there is no way to do pagination on DB side.

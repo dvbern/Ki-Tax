@@ -91,6 +91,15 @@ export class LastenausgleichTSService {
         );
     }
 
+    public saveLATSVerantworlicher(containerId: string, username: string): Observable<void> {
+        return this.http.put<void>(
+            `${this.API_BASE_URL}/saveLATSVerantworlicher/${encodeURIComponent(containerId)}`,
+            username,
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
+        );
+    }
+
     public emptyStore(): void {
         this.lATSAngabenGemeindeContainerStore =
             new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
@@ -223,10 +232,10 @@ export class LastenausgleichTSService {
         );
     }
 
-    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number): void {
+    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number, bemerkungen: string): void {
         this.http.put(
             `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
-            prognose,
+            {prognose, bemerkungen},
         ).subscribe(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error));
     }
 

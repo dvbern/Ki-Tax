@@ -18,6 +18,7 @@
 import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../enums/TSRole';
 import {TSAbstractEntity} from '../TSAbstractEntity';
+import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 import {TSLastenausgleichTagesschuleAngabenGemeinde} from './TSLastenausgleichTagesschuleAngabenGemeinde';
@@ -33,7 +34,9 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public angabenDeklaration: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenKorrektur: TSLastenausgleichTagesschuleAngabenGemeinde;
     public angabenInstitutionContainers: Array<TSLastenausgleichTagesschuleAngabenInstitutionContainer>;
+    public verantwortlicher: TSBenutzerNoDetails;
     private _betreuungsstundenPrognose: number;
+    private _bemerkungenBetreuungsstundenPrognose: string;
     /**
      * Based on AngabenGemeindeStatus, we work with AngabenDeklaration or AngabenKorrektur
      */
@@ -128,6 +131,14 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
 
     public set betreuungsstundenPrognose(value: number) {
         this._betreuungsstundenPrognose = value;
+    }
+
+    public get bemerkungenBetreuungsstundenPrognose(): string {
+        return this._bemerkungenBetreuungsstundenPrognose;
+    }
+
+    public set bemerkungenBetreuungsstundenPrognose(value: string) {
+        this._bemerkungenBetreuungsstundenPrognose = value;
     }
 
     public isAbgeschlossen(): boolean {

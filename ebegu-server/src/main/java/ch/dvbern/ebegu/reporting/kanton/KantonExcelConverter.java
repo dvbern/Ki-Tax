@@ -110,6 +110,7 @@ public class KantonExcelConverter implements ExcelConverter {
 			BigDecimal bgPensumTotal = dataRow.getBgPensumTotal();
 			excelRowGroup.addValue(MergeFieldKanton.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldKanton.betreuungsTyp, dataRow.getBetreuungsTyp());
+			excelRowGroup.addValue(MergeFieldKanton.babyTarif, dataRow.getBabyTarif());
 			if (bgPensumTotal != null && bgPensumTotal.compareTo(BigDecimal.ZERO) > 0) {
 				excelRowGroup.addValue(MergeFieldKanton.bgPensumKanton, dataRow.getBgPensumKanton());
 				excelRowGroup.addValue(MergeFieldKanton.bgPensumGemeinde, dataRow.getBgPensumGemeinde());

@@ -813,8 +813,8 @@ public class GemeindeResource {
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
-		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS()) {
-			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS());
+		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS() || gemeinde.isNurLats() != jaxGemeinde.isNurLats()) {
+			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS(), jaxGemeinde.isNurLats());
 		}
 		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
 			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());

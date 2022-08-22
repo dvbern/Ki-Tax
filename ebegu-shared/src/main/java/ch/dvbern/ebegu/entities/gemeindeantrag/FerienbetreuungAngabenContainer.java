@@ -39,6 +39,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -87,6 +88,11 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 	@Size(max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String internerKommentar;
+
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_container_verantwortlicher_id"))
+	private Benutzer verantwortlicher = null;
 
 	@Nullable
 	@Valid
@@ -245,5 +251,15 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 					.collect(Collectors.toSet()));
 		}
 		target.setDokumente(dokumentCopies);
+	}
+
+	@Nullable
+	@Override
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 }

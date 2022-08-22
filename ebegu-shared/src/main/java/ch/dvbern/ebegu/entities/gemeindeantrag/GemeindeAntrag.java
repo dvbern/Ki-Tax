@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -56,4 +57,7 @@ public interface GemeindeAntrag {
 	String getStatusString();
 
 	boolean isAntragAbgeschlossen();
+
+	@Nullable
+	Benutzer getVerantwortlicher();
 }

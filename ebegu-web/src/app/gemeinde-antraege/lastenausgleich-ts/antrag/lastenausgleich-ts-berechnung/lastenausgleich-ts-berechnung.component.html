@@ -20,6 +20,7 @@
     <h2 class="margin-bottom-50" translate>LATS_VERFUEGUNG</h2>
 
     <form role="form" #form=ngForm name="form">
+        <div class="flex-row-start-center">
         <div class="form-group">
             <label class="md-no-float" for="betreuungsstundenPrognoseId">
                 {{'LATS_CONTROLLING_BETREUUNGSSTUNDEN_SCHULJAHR' | translate}} {{latsContainer?.gesuchsperiode | nextPeriodeStr}}
@@ -33,13 +34,23 @@
                    #betreuungsstundenPrognoseName
                    [(ngModel)]="latsContainer.betreuungsstundenPrognose">
         </div>
+        <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
+        </div>
+        <div>
+        <label class="md-no-float" for="betreuungsstundenPrognoseBemerkungenId" translate>LATS_ANGABEN_GEMEINDE_BEMERKUNGEN</label>
+        <textarea [disabled]="latsContainer.isAbgeschlossen()"
+                  name="betreuungsstundenPrognoseBemerkungen"
+                  #betreuungsstundenPrognoseBemerkungen
+                  [required]="false"
+                  id="betreuungsstundenPrognoseBemerkungenId"
+                  [(ngModel)]="latsContainer.bemerkungenBetreuungsstundenPrognose"></textarea>
+        </div>
         <dv-loading-button
-            type="button"
-            [buttonDisabled]="!betreuungsstundenPrognoseName.checkValidity() || latsContainer.isAbgeschlossen()"
-            (buttonClick)="saveContainerWithPrognose()">
+                type="button"
+                [buttonDisabled]="!betreuungsstundenPrognoseName.checkValidity() || latsContainer.isAbgeschlossen()"
+                (buttonClick)="saveContainerWithPrognose()">
             <span translate>SAVE</span>
         </dv-loading-button>
-        <p>{{'LATS_BERECHNUNG_AUS_KIBON' | translate }}: {{betreuungsstundenPrognoseFromKiBon}}</p>
     </form>
 
     <button type="button" class="dv-btn btn-link link-underline"
