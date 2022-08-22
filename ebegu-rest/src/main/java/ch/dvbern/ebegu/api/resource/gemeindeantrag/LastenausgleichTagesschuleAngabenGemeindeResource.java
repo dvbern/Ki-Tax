@@ -390,6 +390,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Speichert den Verantwortlichen eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveLATSVerantworlicher/{containerId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSVerantworlicher(
+		@Nullable String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+
+		angabenGemeindeService.saveVerantwortlicher(containerId.getId(), username);
+	}
+
+	@ApiOperation(
 		value = "Speichert die Betreuungsstunden Prognose eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
 		response = Void.class)
 	@PUT

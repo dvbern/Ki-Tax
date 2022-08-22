@@ -18,6 +18,7 @@
 import {TSFerienbetreuungBerechnung} from '../../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {FerienbetreuungAngabenStatus} from '../enums/FerienbetreuungAngabenStatus';
 import {TSAbstractEntity} from '../TSAbstractEntity';
+import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 import {TSFerienbetreuungAngaben} from './TSFerienbetreuungAngaben';
@@ -30,6 +31,7 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
     private _angabenDeklaration: TSFerienbetreuungAngaben;
     private _angabenKorrektur: TSFerienbetreuungAngaben;
     private _internerKommentar: string;
+    private _verantwortlicher: TSBenutzerNoDetails;
 
     public get status(): FerienbetreuungAngabenStatus {
         return this._status;
@@ -77,6 +79,14 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
 
     public set internerKommentar(value: string) {
         this._internerKommentar = value;
+    }
+
+    public get verantwortlicher(): TSBenutzerNoDetails {
+        return this._verantwortlicher;
+    }
+
+    public set verantwortlicher(value: TSBenutzerNoDetails) {
+        this._verantwortlicher = value;
     }
 
     public isAtLeastInPruefungKanton(): boolean {
