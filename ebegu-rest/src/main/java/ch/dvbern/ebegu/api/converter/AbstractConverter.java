@@ -47,8 +47,6 @@ import ch.dvbern.ebegu.entities.AbstractMutableEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -344,6 +342,7 @@ public class AbstractConverter {
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
 		gemeinde.setBesondereVolksschule(jaxGemeinde.isBesondereVolksschule());
+		gemeinde.setNurLats(jaxGemeinde.isNurLats());
 		return gemeinde;
 	}
 
@@ -363,6 +362,7 @@ public class AbstractConverter {
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		jaxGemeinde.setBesondereVolksschule(persistedGemeinde.isBesondereVolksschule());
+		jaxGemeinde.setNurLats(persistedGemeinde.isNurLats());
 		return jaxGemeinde;
 	}
 

@@ -134,6 +134,11 @@
                                                        [errorObject]="form.controls.besondere_volksschule_name?.errors">
                                     </dv-error-messages>
                                 </div>
+
+                                <mat-checkbox id="nurLats" name="nurLats"
+                                              [(ngModel)]="gemeinde.nurLats">
+                                    {{'GEMEINDE_ANGEBOT_NUR_LATS'|translate}}</mat-checkbox>
+
                             </div>
 
                             <mat-checkbox id="angebotFI" name="angebotFI"

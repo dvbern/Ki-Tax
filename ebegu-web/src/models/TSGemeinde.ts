@@ -31,6 +31,7 @@ export class TSGemeinde extends TSAbstractEntity {
     public angebotTS: boolean;
     public angebotFI: boolean;
     public besondereVolksschule: boolean;
+    public nurLats: boolean;
     public key: string;
     public gueltigBis: moment.Moment;
 
