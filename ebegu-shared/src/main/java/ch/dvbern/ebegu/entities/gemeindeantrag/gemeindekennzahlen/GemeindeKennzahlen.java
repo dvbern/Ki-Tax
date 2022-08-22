@@ -31,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
@@ -115,6 +116,13 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 	@Override
 	public boolean isAntragAbgeschlossen() {
 		return status == GemeindeKennzahlenStatus.ABGESCHLOSSEN;
+	}
+
+	@Nullable
+	@Override
+	public Benutzer getVerantwortlicher() {
+		//GemeindeKennzahlen haben keinen Verantworlichen
+		return null;
 	}
 
 	@Nonnull

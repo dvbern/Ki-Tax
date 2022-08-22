@@ -52,6 +52,11 @@ public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard> {
 		final Set<LastenausgleichTagesschuleAngabenInstitutionContainer> containerList =
 			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().getAngabenInstitutionContainers();
 
+		//Solange keine Tagesschulen-Angaben erfasst sind, soll der Wizard-Step nicht auf OK wechseln
+		if (containerList.isEmpty()) {
+			return WizardStateEnum.IN_BEARBEITUNG;
+		}
+
 		if (wizard.getRole().isInstitutionRole()) {
 			boolean userInstitutionsAbgeschlossen =
 				containerList.stream()

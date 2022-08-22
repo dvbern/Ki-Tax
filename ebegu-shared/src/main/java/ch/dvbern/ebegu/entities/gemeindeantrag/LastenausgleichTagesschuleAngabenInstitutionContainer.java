@@ -34,6 +34,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
@@ -175,6 +176,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionContainer extends Abstr
 	@Override
 	public boolean isAntragAbgeschlossen() {
 		return status == LastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT;
+	}
+
+	@Nullable
+	@Override
+	public Benutzer getVerantwortlicher() {
+		return angabenGemeinde.getVerantwortlicher();
 	}
 
 	public boolean isAntragInPruefungGemeinde() {

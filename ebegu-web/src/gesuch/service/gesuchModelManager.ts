@@ -1831,6 +1831,7 @@ export class GesuchModelManager {
         const gesuchsperiode = this.getGesuchsperiode();
         return gemeinde
             && gemeinde.angebotTS
+            && !gemeinde.nurLats
             && gesuchsperiode
             && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum);
     }

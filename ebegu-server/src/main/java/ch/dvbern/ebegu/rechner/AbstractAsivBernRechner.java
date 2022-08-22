@@ -116,6 +116,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
+		result.setBabyTarif(unter12Monate);
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
 
 		return result;

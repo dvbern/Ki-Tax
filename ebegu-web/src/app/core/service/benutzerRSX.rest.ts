@@ -89,6 +89,13 @@ export class BenutzerRSX {
         return this.getBenutzerNoDetail(`${this.serviceURL}/BgTsOrGemeinde/all`);
     }
 
+    /**
+     * Gibt alle existierenden Benutzer mit den Rollen SACHBEARBEITER_MANDANT und ADMIN_MANDANT zurueck.
+     */
+    public getAllBenutzerMandant(): Promise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/mandant/all`);
+    }
+
     public getAllGesuchsteller(): Promise<TSBenutzerNoDetails[]> {
         return this.getBenutzerNoDetail(`${this.serviceURL}/gesuchsteller`);
     }

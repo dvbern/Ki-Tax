@@ -75,6 +75,9 @@ export class GemeindeAntragService {
         if (filter.aenderungsdatum) {
             params = params.append('timestampMutiert', filter.aenderungsdatum);
         }
+        if (filter.verantwortlicherGemeindeantraege) {
+            params = params.append('verantwortlicher', filter.verantwortlicherGemeindeantraege.username);
+        }
         if (sort.predicate) {
             params = params.append('sortPredicate', sort.predicate);
         }

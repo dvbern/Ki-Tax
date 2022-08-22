@@ -595,6 +595,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
 			row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
+			row.setBabyTarif(zeitabschnitt.getBgCalculationResultAsiv().isBabyTarif());
 			kantonDataRowList.add(row);
 		}
 		return kantonDataRowList;

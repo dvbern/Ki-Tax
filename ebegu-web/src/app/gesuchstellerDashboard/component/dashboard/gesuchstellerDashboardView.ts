@@ -268,7 +268,8 @@ export class GesuchstellerDashboardViewController implements IController {
     private showAnmeldungCreateTS(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
-        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung();
+        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung()
+            && !this.gemeindeStammdaten.gemeinde.nurLats;
         return tsEnabledForMandant
             && tsEnabledForGemeinde
             && !!antrag

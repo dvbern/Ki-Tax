@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -42,6 +43,8 @@ public class JaxGemeindeAntrag extends JaxAbstractDTO {
 	private String statusString;
 
 	private boolean antragAbgeschlossen;
+
+	private JaxBenutzerNoDetails verantwortlicher;
 
 	@Nonnull
 	public GemeindeAntragTyp getGemeindeAntragTyp() {
@@ -85,5 +88,13 @@ public class JaxGemeindeAntrag extends JaxAbstractDTO {
 
 	public void setAntragAbgeschlossen(boolean antragAbgeschlossen) {
 		this.antragAbgeschlossen = antragAbgeschlossen;
+	}
+
+	public JaxBenutzerNoDetails getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(JaxBenutzerNoDetails verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 }

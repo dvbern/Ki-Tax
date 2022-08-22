@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,12 +48,14 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -74,6 +75,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -132,6 +134,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
@@ -397,7 +402,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status,
-		@Nullable String timestampMutiert) {
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantwortlicher) {
 		// institution users have much less permissions, so we handle this in on its own
 		if (principal.isCallerInAnyOfRole(
 			UserRole.ADMIN_INSTITUTION,
@@ -455,6 +461,13 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			final Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
 			predicates.add(
 				timestampMutiertPredicate
+			);
+		}
+		if (verantwortlicher != null) {
+			predicates.add(
+				cb.equal(
+					root.get(LastenausgleichTagesschuleAngabenGemeindeContainer_.verantwortlicher),
+					verantwortlicher)
 			);
 		}
 
@@ -600,6 +613,31 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		persistence.persist(latsContainer);
 	}
 
+	@Override
+	public void saveVerantwortlicher(@Nonnull String containerId, @Nullable String username) {
+		LastenausgleichTagesschuleAngabenGemeindeContainer latsContainer =
+			this.findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		Benutzer verantwortlicher = null;
+
+		if (username != null) {
+			verantwortlicher = benutzerService.findBenutzer(username, latsContainer.getGemeinde().getMandant())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					username)
+				);
+		}
+
+		latsContainer.setVerantwortlicher(verantwortlicher);
+		persistence.persist(latsContainer);
+	}
+
 	@Nonnull
 	@Override
 	public LastenausgleichTagesschuleAngabenGemeindeContainer lastenausgleichTagesschuleGemeindeFormularAbschliessen(
@@ -698,7 +736,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Override
 	public void deleteLastenausgleicheTagesschuleForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> containerList =
-			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null);
+			getLastenausgleicheTagesschulen(null, gesuchsperiode.getGesuchsperiodeString(), null, null, null);
 		if (containerList == null) {
 			return;
 		}
@@ -915,7 +953,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	}
 
 	@Override
-	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose) {
+	public void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose, @Nullable String bemerkungen) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -926,6 +964,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		authorizer.checkWriteAuthorization(currentAntrag);
 
 		currentAntrag.setBetreuungsstundenPrognose(prognose);
+		currentAntrag.setBemerkungenBetreuungsstundenPrognose(bemerkungen);
 		persistence.merge(currentAntrag);
 	}
 

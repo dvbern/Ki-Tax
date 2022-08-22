@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,9 +50,9 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschulePrognose;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -390,6 +389,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Speichert den Verantwortlichen eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveLATSVerantworlicher/{containerId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSVerantworlicher(
+		@Nullable String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+
+		angabenGemeindeService.saveVerantwortlicher(containerId.getId(), username);
+	}
+
+	@ApiOperation(
 		value = "Speichert die Betreuungsstunden Prognose eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
 		response = Void.class)
 	@PUT
@@ -397,15 +414,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void saveLATSPrognose(
-		@Nonnull BigDecimal prognose,
+		@Nonnull JaxLastenausgleichTagesschulePrognose jaxPrognose,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response,
 		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
 	) {
 		Objects.requireNonNull(containerId);
-		Objects.requireNonNull(prognose);
+		Objects.requireNonNull(jaxPrognose);
 
-		angabenGemeindeService.savePrognose(containerId.getId(), prognose);
+		angabenGemeindeService.savePrognose(containerId.getId(), jaxPrognose.getPrognose(), jaxPrognose.getBemerkungen());
 	}
 
 	@ApiOperation(

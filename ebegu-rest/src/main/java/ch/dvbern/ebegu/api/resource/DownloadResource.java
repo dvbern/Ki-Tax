@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
+import ch.dvbern.ebegu.api.resource.authentication.VerfuegungDownloadAuthenticatorVisitor;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
@@ -455,6 +456,10 @@ public class DownloadResource {
 		requireNonNull(jaxBetreuungId.getId());
 		String ip = getIP(request);
 
+		if (!isUserAllowedToDownloadVerfuegungPdf()) {
+			throw new EbeguRuntimeException("getVerfuegungDokumentAccessTokenGeneratedDokument", "Action not allowed for this user");
+		}
+
 		final Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
 		if (gesuchOptional.isPresent()) {
 			Betreuung betreuung = gesuchOptional.get().extractBetreuungById(jaxBetreuungId.getId());
@@ -469,6 +474,11 @@ public class DownloadResource {
 		}
 		throw new EbeguEntityNotFoundException("getVerfuegungDokumentAccessTokenGeneratedDokument",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId not found: " + jaxGesuchId.getId());
+	}
+
+	private boolean isUserAllowedToDownloadVerfuegungPdf() {
+		return new VerfuegungDownloadAuthenticatorVisitor(principalBean.getBenutzer().getRole())
+			.isUserAllowed(principalBean.getMandant());
 	}
 
 	@ApiOperation("Erstellt ein Token f&uuml;r den Download des Mahnungsbriefs f&uuml;r die " +
