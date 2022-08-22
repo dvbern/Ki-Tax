@@ -76,7 +76,9 @@ export class BenutzerListXComponent implements OnInit {
 
     public datasource: MatTableDataSource<TSBenutzer>;
 
-    public displayedColumns: string[] = ['username'];
+    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'rolle', 'roleGueltigAb', 'roleGueltigBis'];
+
+    public gemeindenStr: string;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -90,14 +92,16 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        // liste sind geladen nur wenn benoetigt
+        // listen sind geladen nur wenn benoetigt
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
             this.updateInstitutionenList();
             this.updateGemeindeList();
+            this.displayedColumns.push('gemeinde', 'institution');
         }
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
             this.updateTraegerschaftenList();
             this.updateSozialdienstList();
+            this.displayedColumns.push('sozialdienst', 'traegerschaft');
         }
         this.datasource = new MatTableDataSource<TSBenutzer>([]);
         this.sortData({} as any);
@@ -134,10 +138,18 @@ export class BenutzerListXComponent implements OnInit {
             .subscribe(
                 gemeinden => {
                     this.gemeindeList = gemeinden;
+                    this.gemeindenStr = this.gemeindenToString(gemeinden);
                     this.cd.markForCheck();
                 },
                 err => LOG.error(err),
             );
+    }
+
+    private gemeindenToString(gemeinden: TSGemeinde[]): string {
+        return gemeinden
+            .map((gem: TSGemeinde) => gem.name)
+            .sort((a, b) => a.localeCompare(b))
+            .join(', ');
     }
 
     public editClicked(user: any): void {

@@ -42,6 +42,119 @@
                     </mat-cell>
                 </ng-container>
 
+                <ng-container matColumnDef="vorname">
+                    <mat-header-cell mat-sort-header="vorname" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>VORNAME</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.vorname">{{element.vorname}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <mat-header-cell mat-sort-header="name" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>NAME</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.name">{{element.nachname}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                    <mat-header-cell mat-sort-header="email" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>EMAIL</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.email">{{element.email}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="rolle">
+                    <mat-header-cell mat-sort-header="rolle" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>ROLLE</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="'TSRole_' + element.getCurrentRole() | translate">
+                        {{'TSRole_' + element.getCurrentRole() | translate}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="roleGueltigAb">
+                    <mat-header-cell mat-sort-header="roleGueltigAb" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>ROLLE_GUELTIG_AB</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.currentBerechtigung.gueltigkeit.gueltigAb | ebeguDate">
+                        {{element.currentBerechtigung.gueltigkeit.gueltigAb | ebeguDate}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="roleGueltigBis">
+                    <mat-header-cell mat-sort-header="roleGueltigBis" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>ROLLE_GUELTIG_BIS</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.currentBerechtigung.gueltigkeit.gueltigBis | ebeguDate">
+                        {{element.currentBerechtigung.gueltigkeit.gueltigBis | ebeguDate}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="gemeinde">
+                    <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>GEMEINDE</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="gemeindenStr">{{gemeindenStr}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="institution">
+                    <mat-header-cell mat-sort-header="institution" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>INSTITUTION</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.currentBerechtigung.institution?.name">
+                        {{element.currentBerechtigung.institution?.name}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="traegerschaft">
+                    <mat-header-cell mat-sort-header="traegerschaft" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>TRAEGERSCHAFT</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.currentBerechtigung.traegerschaft?.name">
+                        {{element.currentBerechtigung.traegerschaft?.name}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="sozialdienst">
+                    <mat-header-cell mat-sort-header="sozialdienst" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>SOZIALDIENST_TITLE</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.currentBerechtigung.sozialdienst?.name">
+                        {{element.currentBerechtigung.sozialdienst?.name}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <mat-header-cell mat-sort-header="status" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>STATUS</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="'BENUTZER_STATUS_' + element.status  | translate">
+                        {{'BENUTZER_STATUS_' + element.status  | translate}}
+                    </span>
+                    </mat-cell>
+                </ng-container>
+
                 <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-benutzer-mat-header-row"></mat-header-row>
 
                 <mat-row *matRowDef="let element; columns: displayedColumns;"
