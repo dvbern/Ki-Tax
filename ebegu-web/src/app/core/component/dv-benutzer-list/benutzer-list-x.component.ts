@@ -24,7 +24,7 @@ import {
     OnInit,
     Output
 } from '@angular/core';
-import {MatSort, Sort} from '@angular/material/sort';
+import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -103,6 +103,10 @@ export class BenutzerListXComponent implements OnInit {
             this.updateSozialdienstList();
             this.displayedColumns.push('sozialdienst', 'traegerschaft');
         }
+        this.initDataSource();
+    }
+
+    private initDataSource(): void {
         this.datasource = new MatTableDataSource<TSBenutzer>([]);
         this.sortData({} as any);
     }
@@ -174,11 +178,9 @@ export class BenutzerListXComponent implements OnInit {
 
     }
 
-    public sortData($event: Sort): void {
+    public sortData($event: MatSort): void {
         const paginate = new TSPagination();
-        const sort = new MatSort();
-        sort.direction = 'asc';
-        sort.active = 'username';
+        const sort = $event;
         const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
             paginate,
             sort,

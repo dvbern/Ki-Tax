@@ -1319,6 +1319,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			case "role":
 				expression = currentBerechtigung.get(Berechtigung_.role);
 				break;
+			case "roleGueltigAb":
+				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb);
+				break;
 			case "roleGueltigBis":
 				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis);
 				break;
