@@ -591,6 +591,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showVerfuegungPdfLink(): boolean {
+        if (this.isLuzern && this.authServiceRs.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
+            return false;
+        }
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
