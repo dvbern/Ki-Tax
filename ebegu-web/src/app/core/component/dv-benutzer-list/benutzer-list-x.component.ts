@@ -15,7 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {TSBenutzer} from '../../../../models/TSBenutzer';
 
 @Component({
     selector: 'dv-benutzer-list-x',
@@ -24,6 +25,24 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerListXComponent implements OnInit {
+
+    @Input()
+    public tableTitle: string;
+
+    @Input()
+    public tableId: string;
+
+    @Input()
+    public totalResultCount: number;
+
+    @Input()
+    public pendenz: boolean;
+
+    @Output()
+    public readonly filterChange: EventEmitter<{tableState: any}> = new EventEmitter<{tableState: any}>();
+
+    @Output()
+    public readonly edit: EventEmitter<{user: TSBenutzer}> = new EventEmitter<{user: TSBenutzer}>();
 
     public constructor() {
     }

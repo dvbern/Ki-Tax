@@ -15,5 +15,22 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>benutzer-list-view-x works!</p>
-<dv-benutzer-list-x></dv-benutzer-list-x>
+<div class="dv-view">
+    <div class="benutzer-list-view admin-modul">
+        <dv-benutzer-list-x
+            [tableTitle]="'BENUTZER'"
+            [tableId]="'alleBenutzer'"
+            (filterChange)="passFilterToServer($event.tableState)"
+            (edit)="editBenutzer($event.user)"
+            [totalResultCount]="totalResultCount"
+            [pendenz]="false">
+        </dv-benutzer-list-x>
+
+        <div *ngIf="showEinladen()">
+            <dv-loading-button (buttonClick)="benutzerEinladen()">
+                <span class="fa fa-plus"></span>&nbsp;
+                <span translate>BENUTZER_ADD</span>
+            </dv-loading-button>
+        </div>
+    </div>
+</div>
