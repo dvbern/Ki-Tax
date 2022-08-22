@@ -17,14 +17,12 @@
 
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/angular';
-import {IPromise} from 'angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzer} from '../../../models/TSBenutzer';
-import {TSUserSearchresultDTO} from '../../../models/TSUserSearchresultDTO';
 
 const LOG = LogFactory.createLog('BenutzerListViewXComponent');
 
@@ -39,8 +37,6 @@ const LOG = LogFactory.createLog('BenutzerListViewXComponent');
     }
 })
 export class BenutzerListViewXComponent implements OnInit {
-
-    public totalResultCount: number = 0;
 
     public constructor(
         private readonly state: StateService,
@@ -64,16 +60,6 @@ export class BenutzerListViewXComponent implements OnInit {
 
     public benutzerEinladen(): void {
         this.state.go('benutzer.einladen');
-    }
-
-    public passFilterToServer(tableFilterState: any): IPromise<TSUserSearchresultDTO> {
-        LOG.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-
-        return this.benutzerRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {
-            this.totalResultCount = response.totalResultSize ? response.totalResultSize : 0;
-
-            return response;
-        });
     }
 
     public showEinladen(): boolean {

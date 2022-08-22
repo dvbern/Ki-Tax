@@ -20,13 +20,11 @@
         <dv-benutzer-list-x
             [tableTitle]="'BENUTZER'"
             [tableId]="'alleBenutzer'"
-            (filterChange)="passFilterToServer($event.tableState)"
             (edit)="editBenutzer($event.user)"
-            [totalResultCount]="totalResultCount"
             [pendenz]="false">
         </dv-benutzer-list-x>
 
-        <div *ngIf="showEinladen()">
+        <div *ngIf="showEinladen()" class="margin-top-20">
             <dv-loading-button (buttonClick)="benutzerEinladen()">
                 <span class="fa fa-plus"></span>&nbsp;
                 <span translate>BENUTZER_ADD</span>

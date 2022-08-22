@@ -16,6 +16,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
+import {TSBenutzerTableFilterDTO} from '../../../models/dto/TSBenutzerTableFilterDTO';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
@@ -114,8 +115,8 @@ export class BenutzerRSX {
             })).toPromise();
     }
 
-    public searchUsers(userSearch: any): Promise<TSUserSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/search/`, userSearch).pipe(map((response: any) => {
+    public searchUsers(userSearch: TSBenutzerTableFilterDTO): Promise<TSUserSearchresultDTO> {
+        return this.$http.post(`${this.serviceURL}/search/`, userSearch.toSmartTableDTO()).pipe(map((response: any) => {
             this.LOG.debug('PARSING benutzer REST array object', response);
             const tsBenutzers = this.ebeguRestUtil.parseUserList(response.benutzerDTOs);
 

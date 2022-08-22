@@ -14,5 +14,42 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
+<div class="dv-benutzer-list">
+    <div class="dv-table">
+        <div class="row">
+            <div class="col-md-10">
+                <div id="titleText">
+                    <h3 class="ng-scope">{{tableTitle | translate}}</h3>
+                </div>
+                <div id="refreshIcon">
+                    <i class="fa fa-undo" (click)="resetSearch()"></i>
+                </div>
+            </div>
+            <div class="col-md-2 text-right">
+                <h3>{{totalResultCount}}</h3>
+            </div>
+        </div>
 
-<p>dv-benutzer-list-x works!</p>
+        <div class="mat-elevation-z0">
+            <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
+
+                <ng-container matColumnDef="username">
+                    <mat-header-cell mat-sort-header="username" *matHeaderCellDef class="ellipsis">
+                        <span class="no-padding-left" translate>USERNAME</span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                    <span [title]="element.username">{{element.username}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-benutzer-mat-header-row"></mat-header-row>
+
+                <mat-row *matRowDef="let element; columns: displayedColumns;"
+                         (click)="editClicked(element)"
+                         class="pointer-cursor"></mat-row>
+
+            </mat-table>
+        </div>
+
+    </div>
+</div>

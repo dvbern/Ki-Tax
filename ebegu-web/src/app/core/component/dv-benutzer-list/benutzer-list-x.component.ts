@@ -15,8 +15,36 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
+import {MatSort, Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {take} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSBenutzerTableFilterDTO} from '../../../../models/dto/TSBenutzerTableFilterDTO';
+import {TSPagination} from '../../../../models/dto/TSPagination';
+import {TSRole} from '../../../../models/enums/TSRole';
+import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
+import {TSGemeinde} from '../../../../models/TSGemeinde';
+import {TSInstitution} from '../../../../models/TSInstitution';
+import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {LogFactory} from '../../logging/LogFactory';
+import {BenutzerRSX} from '../../service/benutzerRSX.rest';
+import {InstitutionRS} from '../../service/institutionRS.rest';
+import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
+import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
+
+const LOG = LogFactory.createLog('BenutzerListXComponent');
 
 @Component({
     selector: 'dv-benutzer-list-x',
@@ -39,15 +67,114 @@ export class BenutzerListXComponent implements OnInit {
     public pendenz: boolean;
 
     @Output()
-    public readonly filterChange: EventEmitter<{tableState: any}> = new EventEmitter<{tableState: any}>();
-
-    @Output()
     public readonly edit: EventEmitter<{user: TSBenutzer}> = new EventEmitter<{user: TSBenutzer}>();
 
-    public constructor() {
+    public institutionenList: Array<TSInstitution>;
+    public traegerschaftenList: Array<TSTraegerschaft>;
+    public gemeindeList: Array<TSGemeinde>;
+    public sozialdienstList: Array<TSSozialdienst>;
+
+    public datasource: MatTableDataSource<TSBenutzer>;
+
+    public displayedColumns: string[] = ['username'];
+
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly institutionRS: InstitutionRS,
+        private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly sozialdienstRS: SozialdienstRS,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly cd: ChangeDetectorRef,
+        private readonly benutzerRS: BenutzerRSX,
+    ) {
     }
 
     public ngOnInit(): void {
+        // liste sind geladen nur wenn benoetigt
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+            this.updateInstitutionenList();
+            this.updateGemeindeList();
+        }
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
+            this.updateTraegerschaftenList();
+            this.updateSozialdienstList();
+        }
+        this.datasource = new MatTableDataSource<TSBenutzer>([]);
+        this.sortData({} as any);
     }
 
+    private updateInstitutionenList(): void {
+        this.institutionRS.getInstitutionenEditableForCurrentBenutzer().then((response: TSInstitution[]) => {
+            this.institutionenList = response;
+            this.cd.markForCheck();
+        });
+    }
+
+    private updateTraegerschaftenList(): void {
+        this.traegerschaftRS.getAllTraegerschaften().then((response: TSTraegerschaft[]) => {
+            this.traegerschaftenList = response;
+            this.cd.markForCheck();
+        });
+    }
+
+    private updateSozialdienstList(): void {
+        this.sozialdienstRS.getSozialdienstList().toPromise().then((response: TSSozialdienst[]) => {
+            this.sozialdienstList = response;
+            this.cd.markForCheck();
+        });
+    }
+
+    /**
+     * Fuer den SUPER_ADMIN muessen wir die gesamte Liste von Gemeinden zurueckgeben, da er zu keiner Gemeinde gehoert
+     * aber alles machen darf. Fuer andere Benutzer geben wir die Liste von Gemeinden zurueck, zu denen er gehoert.
+     */
+    private updateGemeindeList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(take(1))
+            .subscribe(
+                gemeinden => {
+                    this.gemeindeList = gemeinden;
+                    this.cd.markForCheck();
+                },
+                err => LOG.error(err),
+            );
+    }
+
+    public editClicked(user: any): void {
+        this.edit.emit({user});
+    }
+
+    public getRollen(): ReadonlyArray<TSRole> {
+        return this.authServiceRS.getVisibleRolesForPrincipal();
+    }
+
+    // /**
+    //  * Provided there is a row with id benutzerHeadRow it will take this row to check how many
+    //  * columns there are. Therefore this row cannot have any colspan inside any cell and any other
+    //  * children but td or th
+    //  */
+    // public getColumnsNumber(): number {
+    //     const element = this.$window.document.getElementById('benutzerHeadRow');
+    //     return element.childElementCount;
+    // }
+
+    public resetSearch(): void {
+
+    }
+
+    public sortData($event: Sort): void {
+        const paginate = new TSPagination();
+        const sort = new MatSort();
+        sort.direction = 'asc';
+        sort.active = 'username';
+        const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
+            paginate,
+            sort,
+            {}
+        );
+        this.benutzerRS.searchUsers(filterDTO).then(res => {
+            this.datasource.data = res.userDTOs;
+            this.totalResultCount = res.totalResultSize;
+        });
+    }
 }
