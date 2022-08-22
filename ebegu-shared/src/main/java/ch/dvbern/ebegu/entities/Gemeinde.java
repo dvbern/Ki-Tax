@@ -116,6 +116,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean besondereVolksschule = false;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean nurLats = false;
+
 	@Nonnull
 	@NotNull
 	@Column(nullable = false)
@@ -204,6 +208,14 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setBesondereVolksschule(boolean besondereVolksschule) {
 		this.besondereVolksschule = besondereVolksschule;
+	}
+
+	public boolean isNurLats() {
+		return nurLats;
+	}
+
+	public void setNurLats(boolean nurLATS) {
+		this.nurLats = nurLATS;
 	}
 
 	@Nonnull

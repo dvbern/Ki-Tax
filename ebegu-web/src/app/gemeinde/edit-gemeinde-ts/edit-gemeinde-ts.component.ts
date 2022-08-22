@@ -20,6 +20,7 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
@@ -102,5 +103,9 @@ export class EditGemeindeComponentTS implements OnInit {
 
     public hideTSList(): void {
         this.showTSList = false;
+    }
+
+    public isNotNurLats(): Observable<boolean> {
+        return this.stammdaten$.pipe(map(stammdaten => stammdaten.gemeinde.nurLats));
     }
 }
