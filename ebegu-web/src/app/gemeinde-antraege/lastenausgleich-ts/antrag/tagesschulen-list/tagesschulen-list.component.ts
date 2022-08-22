@@ -119,8 +119,8 @@ export class TagesschulenListComponent implements OnInit {
                                 return '';
                             }
                             return isOk ?
-                                '<i class="fa fa-check padding-left-60"></i>' :
-                                '<i class="fa fa-close padding-left-60"></i>';
+                                '<i class="fa fa-check padding-left-60 green"></i>' :
+                                '<i class="fa fa-close padding-left-60 red"></i>';
                         },
                     },
                 ];
