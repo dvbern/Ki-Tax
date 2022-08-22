@@ -308,7 +308,6 @@ export const CORE_JS_MODULE = angular
     .component('dvAccordion', new DvAccordionComponentConfig())
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
-    .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
     .component('dvInputContainer', new DvInputContainerComponentConfig())
