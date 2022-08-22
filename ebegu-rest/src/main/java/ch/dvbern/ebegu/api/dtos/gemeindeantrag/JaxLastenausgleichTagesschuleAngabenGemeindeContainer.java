@@ -66,6 +66,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 	@Nullable
 	private JaxBenutzerNoDetails verantwortlicher;
 
+	@Nullable
+	private String bemerkungenBetreuungsstundenPrognose;
+
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
 		return status;
@@ -154,5 +157,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeindeContainer extends JaxAb
 
 	public void setVerantwortlicher(@Nullable JaxBenutzerNoDetails verantwortlicher) {
 		this.verantwortlicher = verantwortlicher;
+	}
+
+	@Nullable
+	public String getBemerkungenBetreuungsstundenPrognose() {
+		return bemerkungenBetreuungsstundenPrognose;
+	}
+
+	public void setBemerkungenBetreuungsstundenPrognose(@Nullable String bemerkungenBetreuungsstundenPrognose) {
+		this.bemerkungenBetreuungsstundenPrognose = bemerkungenBetreuungsstundenPrognose;
 	}
 }

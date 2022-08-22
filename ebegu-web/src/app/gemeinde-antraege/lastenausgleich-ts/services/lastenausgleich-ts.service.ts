@@ -232,10 +232,10 @@ export class LastenausgleichTSService {
         );
     }
 
-    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number): void {
+    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number, bemerkungen: string): void {
         this.http.put(
             `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
-            prognose,
+            {prognose, bemerkungen},
         ).subscribe(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error));
     }
 

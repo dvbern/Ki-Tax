@@ -4858,6 +4858,8 @@ export class EbeguRestUtil {
             gemeindeContainerTS.verantwortlicher =
                 this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeContainerFromServer.verantwortlicher);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
+            gemeindeContainerTS.bemerkungenBetreuungsstundenPrognose =
+                gemeindeContainerFromServer.bemerkungenBetreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
         return undefined;

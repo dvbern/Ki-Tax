@@ -6184,6 +6184,7 @@ public class JaxBConverter extends AbstractConverter {
 			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
 		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
 		jaxGemeindeContainer.setBetreuungsstundenPrognose(gemeindeContainer.getBetreuungsstundenPrognose());
+		jaxGemeindeContainer.setBemerkungenBetreuungsstundenPrognose(gemeindeContainer.getBemerkungenBetreuungsstundenPrognose());
 
 		return jaxGemeindeContainer;
 	}
