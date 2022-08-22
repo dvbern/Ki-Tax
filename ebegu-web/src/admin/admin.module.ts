@@ -20,7 +20,6 @@ import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.component';
-import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
@@ -39,7 +38,6 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .service('FerieninselStammdatenRS', FerieninselStammdatenRS)
     .directive('dvAdminViewX', downgradeComponent({component: AdminViewXComponent}))
     .directive('dvGesuchsperiodeViewX', downgradeComponent({component: GesuchsperiodeViewXComponent}))
-    .component('benutzerListView', new BenutzerListViewComponentConfig())
     .run(adminRun);
 
 export default ADMIN_JS_MODULE;

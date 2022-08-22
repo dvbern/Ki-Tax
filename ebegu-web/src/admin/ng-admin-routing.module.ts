@@ -21,6 +21,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {BenutzerListViewXComponent} from './component/benutzerListView/benutzer-list-view-x.component';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
@@ -77,6 +78,14 @@ const states: Ng2StateDeclaration[] = [
         params: {
             gesuchsperiodeId: '',
         },
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
+    {
+        name: 'admin.benutzerlist',
+        url: '/benutzerlist',
+        component: BenutzerListViewXComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles(),
         },
