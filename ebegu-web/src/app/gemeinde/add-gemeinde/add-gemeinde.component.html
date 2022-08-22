@@ -80,7 +80,7 @@
                                           [(ngModel)]="gemeinde.angebotBG" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
-                            <div class="form-group inner-option" *ngIf="gemeinde.angebotBG">
+                            <div class="form-group {{getCssClassAngebotBGInput()}}" *ngIf="gemeinde.angebotBG">
                                 <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
                                 <input class="dv-mat-datepicker" type="text"
                                        name="begu_start" id="begu_start_ID"
