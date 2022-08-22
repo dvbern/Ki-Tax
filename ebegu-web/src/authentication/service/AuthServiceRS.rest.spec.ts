@@ -87,7 +87,7 @@ describe('AuthServiceRS', () => {
                 email: 'emma.gerber@example.com',
                 role: 'GESUCHSTELLER',
             };
-            const encodedUser = btoa(JSON.stringify(cookieContent).split('_').join(''));
+            const encodedUser = Buffer.from(JSON.stringify(cookieContent).split('_').join('')).toString('base64');
             spyOn($cookies, 'get').and.returnValue(encodedUser);
             $httpBackend.when('GET', '/ebegu/api/v1/auth/authenticated-user').respond(benutzer);
             spyOn(benutzerRS, 'findBenutzerById').and.returnValue($q.when(benutzer) as Promise<TSBenutzer>);
