@@ -72,6 +72,7 @@ describe('LastenausgleichTsKommentarComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
         );
+        benuzerRSSpy.getAllBenutzerMandant.and.returnValue(Promise.resolve([]));
         fixture = TestBed.createComponent(LastenausgleichTsKommentarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
