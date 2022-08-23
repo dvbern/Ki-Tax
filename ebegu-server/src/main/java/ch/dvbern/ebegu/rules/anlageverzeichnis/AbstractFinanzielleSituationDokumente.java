@@ -122,26 +122,33 @@ abstract class AbstractFinanzielleSituationDokumente
 		case STEUERVERANLAGUNG:
 			return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
 		case STEUERERKLAERUNG:
-			return abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten()
+				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 		case JAHRESLOHNAUSWEISE:
 			return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
 		case NACHWEIS_FAMILIENZULAGEN:
-			return abstractFinanzielleSituation.getFamilienzulage() != null &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				abstractFinanzielleSituation.getFamilienzulage() != null &&
 				abstractFinanzielleSituation.getFamilienzulage().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_ERSATZEINKOMMEN:
-			return abstractFinanzielleSituation.getErsatzeinkommen() != null &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				abstractFinanzielleSituation.getErsatzeinkommen() != null &&
 				abstractFinanzielleSituation.getErsatzeinkommen().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_ERHALTENE_ALIMENTE:
-			return abstractFinanzielleSituation.getErhalteneAlimente() != null &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				abstractFinanzielleSituation.getErhalteneAlimente() != null &&
 				abstractFinanzielleSituation.getErhalteneAlimente().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_GELEISTETE_ALIMENTE:
-			return abstractFinanzielleSituation.getGeleisteteAlimente() != null &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				abstractFinanzielleSituation.getGeleisteteAlimente() != null &&
 				abstractFinanzielleSituation.getGeleisteteAlimente().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_VERMOEGEN:
 			// Vermögen muss immer ausgewiesen werden!
-			return !abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 		case NACHWEIS_SCHULDEN:
-			return !abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
+				!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
 				abstractFinanzielleSituation.getSchulden() != null &&
 				abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
 		case ERFOLGSRECHNUNGEN_JAHR:

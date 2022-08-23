@@ -246,7 +246,8 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 
-			return finanzielleSituation.getNettolohn() != null &&
+			return !finanzielleSituation.getSteuerveranlagungErhalten() &&
+				finanzielleSituation.getNettolohn() != null &&
 				finanzielleSituation.getNettolohn().compareTo(BigDecimal.ZERO) > 0;
 		}
 		return false;
@@ -260,11 +261,14 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
 			case 1:
-				return finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null;
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
 			case 2:
-				return finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null;
+				return !finanzielleSituation.getSteuerveranlagungErhalten()
+					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
 			default:
 				return false;
 			}
