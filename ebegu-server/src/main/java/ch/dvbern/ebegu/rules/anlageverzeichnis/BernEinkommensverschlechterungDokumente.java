@@ -198,11 +198,9 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 				(Einkommensverschlechterung) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return !einkommensverschlechterung.getSteuerveranlagungErhalten()
-					&& (einkommensverschlechterung.getGeschaeftsgewinnBasisjahr() != null);
+				return einkommensverschlechterung.getGeschaeftsgewinnBasisjahr() != null;
 			case 1:
-				return !einkommensverschlechterung.getSteuerveranlagungErhalten()
-					&& (einkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1() != null);
+				return einkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1() != null;
 			}
 		}
 		return false;

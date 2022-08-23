@@ -75,11 +75,8 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  **/
 public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
-	private boolean isFKJV = false;
-
 	public BernFinanzielleSituationDokumente(boolean isFKJV) {
-		super();
-		this.isFKJV = isFKJV;
+		super(isFKJV);
 	}
 
 	@Override
@@ -140,7 +137,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
 
-		if (this.isFKJV && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
+		if (this.isFKJV() && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
 			&& finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet()) {
 			add(
 				getDokument(
@@ -188,7 +185,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			anlageVerzeichnis
 		);
 
-		if (this.isFKJV) {
+		if (this.isFKJV()) {
 			add(
 				getDokument(
 					DokumentTyp.NACHWEIS_BRUTTOVERMOEGENERTRAEGE,
@@ -249,8 +246,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 
-			return !finanzielleSituation.getSteuerveranlagungErhalten() &&
-				finanzielleSituation.getNettolohn() != null &&
+			return finanzielleSituation.getNettolohn() != null &&
 				finanzielleSituation.getNettolohn().compareTo(BigDecimal.ZERO) > 0;
 		}
 		return false;
@@ -264,14 +260,11 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return !finanzielleSituation.getSteuerveranlagungErhalten()
-					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null);
+				return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
 			case 1:
-				return !finanzielleSituation.getSteuerveranlagungErhalten()
-					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
+				return finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null;
 			case 2:
-				return !finanzielleSituation.getSteuerveranlagungErhalten()
-					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
+				return finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null;
 			default:
 				return false;
 			}

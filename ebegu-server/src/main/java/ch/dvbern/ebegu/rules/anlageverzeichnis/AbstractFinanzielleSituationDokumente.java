@@ -36,6 +36,16 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 abstract class AbstractFinanzielleSituationDokumente
 	extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> {
 
+	private final boolean isFKJV;
+
+	protected AbstractFinanzielleSituationDokumente(boolean isFKJV) {
+		this.isFKJV = isFKJV;
+	}
+
+	protected AbstractFinanzielleSituationDokumente() {
+		this.isFKJV = false;
+	}
+
 	void getAllDokumenteGesuchsteller(
 		Set<DokumentGrund> anlageVerzeichnis,
 		int basisJahr,
@@ -99,70 +109,70 @@ abstract class AbstractFinanzielleSituationDokumente
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		if (abstractFinanzielleSituation != null) {
-			switch (dokumentTyp) {
-			case STEUERVERANLAGUNG:
-				return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
-			case STEUERERKLAERUNG:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten()
-					&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
-			case JAHRESLOHNAUSWEISE:
-				return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
-			case NACHWEIS_FAMILIENZULAGEN:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					abstractFinanzielleSituation.getFamilienzulage() != null &&
-					abstractFinanzielleSituation.getFamilienzulage().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_ERSATZEINKOMMEN:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					abstractFinanzielleSituation.getErsatzeinkommen() != null &&
-					abstractFinanzielleSituation.getErsatzeinkommen().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_ERHALTENE_ALIMENTE:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					abstractFinanzielleSituation.getErhalteneAlimente() != null &&
-					abstractFinanzielleSituation.getErhalteneAlimente().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_GELEISTETE_ALIMENTE:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					abstractFinanzielleSituation.getGeleisteteAlimente() != null &&
-					abstractFinanzielleSituation.getGeleisteteAlimente().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_VERMOEGEN:
-				// Vermögen muss immer ausgewiesen werden!
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
-			case NACHWEIS_SCHULDEN:
-				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-					!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
-					abstractFinanzielleSituation.getSchulden() != null &&
-					abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
-			case ERFOLGSRECHNUNGEN_JAHR:
-				return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 0);
-			case ERFOLGSRECHNUNGEN_JAHR_MINUS1:
-				return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 1);
-			case ERFOLGSRECHNUNGEN_JAHR_MINUS2:
-				return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 2);
-			case NACHWEIS_LOHNAUSWEIS_1:
-			case NACHWEIS_LOHNAUSWEIS_2:
-			case NACHWEIS_LOHNAUSWEIS_3:
-				return true;
-			case NACHWEIS_EINKOMMEN_VERFAHREN:
-				return abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null &&
-					abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet();
-			case NACHWEIS_BRUTTOVERMOEGENERTRAEGE:
-				return abstractFinanzielleSituation.getBruttoertraegeVermoegen() != null
-					&& abstractFinanzielleSituation.getBruttoertraegeVermoegen().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_GEWINNUNGSKOSTEN:
-				return abstractFinanzielleSituation.getGewinnungskosten() != null
-					&& abstractFinanzielleSituation.getGewinnungskosten().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_SCHULDZINSEN:
-				return abstractFinanzielleSituation.getAbzugSchuldzinsen() != null
-					&& abstractFinanzielleSituation.getAbzugSchuldzinsen().compareTo(BigDecimal.ZERO) > 0;
-			case NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN:
-				return abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft() != null
-					&& abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft().compareTo(BigDecimal.ZERO) > 0;
-			default:
-				return false;
-			}
+		if (abstractFinanzielleSituation == null) {
+			return false;
 		}
-		return false;
+
+		if (this.isFKJV && abstractFinanzielleSituation.getSteuerveranlagungErhalten()) {
+			// Wenn Steuerveranlagung hochgeladen wird, werden keine anderen FinSit Dokumente verlangt (glit für FKJV)
+			return dokumentTyp == DokumentTyp.STEUERVERANLAGUNG;
+		}
+
+		switch (dokumentTyp) {
+		case STEUERVERANLAGUNG:
+			return abstractFinanzielleSituation.getSteuerveranlagungErhalten();
+		case STEUERERKLAERUNG:
+			return abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+		case JAHRESLOHNAUSWEISE:
+			return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
+		case NACHWEIS_FAMILIENZULAGEN:
+			return abstractFinanzielleSituation.getFamilienzulage() != null &&
+				abstractFinanzielleSituation.getFamilienzulage().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_ERSATZEINKOMMEN:
+			return abstractFinanzielleSituation.getErsatzeinkommen() != null &&
+				abstractFinanzielleSituation.getErsatzeinkommen().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_ERHALTENE_ALIMENTE:
+			return abstractFinanzielleSituation.getErhalteneAlimente() != null &&
+				abstractFinanzielleSituation.getErhalteneAlimente().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_GELEISTETE_ALIMENTE:
+			return abstractFinanzielleSituation.getGeleisteteAlimente() != null &&
+				abstractFinanzielleSituation.getGeleisteteAlimente().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_VERMOEGEN:
+			// Vermögen muss immer ausgewiesen werden!
+			return !abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+		case NACHWEIS_SCHULDEN:
+			return !abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
+				abstractFinanzielleSituation.getSchulden() != null &&
+				abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
+		case ERFOLGSRECHNUNGEN_JAHR:
+			return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 0);
+		case ERFOLGSRECHNUNGEN_JAHR_MINUS1:
+			return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 1);
+		case ERFOLGSRECHNUNGEN_JAHR_MINUS2:
+			return isErfolgsrechnungNeeded(abstractFinanzielleSituation, 2);
+		case NACHWEIS_LOHNAUSWEIS_1:
+		case NACHWEIS_LOHNAUSWEIS_2:
+		case NACHWEIS_LOHNAUSWEIS_3:
+			return true;
+		case NACHWEIS_EINKOMMEN_VERFAHREN:
+			return abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null &&
+				abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet();
+		case NACHWEIS_BRUTTOVERMOEGENERTRAEGE:
+			return abstractFinanzielleSituation.getBruttoertraegeVermoegen() != null
+				&& abstractFinanzielleSituation.getBruttoertraegeVermoegen().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_GEWINNUNGSKOSTEN:
+			return abstractFinanzielleSituation.getGewinnungskosten() != null
+				&& abstractFinanzielleSituation.getGewinnungskosten().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_SCHULDZINSEN:
+			return abstractFinanzielleSituation.getAbzugSchuldzinsen() != null
+				&& abstractFinanzielleSituation.getAbzugSchuldzinsen().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN:
+			return abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft() != null
+				&& abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft().compareTo(BigDecimal.ZERO) > 0;
+		default:
+			return false;
+		}
+
 	}
 
 	protected abstract boolean isJahresLohnausweisNeeded(
@@ -170,4 +180,8 @@ abstract class AbstractFinanzielleSituationDokumente
 
 	protected abstract boolean isErfolgsrechnungNeeded(
 		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
+
+	protected boolean isFKJV() {
+		return isFKJV;
+	}
 }
