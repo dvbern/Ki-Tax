@@ -18,13 +18,10 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -211,7 +208,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
-	public void testGueltigkeitNotFullMonth() {
+	public void testGueltigkeitNotFullMonth() { //Test Saeugling1 gemäss Excel
 		TestValues testValues = new TestValues();
 		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(2080);
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(80);
@@ -220,11 +217,11 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.isBaby = true;
 		testValues.gueltigkeit = dateRangePartFebruary; //Anteil am Monat = 67.857%
 
-		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1411.45);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1411.45);
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(2080);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(1571.75);
 		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(1571.75);
-		testValues.expectedVerguenstigung = BigDecimal.valueOf(1244.5);
-		testValues.expectedElternbeitrag = BigDecimal.valueOf(327.25);
+		testValues.expectedVerguenstigung = BigDecimal.valueOf(1571.75);
+		testValues.expectedElternbeitrag = BigDecimal.valueOf(0);
 		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(166.95);
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(11.13);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(11.13);
@@ -282,35 +279,6 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(6.15);
 		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(10.25);
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(6.15);
-
-		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
-		rechner.calculate(zeitabschnitt, defaultParameterDTO);
-
-		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
-	}
-
-	@Test
-	public void unterMonatlicheZitabschnitteTest() {
-		TestValues testValues = new TestValues();
-		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
-		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(30);
-		testValues.anspruchsPensum = 50;
-		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(40000);
-		testValues.isBaby = false;
-		testValues.gueltigkeit = new DateRange(
-			LocalDate.of(2020, Month.AUGUST, 1),
-			LocalDate.of(2020, Month.AUGUST, 15)); //48.38% des Monats
-
-		//testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(825.76);
-		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(774.20);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(342.2);
-		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(342.2);
-		testValues.expectedVerguenstigung = BigDecimal.valueOf(342.2);
-		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(44.65);
-		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(2.98);
-		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(4.96);
-		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(2.98);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		KitaLuzernRechner rechner = new KitaLuzernRechner();
