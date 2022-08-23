@@ -116,7 +116,10 @@ export class BenutzerRSX {
     }
 
     public searchUsers(userSearch: TSBenutzerTableFilterDTO): Promise<TSUserSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/search/`, userSearch.toSmartTableDTO()).pipe(map((response: any) => {
+        return this.$http.post(
+            `${this.serviceURL}/search/`,
+            this.ebeguRestUtil.benutzerTableFilterDTOToRestObject(userSearch)
+        ).pipe(map((response: any) => {
             this.LOG.debug('PARSING benutzer REST array object', response);
             const tsBenutzers = this.ebeguRestUtil.parseUserList(response.benutzerDTOs);
 

@@ -31,7 +31,7 @@
         </div>
 
         <div class="mat-elevation-z0">
-            <mat-table [dataSource]="datasource" matSort (matSortChange)="sortData($event)">
+            <mat-table [dataSource]="datasource" matSort (matSortChange)="sortChange($event)">
 
                 <ng-container matColumnDef="username">
                     <mat-header-cell mat-sort-header="username" *matHeaderCellDef class="ellipsis">
@@ -69,8 +69,8 @@
                     </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="rolle">
-                    <mat-header-cell mat-sort-header="rolle" *matHeaderCellDef class="ellipsis">
+                <ng-container matColumnDef="role">
+                    <mat-header-cell mat-sort-header="role" *matHeaderCellDef class="ellipsis">
                         <span class="no-padding-left" translate>ROLLE</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
@@ -175,7 +175,7 @@
                 <ng-container matColumnDef="name-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-name-mat-form-field">
-                            <input [value]="filterPredicate.name || null" matInput (keyup)="applyFilter($event.target.value, 'name')">
+                            <input [value]="filterPredicate.nachname || null" matInput (keyup)="applyFilter($event.target.value, 'nachname')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -188,15 +188,15 @@
                     </mat-header-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="rolle-filter">
+                <ng-container matColumnDef="role-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-username-mat-form-field" floatLabel="never">
                             <div class="select-background"></div>
                             <mat-label translate>ALLE</mat-label>
-                            <mat-select [value]="filterPredicate.rolle" (selectionChange)="applyFilter($event.value, 'rolle')" panelClass="mat-select-panel1">
+                            <mat-select [value]="filterPredicate.role" (selectionChange)="applyFilter($event.value, 'role')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
-                                <mat-option *ngFor="let r of getRollen()"
-                                            [value]="'TSRole_' + r | translate"><span>{{'TSRole_' + r | translate}}</span></mat-option>
+                                <mat-option *ngFor="let r of getRoles()"
+                                            [value]="r"><span>{{'TSRole_' + r | translate}}</span></mat-option>
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>
@@ -282,7 +282,7 @@
                             <mat-select [value]="filterPredicate.status" (selectionChange)="applyFilter($event.value, 'status')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let s of benutzerStatuses"
-                                            [value]="'BENUTZER_STATUS_' + s | translate"><span>{{'BENUTZER_STATUS_' + s | translate}}</span></mat-option>
+                                            [value]="s"><span>{{'BENUTZER_STATUS_' + s | translate}}</span></mat-option>
                             </mat-select>
                         </mat-form-field>
                     </mat-header-cell>

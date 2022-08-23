@@ -16,14 +16,15 @@
  */
 
 import {MatSort} from '@angular/material/sort';
+import {BenutzerListFilter} from '../../app/core/component/dv-benutzer-list/BenutzerListFilter';
 import {TSPagination} from './TSPagination';
 
 export class TSBenutzerTableFilterDTO {
     private _pagination: TSPagination;
     private _sort: MatSort;
-    private _search: TSBenutzerTableFilterSearchDTO;
+    private _search: BenutzerListFilter;
 
-    public constructor(pagination: TSPagination, sort: MatSort, search: TSBenutzerTableFilterSearchDTO) {
+    public constructor(pagination: TSPagination, sort: MatSort, search: BenutzerListFilter) {
         this._pagination = pagination;
         this._sort = sort;
         this._search = search;
@@ -45,38 +46,11 @@ export class TSBenutzerTableFilterDTO {
         this._sort = value;
     }
 
-    public get search(): TSBenutzerTableFilterSearchDTO {
+    public get search(): BenutzerListFilter {
         return this._search;
     }
 
-    public set search(value: TSBenutzerTableFilterSearchDTO) {
+    public set search(value: BenutzerListFilter) {
         this._search = value;
     }
-
-    public toSmartTableDTO(): any {
-        return {
-            pagination: this._pagination.toPaginationDTO(),
-            search: {
-                predicateObject: this._search
-            },
-            sort: {
-                predicate: this._sort.active,
-                reverse: this._sort.direction === 'desc'
-            }
-        };
-    }
-}
-
-export interface TSBenutzerTableFilterSearchDTO {
-    username?: string;
-    vorname?: string;
-    nachname?: string;
-    email?: string;
-    role?: string;
-    roleGueltigBis?: string;
-    gemeinde?: string;
-    institution?: string;
-    traegerschaft?: string;
-    sozialdienst?: string;
-    status?: string;
 }

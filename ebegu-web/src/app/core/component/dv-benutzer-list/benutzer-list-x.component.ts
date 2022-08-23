@@ -24,7 +24,7 @@ import {
     OnInit,
     Output
 } from '@angular/core';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -80,14 +80,15 @@ export class BenutzerListXComponent implements OnInit {
 
     public datasource: MatTableDataSource<TSBenutzer>;
 
-    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'rolle',
+    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'role',
         'roleGueltigAb', 'roleGueltigBis'];
     public filterColumns: string[] = ['username-filter', 'vorname-filter', 'name-filter',
-        'email-filter', 'rolle-filter', 'roleGueltigAb-filter', 'roleGueltigBis-filter'];
+        'email-filter', 'role-filter', 'roleGueltigAb-filter', 'roleGueltigBis-filter'];
 
     public gemeindenStr: string;
 
-    public filterPredicate: BenutzerListFilter = {};
+    public filterPredicate: BenutzerListFilter = new BenutzerListFilter();
+    public sort: MatSort = new MatSort();
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -121,7 +122,7 @@ export class BenutzerListXComponent implements OnInit {
 
     private initDataSource(): void {
         this.datasource = new MatTableDataSource<TSBenutzer>([]);
-        this.sortData({} as any);
+        this.searchUsers();
     }
 
     private updateInstitutionenList(): void {
@@ -173,7 +174,7 @@ export class BenutzerListXComponent implements OnInit {
         this.edit.emit({user});
     }
 
-    public getRollen(): ReadonlyArray<TSRole> {
+    public getRoles(): ReadonlyArray<TSRole> {
         return this.authServiceRS.getVisibleRolesForPrincipal();
     }
 
@@ -191,13 +192,12 @@ export class BenutzerListXComponent implements OnInit {
 
     }
 
-    public sortData($event: MatSort): void {
+    public searchUsers(): void {
         const paginate = new TSPagination();
-        const sort = $event;
         const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
             paginate,
-            sort,
-            {}
+            this.sort,
+            this.filterPredicate
         );
         this.benutzerRS.searchUsers(filterDTO).then(res => {
             this.datasource.data = res.userDTOs;
@@ -205,7 +205,14 @@ export class BenutzerListXComponent implements OnInit {
         });
     }
 
-    public applyFilter(value: any, property: string) {
+    public applyFilter(value: any, property: string): void {
+        // @ts-ignore
+        this.filterPredicate[property] = value ? value : undefined;
+        this.searchUsers();
+    }
 
+    public sortChange($event: Sort): void {
+        this.sort = $event as MatSort;
+        this.searchUsers();
     }
 }

@@ -1180,6 +1180,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 					return new ImmutablePair<>(0L, Collections.emptyList());
 				}
 			}
+			// roleGueltigAb
+			if (predicateObjectDto.getRoleGueltigAb() != null) {
+				try {
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getRoleGueltigAb(), Constants.DATE_FORMATTER);
+					predicates.add(cb.equal(currentBerechtigungJoin.get(AbstractDateRangedEntity_.gueltigkeit)
+						.get(DateRange_.gueltigAb), searchDate));
+				} catch (DateTimeParseException e) {
+					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
+					return new ImmutablePair<>(0L, Collections.emptyList());
+				}
+			}
 			// gemeinde
 			if (predicateObjectDto.getGemeinde() != null) {
 				predicates.add(cb.equal(gemeindeSetJoin.get(Gemeinde_.name), predicateObjectDto.getGemeinde()));
