@@ -31,6 +31,7 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSBenutzerTableFilterDTO} from '../../../../models/dto/TSBenutzerTableFilterDTO';
 import {TSPagination} from '../../../../models/dto/TSPagination';
+import {TSBenutzerStatus} from '../../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
@@ -43,6 +44,7 @@ import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../service/traegerschaftRS.rest';
+import {BenutzerListFilter} from './BenutzerListFilter';
 
 const LOG = LogFactory.createLog('BenutzerListXComponent');
 
@@ -74,11 +76,18 @@ export class BenutzerListXComponent implements OnInit {
     public gemeindeList: Array<TSGemeinde>;
     public sozialdienstList: Array<TSSozialdienst>;
 
+    public readonly benutzerStatuses = Object.values(TSBenutzerStatus);
+
     public datasource: MatTableDataSource<TSBenutzer>;
 
-    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'rolle', 'roleGueltigAb', 'roleGueltigBis'];
+    public displayedColumns: string[] = ['username', 'vorname', 'name', 'email', 'rolle',
+        'roleGueltigAb', 'roleGueltigBis'];
+    public filterColumns: string[] = ['username-filter', 'vorname-filter', 'name-filter',
+        'email-filter', 'rolle-filter', 'roleGueltigAb-filter', 'roleGueltigBis-filter'];
 
     public gemeindenStr: string;
+
+    public filterPredicate: BenutzerListFilter = {};
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -97,12 +106,16 @@ export class BenutzerListXComponent implements OnInit {
             this.updateInstitutionenList();
             this.updateGemeindeList();
             this.displayedColumns.push('gemeinde', 'institution');
+            this.filterColumns.push('gemeinde-filter', 'institution-filter');
         }
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
             this.updateTraegerschaftenList();
             this.updateSozialdienstList();
             this.displayedColumns.push('sozialdienst', 'traegerschaft');
+            this.filterColumns.push('sozialdienst-filter', 'traegerschaft-filter');
         }
+        this.displayedColumns.push('status');
+        this.filterColumns.push('status-filter');
         this.initDataSource();
     }
 
@@ -190,5 +203,9 @@ export class BenutzerListXComponent implements OnInit {
             this.datasource.data = res.userDTOs;
             this.totalResultCount = res.totalResultSize;
         });
+    }
+
+    public applyFilter(value: any, property: string) {
+
     }
 }
