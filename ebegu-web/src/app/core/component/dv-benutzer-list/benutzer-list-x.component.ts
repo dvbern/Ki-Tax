@@ -87,6 +87,7 @@ export class BenutzerListXComponent implements OnInit {
 
     public gemeindenStr: string;
 
+    public paginate: TSPagination = new TSPagination();
     public filterPredicate: BenutzerListFilter = new BenutzerListFilter();
     public sort: MatSort = new MatSort();
 
@@ -102,6 +103,7 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.initFilterSortPaginate();
         // listen sind geladen nur wenn benoetigt
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
             this.updateInstitutionenList();
@@ -118,6 +120,12 @@ export class BenutzerListXComponent implements OnInit {
         this.displayedColumns.push('status');
         this.filterColumns.push('status-filter');
         this.initDataSource();
+    }
+
+    private initFilterSortPaginate(): void {
+        this.paginate = new TSPagination();
+        this.filterPredicate = new BenutzerListFilter();
+        this.sort = new MatSort();
     }
 
     private initDataSource(): void {
@@ -178,24 +186,14 @@ export class BenutzerListXComponent implements OnInit {
         return this.authServiceRS.getVisibleRolesForPrincipal();
     }
 
-    // /**
-    //  * Provided there is a row with id benutzerHeadRow it will take this row to check how many
-    //  * columns there are. Therefore this row cannot have any colspan inside any cell and any other
-    //  * children but td or th
-    //  */
-    // public getColumnsNumber(): number {
-    //     const element = this.$window.document.getElementById('benutzerHeadRow');
-    //     return element.childElementCount;
-    // }
-
     public resetSearch(): void {
-
+        this.initFilterSortPaginate();
+        this.searchUsers();
     }
 
     public searchUsers(): void {
-        const paginate = new TSPagination();
         const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
-            paginate,
+            this.paginate,
             this.sort,
             this.filterPredicate
         );
