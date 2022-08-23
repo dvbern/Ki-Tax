@@ -159,7 +159,7 @@
                 <ng-container matColumnDef="username-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-username-mat-form-field">
-                            <input [value]="filterPredicate.username || null" matInput (keyup)="applyFilter($event.target.value, 'username')">
+                            <input [value]="filterPredicate.username || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'username')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -167,7 +167,7 @@
                 <ng-container matColumnDef="vorname-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-vorname-mat-form-field">
-                            <input [value]="filterPredicate.vorname || null" matInput (keyup)="applyFilter($event.target.value, 'vorname')">
+                            <input [value]="filterPredicate.vorname || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'vorname')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -175,7 +175,7 @@
                 <ng-container matColumnDef="name-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-name-mat-form-field">
-                            <input [value]="filterPredicate.nachname || null" matInput (keyup)="applyFilter($event.target.value, 'nachname')">
+                            <input [value]="filterPredicate.nachname || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'nachname')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -183,7 +183,7 @@
                 <ng-container matColumnDef="email-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-email-mat-form-field">
-                            <input [value]="filterPredicate.email || null" matInput (keyup)="applyFilter($event.target.value, 'email')">
+                            <input [value]="filterPredicate.email || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'email')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -205,7 +205,7 @@
                 <ng-container matColumnDef="roleGueltigAb-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-roleGueltigAb-mat-form-field">
-                            <input [value]="filterPredicate.roleGueltigAb || null" matInput (keyup)="applyFilter($event.target.value, 'roleGueltigAb')">
+                            <input [value]="filterPredicate.roleGueltigAb || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'roleGueltigAb')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>
@@ -213,7 +213,7 @@
                 <ng-container matColumnDef="roleGueltigBis-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-roleGueltigAb-mat-form-field">
-                            <input [value]="filterPredicate.roleGueltigBis || null" matInput (keyup)="applyFilter($event.target.value, 'roleGueltigBis')">
+                            <input [value]="filterPredicate.roleGueltigBis || null" matInput (keyup)="applyFilterWithDebounce($event.target.value, 'roleGueltigBis')">
                         </mat-form-field>
                     </mat-header-cell>
                 </ng-container>

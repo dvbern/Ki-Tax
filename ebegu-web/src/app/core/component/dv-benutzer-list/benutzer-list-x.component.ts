@@ -39,6 +39,7 @@ import {TSGemeinde} from '../../../../models/TSGemeinde';
 import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {CONSTANTS} from '../../constants/CONSTANTS';
 import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -90,6 +91,13 @@ export class BenutzerListXComponent implements OnInit {
     public paginate: TSPagination = new TSPagination();
     public filterPredicate: BenutzerListFilter = new BenutzerListFilter();
     public sort: MatSort = new MatSort();
+
+    /**
+     * Filter change should not be triggered when user is still typing. Filter change is triggered
+     * after user stopped typing for timeoutMS milliseconds
+     */
+    private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = CONSTANTS.KEYUP_TIMEOUT;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -207,6 +215,16 @@ export class BenutzerListXComponent implements OnInit {
         // @ts-ignore
         this.filterPredicate[property] = value ? value : undefined;
         this.searchUsers();
+    }
+
+    // für textinputs wollen wir nicht bei jedem KeyUp Event einen Request senden. Wir fügen ein Debounce hinzu
+    public applyFilterWithDebounce(value: any, property: string): void {
+        // @ts-ignore
+        this.filterPredicate[property] = value ? value : undefined;
+        clearTimeout(this.keyupTimeout);
+        this.keyupTimeout = setTimeout(() => {
+            this.searchUsers();
+        }, this.timeoutMS);
     }
 
     public sortChange($event: Sort): void {
