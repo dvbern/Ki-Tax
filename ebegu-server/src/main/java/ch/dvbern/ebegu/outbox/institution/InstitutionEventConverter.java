@@ -145,7 +145,8 @@ public class InstitutionEventConverter {
 			.setAltersKategorien(getAltersKategorien(bgStammdaten))
 			.setSubventioniertePlaetze(bgStammdaten.getSubventioniertePlaetze())
 			.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
-			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()));
+			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()))
+			.setAuslastungPct(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAuslastungInstitutionen()));
 	}
 
 	@Nonnull
