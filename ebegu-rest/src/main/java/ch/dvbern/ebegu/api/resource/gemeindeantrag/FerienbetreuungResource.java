@@ -181,7 +181,7 @@ public class FerienbetreuungResource {
 		response = Void.class)
 	@PUT
 	@Path("/saveVerantworlicher/{containerId}")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.WILDCARD)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void saveVerantworlicher(
 		@Nullable String username,

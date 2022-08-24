@@ -54,7 +54,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
@@ -339,7 +338,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		Benutzer verantwortlicher = null;
 
-		if (username != null) {
+		if (username != null && !username.equals("")) {
 			verantwortlicher = benutzerService.findBenutzer(username, ferienbetreuungAngabenContainer.getGemeinde().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"saveVerantwortlicher",
