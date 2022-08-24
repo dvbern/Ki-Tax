@@ -44,6 +44,7 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
 
 @NgModule({
     imports: [
+
         BrowserModule,
         NoopAnimationsModule, // we don't want material animations in the project yet
         UpgradeModule,
