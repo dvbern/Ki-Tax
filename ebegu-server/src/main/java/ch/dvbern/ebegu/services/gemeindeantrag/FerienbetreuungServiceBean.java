@@ -338,7 +338,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 		Benutzer verantwortlicher = null;
 
-		if (username != null && !username.equals("")) {
+		if (username != null && !username.isEmpty()) {
 			verantwortlicher = benutzerService.findBenutzer(username, ferienbetreuungAngabenContainer.getGemeinde().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"saveVerantwortlicher",
