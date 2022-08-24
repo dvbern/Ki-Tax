@@ -99,29 +99,30 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Nonnull
 	@Override
 	public List<GemeindeKennzahlen> createGemeindeKennzahlen(
-			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gemeinde> gemeindeList) {
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gemeinde> gemeindeList) {
 		return gemeindeList
-				.stream()
-				.filter(gemeinde -> !antragAlreadyExisting(gemeinde, gesuchsperiode))
-				.map(gemeinde -> {
-					GemeindeKennzahlen gemeindeKennzahlen = new GemeindeKennzahlen();
-					gemeindeKennzahlen.setGemeinde(gemeinde);
-					gemeindeKennzahlen.setGesuchsperiode(gesuchsperiode);
-					gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE);
-					return persistence.persist(gemeindeKennzahlen);
-				}).collect(Collectors.toList());
+			.stream()
+			.filter(gemeinde -> !antragAlreadyExisting(gemeinde, gesuchsperiode))
+			.map(gemeinde -> {
+				GemeindeKennzahlen gemeindeKennzahlen = new GemeindeKennzahlen();
+				gemeindeKennzahlen.setGemeinde(gemeinde);
+				gemeindeKennzahlen.setGesuchsperiode(gesuchsperiode);
+				gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE);
+				return persistence.persist(gemeindeKennzahlen);
+			}).collect(Collectors.toList());
 	}
 
 	private boolean antragAlreadyExisting(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode) {
-		boolean hasAntrag = !getGemeindeKennzahlen(gemeinde.getName(),
-				gesuchsperiode.getGesuchsperiodeString(),
-				null,
-				null).isEmpty();
+		boolean hasAntrag = !getGemeindeKennzahlen(
+			gemeinde.getName(),
+			gesuchsperiode.getGesuchsperiodeString(),
+			null,
+			null).isEmpty();
 		if (hasAntrag) {
 			LOG.info(
-					"Gemeinde {} already has an antrag in GS {}",
-					gemeinde.getName(),
-					gesuchsperiode.getGesuchsperiodeString());
+				"Gemeinde {} already has an antrag in GS {}",
+				gemeinde.getName(),
+				gesuchsperiode.getGesuchsperiodeString());
 		}
 		return hasAntrag;
 	}
@@ -145,7 +146,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 
 	@Override
 	public void deleteAntragIfExistsAndIsNotAbgeschlossen(
-			@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 
 		if (!principal.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles())) {
 			throw new EbeguRuntimeException(
@@ -153,7 +154,8 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
 		}
 
-		var antragList = this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		var antragList =
+			this.getGemeindeKennzahlen(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
 		if (antragList.size() > 1) {
 			throw new EbeguRuntimeException(
 				"deleteAntragIfExistsAndIsNotAbgeschlossen",
@@ -170,58 +172,68 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			return;
 		}
 		persistence.remove(gemeindeKennzahlen);
-		if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlen.getGemeinde().getMandant())) {
-			event.fire(gemeindeKennzahlenEventConverter.removeEventOf(gemeindeKennzahlen));
-		}
+
+		event.fire(gemeindeKennzahlenEventConverter.removeEventOf(gemeindeKennzahlen));
+
 		LOG.warn(
-				"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
-				gemeindeKennzahlen.getGemeinde().getName(),
-				gemeindeKennzahlen.getGesuchsperiode().getGesuchsperiodeString());
+			"Removed GemeindeKennzahlen for Gemeinde {} in GS {}",
+			gemeindeKennzahlen.getGemeinde().getName(),
+			gemeindeKennzahlen.getGesuchsperiode().getGesuchsperiodeString());
 	}
 
 	@Nonnull
 	@Override
 	public GemeindeKennzahlen saveGemeindeKennzahlen(
-			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
 		GemeindeKennzahlen gemeindeKennzahlenPersisted = persistence.merge(gemeindeKennzahlen);
-		if (applicationPropertyService.isDashboardEventsAktiviert(gemeindeKennzahlenPersisted.getGemeinde().getMandant())) {
-			Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
-				.getGemeindeEinstellungenOnlyAsMap(gemeindeKennzahlenPersisted.getGemeinde(), gemeindeKennzahlenPersisted.getGesuchsperiode());
+		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
+			.getGemeindeEinstellungenOnlyAsMap(
+				gemeindeKennzahlenPersisted.getGemeinde(),
+				gemeindeKennzahlenPersisted.getGesuchsperiode());
 
-			Einstellung einstellungBgAusstellenBisStufe = gemeindeKonfigurationMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
-			EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+		Einstellung einstellungBgAusstellenBisStufe =
+			gemeindeKonfigurationMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
+		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 
-			Einstellung einstellungErwerbspensumZuschlag = gemeindeKonfigurationMap.get(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG);
+		Einstellung einstellungErwerbspensumZuschlag =
+			gemeindeKonfigurationMap.get(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG);
+		event.fire(gemeindeKennzahlenEventConverter.of(
+			gemeindeKennzahlenPersisted,
+			bgAusstellenBisUndMitStufe,
+			einstellungErwerbspensumZuschlag.getValueAsBigDecimal()));
 
-			event.fire(gemeindeKennzahlenEventConverter.of(gemeindeKennzahlenPersisted, bgAusstellenBisUndMitStufe, einstellungErwerbspensumZuschlag.getValueAsBigDecimal()));
-		}
 		return gemeindeKennzahlenPersisted;
 	}
 
 	@Nonnull
 	@Override
 	public GemeindeKennzahlen gemeindeKennzahlenAbschliessen(
-			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
 		checkRequiredFieldsNotNull(gemeindeKennzahlen);
 		gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.ABGESCHLOSSEN);
 		return persistence.merge(gemeindeKennzahlen);
 	}
 
 	private void checkRequiredFieldsNotNull(GemeindeKennzahlen gemeindeKennzahlen) {
-		Preconditions.checkState(gemeindeKennzahlen.getGemeindeKontingentiert() != null, "gemeindeKontingentiert must not be null");
+		Preconditions.checkState(
+			gemeindeKennzahlen.getGemeindeKontingentiert() != null,
+			"gemeindeKontingentiert must not be null");
 		if (gemeindeKennzahlen.getGemeindeKontingentiert()) {
 			Preconditions.checkState(
-					gemeindeKennzahlen.getNachfrageErfuellt() != null,
-					"nachfrageErfuellt must not be null");
-			Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
-			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
+				gemeindeKennzahlen.getNachfrageErfuellt() != null,
+				"nachfrageErfuellt must not be null");
+			Preconditions.checkState(
+				gemeindeKennzahlen.getNachfrageAnzahl() != null,
+				"nachfrageAnzahl must not be null");
+			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be "
+				+ "null");
 		}
 	}
 
 	@Nonnull
 	@Override
 	public GemeindeKennzahlen gemeindeKennzahlenZurueckAnGemeinde(
-			@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
+		@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
 		gemeindeKennzahlen.setStatus(GemeindeKennzahlenStatus.IN_BEARBEITUNG_GEMEINDE);
 		return persistence.merge(gemeindeKennzahlen);
 	}
@@ -229,10 +241,10 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Nonnull
 	@Override
 	public List<GemeindeKennzahlen> getGemeindeKennzahlen(
-			@Nullable String gemeinde,
-			@Nullable String gesuchsperiode,
-			@Nullable String status,
-			@Nullable String timestampMutiert) {
+		@Nullable String gemeinde,
+		@Nullable String gesuchsperiode,
+		@Nullable String status,
+		@Nullable String timestampMutiert) {
 
 		Mandant mandant = principal.getMandant();
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
@@ -249,11 +261,11 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		predicates.add(mandantPredicate);
 
 		if (!principal.isCallerInAnyOfRole(
-				UserRole.SUPER_ADMIN,
-				UserRole.ADMIN_MANDANT,
-				UserRole.SACHBEARBEITER_MANDANT)) {
+			UserRole.SUPER_ADMIN,
+			UserRole.ADMIN_MANDANT,
+			UserRole.SACHBEARBEITER_MANDANT)) {
 			Predicate gemeindeIn =
-					root.get(GemeindeKennzahlen_.gemeinde).in(gemeinden);
+				root.get(GemeindeKennzahlen_.gemeinde).in(gemeinden);
 			predicates.add(gemeindeIn);
 		}
 
@@ -262,7 +274,8 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		}
 
 		if (gesuchsperiode != null) {
-			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+			predicates.add(PredicateHelper.getPredicateFilterGesuchsperiode(
+				cb,
 				root.join(GemeindeKennzahlen_.gesuchsperiode, JoinType.INNER),
 				gesuchsperiode));
 		}
@@ -285,32 +298,32 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	}
 
 	private Predicate createGemeindePredicate(
-			CriteriaBuilder cb,
-			Root<GemeindeKennzahlen> root,
-			String gemeinde) {
+		CriteriaBuilder cb,
+		Root<GemeindeKennzahlen> root,
+		String gemeinde) {
 		return cb.equal(
-				root.get(GemeindeKennzahlen_.gemeinde).get(Gemeinde_.name),
-				gemeinde
+			root.get(GemeindeKennzahlen_.gemeinde).get(Gemeinde_.name),
+			gemeinde
 		);
 	}
 
 	private Predicate createStatusPredicate(CriteriaBuilder cb, Root<GemeindeKennzahlen> root, String status) {
 		return cb.equal(
-				root.get(GemeindeKennzahlen_.status),
-				GemeindeKennzahlenStatus.valueOf(status)
+			root.get(GemeindeKennzahlen_.status),
+			GemeindeKennzahlenStatus.valueOf(status)
 		);
 	}
 
 	private Predicate createTimestampMutiertPredicate(
-			CriteriaBuilder cb,
-			Root<GemeindeKennzahlen> root,
-			String timestampMutiert) {
+		CriteriaBuilder cb,
+		Root<GemeindeKennzahlen> root,
+		String timestampMutiert) {
 
 		Predicate timestampMutiertPredicate;
 		try {
 			// Wir wollen ohne Zeit vergleichen
 			Expression<LocalDate> timestampAsLocalDate =
-					root.get(GemeindeKennzahlen_.timestampMutiert).as(LocalDate.class);
+				root.get(GemeindeKennzahlen_.timestampMutiert).as(LocalDate.class);
 			LocalDate searchDate = LocalDate.parse(timestampMutiert, Constants.DATE_FORMATTER);
 			timestampMutiertPredicate = cb.equal(timestampAsLocalDate, searchDate);
 		} catch (DateTimeParseException e) {
@@ -323,7 +336,7 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	@Override
 	public void deleteGemeindeKennzahlenForGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		getGemeindeKennzahlen(null, gesuchsperiode.getGesuchsperiodeString(), null, null)
-				.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
+			.forEach(this::deleteGemeindeKennzahlenIfNotAbgeschlossen);
 	}
 }
 

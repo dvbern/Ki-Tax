@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.kibon.exchange.commons.gemeinde.GemeindeEventDTO;
 import ch.dvbern.kibon.exchange.commons.gemeinde.GemeindeEventDTO.Builder;
+import ch.dvbern.kibon.exchange.commons.types.Mandant;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 @ApplicationScoped
@@ -49,7 +50,8 @@ public class GemeindeEventConverter {
 			.setName(gemeinde.getName())
 			.setBfsNummer(gemeinde.getBfsNummer())
 			.setBetreuungsgutscheineAnbietenAb(gemeinde.getBetreuungsgutscheineStartdatum())
-			.setGueltigBis(gemeinde.getGueltigBis());
+			.setGueltigBis(gemeinde.getGueltigBis())
+			.setMandant(Mandant.valueOf(gemeinde.getMandant().getMandantIdentifier().name()));
 		return builder.build();
 	}
 }

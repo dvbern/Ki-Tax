@@ -106,9 +106,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Inject
 	private GemeindeEventConverter gemeindeEventConverter;
 
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
 	@Nonnull
 	@Override
 	public Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde) {
@@ -738,8 +735,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Override
 	public void fireGemeindeChangedEvent(@Nonnull Gemeinde gemeinde) {
-		if (applicationPropertyService.isDashboardEventsAktiviert(gemeinde.getMandant())) {
 			event.fire(gemeindeEventConverter.of(gemeinde));
-		}
 	}
 }

@@ -130,11 +130,4 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant);
-
-	/**
-	 * Wenn TRUE sind die schnittstelle events publisht
-	 */
-	@Nonnull
-	Boolean isDashboardEventsAktiviert(@Nonnull Mandant mandant);
-
 }
