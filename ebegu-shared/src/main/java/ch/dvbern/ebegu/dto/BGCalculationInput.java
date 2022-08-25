@@ -80,7 +80,9 @@ public class BGCalculationInput {
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
 	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht: OHNE erweiterteBetreuung
 	// Aber auch bei langer Abwesenheit!
-	private boolean bezahltVollkosten;
+	// Anteil am Monat, bei welchem die Eltern die gesamen Vollkosten bezahlen müssen (1 = 100%)
+	 @Nonnull
+	private BigDecimal bezahltVollkostenMonatAnteil = BigDecimal.ZERO;
 
 	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht (alle egal ob erweiterteBetreuung)
 	private boolean keinAnspruchAufgrundEinkommen;
@@ -205,7 +207,7 @@ public class BGCalculationInput {
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
-		this.bezahltVollkosten = toCopy.bezahltVollkosten;
+		this.bezahltVollkostenMonatAnteil = toCopy.bezahltVollkostenMonatAnteil;
 		this.keinAnspruchAufgrundEinkommen = toCopy.keinAnspruchAufgrundEinkommen;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
@@ -346,12 +348,20 @@ public class BGCalculationInput {
 		this.hasSecondGesuchstellerForFinanzielleSituation = hasSecondGesuchstellerForFinanzielleSituation;
 	}
 
+	// Gibt an, ob die Eltern während des ganzen Zeitabschnittes die gesamten Vollkosten bezahlen müssen
 	public boolean isBezahltKompletteVollkosten() {
-		return bezahltVollkosten;
+		return bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ONE) == 0;
 	}
 
-	public void setBezahltVollkosten(boolean bezahltVollkosten) {
-		this.bezahltVollkosten = bezahltVollkosten;
+	public @NotNull BigDecimal getBezahltVollkostenMonatAnteil() {
+		return bezahltVollkostenMonatAnteil;
+	}
+
+	// In den RechnerRules kann nur gesetzt werden, das die Eltern die Vollkosten während des kompleten Zeitabschnittes
+	// also zu 100 % tragen. Einzig beim berchnen des prozentualen Anteils (@see BgCalculationInput#calculateInputValuesProportionaly)
+	// wird hier ein Wert zwischen 0 und 1 gesetzt
+	public void setBezahltVollkostenKomplett() {
+		this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
 	}
 
 	public boolean isKeinAnspruchAufgrundEinkommen() {
@@ -750,7 +760,13 @@ public class BGCalculationInput {
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
-		this.setBezahltVollkosten(this.isBezahltKompletteVollkosten() || other.isBezahltKompletteVollkosten());
+
+		this.bezahltVollkostenMonatAnteil = add(this.bezahltVollkostenMonatAnteil, other.bezahltVollkostenMonatAnteil);
+		//Vollkostenanteil ist ein Prozentsatz und darf nach dem add nicht mehr als 1 (100 %) entsprechen
+		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ONE) > 0) {
+			this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
+		}
+
 		this.setKeinAnspruchAufgrundEinkommen(this.isKeinAnspruchAufgrundEinkommen() || other.isKeinAnspruchAufgrundEinkommen());
 
 		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
@@ -909,7 +925,7 @@ public class BGCalculationInput {
 			anspruchspensumRest == other.anspruchspensumRest &&
 			hasSecondGesuchstellerForFinanzielleSituation
 				== other.hasSecondGesuchstellerForFinanzielleSituation &&
-			bezahltVollkosten == other.bezahltVollkosten &&
+			MathUtil.isSame(this.bezahltVollkostenMonatAnteil, other.bezahltVollkostenMonatAnteil) &&
 			keinAnspruchAufgrundEinkommen == other.keinAnspruchAufgrundEinkommen &&
 			longAbwesenheit == other.longAbwesenheit &&
 			ekv1Alleine == other.ekv1Alleine &&
