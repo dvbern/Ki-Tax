@@ -68,7 +68,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 			eingeschult,
 			besonderebeduerfnisse,
 			massgebendesEinkommen,
-			input.isBezahltVollkosten());
+			input.isBezahltKompletteVollkosten());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 

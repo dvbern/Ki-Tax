@@ -346,7 +346,7 @@ public class BGCalculationInput {
 		this.hasSecondGesuchstellerForFinanzielleSituation = hasSecondGesuchstellerForFinanzielleSituation;
 	}
 
-	public boolean isBezahltVollkosten() {
+	public boolean isBezahltKompletteVollkosten() {
 		return bezahltVollkosten;
 	}
 
@@ -750,7 +750,7 @@ public class BGCalculationInput {
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
-		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
+		this.setBezahltVollkosten(this.isBezahltKompletteVollkosten() || other.isBezahltKompletteVollkosten());
 		this.setKeinAnspruchAufgrundEinkommen(this.isKeinAnspruchAufgrundEinkommen() || other.isKeinAnspruchAufgrundEinkommen());
 
 		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
