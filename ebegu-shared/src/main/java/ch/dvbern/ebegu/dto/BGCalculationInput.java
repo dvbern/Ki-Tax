@@ -878,6 +878,7 @@ public class BGCalculationInput {
 		this.anzahlNebenmahlzeiten = calculatePercentage(this.anzahlNebenmahlzeiten, percentage);
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
+		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
 	}
 
 	private boolean isPercentCaluclable(double percent) {
