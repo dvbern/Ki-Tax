@@ -16,6 +16,9 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService} from '@uirouter/core';
+import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 
 import {BenutzerListViewXComponent} from './benutzer-list-view-x.component';
 
@@ -23,8 +26,20 @@ describe('BenutzerListViewXComponent', () => {
     let component: BenutzerListViewXComponent;
     let fixture: ComponentFixture<BenutzerListViewXComponent>;
 
+    const benutzerRSSpy = jasmine.createSpyObj(BenutzerRSX.name, ['searchUsers']);
+    const authServiceRSSpy = jasmine.createSpyObj(AuthServiceRS.name, [
+        'isOneOfRoles',
+        'getVisibleRolesForPrincipal'
+    ]);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            providers: [
+                {provide: BenutzerRSX, useValue: benutzerRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+            ],
             declarations: [BenutzerListViewXComponent]
         })
             .compileComponents();

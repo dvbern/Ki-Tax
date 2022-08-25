@@ -19,12 +19,9 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzer} from '../../../models/TSBenutzer';
-
-const LOG = LogFactory.createLog('BenutzerListViewXComponent');
 
 @Component({
     selector: 'dv-benutzer-list-view-x',

@@ -202,12 +202,12 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     public searchUsers(): void {
-        const paginate: TSPagination = new TSPagination();
+        const paginate = new TSPagination();
         paginate.start = this.page * this.pageSize;
         paginate.number = this.pageSize;
         paginate.totalItemCount = this.totalResultCount;
 
-        const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
+        const filterDTO = new TSBenutzerTableFilterDTO(
             paginate,
             this.sort,
             this.filterPredicate
