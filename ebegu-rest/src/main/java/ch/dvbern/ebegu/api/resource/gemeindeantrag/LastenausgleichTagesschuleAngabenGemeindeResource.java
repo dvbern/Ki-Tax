@@ -393,7 +393,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		response = Void.class)
 	@PUT
 	@Path("/saveLATSVerantworlicher/{containerId}")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.WILDCARD)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void saveLATSVerantworlicher(
 		@Nullable String username,
