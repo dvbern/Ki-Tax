@@ -14,7 +14,7 @@
  */
 
 import * as moment from 'moment';
-import {BenutzerListFilter} from '../app/core/component/dv-benutzer-list/BenutzerListFilter';
+import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSBenutzerTableFilterDTO} from '../models/dto/TSBenutzerTableFilterDTO';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';

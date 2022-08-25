@@ -16,7 +16,7 @@
  */
 
 import {MatSort} from '@angular/material/sort';
-import {BenutzerListFilter} from '../../app/core/component/dv-benutzer-list/BenutzerListFilter';
+import {BenutzerListFilter} from '../../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {TSPagination} from './TSPagination';
 
 export class TSBenutzerTableFilterDTO {

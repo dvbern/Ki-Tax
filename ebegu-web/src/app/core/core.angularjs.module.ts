@@ -79,7 +79,6 @@ import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordi
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
 import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
-import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
