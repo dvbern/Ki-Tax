@@ -24,6 +24,7 @@ import {
     OnInit,
     Output
 } from '@angular/core';
+import {PageEvent} from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {take} from 'rxjs/operators';
@@ -64,9 +65,6 @@ export class BenutzerListXComponent implements OnInit {
     public tableId: string;
 
     @Input()
-    public totalResultCount: number;
-
-    @Input()
     public pendenz: boolean;
 
     @Output()
@@ -88,9 +86,13 @@ export class BenutzerListXComponent implements OnInit {
 
     public gemeindenStr: string;
 
-    public paginate: TSPagination = new TSPagination();
+    public paginationItems: number[];
+    public page: number;
+    public readonly pageSize = 20;
     public filterPredicate: BenutzerListFilter = new BenutzerListFilter();
     public sort: MatSort = new MatSort();
+
+    public totalResultCount: number;
 
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
@@ -131,7 +133,7 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     private initFilterSortPaginate(): void {
-        this.paginate = new TSPagination();
+        this.page = 0;
         this.filterPredicate = new BenutzerListFilter();
         this.sort = new MatSort();
     }
@@ -200,20 +202,27 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     public searchUsers(): void {
+        const paginate: TSPagination = new TSPagination();
+        paginate.start = this.page * this.pageSize;
+        paginate.number = this.pageSize;
+        paginate.totalItemCount = this.totalResultCount;
+
         const filterDTO: TSBenutzerTableFilterDTO = new TSBenutzerTableFilterDTO(
-            this.paginate,
+            paginate,
             this.sort,
             this.filterPredicate
         );
         this.benutzerRS.searchUsers(filterDTO).then(res => {
             this.datasource.data = res.userDTOs;
             this.totalResultCount = res.totalResultSize;
+            this.updatePagination();
         });
     }
 
     public applyFilter(value: any, property: string): void {
         // @ts-ignore
         this.filterPredicate[property] = value ? value : undefined;
+        this.page = 0;
         this.searchUsers();
     }
 
@@ -221,6 +230,7 @@ export class BenutzerListXComponent implements OnInit {
     public applyFilterWithDebounce(value: any, property: string): void {
         // @ts-ignore
         this.filterPredicate[property] = value ? value : undefined;
+        this.page = 0;
         clearTimeout(this.keyupTimeout);
         this.keyupTimeout = setTimeout(() => {
             this.searchUsers();
@@ -229,6 +239,20 @@ export class BenutzerListXComponent implements OnInit {
 
     public sortChange($event: Sort): void {
         this.sort = $event as MatSort;
+        this.page = 0;
         this.searchUsers();
+    }
+
+    public paginationChange(pageEvent: Partial<PageEvent>): void {
+        this.page = pageEvent.pageIndex;
+        this.searchUsers();
+    }
+
+    private updatePagination(): void {
+        this.paginationItems = [];
+        for (let i = Math.max(1, this.page - 4); i <= Math.min(Math.ceil(this.totalResultCount / this.pageSize),
+            this.page + 5); i++) {
+            this.paginationItems.push(i);
+        }
     }
 }
