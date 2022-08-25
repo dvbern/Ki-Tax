@@ -232,11 +232,14 @@ export class LastenausgleichTSService {
         );
     }
 
-    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number, bemerkungen: string): void {
-        this.http.put(
+    public saveLATSAngabenGemeindePrognose(containerId: string, prognose: number, bemerkungen: string):
+        Observable<void> {
+        return this.http.put<void>(
             `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
             {prognose, bemerkungen},
-        ).subscribe(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error));
+        ).pipe(
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error))
+        );
     }
 
     public latsGemeindeAntragAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
