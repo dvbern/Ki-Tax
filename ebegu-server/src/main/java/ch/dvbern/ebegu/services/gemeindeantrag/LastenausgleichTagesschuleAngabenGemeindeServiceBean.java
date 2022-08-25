@@ -55,7 +55,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -625,7 +624,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 		Benutzer verantwortlicher = null;
 
-		if (username != null) {
+		if (username != null && !username.isEmpty()) {
 			verantwortlicher = benutzerService.findBenutzer(username, latsContainer.getGemeinde().getMandant())
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
 					"saveVerantwortlicher",
