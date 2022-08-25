@@ -75,6 +75,9 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
+		BigDecimal effektivAusbezahlteZeiteinheiten =
+				getAnzahlEffektivAusbezahlteZeiteinheiten(verfuegteZeiteinheiten, input.getBezahltVollkostenMonatAnteil());
+
 		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, anspruchPensum);
@@ -82,9 +85,9 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal betreuungspensumZeiteinheit =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
 
-		BigDecimal minBetrag = EXACT.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
+		BigDecimal minBetrag = EXACT.multiply(effektivAusbezahlteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
-			EXACT.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
+			EXACT.multiplyNullSafe(effektivAusbezahlteZeiteinheiten, verguenstigungProZeiteinheit);
 
 		BigDecimal vollkostenMinusMinimaltarif = EXACT.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
@@ -120,6 +123,25 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
 
 		return result;
+	}
+
+	private BigDecimal getAnzahlEffektivAusbezahlteZeiteinheiten(
+		BigDecimal verfuegteZeiteinheiten,
+		BigDecimal bezahltVollkostenAnteil) {
+
+		// Eltern tragen die Vollkosten nie komplett -> alle verfügten Zeiteinheite werden ausbezahlt
+		if (bezahltVollkostenAnteil.compareTo(BigDecimal.ZERO) == 0) {
+			return verfuegteZeiteinheiten;
+		}
+
+		// Eltern tragen die Vollkosten komplett -> keine Zeiteinheiten werden effektiv ausbezahlt
+		if (bezahltVollkostenAnteil.compareTo(BigDecimal.ONE) == 0) {
+			return BigDecimal.ZERO;
+		}
+
+		// Ein Teil des Monats tragen die Eltern die Vollkosten komplett -> hier wird ausgerechnet an wie vielen Tagen
+		// die Eltern die Vollkosten NICHT komplett tragen
+		return EXACT.multiply(verfuegteZeiteinheiten, EXACT.subtract(BigDecimal.ONE, bezahltVollkostenAnteil));
 	}
 
 	/**
