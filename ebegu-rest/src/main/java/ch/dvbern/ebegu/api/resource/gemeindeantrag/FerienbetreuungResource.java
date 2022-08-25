@@ -177,6 +177,24 @@ public class FerienbetreuungResource {
 	}
 
 	@ApiOperation(
+		value = "Speichert den Verantwortlichen eines FerienbetreuungsAngebot in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveVerantworlicher/{containerId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveVerantworlicher(
+		@Nullable String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") String containerId
+	) {
+		Objects.requireNonNull(containerId);
+
+		ferienbetreuungService.saveVerantwortlicher(containerId, username);
+	}
+
+	@ApiOperation(
 		value = "Schliesst den FerienBetreuungAngabenContainer als Gemeinde ab und gibt ihn zur Prüfung durch"
 			+ "die Kantone frei",
 		response = JaxFerienbetreuungAngabenStammdaten.class)

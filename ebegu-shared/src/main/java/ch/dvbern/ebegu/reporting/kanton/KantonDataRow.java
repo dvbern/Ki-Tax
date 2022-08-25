@@ -43,6 +43,8 @@ public class KantonDataRow {
 	private String institution;
 	private String betreuungsTyp;
 
+	private Boolean babyTarif;
+
 	public String getBgNummer() {
 		return bgNummer;
 	}
@@ -179,5 +181,13 @@ public class KantonDataRow {
 
 	public void setGemeinde(String gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	public Boolean getBabyTarif() {
+		return babyTarif;
+	}
+
+	public void setBabyTarif(Boolean babyTarif) {
+		this.babyTarif = babyTarif;
 	}
 }

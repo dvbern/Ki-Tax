@@ -39,8 +39,6 @@
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
         </h3>
-        <p class="inline-hint margin-bottom-20" *ngIf="isDelegationsmodell" translate>
-            FERIENBETREUUNG_EINNAHMEN_GEMAESS_LEISTUNGSERBRINGER</p>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
@@ -73,7 +71,7 @@
             </dv-input-container-x>
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkosten}}</span>
             </div>
         </div>
@@ -103,7 +101,7 @@
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                  *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin}}</span>
             </div>
         </div>
@@ -139,7 +137,7 @@
             </dv-input-container-x>
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.sachkosten}}</span>
             </div>
         </div>
@@ -172,7 +170,7 @@
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                  *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten}}</span>
             </div>
         </div>
@@ -203,7 +201,7 @@
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                  *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten}}</span>
             </div>
         </div>
@@ -229,7 +227,7 @@
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                  *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten}}</span>
             </div>
         </div>
@@ -239,8 +237,6 @@
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_EINNAHMEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
         </h3>
-        <p class="inline-hint margin-bottom-20" *ngIf="isDelegationsmodell" translate>
-            FERIENBETREUUNG_EINNAHMEN_GEMAESS_LEISTUNGSERBRINGER</p>
 
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
@@ -273,7 +269,7 @@
             </dv-input-container-x>
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.elterngebuehren}}</span>
             </div>
         </div>
@@ -309,7 +305,7 @@
             </dv-input-container-x>
             <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
                 <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereEinnahmen}}</span>
             </div>
         </div>
@@ -322,7 +318,6 @@
             <h3 class="uppercase">
                 {{'FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_LEISTUNGSVERTRAG' | translate }}
             </h3>
-            <p class="inline-hint margin-bottom-20" translate>FERIENBETREUUNG_LEISTUNGEN_GEMEINDE_SUBTITLE</p>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
                     <label for="sockelbeitrag_id"
@@ -352,7 +347,7 @@
                 <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                      *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag}}</span>
                 </div>
             </div>
@@ -385,7 +380,7 @@
                 <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                      *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen}}</span>
                 </div>
             </div>
@@ -422,7 +417,7 @@
                 <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                      *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege}}</span>
                 </div>
             </div>
@@ -458,7 +453,7 @@
                 <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
                      *ngIf="(vorgaenger$ | async) as vorgaenger">
                 <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{vorjahr: vorgaenger.gesuchsperiode?.getBasisJahrPlus1()} }}
+                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
                     : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde}}</span>
                 </div>
             </div>

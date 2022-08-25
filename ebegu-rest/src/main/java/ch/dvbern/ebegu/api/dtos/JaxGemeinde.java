@@ -75,6 +75,8 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean angebotFI = false;
 	private boolean besondereVolksschule = false;
 
+	private boolean nurLats = false;
+
 	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
 	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
 	// da diese in kiBon noch nicht registriert ist: Beim Onboarding, Gemeindeauswahl für Tagessschulen, wenn ich
@@ -204,5 +206,13 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setBesondereVolksschule(boolean besondereVolksschule) {
 		this.besondereVolksschule = besondereVolksschule;
+	}
+
+	public boolean isNurLats() {
+		return nurLats;
+	}
+
+	public void setNurLats(boolean nurLats) {
+		this.nurLats = nurLats;
 	}
 }

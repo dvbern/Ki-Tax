@@ -36,6 +36,7 @@
                                     [page]="calculatePage()"
                                     [totalItems]="pagination.totalItemCount"
                                     [pendenz]="true"
+                                    [hiddenColumns]="['verantwortlicherGemeindeantraege']"
                                     (sortChange)="onSort($event)"
                                     (filterChange)="onFilterChange($event)"
                                     (paginationEvent)="onPagination($event)"

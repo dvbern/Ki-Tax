@@ -6144,6 +6144,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeAntrag.setStatusString(gemeindeAntrag.getStatusString());
 		jaxGemeindeAntrag.setAntragAbgeschlossen(gemeindeAntrag.isAntragAbgeschlossen());
 
+		if (gemeindeAntrag.getVerantwortlicher() != null) {
+			jaxGemeindeAntrag.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
+		}
+
 		return jaxGemeindeAntrag;
 	}
 
@@ -6167,6 +6171,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
+		if (gemeindeContainer.getVerantwortlicher() != null) {
+			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeContainer.getVerantwortlicher()));
+		}
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
 		}
@@ -6177,6 +6184,7 @@ public class JaxBConverter extends AbstractConverter {
 			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
 		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
 		jaxGemeindeContainer.setBetreuungsstundenPrognose(gemeindeContainer.getBetreuungsstundenPrognose());
+		jaxGemeindeContainer.setBemerkungenBetreuungsstundenPrognose(gemeindeContainer.getBemerkungenBetreuungsstundenPrognose());
 
 		return jaxGemeindeContainer;
 	}
@@ -6199,6 +6207,13 @@ public class JaxBConverter extends AbstractConverter {
 
 		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
 		gemeindeContainer.setInternerKommentar(jaxGemeindeContainer.getInternerKommentar());
+
+
+		if (jaxGemeindeContainer.getVerantwortlicher() != null) {
+			benutzerService.findBenutzer(jaxGemeindeContainer.getVerantwortlicher().getUsername(),
+					gemeindeContainer.getGemeinde().getMandant())
+				.ifPresent(gemeindeContainer::setVerantwortlicher);
+		}
 
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
 			if (gemeindeContainer.getAngabenDeklaration() != null) {

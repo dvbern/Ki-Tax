@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -114,6 +115,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getMandantRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
@@ -561,6 +563,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Collection<Benutzer> getAllBenutzerTsOrGemeinde() {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles());
+	}
+
+	@Override
+	public Collection<Benutzer> getAllBenutzerMandant(@Nonnull Mandant mandant) {
+		return getBenutzersOfRoles(getMandantRoles())
+			.stream().filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull

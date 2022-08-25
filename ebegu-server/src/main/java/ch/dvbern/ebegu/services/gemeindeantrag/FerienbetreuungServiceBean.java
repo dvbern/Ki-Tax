@@ -41,6 +41,7 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
@@ -64,6 +65,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.PDFService;
@@ -108,6 +110,9 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Inject
 	private GemeindeService gemeindeService;
 
+	@Inject
+	private BenutzerService benutzerService;
+
 	@Nonnull
 	@Override
 	public Collection<FerienbetreuungAngabenContainer> getAllFerienbetreuungAntraege() {
@@ -131,7 +136,8 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		@Nullable String gemeinde,
 		@Nullable String periode,
 		@Nullable String status,
-		@Nullable String timestampMutiert
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantwortlicher
 	) {
 		Set<Gemeinde> gemeinden = principal.getBenutzer().extractGemeindenForUser();
 
@@ -181,6 +187,14 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		if (timestampMutiert != null) {
 			Predicate timestampMutiertPredicate = createTimestampMutiertPredicate(timestampMutiert, cb, root);
 			predicates.add(timestampMutiertPredicate);
+		}
+
+		if (verantwortlicher != null) {
+			predicates.add(
+				cb.equal(
+					root.get(FerienbetreuungAngabenContainer_.verantwortlicher),
+					verantwortlicher)
+			);
 		}
 
 		Predicate[] predicateArray = new Predicate[predicates.size()];
@@ -310,6 +324,31 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				);
 		container.setInternerKommentar(kommentar);
 		persistence.persist(container);
+	}
+
+	@Override
+	public void saveVerantwortlicher(@Nonnull String containerId, @Nullable String username) {
+		FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer =
+			this.findFerienbetreuungAngabenContainer(containerId)
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					containerId)
+				);
+
+		Benutzer verantwortlicher = null;
+
+		if (username != null && !username.isEmpty()) {
+			verantwortlicher = benutzerService.findBenutzer(username, ferienbetreuungAngabenContainer.getGemeinde().getMandant())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					username)
+				);
+		}
+
+		ferienbetreuungAngabenContainer.setVerantwortlicher(verantwortlicher);
+		persistence.persist(ferienbetreuungAngabenContainer);
 	}
 
 	@Nonnull
@@ -618,7 +657,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				"deleteFerienbetreuungAntragIfExists ist nur als SuperAdmin möglich");
 		}
 
-		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null)
+		this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null, null)
 			.forEach(this::removeFerienbetreuungAngabenContainer);
 	}
 
@@ -633,7 +672,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 				"deleteAntragIfExistsAndIsNotAbgeschlossen ist nur als Mandant und SuperAdmin möglich");
 		}
 
-		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null);
+		var antragList = this.getFerienbetreuungAntraege(gemeinde.getName(), gesuchsperiode.getGesuchsperiodeString(), null, null, null);
 		if (antragList.size() > 1) {
 			throw new EbeguRuntimeException(
 				"deleteAntragIfExistsAndIsNotAbgeschlossen",

@@ -102,6 +102,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * 'verantwortlicheTS',
      * 'verantwortlicheBG',
      * 'verantwortlicheGemeinde',
+     * 'verantwortlicherGemeindeantraege'
      *
      * Hides the column in the table
      */
@@ -223,6 +224,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         'verantwortlicheTS-filter',
         'verantwortlicheBG-filter',
         'verantwortlicheGemeinde-filter',
+        'verantwortlicherGemeindeantraege-filter'
     ];
 
     private readonly allColumns = [
@@ -241,6 +243,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         'verantwortlicheTS',
         'verantwortlicheBG',
         'verantwortlicheGemeinde',
+        'verantwortlicherGemeindeantraege'
     ];
 
     public displayedColumns: string[];
@@ -264,6 +267,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public userListBgTsOrGemeinde: TSBenutzerNoDetails[];
     public userListTsOrGemeinde: TSBenutzerNoDetails[];
     public userListBgOrGemeinde: TSBenutzerNoDetails[];
+    public userListGemeindeantraege: TSBenutzerNoDetails[];
     public initialGemeindeUser: TSBenutzerNoDetails;
     public initialBgGemeindeUser: TSBenutzerNoDetails;
     public initialTsGemeindeUser: TSBenutzerNoDetails;
@@ -333,6 +337,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.hiddenColumns.push('verantwortlicheGemeinde');
                 this.hiddenColumns.push('internePendenz');
                 this.hiddenColumns.push('dokumenteHochgeladen');
+            }
+            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                this.hiddenColumns.push('verantwortlicherGemeindeantraege');
             }
         }
         this.updateColumns();
@@ -564,6 +571,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.applyFilter();
     }
 
+    public filterVerantwortlicherGemeindeantraege(verantwortliche: TSBenutzerNoDetails): void {
+        this.filterPredicate.verantwortlicherGemeindeantraege = verantwortliche ? verantwortliche : null;
+        this.applyFilter();
+    }
+
     public filterFamilie(query: string): void {
         this.filterPredicate.familienName = query.length > 0 ? query : null;
         this.applyFilter();
@@ -672,6 +684,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.changeDetectorRef.markForCheck();
             });
         }
+
+        this.initBenutzerListGemeindeAntraege();
     }
 
     public isPendenzGemeindeRolle(): boolean {
@@ -725,5 +739,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.initialTsGemeindeUser?.username,
             this.initialTsGemeindeUser?.gemeindeIds);
 
+    }
+
+    private initBenutzerListGemeindeAntraege(): void {
+        if (this.hiddenColumns.includes('verantwortlicherGemeindeantraege')) {
+            return;
+        }
+
+        this.benutzerRS.getAllBenutzerMandant().then(response => {
+            this.userListGemeindeantraege = response;
+            this.changeDetectorRef.markForCheck();
+        });
     }
 }
