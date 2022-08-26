@@ -130,5 +130,4 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant);
-
 }
