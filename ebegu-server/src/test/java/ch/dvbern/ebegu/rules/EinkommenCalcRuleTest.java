@@ -86,7 +86,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -104,7 +104,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(1, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -121,7 +121,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
-		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -139,7 +139,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN_HOCH.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -225,7 +225,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, (new BigDecimal("0.00")).compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(3, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -244,7 +244,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(4, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -267,7 +267,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, (new BigDecimal(EINSTELLUNG_MAX_EINKOMMEN)).compareTo(result.get(0).getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird trotz Pauschale bes. Bed. auf 0 gesetzt", 0, abschnitt.getAnspruchberechtigtesPensum());
-		assertTrue("erweiterteBetreuung: BezahltVollkosten gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue("erweiterteBetreuung: BezahltVollkosten gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(4, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -287,7 +287,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
-		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -305,7 +305,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals(100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse(abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertFalse(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -323,7 +323,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Keine erweiterteBetreuung: Anspruch wird auf 0 gesetzt", 0, abschnitt.getAnspruchberechtigtesPensum());
-		assertTrue("Keine erweiterteBetreuung: Bezahlt Vollkosten", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertTrue("Keine erweiterteBetreuung: Bezahlt Vollkosten", abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue(abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -341,7 +341,7 @@ public class EinkommenCalcRuleTest {
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		assertEquals(0, MAX_EINKOMMEN.compareTo(abschnitt.getMassgebendesEinkommen()));
 		assertEquals("Anspruch wird wegen Pauschale bes. Bed. nicht auf 0 gesetzt", 100, abschnitt.getAnspruchberechtigtesPensum());
-		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		assertFalse("erweiterteBetreuung: BezahltVollkosten nicht gesetzt", abschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		assertTrue("keinAnspruchAufgrundEinkommen gilt auch wenn erweiterteBetreuung", abschnitt.getBgCalculationInputAsiv().isKeinAnspruchAufgrundEinkommen());
 		assertFalse(abschnitt.getBemerkungenDTOList().isEmpty());
 		assertEquals(4, abschnitt.getBemerkungenDTOList().uniqueSize());

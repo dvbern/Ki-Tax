@@ -59,7 +59,7 @@ public class AbwesenheitCalcRule extends AbstractCalcRule {
 		@Nonnull BGCalculationInput inputData) {
 		requireNonNull(platz.getBetreuungsangebotTyp());
 		if (inputData.isLongAbwesenheit()) {
-			inputData.setBezahltVollkosten(true);
+			inputData.setBezahltVollkostenKomplett();
 			inputData.addBemerkung(MsgKey.ABWESENHEIT_MSG, getLocale(), abwesenheitMaxDaysValue);
 		}
 	}

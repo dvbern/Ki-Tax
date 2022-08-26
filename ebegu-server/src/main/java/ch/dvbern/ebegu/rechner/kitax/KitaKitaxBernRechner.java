@@ -124,7 +124,7 @@ public class KitaKitaxBernRechner extends AbstractKitaxBernRechner {
 		// Runden und auf Zeitabschnitt zurückschreiben
 		BigDecimal vollkostenIntervall = EXACT.multiply(vollkosten, faktor, anteilMonat);
 		BigDecimal elternbeitragIntervall;
-		if (input.isBezahltVollkosten()) {
+		if (input.isBezahltKompletteVollkosten()) {
 			elternbeitragIntervall = vollkostenIntervall;
 		} else {
 			elternbeitragIntervall = EXACT.multiply(elternbeitrag, anteilMonat);
