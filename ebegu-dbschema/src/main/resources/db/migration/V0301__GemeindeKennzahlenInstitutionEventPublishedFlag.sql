@@ -23,3 +23,5 @@ ALTER TABLE gemeinde_kennzahlen_aud
 
 ALTER TABLE gemeinde_kennzahlen
 	ALTER COLUMN event_published DROP DEFAULT;
+
+UPDATE institution SET event_published = false;

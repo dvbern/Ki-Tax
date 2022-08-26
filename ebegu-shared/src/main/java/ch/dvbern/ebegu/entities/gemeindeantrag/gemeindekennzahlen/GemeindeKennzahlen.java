@@ -79,6 +79,7 @@ public class GemeindeKennzahlen extends AbstractEntity implements GemeindeAntrag
 
 	@Nullable
 	@Column
+	@Enumerated(EnumType.STRING)
 	private EinschulungTyp limitierungTfo;
 
 	@Column(nullable = false)
