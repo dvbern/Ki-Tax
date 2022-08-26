@@ -49,6 +49,7 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
         NoopAnimationsModule, // we don't want material animations in the project yet
         UpgradeModule,
 
+
         // Core & Shared
         CoreModule.forRoot(),
         SharedModule,

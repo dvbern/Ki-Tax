@@ -56,6 +56,7 @@ import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
 import ch.dvbern.kibon.exchange.commons.types.Intervall;
+import ch.dvbern.kibon.exchange.commons.types.Mandant;
 import ch.dvbern.kibon.exchange.commons.types.Wochentag;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import ch.dvbern.kibon.exchange.commons.util.TimeConverter;
@@ -108,7 +109,8 @@ public class InstitutionEventConverter {
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(stammdaten.getBetreuungsangebotTyp().name()))
 			.setStatus(InstitutionStatus.valueOf(institution.getStatus().name()))
 			.setAdresse(kontaktAngaben)
-			.setTimestampMutiert(TimestampConverter.serialize(TimestampConverter.of(LocalDateTime.now())));
+			.setTimestampMutiert(TimestampConverter.serialize(TimestampConverter.of(LocalDateTime.now())))
+			.setMandant(Mandant.valueOf(institution.getMandant().getMandantIdentifier().name()));
 
 		InstitutionStammdatenBetreuungsgutscheine bgStammdaten =
 			stammdaten.getInstitutionStammdatenBetreuungsgutscheine();
@@ -145,7 +147,8 @@ public class InstitutionEventConverter {
 			.setAltersKategorien(getAltersKategorien(bgStammdaten))
 			.setSubventioniertePlaetze(bgStammdaten.getSubventioniertePlaetze())
 			.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
-			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()));
+			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()))
+			.setAuslastungPct(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAuslastungInstitutionen()));
 	}
 
 	@Nonnull
