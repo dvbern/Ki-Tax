@@ -462,6 +462,7 @@ public class GemeindeResource {
 			einstellung.setKey(jaxKonfig.getKey());
 			einstellung.setGemeinde(gemeinde);
 			einstellung.setGesuchsperiode(gesuchsperiode);
+			einstellung.setErklaerung(jaxKonfig.getErklaerung());
 		}
 		einstellung.setValue(jaxKonfig.getValue());
 		einstellungService.saveEinstellung(einstellung);

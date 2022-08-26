@@ -479,6 +479,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
 		jaxEinstellung.setKey(einstellung.getKey());
 		jaxEinstellung.setValue(einstellung.getValue());
+		jaxEinstellung.setErklaerung(einstellung.getErklaerung());
 		jaxEinstellung.setGemeindeId(null == einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
 		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
 		// Mandant wird aktuell nicht gemappt
@@ -495,6 +496,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertMandantFieldsToEntity(einstellung);
 		einstellung.setKey(jaxEinstellung.getKey());
 		einstellung.setValue(jaxEinstellung.getValue());
+		einstellung.setErklaerung(jaxEinstellung.getErklaerung());
 		if (jaxEinstellung.getGemeindeId() != null) {
 			einstellung.setGemeinde(gemeindeService.findGemeinde(jaxEinstellung.getGemeindeId()).orElse(null));
 		}

@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.Audited;
 
 /**
@@ -56,6 +57,10 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String value;
+
+	@Nullable
+	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String erklaerung;
 
 	@Nullable
 	@ManyToOne(optional = true)
@@ -141,6 +146,15 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
+	@Nullable
+	public String getErklaerung() {
+		return erklaerung;
+	}
+
+	public void setErklaerung(@Nullable final String erklaerung) {
+		this.erklaerung = erklaerung;
+	}
+
 	/**
 	 * Erstellt eine Kopie der Einstellung für eine neue Gesuchsperiode
 	 */
@@ -194,7 +208,8 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 			Objects.equals(getValue(), otherEinstellung.getValue()) &&
 			Objects.equals(getGesuchsperiode(), otherEinstellung.getGesuchsperiode()) &&
 			Objects.equals(getMandant(), otherEinstellung.getMandant()) &&
-			Objects.equals(getGemeinde(), otherEinstellung.getGemeinde());
+			Objects.equals(getGemeinde(), otherEinstellung.getGemeinde()) &&
+			StringUtils.equals(getErklaerung(), otherEinstellung.getErklaerung());
 	}
 
 	@Override
@@ -202,6 +217,7 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 		return new ToStringBuilder(this)
 			.append("key", key)
 			.append("value", value)
+			.append("erklärung", erklaerung)
 			.append("mandant", mandant != null ? mandant.getName() : "null")
 			.append("gemeinde", gemeinde != null ? gemeinde.getName() : "null")
 			.append("gesuchsperiode", gesuchsperiode.getGesuchsperiodeString())
