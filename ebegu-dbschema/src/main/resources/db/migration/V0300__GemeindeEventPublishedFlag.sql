@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSGemeindeAntragTyp} from '../enums/TSGemeindeAntragTyp';
-import {TSAbstractEntity} from '../TSAbstractEntity';
-import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';
-import {TSGemeinde} from '../TSGemeinde';
-import {TSGesuchsperiode} from '../TSGesuchsperiode';
 
-export class TSGemeindeAntrag extends TSAbstractEntity {
-    public gemeindeAntragTyp: TSGemeindeAntragTyp;
-    public gemeinde: TSGemeinde;
-    public gesuchsperiode: TSGesuchsperiode;
-    public statusString: string;
-    public antragAbgeschlossen: boolean;
-    public verantworlicher: TSBenutzerNoDetails;
-}
+ALTER TABLE gemeinde
+	ADD COLUMN event_published BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE gemeinde_aud
+	ADD event_published BOOLEAN;
+
+ALTER TABLE gemeinde
+	ALTER COLUMN event_published DROP DEFAULT;

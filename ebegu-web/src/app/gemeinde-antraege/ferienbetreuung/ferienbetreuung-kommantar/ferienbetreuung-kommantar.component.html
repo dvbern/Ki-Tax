@@ -50,6 +50,21 @@
                 </div>
             </div>
         </div>
+        <div class="verantwortlicher-view kommentar-padding">
+            <div class="form-group">
+                <mat-select [(ngModel)]="getFerienbetreuungContainer().verantwortlicher"
+                            id="verantwortlicher"
+                            class="form-control"
+                            (selectionChange)="saveVerantwortlicher()"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder=" {{'VERANTWORTLICHER' | translate:{name: getVerantwortlicherFullName()} }}">
+
+                    <mat-option [value]="undefined"> {{'NO_VERANTWORTLICHER_SELECTED' | translate }}</mat-option>
+                    <mat-option *ngFor="let benutzer of userList"
+                                [value]="benutzer"> {{'VERANTWORTLICHER' | translate:{name: benutzer.getFullName()} }}</mat-option>
+                </mat-select>
+            </div>
+        </div>
     </form>
 </div>
 

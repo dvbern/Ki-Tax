@@ -16,6 +16,7 @@
  */
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 
 export interface DVAntragListItem {
@@ -38,6 +39,7 @@ export interface DVAntragListItem {
     verantwortlicheBG?: string;
     isSozialdienst?: boolean;
     antragAbgeschlossen?: boolean;
+    verantwortlicherGemeindeantraege?: TSBenutzerNoDetails;
 
     hasBesitzer?(): boolean;
 }

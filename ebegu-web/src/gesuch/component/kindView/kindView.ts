@@ -479,14 +479,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
             && this.getGesuch().dossier.gemeinde.angebotBG
-            && !this.getGesuch().dossier.gemeinde.angebotTS;
+            && !(this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats);
     }
 
     public hasAngebotTSOnly(): boolean {
         return this.getGesuch()
             && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
-            && this.getGesuch().dossier.gemeinde.angebotTS
+            && this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats
             && !this.getGesuch().dossier.gemeinde.angebotBG;
     }
 
@@ -494,7 +494,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.getGesuch()
             && this.getGesuch().dossier
             && this.getGesuch().dossier.gemeinde
-            && this.getGesuch().dossier.gemeinde.angebotTS
+            && this.getGesuch().dossier.gemeinde.angebotTS && !this.getGesuch().dossier.gemeinde.nurLats
             && this.getGesuch().dossier.gemeinde.angebotBG;
     }
 

@@ -222,6 +222,7 @@ export class TestDataUtil {
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         gemeinde.besondereVolksschule = false;
+        gemeinde.nurLats = false;
         gemeinde.gueltigBis = moment('99991231', 'YYYYMMDD');
         return gemeinde;
     }
@@ -242,6 +243,7 @@ export class TestDataUtil {
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         gemeinde.besondereVolksschule = false;
+        gemeinde.nurLats = false;
         gemeinde.gueltigBis = moment('99991231', 'YYYYMMDD');
         return gemeinde;
     }

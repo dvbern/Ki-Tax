@@ -195,6 +195,4 @@ public enum ApplicationPropertyKey {
 	 */
 	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
 
-	DASHBOARD_EXCHANGE_SERVICE_AKTIV,
-
 }

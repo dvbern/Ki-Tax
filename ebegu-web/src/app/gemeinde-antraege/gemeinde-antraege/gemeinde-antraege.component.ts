@@ -172,6 +172,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                         antragTyp: antrag.gemeindeAntragTyp,
                         aenderungsdatum: antrag.timestampMutiert,
                         antragAbgeschlossen: antrag.antragAbgeschlossen,
+                        verantwortlicherGemeindeantraege: antrag.verantworlicher
                     };
                 });
             }),

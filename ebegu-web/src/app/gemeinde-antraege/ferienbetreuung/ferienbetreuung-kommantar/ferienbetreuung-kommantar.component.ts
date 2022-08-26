@@ -21,8 +21,10 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 const LOG = LogFactory.createLog('FerienbetreuungKommantarComponent');
@@ -41,11 +43,14 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private ferienbetreuungContainer: TSFerienbetreuungAngabenContainer;
 
+    public userList: Array<TSBenutzerNoDetails>;
+
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly ref: ChangeDetectorRef,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
+        private readonly benutzerRS: BenutzerRSX
     ) {}
 
     public ngOnInit(): void {
@@ -86,5 +91,31 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
         this.form = new FormGroup({
             kommentar: this.kommentarControl
         });
+
+        this.loadUserList();
+    }
+
+    public getFerienbetreuungContainer(): TSFerienbetreuungAngabenContainer {
+        return this.ferienbetreuungContainer;
+    }
+
+    public getVerantwortlicherFullName(): string {
+        if (this.ferienbetreuungContainer.verantwortlicher) {
+            return this.ferienbetreuungContainer.verantwortlicher.getFullName();
+        }
+
+        return this.translate.instant('NO_VERANTWORTLICHER_SELECTED');
+    }
+
+    public saveVerantwortlicher(): void {
+        this.ferienbetreuungService.saveVerantwortlicher(this.ferienbetreuungContainer.id,
+            this.ferienbetreuungContainer.verantwortlicher?.username);
+    }
+
+    private loadUserList(): void {
+        this.benutzerRS.getAllBenutzerMandant()
+            .then(response => {
+                this.userList = response;
+            });
     }
 }

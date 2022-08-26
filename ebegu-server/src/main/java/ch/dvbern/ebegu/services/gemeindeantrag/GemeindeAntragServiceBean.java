@@ -29,15 +29,19 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.BenutzerService;
 import org.apache.commons.lang.NotImplementedException;
 
 import static ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp.FERIENBETREUUNG;
@@ -59,6 +63,9 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 	@Inject
 	private GemeindeKennzahlenService gemeindeKennzahlenService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	@Inject
 	private PrincipalBean principal;
@@ -103,20 +110,26 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		@Nullable String periode,
 		@Nullable String typ,
 		@Nullable String status,
-		@Nullable String timestampMutiert
+		@Nullable String timestampMutiert,
+		@Nullable String usernameVerantwortlicher
 	) {
+
+		Benutzer verantwortlicher = getVerantwortlicherBenutzerIfPresent(usernameVerantwortlicher);
 
 		if (typ != null) {
 			switch (typ) {
 			case "LASTENAUSGLEICH_TAGESSCHULEN": {
 				return lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-					gemeinde, periode, status, timestampMutiert
+					gemeinde, periode, status, timestampMutiert, verantwortlicher
 				);
 			}
 			case "FERIENBETREUUNG": {
-				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert);
+				return ferienbetreuungService.getFerienbetreuungAntraege(gemeinde, periode, status, timestampMutiert, verantwortlicher);
 			}
 			case "GEMEINDE_KENNZAHLEN": {
+				if (verantwortlicher != null) {
+					return List.of();
+				}
 				return gemeindeKennzahlenService.getGemeindeKennzahlen(gemeinde, periode, status, timestampMutiert);
 			}
 			default:
@@ -125,17 +138,30 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 					+ " wurde noch nicht implementiert");
 			}
 		}
-		return getGemeindeAntraege(gemeinde, periode, status, timestampMutiert);
+		return getGemeindeAntraege(gemeinde, periode, status, timestampMutiert, verantwortlicher);
 
 	}
 
+	@Nullable
+	private Benutzer getVerantwortlicherBenutzerIfPresent(@Nullable String usernameVerantwortlicher) {
+		if (usernameVerantwortlicher == null) {
+			return null;
+		}
+
+		return benutzerService.findBenutzer(usernameVerantwortlicher, principal.getMandant())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getVerantwortlicherBenutzerIfPresent",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				usernameVerantwortlicher));
+	}
+
 	@Nonnull
-	@Override
-	public List<GemeindeAntrag> getGemeindeAntraege(
+	private List<GemeindeAntrag> getGemeindeAntraege(
 		@Nullable String gemeindeId,
 		@Nullable String periodeId,
 		@Nullable String status,
-		@Nullable String timestampMutiert
+		@Nullable String timestampMutiert,
+		@Nullable Benutzer verantworlicher
 	) {
 
 		List<GemeindeAntrag> antraege = new ArrayList<>();
@@ -143,7 +169,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 		if (principal.isCallerInAnyOfRole(UserRole.getAllGemeindeFerienbetreuungMandantSuperadminRoles())) {
 			List<FerienbetreuungAngabenContainer> ferienbetreuungAntraege =
 				ferienbetreuungService.getFerienbetreuungAntraege(
-					gemeindeId, periodeId, status, timestampMutiert
+					gemeindeId, periodeId, status, timestampMutiert, verantworlicher
 				);
 			antraege.addAll(ferienbetreuungAntraege);
 		}
@@ -154,7 +180,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 			return antraege;
 		}
 
-		if (principal.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles())) {
+		if (principal.isCallerInAnyOfRole(UserRole.getMandantBgGemeindeRoles()) && verantworlicher == null) {
 			List<GemeindeKennzahlen> gemeindeKennzahlenAntraege =
 					gemeindeKennzahlenService.getGemeindeKennzahlen(gemeindeId, periodeId, status, timestampMutiert);
 			antraege.addAll(gemeindeKennzahlenAntraege);
@@ -166,7 +192,7 @@ public class GemeindeAntragServiceBean extends AbstractBaseService implements Ge
 
 		List<LastenausgleichTagesschuleAngabenGemeindeContainer> latsAntraege =
 			lastenausgleichTagesschuleAngabenGemeindeService.getLastenausgleicheTagesschulen(
-				gemeindeId, periodeId, status, timestampMutiert
+				gemeindeId, periodeId, status, timestampMutiert, verantworlicher
 			);
 		antraege.addAll(latsAntraege);
 

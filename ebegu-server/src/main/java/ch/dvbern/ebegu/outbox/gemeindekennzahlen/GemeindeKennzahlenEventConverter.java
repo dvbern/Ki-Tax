@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO;
 import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO.Builder;
 import ch.dvbern.kibon.exchange.commons.types.EinschulungTyp;
+import ch.dvbern.kibon.exchange.commons.types.Mandant;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 @ApplicationScoped
@@ -63,7 +64,9 @@ public class GemeindeKennzahlenEventConverter {
 			.setKontingentierungAusgeschoepft(gemeindeKennzahlen.getNachfrageErfuellt())
 			.setAnzahlKinderWarteliste(gemeindeKennzahlen.getNachfrageAnzahl() != null ? new BigDecimal(gemeindeKennzahlen.getNachfrageAnzahl()) : null)
 			.setDauerWarteliste(gemeindeKennzahlen.getNachfrageDauer())
-			.setLimitierungTfo(gemeindeKennzahlen.getLimitierungTfo() != null ? EinschulungTyp.valueOf(gemeindeKennzahlen.getLimitierungTfo().name()) : null);
+			.setLimitierungTfo(gemeindeKennzahlen.getLimitierungTfo() != null ? EinschulungTyp.valueOf(gemeindeKennzahlen.getLimitierungTfo().name()) : null)
+			.setMandant(Mandant.valueOf(gemeindeKennzahlen.getGemeinde().getMandant().getMandantIdentifier().name()));
+
 		return builder.build();
 	}
 }

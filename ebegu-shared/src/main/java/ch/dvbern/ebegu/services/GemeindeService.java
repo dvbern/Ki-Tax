@@ -152,7 +152,7 @@ public interface GemeindeService {
 	/**
 	 * aktiviert oder deaktiviert das TS Angebot
 	 */
-	void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value);
+	void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value, boolean nurLats);
 
 	/**
 	 * aktiviert oder deaktiviert das FI Angebot

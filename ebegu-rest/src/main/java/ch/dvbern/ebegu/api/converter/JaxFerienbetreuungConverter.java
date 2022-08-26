@@ -49,10 +49,14 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.StaleObjectStateException;
+
+import static java.util.Objects.requireNonNull;
 
 @RequestScoped
 public class JaxFerienbetreuungConverter extends AbstractConverter {
@@ -62,6 +66,15 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	@Inject
 	private PrincipalBean principal;
+
+	@Inject
+	private JaxBConverter jaxBConverter;
+
+	@Inject
+	private GemeindeService gemeindeService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	/**
 	 * Behandlung des Version-Attributes fuer OptimisticLocking.
@@ -79,9 +92,15 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		@Nonnull JaxFerienbetreuungAngabenContainer jaxContainer,
 		@Nonnull FerienbetreuungAngabenContainer container
 	) {
+		requireNonNull(jaxContainer.getGemeinde().getId());
+
 		convertAbstractFieldsToEntity(jaxContainer, container);
 
 		// never set status, gemeinde and gesuchsperiode from client
+
+		gemeindeService.findGemeinde(jaxContainer.getGemeinde().getId())
+			.ifPresent(container::setGemeinde);
+
 
 		container.setAngabenDeklaration(ferienbetreuungenAngabenToEntity(
 			jaxContainer.getAngabenDeklaration(),
@@ -91,11 +110,19 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		if (container.getAngabenKorrektur() != null && jaxContainer.getAngabenKorrektur() != null) {
 			container.setAngabenKorrektur(ferienbetreuungenAngabenToEntity(
 				jaxContainer.getAngabenKorrektur(),
+				//TODO sollte hier nicht Angaben Korrektur sein?
 				container.getAngabenDeklaration()
 			));
 		}
 
 		container.setInternerKommentar(jaxContainer.getInternerKommentar());
+
+		if (jaxContainer.getVerantwortlicher() != null) {
+			benutzerService.findBenutzer(jaxContainer.getVerantwortlicher().getUsername(),
+					container.getGemeinde().getMandant())
+				.ifPresent(container::setVerantwortlicher);
+		}
+
 		return container;
 	}
 
@@ -343,6 +370,9 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		}
 		jaxContainer.setInternerKommentar(container.getInternerKommentar());
 
+		if (container.getVerantwortlicher() != null) {
+			jaxContainer.setVerantwortlicher(jaxBConverter.benutzerToJaxBenutzerNoDetails(container.getVerantwortlicher()));
+		}
 		return jaxContainer;
 	}
 
