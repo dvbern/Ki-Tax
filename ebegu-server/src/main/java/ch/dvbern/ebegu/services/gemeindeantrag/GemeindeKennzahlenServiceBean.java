@@ -89,9 +89,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 	private GemeindeKennzahlenEventConverter gemeindeKennzahlenEventConverter;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
 	private EinstellungService einstellungService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(GemeindeKennzahlenServiceBean.class);
