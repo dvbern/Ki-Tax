@@ -23,7 +23,7 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 import org.apache.avro.Schema;
 import org.jetbrains.annotations.NotNull;
 
-public class GemeindeKennzahlenChangedEvent extends AbstractGemeindeKennzahlenEvent implements ExportedEvent {
+public class GemeindeKennzahlenChangedEvent extends AbstractGemeindeKennzahlenEvent {
 
 	public GemeindeKennzahlenChangedEvent(
 		@Nonnull String gemeindeKennzahlenId,
