@@ -725,10 +725,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         let institutionenSDList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
 
-        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
-            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
-            institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
+            institutionenSDList = institutionenSDList.filter(instStamm =>  instStamm.institution.status !== TSInstitutionStatus.NUR_LATS);
+
+            if (this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+                institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+            }
         }
+
         return institutionenSDList;
     }
 
