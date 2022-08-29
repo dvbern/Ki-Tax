@@ -91,7 +91,7 @@ public class TageselternKitaxBernRechner extends AbstractKitaxBernRechner {
 		// Vollkosten und Elternbeitrag
 		BigDecimal vollkosten = MathUtil.EXACT.multiply(kitaxParameter.getKostenProStundeMaximalTageseltern(), betreuungsstundenIntervall);
 		BigDecimal elternbeitrag;
-		if (input.isBezahltVollkosten()) {
+		if (input.isBezahltKompletteVollkosten()) {
 			elternbeitrag = vollkosten;
 		} else {
 			elternbeitrag = MathUtil.EXACT.multiply(kostenProBetreuungsstunde, betreuungsstundenIntervall);
