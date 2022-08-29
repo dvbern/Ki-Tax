@@ -85,11 +85,23 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		case UNTERSTUETZUNGSBESTAETIGUNG:
 			return !EbeguUtil.isNullOrFalse(familiensituation.getSozialhilfeBezueger());
 		case NACHWEIS_UNTERHALTSVEREINBARUNG:
-			return EbeguUtil.isNotNullAndTrue(familiensituation.isFkjvFamSit()) &&
-					familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
+			return isNachweisunterhaltsverinabrungNeeded(familiensituation);
 		default:
 			return false;
 		}
+	}
+
+	private boolean isNachweisunterhaltsverinabrungNeeded(Familiensituation familiensituation) {
+		if (EbeguUtil.isNullOrFalse(familiensituation.isFkjvFamSit())) {
+			return false;
+		}
+
+		//Sozialhilfebezüger müssen kein Beleg zur Unterhaltsvereinbarung hochladen
+		if (EbeguUtil.isNotNullAndTrue(familiensituation.getSozialhilfeBezueger())) {
+			return false;
+		}
+
+		return familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
 	}
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
