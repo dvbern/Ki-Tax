@@ -212,7 +212,7 @@ export class AddInstitutionComponent implements OnInit {
         obs$.pipe(take(1))
             .subscribe(
                 gemeinden => {
-                    this.gemeinden = this.isLatsInstitution ? gemeinden.filter(gemeinde => !gemeinde.angebotTS) : gemeinden;
+                    this.gemeinden = this.isLatsInstitution ? gemeinden : gemeinden.filter(gemeinde => !gemeinde.nurLats);
                     this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
                 err => LOG.error(err),
