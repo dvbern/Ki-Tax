@@ -23,9 +23,11 @@ import java.time.LocalDate;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.junit.jupiter.api.Test;
@@ -43,6 +45,8 @@ public class GemeindeKennzahlenEventConverterTest {
 	public void testChangedEvent() {
 		Gemeinde gemeinde = new Gemeinde();
 		gemeinde.setBfsNummer(123L);
+		gemeinde.setMandant(new Mandant());
+		gemeinde.getMandant().setMandantIdentifier(MandantIdentifier.BERN);
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setGueltigkeit(new DateRange());
 		gesuchsperiode.getGueltigkeit().setGueltigAb(LocalDate.of(2022,8,1));

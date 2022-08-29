@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.outbox.gemeinde;
 import java.time.LocalDate;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.kibon.exchange.commons.gemeinde.GemeindeEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,8 @@ public class GemeindeEventConverterTest {
 		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2022,12,12));
 		gemeinde.setBfsNummer(123L);
 		gemeinde.setGueltigBis(LocalDate.of(9999,12,31));
+		gemeinde.setMandant(new Mandant());
+		gemeinde.getMandant().setMandantIdentifier(MandantIdentifier.BERN);
 
 		GemeindeChangedEvent gemeindeChangedEvent = gemeindeEventConverter.of(gemeinde);
 
