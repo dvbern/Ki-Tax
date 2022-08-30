@@ -104,10 +104,10 @@
 
                 <ng-container matColumnDef="gemeinde">
                     <mat-header-cell mat-sort-header="gemeinde" *matHeaderCellDef class="ellipsis">
-                        <span class="no-padding-left" translate>GEMEINDE</span>
+                        <span class="no-padding-left" translate>GEMEINDEN</span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="gemeindenStr">{{gemeindenStr}}</span>
+                    <span [title]="gemeindenStr">{{getGemeindenForBenutzer(element)}}</span>
                     </mat-cell>
                 </ng-container>
 

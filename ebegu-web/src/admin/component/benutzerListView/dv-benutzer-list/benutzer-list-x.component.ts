@@ -124,8 +124,8 @@ export class BenutzerListXComponent implements OnInit {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
             this.updateTraegerschaftenList();
             this.updateSozialdienstList();
-            this.displayedColumns.push('sozialdienst', 'traegerschaft');
-            this.filterColumns.push('sozialdienst-filter', 'traegerschaft-filter');
+            this.displayedColumns.push('traegerschaft', 'sozialdienst');
+            this.filterColumns.push('traegerschaft-filter', 'sozialdienst-filter');
         }
         this.displayedColumns.push('status');
         this.filterColumns.push('status-filter');
@@ -254,5 +254,11 @@ export class BenutzerListXComponent implements OnInit {
             this.page + 5); i++) {
             this.paginationItems.push(i);
         }
+    }
+
+    public getGemeindenForBenutzer(benutzer: TSBenutzer): string {
+        return benutzer.currentBerechtigung?.gemeindeList
+            .map(g => g.name)
+            .join(', ');
     }
 }
