@@ -2827,7 +2827,7 @@
     "GUTSCHEINAUSGABESTELLE": "Gutscheinausgabestelle",
     "GEMEINDE_KENNZAHLEN": "Gemeinde-Kennzahlen Betreuungsgutscheine",
     "GEMEINDE_KENNZAHLEN_FORMULAR": "Kennzahlen",
-    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT": "Wurde das Kontingenz ausgeschöpft?",
+    "GEMEINDE_KENNZAHLEN_NACHFRAGE_ERFUELLT": "Wurde das Kontingent ausgeschöpft?",
     "GEMEINDE_KENNZAHLEN_GEMEINDE_KONTINGENTIERT": "Kontingentiert Ihre Gemeinde die Ausgabe der Betreuungsgutscheine mittels Gemeindereglement?",
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_ANZAHL": "Für Gemeinden die Kontingentieren: Anzahl Kinder auf Warteliste per 15.9.{{jahr}}",
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Für Gemeinden die Kontingentieren: Dauer in Monaten, wie lange Kinder durchschnittlich auf Warteliste sind",

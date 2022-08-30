@@ -50,7 +50,6 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -178,8 +177,10 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			Preconditions.checkState(
 					gemeindeKennzahlen.getNachfrageErfuellt() != null,
 					"nachfrageErfuellt must not be null");
-			Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
-			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
+			if (gemeindeKennzahlen.getNachfrageErfuellt()) {
+				Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
+				Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
+			}
 		}
 	}
 
