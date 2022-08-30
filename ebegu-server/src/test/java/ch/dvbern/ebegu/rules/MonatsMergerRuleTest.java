@@ -17,14 +17,21 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import ch.dvbern.ebegu.entities.Abwesenheit;
+import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -246,6 +253,64 @@ public class MonatsMergerRuleTest {
 		assertBemerkungWithGueltigkeit(zaMay, MsgKey.UNBEZAHLTER_URLAUB_MSG, new DateRange(zaMay.getGueltigkeit().getGueltigAb(), JANUAR_26.plusMonths(4)));
 		assertBemerkungWithGueltigkeit(zaApril, MsgKey.UNBEZAHLTER_URLAUB_MSG, new DateRange(JANUAR_26.plusMonths(3), zaApril.getGueltigkeit().getGueltigBis()));
 
+	}
+
+	@Test
+	public void abwesenheitMitteMonatMergen() {
+		//Setup mit BGPensum 80% (60% plus 20% Zuschlag), Abwesenheit von 17.08-26.10
+		ErwerbspensumContainer ewp = TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE, 60);
+		final Betreuung betreuung = createBetreuungWithErwerpspensen(ewp);
+
+		Betreuungspensum betreuungspensum = new Betreuungspensum();
+		betreuungspensum.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
+		betreuungspensum.setMonatlicheBetreuungskosten(new BigDecimal(2000));
+		betreuungspensum.setPensum(new BigDecimal(60));
+		BetreuungspensumContainer container = new BetreuungspensumContainer();
+		container.setBetreuungspensumJA(betreuungspensum);
+
+		betreuung.setBetreuungspensumContainers(new HashSet<>());
+		betreuung.getBetreuungspensumContainers().add(container);
+
+		DateRange abwesenheitGueltigkeit = new DateRange(
+			LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.AUGUST, 17),
+			LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 26));
+		Abwesenheit abwesenheit = new Abwesenheit();
+		abwesenheit.setGueltigkeit(abwesenheitGueltigkeit);
+
+		AbwesenheitContainer abwesenheitContainer = new AbwesenheitContainer();
+		abwesenheitContainer.setAbwesenheitJA(abwesenheit);
+		abwesenheit.setAbwesenheitContainer(abwesenheitContainer);
+
+		betreuung.getAbwesenheitContainers().add(abwesenheitContainer);
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		Assert.assertNotNull(result);
+
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(new MonatsRule(false), betreuung, result);
+		result = EbeguRuleTestsHelper.runSingleAbschlussRule(new MonatsMergerRule(false, true), betreuung, result);
+
+		//ZA August Betreuung während kompletem Monat Anteil an zu beazahlenden Vollkosten = 0
+		VerfuegungZeitabschnitt zaAugust = getVerfuegungZeitabschnittGueltigInMonth(result, Month.AUGUST);
+		Assert.assertFalse(zaAugust.getRelevantBgCalculationInput().isBezahltKompletteVollkosten());
+		Assert.assertEquals(BigDecimal.ZERO, zaAugust.getRelevantBgCalculationInput().getBezahltVollkostenMonatAnteil());
+
+		//ZA September Betreuung vom 01.09-15.09 -> 15 Tage -> Anteil an zu beazahlenden Vollkosten = 0.5
+		VerfuegungZeitabschnitt zaSeptember = getVerfuegungZeitabschnittGueltigInMonth(result, Month.SEPTEMBER);
+		Assert.assertFalse(zaSeptember.getRelevantBgCalculationInput().isBezahltKompletteVollkosten());
+		Assert.assertEquals(new BigDecimal("0.5").stripTrailingZeros(),
+			zaSeptember.getRelevantBgCalculationInput().getBezahltVollkostenMonatAnteil().stripTrailingZeros());
+
+		//ZA Oktober Betreuung vom 27.10-31.10 -> 5 Tage -> Anteil an zu beazahlenden Vollkosten = 0.8387 (01.10.-26.10 => 83.87 %)
+		VerfuegungZeitabschnitt zaOctober = getVerfuegungZeitabschnittGueltigInMonth(result, Month.OCTOBER);
+		Assert.assertFalse(zaOctober.getRelevantBgCalculationInput().isBezahltKompletteVollkosten());
+		Assert.assertEquals(new BigDecimal("0.8387").stripTrailingZeros()
+			, zaOctober.getRelevantBgCalculationInput().getBezahltVollkostenMonatAnteil().round(new MathContext(4)));
+
+		//ZA November Betreuung wieder während kompletem Monat Anteil an zu beazahlenden Vollkosten = 0
+		VerfuegungZeitabschnitt zaNovember = getVerfuegungZeitabschnittGueltigInMonth(result, Month.NOVEMBER);
+		Assert.assertFalse(zaNovember.getRelevantBgCalculationInput().isBezahltKompletteVollkosten());
+		Assert.assertEquals(BigDecimal.ZERO, zaNovember.getRelevantBgCalculationInput().getBezahltVollkostenMonatAnteil());
 	}
 
 	private void assertBemerkungWithGueltigkeit(VerfuegungZeitabschnitt zeitabschnitt, MsgKey msgKey, DateRange gueltigkeit) {

@@ -67,8 +67,10 @@
 			  angebotts="true"
 			  angebotfi="false"
 			  gueltig_bis="9999-12-31"
+			  besondere_volksschule="false"
 			  nur_lats="false"
-			  besondere_volksschule="false"/>
+			  event_published="true"/>
+			  />
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6Hdw=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"
@@ -88,7 +90,8 @@
 			  angebotfi="false"
 			  nur_lats="false"
 			  gueltig_bis="9999-12-31"
-			  besondere_volksschule="false"/>
+			  besondere_volksschule="false"
+			  event_published="true"/>
 	<sequence id="43RuuG7vQO+eUparSNjyIA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"

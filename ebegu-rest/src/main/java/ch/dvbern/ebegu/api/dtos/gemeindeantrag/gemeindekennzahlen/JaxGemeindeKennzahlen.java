@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 
 public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 
@@ -54,7 +55,7 @@ public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 	private BigDecimal nachfrageDauer;
 
 	@Nullable
-	private String limitierungTfo;
+	private EinschulungTyp limitierungTfo;
 
 	@Nonnull
 	public JaxGemeinde getGemeinde() {
@@ -102,11 +103,11 @@ public class JaxGemeindeKennzahlen extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getLimitierungTfo() {
+	public EinschulungTyp getLimitierungTfo() {
 		return limitierungTfo;
 	}
 
-	public void setLimitierungTfo(@Nullable String limitierungTfo) {
+	public void setLimitierungTfo(@Nullable EinschulungTyp limitierungTfo) {
 		this.limitierungTfo = limitierungTfo;
 	}
 
