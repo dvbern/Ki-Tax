@@ -465,4 +465,17 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		}
 		return change.getGueltigBis().isBefore(current.getGueltigBis());
 	}
+
+	public void deleteInstitutionKennzahlenFields() {
+		var stammdatenList = this.getAllInstitonStammdatenForBatchjobs();
+		for (InstitutionStammdaten i : stammdatenList) {
+			var stammdatenBetreuungsgutscheine = i.getInstitutionStammdatenBetreuungsgutscheine();
+			if (stammdatenBetreuungsgutscheine != null) {
+				stammdatenBetreuungsgutscheine.setAuslastungInstitutionen(null);
+				stammdatenBetreuungsgutscheine.setAnzahlKinderWarteliste(null);
+				stammdatenBetreuungsgutscheine.setSummePensumWarteliste(null);
+				stammdatenBetreuungsgutscheine.setDauerWarteliste(null);
+			}
+		}
+	}
 }
