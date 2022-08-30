@@ -691,6 +691,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
 		} catch (IllegalArgumentException e) {
 			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN);
+			LOG.error(e.getMessage());
 		}
 
 		return persistence.persist(fallContainer);
