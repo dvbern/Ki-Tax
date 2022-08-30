@@ -1383,6 +1383,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Nullable
+	public LocalDate getFinSitAenderungStartDatum() {
+		if (finSitAenderungGueltigAbDatum == null) {
+			return getRegelStartDatum();
+		}
+
+		return finSitAenderungGueltigAbDatum;
+	}
+
+	@Nullable
 	public LocalDate getFinSitAenderungGueltigAbDatum() {
 		return finSitAenderungGueltigAbDatum;
 	}
