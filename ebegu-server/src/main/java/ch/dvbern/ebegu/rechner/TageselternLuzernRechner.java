@@ -47,12 +47,12 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
+	protected BigDecimal calculateVollkostenProZeitabschnitt(BigDecimal vollkostenGekuerzt) {
 		return EXACT.multiply(vollkostenGekuerzt, this.verfuegteZeiteinheit);
 	}
 
 	@Override
-	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
+	protected BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein) {
 		return EXACT.multiply(gutschein, this.verfuegteZeiteinheit);
 	}
 

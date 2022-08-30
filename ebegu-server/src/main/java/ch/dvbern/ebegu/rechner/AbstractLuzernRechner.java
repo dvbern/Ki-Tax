@@ -50,6 +50,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	protected BigDecimal verfuegteZeiteinheit; //Betreuungtage oder Betreuungsstunden pro Monat
 
+	protected BigDecimal anteilMonat;
+
 	@Override
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
@@ -73,6 +75,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		this.geschwisternBonus2Kind = calculateGeschwisternBonus2Kind();
 		this.geschwisternBonus3Kind = calculateGeschwisternBonus3Kind();
 
+		this.anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
+			this.input.getParent().getGueltigkeit().getGueltigAb(),
+			this.input.getParent().getGueltigkeit().getGueltigBis());
+
 		this.verfuegteZeiteinheit = calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(input.getBgPensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten = calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
 		BigDecimal betreuungsZeiteinheiten = calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(input.getBetreuungspensumProzent());
@@ -94,8 +100,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehalt, selbstbehaltDerEltern);
 		// Gutschein darf nie null oder negativ sein
 		gutschein = MathUtil.assertNotNullAndNotNegative(gutschein);
-		BigDecimal gutscheinProMonat = calculateGutscheinProMonat(gutschein);
-		BigDecimal vollkostenProMonat = calculateVollkostenProMonat(vollkostenGekuerzt);
+		BigDecimal gutscheinProMonat = calculateGutscheinProZeitanschnitt(gutschein);
+		BigDecimal vollkostenProMonat = calculateVollkostenProZeitabschnitt(vollkostenGekuerzt);
 
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
@@ -137,10 +143,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal pensum) {
-		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
-			this.input.getParent().getGueltigkeit().getGueltigAb(),
-			this.input.getParent().getGueltigkeit().getGueltigBis());
-		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), pensum, anteilMonat);
+		return EXACT.multiply(getAnzahlZeiteinheitenProMonat(), BigDecimal.valueOf(0.01), pensum, this.anteilMonat);
 	}
 
 	protected BigDecimal calculateGutscheinProZeiteinheitVorZuschlagUndSelbstbehalt(BigDecimal gutscheinProTagAufgrundEinkommen) {
@@ -253,10 +256,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return this.selbstBehaltElternProzent;
 	}
 
-	protected abstract BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt);
+	protected abstract BigDecimal calculateVollkostenProZeitabschnitt(BigDecimal vollkostenGekuerzt);
 	protected abstract BigDecimal calculateZuschlag();
 	protected abstract BigDecimal calculateVollkosten();
-	protected abstract BigDecimal calculateGutscheinProMonat(BigDecimal gutschein);
+	protected abstract BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein);
 	protected abstract BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt();
 	protected abstract BigDecimal calculateMinimalerSelbstbehalt();
 	protected abstract BigDecimal getMinimalTarif();
