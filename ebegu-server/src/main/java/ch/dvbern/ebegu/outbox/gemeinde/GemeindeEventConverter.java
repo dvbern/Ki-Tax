@@ -47,6 +47,7 @@ public class GemeindeEventConverter {
 	private GemeindeEventDTO toGemeindeEventDTO(@Nonnull Gemeinde gemeinde) {
 		//noinspection ConstantConditions
 		Builder builder = GemeindeEventDTO.newBuilder()
+			.setGemeindeUUID(gemeinde.getId())
 			.setName(gemeinde.getName())
 			.setBfsNummer(gemeinde.getBfsNummer())
 			.setBetreuungsgutscheineAnbietenAb(gemeinde.getBetreuungsgutscheineStartdatum())
