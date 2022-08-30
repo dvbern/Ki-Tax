@@ -226,18 +226,26 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setBetreuungsstundenProg(betreuungsstundenPrognose);
 
 		// for gemeinden with both normlohnkosten, use same distribution => use same calculated normlohnkosten
-		BigDecimal normlohnkostenCalculated = MathUtil.EXACT.divide(
-			angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
-			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
-			);
+		final boolean islastenausgleichberechtigteBetreuungstundenZero =
+				BigDecimal.ZERO.compareTo(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()) == 0;
+
+		BigDecimal normlohnkostenCalculated =
+				islastenausgleichberechtigteBetreuungstundenZero ?
+						BigDecimal.ZERO :
+						MathUtil.EXACT.divide(
+								angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
+								angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+						);
 
 		Objects.requireNonNull(normlohnkostenCalculated);
 		BigDecimal normlohnkostenProg = normlohnkostenCalculated.multiply(betreuungsstundenPrognose);
 		dto.setNormlohnkostenTotalProg(MathUtil.ceilToFrankenRappen(normlohnkostenProg));
 
-		BigDecimal proportion = MathUtil.EXACT.divide(
-			betreuungsstundenPrognose,
-			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+		BigDecimal proportion = islastenausgleichberechtigteBetreuungstundenZero ?
+				BigDecimal.ZERO :
+				MathUtil.EXACT.divide(
+				betreuungsstundenPrognose,
+				angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
 		);
 
 		Objects.requireNonNull(angabenGemeinde.getEinnahmenElterngebuehren());
