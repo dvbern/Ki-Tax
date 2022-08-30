@@ -31,7 +31,12 @@
         </div>
 
         <div class="mat-elevation-z0">
-            <mat-table [dataSource]="datasource" matSort (matSortChange)="sortChange($event)">
+            <mat-table
+                [dataSource]="datasource"
+                matSort="sort"
+                [matSortDirection]="sort.direction"
+                [matSortActive]="sort.active"
+                (matSortChange)="sortChange($event)">
 
                 <ng-container matColumnDef="username">
                     <mat-header-cell mat-sort-header="username" *matHeaderCellDef class="ellipsis">

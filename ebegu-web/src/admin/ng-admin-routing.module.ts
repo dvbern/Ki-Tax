@@ -87,7 +87,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/benutzerlist',
         component: BenutzerListViewXComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
         },
     },
 ];
