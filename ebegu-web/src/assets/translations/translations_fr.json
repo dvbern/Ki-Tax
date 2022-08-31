@@ -959,6 +959,7 @@
     "ERROR_FILE_TOO_LARGE": "Le fichier est trop volumineux (10MB max).",
     "FAMILIENSITUATION_NACHWEIS_TRENNUNG": "Convention de séparation / jugement de divorce / autre justificatif concernant la séparation / procédure de protection de l'union conjugale",
     "FAMILIENSITUATION_NACHWEIS_UNTERHALTSVEREINBARUNG": "Convention d’entretien ou preuve de l’intention d’en conclure une",
+    "FAMILIENSITUATION_NACHWEIS_GETEILTE_OBHUT": "Justificatif relatif au partage de l'autorité parentale et de la garde de l'enfant",
     "KINDER_FACHSTELLENBESTAETIGUNG": "Confirmation du service spécialisé",
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM": "Contrat de travail / justificatifs des heures fournies / autre justificatif du taux d'activité lucrative",
     "ERWERBSPENSUM_NACHWEIS_SELBSTAENDIGKEIT": "Justificatif d'activité indépendante ou attestation AVS et justificatif du taux d'activité lucrative",
