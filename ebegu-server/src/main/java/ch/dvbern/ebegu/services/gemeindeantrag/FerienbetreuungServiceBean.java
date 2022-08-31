@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
@@ -739,11 +740,11 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Override
 	public byte[] generateFerienbetreuungReportDokument(
-			@Nonnull FerienbetreuungAngabenContainer container) throws MergeDocException {
+		@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) throws MergeDocException {
 		GemeindeStammdaten gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
 						.orElse(new GemeindeStammdaten());
-		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE);
+		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, sprache);
 	}
 }
 
