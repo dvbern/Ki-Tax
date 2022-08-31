@@ -122,6 +122,10 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 						lastenausgleichTagesschuleAngabenGemeinde,
 						dataRow);
 
+					dataRow.setBetreuungsstundenPrognoseBemerkungen(
+						lastenausgleichTagesschuleAngabenGemeindeContainer.getBemerkungenBetreuungsstundenPrognose()
+					);
+
 					lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenInstitutionContainers().forEach(
 						lastenausgleichTagesschuleAngabenInstitutionContainer -> {
 							LastenausgleichTagesschulenDataRow lastenausgleichTagesschulenDataRow =
