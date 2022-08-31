@@ -302,6 +302,32 @@ public class EingewoehnungFristRuleTest {
 				result.get(0).getGueltigkeit().getGueltigBis());
 	}
 
+	@Test
+	public void eingewoehungFristRuleEingagsdatumZuSpaet() {
+		Betreuung betreuung = createGesuch(false, true);
+		Gesuch gesuch = betreuung.extractGesuch();
+		gesuch.setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(1));
+
+		assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 40));
+
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
+
+		Assert.assertEquals(2, result.size());
+		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1),
+			result.get(0).getGueltigkeit().getGueltigBis());
+
+		Assert.assertEquals(60, result.get(1).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), result.get(1).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			TestDataUtil.ENDE_PERIODE,
+			result.get(1).getGueltigkeit().getGueltigBis());
+	}
+
 	private Betreuung createGesuch(final boolean gs2, final boolean eingewoehnung) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		betreuung.setEingewoehnung(eingewoehnung);
