@@ -50,14 +50,14 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateVollkostenProMonat(BigDecimal vollkostenGekuerzt) {
-		//Bei KITA Rechner wurden die Vollkosten bereits pro Monat berechnet
+	protected BigDecimal calculateVollkostenProZeitabschnitt(BigDecimal vollkostenGekuerzt) {
+		//Bei KITA Rechner wurden die Vollkosten bereits pro Zeitabschnitt berechnet
 		return vollkostenGekuerzt;
 	}
 
 	@Override
-	protected BigDecimal calculateGutscheinProMonat(BigDecimal gutschein) {
-		//Bei KITA Rechner wird der Gutschein schon pro Monat berechnet
+	protected BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein) {
+		//Bei KITA Rechner wird der Gutschein schon pro Zeitabschnitt berechnet
 		return gutschein;
 	}
 
@@ -78,13 +78,14 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		BigDecimal betreuungspensum = input.getBetreuungspensumProzent();
 		BigDecimal anspruchsPensum = BigDecimal.valueOf(input.getAnspruchspensumProzent());
 
+		BigDecimal vollKostenProMonat = input.getMonatlicheBetreuungskosten();
 		//wenn anspruchspensum < betreuungspensum, dann anspruchspensum/betreuungspensum * monatlicheBetreuungskosten
 		if(anspruchsPensum.compareTo(betreuungspensum) < 0) {
 			BigDecimal anspruchsPensumDevidedByBetreuungspensum = EXACT.divide(anspruchsPensum, betreuungspensum);
-			return EXACT.multiply(anspruchsPensumDevidedByBetreuungspensum, input.getMonatlicheBetreuungskosten());
+			vollKostenProMonat = EXACT.multiply(anspruchsPensumDevidedByBetreuungspensum, input.getMonatlicheBetreuungskosten());
 		}
 
-		return input.getMonatlicheBetreuungskosten();
+		return EXACT.multiply(vollKostenProMonat, anteilMonat);
 	}
 
 	@Override

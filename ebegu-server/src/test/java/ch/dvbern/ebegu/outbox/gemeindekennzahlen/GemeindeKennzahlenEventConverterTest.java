@@ -23,9 +23,11 @@ import java.time.LocalDate;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.kibon.exchange.commons.gemeindekennzahlen.GemeindeKennzahlenEventDTO;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,10 @@ public class GemeindeKennzahlenEventConverterTest {
 	@Test
 	public void testChangedEvent() {
 		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setId("12345");
 		gemeinde.setBfsNummer(123L);
+		gemeinde.setMandant(new Mandant());
+		gemeinde.getMandant().setMandantIdentifier(MandantIdentifier.BERN);
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setGueltigkeit(new DateRange());
 		gesuchsperiode.getGueltigkeit().setGueltigAb(LocalDate.of(2022,8,1));
@@ -62,6 +67,7 @@ public class GemeindeKennzahlenEventConverterTest {
 		GemeindeKennzahlenEventDTO specificRecord = AvroConverter.fromAvroBinary(gemeindeKennzahlenChangedEvent.getSchema(), gemeindeKennzahlenChangedEvent.getPayload());
 
 		assertThat(specificRecord, is(pojo(GemeindeKennzahlenEventDTO.class)
+			.where(GemeindeKennzahlenEventDTO::getGemeindeUUID, is(gemeinde.getId()))
 			.where(GemeindeKennzahlenEventDTO::getBfsNummer, is(123L))
 			.where(
 				GemeindeKennzahlenEventDTO::getGesuchsperiodeStart,

@@ -57,6 +57,7 @@ public class GemeindeKennzahlenEventConverter {
 	private GemeindeKennzahlenEventDTO toGemeindeKennzahlenEventDTO(@Nonnull GemeindeKennzahlen gemeindeKennzahlen) {
 		//noinspection ConstantConditions
 		Builder builder = GemeindeKennzahlenEventDTO.newBuilder()
+			.setGemeindeUUID(gemeindeKennzahlen.getGemeinde().getId())
 			.setBfsNummer(gemeindeKennzahlen.getGemeinde().getBfsNummer())
 			.setGesuchsperiodeStart(gemeindeKennzahlen.getGesuchsperiode().getGueltigkeit().getGueltigAb())
 			.setGesuchsperiodeStop(gemeindeKennzahlen.getGesuchsperiode().getGueltigkeit().getGueltigBis())

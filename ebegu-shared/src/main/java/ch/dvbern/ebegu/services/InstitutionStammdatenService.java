@@ -120,4 +120,14 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getAllTagesschulenForGemeinde(@Nonnull Gemeinde gemeinde);
 
 	boolean isGueltigkeitDecrease(@Nonnull DateRange current, @Nonnull DateRange change);
+
+	/**
+	 * Nur für Batchjob.
+	 * Löscht von allen Institutionen die Felder:
+	 * * Auslastung der Institutionen
+	 * * Anzahl Kinder auf Warteliste
+	 * * Pensum Warteliste
+	 * * Dauer Warteliste
+	 */
+	void deleteInstitutionKennzahlenFields();
 }

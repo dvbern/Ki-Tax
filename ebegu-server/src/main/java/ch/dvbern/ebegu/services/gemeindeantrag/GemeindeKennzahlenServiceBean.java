@@ -217,13 +217,12 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 			"gemeindeKontingentiert must not be null");
 		if (gemeindeKennzahlen.getGemeindeKontingentiert()) {
 			Preconditions.checkState(
-				gemeindeKennzahlen.getNachfrageErfuellt() != null,
-				"nachfrageErfuellt must not be null");
-			Preconditions.checkState(
-				gemeindeKennzahlen.getNachfrageAnzahl() != null,
-				"nachfrageAnzahl must not be null");
-			Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be "
-				+ "null");
+					gemeindeKennzahlen.getNachfrageErfuellt() != null,
+					"nachfrageErfuellt must not be null");
+			if (gemeindeKennzahlen.getNachfrageErfuellt()) {
+				Preconditions.checkState(gemeindeKennzahlen.getNachfrageAnzahl() != null, "nachfrageAnzahl must not be null");
+				Preconditions.checkState(gemeindeKennzahlen.getNachfrageDauer() != null, "nachfrageDauer must not be null");
+			}
 		}
 	}
 
