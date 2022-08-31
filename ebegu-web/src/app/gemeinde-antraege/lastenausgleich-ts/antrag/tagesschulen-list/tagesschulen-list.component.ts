@@ -109,7 +109,7 @@ export class TagesschulenListComponent implements OnInit {
         this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
             if (container.isAtLeastInBearbeitungKanton() && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 this.tableColumns = [
-                    {displayedName: 'Tagesschule', attributeName: 'institutionName'},
+                    {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
                     {displayedName: 'STATUS', attributeName: 'status'},
                     {
                         displayedName: 'KONTROLLFRAGEN',

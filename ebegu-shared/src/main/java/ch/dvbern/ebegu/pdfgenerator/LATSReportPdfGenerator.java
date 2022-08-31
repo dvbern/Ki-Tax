@@ -196,13 +196,13 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
+				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString(),getSchuljahrBasisjahrPlus1AsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_MIT_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_VOLKSSCHULANGEBOT, mandant, getSchuljahrBasisjahrAsString()),
+				translate(BETREUUNGSSTUNDEN_VOLKSSCHULANGEBOT, mandant, getSchuljahrBasisjahrPlus1AsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
 		table.addRow(
 				translate(LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN, mandant),
@@ -220,7 +220,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
 		table.addRow(
-				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getNextSchuljahrAsString()),
+				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getSchuljahrAsString()),
 				getBooleanAsString(angabenGemeinde.getTagesschuleTeilweiseGeschlossen()));
 		if(Boolean.TRUE.equals(angabenGemeinde.getTagesschuleTeilweiseGeschlossen())) {
 			table.addRow(
