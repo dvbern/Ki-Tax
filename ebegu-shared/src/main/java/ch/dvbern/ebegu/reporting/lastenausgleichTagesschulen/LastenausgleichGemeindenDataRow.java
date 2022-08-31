@@ -122,6 +122,9 @@ public class LastenausgleichGemeindenDataRow {
 	private String betreuungsstundenPrognoseKibon;
 
 	@Nullable
+	private String betreuungsstundenPrognoseBemerkungen;
+
+	@Nullable
 	private BigDecimal betreuungsstundenPrognose;
 
 	private Set<LastenausgleichTagesschulenDataRow> lastenausgleichTagesschulenDaten = new HashSet<>();
@@ -412,6 +415,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBetreuungsstundenPrognoseKibon(@Nullable String betreuungsstundenPrognoseKibon) {
 		this.betreuungsstundenPrognoseKibon = betreuungsstundenPrognoseKibon;
+	}
+
+	@Nullable
+	public String getBetreuungsstundenPrognoseBemerkungen() {
+		return betreuungsstundenPrognoseBemerkungen;
+	}
+
+	public void setBetreuungsstundenPrognoseBemerkungen(@Nullable String betreuungsstundenPrognoseBemerkungen) {
+		this.betreuungsstundenPrognoseBemerkungen = betreuungsstundenPrognoseBemerkungen;
 	}
 
 	public Set<LastenausgleichTagesschulenDataRow> getLastenausgleichTagesschulenDaten() {
