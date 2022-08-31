@@ -118,14 +118,13 @@ public interface PDFService {
 	byte[] generateFerienbetreuungReport(
 		@Nonnull FerienbetreuungAngabenContainer ferienbetreuung,
 		@Nonnull GemeindeStammdaten gemeindeStammdaten,
-		@Nonnull Locale locale
+		@Nonnull Sprache sprache
 	) throws MergeDocException;
 
 	@Nonnull
 	byte[] generateLATSReport(
 			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
-			@Nullable GemeindeStammdaten gemeindeStammdaten,
-			@Nonnull Locale locale,
+			@Nonnull Sprache sprache,
 			Einstellung lohnnormkosten,
 			Einstellung lohnnormkostenLessThan50) throws MergeDocException;
 }

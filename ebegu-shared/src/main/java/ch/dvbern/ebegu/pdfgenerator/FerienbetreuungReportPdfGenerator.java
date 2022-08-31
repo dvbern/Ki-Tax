@@ -21,12 +21,12 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import ch.dvbern.ebegu.util.Constants;
@@ -114,8 +114,8 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 
 	public FerienbetreuungReportPdfGenerator(
 			@Nonnull FerienbetreuungAngabenContainer gemeindeAntrag,
-			@Nonnull GemeindeStammdaten gemeindeStammdaten) {
-		super(gemeindeAntrag, gemeindeStammdaten);
+			@Nonnull Sprache sprache) {
+		super(gemeindeAntrag, sprache);
 		this.ferienbetreuungAngabenContainer = gemeindeAntrag;
 	}
 
