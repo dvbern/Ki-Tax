@@ -2408,7 +2408,7 @@
     "LATS_ANGABEN_TAGESSCHULEN": "Données pour les écoles à journée continue",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Il existe déjà une demande de ce type pour cette période",
     "ERROR_LATS_KOMMENTAR_SAVE": "Il y a eu un problème lors de la sauvegarde du commentaire",
-    "ERROR_VERANTWORTLICHER_SAVE": "Es gab ein Problem beim Speichern des Verantwortlichen",
+    "ERROR_VERANTWORTLICHER_SAVE": "Il y a eu un problème lors de la sauvegarde du responsable",
     "LATS_ALLGEMEINE_ANGABEN_GEMEINDE": "A) Informations générales",
     "LATS_BEDARF_BEI_ELTERN_ABGEKLAERT": "L'enquête des besoins a-t-elle été effectuée auprès de tous les parents, pour la prise en charge de tous les jours de la semaine (matin, midi, après-midi) ? (Art. 2 de l'OEC)",
     "LATS_ANGEBOT_FERIENBETREUUNG_VORHANDEN": "Votre commune propose-t-elle une prise en charge des élèves durant les vacances pour l'année scolaire en cours {{jahr}} ?",
@@ -2904,6 +2904,6 @@
     "KORRESPONDENZ_STANDARD_SIGNATUR_HELP": "Cette signature va être ajoutée dans chaque message que vous envoyez dans kiBon. Vous pouvez l'éditer directement dans le message.",
     "PDF_GENERIERUNG": "Génération - PDF",
     "KIBON_MITTEILUNGEN": "kiBon - Messages",
-    "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
+    "GEMEINDE_ANGEBOT_NUR_LATS": "Seulement pour la compensation des charges écoles à journée continue",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
