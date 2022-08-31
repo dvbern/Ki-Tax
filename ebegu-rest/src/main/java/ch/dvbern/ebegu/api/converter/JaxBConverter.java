@@ -2844,6 +2844,7 @@ public class JaxBConverter extends AbstractConverter {
 		selbstdeklaration.setEinkunftUeberige(jaxSelbstdeklaration.getEinkunftUeberige());
 		selbstdeklaration.setEinkunftLiegenschaften(jaxSelbstdeklaration.getEinkunftLiegenschaften());
 		selbstdeklaration.setAbzugBerufsauslagen(jaxSelbstdeklaration.getAbzugBerufsauslagen());
+		selbstdeklaration.setAbzugSchuldzinsen(jaxSelbstdeklaration.getAbzugSchuldzinsen());
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		selbstdeklaration.setAbzugSaeule3A(jaxSelbstdeklaration.getAbzugSaeule3A());
 		selbstdeklaration.setAbzugVersicherungspraemien(jaxSelbstdeklaration.getAbzugVersicherungspraemien());
@@ -2908,6 +2909,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setEinkunftUeberige(persistedSelbstdeklaration.getEinkunftUeberige());
 		jaxSelbstdeklaration.setEinkunftLiegenschaften(persistedSelbstdeklaration.getEinkunftLiegenschaften());
 		jaxSelbstdeklaration.setAbzugBerufsauslagen(persistedSelbstdeklaration.getAbzugBerufsauslagen());
+		jaxSelbstdeklaration.setAbzugSchuldzinsen(persistedSelbstdeklaration.getAbzugSchuldzinsen());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		jaxSelbstdeklaration.setAbzugSaeule3A(persistedSelbstdeklaration.getAbzugSaeule3A());
 		jaxSelbstdeklaration.setAbzugVersicherungspraemien(persistedSelbstdeklaration.getAbzugVersicherungspraemien());
