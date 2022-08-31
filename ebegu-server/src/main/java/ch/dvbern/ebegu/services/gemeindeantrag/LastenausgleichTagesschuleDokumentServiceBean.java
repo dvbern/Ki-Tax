@@ -113,9 +113,6 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	public byte[] generateLATSReportDokument(
 		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
 		Sprache sprache) throws MergeDocException {
-		GemeindeStammdaten gemeindeStammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
-						.orElse(null);
 		Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
 		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
 		return pdfService.generateLATSReport(container, sprache, lohnnormkosten, lohnnormkostenLessThan50);
