@@ -95,14 +95,14 @@ export class PendenzenListViewComponent {
     }
 
     private countData(): void {
-        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).subscribe(
             response => this.pagination.totalItemCount = response ? response : 0,
         );
     }
 
     private loadData(): void {
         this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
-            .then(response => {
+            .subscribe(response => {
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => {
                     return {
@@ -136,6 +136,7 @@ export class PendenzenListViewComponent {
             ...listFilter,
         };
         this.loadData();
+        this.countData();
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {

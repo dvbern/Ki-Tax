@@ -423,7 +423,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
+            this.searchRS.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => {
                 return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
@@ -474,7 +474,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (!EbeguUtil.isNullOrUndefined(this.data$)) {
             return;
         }
-        this.searchRS.countAntraege(body).then(result => {
+        this.searchRS.countAntraege(body).subscribe(result => {
             this.totalItems = result;
             this.changeDetectorRef.markForCheck();
         });

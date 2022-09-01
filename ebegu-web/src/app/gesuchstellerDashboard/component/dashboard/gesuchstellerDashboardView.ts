@@ -106,7 +106,7 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
-        return this.searchRS.getAntraegeOfDossier(this.dossier.id).then((response: any) => {
+        return this.searchRS.getAntraegeOfDossier(this.dossier.id).toPromise().then((response: any) => {
             this.antragList = angular.copy(response);
             this.getAmountNewMitteilungen();
             this.updateActiveGesuchsperiodenList();
