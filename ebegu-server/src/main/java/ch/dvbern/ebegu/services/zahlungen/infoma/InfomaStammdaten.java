@@ -1,9 +1,15 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
+import java.time.Month;
+import java.util.Locale;
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -71,21 +77,17 @@ public abstract class InfomaStammdaten {
 	}
 
 	@Nonnull
-	private String getKundenspezifischesFeld2(Zahlung zahlung) {
-		final int monthValueVon = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonthValue();
-		final int monthValueBis = zahlung.getZahlungsauftrag().getGueltigkeit().getGueltigBis().getMonthValue();
-		String monthBezeichnung = "";
-		if (monthValueVon == monthValueBis) {
-			monthBezeichnung = String.valueOf(monthValueVon);
-		} else {
-			monthBezeichnung = monthValueVon + "/" + monthValueBis;
-		}
-		return "BG "
-			+ zahlung.getZahlungsauftrag().getDatumGeneriert().getYear()
-			+ ", "
-			+ monthBezeichnung
-			+ ", "
-			+ zahlung.getEmpfaengerName();
+	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung) {
+		final String kontoinhaber = zahlung.getAuszahlungsdaten().getKontoinhaber();
+		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
+		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
+
+		// Just to keep IDE happy. auf Zahlungsauftrag ist Mandant NotNull im Interface nullable.
+		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
+
+		String monthBezeichnung = ServerMessageUtil
+			.translateEnumValue(monthValueDatumGeneriert, Locale.GERMAN, zahlung.getZahlungsauftrag().getMandant());
+		return kontoinhaber + ", Betreuungsgutscheine " + monthBezeichnung + ' ' + yearValueDatumGeneriert;
 	}
 
 	@Nonnull
