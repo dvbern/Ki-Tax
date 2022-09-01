@@ -40,11 +40,14 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.EinschulungTyp;
+import ch.dvbern.kibon.exchange.commons.types.Mandant;
 import ch.dvbern.kibon.exchange.commons.types.Regelwerk;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
@@ -75,7 +78,10 @@ public class VerfuegungEventConverter {
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
 		Objects.requireNonNull(verfuegung.getBetreuung());
-		return Optional.of(new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema()));
+		return Optional.of(new VerfuegungVerfuegtEvent(
+			verfuegung.getBetreuung().getBGNummer(),
+			payload,
+			dto.getSchema()));
 	}
 
 	@Nullable
@@ -105,7 +111,8 @@ public class VerfuegungEventConverter {
 			.setVerfuegtAm(verfuegtAm)
 			.setGemeindeBfsNr(gemeinde.getBfsNummer())
 			.setGemeindeName(gemeinde.getName())
-			.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
+			.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern())
+			.setMandant(Mandant.valueOf(gemeinde.getMandant().getMandantIdentifier().name()));
 
 		setZeitabschnitte(verfuegung, builder);
 
@@ -114,10 +121,20 @@ public class VerfuegungEventConverter {
 
 	@Nonnull
 	private KindDTO toKindDTO(@Nonnull Kind kind) {
+		assert kind.getEinschulungTyp() != null;
+		assert kind.getSprichtAmtssprache() != null;
 		return KindDTO.newBuilder()
 			.setVorname(kind.getVorname())
 			.setNachname(kind.getNachname())
 			.setGeburtsdatum(kind.getGeburtsdatum())
+			.setStufe(EinschulungTyp.valueOf(kind.getEinschulungTyp().name()))
+			.setHatSozialeIndikation(kind.getPensumFachstelle() != null ?
+				kind.getPensumFachstelle().getIntegrationTyp().equals(IntegrationTyp.SOZIALE_INTEGRATION) :
+				false)
+			.setHatSprachlicheIndikation(kind.getPensumFachstelle() != null ?
+				kind.getPensumFachstelle().getIntegrationTyp().equals(IntegrationTyp.SPRACHLICHE_INTEGRATION) :
+				false)
+			.setSprichtMuttersprache(kind.getSprichtAmtssprache().booleanValue())
 			.build();
 	}
 
@@ -134,7 +151,8 @@ public class VerfuegungEventConverter {
 	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
-			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatusInstitution().isIgnoriertIgnorierend()));
+			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatusInstitution()
+				.isIgnoriertIgnorierend()));
 
 		List<VerfuegungZeitabschnitt> ignoredAbschnitte = abschnitteByIgnored.getOrDefault(true, emptyList());
 		List<VerfuegungZeitabschnitt> verrechnetAbschnitte = abschnitteByIgnored.getOrDefault(false, emptyList());
@@ -199,6 +217,14 @@ public class VerfuegungEventConverter {
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
 			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
 			.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern())
+			.setBesondereBeduerfnisse(zeitabschnitt.isBesondereBeduerfnisseBestaetigt())
+			.setMassgegebendesEinkommen(zeitabschnitt.getMassgebendesEinkommen())
+			.setGutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
+				.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
+			.setAusserordentlicherAnspruch(
+				zeitabschnitt.getVerfuegung().getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null ?
+				zeitabschnitt.getVerfuegung().getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse() :
+				false)
 			.build();
 	}
 }
