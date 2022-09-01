@@ -550,6 +550,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				LastenausgleichTagesschuleAngabenGemeindeStatus.NEU)
 		);
 		query.where(institutionIn, notNeu);
+		query.groupBy(root.get(AbstractEntity_.id));
 
 		predicates.add(notNeu);
 
