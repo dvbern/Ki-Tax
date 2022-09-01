@@ -479,7 +479,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         }
         this.searchRS.countAntraege(body).subscribe(result => {
             this.totalItems = result;
-        });
+        }, error => LOG.error(error));
     }
 
     private updatePagination(): void {

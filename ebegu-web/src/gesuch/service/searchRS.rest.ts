@@ -27,8 +27,8 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 })
 export class SearchRS {
 
-    private serviceURL = `${CONSTANTS.REST_API}search`;
-    private ebeguRestUtil = new EbeguRestUtil();
+    private readonly serviceURL = `${CONSTANTS.REST_API}search`;
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         public http: HttpClient,

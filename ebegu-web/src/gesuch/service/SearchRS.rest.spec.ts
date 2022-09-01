@@ -30,10 +30,12 @@ describe('searchRS', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{
-                provide: HttpClient,
-                useValue: mockHttpClient
-            }]
+            providers: [
+                {
+                    provide: HttpClient,
+                    useValue: mockHttpClient,
+                },
+            ],
         });
         service = TestBed.inject(SearchRS);
     });
@@ -60,7 +62,7 @@ describe('searchRS', () => {
                     foundPendenzen = result;
                     expect(foundPendenzen).toBeDefined();
                     TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
-                });
+                }, error => console.error(error));
             });
         });
     });
