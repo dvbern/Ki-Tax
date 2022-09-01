@@ -39,7 +39,7 @@ public abstract class InfomaStammdaten {
 	private final String bankcode;
 	private final String kundenspezifischesFeld2;
 
-	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer) {
+	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer, Locale locale) {
 		this.belegnummer = BELEGNUMMER_PRAEFIX + belegnummer;
 		this.externeNummer = getBgNummer(zahlung);
 		this.buchungsdatum = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
@@ -50,7 +50,7 @@ public abstract class InfomaStammdaten {
 		this.betrag = getBetrag(zahlung);
 		this.faelligkeitsdatum = getFaelligkeitsdatum(zahlung);
 		this.bankcode = getBankCode(zahlung);
-		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung);
+		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung, locale);
 	}
 
 	@Nonnull
@@ -77,7 +77,7 @@ public abstract class InfomaStammdaten {
 	}
 
 	@Nonnull
-	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung) {
+	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung, Locale locale) {
 		final String kontoinhaber = zahlung.getAuszahlungsdaten().getKontoinhaber();
 		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
 		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
@@ -86,7 +86,7 @@ public abstract class InfomaStammdaten {
 		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
 
 		String monthBezeichnung = ServerMessageUtil
-			.translateEnumValue(monthValueDatumGeneriert, Locale.GERMAN, zahlung.getZahlungsauftrag().getMandant());
+			.translateEnumValue(monthValueDatumGeneriert, locale, zahlung.getZahlungsauftrag().getMandant());
 		return kontoinhaber + ", Betreuungsgutscheine " + monthBezeichnung + ' ' + yearValueDatumGeneriert;
 	}
 

@@ -67,8 +67,8 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 					zahlung.getEmpfaengerName());
 			}
 
-			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer));
-			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer));
+			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer, locale));
+			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer, locale));
 			nextInfomaBelegnummer++;
 		}
 		sb.append(InfomaFooter.with(zahlungenSorted.size(), zahlungsauftrag.getBetragTotalAuftrag()));
