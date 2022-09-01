@@ -75,11 +75,8 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  **/
 public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
-	private boolean isFKJV = false;
-
 	public BernFinanzielleSituationDokumente(boolean isFKJV) {
-		super();
-		this.isFKJV = isFKJV;
+		super(isFKJV);
 	}
 
 	@Override
@@ -140,7 +137,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
 
-		if (this.isFKJV && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
+		if (this.isFKJV() && finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null
 			&& finanzielleSituationJA.getEinkommenInVereinfachtemVerfahrenAbgerechnet()) {
 			add(
 				getDokument(
@@ -188,7 +185,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			anlageVerzeichnis
 		);
 
-		if (this.isFKJV) {
+		if (this.isFKJV()) {
 			add(
 				getDokument(
 					DokumentTyp.NACHWEIS_BRUTTOVERMOEGENERTRAEGE,

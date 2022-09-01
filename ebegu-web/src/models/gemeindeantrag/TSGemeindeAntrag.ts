@@ -17,6 +17,7 @@
 
 import {TSGemeindeAntragTyp} from '../enums/TSGemeindeAntragTyp';
 import {TSAbstractEntity} from '../TSAbstractEntity';
+import {TSBenutzerNoDetails} from '../TSBenutzerNoDetails';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 
@@ -26,4 +27,5 @@ export class TSGemeindeAntrag extends TSAbstractEntity {
     public gesuchsperiode: TSGesuchsperiode;
     public statusString: string;
     public antragAbgeschlossen: boolean;
+    public verantworlicher: TSBenutzerNoDetails;
 }

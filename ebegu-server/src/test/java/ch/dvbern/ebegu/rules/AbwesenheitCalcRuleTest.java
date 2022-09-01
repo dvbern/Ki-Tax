@@ -61,7 +61,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
-		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		Assert.assertTrue(zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
 	}
 
@@ -75,7 +75,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
-		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		Assert.assertTrue(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		Assert.assertEquals(1, zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().size());
 		Assert.assertEquals(
 			"Das Kind wird länger als 30 aufeinanderfolgende Kalendertage nicht familienergänzend betreut"
@@ -94,7 +94,7 @@ public class AbwesenheitCalcRuleTest {
 		rule.executeRuleIfApplicable(betreuung, zeitAbschnitt);
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt, mandant);
 
-		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltVollkosten());
+		Assert.assertFalse(zeitAbschnitt.getBgCalculationInputAsiv().isBezahltKompletteVollkosten());
 		Assert.assertTrue(zeitAbschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
 	}
 

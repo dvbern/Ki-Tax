@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -56,9 +57,11 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinna
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import com.google.common.base.Preconditions;
@@ -174,6 +177,24 @@ public class FerienbetreuungResource {
 		Objects.requireNonNull(kommentar);
 
 		ferienbetreuungService.saveKommentar(containerId.getId(), kommentar);
+	}
+
+	@ApiOperation(
+		value = "Speichert den Verantwortlichen eines FerienbetreuungsAngebot in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveVerantworlicher/{containerId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveVerantworlicher(
+		@Nullable String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") String containerId
+	) {
+		Objects.requireNonNull(containerId);
+
+		ferienbetreuungService.saveVerantwortlicher(containerId, username);
 	}
 
 	@ApiOperation(
@@ -853,7 +874,7 @@ public class FerienbetreuungResource {
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
 	}
 
-	@ApiOperation("Öffnet FerienbetreuungAngabenKostenEinnahmen zur Wiederbearbeitung als Gemeinde")
+	@ApiOperation("Generiert den Report als PDF")
 	@Nonnull
 	@GET
 	@Path("/{containerId}/report")
@@ -877,7 +898,10 @@ public class FerienbetreuungResource {
 
 		authorizer.checkReadAuthorization(container);
 
-		final byte[] content = ferienbetreuungService.generateFerienbetreuungReportDokument(container);
+		final Locale locale = LocaleThreadLocal.get();
+		Sprache sprache = Sprache.fromLocale(locale);
+
+		final byte[] content = ferienbetreuungService.generateFerienbetreuungReportDokument(container, sprache);
 
 		if (content != null && content.length > 0) {
 			try {

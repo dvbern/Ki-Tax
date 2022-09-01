@@ -20,12 +20,11 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
 import com.lowagie.text.Document;
@@ -99,11 +98,10 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	private final Einstellung lohnnormkostenLessThan50;
 
 	public LATSReportPdfGenerator(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeAntrag,
-			@Nullable GemeindeStammdaten gemeindeStammdaten,
-			@Nonnull Einstellung lohnnormkosten,
-			@Nonnull Einstellung lohnnormkostenLessThan50) {
-		super(gemeindeAntrag, gemeindeStammdaten);
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer gemeindeAntrag,
+		@Nonnull Einstellung lohnnormkosten,
+		@Nonnull Einstellung lohnnormkostenLessThan50, Sprache sprache) {
+		super(gemeindeAntrag, sprache);
 		this.lastenausgleichTagesschuleAngabenGemeindeContainer = gemeindeAntrag;
 		this.lohnnormkosten = lohnnormkosten;
 		this.lohnnormkostenLessThan50 = lohnnormkostenLessThan50;
@@ -198,13 +196,13 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
+				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString(),getSchuljahrBasisjahrPlus1AsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_MIT_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_VOLKSSCHULANGEBOT, mandant, getSchuljahrBasisjahrAsString()),
+				translate(BETREUUNGSSTUNDEN_VOLKSSCHULANGEBOT, mandant, getSchuljahrBasisjahrPlus1AsString()),
 				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
 		table.addRow(
 				translate(LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN, mandant),
@@ -222,7 +220,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
 		table.addRow(
-				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getNextSchuljahrAsString()),
+				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getSchuljahrAsString()),
 				getBooleanAsString(angabenGemeinde.getTagesschuleTeilweiseGeschlossen()));
 		if(Boolean.TRUE.equals(angabenGemeinde.getTagesschuleTeilweiseGeschlossen())) {
 			table.addRow(

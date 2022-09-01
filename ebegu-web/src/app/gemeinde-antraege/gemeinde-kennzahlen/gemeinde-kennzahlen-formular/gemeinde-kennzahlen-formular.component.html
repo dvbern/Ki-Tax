@@ -43,6 +43,7 @@
 							name="gemeindeKontingentiert"
                             #gemeindeKontingentiert="ngModel"
 							horizontal
+                            (change)="onGemeindeKontingentiertChange($event, antragAndPrincipal[0])"
 							[disabled]="isFormDisabledFor(antragAndPrincipal)"
 							[required]="abschlussValidationTriggered"
 							[(ngModel)]="antragAndPrincipal[0].gemeindeKontingentiert">
@@ -69,6 +70,7 @@
 								name="nachfrageErfuellt"
                                 #nachfrageErfuellt="ngModel"
 								horizontal
+                                (change)="onNachfrageErfuelltChange($event, antragAndPrincipal[0])"
 								[disabled]="isFormDisabledFor(antragAndPrincipal)"
 								[required]="abschlussValidationTriggered"
 								[(ngModel)]="antragAndPrincipal[0].nachfrageErfuellt">
@@ -79,7 +81,7 @@
 					</dv-radio-container-x>
 				</dv-input-container-x>
 
-				<dv-input-container-x [noMargin]="true">
+				<dv-input-container-x [noMargin]="true" *ngIf="nachfrageErfuellt.value === true">
 					<label required
 						   [ngClass]="{'label-error': nachfrageAnzahl.errors}"
 						   for="nachfrageAnzahl_id">
@@ -100,7 +102,7 @@
 					</mat-form-field>
 				</dv-input-container-x>
 
-				<dv-input-container-x [noMargin]="true">
+				<dv-input-container-x [noMargin]="true" *ngIf="nachfrageErfuellt.value === true">
 					<label required
 						   [ngClass]="{'label-error': nachfrageDauer.errors}"
 						   for="nachfrageDauer_id">

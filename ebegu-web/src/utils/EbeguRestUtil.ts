@@ -944,6 +944,7 @@ export class EbeguRestUtil {
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
             restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
+            restGemeinde.nurLats = gemeinde.nurLats;
             return restGemeinde;
         }
         return undefined;
@@ -968,6 +969,7 @@ export class EbeguRestUtil {
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
             gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;
+            gemeindeTS.nurLats = gemeindeFromServer.nurLats;
             gemeindeTS.key = gemeindeFromServer.key;
             return gemeindeTS;
         }
@@ -2017,6 +2019,7 @@ export class EbeguRestUtil {
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
         restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
+        restSelbstdeklaration.abzugSchuldzinsen = selbstdeklaration.abzugSchuldzinsen;
         restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
@@ -2130,6 +2133,7 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
+            tsSelbstdeklaration.abzugSchuldzinsen = selbstdeklarationFromServer.abzugSchuldzinsen;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
@@ -4825,6 +4829,10 @@ export class EbeguRestUtil {
                 this.parseGemeinde(new TSGemeinde(), gemeindeAntragFromServer.gemeinde);
             gemeindeAntragTS.statusString = gemeindeAntragFromServer.statusString;
             gemeindeAntragTS.antragAbgeschlossen = gemeindeAntragFromServer.antragAbgeschlossen;
+            if (EbeguUtil.isNotNullOrUndefined(gemeindeAntragFromServer.verantwortlicher)) {
+                gemeindeAntragTS.verantworlicher =
+                    this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeAntragFromServer.verantwortlicher);
+            }
             return gemeindeAntragTS;
         }
         return undefined;
@@ -4851,7 +4859,11 @@ export class EbeguRestUtil {
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenKorrektur);
             gemeindeContainerTS.angabenInstitutionContainers =
                 this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
+            gemeindeContainerTS.verantwortlicher =
+                this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeContainerFromServer.verantwortlicher);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
+            gemeindeContainerTS.bemerkungenBetreuungsstundenPrognose =
+                gemeindeContainerFromServer.bemerkungenBetreuungsstundenPrognose;
             return gemeindeContainerTS;
         }
         return undefined;
@@ -4879,6 +4891,8 @@ export class EbeguRestUtil {
             restGemeindeContainer.angabenInstitutionContainers =
                 this.lastenausgleichTagesschuleAngabenInstitutionContainerListToRestObject(
                     tsGemeindeContainer.angabenInstitutionContainers);
+            restGemeindeContainer.verantwortlicher =
+                this.benutzerNoDetailsToRestObject({}, restGemeindeContainer.verantwortlicher);
             return restGemeindeContainer;
         }
         return undefined;
@@ -5383,6 +5397,7 @@ export class EbeguRestUtil {
         restContainer.angabenDeklaration = this.ferienbetreuungToRestObject({}, containerTS.angabenDeklaration);
         restContainer.angabenKorrektur = this.ferienbetreuungToRestObject({}, containerTS.angabenKorrektur);
         restContainer.internerKommentar = containerTS.internerKommentar;
+        restContainer.verantwortlicher = this.benutzerNoDetailsToRestObject({}, containerTS.verantwortlicher);
         return restContainer;
     }
 
@@ -5533,6 +5548,8 @@ export class EbeguRestUtil {
         containerTS.angabenKorrektur =
             this.parseFerienbetreuung(new TSFerienbetreuungAngaben(), containerFromServer.angabenKorrektur);
         containerTS.internerKommentar = containerFromServer.internerKommentar;
+        containerTS.verantwortlicher =
+            this.parseUserNoDetails(new TSBenutzerNoDetails(), containerFromServer.verantwortlicher);
         return containerTS;
     }
 

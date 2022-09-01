@@ -101,15 +101,15 @@ export class TagesschulenListComponent implements OnInit {
             });
     }
 
-    public isGemeindeSuperadmin(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
+    public isGemeindeMandantOrSuperadmin(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantOnlyRoles()));
     }
 
     private initTableColumns(): void {
         this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
             if (container.isAtLeastInBearbeitungKanton() && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 this.tableColumns = [
-                    {displayedName: 'Tagesschule', attributeName: 'institutionName'},
+                    {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
                     {displayedName: 'STATUS', attributeName: 'status'},
                     {
                         displayedName: 'KONTROLLFRAGEN',
@@ -119,8 +119,8 @@ export class TagesschulenListComponent implements OnInit {
                                 return '';
                             }
                             return isOk ?
-                                '<i class="fa fa-check padding-left-60"></i>' :
-                                '<i class="fa fa-close padding-left-60"></i>';
+                                '<i class="fa fa-check padding-left-60 green"></i>' :
+                                '<i class="fa fa-close padding-left-60 red"></i>';
                         },
                     },
                 ];

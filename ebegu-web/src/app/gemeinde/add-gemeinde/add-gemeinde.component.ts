@@ -245,4 +245,11 @@ export class AddGemeindeComponent implements OnInit {
             this.handleIsBesondereVolksschuleChange(false);
         }
     }
+
+    public getCssClassAngebotBGInput(): string {
+        if (this.tageschuleEnabledForMandant) {
+            return 'inner-option';
+        }
+        return '';
+    }
 }

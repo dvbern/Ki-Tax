@@ -142,8 +142,9 @@
                     </div>
                 </div>
 
+
                 <!-- Standardverantwortliche TS -->
-                <div class="col-sm-6">
+                <div *ngIf="!stammdaten.gemeinde.nurLats" class="col-sm-6">
                     <div class="form-group">
                         <h3 translate
                             for="verantwortliche_ts_id">ALT_STANDARD_VERANTWORTLICHE</h3>
@@ -161,7 +162,9 @@
                                            inputId="verantwortliche_ts_id"></dv-error-messages>
                     </div>
                 </div>
+
             </div>
+            <div *ngIf="!stammdaten.gemeinde.nurLats">
             <div class="row">
                 <!-- Anmeldungen akzeptieren ab -->
                 <div class="col-sm-6">
@@ -219,8 +222,11 @@
                 [korrespondenzspracheDe]="stammdaten.korrespondenzspracheDe"
                 [korrespondenzspracheFr]="stammdaten.korrespondenzspracheFr">
             </dv-gemeinde-ts-konfiguration>
+            </div>
         </fieldset>
+
     </div>
+
     <ng-template #viewModeTemplate>
         <fieldset>
             <div class="row">
@@ -248,13 +254,14 @@
                 </div>
 
                 <!-- Standardverantwortliche -->
-                <div *ngIf="stammdaten.defaultBenutzerTS" class="col-sm-6">
+                <div *ngIf="stammdaten.defaultBenutzerTS && !stammdaten.gemeinde.nurLats" class="col-sm-6">
                     <div class="form-group">
                         <h3 translate>ALT_STANDARD_VERANTWORTLICHE</h3>
                         <p>{{stammdaten.defaultBenutzerTS.vorname}} {{stammdaten.defaultBenutzerTS.nachname}}</p>
                     </div>
                 </div>
             </div>
+            <div *ngIf="!stammdaten.gemeinde.nurLats">
             <div class="row">
                 <!-- Anmeldungen akzeptieren ab -->
                 <div class="col-sm-6">
@@ -321,6 +328,7 @@
                     [editMode]="editMode"
                     [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum">
                 </dv-gemeinde-ts-konfiguration>
+            </div>
             </div>
         </fieldset>
     </ng-template>

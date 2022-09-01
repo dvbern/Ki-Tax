@@ -191,6 +191,8 @@ public class GemeindeResource {
 				.forEach(gp -> initFerieninselnForGemeindeAndGesuchsperiode(persistedGemeinde, gp));
 		}
 
+		gemeindeService.fireGemeindeChangedEvent(persistedGemeinde);
+
 		return converter.gemeindeToJAX(persistedGemeinde);
 	}
 
@@ -224,6 +226,8 @@ public class GemeindeResource {
 		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, gemeinde);
 		Gemeinde persistedGemeinde = this.gemeindeService.saveGemeinde(convertedGemeinde);
 		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
+
+		gemeindeService.fireGemeindeChangedEvent(persistedGemeinde);
 
 		return jaxGemeinde;
 	}
@@ -813,14 +817,16 @@ public class GemeindeResource {
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
-		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS()) {
-			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS());
+		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS() || gemeinde.isNurLats() != jaxGemeinde.isNurLats()) {
+			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS(), jaxGemeinde.isNurLats());
 		}
 		if (gemeinde.isAngebotFI() != jaxGemeinde.isAngebotFI()) {
 			gemeindeService.updateAngebotFI(gemeinde, jaxGemeinde.isAngebotFI());
 
 			handleFIAngebotChange(jaxGemeinde.isAngebotFI(), gemeinde);
 		}
+
+		gemeindeService.fireGemeindeChangedEvent(gemeinde);
 
 		return Response.ok().build();
 	}

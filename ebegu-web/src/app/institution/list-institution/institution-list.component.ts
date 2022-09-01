@@ -77,9 +77,9 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin())),
         ]).subscribe(([gemeinden, isSuperadmin]) => {
             this.userHasGemeindeWithTSEnabled = isSuperadmin ||
-                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => gemeinde.angebotTS));
+                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => (gemeinde.angebotTS && !gemeinde.nurLats)));
             this.userHasGemeindeWithoutTSEnabled = isSuperadmin ||
-                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => !gemeinde.angebotTS));
+                EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => !gemeinde.angebotTS || gemeinde.nurLats));
         }, err => this.log.error(err));
     }
 

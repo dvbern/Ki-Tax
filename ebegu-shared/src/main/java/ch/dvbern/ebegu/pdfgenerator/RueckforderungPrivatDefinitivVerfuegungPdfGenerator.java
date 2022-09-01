@@ -26,11 +26,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
@@ -41,7 +39,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfContentByte;
-import org.jetbrains.annotations.Nullable;
 
 public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends MandantPdfGenerator {
 
@@ -177,7 +174,7 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 
 	private void createSignatur(@Nonnull Document document) {
 
-		if (sprache.equals(Locale.GERMAN)) {
+		if (locale.equals(Locale.GERMAN)) {
 			Paragraph empty = PdfUtil.createParagraph("", 2);
 			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE, mandant));
 			Paragraph begruessungAmt = PdfUtil.createParagraph(translate(BEGRUESSUNG_AMT, mandant), 4);
@@ -205,7 +202,7 @@ public class RueckforderungPrivatDefinitivVerfuegungPdfGenerator extends Mandant
 		createContentWhereIWant(directContent, translate(VERFUEGUNG_TITLE, mandant), 765, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
 		createContentWhereIWant(directContent, translate(VERFUEGUNG_INTRO, mandant), 750, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
 
-		int y = sprache.equals(Locale.GERMAN) ? 720 : 710;
+		int y = locale.equals(Locale.GERMAN) ? 720 : 710;
 		createContentWhereIWant(directContent, translate(SCHLUSSABRECHNUNG, mandant), y, 122, getPageConfiguration().getFonts().getFont(), 6.5f);
 	}
 
