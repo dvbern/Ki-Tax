@@ -216,7 +216,6 @@ export const CORE_JS_MODULE = angular
     .service('FamiliensituationRS', FamiliensituationRS)
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
-    .service('SearchRS', SearchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
     .service('EinkommensverschlechterungContainerRS', EinkommensverschlechterungContainerRS)
     .service('EinkommensverschlechterungInfoRS', EinkommensverschlechterungInfoRS)
@@ -255,6 +254,7 @@ export const CORE_JS_MODULE = angular
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
+    .factory('SearchRS', downgradeInjectable(SearchRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
