@@ -382,7 +382,7 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
-		table.addHeaderRow(translate(EINNAHMEN, mandant), "");
+		table.addHeaderRow(translate(KOSTEN, mandant), "");
 
 		table.addRow(
 				translate(PERSONALKOSTEN, mandant),
@@ -403,7 +403,7 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 				translate(BEMERKUNGEN_KOSTEN, mandant),
 				kostenEinnahmen.getBemerkungenKosten());
 
-		table.addHeaderRow(translate(KOSTEN, mandant), "");
+		table.addHeaderRow(translate(EINNAHMEN, mandant), "");
 		table.addRow(
 				translate(EINNAHMEN_ELTERNBEITRAEGE, mandant),
 				kostenEinnahmen.getElterngebuehren());
