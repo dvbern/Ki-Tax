@@ -205,6 +205,7 @@ export class EbeguRestUtil {
         this.parseAbstractMutableEntity(parsedAppProperty, receivedAppProperty);
         parsedAppProperty.name = receivedAppProperty.name;
         parsedAppProperty.value = receivedAppProperty.value;
+        parsedAppProperty.erklaerung = receivedAppProperty.erklaerung;
         return parsedAppProperty;
     }
 

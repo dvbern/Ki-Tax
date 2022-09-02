@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,6 +35,9 @@ public class JaxApplicationProperties extends JaxAbstractDTO {
 	@NotNull
 	private String name = null;
 
+	@Nullable
+	private String erklaerung;
+
 	public String getValue() {
 		return value;
 	}
@@ -48,5 +52,14 @@ public class JaxApplicationProperties extends JaxAbstractDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Nullable
+	public String getErklaerung() {
+		return erklaerung;
+	}
+
+	public void setErklaerung(@Nullable final String erklaerung) {
+		this.erklaerung = erklaerung;
 	}
 }

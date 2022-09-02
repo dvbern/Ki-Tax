@@ -20,3 +20,9 @@ ADD erklaerung varchar(4000);
 
 ALTER TABLE einstellung_aud
 ADD erklaerung varchar(4000);
+
+ALTER TABLE application_property
+ADD erklaerung varchar(4000);
+
+ALTER TABLE application_property_aud
+ADD erklaerung varchar(4000);

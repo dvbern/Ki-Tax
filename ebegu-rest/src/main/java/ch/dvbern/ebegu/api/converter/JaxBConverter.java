@@ -453,6 +453,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(applicationProperty, jaxProperty);
 		jaxProperty.setName(applicationProperty.getName().toString());
 		jaxProperty.setValue(applicationProperty.getValue());
+		jaxProperty.setErklaerung(applicationProperty.getErklaerung());
 
 		return jaxProperty;
 	}
@@ -469,6 +470,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertMandantFieldsToEntity(applicationProperty);
 		applicationProperty.setName(Enum.valueOf(ApplicationPropertyKey.class, jaxAP.getName()));
 		applicationProperty.setValue(jaxAP.getValue());
+		applicationProperty.setErklaerung(jaxAP.getErklaerung());
 
 		return applicationProperty;
 	}
