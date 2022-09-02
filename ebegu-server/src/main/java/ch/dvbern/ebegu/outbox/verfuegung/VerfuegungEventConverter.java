@@ -135,6 +135,7 @@ public class VerfuegungEventConverter {
 				kind.getPensumFachstelle().getIntegrationTyp().equals(IntegrationTyp.SPRACHLICHE_INTEGRATION) :
 				false)
 			.setSprichtMuttersprache(kind.getSprichtAmtssprache().booleanValue())
+			.setAusserordentlicherAnspruch(kind.getPensumAusserordentlicherAnspruch() != null)
 			.build();
 	}
 
@@ -218,13 +219,9 @@ public class VerfuegungEventConverter {
 			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
 			.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern())
 			.setBesondereBeduerfnisse(zeitabschnitt.isBesondereBeduerfnisseBestaetigt())
-			.setMassgegebendesEinkommen(zeitabschnitt.getMassgebendesEinkommen())
-			.setGutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
+			.setMassgebendesEinkommen(zeitabschnitt.getMassgebendesEinkommen())
+			.setBetreuungsgutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
 				.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
-			.setAusserordentlicherAnspruch(
-				zeitabschnitt.getVerfuegung().getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null ?
-				zeitabschnitt.getVerfuegung().getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse() :
-				false)
 			.build();
 	}
 }
