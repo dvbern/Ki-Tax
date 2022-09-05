@@ -26,6 +26,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
@@ -134,6 +135,22 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setNextInfomaBelegnummerInstitutionen(long nextInfomaBelegnummerInstitutionen) {
 		this.nextInfomaBelegnummerInstitutionen = nextInfomaBelegnummerInstitutionen;
+	}
+
+	public long getNextInofmaBelegnummer(ZahlungslaufTyp zahlungslaufTyp) {
+		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+			return getNextInfomaBelegnummerAntragsteller();
+		}
+
+		return getNextInfomaBelegnummerInstitutionen();
+	}
+
+	public void setNextInfomaBelegnummer(ZahlungslaufTyp zahlungslaufTyp, long nextInfomaBelegnummer) {
+		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+			setNextInfomaBelegnummerAntragsteller(nextInfomaBelegnummer);
+		} else {
+			setNextInfomaBelegnummerInstitutionen(nextInfomaBelegnummer);
+		}
 	}
 
 	@Override

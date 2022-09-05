@@ -868,9 +868,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Die nextBelegnummerInfoma hochzaehlen
 		final Mandant mandant = zahlungsauftrag.getMandant();
 		Objects.requireNonNull(mandant);
-		final long oldNextNummer = mandant.getNextInfomaBelegnummerAntragsteller();
+		final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
 		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
-		mandantService.updateNextInfomaBelegnummer(mandant, oldNextNummer + anzahlNeueZahlungen);
+		mandantService.updateNextInfomaBelegnummer(mandant, zahlungsauftrag.getZahlungslaufTyp(), oldNextNummer + anzahlNeueZahlungen);
 		return persistence.merge(zahlungsauftrag);
 	}
 
