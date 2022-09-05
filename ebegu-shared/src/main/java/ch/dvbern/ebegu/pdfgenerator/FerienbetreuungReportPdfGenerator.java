@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
@@ -108,6 +109,11 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	protected static final String BEMERKUNGEN_KOSTEN = "PdfGeneration_bemerkungenKosten";
 	protected static final String EINNAHMEN_ELTERNBEITRAEGE = "PdfGeneration_einnahmenElternbeitraege";
 	protected static final String WEITERE_EINNAHMEN = "PdfGeneration_weitereEinnahmen";
+	protected static final String LEISTUNGEN_DER_GEMEINDE= "PdfGeneration_leistungenDerGemeinde";
+	protected static final String SOCKELBEITRAG= "PdfGeneration_sockelbeitrag";
+	protected static final String BEITRAEGE_NACH_ANMELDUNGEN = "PdfGeneration_beitraegeNachAnmeldungen";
+	protected static final String VORFINANZIERTE_KANTONSBEITRAEGE = "PdfGeneration_vorfinanzierteKantonsbeitraege";
+	protected static final String EIGENLEISTUNGEN_GEMEINDE= "PdfGeneration_eigenleistungenGemeinde";
 
 	@Nonnull
 	private final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
@@ -375,10 +381,13 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 
 	@Nonnull
 	private PdfPTable createTableKostenEinnahmen() {
-		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen =
-				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenKostenEinnahmen();
+
+		FerienbetreuungAngaben angaben = ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
+			ferienbetreuungAngabenContainer.getAngabenDeklaration() :
+			ferienbetreuungAngabenContainer.getAngabenKorrektur();
+
+		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen = angaben.getFerienbetreuungAngabenKostenEinnahmen();
+		FerienbetreuungAngabenAngebot angebot = angaben.getFerienbetreuungAngabenAngebot();
 
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
@@ -411,10 +420,36 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 				translate(WEITERE_EINNAHMEN, mandant),
 				kostenEinnahmen.getWeitereEinnahmen());
 
+		if (angebot.isDelegationsmodell()) {
+			createTableLeistungenGemeinde(table, kostenEinnahmen);
+		}
+
 		PdfPTable pdfPTable = table.createTable();
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
 
 		return pdfPTable;
+	}
+
+	@Nonnull
+	private void createTableLeistungenGemeinde(
+		@Nonnull SimplePDFTable table,
+		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen
+	) {
+
+		table.addHeaderRow(translate(LEISTUNGEN_DER_GEMEINDE, mandant), "");
+
+		table.addRow(
+				translate(SOCKELBEITRAG, mandant),
+				kostenEinnahmen.getSockelbeitrag());
+		table.addRow(
+				translate(BEITRAEGE_NACH_ANMELDUNGEN, mandant),
+				kostenEinnahmen.getBeitraegeNachAnmeldungen());
+		table.addRow(
+				translate(VORFINANZIERTE_KANTONSBEITRAEGE, mandant),
+				kostenEinnahmen.getVorfinanzierteKantonsbeitraege());
+		table.addRow(
+				translate(EIGENLEISTUNGEN_GEMEINDE, mandant),
+				kostenEinnahmen.getEigenleistungenGemeinde());
 	}
 
 	@Nonnull
