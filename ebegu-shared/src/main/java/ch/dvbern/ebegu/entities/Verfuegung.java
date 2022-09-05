@@ -50,13 +50,13 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -6682874795746487562L;
 
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_XL_LENGTH)
 	@Nullable
-	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String generatedBemerkungen;
+	private @Size(max = Constants.DB_TEXTAREA_XL_LENGTH) String generatedBemerkungen;
 
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_XL_LENGTH)
 	@Nullable
-	private @Size(max = Constants.DB_TEXTAREA_LENGTH) String manuelleBemerkungen;
+	private @Size(max = Constants.DB_TEXTAREA_XL_LENGTH) String manuelleBemerkungen;
 
 	@Nullable
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = true)
