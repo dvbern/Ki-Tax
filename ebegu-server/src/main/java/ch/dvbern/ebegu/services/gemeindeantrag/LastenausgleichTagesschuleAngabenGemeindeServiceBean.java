@@ -550,6 +550,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 				LastenausgleichTagesschuleAngabenGemeindeStatus.NEU)
 		);
 		query.where(institutionIn, notNeu);
+		query.groupBy(root.get(AbstractEntity_.id));
 
 		predicates.add(notNeu);
 
@@ -691,6 +692,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN);
 		} catch (IllegalArgumentException e) {
 			formular.setStatus(LastenausgleichTagesschuleAngabenGemeindeFormularStatus.VALIDIERUNG_FEHLGESCHLAGEN);
+			LOG.error(e.getMessage());
 		}
 
 		return persistence.persist(fallContainer);
