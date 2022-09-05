@@ -27,7 +27,7 @@ import {MatSort} from '@angular/material/sort';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
@@ -40,7 +40,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     templateUrl: './gemeinde-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GemeindeListComponent extends AbstractAdminViewController implements OnInit {
+export class GemeindeListComponent extends AbstractAdminViewX implements OnInit {
     public hiddenDVTableColumns = [
         'institutionCount',
         'type',

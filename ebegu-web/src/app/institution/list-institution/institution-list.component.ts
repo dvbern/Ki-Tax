@@ -21,7 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {combineLatest, from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -41,7 +41,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     templateUrl: './institution-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionListComponent extends AbstractAdminViewController implements OnInit {
+export class InstitutionListComponent extends AbstractAdminViewX implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
 
