@@ -1,6 +1,7 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -41,7 +42,7 @@ public abstract class InfomaStammdaten {
 
 	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer, Locale locale) {
 		this.belegnummer = BELEGNUMMER_PRAEFIX + belegnummer;
-		this.externeNummer = getBgNummer(zahlung);
+		this.externeNummer = getExterneNummer(zahlung, locale);
 		this.buchungsdatum = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
 		this.kontoart = getKontoart();
 		this.kontonummer = getKontonummer(zahlung);
@@ -82,7 +83,6 @@ public abstract class InfomaStammdaten {
 		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
 		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
 
-		// Just to keep IDE happy. auf Zahlungsauftrag ist Mandant NotNull im Interface nullable.
 		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
 
 		String monthBezeichnung = ServerMessageUtil
@@ -91,8 +91,9 @@ public abstract class InfomaStammdaten {
 	}
 
 	@Nonnull
-	private String getBgNummer(@Nonnull Zahlung zahlung) {
-		return zahlung
+	private String getExterneNummer(@Nonnull Zahlung zahlung, Locale locale) {
+		final String bgNummer =
+			zahlung
 			.getZahlungspositionen()
 			.stream()
 			.findFirst()
@@ -101,6 +102,20 @@ public abstract class InfomaStammdaten {
 			.getVerfuegung()
 			.getPlatz()
 			.getBGNummer();
+
+		final String month = zahlung.getZahlungsauftrag().getDatumGeneriert()
+			.format(DateTimeFormatter.ofPattern("_MM_dd", locale));
+		return formatBgNummer(bgNummer) +  month;
+	}
+
+	/**
+	 * Die BG-Nummer soll folendermaasen formatiert werden:
+	 * 22.000461.391.1.1 -> 22000461.39111
+	 */
+	@Nonnull
+	private String formatBgNummer(@Nonnull String bgNummer) {
+		String[] splitedBgNummer = bgNummer.split("\\.", 3);
+		return splitedBgNummer[0] + splitedBgNummer[1] + "." + splitedBgNummer[2].replace(".", "");
 	}
 
 	@Nonnull
