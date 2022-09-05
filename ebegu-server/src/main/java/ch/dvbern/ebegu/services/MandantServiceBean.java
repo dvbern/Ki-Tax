@@ -113,7 +113,7 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 
 	@Override
 	public void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, long nextNumber) {
-		mandant.setNextInfomaBelegnummer(nextNumber);
+		mandant.setNextInfomaBelegnummerAntragsteller(nextNumber);
 		persistence.merge(mandant);
 	}
 }

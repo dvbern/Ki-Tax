@@ -47,7 +47,7 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 		Objects.requireNonNull(zahlungsauftrag.getMandant());
 		// Die nextInfomaBelegnummer darf erst bei der Freigabe der Zahlung auf dem Mandant
 		// hochgezaehlt werden!
-		long nextInfomaBelegnummer = zahlungsauftrag.getMandant().getNextInfomaBelegnummer();
+		long nextInfomaBelegnummer = zahlungsauftrag.getMandant().getNextInfomaBelegnummerAntragsteller();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
