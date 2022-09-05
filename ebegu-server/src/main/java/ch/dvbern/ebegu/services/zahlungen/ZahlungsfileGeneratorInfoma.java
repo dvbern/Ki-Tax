@@ -70,6 +70,12 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer, locale));
 			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer, locale));
 			nextInfomaBelegnummer++;
+
+			if (zahlungsauftrag.getZahlungslaufTyp().isBelegnummerHigherThanMax(nextInfomaBelegnummer)) {
+				throw new EbeguRuntimeException(KibonLogLevel.ERROR,
+					"infomaBelegNummerMaxReached",
+					ErrorCodeEnum.ERROR_INFOMA_BELEGNUMMER_MAX_REACHED);
+			}
 		}
 		sb.append(InfomaFooter.with(zahlungenSorted.size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.US_ASCII);
