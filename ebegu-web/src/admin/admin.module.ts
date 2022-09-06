@@ -20,7 +20,6 @@ import {adminRun} from './admin.route';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {EinstellungRS} from './service/einstellungRS.rest';
-import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
 
@@ -30,7 +29,6 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .service('ReindexRS', ReindexRS)
     .service('TestFaelleRS', TestFaelleRS)
     .service('DailyBatchRS', DailyBatchRS)
-    .service('FerieninselStammdatenRS', FerieninselStammdatenRS)
     .run(adminRun);
 
 export default ADMIN_JS_MODULE;

@@ -13,58 +13,66 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {map} from 'rxjs/operators';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {TSFerienname} from '../../models/enums/TSFerienname';
 import {TSFerieninselStammdaten} from '../../models/TSFerieninselStammdaten';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class FerieninselStammdatenRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-
-    public serviceURL: string;
+    public readonly serviceURL: string;
+    public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public http: HttpClient
     ) {
-        this.serviceURL = `${REST_API}ferieninselStammdaten`;
+        this.serviceURL = `${CONSTANTS.REST_API}ferieninselStammdaten`;
     }
 
-    public saveFerieninselStammdaten(stammdaten: TSFerieninselStammdaten): IPromise<TSFerieninselStammdaten> {
+    public saveFerieninselStammdaten(stammdaten: TSFerieninselStammdaten): Promise<TSFerieninselStammdaten> {
         let stammdatenObj = {};
         stammdatenObj = this.ebeguRestUtil.ferieninselStammdatenToRestObject(stammdatenObj, stammdaten);
 
-        return this.http.put(this.serviceURL, stammdatenObj).then((response: any) => {
-            return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-        });
+        return this.http.put(this.serviceURL, stammdatenObj)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response);
+            }))
+            .toPromise();
     }
 
-    public findFerieninselStammdaten(fachstelleID: string): IPromise<TSFerieninselStammdaten> {
+    public findFerieninselStammdaten(fachstelleID: string): Promise<TSFerieninselStammdaten> {
         return this.http.get(`${this.serviceURL}/id/${encodeURIComponent(fachstelleID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response);
+            }))
+            .toPromise();
     }
 
-    public findFerieninselStammdatenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSFerieninselStammdaten[]> {
+    public findFerieninselStammdatenByGesuchsperiode(gesuchsperiodeId: string): Promise<TSFerieninselStammdaten[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdatenList(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseFerieninselStammdatenList(response);
+            }))
+            .toPromise();
     }
 
     public findFerieninselStammdatenByGesuchsperiodeAndFerien(
         gesuchsperiodeId: string,
         gemeindeId: string,
         ferienname: TSFerienname,
-    ): IPromise<TSFerieninselStammdaten> {
+    ): Promise<TSFerieninselStammdaten> {
         const url = `${encodeURIComponent(gesuchsperiodeId)}/${encodeURIComponent(gemeindeId)}/${ferienname}`;
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${url}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response);
+            }))
+            .toPromise();
     }
 
     public getServiceName(): string {
