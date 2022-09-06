@@ -27,7 +27,7 @@ import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
 
 @Component({
     selector: 'dv-edit-gemeinde-ts',

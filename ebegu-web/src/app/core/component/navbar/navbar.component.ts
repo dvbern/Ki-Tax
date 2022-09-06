@@ -38,7 +38,7 @@ import {GUIDED_TOUR_SUPPORTED_ROLES, GuidedTourByRole} from '../../../kibonTour/
 import {LogFactory} from '../../logging/LogFactory';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../service/institutionRS.rest';
+import {InstitutionRSX} from '../../service/institutionRSX.rest';
 import {SozialdienstRS} from '../../service/SozialdienstRS.rest';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgOkDialogComponent} from '../dv-ng-ok-dialog/dv-ng-ok-dialog.component';

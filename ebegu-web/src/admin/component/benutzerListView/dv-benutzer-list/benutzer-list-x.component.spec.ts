@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {BenutzerRSX} from '../../../../app/core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../../../app/core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../../../app/core/service/institutionRSX.rest';
 import {SozialdienstRS} from '../../../../app/core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../../app/core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../../../app/shared/shared.module';

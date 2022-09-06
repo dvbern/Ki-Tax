@@ -24,7 +24,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';

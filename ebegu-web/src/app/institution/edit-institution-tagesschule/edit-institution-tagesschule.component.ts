@@ -43,7 +43,7 @@ import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialo
 import {DvNgThreeButtonDialogComponent} from '../../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
 import {InfoSchnittstelleDialogComponent} from '../info-schnittstelle-dialog/info-schnittstelle-dialog.component';
