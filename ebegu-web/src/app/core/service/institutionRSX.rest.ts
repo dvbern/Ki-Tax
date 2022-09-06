@@ -124,9 +124,7 @@ export class InstitutionRSX {
     }
 
     public hasInstitutionenInStatusAngemeldet(): Promise<boolean> {
-        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`)
-            .pipe(map((response: any) => response))
-            .toPromise();
+        return this.$http.get<boolean>(`${this.serviceURL}/hasEinladungen/currentuser`).toPromise();
     }
 
     public getExternalClients(institutionId: string): Promise<TSInstitutionExternalClientAssignment> {
@@ -136,15 +134,8 @@ export class InstitutionRSX {
     }
 
     public isStammdatenCheckRequired(): Promise<boolean> {
-        return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`)
-            .pipe(map((response: any) => {
-                return response;
-            }))
+        return this.$http.get<boolean>(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`)
             .toPromise();
-    }
-
-    public getServiceName(): string {
-        return 'InstitutionRS';
     }
 
     public deactivateStammdatenCheckRequired(institutionId: string): Promise<TSInstitution> {
