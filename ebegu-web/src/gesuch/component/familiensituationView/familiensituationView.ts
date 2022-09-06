@@ -253,10 +253,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     private checkChanged2To1GSMutation(): boolean {
         const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
         return (this.model.familiensituationJA.aenderungPer.isBefore(ab)
-            && ((EbeguUtil.isNotNullOrUndefined(this.getGesuch().regelnGueltigAb)
-                && this.getGesuch().regelnGueltigAb.isBefore(ab))
-                || (EbeguUtil.isNullOrUndefined(this.getGesuch().regelnGueltigAb)
-                    && this.getGesuch().eingangsdatum.isBefore(ab))));
+            && this.getGesuch().getRegelStartDatum().isBefore(ab));
     }
 
     private isScheidung(): boolean {

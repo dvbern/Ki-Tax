@@ -362,6 +362,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 		return formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
 			.add(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.add(formular.getGeleisteteBetreuungsstundenBesondereVolksschulangebot())
 			.compareTo(sumTagesschulen) == 0;
 	}
 
