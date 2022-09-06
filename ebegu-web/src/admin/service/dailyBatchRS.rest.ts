@@ -13,38 +13,43 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {map} from 'rxjs/operators';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
+import {CoreModule} from '../../app/core/core.module';
 
+@Injectable({
+    providedIn: CoreModule,
+})
 export class DailyBatchRS {
 
-    public static $inject = ['$http', 'REST_API'];
+    public readonly serviceURL: string;
 
-    public serviceURL: string;
-
-    public constructor(public http: IHttpService, REST_API: string) {
-        this.serviceURL = REST_API + 'dailybatch';
+    public constructor(public $http: HttpClient) {
+        this.serviceURL = CONSTANTS.REST_API + 'dailybatch';
     }
 
     public getServiceName(): string {
         return 'DailyBatchRS';
     }
 
-    public runBatchCleanDownloadFiles(): IPromise<boolean> {
+    public runBatchCleanDownloadFiles(): Promise<boolean> {
         return this.callServer(this.serviceURL + '/cleanDownloadFiles');
     }
 
-    public runBatchMahnungFristablauf(): IPromise<boolean> {
+    public runBatchMahnungFristablauf(): Promise<boolean> {
         return this.callServer(this.serviceURL + '/mahnungFristAblauf');
     }
 
-    public runBatchUpdateGemeindeForBGInstitutionen(): IPromise<boolean> {
+    public runBatchUpdateGemeindeForBGInstitutionen(): Promise<boolean> {
         return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
     }
 
-    private callServer(url: string): IPromise<boolean> {
-        return this.http.get(url)
-            .then((response: any) => {
-                return response; // FIXME müsste es nicht response.data sein?
-            });
+    private callServer(url: string): Promise<boolean> {
+        return this.$http.get<boolean>(url)
+            .pipe(map((response: any) => {
+                return response;
+            })).toPromise();
     }
 }

@@ -139,17 +139,6 @@ export const gesuchRSProvider = {
     deps: ['$injector'],
 };
 
-// DailyBatchRS
-export function dailyBatchRSProviderServiceFactory(i: IInjectorService): DailyBatchRS {
-    return i.get('DailyBatchRS');
-}
-
-export const dailyBatchRSProvider = {
-    provide: DailyBatchRS,
-    useFactory: dailyBatchRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
 // GemeindeRS
 export function gemeindeRSProviderServiceFactory(i: IInjectorService): GemeindeRS {
     return i.get('GemeindeRS');
@@ -401,7 +390,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     gesuchRSProvider,
-    dailyBatchRSProvider,
     gemeindeRSProvider,
     mitteilungRSProvider,
     downloadRSProvider,

@@ -17,7 +17,6 @@ import * as angular from 'angular';
 
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {adminRun} from './admin.route';
-import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {EinstellungRS} from './service/einstellungRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
@@ -26,7 +25,6 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .service('EinstellungRS', EinstellungRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)
     .service('TestFaelleRS', TestFaelleRS)
-    .service('DailyBatchRS', DailyBatchRS)
     .run(adminRun);
 
 export default ADMIN_JS_MODULE;
