@@ -33,7 +33,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
@@ -54,7 +54,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     private userHasGemeindeWithoutTSEnabled: boolean;
 
     public constructor(
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRSX,
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,

@@ -24,7 +24,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -35,7 +35,7 @@ describe('AddInstitutionComponent', () => {
     let component: AddInstitutionComponent;
     let fixture: ComponentFixture<AddInstitutionComponent>;
 
-    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
         ['getInstitutionenReadableForCurrentBenutzer']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['removeBenutzer']);
@@ -60,7 +60,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: Transition, useValue: transitionServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: InstitutionRSX, useValue: insitutionServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: BenutzerRSX, useValue: benutzerServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},

@@ -22,7 +22,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -34,7 +34,7 @@ describe('BenutzerComponent', () => {
     let fixture: ComponentFixture<BenutzerComponent>;
 
     beforeEach(waitForAsync(() => {
-        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+        const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name, ['getAllInstitutionen']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
             [
@@ -53,7 +53,7 @@ describe('BenutzerComponent', () => {
             declarations: [BenutzerComponent],
             providers: [
                 {
-                    provide: InstitutionRS,
+                    provide: InstitutionRSX,
                     useValue: insitutionSpy,
                 },
                 {

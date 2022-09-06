@@ -31,7 +31,7 @@ import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
 import {BetreuungRS} from '../../../core/service/betreuungRS.rest';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
 import {MITTEILUNGEN_JS_MODULE} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';
@@ -53,7 +53,7 @@ describe('mitteilungenView', () => {
     let verantwortlicher: TSBenutzerNoDetails;
     let scope: angular.IScope;
     let $timeout: ITimeoutService;
-    let institutionRS: InstitutionRS;
+    let institutionRS: InstitutionRSX;
     let gemeindeRS: GemeindeRS;
 
     beforeEach(angular.mock.module(MITTEILUNGEN_JS_MODULE.name));

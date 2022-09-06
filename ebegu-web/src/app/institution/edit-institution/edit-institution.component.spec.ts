@@ -7,7 +7,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {GemeindeModule} from '../../gemeinde/gemeinde.module';
@@ -24,7 +24,7 @@ describe('EditInstitutionComponent', () => {
 
     const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
         ['getAllActiveTraegerschaften']);
-    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
         ['getInstitutionenReadableForCurrentBenutzer']);
     const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
         ['findInstitutionStammdaten']);
@@ -50,7 +50,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
-                {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: InstitutionRSX, useValue: insitutionServiceSpy},
                 {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},

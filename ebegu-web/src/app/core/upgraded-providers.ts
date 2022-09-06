@@ -40,7 +40,6 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {GesuchstellerRS} from './service/gesuchstellerRS.rest';
-import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
@@ -239,17 +238,6 @@ export const fallRSProvider = {
     deps: ['$injector'],
 };
 
-// InstitutionRS
-export function institutionRSFactory(i: IInjectorService): InstitutionRS {
-    return i.get('InstitutionRS');
-}
-
-export const institutionRSProvider = {
-    provide: InstitutionRS,
-    useFactory: institutionRSFactory,
-    deps: ['$injector'],
-};
-
 // InstitutionStammdatenRS
 export function institutionStammdatenRSFactory(i: IInjectorService): InstitutionStammdatenRS {
     return i.get('InstitutionStammdatenRS');
@@ -421,7 +409,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     antragStatusHistoryRSProvider,
     wizardStepManagerProvider,
     fallRSProvider,
-    institutionRSProvider,
     institutionStammdatenRSProvider,
     einstellungRSProvider,
     supportRSProvider,

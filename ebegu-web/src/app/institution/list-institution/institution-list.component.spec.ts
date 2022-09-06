@@ -24,7 +24,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {InstitutionListComponent} from './institution-list.component';
@@ -35,7 +35,7 @@ describe('InstitutionListComponent', () => {
     let fixture: ComponentFixture<InstitutionListComponent>;
 
     beforeEach(waitForAsync(() => {
-        const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
             [
                 'getInstitutionenEditableForCurrentBenutzer',
                 'getInstitutionenListDTOEditableForCurrentBenutzer',
@@ -56,7 +56,7 @@ describe('InstitutionListComponent', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: InstitutionRSX, useValue: insitutionServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},

@@ -18,7 +18,7 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
-import {InstitutionRS} from '../../service/institutionRS.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -33,7 +33,7 @@ export class DVSTPersistPendenzen implements IDirective {
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRSX,
         private readonly dVsTPersistService: DVsTPersistService,
         private readonly gemeindeRS: GemeindeRS,
     ) {

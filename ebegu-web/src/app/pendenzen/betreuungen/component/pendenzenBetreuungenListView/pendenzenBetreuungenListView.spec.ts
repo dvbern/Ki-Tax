@@ -25,7 +25,7 @@ import {TSBetreuungsangebotTyp} from '../../../../../models/enums/TSBetreuungsan
 import {TSPendenzBetreuung} from '../../../../../models/TSPendenzBetreuung';
 import {TestDataUtil} from '../../../../../utils/TestDataUtil.spec';
 import {GesuchsperiodeRS} from '../../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../../core/service/institutionStammdatenRS.rest';
 import {PENDENZEN_BETREUUNGEN_JS_MODULE} from '../../pendenzenBetreuungen.module';
 import {PendenzBetreuungenRS} from '../../service/PendenzBetreuungenRS.rest';
@@ -33,7 +33,7 @@ import {PendenzenBetreuungenListViewController} from './pendenzenBetreuungenList
 
 describe('pendenzenBetreuungenListView', () => {
 
-    let institutionRS: InstitutionRS;
+    let institutionRS: InstitutionRSX;
     let gesuchsperiodeRS: GesuchsperiodeRS;
     let institutionStammdatenRS: InstitutionStammdatenRS;
     let pendenzBetreuungenRS: PendenzBetreuungenRS;

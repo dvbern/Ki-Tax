@@ -31,7 +31,7 @@ import {take} from 'rxjs/operators';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../../../app/core/service/benutzerRSX.rest';
-import {InstitutionRS} from '../../../../app/core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../../../app/core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../../../app/core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../../app/core/service/traegerschaftRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -103,7 +103,7 @@ export class BenutzerListXComponent implements OnInit {
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRSX,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly gemeindeRS: GemeindeRS,

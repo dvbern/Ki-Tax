@@ -33,7 +33,7 @@ import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../service/institutionRS.rest';
+import {InstitutionRSX} from '../service/institutionRS.rest';
 
 import {NewAntragListComponent} from './new-antrag-list.component';
 
@@ -73,7 +73,7 @@ class MockNewUserSelectDirective {
 describe('NewAntragListComponent', () => {
     let component: NewAntragListComponent;
     let fixture: ComponentFixture<NewAntragListComponent>;
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
         ['findInstitution', 'getInstitutionenReadableForCurrentBenutzer']);
     const gesuchPeriodeSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['findGesuchsperiode', 'getAllGesuchsperioden']);
@@ -97,7 +97,7 @@ describe('NewAntragListComponent', () => {
             declarations: [NewAntragListComponent, MockNewUserSelectDirective],
             imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
             providers: [
-                {provide: InstitutionRS, useValue: insitutionSpy},
+                {provide: InstitutionRSX, useValue: insitutionSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchPeriodeSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: AuthServiceRS, useValue: authRSSpy},

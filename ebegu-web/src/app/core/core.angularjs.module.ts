@@ -146,7 +146,7 @@ import {FachstelleRS} from './service/fachstelleRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {GesuchstellerRS} from './service/gesuchstellerRS.rest';
 import {HttpResponseInterceptor} from './service/HttpResponseInterceptor';
-import {InstitutionRS} from './service/institutionRS.rest';
+import {InstitutionRSX} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {KindRS} from './service/kindRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
@@ -220,7 +220,7 @@ export const CORE_JS_MODULE = angular
     .service('EinkommensverschlechterungContainerRS', EinkommensverschlechterungContainerRS)
     .service('EinkommensverschlechterungInfoRS', EinkommensverschlechterungInfoRS)
     .service('TraegerschaftRS', TraegerschaftRS)
-    .service('InstitutionRS', InstitutionRS)
+    .service('InstitutionRS', InstitutionRSX)
     .service('InstitutionStammdatenRS', InstitutionStammdatenRS)
     .service('ErwerbspensumRS', ErwerbspensumRS)
     .service('KindRS', KindRS)

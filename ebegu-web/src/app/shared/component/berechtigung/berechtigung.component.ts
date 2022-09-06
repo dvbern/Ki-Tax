@@ -27,7 +27,7 @@ import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {Displayable} from '../../interfaces/displayable';
@@ -63,7 +63,7 @@ export class BerechtigungComponent {
 
     public constructor(
         public readonly form: NgForm,
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRSX,
         private readonly traegerschaftenRS: TraegerschaftRS,
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly authServiceRS: AuthServiceRS,

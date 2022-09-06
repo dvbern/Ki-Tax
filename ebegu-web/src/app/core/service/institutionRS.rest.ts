@@ -13,8 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import { Injectable} from '@angular/core';
 import * as moment from 'moment';
+import {map} from 'rxjs/operators';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionExternalClientAssignment} from '../../../models/TSInstitutionExternalClientAssignment';
@@ -23,31 +25,39 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
+import {CoreModule} from '../core.module';
 
-export class InstitutionRS {
+@Injectable({
+    providedIn: CoreModule,
+})
+export class InstitutionRSX {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    public serviceURL: string;
+    public readonly serviceURL: string;
+    public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public $http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public $http: HttpClient,
     ) {
-        this.serviceURL = `${REST_API}institutionen`;
+        this.serviceURL = `${CONSTANTS.REST_API}institutionen`;
     }
 
-    public findInstitution(institutionID: string): IPromise<TSInstitution> {
+    public findInstitution(institutionID: string): Promise<TSInstitution> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionID)}`)
-            .then(response => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data));
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
+            }))
+            .toPromise();
     }
 
-    public updateInstitution(institutionID: string, update: TSInstitutionUpdate): IPromise<TSInstitutionStammdaten> {
+    public updateInstitution(institutionID: string, update: TSInstitutionUpdate): Promise<TSInstitutionStammdaten> {
         const restInstitution = this.ebeguRestUtil.institutionUpdateToRestObject(update);
 
         return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionID)}`, restInstitution)
-            .then(response => response.data)
-            .then(data => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), data));
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response);
+            }))
+            .toPromise();
     }
 
     /**
@@ -60,7 +70,7 @@ export class InstitutionRS {
         betreuungsangebot: TSBetreuungsangebotTyp,
         adminMail: string,
         gemeindeId: string,
-    ): IPromise<TSInstitution> {
+    ): Promise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
             {
@@ -71,83 +81,101 @@ export class InstitutionRS {
                     gemeindeId,
                 },
             })
-            .then(response => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
+            }))
+            .toPromise();
     }
 
-    public removeInstitution(institutionID: string): IHttpPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(institutionID)}`);
+    public removeInstitution(institutionID: string): Promise<any> {
+        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(institutionID)}`).toPromise();
     }
 
-    public getAllInstitutionen(): IPromise<TSInstitution[]> {
-        return this.$http.get(this.serviceURL).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionen(response.data);
-        });
+    public getAllInstitutionen(): Promise<TSInstitution[]> {
+        return this.$http.get(this.serviceURL)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response);
+            }))
+            .toPromise();
     }
 
-    public getInstitutionenEditableForCurrentBenutzer(): IPromise<TSInstitution[]> {
-        return this.$http.get(`${this.serviceURL}/editable/currentuser`).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionen(response.data);
-        });
+    public getInstitutionenEditableForCurrentBenutzer(): Promise<TSInstitution[]> {
+        return this.$http.get(`${this.serviceURL}/editable/currentuser`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response);
+            }))
+            .toPromise();
     }
 
-    public getInstitutionenListDTOEditableForCurrentBenutzer(): IPromise<TSInstitutionListDTO[]> {
-        return this.$http.get(`${this.serviceURL}/editable/currentuser/listdto`).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionenListDTO(response.data);
-        });
+    public getInstitutionenListDTOEditableForCurrentBenutzer(): Promise<TSInstitutionListDTO[]> {
+        return this.$http.get(`${this.serviceURL}/editable/currentuser/listdto`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionenListDTO(response);
+            }))
+            .toPromise();
     }
 
-    public getInstitutionenReadableForCurrentBenutzer(): IPromise<TSInstitution[]> {
-        return this.$http.get(`${this.serviceURL}/readable/currentuser`).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionen(response.data);
-        });
+    public getInstitutionenReadableForCurrentBenutzer(): Promise<TSInstitution[]> {
+        return this.$http.get(`${this.serviceURL}/readable/currentuser`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response);
+            }))
+            .toPromise();
     }
 
-    public hasInstitutionenInStatusAngemeldet(): IPromise<boolean> {
-        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
-            return response.data;
-        });
+    public hasInstitutionenInStatusAngemeldet(): Promise<boolean> {
+        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`)
+            .pipe(map((response: any) => response))
+            .toPromise();
     }
 
-    public getExternalClients(institutionId: string): IPromise<TSInstitutionExternalClientAssignment> {
+    public getExternalClients(institutionId: string): Promise<TSInstitutionExternalClientAssignment> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionId)}/externalclients`)
-            .then(response => this.ebeguRestUtil.parseInstitutionExternalClientAssignment(response.data));
+            .pipe(map(response => this.ebeguRestUtil.parseInstitutionExternalClientAssignment(response)))
+            .toPromise();
     }
 
-    public isStammdatenCheckRequired(): IPromise<boolean> {
-        return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`).then((response: any) => {
-            return response.data;
-        });
+    public isStammdatenCheckRequired(): Promise<boolean> {
+        return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`)
+            .pipe(map((response: any) => {
+                return response;
+            }))
+            .toPromise();
     }
 
     public getServiceName(): string {
         return 'InstitutionRS';
     }
 
-    public deactivateStammdatenCheckRequired(institutionId: string): IPromise<TSInstitution> {
+    public deactivateStammdatenCheckRequired(institutionId: string): Promise<TSInstitution> {
         return this.$http.put(`${this.serviceURL}/deactivateStammdatenCheckRequired/${institutionId}`, {})
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
+            }))
+            .toPromise();
     }
 
-    public isCurrentUserTagesschuleUser(): IPromise<boolean> {
-        return this.$http.get(`${this.serviceURL}/istagesschulenutzende/currentuser`).then((response: any) => {
-            return response.data;
-        });
+    public isCurrentUserTagesschuleUser(): Promise<boolean> {
+        return this.$http.get(`${this.serviceURL}/istagesschulenutzende/currentuser`)
+            .pipe(map((response: any) => {
+                return response;
+            }))
+            .toPromise();
     }
 
-    public getInstitutionenForGemeinde(gemeindeId: string): IPromise<TSInstitutionListDTO[]> {
-        return this.$http.get(`${this.serviceURL}/gemeinde/listdto/${gemeindeId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitutionenListDTO(response.data);
-        });
+    public getInstitutionenForGemeinde(gemeindeId: string): Promise<TSInstitutionListDTO[]> {
+        return this.$http.get(`${this.serviceURL}/gemeinde/listdto/${gemeindeId}`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionenListDTO(response);
+            }))
+            .toPromise();
     }
 
-    public findAllInstitutionen(dossierId: string): IPromise<Array<TSInstitution>> {
+    public findAllInstitutionen(dossierId: string): Promise<Array<TSInstitution>> {
         return this.$http.get(`${this.serviceURL}/findAllInstitutionen/${encodeURIComponent(dossierId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionen(response.data);
-            });
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseInstitutionen(response);
+            }))
+            .toPromise();
     }
 }

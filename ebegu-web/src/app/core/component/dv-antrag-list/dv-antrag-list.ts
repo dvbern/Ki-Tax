@@ -39,7 +39,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
-import {InstitutionRS} from '../../service/institutionRS.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('DVAntragListController');
@@ -119,7 +119,7 @@ export class DVAntragListController implements IController {
 
     public constructor(
         private readonly $filter: IFilterService,
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRSX,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $window: IWindowService,
