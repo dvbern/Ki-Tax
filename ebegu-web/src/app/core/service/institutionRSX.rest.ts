@@ -26,10 +26,9 @@ import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
-import {CoreModule} from '../core.module';
 
 @Injectable({
-    providedIn: CoreModule,
+    providedIn: 'root',
 })
 export class InstitutionRSX {
 

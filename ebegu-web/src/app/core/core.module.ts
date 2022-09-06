@@ -41,6 +41,7 @@ import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
+import {InstitutionRSX} from './service/institutionRSX.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -82,7 +83,8 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         MandantService,
         CookieService,
         ColorService,
-        FjkvKinderabzugExchangeService
+        FjkvKinderabzugExchangeService,
+        InstitutionRSX
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
