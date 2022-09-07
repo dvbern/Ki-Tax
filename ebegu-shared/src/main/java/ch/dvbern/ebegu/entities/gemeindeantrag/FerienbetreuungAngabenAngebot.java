@@ -596,4 +596,14 @@ public class FerienbetreuungAngabenAngebot extends AbstractEntity {
 		target.setFixerTarifKinderDerGemeinde(getFixerTarifKinderDerGemeinde());
 		target.setKinderAusAnderenGemeindenZahlenAnderenTarif(getKinderAusAnderenGemeindenZahlenAnderenTarif());
 	}
+
+	public boolean isDelegationsmodell() {
+		if (this.gemeindeFuehrtAngebotSelber == null) {
+			return false;
+		}
+		if (this.gemeindeBeauftragtExterneAnbieter == null) {
+			return false;
+		}
+		return !this.gemeindeFuehrtAngebotSelber && this.gemeindeBeauftragtExterneAnbieter;
+	}
 }

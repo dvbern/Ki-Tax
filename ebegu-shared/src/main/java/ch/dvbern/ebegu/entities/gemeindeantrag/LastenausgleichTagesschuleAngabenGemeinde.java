@@ -494,10 +494,15 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		);
 		assert getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null;
 		assert getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null;
-		return getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
-			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
-			.compareTo(getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
-				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) == 0;
+
+		final BigDecimal angabenStunden = getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
+				getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()).add(
+				getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
+		final BigDecimal angabenStundenSplittedByNormlohn = getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
+				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+
+		return angabenStunden
+				.compareTo(angabenStundenSplittedByNormlohn) == 0;
 	}
 
 	@Nullable

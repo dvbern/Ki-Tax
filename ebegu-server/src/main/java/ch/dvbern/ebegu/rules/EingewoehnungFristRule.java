@@ -76,6 +76,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 				VerfuegungZeitabschnitt eingewoehnung = null;
 				if (zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() > 0
 					&& vorherigerZeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0
+					&& !vorherigerZeitabschnitt.getRelevantBgCalculationInput().isZuSpaetEingereicht()
 					&& !found) {
 					// wir verlaengern der Anspruch aber die Input muessen von vorherigerZeitabschnitt kopiert werden
 					eingewoehnung =
