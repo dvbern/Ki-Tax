@@ -30,7 +30,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../../core/service/institutionStammdatenRS.rest';
 import {PendenzBetreuungenRS} from '../../service/PendenzBetreuungenRS.rest';
 

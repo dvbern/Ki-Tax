@@ -34,7 +34,7 @@ import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
-import {InstitutionRSX} from '../../service/institutionRSX.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
 import IFormController = angular.IFormController;
 import IQService = angular.IQService;

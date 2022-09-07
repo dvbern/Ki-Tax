@@ -24,7 +24,7 @@ import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-l
 import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
-import {InstitutionRSX} from '../../service/institutionRSX.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVSTPersistAntraege');
 

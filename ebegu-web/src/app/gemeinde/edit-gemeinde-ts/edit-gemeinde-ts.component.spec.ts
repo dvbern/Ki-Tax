@@ -22,7 +22,7 @@ import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';

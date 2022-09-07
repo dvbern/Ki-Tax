@@ -27,7 +27,7 @@ import {TSInstitution} from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {InstitutionRSX} from '../../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {Displayable} from '../../interfaces/displayable';

@@ -39,7 +39,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../service/institutionRSX.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 const LOG = LogFactory.createLog('DVAntragListController');

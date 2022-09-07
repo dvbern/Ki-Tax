@@ -7,7 +7,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {GemeindeModule} from '../../gemeinde/gemeinde.module';

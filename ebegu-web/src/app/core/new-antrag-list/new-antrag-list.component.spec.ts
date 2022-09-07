@@ -33,7 +33,7 @@ import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../service/institutionRSX.rest';
+import {InstitutionRSX} from '../service/institutionRS.rest';
 
 import {NewAntragListComponent} from './new-antrag-list.component';
 

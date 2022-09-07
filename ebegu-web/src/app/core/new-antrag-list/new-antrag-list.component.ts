@@ -62,7 +62,7 @@ import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../service/institutionRSX.rest';
+import {InstitutionRSX} from '../service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 

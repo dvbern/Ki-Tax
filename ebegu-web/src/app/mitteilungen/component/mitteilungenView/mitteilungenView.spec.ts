@@ -31,7 +31,7 @@ import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {DVMitteilungListController} from '../../../core/component/dv-mitteilung-list/dv-mitteilung-list';
 import {BetreuungRS} from '../../../core/service/betreuungRS.rest';
-import {InstitutionRSX} from '../../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
 import {MITTEILUNGEN_JS_MODULE} from '../../mitteilungen.module';
 import {IMitteilungenStateParams} from '../../mitteilungen.route';

@@ -40,7 +40,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVQuicksearchListController');
 

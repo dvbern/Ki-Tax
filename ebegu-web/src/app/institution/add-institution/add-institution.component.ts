@@ -34,7 +34,7 @@ import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuc
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 const LOG = LogFactory.createLog('AddInstitutionComponent');

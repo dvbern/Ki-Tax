@@ -30,7 +30,7 @@ import {TSGesuch} from '../../../../models/TSGesuch';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
 
 describe('DVQuicksearchList', () => {

@@ -18,7 +18,7 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
-import {InstitutionRSX} from '../../service/institutionRSX.rest';
+import {InstitutionRSX} from '../../service/institutionRS.rest';
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.

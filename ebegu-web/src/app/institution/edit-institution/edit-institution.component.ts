@@ -57,7 +57,7 @@ import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
-import {InstitutionRSX} from '../../core/service/institutionRSX.rest';
+import {InstitutionRSX} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
