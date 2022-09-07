@@ -124,7 +124,8 @@
                             <div class="flex-fill"></div>
                             <dv-loading-button (buttonClick)="setUngelesen(element)"
                                                *ngIf="isSuperAdmin() && isStatusGelesen(element)">
-                                <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i></dv-loading-button>
+                                <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
+                            </dv-loading-button>
                         </mat-cell>
                     </ng-container>
 
@@ -255,6 +256,7 @@
                              (click)="gotoMitteilung(element)"
                              [class]="{'mitteilung-neu': ('NEU' === element.mitteilungStatus.toString()),'mitteilung-alt': ('NEU' !== element.mitteilungStatus.toString())}"></mat-row>
                 </mat-table>
+
                 <div class="bottom-pagination">
                     <nav>
                         <ul class="pagination">
@@ -263,6 +265,12 @@
                             </li>
                         </ul>
                     </nav>
+                </div>
+                <div *ngIf="!isSozialdienstOrInstitution()" [dvHideFeature]="'alleMutationsmeldungVerfuegen'"
+                     class="text-right closed-mitteilungen dv-table-actionButton">
+                    <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()"
+                                       *ngIf="isSuperAdmin()">
+                        {{'ALLE_MUTATIONSMITTEILUNG_AUTOMATISCH_VERFUEGEN' | translate}}</dv-loading-button>
                 </div>
             </div>
         </div>

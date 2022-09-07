@@ -37,6 +37,8 @@ import javax.ejb.EJBAccessException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -1599,6 +1601,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return false;
 		}
 		return true;
+	}
+
+	@Nullable
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(
+		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+		try {
+			applyBetreuungsmitteilung(betreuungsmitteilung);
+			return betreuungsmitteilung;
+		}
+		catch (Exception e) {
+			LOG.warn("Die Betreuungsmitteilung '{}' koennte nicht automatisch bearbeitet werden: '{}'", betreuungsmitteilung.getId(),
+				e.getMessage());
+		}
+		return null;
 	}
 }
 

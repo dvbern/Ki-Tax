@@ -22,6 +22,7 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -41,6 +42,8 @@ import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
@@ -140,6 +143,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly benutzerRS: BenutzerRSX,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly posteingangService: PosteingangService,
+        private readonly dialog: MatDialog,
     ) {
     }
 
@@ -260,6 +264,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public isSozialdienstOrInstitution(): boolean {
         return this.isSozialdienst() || this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+    }
+
+    public isSuperAdminOrGemeinde(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     private applyFilter(): void {
@@ -396,15 +404,55 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             () => {
                 this.passFilterToServer();
                 this.getMitteilungenCount();
-                },
+            },
         );
     }
 
     public isStatusGelesen(mitteilung: TSMitteilung): boolean {
         return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
-        }
+    }
 
     private getMitteilungenCount(): void {
         this.posteingangService.posteingangChanged();
+    }
+
+    public alleMutationsmeldungVerfuegen(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN_FRAGE',
+        };
+        this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    const body = {
+                        pagination: {
+                            number: this.pageSize,
+                            start: this.page * this.pageSize,
+                        },
+                        search: {
+                            predicateObject: this.filterPredicate,
+                        },
+                        sort: this.sort,
+                    };
+                    this.mitteilungRS.applyAlleBetreuungsmitteilungen(body).then(
+                        resultList => {
+                            dialogConfig.data = resultList;
+                            dialogConfig.disableClose = true;
+                            this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
+                                .subscribe(() => {
+                                        this.passFilterToServer();
+                                        this.getMitteilungenCount();
+                                    },
+                                    () => {
+                                    },
+                                )
+                            ;
+                        },
+                    );
+                },
+                () => {
+                });
     }
 }
