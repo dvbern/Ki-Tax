@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {BenutzerRSX} from '../../../../app/core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../../../app/core/service/institutionRS.rest';
+import {InstitutionRS} from '../../../../app/core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../../../app/core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../../app/core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../../../app/shared/shared.module';
@@ -37,7 +37,7 @@ describe('DvBenutzerListXComponent', () => {
         'isOneOfRoles',
         'getVisibleRolesForPrincipal'
     ]);
-    const institutionRSSpy = jasmine.createSpyObj(InstitutionRSX.name, ['getInstitutionenEditableForCurrentBenutzer']);
+    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, ['getInstitutionenEditableForCurrentBenutzer']);
     const traegerschaftRSSpy = jasmine.createSpyObj(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const sozialdienstRSSpy = jasmine.createSpyObj(SozialdienstRS.name, ['getSozialdienstList']);
     const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, ['getGemeindenForPrincipal$']);
@@ -48,7 +48,7 @@ describe('DvBenutzerListXComponent', () => {
             declarations: [BenutzerListXComponent],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: InstitutionRSX, useValue: institutionRSSpy},
+                {provide: InstitutionRS, useValue: institutionRSSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},

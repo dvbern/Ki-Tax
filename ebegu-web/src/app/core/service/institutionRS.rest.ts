@@ -30,7 +30,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 @Injectable({
     providedIn: 'root',
 })
-export class InstitutionRSX {
+export class InstitutionRS {
 
     public readonly serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();

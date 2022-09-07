@@ -145,7 +145,7 @@ import {FachstelleRS} from './service/fachstelleRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {GesuchstellerRS} from './service/gesuchstellerRS.rest';
 import {HttpResponseInterceptor} from './service/HttpResponseInterceptor';
-import {InstitutionRSX} from './service/institutionRS.rest';
+import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {KindRS} from './service/kindRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
@@ -240,7 +240,7 @@ export const CORE_JS_MODULE = angular
     .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
-    .factory('InstitutionRS', downgradeInjectable(InstitutionRSX) as any)
+    .factory('InstitutionRS', downgradeInjectable(InstitutionRS) as any)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)

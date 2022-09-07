@@ -25,7 +25,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponen
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -38,7 +38,7 @@ describe('BenutzerEinladenComponent', () => {
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getVisibleRolesForPrincipal']);
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenEditableForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
@@ -68,7 +68,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeSpy},
                 {provide: BenutzerRSX, useValue: benutzerSpy},
-                {provide: InstitutionRSX, useValue: insitutionSpy},
+                {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},

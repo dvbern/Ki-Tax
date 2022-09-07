@@ -23,7 +23,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -38,7 +38,7 @@ describe('EinladungAbschliessenComponent', () => {
 
     beforeEach(waitForAsync(() => {
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
-        const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
+        const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
             ['getInstitutionenEditableForCurrentBenutzer']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const sozialdienstRSSpy = jasmine.createSpyObj<SozialdienstRS>(SozialdienstRS.name,
@@ -67,7 +67,7 @@ describe('EinladungAbschliessenComponent', () => {
             ],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
-                {provide: InstitutionRSX, useValue: insitutionSpy},
+                {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},

@@ -40,7 +40,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVQuicksearchListController');
 
@@ -101,7 +101,7 @@ export class DVQuicksearchListController implements IController {
 
     public constructor(
         private readonly $filter: IFilterService,
-        private readonly institutionRS: InstitutionRSX,
+        private readonly institutionRS: InstitutionRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,

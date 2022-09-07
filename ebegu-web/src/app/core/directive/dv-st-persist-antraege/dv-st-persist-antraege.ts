@@ -24,7 +24,7 @@ import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-l
 import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
-import {InstitutionRSX} from '../../service/institutionRS.rest';
+import {InstitutionRS} from '../../service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVSTPersistAntraege');
 
@@ -47,7 +47,7 @@ export class DVSTPersistAntraege implements IDirective {
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
-        private readonly institutionRS: InstitutionRSX,
+        private readonly institutionRS: InstitutionRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dVsTPersistService: DVsTPersistService,
         private readonly gemeindeRS: GemeindeRS,

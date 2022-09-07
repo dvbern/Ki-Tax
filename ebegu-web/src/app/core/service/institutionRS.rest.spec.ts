@@ -22,11 +22,11 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
-import {InstitutionRSX} from './institutionRSX.rest';
+import {InstitutionRS} from './institutionRS.rest';
 
 describe('institutionRS', () => {
 
-    let institutionRS: InstitutionRSX;
+    let institutionRS: InstitutionRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockInstitution: TSInstitution;

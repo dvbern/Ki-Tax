@@ -25,7 +25,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedCompo
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBerechtigung} from '../../../../models/TSBerechtigung';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
-import {InstitutionRSX} from '../../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {SozialdienstRS} from '../../../core/service/SozialdienstRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
@@ -37,7 +37,7 @@ describe('BerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name,
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenEditableForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
@@ -64,7 +64,7 @@ describe('BerechtigungComponent', () => {
                 SharedModule,
             ],
             providers: [
-                {provide: InstitutionRSX, useValue: insitutionSpy},
+                {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: GemeindeRS, useValue: gemeindeSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstSpy},

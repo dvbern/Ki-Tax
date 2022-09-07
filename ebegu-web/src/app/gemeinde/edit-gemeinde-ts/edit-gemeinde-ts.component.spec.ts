@@ -22,7 +22,7 @@ import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
@@ -33,7 +33,7 @@ describe('EditGemeindeComponentTS', () => {
     let component: EditGemeindeComponentTS;
     let fixture: ComponentFixture<EditGemeindeComponentTS>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRSX>(InstitutionRSX.name, ['getInstitutionenForGemeinde']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForGemeinde']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
@@ -47,7 +47,7 @@ describe('EditGemeindeComponentTS', () => {
                 [CUSTOM_ELEMENTS_SCHEMA],
             providers:
                 [
-                    {provide: InstitutionRSX, useValue: insitutionSpy},
+                    {provide: InstitutionRS, useValue: insitutionSpy},
                     {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                     {provide: StateService, useValue: stateServiceSpy}
                 ],

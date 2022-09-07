@@ -34,7 +34,7 @@ import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuc
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
-import {InstitutionRSX} from '../../core/service/institutionRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 const LOG = LogFactory.createLog('AddInstitutionComponent');
@@ -65,7 +65,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
-        private readonly institutionRS: InstitutionRSX,
+        private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,

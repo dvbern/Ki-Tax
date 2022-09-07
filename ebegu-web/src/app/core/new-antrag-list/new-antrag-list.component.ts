@@ -62,7 +62,7 @@ import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
-import {InstitutionRSX} from '../service/institutionRS.rest';
+import {InstitutionRS} from '../service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -275,7 +275,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private filterId: string;
 
     public constructor(
-        private readonly institutionRS: InstitutionRSX,
+        private readonly institutionRS: InstitutionRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly searchRS: SearchRS,
