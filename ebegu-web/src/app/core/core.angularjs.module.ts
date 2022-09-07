@@ -99,7 +99,6 @@ import {DvSearchResultIconComponentConfig} from './component/dv-search/dv-search
 import {DvSkiplinksComponentConfig} from './component/dv-skiplinks/dv-skiplinks';
 import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
-import {DVVorlageListConfig} from './component/dv-vorlage-list/dv-vorlage-list';
 import {NavbarComponent} from './component/navbar/navbar.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
@@ -300,7 +299,6 @@ export const CORE_JS_MODULE = angular
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())
     .component('dvAntragList', new DVAntragListConfig())
-    .component('dvVorlageList', new DVVorlageListConfig())
     .component('dvQuicksearchbox', new DvQuicksearchboxComponentConfig())
     .component('dvSearchResultIcon', new DvSearchResultIconComponentConfig())
     .component('dvMitteilungList', new DVMitteilungListConfig())
