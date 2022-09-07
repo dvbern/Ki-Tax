@@ -42,7 +42,7 @@ import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
-import {InstitutionRSX} from './service/institutionRSX.rest';
+import {InstitutionRS} from './service/institutionRS.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -85,7 +85,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         CookieService,
         ColorService,
         FjkvKinderabzugExchangeService,
-        InstitutionRSX,
+        InstitutionRS,
         EinstellungRS
     ],
     declarations: [
