@@ -53,6 +53,7 @@ import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/d
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvHiddenDirective} from '../core/directive/dv-hidden/dv-hidden.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
@@ -164,7 +165,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
-        DvLoadingButtonXDirective,
+        DvHiddenDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
@@ -236,6 +237,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
+        DvHiddenDirective,
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,

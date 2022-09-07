@@ -117,6 +117,12 @@ export class ApplicationPropertyRS {
         });
     }
 
+    public getAllowedElements(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.allowedElements;
+        });
+    }
+
     public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
         return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(

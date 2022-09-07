@@ -195,4 +195,5 @@ public enum ApplicationPropertyKey {
 	 */
 	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
 
+	ALLOWED_ELEMENTS;
 }
