@@ -18,11 +18,9 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {adminRun} from './admin.route';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
-import {EinstellungRS} from './service/einstellungRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
 
 export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.name, 'smart-table'])
-    .service('EinstellungRS', EinstellungRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)
     .service('TestFaelleRS', TestFaelleRS)
     .run(adminRun);

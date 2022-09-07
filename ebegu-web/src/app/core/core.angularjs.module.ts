@@ -238,7 +238,7 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('NotrechtRS', NotrechtRS)
-    .service('EinstellungRS', EinstellungRS)
+    .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
     .factory('InstitutionRS', downgradeInjectable(InstitutionRSX) as any)

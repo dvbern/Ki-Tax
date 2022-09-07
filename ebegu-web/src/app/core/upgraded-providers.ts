@@ -16,9 +16,7 @@
  */
 
 import {Provider} from '@angular/core';
-import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
-import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
@@ -238,17 +236,6 @@ export const institutionStammdatenRSProvider = {
     deps: ['$injector'],
 };
 
-// EinstellungRS
-export function einstellungRSServiceFactory(i: IInjectorService): EinstellungRS {
-    return i.get('EinstellungRS');
-}
-
-export const einstellungRSProvider = {
-    provide: EinstellungRS,
-    useFactory: einstellungRSServiceFactory,
-    deps: ['$injector'],
-};
-
 // SupportRS
 export function supportRSServiceFactory(i: IInjectorService): SupportRS {
     return i.get('SupportRS');
@@ -398,7 +385,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     wizardStepManagerProvider,
     fallRSProvider,
     institutionStammdatenRSProvider,
-    einstellungRSProvider,
     supportRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
