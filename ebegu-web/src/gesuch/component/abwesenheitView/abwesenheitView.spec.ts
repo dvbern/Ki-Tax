@@ -64,7 +64,7 @@ describe('abwesenheitView', () => {
 
     beforeEach(() => {
         spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.resolve(new TSEinstellung()));
+            .and.returnValue($q.when(new TSEinstellung()) as Promise<any>);
         spyOn(gesuchModelManager, 'getGemeinde')
             .and.returnValue(new TSGemeinde());
         spyOn(gesuchModelManager, 'getGesuchsperiode')

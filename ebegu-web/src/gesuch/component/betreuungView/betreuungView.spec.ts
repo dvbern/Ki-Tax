@@ -119,9 +119,9 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.resolve([]));
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.when([]) as Promise<any>);
         spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.resolveTo(({}));
-        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.resolve(new TSEinstellung()));
+        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.when(new TSEinstellung()) as Promise<any>);
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
 

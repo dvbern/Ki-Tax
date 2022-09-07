@@ -87,7 +87,7 @@ describe('verfuegenListViewTest', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung')
           .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
         spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.resolve(new TSEinstellung()));
+            .and.returnValue($q.when(new TSEinstellung()) as Promise<any>);
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         verfuegenListView = new VerfuegenListViewController($state,
