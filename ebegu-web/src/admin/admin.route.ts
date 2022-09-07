@@ -14,19 +14,12 @@
  */
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 
 export class IGesuchsperiodeStateParams {
     public gesuchsperiodeId: string;
 }
-
-const applicationPropertiesResolver = [
-    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
-        return applicationPropertyRS.getAllApplicationProperties();
-    },
-];
 
 const ng1States: Ng1StateDeclaration[] = [
     {
@@ -36,18 +29,7 @@ const ng1States: Ng1StateDeclaration[] = [
         data: {
             roles: TSRoleUtil.getAdministratorRoles(),
         },
-    },
-    {
-        name: 'admin.view',
-        component: 'dvAdminViewX',
-        url: '/admin',
-        resolve: {
-            applicationProperties: applicationPropertiesResolver,
-        },
-        data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
-    },
+    }
 ];
 
 adminRun.$inject = ['RouterHelper'];

@@ -19,7 +19,9 @@ import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.component';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BenutzerListViewXComponent} from './component/benutzerListView/benutzer-list-view-x.component';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
@@ -28,7 +30,24 @@ import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 
+const applicationPropertiesResolver = [
+    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
+        return applicationPropertyRS.getAllApplicationProperties();
+    },
+];
+
 const states: Ng2StateDeclaration[] = [
+    {
+        name: 'admin.view',
+        component: AdminViewXComponent,
+        url: '/admin',
+        resolve: {
+            applicationProperties: applicationPropertiesResolver,
+        },
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
     {
         name: 'admin.testdaten',
         url: '/testdaten',
