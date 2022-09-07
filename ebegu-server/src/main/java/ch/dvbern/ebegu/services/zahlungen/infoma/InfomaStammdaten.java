@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -79,7 +80,10 @@ public abstract class InfomaStammdaten {
 
 	@Nonnull
 	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung, Locale locale) {
-		final String kontoinhaber = zahlung.getAuszahlungsdaten().getKontoinhaber();
+		final String kontoinhaber =
+				zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER ?
+						zahlung.getAuszahlungsdaten().getKontoinhaber() :
+						zahlung.getEmpfaengerName();
 		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
 		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
 
