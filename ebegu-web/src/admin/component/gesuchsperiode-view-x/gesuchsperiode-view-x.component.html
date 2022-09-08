@@ -273,6 +273,7 @@
                                     <td class="key" *matCellDef="let item">
                                         <label>
                                             {{item.key | translate}}
+                                            <dv-tooltip [text]="item.erklaerung"></dv-tooltip>
                                         </label>
                                     </td>
                                 </ng-container>
