@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
@@ -76,6 +77,8 @@ public abstract class AbstractFamiliensituationDokumente extends AbstractDokumen
 		// Familiensituation benoetigt
 		add(getDokument(DokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG, gesuch.extractFamiliensituation(),
 			null, null, null, DokumentGrundTyp.FINANZIELLESITUATION), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_GETEILTE_OBHUT, gesuch.extractFamiliensituation(),
+			null, null, null, DokumentGrundTyp.FAMILIENSITUATION), anlageVerzeichnis);
 	}
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
@@ -89,12 +92,26 @@ public abstract class AbstractFamiliensituationDokumente extends AbstractDokumen
 			return isUnterstuetzungsbestaetigungNeeded(familiensituation);
 		case NACHWEIS_UNTERHALTSVEREINBARUNG:
 			return isNachweisunterhaltsverinabrungNeeded(familiensituation);
+		case NACHWEIS_GETEILTE_OBHUT:
+			return isNachweisGeteilteObhutNeeded(familiensituation);
 		default:
 			return false;
 		}
 	}
 
 	protected abstract boolean isUnterstuetzungsbestaetigungNeeded(Familiensituation familiensituation);
+
+	private boolean isNachweisGeteilteObhutNeeded(Familiensituation familiensituation) {
+		if (!familiensituation.isFkjvFamSit()) {
+			return false;
+		}
+
+		if (familiensituation.getGeteilteObhut() == null || !familiensituation.getGeteilteObhut()) {
+			return false;
+		}
+
+		return familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE;
+	}
 
 	private boolean isNachweisunterhaltsverinabrungNeeded(Familiensituation familiensituation) {
 		if (EbeguUtil.isNullOrFalse(familiensituation.isFkjvFamSit())) {

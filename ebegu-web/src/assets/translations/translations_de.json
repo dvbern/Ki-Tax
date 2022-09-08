@@ -1029,6 +1029,7 @@
     "ERROR_FILE_TOO_LARGE": "File ist zu gross (Maximal 10MB)",
     "FAMILIENSITUATION_NACHWEIS_TRENNUNG": "Trennungsvereinbarung / Scheidungsurteil / Sonstiger Nachweis über Trennung / Eheschutzverfahren",
     "FAMILIENSITUATION_NACHWEIS_UNTERHALTSVEREINBARUNG": "Unterhaltsvereinbarung oder Nachweis über die Absicht, eine Unterhaltsvereinbarung abzuschliessen",
+    "FAMILIENSITUATION_NACHWEIS_GETEILTE_OBHUT": "Beleg über die geteilte elterliche Sorge und Obhut",
     "KINDER_FACHSTELLENBESTAETIGUNG": "Fachstellenbestätigung",
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM": "Arbeitsvertrag / Stundennachweise / sonstiger Nachweis über Erwerbspensum",
     "ERWERBSPENSUM_NACHWEIS_SELBSTAENDIGKEIT": "Nachweis Selbständigkeit oder AHV-Bestätigung und Nachweis über das Erwerbspensum",
