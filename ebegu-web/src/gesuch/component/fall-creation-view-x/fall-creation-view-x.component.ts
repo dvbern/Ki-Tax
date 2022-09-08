@@ -108,6 +108,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             // promise immediately
             // tslint:disable-next-line:no-unnecessary-callback-wrapper
             Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
+            return;
         }
         this.errorService.clearAll();
         this.gesuchModelManager.saveGesuchAndFall().then(
