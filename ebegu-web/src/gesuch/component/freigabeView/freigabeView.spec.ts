@@ -15,7 +15,6 @@
 
 import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
-import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -56,8 +55,6 @@ describe('freigabeView', () => {
     let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
-
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));  // to inject applicationPropertyRS
 
     beforeEach(angular.mock.module(ngServicesMock));
 
