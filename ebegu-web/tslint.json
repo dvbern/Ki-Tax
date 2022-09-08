@@ -5,7 +5,7 @@
     ],
     "extends": [
         "rxjs-tslint-rules",
-        "tslint-consistent-codestyle",
+        "tslint-consistent-codestyle"
     ],
     "rules": {
         "align": [
