@@ -32,7 +32,7 @@ import 'core-js/es6/reflect';
  */
 (window as any).__Zone_enable_cross_context_check = true;
 // tslint:disable-next-line:no-import-side-effect
-import 'zone.js/dist/zone'; // Included with Angular CLI.
+import 'zone.js'; // Included with Angular CLI.
 
 /**
  * Required to support Web Animations `@angular/platform-browser/animations`.
