@@ -755,12 +755,21 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
+		return applyBetreuungsmitteilung(mitteilung, false);
+	}
+
+	@Nonnull
+	private Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull boolean skipException) {
 		Objects.requireNonNull(mitteilung);
 		Objects.requireNonNull(mitteilung.getBetreuung());
 
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
+			if(skipException) {
+				logExceptionForBetreuungsmitteilung(mitteilung, ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG);
+				return gesuch;
+			}
 			throw new EbeguExistingAntragException(
 				"applyBetreuungsmitteilung",
 				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
@@ -772,7 +781,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
-			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
+			//if skipexception ist aktiviert sollte man keine Fehler bekommen fuer nicht freigegebene Antraege
+			//sonst bricht der Batch Arbeit anstatt zu melden die die sollten manual geprueft werden
+			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch, skipException);
 		} catch (EJBTransactionRolledbackException exception) {
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
@@ -788,9 +799,18 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 		if (neustesGesuchOpt.isPresent()) {
 			final Gesuch neustesGesuch = neustesGesuchOpt.get();
+			// Mit skipException, darf man auch nicht einen noch nicht freigegebener ONLINE Antrag uberschreiben
+			if(skipException && neustesGesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
+				logExceptionForBetreuungsmitteilung(mitteilung, ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION);
+				return gesuch;
+			}
 			// Sobald irgendein Antrag dieser Periode geperrt ist, darf keine Mutationsmeldungs-Mutation erstellt
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
+				if(skipException) {
+					logExceptionForBetreuungsmitteilung(mitteilung, ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT);
+					return gesuch;
+				}
 				throw new EbeguRuntimeException(
 					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
@@ -798,6 +818,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
+				if(skipException) {
+					logExceptionForBetreuungsmitteilung(mitteilung, ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN);
+					return gesuch;
+				}
 				throw new EbeguRuntimeException(
 					KibonLogLevel.INFO,
 					"applyBetreuungsmitteilung",
@@ -821,7 +845,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
-
+			if(skipException) {
+				logExceptionForBetreuungsmitteilung(mitteilung, ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG);
+				return gesuch;
+			}
 			throw new EbeguRuntimeException(
 				KibonLogLevel.INFO,
 				"applyBetreuungsmitteilung",
@@ -829,6 +856,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				neustesGesuch.getId());
 		}
 		return gesuch;
+	}
+
+	private void logExceptionForBetreuungsmitteilung(@Nonnull Betreuungsmitteilung  betreuungsmitteilung,@Nonnull ErrorCodeEnum errorCodeEnum) {
+		LOG.warn("Die Betreuungsmitteilung '{}' koennte nicht automatisch bearbeitet werden: '{}'", betreuungsmitteilung.getId(), errorCodeEnum);
 	}
 
 	@Nonnull
@@ -1605,18 +1636,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nullable
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
-		try {
-			applyBetreuungsmitteilung(betreuungsmitteilung);
-			return betreuungsmitteilung;
-		}
-		catch (Exception e) {
-			LOG.warn("Die Betreuungsmitteilung '{}' koennte nicht automatisch bearbeitet werden: '{}'", betreuungsmitteilung.getId(),
-				e.getMessage());
-		}
-		return null;
+		applyBetreuungsmitteilung(betreuungsmitteilung, true);
+		return betreuungsmitteilung;
 	}
 }
 

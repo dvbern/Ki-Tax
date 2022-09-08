@@ -2987,5 +2987,9 @@
     "PDF_GENERIERUNG": "PDF-Generierung",
     "KIBON_MITTEILUNGEN": "kiBon-Mitteilungen",
     "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
+    "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Alle Mutationsmeldungen automatisch bearbeiten",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten ?",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung erfolgreich bearbeitet :",
+    "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die benötigen eine manuelle Überprüfung :",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

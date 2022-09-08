@@ -656,11 +656,7 @@ public class MitteilungResource {
 				mitteilungService.findBetreuungsmitteilung(mitteilung.getId());
 			if (betreuungsmitteilung.isPresent()) {
 				Betreuungsmitteilung result = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung.get());
-				if(result != null) {
-					betreuungsmitteilungs.add(result);
-				} else {
-					betreuungsmitteilungs.add(betreuungsmitteilung.get());
-				}
+				betreuungsmitteilungs.add(result);
 			}
 		}
 		List<JaxBetreuungsmitteilung> jaxResult = new ArrayList<>();

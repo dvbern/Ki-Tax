@@ -419,7 +419,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public alleMutationsmeldungVerfuegen(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN_FRAGE',
+            frage: 'ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE',
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {

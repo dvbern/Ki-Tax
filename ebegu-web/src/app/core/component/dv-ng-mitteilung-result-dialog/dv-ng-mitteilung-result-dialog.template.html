@@ -18,12 +18,14 @@
 <mat-dialog-content>
     <nav>
         <ul class="">
-            <span>AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN</span>
+            <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN' | translate}}</span>
+            <br>
             <li class="applied" *ngFor="let betreuungsmitteilung of betreuungsmitteilungsOk">
                 <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
             </li>
             <br><br>
-            <span>NICHT_BEARBEITETE_MITTEILUNGEN</span>
+            <span>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</span>
+            <br>
             <li class="nonapplied" *ngFor="let betreuungsmitteilung of betreuungsmitteilungsKo">
                 <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
             </li>
