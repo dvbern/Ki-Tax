@@ -39,7 +39,7 @@ public class DokumentenverzeichnisEvaluator {
 	@Inject
 	private EinstellungService einstellungService;
 
-	private final AbstractDokumente<Familiensituation, Familiensituation> familiensituationDokumente = new FamiliensituationDokumente();
+	private final FamiliensituationDokumenteVisitor familiensituationVisitor = new FamiliensituationDokumenteVisitor();
 	private final KindDokumenteVisitor kindDokumenteVisitor = new KindDokumenteVisitor();
 	private final BetreuungDokumenteVisitor  betreuungDokumenteVisitor = new BetreuungDokumenteVisitor();
 
@@ -63,7 +63,9 @@ public class DokumentenverzeichnisEvaluator {
 		if (gesuch != null) {
 			Mandant mandant = gesuch.extractMandant();
 
-			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			familiensituationVisitor
+				.getFamiliensituationDokumenteForMandant(mandant)
+				.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 			kindDokumenteVisitor
 				.getKindDokumenteForMandant(mandant)
 				.getAllDokumente(gesuch, anlageVerzeichnis, locale);

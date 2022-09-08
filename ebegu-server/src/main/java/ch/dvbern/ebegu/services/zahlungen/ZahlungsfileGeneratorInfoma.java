@@ -47,7 +47,7 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 		Objects.requireNonNull(zahlungsauftrag.getMandant());
 		// Die nextInfomaBelegnummer darf erst bei der Freigabe der Zahlung auf dem Mandant
 		// hochgezaehlt werden!
-		long nextInfomaBelegnummer = zahlungsauftrag.getMandant().getNextInfomaBelegnummer();
+		long nextInfomaBelegnummer = zahlungsauftrag.getMandant().getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(InfomaHeader.with(isDevmode, currentUsername));
@@ -67,9 +67,15 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 					zahlung.getEmpfaengerName());
 			}
 
-			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer));
-			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer));
+			sb.append(InfomaStammdatenZahlung.with(zahlung, nextInfomaBelegnummer, locale));
+			sb.append(InfomaStammdatenFinanzbuchhaltung.with(zahlung, nextInfomaBelegnummer, locale));
 			nextInfomaBelegnummer++;
+
+			if (zahlungsauftrag.getZahlungslaufTyp().isBelegnummerHigherThanMax(nextInfomaBelegnummer)) {
+				throw new EbeguRuntimeException(KibonLogLevel.ERROR,
+					"infomaBelegNummerMaxReached",
+					ErrorCodeEnum.ERROR_INFOMA_BELEGNUMMER_MAX_REACHED);
+			}
 		}
 		sb.append(InfomaFooter.with(zahlungenSorted.size(), zahlungsauftrag.getBetragTotalAuftrag()));
 		return sb.toString().getBytes(StandardCharsets.US_ASCII);

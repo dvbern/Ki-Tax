@@ -34,6 +34,7 @@ import javax.ws.rs.core.Cookie;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mandant_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -112,8 +113,8 @@ public class MandantServiceBean extends AbstractBaseService implements MandantSe
 	}
 
 	@Override
-	public void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, long nextNumber) {
-		mandant.setNextInfomaBelegnummer(nextNumber);
+	public void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, @Nonnull ZahlungslaufTyp zahlungslaufTyp, long nextNumber) {
+		mandant.setNextInfomaBelegnummer(zahlungslaufTyp, nextNumber);
 		persistence.merge(mandant);
 	}
 }

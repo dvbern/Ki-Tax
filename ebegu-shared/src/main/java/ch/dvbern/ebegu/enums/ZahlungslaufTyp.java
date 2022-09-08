@@ -21,6 +21,17 @@ package ch.dvbern.ebegu.enums;
  * Enum fuer die verschiedenen Varianten von Zahlungslaeufen
  */
 public enum ZahlungslaufTyp {
-	GEMEINDE_INSTITUTION,
-	GEMEINDE_ANTRAGSTELLER
+	GEMEINDE_INSTITUTION(999999),
+	GEMEINDE_ANTRAGSTELLER(799999);
+
+	private final long maxInfomaBelegnummer;
+
+	ZahlungslaufTyp(long maxInfomaBelegnummer) {
+		this.maxInfomaBelegnummer = maxInfomaBelegnummer;
+	}
+
+	public boolean isBelegnummerHigherThanMax(long belegnumer) {
+		return belegnumer > maxInfomaBelegnummer;
+	}
+
 }
