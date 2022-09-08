@@ -16,7 +16,6 @@
 import {upgradeModule} from '@uirouter/angular-hybrid';
 import {Ng1StateDeclaration, StateProvider} from '@uirouter/angularjs';
 import * as angular from 'angular';
-import ADMIN_JS_MODULE from '../admin/admin.module';
 import {GESUCH_JS_MODULE} from '../gesuch/gesuch.module';
 import {ALLE_VERFUEGUNGEN_JS_MODULE} from './alleVerfuegungen/alleVerfuegungen.module';
 import {APP_ANGULARJS_COMPONENT} from './app.angularjs.component';
@@ -35,7 +34,6 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         'ui.router',
         upgradeModule.name,
         CORE_JS_MODULE.name,
-        ADMIN_JS_MODULE.name,
         GESUCH_JS_MODULE.name,
         PENDENZEN_JS_MODULE.name,
         DOSSIER_JS_MODULE.name,

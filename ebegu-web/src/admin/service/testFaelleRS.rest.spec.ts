@@ -17,15 +17,12 @@ import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../hybridTools/translationsMock';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
-import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
 describe('TestFaelleRS', () => {
 
     let testFaelleRS: TestFaelleRS;
     let $httpBackend: IHttpBackendService;
-
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 

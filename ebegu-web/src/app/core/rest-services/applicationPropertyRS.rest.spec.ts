@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
@@ -35,9 +34,6 @@ describe('ApplicationPropertyRS', () => {
         name: testName,
         value: 'myTestValue',
     };
-
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
-
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.module(translationsMock));

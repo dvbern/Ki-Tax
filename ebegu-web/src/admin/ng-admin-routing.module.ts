@@ -38,6 +38,14 @@ const applicationPropertiesResolver = [
 
 const states: Ng2StateDeclaration[] = [
     {
+        parent: 'app',
+        abstract: true,
+        name: 'admin',
+        data: {
+            roles: TSRoleUtil.getAdministratorRoles(),
+        },
+    },
+    {
         name: 'admin.view',
         component: AdminViewXComponent,
         url: '/admin',
