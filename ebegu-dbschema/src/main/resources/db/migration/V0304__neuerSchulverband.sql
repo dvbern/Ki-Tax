@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
-
-/**
- * Enum fuer die verschiedenen Varianten von Zahlungslaeufen
- */
-public enum ZahlungslaufTyp {
-	GEMEINDE_INSTITUTION(999999),
-	GEMEINDE_ANTRAGSTELLER(799999);
-
-	private final long maxInfomaBelegnummer;
-
-	ZahlungslaufTyp(long maxInfomaBelegnummer) {
-		this.maxInfomaBelegnummer = maxInfomaBelegnummer;
-	}
-
-	public boolean isBelegnummerHigherThanMax(long belegnumer) {
-		return belegnumer > maxInfomaBelegnummer;
-	}
-
-}
+-- 10048	Syndicat scolaire de Saicourt – Petit-Val (Schulverband)
+INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab) VALUES
+('bb0419f6-12ae-44c8-97f8-eb190e853d99', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')), 'BE', 10048, 'Syndicat scolaire de Saicourt – Petit-Val', '2010-01-01');

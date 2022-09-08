@@ -26,6 +26,7 @@ import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
+import {SearchRS} from '../gesuch/service/searchRS.rest';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
@@ -108,6 +109,9 @@ class MandantServiceMock extends MandantService {
     }
 }
 
+class SearchRSMock extends SearchRS {
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -119,6 +123,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('windowRef', WindowRef);
     $provide.service('cookieService', CookieServiceMock);
     $provide.service('ErrorServiceX', ErrorServiceXMock);
+    $provide.service('SearchRS', SearchRSMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

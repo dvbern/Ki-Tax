@@ -14,6 +14,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlung;
@@ -71,6 +72,11 @@ public class ZahlungsauftragBuilder {
 		return this;
 	}
 
+	public ZahlungsauftragBuilder withMandant(@Nonnull Mandant mandant) {
+		zahlungsauftrag.setMandant(mandant);
+		return this;
+	}
+
 	public ZahlungsauftragBuilder withZahlung(
 		@Nonnull BigDecimal betrag,
 		@Nonnull String empfaenger,
@@ -83,6 +89,7 @@ public class ZahlungsauftragBuilder {
 		zahlung.getAuszahlungsdaten().setIban(new IBAN(empfaengerKonto));
 		zahlung.getAuszahlungsdaten().setInfomaKreditorennummer(empfaengerKonto);
 		zahlung.getAuszahlungsdaten().setInfomaBankcode("010");
+		zahlung.getAuszahlungsdaten().setKontoinhaber(empfaenger);
 		zahlungsauftrag.getZahlungen().add(zahlung);
 		zahlung.setZahlungsauftrag(zahlungsauftrag);
 
