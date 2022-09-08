@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {isAtLeastFreigegeben, TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
@@ -468,5 +469,18 @@ export class TSGesuch extends TSAbstractAntragEntity {
     public isKorrekturModusOrFreigegeben(): boolean {
         return isAtLeastFreigegeben(this.status)
         && (TSEingangsart.ONLINE === this.eingangsart);
+    }
+
+    public getRegelStartDatum(): moment.Moment {
+        if (EbeguUtil.isNotNullOrUndefined(this.regelnGueltigAb)) {
+            return this.regelnGueltigAb;
+        }
+
+        if (EbeguUtil.isNullOrUndefined(this.eingangsdatum)
+        && this.eingangsart === TSEingangsart.ONLINE) {
+            return moment();
+        }
+
+        return this.eingangsdatum;
     }
 }

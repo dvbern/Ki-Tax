@@ -789,7 +789,7 @@
 	<kind_container id="8GoFfD71Qh6VObIi/s/JnQ==" timestamp_erstellt="2018-11-28 16:37:39.0" timestamp_mutiert="2018-11-28 16:37:39.0" user_erstellt="blku" user_mutiert="blku" version="0" vorgaenger_id="PP0SLfmXRt21648no+HUQw==" kind_nummer="1" next_number_betreuung="2" gesuch_id="vYkdwDslRF6ejVCOGaAGpg==" kindja_id="/VyCueNoT4qOO8qRFilqaQ=="/>
 	<kind_container id="/qKEESIyR1Cxj7xsom9vVQ==" timestamp_erstellt="2018-11-27 13:32:21.0" timestamp_mutiert="2018-11-27 13:32:35.0" user_erstellt="blku" user_mutiert="blku" version="1" kind_nummer="1" next_number_betreuung="2" gesuch_id="QwK/UtS6QRiTaGRYK6pkxw==" kindja_id="olgFNkKvT9qUEpoktU2Pvw=="/>
 	<mahnung/>
-	<mandant id="43NuuG7vQO+eUparSNjyIA==" timestamp_erstellt="2016-04-25 16:22:22.0" timestamp_mutiert="2016-04-25 16:22:26.0" user_erstellt="flyway" user_mutiert="flyway" version="0" name="Stadt Bern" angebotts="false" angebotfi="false" mandant_identifier="BERN" activated="true" next_infoma_belegnummer="1"/>
+	<mandant id="43NuuG7vQO+eUparSNjyIA==" timestamp_erstellt="2016-04-25 16:22:22.0" timestamp_mutiert="2016-04-25 16:22:26.0" user_erstellt="flyway" user_mutiert="flyway" version="0" name="Stadt Bern" angebotts="false" angebotfi="false" mandant_identifier="BERN" activated="true" next_infoma_belegnummer_antragsteller="1" next_infoma_belegnummer_institutionen="80001"/>
 	<massenversand/>
 	<massenversand_gesuch/>
 	<mitteilung/>
