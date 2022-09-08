@@ -149,7 +149,7 @@
     "ng-file-upload": "~12.2.8",
     "ngx-cookie-service": "^12.0.3",
     "ngx-guided-tour": "^1.1.11",
-    "ngx-iban": "^10.0.1",
+    "ngx-iban": "^12.1.0",
     "ngx-material-timepicker": "^3.2.2",
     "randomcolor": "^0.5.4",
     "raven-js": "^3.27.2",
