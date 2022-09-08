@@ -35,7 +35,7 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, from, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -250,6 +250,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
+
+    // used to cancel the previous subscription so we don't have two data loads racing each other
+    private dataLoadingSubscription: Subscription;
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
      * after user stopped typing for timeoutMS milliseconds
@@ -423,7 +426,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
+            this.searchRS.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => {
                 return result.antragDTOs.map(antragDto => {
                     return {
                         fallNummer: antragDto.fallNummer,
@@ -450,12 +453,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 });
             }));
 
-        dataToLoad$.subscribe((result: DVAntragListItem[]) => {
+        // cancel previous subscription if not closed
+        this.dataLoadingSubscription?.unsubscribe();
+
+        this.dataLoadingSubscription = dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
             this.updatePagination();
-            // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
-            //  these since they are not zone-aware. Remove once the service is migrated
-            this.changeDetectorRef.markForCheck();
         }, error => {
             this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
                 this.errorService.addMesageAsError(message);
@@ -474,10 +477,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (!EbeguUtil.isNullOrUndefined(this.data$)) {
             return;
         }
-        this.searchRS.countAntraege(body).then(result => {
+        this.searchRS.countAntraege(body).subscribe(result => {
             this.totalItems = result;
-            this.changeDetectorRef.markForCheck();
-        });
+        }, error => LOG.error(error));
     }
 
     private updatePagination(): void {
