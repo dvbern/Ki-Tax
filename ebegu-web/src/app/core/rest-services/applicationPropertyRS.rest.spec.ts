@@ -27,7 +27,7 @@ describe('ApplicationPropertyRS', () => {
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
     // tslint:disable-next-line:naming-convention
-    const REST_API: string = CONSTANTS.REST_API;
+    const REST_API = CONSTANTS.REST_API;
     const testName = 'myTestName';
 
     const mockApplicationProp = new TSApplicationProperty(testName, 'myTestValue');

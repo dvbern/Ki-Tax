@@ -25,7 +25,7 @@ import {InstitutionRS} from './institutionRS.rest';
 describe('institutionRS', () => {
 
     let institutionRS: InstitutionRS;
-    const ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
+    const ebeguRestUtil = new EbeguRestUtil();
     let mockInstitution: TSInstitution;
     let mockInstitutionRest: any;
     let mandant: TSMandant;

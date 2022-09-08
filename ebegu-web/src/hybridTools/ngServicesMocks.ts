@@ -13,14 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ICacheObject} from 'angular';
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
 import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../app/core/constants/MANDANTS';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
-import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {VersionService} from '../app/core/service/version/version.service';
@@ -30,10 +28,8 @@ import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
-import {GlobalCacheService} from '../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
-import {TSCacheTyp} from '../models/enums/TSCacheTyp';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';

@@ -33,7 +33,7 @@ export class EinstellungRS {
     public serviceURL: string;
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
-    private _einstellungenCacheMap = new Map<string, TSEinstellung[]>();
+    private readonly _einstellungenCacheMap = new Map<string, TSEinstellung[]>();
 
     public constructor(
         public readonly http: HttpClient,
