@@ -17,7 +17,6 @@
 
 import {Provider} from '@angular/core';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
-import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -90,17 +89,6 @@ export function errorServiceProviderServiceFactory(i: IInjectorService): ErrorSe
 export const errorServiceProvider = {
     provide: ErrorService,
     useFactory: errorServiceProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// TestFaelleRS
-export function testFaelleRSProviderServiceFactory(i: IInjectorService): TestFaelleRS {
-    return i.get('TestFaelleRS');
-}
-
-export const testFaelleRSProvider = {
-    provide: TestFaelleRS,
-    useFactory: testFaelleRSProviderServiceFactory,
     deps: ['$injector'],
 };
 
@@ -373,7 +361,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     applicationPropertyRSProvider,
     traegerschaftRSProvider,
     errorServiceProvider,
-    testFaelleRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     gesuchRSProvider,

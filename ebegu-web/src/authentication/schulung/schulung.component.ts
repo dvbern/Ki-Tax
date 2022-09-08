@@ -51,7 +51,7 @@ export class SchulungViewController implements IController {
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
         this.institutionForelle = this.getInstitutionForelle();
-        this.testFaelleRS.getSchulungBenutzer().then((response: any) => {
+        this.testFaelleRS.getSchulungBenutzer().subscribe((response: any) => {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];

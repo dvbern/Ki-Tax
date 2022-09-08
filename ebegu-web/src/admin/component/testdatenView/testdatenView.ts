@@ -157,7 +157,7 @@ export class TestdatenViewComponent implements OnInit {
         bestaetigt: boolean,
         verfuegen: boolean,
     ): void {
-        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(
+        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).subscribe(
             response => {
                 this.createLinkDialog(response);
             });
@@ -176,13 +176,13 @@ export class TestdatenViewComponent implements OnInit {
             gemeindeId,
             bestaetigt,
             verfuegen,
-            username).then(response => {
+            username).subscribe(response => {
             this.createLinkDialog(response);
         });
     }
 
     public removeGesucheGS(): void {
-        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).then(() => {
+        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).subscribe(() => {
             this.errorService.addMesageAsInfo(`Gesuche entfernt fuer ${this.selectedBesitzer.username}`);
         });
     }
@@ -201,11 +201,11 @@ export class TestdatenViewComponent implements OnInit {
             this.eingangsdatum,
             this.ereignisdatum)
             .then(response => {
-                this.createAndOpenOkDialog(response.data);
+                this.createAndOpenOkDialog(response);
             });
     }
 
-    public testAllMails(): IPromise<any> {
+    public testAllMails(): Observable<any> {
         return this.testFaelleRS.testAllMails(this.mailadresse);
     }
 
@@ -215,25 +215,25 @@ export class TestdatenViewComponent implements OnInit {
             this.eingangsdatum,
             this.ereignisdatum)
             .then(response => {
-                this.createAndOpenOkDialog(response.data);
+                this.createAndOpenOkDialog(response);
             });
     }
 
     public resetSchulungsdaten(): IPromise<any> {
         return this.testFaelleRS.resetSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
+            this.createAndOpenOkDialog(response);
         });
     }
 
     public deleteSchulungsdaten(): IPromise<any> {
         return this.testFaelleRS.deleteSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
+            this.createAndOpenOkDialog(response);
         });
     }
 
     public createTutorialdaten(): IPromise<any> {
         return this.testFaelleRS.createTutorialdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
+            this.createAndOpenOkDialog(response);
         });
     }
 
@@ -254,9 +254,9 @@ export class TestdatenViewComponent implements OnInit {
     private createLinkDialog(response: any): void {
         // einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
         const uuidLength = -36;
-        const uuidPartOfString = response.data ? response.data.slice(uuidLength) : '';
+        const uuidPartOfString = response ? response.slice(uuidLength) : '';
         // nicht alle Parameter werden benoetigt, deswegen sind sie leer
-        this.createAndOpenLinkDialog$(response.data, `#/gesuch/fall////${uuidPartOfString}//`);
+        this.createAndOpenLinkDialog$(response, `#/gesuch/fall////${uuidPartOfString}//`);
     }
 
     private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
@@ -296,7 +296,7 @@ export class TestdatenViewComponent implements OnInit {
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeForGemeindeAntrag,
-            this.gemeindeAntragStatus).then(response => {
+            this.gemeindeAntragStatus).subscribe(response => {
             this.errorService.clearAll();
             if (this.ferienbetreuungSelected()) {
                 this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
