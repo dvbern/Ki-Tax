@@ -19,20 +19,20 @@ import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
 
 export class ApplicationPropertyRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
+    public static $inject = ['$http', 'EbeguRestUtil', 'GlobalCacheService'];
 
     public serviceURL: string;
 
     public constructor(
         public http: IHttpService,
-        REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         private readonly globalCacheService: GlobalCacheService,
     ) {
-        this.serviceURL = `${REST_API}application-properties`;
+        this.serviceURL = `${CONSTANTS.REST_API}application-properties`;
     }
 
     public getAllowedMimetypes(): IPromise<string> {
