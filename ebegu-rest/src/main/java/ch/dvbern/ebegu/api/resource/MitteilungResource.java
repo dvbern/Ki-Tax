@@ -80,8 +80,6 @@ import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -110,8 +108,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Api(description = "Resource zum Verwalten von Mitteilungen (In-System Nachrichten)")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class MitteilungResource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(MitteilungResource.class.getSimpleName());
 
 	public static final String FALL_ID_INVALID = "FallID invalid: ";
 	public static final String DOSSIER_ID_INVALID = "DossierId invalid: ";

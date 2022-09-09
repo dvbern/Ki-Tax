@@ -25,7 +25,10 @@ export class DvHideFeatureDirective implements OnInit {
 
     @Input() public dvHideFeature = 'none';
 
-    public constructor(private elementRef: ElementRef, private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(
+        private readonly elementRef: ElementRef,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
     }
 
     public ngOnInit(): void {
