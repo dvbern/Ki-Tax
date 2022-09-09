@@ -34,8 +34,6 @@ import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
-    public readonly: boolean = false;
-
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
@@ -198,6 +196,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public getGesuch(): TSGesuch {
         return this.gesuchModelManager.getGesuch();
+    }
+
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
     }
 
     public showInfomaFields(): boolean {
