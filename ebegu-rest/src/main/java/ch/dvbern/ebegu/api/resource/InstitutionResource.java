@@ -75,6 +75,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
@@ -83,6 +84,8 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -149,6 +152,12 @@ public class InstitutionResource {
 	@Inject
 	private MitteilungService mitteilungService;
 
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
 	@Nullable
 	@POST
@@ -166,13 +175,7 @@ public class InstitutionResource {
 		@Context HttpServletResponse response) {
 
 		requireNonNull(adminMail);
-		if ((betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) &&
-			!principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
-			throw new IllegalStateException(
-				"Nur ein Superadmin oder Mandant Benutzer kann einen neuen Kita/TFO Benutzer einladen. Dies wurde "
-					+ "aber versucht durch: "
-					+ principalBean.getBenutzer().getUsername());
-		}
+		checkCreatInstitutionAllowed(betreuungsangebot);
 
 		Institution convertedInstitution = converter.institutionToNewEntity(institutionJAXP);
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
@@ -210,6 +213,23 @@ public class InstitutionResource {
 		return Response.created(uri).entity(jaxInstitution).build();
 	}
 
+	private void checkCreatInstitutionAllowed(@Nonnull BetreuungsangebotTyp betreuungsangebot) {
+		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
+			boolean institutionenDurchGemeindenEinladen = this.applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
+				principalBean.getMandant()
+			);
+			// falls Einstellung deaktiviert, dass Institutionen durch Gemeinden eingeladen werden können, dürfen nur
+			// SUPERADMIN und MANDANTROLLEN Institutionen einladen
+			if (!institutionenDurchGemeindenEinladen && !principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+				throw new IllegalStateException(
+					"Nur ein Superadmin oder Mandant Benutzer kann einen neuen Kita/TFO Benutzer einladen. Dies wurde "
+						+ "aber versucht durch: "
+						+ principalBean.getBenutzer().getUsername());
+			}
+		}
+	}
+
 	private void initInstitutionStammdaten(
 		@Nonnull String stringDateStartDate,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
@@ -222,7 +242,16 @@ public class InstitutionResource {
 		switch (betreuungsangebot) {
 		case KITA:
 		case TAGESFAMILIEN:
-			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(new InstitutionStammdatenBetreuungsgutscheine());
+			gemeinde = null;
+			if (gemeindeId != null) {
+				gemeinde = getGemeindeOrThrowException(gemeindeId);
+				// Benutzer muss write berechtigt sein, damit er auf der Gemeinde eine neue Institution erstellen
+				// kann
+				authorizer.checkWriteAuthorization(gemeinde);
+			}
+			InstitutionStammdatenBetreuungsgutscheine bgStammdaten = new InstitutionStammdatenBetreuungsgutscheine();
+			bgStammdaten.setGemeinde(gemeinde);
+			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(bgStammdaten);
 			break;
 		case TAGESSCHULE:
 			gemeinde = getGemeindeOrThrowException(gemeindeId);

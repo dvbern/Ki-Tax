@@ -33,6 +33,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
@@ -52,6 +53,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     @ViewChild(NgForm) public form: NgForm;
     private userHasGemeindeWithTSEnabled: boolean;
     private userHasGemeindeWithoutTSEnabled: boolean;
+    private institutionenDurchGemeindenEinladen: boolean = false;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -61,6 +63,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
+        public readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(authServiceRS);
     }
@@ -69,6 +72,9 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.setHiddenColumns();
         this.loadData();
         this.setupGemeindeAndRoleSpecificProperties();
+        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
+            this.institutionenDurchGemeindenEinladen = result;
+        });
     }
 
     private setupGemeindeAndRoleSpecificProperties(): void {
@@ -203,7 +209,12 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isCreateBGAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+        let allowedRoles: TSRole[] = [];
+        allowedRoles = allowedRoles.concat(TSRoleUtil.getMandantRoles());
+        if (this.institutionenDurchGemeindenEinladen) {
+            allowedRoles = allowedRoles.concat([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE]);
+        }
+        return this.authServiceRS.isOneOfRoles(allowedRoles);
     }
 
     public isCreateTSAllowed(): boolean {

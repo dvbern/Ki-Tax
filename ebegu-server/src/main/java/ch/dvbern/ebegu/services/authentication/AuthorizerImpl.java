@@ -627,6 +627,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return (userHasSameGemeindeAsPrincipal(benutzer))
 				|| (benutzer.getInstitution() != null
 				&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
+				|| (bgInstitutionBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))
 				|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
@@ -663,6 +664,19 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
+	}
+
+	private boolean bgInstitutionBelongsToGemeinde(
+		@Nonnull String institutionId,
+		@Nonnull Collection<Gemeinde> userGemeinden) {
+		InstitutionStammdaten stammdaten =
+			stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+		if (stammdaten == null
+			|| stammdaten.getInstitutionStammdatenBetreuungsgutscheine() == null
+			|| stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde() == null) {
+			return false;
+		}
+		return userGemeinden.contains(stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde());
 	}
 
 	private boolean ferieninselBelongsToGemeinde(
@@ -1410,8 +1424,14 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case SACHBEARBEITER_TS: {
 			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
 				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-				// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch
-				// Gemeinde-Benutzer,
+				// Kitas und Tageseltern koennen normalerweise ohne Einschraenkungen gelesen aber nicht editiert werden durch
+				// Gemeinde-Benutzer
+				// falls die Institution aber durch die Gemeinde eingeladen wurde (ApplicationPropopertyKey.INSTITUION_DURCH_GEMEINDE_EINLADEN = true)
+				// dann dürfen die Gemeindebenutzer die InstitutionStammdaten editieren
+				Gemeinde gemeinde = institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde();
+				if (gemeinde != null) {
+					return isUserAllowedForGemeinde(gemeinde);
+				}
 				return false;
 			}
 			Gemeinde gemeinde = null;

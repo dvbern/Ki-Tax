@@ -51,6 +51,25 @@
                             </dv-error-messages>
                         </div>
                     </div>
+                    <div class="col-sm-6" *ngIf="selectGemeindeVisible()">
+                        <div class="form-group">
+                            <label class="required" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
+                            <select [(ngModel)]="selectedGemeinde"
+                                    name="gemeinde"
+                                    class="form-control"
+                                    id="gemeinde"
+                                    [required]="true">
+                                <option *ngFor="let gemeinde of (gemeinden)"
+                                        [ngValue]="gemeinde">
+                                    {{gemeinde.name}}
+                                </option>
+                            </select>
+                            <dv-error-messages [errorObject]="form.controls.gemeindeId?.errors"
+                                               inputId="gemeinde"
+                                               class="input-error">
+                            </dv-error-messages>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Institutionname | Betreuungsgutscheine akzeptieren ab -->
@@ -79,25 +98,6 @@
                             <mat-datepicker #start_date></mat-datepicker>
                             <dv-error-messages input-id="begu_start_ID"
                                                [errorObject]="form.controls.begu_start?.errors">
-                            </dv-error-messages>
-                        </div>
-                    </div>
-                    <div class="col-sm-6" *ngIf="!isBGInstitution">
-                        <div class="form-group">
-                            <label class="required" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
-                            <select [(ngModel)]="selectedGemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    [required]="true">
-                                <option *ngFor="let gemeinde of (gemeinden)"
-                                        [ngValue]="gemeinde">
-                                    {{gemeinde.name}}
-                                </option>
-                            </select>
-                            <dv-error-messages [errorObject]="form.controls.gemeindeId?.errors"
-                                               inputId="gemeinde"
-                                               class="input-error">
                             </dv-error-messages>
                         </div>
                     </div>
