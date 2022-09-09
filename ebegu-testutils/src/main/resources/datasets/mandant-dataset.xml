@@ -28,7 +28,8 @@
 			 angebotts="false"
 			 angebotfi="false"
 			 activated="true"
-			 next_infoma_belegnummer="1"/>
+			 next_infoma_belegnummer_antragsteller="1"
+			 next_infoma_belegnummer_institutionen="80001"/>
 	<gesuchsperiode id="BiH7XaGHWpGrr4qBPE0qqg=="
 					timestamp_erstellt="2013-05-30 16:39:38.0"
 					timestamp_mutiert="2013-05-30 16:39:38.0"

@@ -258,6 +258,12 @@ public final class MahlzeitenverguenstigungBGRechnerRule implements RechnerRule 
 			inputGemeinde.addBemerkung(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, locale);
 			return false;
 		}
+
+		// Bei Abwesenheiten wird keine MZV ausbezahlt
+		if (inputGemeinde.isLongAbwesenheit() && inputGemeinde.isBezahltKompletteVollkosten()) {
+			return false;
+		}
+
 		return true;
 	}
 

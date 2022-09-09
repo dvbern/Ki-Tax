@@ -58,8 +58,6 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	protected static final String NORMLOHNKOSTEN_BETREUUNG = "PdfGeneration_normlohnkostenBetreuung";
 	protected static final String TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN =
 			"PdfGeneration_tatsachlicheEinnahmenElterngebuehren";
-	protected static final String RUCKERSTATTUNG_ELTERN = "PdfGeneration_ruckerstattungEltern";
-	protected static final String TS_TEILWEISE_GESCHLOSSEN = "PdfGeneration_tsTeilweiseGeschlossen";
 
 	protected static final String LATS_BETRAG = "PdfGeneration_latsBetrag";
 	protected static final String ERSTE_RATE = "PdfGeneration_ersteRate";
@@ -219,14 +217,6 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		table.addRow(
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
-		table.addRow(
-				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getSchuljahrAsString()),
-				getBooleanAsString(angabenGemeinde.getTagesschuleTeilweiseGeschlossen()));
-		if(Boolean.TRUE.equals(angabenGemeinde.getTagesschuleTeilweiseGeschlossen())) {
-			table.addRow(
-					translate(RUCKERSTATTUNG_ELTERN, mandant),
-					angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
-		}
 
 		table.addRow(
 				translate(LATS_BETRAG, mandant, getSchuljahrAsString()),

@@ -48,14 +48,6 @@ const ng1States: Ng1StateDeclaration[] = [
             roles: TSRoleUtil.getSuperAdminRoles(),
         },
     },
-    {
-        name: 'admin.benutzerlist',
-        template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
-        url: '/benutzerlist',
-        data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
-    },
 ];
 
 adminRun.$inject = ['RouterHelper'];
