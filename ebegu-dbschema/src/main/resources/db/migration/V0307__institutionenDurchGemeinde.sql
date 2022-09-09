@@ -18,3 +18,6 @@
 ALTER TABLE institution_stammdaten_betreuungsgutscheine add gemeinde_id binary(16);
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud add gemeinde_id binary(16);
 
+INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN', 'false' FROM mandant;
+

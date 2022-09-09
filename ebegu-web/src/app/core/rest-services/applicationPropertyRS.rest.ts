@@ -160,4 +160,10 @@ export class ApplicationPropertyRS {
             return response.zusatzinformationenInstitution;
         });
     }
+
+    public getInstitutionenDurchGemeindenEinladen(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.institutionenDurchGemeindenEinladen;
+        });
+    }
 }

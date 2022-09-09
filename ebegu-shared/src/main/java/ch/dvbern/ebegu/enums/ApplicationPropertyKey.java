@@ -195,4 +195,10 @@ public enum ApplicationPropertyKey {
 	 */
 	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
 
+	/**
+	 * Falls aktiv, können Gemeinden durch die Institutionen eingeladen werden. Diese werden direkt mit der Gemeinde
+	 * verknüpft
+	 */
+	INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
+
 }
