@@ -1788,6 +1788,10 @@ public class JaxBConverter extends AbstractConverter {
 			new JaxInstitutionStammdatenBetreuungsgutscheine();
 		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
 
+		if (persistedInstStammdaten.getGemeinde() != null) {
+			jaxInstStammdaten.setGemeinde(gemeindeToJAX(persistedInstStammdaten.getGemeinde()));
+		}
+
 		final IBAN persistedIban = persistedInstStammdaten.extractIban();
 		if (persistedIban != null) {
 			jaxInstStammdaten.setIban(persistedIban.getIban());
