@@ -57,6 +57,7 @@ import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
+import {CONSTANTS} from '../constants/CONSTANTS';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
@@ -256,12 +257,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
      * after user stopped typing for timeoutMS milliseconds
-     * We use 700ms because community proposes 500ms as a starting value
-     * and we add some more extra for slow typers
      */
     private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = CONSTANTS.KEYUP_TIMEOUT;
 
-    private readonly timeoutMS = 700;
     private readonly sort: {
         predicate?: string,
         reverse?: boolean
