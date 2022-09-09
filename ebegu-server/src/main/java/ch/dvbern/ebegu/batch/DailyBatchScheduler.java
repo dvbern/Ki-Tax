@@ -99,6 +99,11 @@ public class DailyBatchScheduler {
 		dailyBatch.runBatchInfoOffenePendenzenNeueMitteilungInstitution();
 	}
 
+	@Schedule(second = "59", minute = "00", hour = "02", dayOfMonth = "1", month = "9", persistent = true)
+	public void deleteInstitutionKennzahlenFields() {
+		dailyBatch.deleteInstitutionKennzahlenFields();
+	}
+
 	@Schedule(second = "59", minute = "30", hour = "02", dayOfMonth = "15", month = "9", persistent = true)
 	public void runBatchInstitutionCheckRequired() {
 		dailyBatch.runBatchInstitutionCheckRequired();

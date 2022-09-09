@@ -279,7 +279,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Map<String, Integer> calculateAnzahlEingeschriebeneKinder(
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId latsInstitutionAngabenJaxId
 	) {
@@ -308,7 +308,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+		SACHBEARBEITER_TS, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Map<String, BigDecimal> calculateDurchschnitKinderProTag(
 		@Nonnull @NotNull @PathParam("containerJaxId") JaxId latsInstitutionAngabenJaxId
 	) {

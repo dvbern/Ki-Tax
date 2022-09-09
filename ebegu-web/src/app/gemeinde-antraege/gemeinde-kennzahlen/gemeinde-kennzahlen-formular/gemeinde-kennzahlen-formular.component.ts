@@ -17,6 +17,7 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
@@ -177,5 +178,27 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
 
     public getEinschulungTypes(): TSEinschulungTyp[] {
         return getTSEinschulungTypValues();
+    }
+
+    public onGemeindeKontingentiertChange(event: MatRadioChange, gdeKennzahlen: TSGemeindeKennzahlen): void {
+        if (event.value === true) {
+            return;
+        }
+
+        gdeKennzahlen.nachfrageErfuellt = undefined;
+        this.resetNachfrageFields(gdeKennzahlen);
+    }
+
+    public onNachfrageErfuelltChange(event: MatRadioChange, gdeKennzahlen: TSGemeindeKennzahlen): void {
+        if (event.value === true) {
+            return;
+        }
+
+        this.resetNachfrageFields(gdeKennzahlen);
+    }
+
+    private resetNachfrageFields(gdeKennzahlen: TSGemeindeKennzahlen): void {
+        gdeKennzahlen.nachfrageDauer = undefined;
+        gdeKennzahlen.nachfrageAnzahl = undefined;
     }
 }

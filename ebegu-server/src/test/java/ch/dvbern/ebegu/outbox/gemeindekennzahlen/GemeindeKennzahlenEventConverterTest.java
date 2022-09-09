@@ -44,6 +44,7 @@ public class GemeindeKennzahlenEventConverterTest {
 	@Test
 	public void testChangedEvent() {
 		Gemeinde gemeinde = new Gemeinde();
+		gemeinde.setId("12345");
 		gemeinde.setBfsNummer(123L);
 		gemeinde.setMandant(new Mandant());
 		gemeinde.getMandant().setMandantIdentifier(MandantIdentifier.BERN);
@@ -66,6 +67,7 @@ public class GemeindeKennzahlenEventConverterTest {
 		GemeindeKennzahlenEventDTO specificRecord = AvroConverter.fromAvroBinary(gemeindeKennzahlenChangedEvent.getSchema(), gemeindeKennzahlenChangedEvent.getPayload());
 
 		assertThat(specificRecord, is(pojo(GemeindeKennzahlenEventDTO.class)
+			.where(GemeindeKennzahlenEventDTO::getGemeindeUUID, is(gemeinde.getId()))
 			.where(GemeindeKennzahlenEventDTO::getBfsNummer, is(123L))
 			.where(
 				GemeindeKennzahlenEventDTO::getGesuchsperiodeStart,

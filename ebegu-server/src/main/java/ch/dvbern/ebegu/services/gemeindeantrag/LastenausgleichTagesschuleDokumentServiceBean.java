@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.PDFService;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -112,14 +111,11 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 	@Override
 	public byte[] generateLATSReportDokument(
-			@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container
-	) throws MergeDocException {
-		GemeindeStammdaten gemeindeStammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
-						.orElse(null);
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		Sprache sprache) throws MergeDocException {
 		Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
 		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
-		return pdfService.generateLATSReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE, lohnnormkosten, lohnnormkostenLessThan50);
+		return pdfService.generateLATSReport(container, sprache, lohnnormkosten, lohnnormkostenLessThan50);
 
 	}
 
@@ -226,18 +222,26 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setBetreuungsstundenProg(betreuungsstundenPrognose);
 
 		// for gemeinden with both normlohnkosten, use same distribution => use same calculated normlohnkosten
-		BigDecimal normlohnkostenCalculated = MathUtil.EXACT.divide(
-			angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
-			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
-			);
+		final boolean islastenausgleichberechtigteBetreuungstundenZero =
+				BigDecimal.ZERO.compareTo(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()) == 0;
+
+		BigDecimal normlohnkostenCalculated =
+				islastenausgleichberechtigteBetreuungstundenZero ?
+						BigDecimal.ZERO :
+						MathUtil.EXACT.divide(
+								angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
+								angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+						);
 
 		Objects.requireNonNull(normlohnkostenCalculated);
 		BigDecimal normlohnkostenProg = normlohnkostenCalculated.multiply(betreuungsstundenPrognose);
 		dto.setNormlohnkostenTotalProg(MathUtil.ceilToFrankenRappen(normlohnkostenProg));
 
-		BigDecimal proportion = MathUtil.EXACT.divide(
-			betreuungsstundenPrognose,
-			angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
+		BigDecimal proportion = islastenausgleichberechtigteBetreuungstundenZero ?
+				BigDecimal.ZERO :
+				MathUtil.EXACT.divide(
+				betreuungsstundenPrognose,
+				angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
 		);
 
 		Objects.requireNonNull(angabenGemeinde.getEinnahmenElterngebuehren());

@@ -139,4 +139,14 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
         && this.isInfomazahlungen;
     }
+
+    public getAuslastungInstitutionenLabel(): string {
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
+            return 'INSTITUTION_AUSLASTUNG_INSTITUTIONEN_KITA';
+        }
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            return 'INSTITUTION_AUSLASTUNG_INSTITUTIONEN_TFO';
+        }
+        return '';
+    }
 }

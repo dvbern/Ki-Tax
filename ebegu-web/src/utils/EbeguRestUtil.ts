@@ -14,7 +14,9 @@
  */
 
 import * as moment from 'moment';
+import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
+import {TSBenutzerTableFilterDTO} from '../models/dto/TSBenutzerTableFilterDTO';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationAufteilungDTO} from '../models/dto/TSFinanzielleSituationAufteilungDTO';
 import {TSFinanzielleSituationResultateDTO} from '../models/dto/TSFinanzielleSituationResultateDTO';
@@ -2019,6 +2021,7 @@ export class EbeguRestUtil {
         restSelbstdeklaration.einkunftUeberige = selbstdeklaration.einkunftUeberige;
         restSelbstdeklaration.einkunftLiegenschaften = selbstdeklaration.einkunftLiegenschaften;
         restSelbstdeklaration.abzugBerufsauslagen = selbstdeklaration.abzugBerufsauslagen;
+        restSelbstdeklaration.abzugSchuldzinsen = selbstdeklaration.abzugSchuldzinsen;
         restSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklaration.abzugUnterhaltsbeitragKinder;
         restSelbstdeklaration.abzugSaeule3A = selbstdeklaration.abzugSaeule3A;
         restSelbstdeklaration.abzugVersicherungspraemien = selbstdeklaration.abzugVersicherungspraemien;
@@ -2132,6 +2135,7 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.einkunftUeberige = selbstdeklarationFromServer.einkunftUeberige;
             tsSelbstdeklaration.einkunftLiegenschaften = selbstdeklarationFromServer.einkunftLiegenschaften;
             tsSelbstdeklaration.abzugBerufsauslagen = selbstdeklarationFromServer.abzugBerufsauslagen;
+            tsSelbstdeklaration.abzugSchuldzinsen = selbstdeklarationFromServer.abzugSchuldzinsen;
             tsSelbstdeklaration.abzugUnterhaltsbeitragKinder = selbstdeklarationFromServer.abzugUnterhaltsbeitragKinder;
             tsSelbstdeklaration.abzugSaeule3A = selbstdeklarationFromServer.abzugSaeule3A;
             tsSelbstdeklaration.abzugVersicherungspraemien = selbstdeklarationFromServer.abzugVersicherungspraemien;
@@ -6048,5 +6052,35 @@ export class EbeguRestUtil {
         restObj.nettovermoegenGS2 = aufteilung.nettovermoegen.gs2;
         restObj.nettoertraegeErbengemeinschaftGS2 = aufteilung.nettoertraegeErbengemeinschaft.gs2;
         return restObj;
+    }
+
+    public benutzerTableFilterDTOToRestObject(dto: TSBenutzerTableFilterDTO): any {
+        return {
+            pagination: dto.pagination.toPaginationDTO(),
+            search: {
+                predicateObject: this.benutzerListFilterToRestObject(dto.search)
+            },
+            sort: {
+                predicate: dto.sort.active,
+                reverse: dto.sort.direction === 'asc'
+            }
+        };
+    }
+
+    private benutzerListFilterToRestObject(filter: BenutzerListFilter): any {
+        return {
+            username: filter.username,
+            vorname: filter.vorname,
+            nachname: filter.nachname,
+            email: filter.email,
+            role: filter.role,
+            roleGueltigAb: filter.roleGueltigAb,
+            roleGueltigBis: filter.roleGueltigBis,
+            gemeinde: filter.gemeinde,
+            institution: filter.institution,
+            traegerschaft: filter.traegerschaft,
+            sozialdienst: filter.sozialdienst,
+            status: filter.status,
+        };
     }
 }
