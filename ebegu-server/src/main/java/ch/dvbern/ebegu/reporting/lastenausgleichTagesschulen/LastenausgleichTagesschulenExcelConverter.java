@@ -81,6 +81,7 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.bemerkungenGemeinde, lastenausgleichGemeindenDataRow.getBemerkungenGemeinde());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPrognose, lastenausgleichGemeindenDataRow.getBetreuungsstundenPrognose());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPrognoseKibon, lastenausgleichGemeindenDataRow.getBetreuungsstundenPrognoseKibon());
+			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPrognoseBemerkungen, lastenausgleichGemeindenDataRow.getBetreuungsstundenPrognoseBemerkungen());
 
 			lastenausgleichGemeindenDataRow.getLastenausgleichTagesschulenDaten().forEach(lastenausgleichTagesschulenDataRow -> {
 				ExcelMergerDTO tagesschuleAngabenGroup = excelMerger.createGroup(MergeFieldLastenausgleichTS.rowTagesschulenRepeat);

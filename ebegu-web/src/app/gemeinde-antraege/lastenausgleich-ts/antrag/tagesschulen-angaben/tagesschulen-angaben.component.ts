@@ -235,7 +235,7 @@ export class TagesschulenAngabenComponent {
         }
     }
 
-    private canEditForm(): boolean {
+    public canEditForm(): boolean {
         return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && (
             (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
                 this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||

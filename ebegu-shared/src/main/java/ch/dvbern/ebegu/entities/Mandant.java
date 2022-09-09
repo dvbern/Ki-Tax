@@ -26,6 +26,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
@@ -67,7 +68,13 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 	@Column(nullable = false)
 	@Min(1)
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
-	private long nextInfomaBelegnummer = 1L;
+	private long nextInfomaBelegnummerAntragsteller = 1L;
+
+	@NotNull
+	@Column(nullable = false)
+	@Min(1)
+	@Field(bridge = @FieldBridge(impl = LongBridge.class))
+	private long nextInfomaBelegnummerInstitutionen = 1L;
 
 	public Mandant() {
 	}
@@ -114,12 +121,36 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 		this.activated = activated;
 	}
 
-	public long getNextInfomaBelegnummer() {
-		return nextInfomaBelegnummer;
+	public long getNextInfomaBelegnummerAntragsteller() {
+		return nextInfomaBelegnummerAntragsteller;
 	}
 
-	public void setNextInfomaBelegnummer(long nextInfomaBelegnummer) {
-		this.nextInfomaBelegnummer = nextInfomaBelegnummer;
+	public void setNextInfomaBelegnummerAntragsteller(long nextInfomaBelegnummer) {
+		this.nextInfomaBelegnummerAntragsteller = nextInfomaBelegnummer;
+	}
+
+	public long getNextInfomaBelegnummerInstitutionen() {
+		return nextInfomaBelegnummerInstitutionen;
+	}
+
+	public void setNextInfomaBelegnummerInstitutionen(long nextInfomaBelegnummerInstitutionen) {
+		this.nextInfomaBelegnummerInstitutionen = nextInfomaBelegnummerInstitutionen;
+	}
+
+	public long getNextInofmaBelegnummer(ZahlungslaufTyp zahlungslaufTyp) {
+		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+			return getNextInfomaBelegnummerAntragsteller();
+		}
+
+		return getNextInfomaBelegnummerInstitutionen();
+	}
+
+	public void setNextInfomaBelegnummer(ZahlungslaufTyp zahlungslaufTyp, long nextInfomaBelegnummer) {
+		if (zahlungslaufTyp == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER) {
+			setNextInfomaBelegnummerAntragsteller(nextInfomaBelegnummer);
+		} else {
+			setNextInfomaBelegnummerInstitutionen(nextInfomaBelegnummer);
+		}
 	}
 
 	@Override

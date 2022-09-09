@@ -65,6 +65,10 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal abzugSchuldzinsen;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal abzugUnterhaltsbeitragKinder;
 
 	@Nullable
@@ -177,6 +181,15 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 
 	public void setAbzugBerufsauslagen(@Nullable BigDecimal abzugBerufsauslagen) {
 		this.abzugBerufsauslagen = abzugBerufsauslagen;
+	}
+
+	@Nullable
+	public BigDecimal getAbzugSchuldzinsen() {
+		return abzugSchuldzinsen;
+	}
+
+	public void setAbzugSchuldzinsen(@Nullable BigDecimal abzugSchuldzinsen) {
+		this.abzugSchuldzinsen = abzugSchuldzinsen;
 	}
 
 	@Nullable
@@ -315,6 +328,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			MathUtil.isSame(getEinkunftUeberige(), otherSelbstdeklaration.getEinkunftUeberige()) &&
 			MathUtil.isSame(getEinkunftLiegenschaften(), otherSelbstdeklaration.getEinkunftLiegenschaften()) &&
 			MathUtil.isSame(getAbzugBerufsauslagen(), otherSelbstdeklaration.getAbzugBerufsauslagen()) &&
+			MathUtil.isSame(getAbzugSchuldzinsen(), otherSelbstdeklaration.getAbzugSchuldzinsen()) &&
 			MathUtil.isSame(getAbzugUnterhaltsbeitragKinder(), otherSelbstdeklaration.getAbzugUnterhaltsbeitragKinder()) &&
 			MathUtil.isSame(getAbzugSaeule3A(), otherSelbstdeklaration.getAbzugSaeule3A()) &&
 			MathUtil.isSame(getAbzugVersicherungspraemien(), otherSelbstdeklaration.getAbzugVersicherungspraemien()) &&
@@ -343,6 +357,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			target.setEinkunftUeberige(this.getEinkunftUeberige());
 			target.setEinkunftLiegenschaften(this.getEinkunftLiegenschaften());
 			target.setAbzugBerufsauslagen(this.getAbzugBerufsauslagen());
+			target.setAbzugSchuldzinsen(this.getAbzugSchuldzinsen());
 			target.setAbzugUnterhaltsbeitragKinder(this.getAbzugUnterhaltsbeitragKinder());
 			target.setAbzugSaeule3A(this.getAbzugSaeule3A());
 			target.setAbzugVersicherungspraemien(this.getAbzugVersicherungspraemien());
@@ -383,6 +398,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		return MathUtil.EXACT.addNullSafe(
 			total,
 			abzugBerufsauslagen,
+			abzugSchuldzinsen,
 			abzugUnterhaltsbeitragKinder,
 			abzugSaeule3A,
 			abzugVersicherungspraemien,
@@ -418,6 +434,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			&& einkunftUeberige != null
 			&& einkunftLiegenschaften != null
 			&& abzugBerufsauslagen != null
+			&& abzugSchuldzinsen != null
 			&& abzugUnterhaltsbeitragKinder != null
 			&& abzugSaeule3A != null
 			&& abzugVersicherungspraemien != null

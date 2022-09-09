@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,6 +62,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
@@ -675,7 +677,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		authorizer.checkReadAuthorization(container);
 
-		final byte[] content = latsDokumentService.generateLATSReportDokument(container);
+		final Locale locale = LocaleThreadLocal.get();
+		Sprache sprache = Sprache.fromLocale(locale);
+		final byte[] content = latsDokumentService.generateLATSReportDokument(container, sprache);
 
 		if (content != null && content.length > 0) {
 			try {

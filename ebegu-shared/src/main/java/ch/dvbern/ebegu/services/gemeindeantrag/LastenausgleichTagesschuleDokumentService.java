@@ -30,6 +30,6 @@ public interface LastenausgleichTagesschuleDokumentService {
 	@Nonnull
 	byte[] createDocx(@Nonnull String containerId, @Nonnull Sprache sprache, @Nonnull BigDecimal betreuungsstundenPrognose);
 
-	byte[] generateLATSReportDokument(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container) throws
+	byte[] generateLATSReportDokument(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container, Sprache sprache) throws
 			MergeDocException;
 }

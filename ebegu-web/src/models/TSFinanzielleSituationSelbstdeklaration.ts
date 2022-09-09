@@ -25,6 +25,7 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
     private _einkunftUeberige: number;
     private _einkunftLiegenschaften: number;
     private _abzugBerufsauslagen: number;
+    private _abzugSchuldzinsen: number;
     private _abzugUnterhaltsbeitragKinder: number;
     private _abzugSaeule3A: number;
     private _abzugVersicherungspraemien: number;
@@ -93,6 +94,14 @@ export  class TSFinanzielleSituationSelbstdeklaration extends TSAbstractMutableE
 
     public set abzugBerufsauslagen(value: number) {
         this._abzugBerufsauslagen = value;
+    }
+
+    public get abzugSchuldzinsen(): number {
+        return this._abzugSchuldzinsen;
+    }
+
+    public set abzugSchuldzinsen(value: number) {
+        this._abzugSchuldzinsen = value;
     }
 
     public get abzugUnterhaltsbeitragKinder(): number {

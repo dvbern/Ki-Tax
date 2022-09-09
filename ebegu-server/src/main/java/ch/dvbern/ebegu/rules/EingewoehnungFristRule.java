@@ -69,17 +69,18 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		Gesuch gesuch) {
 		List<VerfuegungZeitabschnitt> result = new LinkedList<>();
-		VerfuegungZeitabschnitt vorgaenger = null;
+		VerfuegungZeitabschnitt vorherigerZeitabschnitt = null;
 		boolean found = false; //wenn wir eine erweitert haben es ist fertig als es kann wieder spaeter zu 0 sinken
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			if (vorgaenger != null) {
+			if (vorherigerZeitabschnitt != null) {
 				VerfuegungZeitabschnitt eingewoehnung = null;
 				if (zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() > 0
-					&& vorgaenger.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0
+					&& vorherigerZeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumProzent() <= 0
+					&& !vorherigerZeitabschnitt.getRelevantBgCalculationInput().isZuSpaetEingereicht()
 					&& !found) {
-					// wir verlaengern der Anspruch aber die Input muessen von vorgaenger kopiert werden
+					// wir verlaengern der Anspruch aber die Input muessen von vorherigerZeitabschnitt kopiert werden
 					eingewoehnung =
-						createEingewoehnungAbschnitt(vorgaenger, zeitabschnitt, zeitabschnitt.getGueltigkeit());
+						createEingewoehnungAbschnitt(vorherigerZeitabschnitt, zeitabschnitt, zeitabschnitt.getGueltigkeit());
 					if (gesuch.getGesuchsperiode()
 						.getGueltigkeit()
 						.getGueltigAb()
@@ -95,16 +96,16 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 						}
 						eingewoehnung.getGueltigkeit()
 							.setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-						vorgaenger.getGueltigkeit()
+						vorherigerZeitabschnitt.getGueltigkeit()
 							.setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
-						if (vorgaenger.getGueltigkeit()
+						if (vorherigerZeitabschnitt.getGueltigkeit()
 							.getGueltigAb()
-							.compareTo(vorgaenger.getGueltigkeit().getGueltigBis()) >= 0) {
+							.compareTo(vorherigerZeitabschnitt.getGueltigkeit().getGueltigBis()) >= 0) {
 							//get the original Gueltigab
 							LocalDate gueltigAb = eingewoehnung.getGueltigkeit().getGueltigAb();
 							//set the new value for the eingewoehnung
-							eingewoehnung.getGueltigkeit().setGueltigAb(vorgaenger.getGueltigkeit().getGueltigAb());
-							vorgaenger = null;
+							eingewoehnung.getGueltigkeit().setGueltigAb(vorherigerZeitabschnitt.getGueltigkeit().getGueltigAb());
+							vorherigerZeitabschnitt = null;
 							List<VerfuegungZeitabschnitt> resultOld = result;
 							result = new ArrayList<>();
 							for (VerfuegungZeitabschnitt zeitabschnittResult : resultOld) {
@@ -132,21 +133,21 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 				}
 				// wenn die erste Betreuung Abschnitt ist schon vorbei, eingewoehnung macht weniger Sinn
 				if (!found
-					&& zeitabschnitt.getRelevantBgCalculationInput()
+					&& vorherigerZeitabschnitt.getRelevantBgCalculationInput()
 					.getBetreuungspensumProzent()
 					.compareTo(BigDecimal.ZERO) > 0) {
 					found = true;
 				}
-				if (vorgaenger != null) {
-					result.add(vorgaenger);
+				if (vorherigerZeitabschnitt != null) {
+					result.add(vorherigerZeitabschnitt);
 				}
 				if (eingewoehnung != null) {
 					result.add(eingewoehnung);
 				}
 			}
-			vorgaenger = zeitabschnitt;
+			vorherigerZeitabschnitt = zeitabschnitt;
 		}
-		result.add(vorgaenger);
+		result.add(vorherigerZeitabschnitt);
 
 		return result;
 	}

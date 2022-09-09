@@ -165,9 +165,9 @@ public class FinanzielleSituationLuzernRechnerTest {
 
 			finSitRechner.setFinanzielleSituationParameters(gesuch, resultDTO, false);
 			assertThat(resultDTO.getEinkommenGS1(), is(BigDecimal.valueOf(161411)));
-			assertThat(resultDTO.getAbzuegeGS1(), is(BigDecimal.valueOf(31625)));
+			assertThat(resultDTO.getAbzuegeGS1(), is(BigDecimal.valueOf(33625)));
 			assertThat(resultDTO.getVermoegenXPercentAnrechenbarGS1(), is(BigDecimal.valueOf(9257)));
-			assertThat(resultDTO.getMassgebendesEinkVorAbzFamGrGS1(), is(BigDecimal.valueOf(139043)));
+			assertThat(resultDTO.getMassgebendesEinkVorAbzFamGrGS1(), is(BigDecimal.valueOf(137043)));
 		}
 	}
 
@@ -185,7 +185,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 			gesuch.setEinkommensverschlechterungInfoContainer(createEKVInfoContainer(false));
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
 			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(25));
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(139043)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(137043)));
 		}
 
 		@Test
@@ -199,7 +199,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 			gesuch.setEinkommensverschlechterungInfoContainer(createEKVInfoContainer(false));
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSit);
 			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(2));
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(119043)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(117043)));
 		}
 
 		@Test
@@ -220,7 +220,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 				.getSelbstdeklaration() != null;
 			gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().getSelbstdeklaration().setEinkunftErwerb(new BigDecimal("55678.00"));
 			finSitRechner.calculateFinanzDaten(gesuch, new BigDecimal(5));
-			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(159043)));
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(157043)));
 		}
 	}
 
@@ -290,6 +290,7 @@ public class FinanzielleSituationLuzernRechnerTest {
 		deklaration.setEinkunftUeberige(new BigDecimal("16005.00"));
 		deklaration.setEinkunftLiegenschaften(new BigDecimal("23805.00"));
 		deklaration.setAbzugBerufsauslagen(new BigDecimal("3940.00"));
+		deklaration.setAbzugSchuldzinsen(new BigDecimal("2000.00"));
 		deklaration.setAbzugUnterhaltsbeitragKinder(new BigDecimal("4279.00"));
 		deklaration.setAbzugSaeule3A(new BigDecimal("2358.00"));
 		deklaration.setAbzugVersicherungspraemien(new BigDecimal("4521.00"));

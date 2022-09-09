@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.Null;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -33,6 +32,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.MergeDocException;
 
 /**
@@ -140,6 +140,6 @@ public interface FerienbetreuungService {
 
 	Optional<FerienbetreuungAngabenContainer> findFerienbetreuungAngabenVorgaengerContainer(@Nonnull FerienbetreuungAngabenContainer container);
 
-	byte[] generateFerienbetreuungReportDokument(@Nonnull FerienbetreuungAngabenContainer container)
+	byte[] generateFerienbetreuungReportDokument(@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache)
 			throws MergeDocException;
 }
