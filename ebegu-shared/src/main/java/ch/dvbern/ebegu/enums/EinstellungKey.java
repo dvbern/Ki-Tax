@@ -40,6 +40,8 @@ public enum EinstellungKey {
 	// Ob die Tageschulen koennen Tagis sein
 	GEMEINDE_TAGESSCHULE_TAGIS_ENABLED(EinstellungTyp.GEMEINDE),
 
+	GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG(EinstellungTyp.GEMEINDE),
+
 	// Die Gemeinde gewährt einen zusätzlichen Beitrag zum Gutschein
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED(EinstellungTyp.GEMEINDE),
 
