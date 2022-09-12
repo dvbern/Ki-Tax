@@ -8,6 +8,11 @@ module.exports = {
                     //TODO: Remove once dv-userselect directive is angular 2+
                     minimize: false
                 }
+            },
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: "javascript/auto"
             }
         ]
     }
