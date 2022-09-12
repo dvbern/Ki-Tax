@@ -86,6 +86,16 @@ public enum EinstellungKey {
 	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
 	GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT(EinstellungTyp.GEMEINDE),
 
+	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT(EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG(EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(EinstellungTyp.GEMEINDE),
+
+
 	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
