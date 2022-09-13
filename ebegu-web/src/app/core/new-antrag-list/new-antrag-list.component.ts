@@ -748,7 +748,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             return;
         }
 
-        this.benutzerRS.getAllBenutzerMandant().then(response => {
+        this.benutzerRS.getAllActiveBenutzerMandant().then(response => {
             this.userListGemeindeantraege = response;
             this.changeDetectorRef.markForCheck();
         });
