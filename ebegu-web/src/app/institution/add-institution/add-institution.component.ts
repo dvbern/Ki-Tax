@@ -105,7 +105,7 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
 
         this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
             this.institutionenDurchGemeindenEinladen = result;
-        })
+        });
     }
 
     public ngOnDestroy(): void {

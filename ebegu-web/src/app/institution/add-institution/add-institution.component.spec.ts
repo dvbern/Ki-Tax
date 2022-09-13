@@ -18,11 +18,14 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -48,6 +51,8 @@ describe('AddInstitutionComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
         ['getGemeindenForPrincipal$']);
+    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
 
     beforeEach(waitForAsync(() => {
 
@@ -66,6 +71,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
             ],
             declarations: [
                 AddInstitutionComponent,
@@ -78,6 +84,9 @@ describe('AddInstitutionComponent', () => {
         traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionServiceSpy.params.and.returnValue({institutionId: undefined});
         authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
+        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(of(false).toPromise());
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
     }));
 
     beforeEach(waitForAsync(() => {
