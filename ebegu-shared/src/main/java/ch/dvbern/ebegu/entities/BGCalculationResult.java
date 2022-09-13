@@ -366,7 +366,8 @@ public class BGCalculationResult extends AbstractEntity {
 			MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 			MathUtil.isSame(thisEntity.getBgPensumProzent(), otherEntity.getBgPensumProzent()) &&
 			MathUtil.isSame(thisEntity.minimalerElternbeitragGekuerzt, otherEntity.minimalerElternbeitragGekuerzt) &&
-			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent
+			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+			thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
 		));
 	}
 
