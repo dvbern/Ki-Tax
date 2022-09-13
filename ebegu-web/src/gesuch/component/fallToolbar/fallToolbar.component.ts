@@ -54,7 +54,7 @@ export class FallToolbarComponent implements OnChanges {
     @Input() public currentDossier: TSDossier;
     @Input() public mobileMode?: boolean = false;
     @Input() public kitaxEnabled?: boolean = false;
-    @Input() public name: string;
+    @Input() public nameGs: string;
 
     public dossierList: TSDossier[] = [];
     public dossierListWithoutSelected: TSDossier[] = [];

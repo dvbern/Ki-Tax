@@ -37,7 +37,7 @@
 
             <div class="pull-right dossier-element fall-nummer"
                  [ngClass]="{'fall-nummer-gesuchsteller': isGesuchsteller()}">
-                <span [textContent]="name" class="fall-toolbar-symbol-padding"></span>
+                <span [textContent]="nameGs" class="fall-toolbar-symbol-padding"></span>
                 <span [textContent]="fallNummer" class="fall-toolbar-symbol-padding"></span>
                 <span class="kitax-link" *ngIf="kitaxResponse && isGemeindeUserOrSuperAdmin()">
                     (<a target="_blank" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
