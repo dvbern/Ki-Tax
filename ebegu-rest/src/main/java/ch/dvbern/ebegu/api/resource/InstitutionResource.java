@@ -230,6 +230,7 @@ public class InstitutionResource {
 		}
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void initInstitutionStammdaten(
 		@Nonnull String stringDateStartDate,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
