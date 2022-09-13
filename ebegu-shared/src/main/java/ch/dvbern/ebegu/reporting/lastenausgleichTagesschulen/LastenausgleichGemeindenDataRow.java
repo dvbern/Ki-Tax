@@ -62,6 +62,9 @@ public class LastenausgleichGemeindenDataRow {
 	private BigDecimal betreuungsstundenFaktor15;
 
 	@Nullable
+	private BigDecimal betreuungsstundenFaktor3;
+
+	@Nullable
 	private BigDecimal betreuungsstundenPaed;
 
 	@Nullable
@@ -235,6 +238,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBetreuungsstundenFaktor15(@Nullable BigDecimal betreuungsstundenFaktor15) {
 		this.betreuungsstundenFaktor15 = betreuungsstundenFaktor15;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenFaktor3() {
+		return betreuungsstundenFaktor3;
+	}
+
+	public void setBetreuungsstundenFaktor3(@Nullable BigDecimal betreuungsstundenFaktor3) {
+		this.betreuungsstundenFaktor3 = betreuungsstundenFaktor3;
 	}
 
 	@Nullable

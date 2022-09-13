@@ -28,11 +28,13 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen.LastenausgleichGemeindenDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen.LastenausgleichTagesschulenDataRow;
@@ -40,9 +42,11 @@ import ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen.LastenausgleichTage
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -170,7 +174,8 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setKinderKindergarten(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderKindergarten());
 		dataRow.setKinderPrimar(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderPrimarstufe());
 		dataRow.setKinderSek(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderSekundarstufe());
-		dataRow.setKinderFaktor(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		dataRow.setKinderFaktor15(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen());
+		dataRow.setKinderFaktor3(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderVolksschulangebot());
 		dataRow.setKinderFrueh(angabenTagesschuleKorrektur.getDurchschnittKinderProTagFruehbetreuung());
 		dataRow.setKinderMittag(angabenTagesschuleKorrektur.getDurchschnittKinderProTagMittag());
 		dataRow.setKinderNachmittag1(angabenTagesschuleKorrektur.getDurchschnittKinderProTagNachmittag1());
@@ -182,6 +187,64 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBetreuungsVerhaeltnis(angabenTagesschuleKorrektur.getBetreuungsverhaeltnisEingehalten());
 		dataRow.setErnaehrung(angabenTagesschuleKorrektur.getErnaehrungsGrundsaetzeEingehalten());
 		dataRow.setBemerkungenTagesschule(angabenTagesschuleKorrektur.getBemerkungen());
+
+		mapLastenausgleichTagesschuleOeffnungszeitenToDataRow(dataRow, angabenTagesschuleKorrektur.getOeffnungszeiten());
+	}
+
+	private void mapLastenausgleichTagesschuleOeffnungszeitenToDataRow(
+		@Nonnull LastenausgleichTagesschulenDataRow dataRow,
+		@Nullable String oeffnungszeitenStr
+	) {
+		if (oeffnungszeitenStr == null) {
+			return;
+		}
+		OeffnungszeitenTagesschuleDTO[] oeffnungszeiten;
+		try {
+			oeffnungszeiten = EbeguUtil.convertOeffnungszeiten(oeffnungszeitenStr);
+		} catch(JsonProcessingException e) {
+			throw new EbeguRuntimeException("Problem while converting oeffnungszeiten", oeffnungszeitenStr);
+		}
+		for (var oeffnungszeit : oeffnungszeiten) {
+			mapLastenausgleichTagesschuleOeffnungszeitToDataRow(dataRow, oeffnungszeit);
+		}
+	}
+
+	private void mapLastenausgleichTagesschuleOeffnungszeitToDataRow(
+		@Nonnull LastenausgleichTagesschulenDataRow dataRow,
+		@Nonnull OeffnungszeitenTagesschuleDTO oeffnungszeit
+	) {
+		switch (oeffnungszeit.getType()) {
+		case FRUEHBETREUUNG:
+			dataRow.setFruehBetMo(oeffnungszeit.isMontag());
+			dataRow.setFruehBetDi(oeffnungszeit.isDienstag());
+			dataRow.setFruehBetMi(oeffnungszeit.isMittwoch());
+			dataRow.setFruehBetDo(oeffnungszeit.isDonnerstag());
+			dataRow.setFruehBetFr(oeffnungszeit.isFreitag());
+			break;
+		case MITTAGSBETREUUNG:
+			dataRow.setMittagsBetMo(oeffnungszeit.isMontag());
+			dataRow.setMittagsBetDi(oeffnungszeit.isDienstag());
+			dataRow.setMittagsBetMi(oeffnungszeit.isMittwoch());
+			dataRow.setMittagsBetDo(oeffnungszeit.isDonnerstag());
+			dataRow.setMittagsBetFr(oeffnungszeit.isFreitag());
+			break;
+		case NACHMITTAGSBETREUUNG_1:
+			dataRow.setNachmittags1BetMo(oeffnungszeit.isMontag());
+			dataRow.setNachmittags1BetDi(oeffnungszeit.isDienstag());
+			dataRow.setNachmittags1BetMi(oeffnungszeit.isMittwoch());
+			dataRow.setNachmittags1BetDo(oeffnungszeit.isDonnerstag());
+			dataRow.setNachmittags1BetFr(oeffnungszeit.isFreitag());
+			break;
+		case NACHMITTAGSBETREUUNG_2:
+			dataRow.setNachmittags2BetMo(oeffnungszeit.isMontag());
+			dataRow.setNachmittags2BetDi(oeffnungszeit.isDienstag());
+			dataRow.setNachmittags2BetMi(oeffnungszeit.isMittwoch());
+			dataRow.setNachmittags2BetDo(oeffnungszeit.isDonnerstag());
+			dataRow.setNachmittags2BetFr(oeffnungszeit.isFreitag());
+			break;
+		default:
+			throw new EbeguRuntimeException("Oeffnungszeit type not implemented", oeffnungszeit.getType().name());
+		}
 	}
 
 	private void mapLastenausgleichTagesschuleAngabenGemeindeToDataRow(
@@ -196,6 +259,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setGrundZugangEingeschraenkt(angabenGemeinde.getBegruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen());
 		dataRow.setBetreuungsstundenFaktor1(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
 		dataRow.setBetreuungsstundenFaktor15(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+		dataRow.setBetreuungsstundenFaktor3(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
 		dataRow.setBetreuungsstundenPaed(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		dataRow.setBetreuungsstundenNichtPaed(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 

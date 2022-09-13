@@ -302,6 +302,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.InstitutionExternalClientId;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
@@ -309,7 +310,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -6513,11 +6513,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+	public static OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
 		try {
-			return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
+			return EbeguUtil.convertOeffnungszeiten(oeffnungszeiten);
 		} catch(JsonProcessingException e) {
 			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
 			return new OeffnungszeitenTagesschuleDTO[]{};
