@@ -57,6 +57,7 @@
                         <location>db/migration</location>
                     </locations>
                     <table>schema_version</table>
+                    <outOfOrder>true</outOfOrder>
                 </configuration>
             </plugin>
         </plugins>
