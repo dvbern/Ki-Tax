@@ -356,4 +356,8 @@ public class Benutzer extends AbstractMutableEntity implements HasMandant {
 			+ ", rolle: " + this.getRole()
 			+ ", berechtigung: " + this.extractRollenAbhaengigkeitAsString();
 	}
+
+	public boolean isGesperrt() {
+		return status == BenutzerStatus.GESPERRT;
+	}
 }

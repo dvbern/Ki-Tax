@@ -570,6 +570,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return getBenutzersOfRoles(getMandantRoles())
 			.stream()
 			.filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.filter(benutzer -> !benutzer.isGesperrt())
 			.collect(Collectors.toList());
 	}
 
