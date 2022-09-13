@@ -16,12 +16,11 @@
  */
 
 import {NgModule} from '@angular/core';
-import {UIRouterModule} from '@uirouter/angular';
 import {SharedModule} from '../shared/shared.module';
 import {PendenzenListViewComponent} from './default/component/pendenzenListView/pendenzen-list-view.component';
 
 @NgModule({
-    imports: [SharedModule, UIRouterModule],
+    imports: [SharedModule],
     declarations: [PendenzenListViewComponent],
     exports: [PendenzenListViewComponent],
     entryComponents: [PendenzenListViewComponent],

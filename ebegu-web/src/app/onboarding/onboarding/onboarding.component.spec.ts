@@ -17,7 +17,6 @@
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -43,7 +42,6 @@ describe('OnboardingComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingComponent],
             providers: [

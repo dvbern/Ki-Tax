@@ -18,7 +18,6 @@
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {TranslateModule} from '@ngx-translate/core';
-import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
@@ -71,7 +70,6 @@ describe('LastenausgleichTSComponent', () => {
             ],
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot({useHash: true}),
                 TranslateModule,
                 MatToolbarModule,
                 WizardstepXModule

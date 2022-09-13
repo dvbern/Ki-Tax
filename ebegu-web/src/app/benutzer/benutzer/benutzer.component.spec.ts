@@ -17,7 +17,7 @@
 
 import {APP_BASE_HREF} from '@angular/common';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
-import {Transition, UIRouterModule} from '@uirouter/angular';
+import {Transition} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -49,7 +49,7 @@ describe('BenutzerComponent', () => {
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
 
         TestBed.configureTestingModule({
-            imports: [SharedModule, UIRouterModule.forRoot()],
+            imports: [SharedModule],
             declarations: [BenutzerComponent],
             providers: [
                 {

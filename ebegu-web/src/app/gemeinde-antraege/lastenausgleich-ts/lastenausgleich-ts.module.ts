@@ -23,7 +23,6 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
-import {UIRouterModule} from '@uirouter/angular';
 import {SharedModule} from '../../shared/shared.module';
 import {WizardstepXModule} from '../../wizardstepX/wizardstep-x.module';
 import {FreigabeComponent} from './antrag/freigabe/freigabe.component';
@@ -53,7 +52,6 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         MatToolbarModule,
         MatSidenavModule,
         RouterModule,
-        UIRouterModule,
         MatMenuModule,
         MatButtonModule,
         SharedModule,
