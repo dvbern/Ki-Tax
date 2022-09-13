@@ -484,4 +484,45 @@ export class EditGemeindeComponentBG implements OnInit {
         }
         return this.dauerBabyTarife.find(einstellung => einstellung.gesuchsperiodeId === gesuchsperiode.id)?.value;
     }
+
+    public changeKonfigHoheEinkommensklassenAktiviert(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT,
+            gk.konfigHoheEinkommensklassenAktiviert, gk,
+        );
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigHoheEinkommensklassenAktiviert)) {
+            this.resetKonfigHoheEinkommensklassen(gk);
+        }
+    }
+
+    private resetKonfigHoheEinkommensklassen(gk: TSGemeindeKonfiguration): void {
+        gk.konfigHoheEinkommensklassenBetrag = 0;
+        gk.konfigHoheEinkommensklassenMassgebendenEinkommen = 0;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG,
+            gk.konfigHoheEinkommensklassenBetrag, gk,
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            gk.konfigHoheEinkommensklassenMassgebendenEinkommen, gk,
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetrag(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG,
+            gk.konfigHoheEinkommensklassenBetrag,
+            gk,
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenMassgebendenEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            gk.konfigHoheEinkommensklassenMassgebendenEinkommen,
+            gk,
+        );
+    }
 }
