@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -36,6 +36,7 @@ export class ListSozialdienstComponent implements OnInit {
         'institutionCount',
         'type',
         'remove',
+        'gemeinde',
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;

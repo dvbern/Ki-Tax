@@ -102,6 +102,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                             status: institution.stammdatenCheckRequired
                                 ? 'CHECK_REQUIRED'
                                 : institution.status.toString(),
+                            gemeinde: institution.gemeinde.name,
                             type: institution.betreuungsangebotTyp,
                             canEdit: this.hatBerechtigungEditieren(institution),
                             canRemove: deleteAllowed,

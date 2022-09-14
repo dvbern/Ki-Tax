@@ -126,7 +126,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     private setDisplayedColumns(): void {
         this.hiddenDVTableColumns = this.isReadDeleteAllowed()
-            ? ['status', 'type', ]
-            : ['status', 'type', 'remove'];
+            ? ['status', 'type', 'gemeinde']
+            : ['status', 'type', 'gemeinde', 'remove'];
     }
 }

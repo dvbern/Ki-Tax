@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -38,11 +40,23 @@ public class JaxInstitutionListDTO extends JaxInstitution {
 	@NotNull
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
+	@Nullable
+	private Gemeinde gemeinde;
+
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
 	}
 
 	public void setBetreuungsangebotTyp(BetreuungsangebotTyp betreuungsangebotTyp) {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
+	}
+
+	@Nullable
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

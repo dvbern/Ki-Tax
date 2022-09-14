@@ -57,8 +57,8 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
 
     @Input() public columnName: string;
 
-    public displayedColumns: string[] = ['name', 'institutionCount', 'status', 'type', 'detail', 'remove'];
-    private readonly allColumns = ['name', 'institutionCount', 'status', 'type', 'detail', 'remove'];
+    public displayedColumns: string[] = ['name', 'institutionCount', 'status', 'gemeinde', 'type', 'detail', 'remove'];
+    private readonly allColumns = ['name', 'institutionCount', 'status', 'gemeinde', 'type', 'detail', 'remove'];
     public dataSource: MatTableDataSource<DVEntitaetListItem>;
 
     @ViewChild(MatSort, {static: true}) public sort: MatSort;

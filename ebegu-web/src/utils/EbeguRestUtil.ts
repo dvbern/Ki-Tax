@@ -1509,6 +1509,7 @@ export class EbeguRestUtil {
 
             if (institutionTS instanceof TSInstitutionListDTO) {
                 institutionTS.betreuungsangebotTyp = institutionFromServer.betreuungsangebotTyp;
+                institutionTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionFromServer.gemeinde);
             }
 
             return institutionTS;
