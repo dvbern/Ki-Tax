@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- Selbstbehalt pro 100% Platz -->
-                <div class="flex-grow-3">
+                <div class="flex-grow-3" *ngIf="showLastenausgleichSelbstbehalt()">
                     <div class="form-group">
                         <label class="md-no-float required" translate
                                for="selbstbehaltPro100ProzentPlatz">LASTENAUSGLEICH_SELBSTBEHALT</label>

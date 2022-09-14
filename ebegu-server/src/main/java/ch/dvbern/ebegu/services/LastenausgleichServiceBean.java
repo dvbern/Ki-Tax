@@ -125,7 +125,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Override
 	@Nonnull
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Lastenausgleich createLastenausgleich(
+	public Lastenausgleich createLastenausgleichWithSelbstbehalt(
 			int jahr,
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
 			Mandant mandant) {
@@ -151,6 +151,40 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		grundlagenErhebungsjahr.setKostenPro100ProzentPlatz(kostenPro100ProzentPlatz);
 		persistence.persist(grundlagenErhebungsjahr);
 
+		return calculateLastenausgleich(jahr, mandant, sb, grundlagenErhebungsjahr);
+	}
+
+	@SuppressWarnings("PMD.NcssMethodCount")
+	@Override
+	@Nonnull
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Lastenausgleich createLastenausgleichWithoutSelbstbehalt(
+		int jahr,
+		Mandant mandant) {
+
+		// Ueberpruefen, dass es nicht schon einen Lastenausgleich oder LastenausgleichGrundlagen gibt fuer dieses Jahr
+		assertUnique(jahr);
+
+		LOG.info("Berechnung Lastenausgleich wird gestartet");
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Erstelle Lastenausgleich für Jahr ").append(jahr)
+			.append(" ohne Selbstbehalt ")
+			.append(NEWLINE);
+
+		LastenausgleichGrundlagen grundlagenErhebungsjahr = new LastenausgleichGrundlagen();
+		grundlagenErhebungsjahr.setJahr(jahr);
+		persistence.persist(grundlagenErhebungsjahr);
+
+		return calculateLastenausgleich(jahr, mandant, sb, grundlagenErhebungsjahr);
+	}
+
+	private Lastenausgleich calculateLastenausgleich(
+		int jahr,
+		@Nonnull Mandant mandant,
+		@Nonnull StringBuilder sb,
+		@Nonnull LastenausgleichGrundlagen grundlagenErhebungsjahr
+	) {
 		Lastenausgleich lastenausgleich = new Lastenausgleich();
 		lastenausgleich.setJahr(jahr);
 		lastenausgleich.setMandant(mandant);
@@ -208,9 +242,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}
 		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
 
-		Lastenausgleich storedLastenausgleich = persistence.merge(lastenausgleich);
-
-		return storedLastenausgleich;
+		return persistence.merge(lastenausgleich);
 	}
 
 	@Override

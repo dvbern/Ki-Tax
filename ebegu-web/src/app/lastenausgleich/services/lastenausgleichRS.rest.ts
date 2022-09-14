@@ -22,6 +22,7 @@ import {map} from 'rxjs/operators';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../models/TSLastenausgleich';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 @Injectable({
@@ -50,7 +51,10 @@ export class LastenausgleichRS {
 
         let params = new HttpParams();
         params = params.append('jahr', jahr.toFixed(0));
-        params = params.append('selbstbehaltPro100ProzentPlatz', selbstbehaltPro100ProzentPlatz.toFixed(0));
+
+        if (EbeguUtil.isNotNullOrUndefined(selbstbehaltPro100ProzentPlatz)) {
+            params = params.append('selbstbehaltPro100ProzentPlatz', selbstbehaltPro100ProzentPlatz.toFixed(0));
+        }
 
         return this.http.get(`${this.API_BASE_URL}/create`,
             {

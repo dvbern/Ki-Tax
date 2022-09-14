@@ -90,7 +90,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Optional<LastenausgleichGrundlagen> grundlagen = lastenausgleichServiceBean.findLastenausgleichGrundlagen(2018);
 		Assert.assertFalse("Noch keine Grundlagen vorhanden", grundlagen.isPresent());
 		// Einen (leeren) Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2018, MathUtil.DEFAULT.from(4025d),
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018, MathUtil.DEFAULT.from(4025d),
 				mandant);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2018, lastenausgleich.getJahr().longValue());
@@ -103,8 +103,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test (expected = EbeguRuntimeException.class)
 	public void grundlagenKoennenNichtAktualisiertWerden() {
 		// Es darf nicht moeglich sein, fuer dasselbe Jahr einen zweiten Lastenausgleich zu erstellen
-		lastenausgleichServiceBean.createLastenausgleich(2018, MathUtil.DEFAULT.from(4025d), mandant);
-		lastenausgleichServiceBean.createLastenausgleich(2018, MathUtil.DEFAULT.from(3012d), mandant);
+		lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018, MathUtil.DEFAULT.from(4025d), mandant);
+		lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018, MathUtil.DEFAULT.from(3012d), mandant);
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createGesuch(gp1718);
 
 		// Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2017, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2017, lastenausgleich.getJahr().longValue());
@@ -135,7 +135,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createGesuch(gp1718);
 
 		// Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2018, lastenausgleich.getJahr().longValue());
@@ -158,7 +158,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		BigDecimal hoheKostenPro100ProzentPlatz = MathUtil.DEFAULT.multiply(waeltiSelbstbehaltPro100Prozent, MathUtil.DEFAULT.from(2));
 
 		// Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, hoheKostenPro100ProzentPlatz,
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2017, hoheKostenPro100ProzentPlatz,
 				mandant);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2017, lastenausgleich.getJahr().longValue());
@@ -181,7 +181,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		BigDecimal tiefeKostenPro100ProzentPlatz = MathUtil.DEFAULT.divide(waeltiSelbstbehaltPro100Prozent, MathUtil.DEFAULT.from(2));
 
 		// Lastenausgleich erstellen
-		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleich(2017, tiefeKostenPro100ProzentPlatz,
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2017, tiefeKostenPro100ProzentPlatz,
 				mandant);
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2017, lastenausgleich.getJahr().longValue());
@@ -202,7 +202,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = createGesuch(gp1718);
 
 		// Lastenausgleich 2017 erstellen
-		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2017, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 
 		Assert.assertNotNull(lastenausgleich2017);
@@ -224,7 +224,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		createGesuch(gp1718);
 
 		// Lastenausgleich 2018 erstellen: Dies soll auch zu Korrekturen fuer 2017 fuehren
-		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleich(2018, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertNotNull(lastenausgleich2018);
 
@@ -265,20 +265,20 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 
 		// Lastenausgleich 2017: 1 aus Erhebung
 		createGesuch(gp1718);
-		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleich(2017, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich2017 = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2017, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertEquals(1, lastenausgleich2017.getLastenausgleichDetails().size());
 
 		// Lastenausgleich 2018: 1 aus Erhebung, 2 aus Korrektur 2017
 		createGesuch(gp1718);
-		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleich(2018,
+		Lastenausgleich lastenausgleich2018 = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2018,
 				waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertEquals(3, lastenausgleich2018.getLastenausgleichDetails().size());
 
 		// Lastenausgleich 2019: 2 aus Korrektur 2017, 2 aus Korrektur 2018. Im 2019 kein Gesuch!
 		createGesuch(gp1718);
-		Lastenausgleich lastenausgleich2019 = lastenausgleichServiceBean.createLastenausgleich(2019, waeltiSelbstbehaltPro100Prozent,
+		Lastenausgleich lastenausgleich2019 = lastenausgleichServiceBean.createLastenausgleichWithSelbstbehalt(2019, waeltiSelbstbehaltPro100Prozent,
 				mandant);
 		Assert.assertEquals(4, lastenausgleich2019.getLastenausgleichDetails().size());
 

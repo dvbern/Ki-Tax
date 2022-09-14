@@ -56,9 +56,21 @@ public interface LastenausgleichService {
 	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
 	 */
 	@Nonnull
-	Lastenausgleich createLastenausgleich(
+	Lastenausgleich createLastenausgleichWithSelbstbehalt(
 			int jahr,
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
+			Mandant mandant);
+
+	/**
+	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Ab dem Jahr 2022 wird der Lastenausgleich nicht mehr
+	 * mit dem Selbstbehalt pro 100% Platz berechnet.
+	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert
+	 * werden.
+	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
+	 */
+	@Nonnull
+	Lastenausgleich createLastenausgleichWithoutSelbstbehalt(
+			int jahr,
 			Mandant mandant);
 
 	/**
