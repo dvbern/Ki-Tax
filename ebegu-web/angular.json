@@ -35,7 +35,13 @@
                     "configurations": {
                         "production": {
                             "baseHref": "/web/",
-                            "optimization": true,
+                            "optimization": {
+                                "scripts": true,
+                                "styles": true,
+                                "fonts": {
+                                    "inline": false
+                                }
+                            },
                             "outputHashing": "all",
                             "sourceMap": true,
                             "namedChunks": false,
@@ -49,6 +55,11 @@
                                     "with": "src/environments/environment.prod.ts"
                                 }
                             ]
+                        },
+                        "development": {
+                            "optimization": {
+                                "fonts": false
+                            }
                         },
                         "es5": {
                             "tsConfig": "./tsconfig.es5.json"
@@ -77,8 +88,12 @@
                         },
                         "ie": {
                             "browserTarget": "ebegu:build:es5"
+                        },
+                        "development": {
+                            "browserTarget": "ebegu:build:development"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
