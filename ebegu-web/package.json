@@ -10,7 +10,7 @@
   "scripts": {
     "rimraf": "rimraf",
     "typedoc": "typedoc",
-    "clean": "npm run rimraf -- doc coverage dist .cache_loader",
+    "clean": "npx rimraf -- doc coverage dist .cache_loader",
     "prebuild": "check-engine && npm run clean && npm run set-version",
     "build": "npm run build:prod",
     "prebuild:ci": "npm run prebuild",
@@ -35,7 +35,7 @@
     "start": "npm run server",
     "start:ie": "npm run server:ie",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && mkdirp build"
+    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && npx mkdirp build"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^13.0.0",
@@ -105,13 +105,13 @@
   },
   "dependencies": {
     "@angular/animations": "^13.3.11",
-    "@angular/cdk": "^12.2.13",
+    "@angular/cdk": "^13.3.9",
     "@angular/common": "^13.3.11",
     "@angular/compiler": "^13.3.11",
     "@angular/core": "^13.3.11",
     "@angular/forms": "^13.3.11",
-    "@angular/material": "^12.2.13",
-    "@angular/material-moment-adapter": "^12.2.13",
+    "@angular/material": "^13.3.9",
+    "@angular/material-moment-adapter": "^13.3.9",
     "@angular/platform-browser": "^13.3.11",
     "@angular/platform-browser-dynamic": "^13.3.11",
     "@angular/router": "^13.3.11",
