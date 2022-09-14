@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
@@ -41,7 +40,7 @@ public class JaxInstitutionListDTO extends JaxInstitution {
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	@Nullable
-	private Gemeinde gemeinde;
+	private JaxGemeinde gemeinde;
 
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
@@ -52,11 +51,11 @@ public class JaxInstitutionListDTO extends JaxInstitution {
 	}
 
 	@Nullable
-	public Gemeinde getGemeinde() {
+	public JaxGemeinde getGemeinde() {
 		return gemeinde;
 	}
 
-	public void setGemeinde(@Nullable Gemeinde gemeinde) {
+	public void setGemeinde(@Nullable JaxGemeinde gemeinde) {
 		this.gemeinde = gemeinde;
 	}
 }

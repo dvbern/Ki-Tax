@@ -27,6 +27,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
@@ -261,5 +262,11 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
             return false;
         }
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+    }
+
+    // das Dropdown ist nur für den Superadmin sichtbar, aber nicht required. für alle
+    // anderen Rollen ist es entweder nicht sichtbar, oder required
+    public selectGemeindeRequired(): boolean {
+        return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

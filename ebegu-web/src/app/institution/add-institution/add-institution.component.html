@@ -53,12 +53,12 @@
                     </div>
                     <div class="col-sm-6" *ngIf="selectGemeindeVisible()">
                         <div class="form-group">
-                            <label class="required" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
+                            <label [ngClass]="{'required' : selectGemeindeRequired()}" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
                             <select [(ngModel)]="selectedGemeinde"
                                     name="gemeinde"
                                     class="form-control"
                                     id="gemeinde"
-                                    [required]="true">
+                                    [required]="selectGemeindeRequired()">
                                 <option *ngFor="let gemeinde of (gemeinden)"
                                         [ngValue]="gemeinde">
                                     {{gemeinde.name}}

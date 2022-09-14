@@ -1580,7 +1580,10 @@ public class JaxBConverter extends AbstractConverter {
 		if (entry.getValue().getInstitutionStammdatenFerieninsel() != null) {
 			gemeinde = entry.getValue().getInstitutionStammdatenFerieninsel().getGemeinde();
 		}
-		jaxInstitutionListDTO.setGemeinde(gemeinde);
+
+		if (gemeinde != null) {
+			jaxInstitutionListDTO.setGemeinde(gemeindeToJAX(gemeinde));
+		}
 
 		return jaxInstitutionListDTO;
 	}
