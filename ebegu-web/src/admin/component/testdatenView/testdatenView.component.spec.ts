@@ -30,7 +30,7 @@ import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
-import {TestdatenViewComponent} from './testdatenView';
+import {TestdatenViewComponent} from './testdatenView.component';
 
 describe('testdatenView', () => {
 

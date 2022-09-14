@@ -19,7 +19,7 @@ import * as angular from 'angular';
 import ADMIN_JS_MODULE from '../admin/admin.module';
 import {GESUCH_JS_MODULE} from '../gesuch/gesuch.module';
 import {ALLE_VERFUEGUNGEN_JS_MODULE} from './alleVerfuegungen/alleVerfuegungen.module';
-import {APP_ANGULARJS_COMPONENT} from './app.angularjs.component';
+import {APP_ANGULARJS_COMPONENT} from './app.angularjs';
 import {CORE_JS_MODULE} from './core/core.angularjs.module';
 import {DOSSIER_JS_MODULE} from './dossier/dossier.angularjs.module';
 import {FAELLE_JS_MODULE} from './faelle/faelle.module';

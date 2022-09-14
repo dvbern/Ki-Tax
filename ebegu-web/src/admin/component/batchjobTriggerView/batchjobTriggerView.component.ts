@@ -21,8 +21,8 @@ import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
 
 @Component({
     selector: 'dv-batchjob-trigger-view',
-    templateUrl: './batchjobTriggerView.html',
-    styleUrls: ['./batchjobTrigger.less'],
+    templateUrl: './batchjobTriggerView.component.html',
+    styleUrls: ['./batchjobTrigger.component.less'],
 })
 export class BatchjobTriggerViewComponent {
 

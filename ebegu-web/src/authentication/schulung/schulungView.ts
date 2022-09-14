@@ -24,9 +24,9 @@ import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
-export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
+export const SCHULUNG_CONFIG: IComponentOptions = {
     transclude: false,
-    template: require('./schulung.component.html'),
+    template: require('./schulungView.html'),
     controllerAs: 'vm',
 };
 
@@ -130,4 +130,4 @@ export class SchulungViewController implements IController {
     }
 }
 
-SCHULUNG_COMPONENT_CONFIG.controller = SchulungViewController;
+SCHULUNG_CONFIG.controller = SchulungViewController;

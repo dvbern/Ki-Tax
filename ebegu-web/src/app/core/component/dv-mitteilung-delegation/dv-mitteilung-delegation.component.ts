@@ -24,7 +24,7 @@ const LOG = LogFactory.createLog('DvMitteilungDelegationComponent');
 
 @Component({
     selector: 'dv-mitteilung-delegation',
-    templateUrl: './dv-mitteilung-delegation.html',
+    templateUrl: './dv-mitteilung-delegation.component.html',
 })
 export class DvMitteilungDelegationComponent {
 

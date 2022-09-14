@@ -20,12 +20,12 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView.component';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
+import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
 
 const states: Ng2StateDeclaration[] = [
     {

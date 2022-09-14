@@ -41,8 +41,8 @@ import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
 @Component({
     selector: 'dv-testdaten-view',
-    templateUrl: './testdatenView.html',
-    styleUrls: ['./testdatenView.less'],
+    templateUrl: './testdatenView.component.html',
+    styleUrls: ['./testdatenView.component.less'],
 })
 export class TestdatenViewComponent implements OnInit {
 
@@ -101,7 +101,7 @@ export class TestdatenViewComponent implements OnInit {
             this.devMode = response;
         });
         this.gemeindeRS.getAktiveGemeinden().then(response => {
-            this.gemeindeList = angular.copy(response);
+            this.gemeindeList = response;
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
         this.applicationPropertyRS.isEbeguKibonAnfrageTestGuiEnabled().then(response => {

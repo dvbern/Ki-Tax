@@ -24,9 +24,9 @@ import {RedirectWarningDialogController} from '../redirect-warning-dialog/Redire
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
 // tslint:disable-next-line:naming-convention variable-name
-export const LoginComponentConfig: IComponentOptions = {
+export const LoginConfig: IComponentOptions = {
     transclude: false,
-    template: require('./login.component.html'),
+    template: require('./login.html'),
     controllerAs: 'vm',
     bindings: {
         returnTo: '<',
@@ -35,7 +35,7 @@ export const LoginComponentConfig: IComponentOptions = {
 
 const dialogTemplate = require('../redirect-warning-dialog/redirectWarningDialogTemplate.html');
 
-export class LoginComponentController implements IController {
+export class LoginController implements IController {
 
     public static $inject: string[] = ['$state', '$stateParams', '$window', '$timeout', 'AuthServiceRS', '$location',
         'DvDialog', 'ApplicationPropertyRS'];
@@ -166,4 +166,4 @@ export class LoginComponentController implements IController {
     }
 }
 
-LoginComponentConfig.controller = LoginComponentController;
+LoginConfig.controller = LoginController;

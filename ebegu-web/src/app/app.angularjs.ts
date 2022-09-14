@@ -54,6 +54,6 @@ export class AppAngularjsComponent implements IController {
 }
 
 export const APP_ANGULARJS_COMPONENT: IComponentOptions = {
-    template: require('./app.angularjs.component.html'),
+    template: require('./app.angularjs.html'),
     controller: AppAngularjsComponent,
 };

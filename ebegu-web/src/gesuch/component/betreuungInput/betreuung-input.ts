@@ -24,8 +24,8 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
-export class BetreuungInputComponentConfig implements IComponentOptions {
-    public template = require('./betreuung-input.component.html');
+export class BetreuungInputConfig implements IComponentOptions {
+    public template = require('./betreuung-input.html');
     public bindings = {
         pensumContainer: '<',
         isDisabled: '<',
@@ -35,15 +35,15 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         multiplierTfo: '<',
         showBetreuungInputSwitch: '<',
     };
-    public controller = BetreuungInputComponent;
+    public controller = BetreuungInput;
     public controllerAs = 'vm';
 }
 
-export class BetreuungInputComponent implements IController {
+export class BetreuungInput implements IController {
 
     public static $inject = ['$translate', 'GesuchModelManager'];
 
-    private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
+    private readonly LOG: Log = LogFactory.createLog(BetreuungInput.name);
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
 
     public pensumContainer: TSBetreuungspensumContainer;

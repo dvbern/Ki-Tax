@@ -27,14 +27,14 @@ import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-bas
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
-import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
 import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
-import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu.component';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
-import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -48,7 +48,7 @@ import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
-import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
+import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang.component';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';

@@ -32,7 +32,7 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
  */
 @Component({
     selector: 'dv-ng-mitteilung-delegation-dialog',
-    templateUrl: './dv-ng-mitteilung-delegation-dialog.template.html',
+    templateUrl: './dv-ng-mitteilung-delegation-dialog.component.html',
 })
 export class DvNgMitteilungDelegationDialogComponent {
 

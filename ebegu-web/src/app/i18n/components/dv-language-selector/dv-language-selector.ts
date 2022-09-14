@@ -26,15 +26,15 @@ const LOG = LogFactory.createLog('DvLanguageSelectorComponent');
 
 export class DvLanguageSelectorComponentConfig implements IComponentOptions {
     public transclude = true;
-    public template = require('./dv-language-selector.component.html');
+    public template = require('./dv-language-selector.html');
     public bindings = {
         hideForLoggedUser: '<',
     };
-    public controller = DvLanguageSelectorComponent;
+    public controller = DvLanguageSelector;
     public controllerAs = 'vm';
 }
 
-export class DvLanguageSelectorComponent implements IController {
+export class DvLanguageSelector implements IController {
 
     public static $inject: ReadonlyArray<string> = [
         'AuthServiceRS',

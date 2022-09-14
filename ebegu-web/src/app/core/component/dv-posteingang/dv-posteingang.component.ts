@@ -25,7 +25,7 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
 
 @Component({
     selector: 'dv-posteingang',
-    templateUrl: './dv-posteingang.html',
+    templateUrl: './dv-posteingang.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DvPosteingangComponent implements OnDestroy {

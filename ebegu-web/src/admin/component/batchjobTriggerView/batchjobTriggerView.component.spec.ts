@@ -21,7 +21,7 @@ import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
-import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
+import {BatchjobTriggerViewComponent} from './batchjobTriggerView.component';
 
 describe('batchjobTriggerView', () => {
 
