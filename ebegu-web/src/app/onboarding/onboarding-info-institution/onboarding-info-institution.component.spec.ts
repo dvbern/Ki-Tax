@@ -17,6 +17,7 @@
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {UIRouterModule} from '@uirouter/angular';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -35,6 +36,7 @@ describe('OnboardingInfoInstitutionComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
+                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingInfoInstitutionComponent],
             providers: [{provide: I18nServiceRSRest, useValue: i18nServiceSpy},

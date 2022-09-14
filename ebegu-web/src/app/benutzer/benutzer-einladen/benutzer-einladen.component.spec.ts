@@ -17,6 +17,7 @@
 
 import {APP_BASE_HREF} from '@angular/common';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -59,6 +60,7 @@ describe('BenutzerEinladenComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
+                UIRouterModule.forRoot(),
             ],
             declarations: [BenutzerEinladenComponent],
             providers: [

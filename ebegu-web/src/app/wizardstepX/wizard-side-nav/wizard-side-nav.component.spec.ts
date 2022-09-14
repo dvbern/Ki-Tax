@@ -18,6 +18,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {TranslateModule} from '@ngx-translate/core';
+import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -43,6 +44,7 @@ describe('WizardSideNavComponent', () => {
             ],
             declarations: [WizardSideNavComponent],
             imports: [
+                UIRouterModule.forRoot({useHash: true}),
                 TranslateModule,
                 MatToolbarModule,
                 SharedModule,

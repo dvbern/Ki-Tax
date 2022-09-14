@@ -17,6 +17,7 @@
 
 import {APP_BASE_HREF} from '@angular/common';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {UIRouterModule} from '@uirouter/angular';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
@@ -34,6 +35,7 @@ describe('DebuggingComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
+                UIRouterModule.forRoot(),
             ],
             declarations: [DebuggingComponent],
             providers: [

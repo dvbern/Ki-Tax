@@ -17,7 +17,7 @@
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {Transition} from '@uirouter/angular';
+import {Transition, UIRouterModule} from '@uirouter/angular';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -44,6 +44,7 @@ describe('OnboardingBeLoginComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
+                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingBeLoginComponent],
             providers: [
