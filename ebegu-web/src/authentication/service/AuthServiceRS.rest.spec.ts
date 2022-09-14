@@ -25,6 +25,7 @@ import {TSBerechtigung} from '../../models/TSBerechtigung';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {AUTHENTICATION_JS_MODULE} from '../authentication.module';
 import {AuthServiceRS} from './AuthServiceRS.rest';
+import { Buffer } from 'buffer';
 
 describe('AuthServiceRS', () => {
 
