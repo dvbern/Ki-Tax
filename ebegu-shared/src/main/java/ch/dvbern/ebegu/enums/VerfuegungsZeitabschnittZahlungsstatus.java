@@ -38,7 +38,11 @@ public enum VerfuegungsZeitabschnittZahlungsstatus {
 	}
 
 	public boolean isVerrechnet() {
-		return VERRECHNET == this || VERRECHNET_KORRIGIERT == this || VERRECHNET_KEINE_BETREUUNG == this;
+		return isVerrechnetMitBetreuung() || VERRECHNET_KEINE_BETREUUNG == this;
+	}
+
+	public boolean isVerrechnetMitBetreuung() {
+		return VERRECHNET == this || VERRECHNET_KORRIGIERT == this;
 	}
 
 	public boolean isIgnorierend() {
