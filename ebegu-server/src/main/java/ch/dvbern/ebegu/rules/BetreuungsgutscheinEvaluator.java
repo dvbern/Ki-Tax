@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungBGRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungTSRechnerRule;
+import ch.dvbern.ebegu.rechner.rules.MinimalPauschalbetragGemeindeRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
@@ -343,16 +344,12 @@ public class BetreuungsgutscheinEvaluator {
 
 	private List<RechnerRule> rechnerRulesForGemeinde(@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO, @Nonnull Locale locale) {
 		List<RechnerRule> rechnerRules = new LinkedList<>();
-		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled()) {
-			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
-		}
-		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherBabyGutscheinEnabled()) {
-			rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(locale));
-		}
-		if (bgRechnerParameterDTO.getMahlzeitenverguenstigungParameter().isEnabled()) {
-			rechnerRules.add(new MahlzeitenverguenstigungBGRechnerRule(locale));
-			rechnerRules.add(new MahlzeitenverguenstigungTSRechnerRule(locale));
-		}
+		rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
+		rechnerRules.add(new ZusaetzlicherBabyGutscheinRechnerRule(locale));
+		rechnerRules.add(new MahlzeitenverguenstigungBGRechnerRule(locale));
+		rechnerRules.add(new MahlzeitenverguenstigungTSRechnerRule(locale));
+		rechnerRules.add(new MinimalPauschalbetragGemeindeRechnerRule(locale));
+
 		return rechnerRules;
 	}
 }

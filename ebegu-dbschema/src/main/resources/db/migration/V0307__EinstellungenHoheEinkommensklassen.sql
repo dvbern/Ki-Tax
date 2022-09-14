@@ -17,7 +17,7 @@
 
 -- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
 SELECT *
 FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  '2022-09-09 12:12:12' AS timestamp_erstellt,
@@ -28,13 +28,12 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT' AS einstellung_key,
 		  'false' AS VALUE,
 		NULL    AS gemeinde_id,
-		gp.id   AS gesuchsperiode_id,
-		UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) AS mandant_id
+		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;
 
 -- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
 SELECT *
 FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  '2022-09-09 12:12:12' AS timestamp_erstellt,
@@ -45,13 +44,12 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG' AS einstellung_key,
 		  '0' AS VALUE,
 		NULL    AS gemeinde_id,
-		gp.id   AS gesuchsperiode_id,
-		UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) AS mandant_id
+		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;
 
 -- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
 SELECT *
 FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  '2022-09-09 12:12:12' AS timestamp_erstellt,
@@ -62,6 +60,5 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN' AS einstellung_key,
 		  'false' AS VALUE,
 		NULL    AS gemeinde_id,
-		gp.id   AS gesuchsperiode_id,
-		UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')) AS mandant_id
+		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;

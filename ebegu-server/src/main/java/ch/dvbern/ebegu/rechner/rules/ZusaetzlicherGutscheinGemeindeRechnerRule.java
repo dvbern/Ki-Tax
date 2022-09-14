@@ -43,9 +43,6 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRule implements RechnerRule {
 
 	@Override
 	public boolean isRelevantForVerfuegung(@Nonnull BGCalculationInput inputGemeinde, @Nonnull BGRechnerParameterDTO parameterDTO) {
-		if (!isConfigueredForGemeinde(parameterDTO)) {
-			return false;
-		}
 		// (1) Nur Kita und TFO
 		if (!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			return false;

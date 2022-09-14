@@ -38,6 +38,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -60,6 +63,11 @@ public final class BGRechnerParameterGemeindeDTO {
 	private BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragKita;
 	private BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragTfo;
 
+	// (3) Minimal Betrag-Gutschein
+	private Boolean gemeindePauschalbetragEnabled;
+	private BigDecimal gemeindePauschalbetrag;
+	private BigDecimal gemeindePauschalbetragMassgebendenEinkommen;
+
 
 
 	public BGRechnerParameterGemeindeDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
@@ -73,6 +81,10 @@ public final class BGRechnerParameterGemeindeDTO {
 		this.setGemeindeZusaetzlicherBabyGutscheinEnabled(asBoolean(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherBabyGutscheinBetragKita(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA, gesuchsperiode, gemeinde));
 		this.setGemeindeZusaetzlicherBabyGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, gesuchsperiode, gemeinde));
+		// (3) Minimal Betrag-Gutschein
+		this.setGemeindePauschalbetragEnabled(asBoolean(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT, gesuchsperiode, gemeinde));
+		this.setGemeindePauschalbetrag(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG, gesuchsperiode, gemeinde));
+		this.setGemeindePauschalbetragMassgebendenEinkommen(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterGemeindeDTO() {
@@ -186,5 +198,29 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	public void setGemeindeZusaetzlicherBabyGutscheinBetragTfo(BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragTfo) {
 		this.gemeindeZusaetzlicherBabyGutscheinBetragTfo = gemeindeZusaetzlicherBabyGutscheinBetragTfo;
+	}
+
+	public Boolean getGemeindePauschalbetragEnabled() {
+		return gemeindePauschalbetragEnabled;
+	}
+
+	public void setGemeindePauschalbetragEnabled(Boolean gemeindePauschalbetragEnabled) {
+		this.gemeindePauschalbetragEnabled = gemeindePauschalbetragEnabled;
+	}
+
+	public BigDecimal getGemeindePauschalbetrag() {
+		return gemeindePauschalbetrag;
+	}
+
+	public void setGemeindePauschalbetrag(BigDecimal gemeindePauschalbetrag) {
+		this.gemeindePauschalbetrag = gemeindePauschalbetrag;
+	}
+
+	public BigDecimal getGemeindePauschalbetragMassgebendenEinkommen() {
+		return gemeindePauschalbetragMassgebendenEinkommen;
+	}
+
+	public void setGemeindePauschalbetragMassgebendenEinkommen(BigDecimal gemeindePauschalbetragMassgebendenEinkommen) {
+		this.gemeindePauschalbetragMassgebendenEinkommen = gemeindePauschalbetragMassgebendenEinkommen;
 	}
 }

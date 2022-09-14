@@ -42,7 +42,7 @@ public class TageselternRechnerVisitor implements MandantVisitor<AbstractRechner
 
 	@Override
 	public AbstractRechner visitLuzern() {
-		return new TageselternLuzernRechner();
+		return new TageselternLuzernRechner(rechnerRulesForGemeinde);
 	}
 
 	@Override

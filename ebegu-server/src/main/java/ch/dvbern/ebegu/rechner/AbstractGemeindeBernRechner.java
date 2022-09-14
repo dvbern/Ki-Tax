@@ -109,6 +109,9 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
 		// Zusaetzlicher Baby-Gutschein
 		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
+		// Minimal Pauschalbetrag wenn nicht erreicht
+		verguenstigungProZeiteinheit = verguenstigungProZeiteinheit.compareTo(rechnerParameter.getMinimalPauschalBetrag()) < 0 ? rechnerParameter.getMinimalPauschalBetrag() : verguenstigungProZeiteinheit;
+
 		return verguenstigungProZeiteinheit;
 	}
 

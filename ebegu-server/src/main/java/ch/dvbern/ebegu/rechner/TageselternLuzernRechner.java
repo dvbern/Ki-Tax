@@ -18,11 +18,13 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
@@ -35,6 +37,10 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	private boolean isBaby = false;
 	private BigDecimal stuendlicherVorllkostenTarif;
+
+	protected TageselternLuzernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		super(rechnerRulesForGemeinde);
+	}
 
 	@Override
 	public void calculate(
@@ -52,7 +58,7 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein) {
+	protected BigDecimal calculateGutscheinProZeitabschnitt(BigDecimal gutschein) {
 		return EXACT.multiply(gutschein, this.verfuegteZeiteinheit);
 	}
 
