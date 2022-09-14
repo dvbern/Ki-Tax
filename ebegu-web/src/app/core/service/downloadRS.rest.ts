@@ -281,14 +281,6 @@ export class DownloadRS {
     }
 
     public openDownload(blob: Blob, filename: string): void {
-        // tslint:disable-next-line
-        if (typeof this.$window.navigator.msSaveBlob !== 'undefined') {
-            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which
-            // they were created. These URLs will no longer resolve as the data backing the URL has been
-            // freed."
-            this.$window.navigator.msSaveBlob(blob, filename);
-            return;
-        }
         // @ts-ignore: webkitURL may exist in some browsers
         const url = this.$window.URL || this.$window.webkitURL;
         const downloadUrl = url.createObjectURL(blob);        // use HTML5 a[download] attribute to specify filename

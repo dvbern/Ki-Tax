@@ -35,12 +35,12 @@ export function customTranslateLoader(
         ).subscribe(mandant => {
             let translationFiles: IPromise<IHttpResponse<object>[]>;
             if (mandant === KiBonMandant.NONE || mandant === KiBonMandant.BE) {
-                translationFiles = Promise.all([$http.get(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)]);
+                translationFiles = Promise.all([$http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)]);
             } else {
                 translationFiles = Promise.all(
                     [
-                        $http.get(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`),
-                        $http.get(`./assets/translations/translations_${mandant}_${options.key}.json?t=${Date.now()}`),
+                        $http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`),
+                        $http.get<object>(`./assets/translations/translations_${mandant}_${options.key}.json?t=${Date.now()}`),
                     ],
                 );
             }

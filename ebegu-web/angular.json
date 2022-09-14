@@ -26,7 +26,6 @@
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js"
                         ],
-                        "extractCss": true,
                         "extractLicenses": true,
                         "customWebpackConfig": {
                             "path": "./extra-webpack.config.js"
@@ -39,7 +38,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": true,
-                            "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
