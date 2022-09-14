@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +40,9 @@ public class LastenausgleichGemeindenDataRow {
 
 	@Nullable
 	private String status;
+
+	@Nullable
+	private LocalDateTime timestampMutiert;
 
 	@Nullable
 	private Boolean alleAnmeldungenKibon;
@@ -175,6 +179,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setStatus(@Nullable String status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public LocalDateTime getTimestampMutiert() {
+		return timestampMutiert;
+	}
+
+	public void setTimestampMutiert(@Nullable LocalDateTime timestampMutiert) {
+		this.timestampMutiert = timestampMutiert;
 	}
 
 	@Nullable

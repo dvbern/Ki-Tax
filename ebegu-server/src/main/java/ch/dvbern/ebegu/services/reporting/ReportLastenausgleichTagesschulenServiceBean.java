@@ -116,6 +116,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 					dataRow.setPeriode(lastenausgleichTagesschuleAngabenGemeindeContainer.getGesuchsperiode()
 						.getGesuchsperiodeString());
 					dataRow.setStatus(lastenausgleichTagesschuleAngabenGemeindeContainer.getStatusString());
+					dataRow.setTimestampMutiert(lastenausgleichTagesschuleAngabenGemeindeContainer.getTimestampMutiert());
 					dataRow.setAlleAnmeldungenKibon(lastenausgleichTagesschuleAngabenGemeindeContainer.getAlleAngabenInKibonErfasst());
 					dataRow.setBetreuungsstundenPrognose(lastenausgleichTagesschuleAngabenGemeindeContainer.getBetreuungsstundenPrognose());
 					//wir nehmen die korrektur als in pruefung kanton mindestens

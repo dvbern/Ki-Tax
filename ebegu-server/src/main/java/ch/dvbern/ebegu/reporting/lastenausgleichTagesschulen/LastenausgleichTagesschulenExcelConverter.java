@@ -53,6 +53,7 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.gemeindeFallNummer, lastenausgleichGemeindenDataRow.getGemeindeFallNummer());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.periode, lastenausgleichGemeindenDataRow.getPeriode());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.status, lastenausgleichGemeindenDataRow.getStatus());
+			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.timestampMutiert, lastenausgleichGemeindenDataRow.getTimestampMutiert());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.alleAnmeldungenKibon, lastenausgleichGemeindenDataRow.getAlleAnmeldungenKibon());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.bedarfAbgeklaert, lastenausgleichGemeindenDataRow.getBedarfAbgeklaert());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.ferienbetreuung, lastenausgleichGemeindenDataRow.getFerienbetreuung());

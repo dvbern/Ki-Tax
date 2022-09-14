@@ -26,6 +26,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -44,6 +45,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	gemeindeFallNummer(new SimpleMergeField<>("gemeindeFallNummer", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
+	timestampMutiert(new SimpleMergeField<>("timestampMutiert", DATETIME_CONVERTER)),
 	alleAnmeldungenKibon(new SimpleMergeField<>("alleAnmeldungenKibon", BOOLEAN_X_CONVERTER)),
 	bedarfAbgeklaert(new SimpleMergeField<>("bedarfAbgeklaert", BOOLEAN_X_CONVERTER)),
 	ferienbetreuung(new SimpleMergeField<>("ferienbetreuung", BOOLEAN_X_CONVERTER)),
