@@ -201,8 +201,11 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		OeffnungszeitenTagesschuleDTO[] oeffnungszeiten;
 		try {
 			oeffnungszeiten = EbeguUtil.convertOeffnungszeiten(oeffnungszeitenStr);
-		} catch(JsonProcessingException e) {
-			throw new EbeguRuntimeException("Problem while converting oeffnungszeiten", oeffnungszeitenStr);
+		} catch (JsonProcessingException e) {
+			throw new EbeguRuntimeException(
+				"mapLastenausgleichTagesschuleOeffnungszeitenToDataRow",
+				"Problem while converting oeffnungszeiten",
+				e);
 		}
 		for (var oeffnungszeit : oeffnungszeiten) {
 			mapLastenausgleichTagesschuleOeffnungszeitToDataRow(dataRow, oeffnungszeit);
