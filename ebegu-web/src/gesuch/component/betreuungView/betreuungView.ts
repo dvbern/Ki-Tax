@@ -192,7 +192,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }, err => LOG.error(err));
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line 
     public $onInit(): void {
         super.$onInit();
         this.mutationsmeldungModel = undefined;
@@ -228,7 +228,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
-                    // tslint:disable-next-line:early-exit
+                    // eslint-disable-next-line 
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
                         && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
                     ) {
@@ -450,7 +450,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.form.$dirty && this.isMutationsmeldungStatus;
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
             return;
@@ -477,7 +477,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setErsterSchultag(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line 
         if (this.minEintrittsdatum && !this.getBetreuungModel().keineDetailinformationen
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
@@ -951,7 +951,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public checkErweiterteBetreuungAndSaveBestaetigung(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.getErweiterteBetreuungJA()
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
@@ -1459,7 +1459,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private setUnbekannteInstitutionAccordingToAngebot(): void {
-        // tslint:disable:prefer-conditional-expression
+        /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStamm.id = CONSTANTS.getUnknowTFOIdForMandant(this.mandant);
@@ -1478,7 +1478,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.provisorischeBetreuung = false;
 
         // init prov. betreuung
-        if (this.model.vertrag === false) { // tslint:disable-line:no-boolean-literal-compare
+        if (this.model.vertrag === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         }

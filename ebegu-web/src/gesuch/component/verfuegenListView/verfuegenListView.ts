@@ -157,7 +157,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
@@ -807,7 +807,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public $postLink(): void {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         this.doPostLinkActions(500);
     }
 

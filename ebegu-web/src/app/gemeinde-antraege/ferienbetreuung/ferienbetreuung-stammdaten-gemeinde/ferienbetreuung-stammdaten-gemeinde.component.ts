@@ -217,7 +217,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.triggerFormValidation();
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line 
     private adressValidValidator(): ValidatorFn {
         return control => {
             const strasse = control.get('strasse');
@@ -254,7 +254,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         };
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private auszahlungsdatenValidation(): ValidatorFn {
         return control => {
             const kontoinhaber = control.get('kontoinhaber');

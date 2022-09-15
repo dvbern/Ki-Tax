@@ -116,7 +116,7 @@ export class DvQuicksearchboxController {
 
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private navigateToFall(): void {
         if (!this.selectedItem) {
             return;

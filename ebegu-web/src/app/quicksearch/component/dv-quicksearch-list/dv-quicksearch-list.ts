@@ -178,7 +178,7 @@ export class DVQuicksearchListController implements IController {
         if (betreuungsangebotTypList) {
             let prefix = '';
             if (Array.isArray(betreuungsangebotTypList)) {
-                // tslint:disable-next-line:prefer-for-of
+                // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
                     const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();

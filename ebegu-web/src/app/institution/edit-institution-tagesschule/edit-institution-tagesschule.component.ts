@@ -375,7 +375,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return group.module
             .map((gem: TSModulTagesschule) => gem.wochentag)
             .map(ordinal => getWeekdaysValues().indexOf(ordinal))
-            // tslint:disable-next-line:no-alphabetical-sort
+            // eslint-disable-next-line
             .sort()
             .map((tag: number) => this.translate.instant(getWeekdaysValues()[tag] + '_SHORT'))
             .join(', ');

@@ -67,7 +67,7 @@ export class AddSozialdienstComponent implements OnInit {
                 this.sozialdienst = neueSozialdienst;
                 this.navigateBack();
             }, exception  => {
-                // tslint:disable-next-line:prefer-switch
+                // eslint-disable-next-line
             if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const dialogConfig = new MatDialogConfig();

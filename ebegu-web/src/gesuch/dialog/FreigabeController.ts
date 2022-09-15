@@ -108,7 +108,7 @@ export class FreigabeController {
         // Schulamt
         const userVorjahrOrCurrentTS = this.getVerantwortlichenAusVorjahrOrCurrentBenutzer(
             this.gesuch.verantwortlicherUsernameTS, this.userTSList);
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullOrUndefined(userVorjahrOrCurrentTS)) {
             this.selectedUserTS = userVorjahrOrCurrentTS;
         } else {

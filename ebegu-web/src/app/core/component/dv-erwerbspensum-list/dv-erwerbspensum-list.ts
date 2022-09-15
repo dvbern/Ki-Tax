@@ -58,7 +58,7 @@ export class DVErwerbspensumListController implements IOnInit {
             this.addButtonVisible = true;
         }
         // clear selected
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.erwerbspensen.length; i++) {
             const obj: any = this.erwerbspensen[i];
             // FIXME woher kommt dieses Property?

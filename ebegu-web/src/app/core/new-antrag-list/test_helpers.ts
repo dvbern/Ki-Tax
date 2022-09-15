@@ -17,7 +17,7 @@
 import {NgZone, PlatformRef, Type} from '@angular/core';
 import {UpgradeModule} from '@angular/upgrade/static';
 
-// tslint:disable-next-line:no-shadowed-variable
+// eslint-disable-next-line @typescript-eslint/no-shadow
 export function html(html: string): Element {
     // Don't return `body` itself, because using it as a `$rootElement` for ng1
     // will attach `$injector` to it and that will affect subsequent tests.
@@ -32,7 +32,7 @@ export function html(html: string): Element {
     return div;
 }
 
-// tslint:disable-next-line:typedef
+// eslint-disable-next-line
 export function bootstrap(
     platform: PlatformRef, ng2Module: Type<{}>, element: Element, ng1Module: angular.IModule) {
     // We bootstrap the Angular module first; then when it is ready (async) we bootstrap the AngularJS

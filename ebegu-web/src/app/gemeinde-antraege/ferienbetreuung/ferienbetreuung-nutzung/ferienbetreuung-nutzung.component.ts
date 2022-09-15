@@ -137,7 +137,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
             return null;
         });
         // sonderschueler 2
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').setValidators(control => {
             const diff = parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value) -
                 parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value);

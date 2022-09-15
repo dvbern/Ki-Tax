@@ -359,7 +359,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     private initSort(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.stateStore.has(this.sortId)) {
             const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;

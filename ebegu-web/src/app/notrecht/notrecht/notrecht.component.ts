@@ -56,7 +56,7 @@ export class NotrechtComponent implements OnInit {
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
-    // tslint:disable-next-line:no-duplicate-string
+    // eslint-disable-next-line
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
     public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
@@ -243,7 +243,7 @@ export class NotrechtComponent implements OnInit {
                 });
                 return;
             }
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
             this.notrechtRS.sendMitteilung(result.mitteilung, result.statusToSendMitteilung).then(() => {
                 this.errorService.addMesageAsInfo(this.translate.instant(
                     'RUECKFORDERUNG_MITTEILUNG_VERSENDET'

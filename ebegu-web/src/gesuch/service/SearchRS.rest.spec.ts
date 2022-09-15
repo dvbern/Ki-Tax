@@ -25,7 +25,7 @@ import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {SearchRS} from './searchRS.rest';
 
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 describe('searchRS', () => {
 
     let searchRS: SearchRS;

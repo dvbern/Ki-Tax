@@ -239,7 +239,7 @@ export class GesuchstellerDashboardViewController implements IController {
     private loadGemeindeKonfiguration(gp: TSGesuchsperiode): TSGemeindeKonfiguration {
         if (this.gemeindeStammdaten) {
             for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (konfigurationsListeElement.gesuchsperiode.id === gp.id) {
                     konfigurationsListeElement.initProperties();
                     return konfigurationsListeElement;

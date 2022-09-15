@@ -199,7 +199,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (!this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
             this.getFamiliensituation().unterhaltsvereinbarung = undefined;

@@ -113,7 +113,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public confirmationCallback(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.gesuchModelManager.isGesuch()) {
             const freigabeQuittung = this.openFreigabequittungPDF(true);
             if (EbeguUtil.isNotNullAndFalse(this.isFreigabequittungEinlesenRequired)) {
@@ -238,7 +238,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public $postLink(): void {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         this.doPostLinkActions(500);
     }
 

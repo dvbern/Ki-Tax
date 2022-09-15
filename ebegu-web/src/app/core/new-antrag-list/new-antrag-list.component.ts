@@ -311,7 +311,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.updateColumns();
         }
 
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line 
         if (changes.data$) {
             this.customData = !!this.data$;
             if (!changes.data$.firstChange) {
@@ -355,7 +355,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private initSort(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
             const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
             this.sort.predicate = stored.predicate;

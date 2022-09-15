@@ -67,7 +67,7 @@ describe('AuthServiceRS', () => {
         });
         it('does not nothing for an undefined user', () => {
             expect(authServiceRS.loginRequest(undefined)).toBeUndefined();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($http.post).not.toHaveBeenCalled();
         });
         it('receives a loginRequest and handles the incoming cookie', () => {
@@ -103,7 +103,7 @@ describe('AuthServiceRS', () => {
             $timeout.flush();
             $httpBackend.flush();
 
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($http.post).toHaveBeenCalled();
             expect(cookieUser.vorname).toEqual(benutzer.vorname);
             expect(cookieUser.nachname).toEqual(benutzer.nachname);
@@ -114,7 +114,7 @@ describe('AuthServiceRS', () => {
         it('sends a logrequest to server', () => {
             authServiceRS.logoutRequest();
             $rootScope.$apply();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($http.post).toHaveBeenCalledWith('/ebegu/api/v1/auth/logout', null);
             expect(authServiceRS.getPrincipal()).toBeUndefined();
         });

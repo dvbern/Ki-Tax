@@ -50,7 +50,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
-// tslint:disable:naming-convention
+/* eslint-disable */
 
 // AuthServiceRS
 export function authServiceRSServiceFactory(i: IInjectorService): AuthServiceRS {

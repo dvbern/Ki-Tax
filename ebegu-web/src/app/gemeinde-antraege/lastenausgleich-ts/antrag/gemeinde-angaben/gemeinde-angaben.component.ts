@@ -347,7 +347,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('ersteRateAusbezahlt')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line 
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
             if (value === true) {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
@@ -376,7 +376,7 @@ export class GemeindeAngabenComponent implements OnInit {
             ]);
         this.angabenForm.get('ueberschussErzielt')
             .setValidators([Validators.required]);
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line 
         this.angabenForm.get('ueberschussErzielt').valueChanges.subscribe(value => {
             if (value === true) {
                 this.angabenForm.get('ueberschussVerwendung')
@@ -434,7 +434,7 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private numberValidator(): ValidatorFn {
-        // tslint:disable-next-line:no-unnecessary-type-annotation
+        // eslint-disable-next-line
         return (control: AbstractControl): {} | null => {
             return isNaN(control.value) ? {
                 noNumberError: control.value,
@@ -487,7 +487,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupLastenausgleichberechtigteBetreuungsstundenCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest(
             [
@@ -512,7 +512,7 @@ export class GemeindeAngabenComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupStundenNormlohnMehr50ProzentCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').valueChanges.pipe(
@@ -539,7 +539,7 @@ export class GemeindeAngabenComponent implements OnInit {
         }
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupStundenWeniger50ProzentCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').valueChanges.pipe(
@@ -557,7 +557,7 @@ export class GemeindeAngabenComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupLastenausgleichsberechtigterBetragCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
             this.angabenForm.get('normlohnkostenBetreuungBerechnet')
@@ -586,7 +586,7 @@ export class GemeindeAngabenComponent implements OnInit {
         );
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupKostenGemeindeCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
             this.angabenForm.get('gesamtKostenTagesschule')
@@ -648,7 +648,7 @@ export class GemeindeAngabenComponent implements OnInit {
         );
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     private setupSchlusszahlungenCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
             this.angabenForm.get('lastenausgleichsberechtigerBetrag')
@@ -663,7 +663,7 @@ export class GemeindeAngabenComponent implements OnInit {
                     startWith(gemeindeAngabenFromServer?.ersteRateAusbezahlt || 0),
                     map(value => this.parseFloatSafe(value)),
                 ),
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line 
         ]).subscribe(values => {
             this.angabenForm.get('schlusszahlung').setValue(
                 (values[0] - values[1]).toFixed(2),
@@ -698,7 +698,7 @@ export class GemeindeAngabenComponent implements OnInit {
             );
             return;
         }
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if (this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
             Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
@@ -726,7 +726,7 @@ export class GemeindeAngabenComponent implements OnInit {
             return;
         }
 
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         if (this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()) {
             this.lATSAngabenGemeindeContainer.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
             Object.assign(this.lATSAngabenGemeindeContainer.angabenKorrektur = this.angabenForm.getRawValue());
@@ -826,10 +826,10 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     public formularNotEditable(): boolean {
-        return this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() && // tslint:disable-next-line:max-line-length
+        return this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() && // eslint-disable-next-line max-len
             this.lATSAngabenGemeindeContainer.angabenDeklaration.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN ||
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() ||
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // tslint:disable-next-line:max-line-length
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // eslint-disable-next-line max-len
             this.lATSAngabenGemeindeContainer.angabenKorrektur.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
     }
 
@@ -884,7 +884,7 @@ export class GemeindeAngabenComponent implements OnInit {
         this.angabenForm.get('ersteRateAusbezahlt')
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         this.angabenForm.get('tagesschuleTeilweiseGeschlossen').valueChanges.subscribe(value => {
             if (value === true) {
                 this.angabenForm.get('rueckerstattungenElterngebuehrenSchliessung')
@@ -942,7 +942,7 @@ export class GemeindeAngabenComponent implements OnInit {
         };
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private setupPermissions(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         principal: TSBenutzer,
@@ -978,7 +978,7 @@ export class GemeindeAngabenComponent implements OnInit {
                 this.falscheAngabenVisible.next(!container.angabenKorrektur.isInBearbeitung());
             }
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             if (container.isInBearbeitungGemeinde()) {
                 this.saveVisible.next(container.angabenDeklaration.isInBearbeitung());

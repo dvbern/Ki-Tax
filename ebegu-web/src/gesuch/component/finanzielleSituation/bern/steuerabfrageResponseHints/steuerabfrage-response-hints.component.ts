@@ -77,7 +77,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
             this.gesuchModelManager.getGesuch().gesuchsteller1 :
             this.gesuchModelManager.getGesuch().gesuchsteller2;
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.showZugriffErfolgreich()) {
             this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
                 gs.finanzielleSituationContainer.id).then(isMatching => {

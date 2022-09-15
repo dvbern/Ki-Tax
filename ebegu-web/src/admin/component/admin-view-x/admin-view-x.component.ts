@@ -55,7 +55,7 @@ export class AdminViewXComponent extends AbstractAdminViewX {
             return;
         }
         // Bei STADT_BERN_ASIV_CONFIGURED eine Sicherheitsabfrage machen
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED'
             && this.applicationProperty.value === 'true') {
             this.dvDialog.open(DvNgRemoveDialogComponent, {data : {

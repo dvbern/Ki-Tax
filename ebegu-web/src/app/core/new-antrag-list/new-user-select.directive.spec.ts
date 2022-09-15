@@ -67,7 +67,7 @@ describe('NewUserSelectDirective', () => {
 
             element = html(`<ng2></ng2>`);
 
-            // tslint:disable-next-line:no-unused
+            // eslint-disable-next-line
             bootstrap(platformBrowserDynamic(), Ng2Module, element, ng1Module).then(upgrade => {
                 expect(element).toBeTruthy();
             });

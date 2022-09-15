@@ -16,7 +16,7 @@
  */
 
 import {HttpClientModule} from '@angular/common/http';
-/* tslint:disable:no-magic-numbers */
+/* eslint-disable no-magic-numbers */
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';

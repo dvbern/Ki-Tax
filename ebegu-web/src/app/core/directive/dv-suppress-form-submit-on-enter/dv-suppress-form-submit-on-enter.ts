@@ -75,12 +75,12 @@ export class DVSuppressFormSubmitOnEnterController {
         // so that we don't trigger on things like arrow keys in
         // inputs.
 
-        // tslint:disable
+        /* eslint-disable */
         if (keyCode != this.$mdConstant.KEY_CODE.ENTER &&
             ev.currentTarget != ev.target) {
             return;
         }
-        // tslint:enable
+        /* eslint-enable */
 
         switch (keyCode) {
             case this.$mdConstant.KEY_CODE.LEFT_ARROW:
@@ -96,7 +96,7 @@ export class DVSuppressFormSubmitOnEnterController {
                 this.setFocus(element);
                 return;
             case this.$mdConstant.KEY_CODE.ENTER:
-                // tslint:disable-next-line:no-commented-code
+                // eslint-disable-next-line
                 // event.stopPropagation();    //we do not want to submit the form on enter
                 // event.preventDefault();
                 this.triggerNextButton(element);

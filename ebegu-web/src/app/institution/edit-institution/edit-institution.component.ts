@@ -305,7 +305,7 @@ export class EditInstitutionComponent implements OnInit {
         this.updateInstitution(updateModel);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private async updateInstitution(updateModel: TSInstitutionUpdate): Promise<void> {
         if (this.stammdaten.institutionStammdatenBetreuungsgutscheine) {
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =

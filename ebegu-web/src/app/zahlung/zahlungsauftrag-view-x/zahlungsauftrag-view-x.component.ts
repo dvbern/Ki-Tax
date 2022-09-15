@@ -255,7 +255,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
             .catch(error => {
                 this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
                     'ERROR_UNEXPECTED'));
@@ -263,7 +263,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             });
     }
 
-    // tslint:disable-next-line:no-unused
+    // eslint-disable-next-line 
     public ausloesen(zahlungsauftragId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
@@ -494,7 +494,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 displayFunction: (
-                    // tslint:disable-next-line:no-unused
+                    // eslint-disable-next-line
                     status: TSZahlungsauftragsstatus,
                     element: TSZahlungsauftrag,
                 ) => this.getCalculatedStatus(element),

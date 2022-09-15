@@ -16,7 +16,7 @@
  */
 
 import {registerLocaleData} from '@angular/common';
-// tslint:disable-next-line:match-default-export-name
+// eslint-disable-next-line
 import deCH from '@angular/common/locales/de-CH';
 import {
     APP_INITIALIZER,

@@ -105,7 +105,7 @@ export class AddGemeindeComponent implements OnInit {
      * erscheint nicht, wir setzen fix auf BG=true, den Rest false
      */
     private initializeFlags(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (!this.tageschuleEnabledForMandant) {
             this.gemeinde.angebotBG = true;
             this.gemeinde.angebotTS = false;

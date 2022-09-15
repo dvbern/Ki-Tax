@@ -45,7 +45,7 @@ import {TSWizardStep} from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
 
-// tslint:disable:no-magic-numbers no-identical-functions
+/* eslint-disable no-magic-numbers */
 export class TestDataUtil {
 
     public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity): void {

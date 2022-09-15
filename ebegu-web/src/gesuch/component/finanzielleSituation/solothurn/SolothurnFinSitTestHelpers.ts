@@ -120,7 +120,7 @@ export class SolothurnFinSitTestHelpers {
     }
 
     public static createFinanzModel(): TSFinanzModel {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         const model = new TSFinanzModel(2019, false, 1);
         model.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
         model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();

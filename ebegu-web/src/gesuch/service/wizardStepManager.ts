@@ -424,7 +424,7 @@ export class WizardStepManager {
         if (EbeguUtil.isNullOrUndefined(gesuch)) {
             return false;
         }
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.wizardSteps.length; i++) {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {
                 if (!this.isStatusOk(this.wizardSteps[i].wizardStepStatus)

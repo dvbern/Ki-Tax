@@ -58,7 +58,7 @@ export class UploadRS {
             url: this.serviceURL,
             method: 'POST',
             headers: {
-                // tslint:disable-next-line:no-duplicate-string
+                // eslint-disable-next-line
                 'x-filename': names.join(';'),
                 'x-gesuchID': gesuchID,
             },
@@ -171,7 +171,7 @@ export class UploadRS {
                                                 dokumentTyp: TSDokumentTyp,
     ): IPromise<any> {
         return this.upload.upload({
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             url: `${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(
                 periodeID)}/${sprache}/${dokumentTyp}`,
             method: 'POST',
@@ -193,7 +193,7 @@ export class UploadRS {
     public uploadVollmachtDokument(vollmacht: any, fallId: string): IPromise<any> {
         const encodedFilename = this.base64.encode(vollmacht.name);
         return this.upload.upload({
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
             url: `${this.serviceURL}/uploadSozialdienstFallsDokument/${encodeURIComponent(fallId)}`,
             headers: {
                 'x-filename': encodedFilename,

@@ -92,7 +92,7 @@ export class FreigabeComponent implements OnInit {
                 this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
             }
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line 
             if (container.isGeprueft()) {
                 this.canSeeFreigabeButton.next(false);
                 this.canSeeGeprueftButton.next(false);
@@ -118,7 +118,7 @@ export class FreigabeComponent implements OnInit {
             .subscribe(() => {
                 this.$state.go('gemeindeantraege.view');
             }, (errors: TSExceptionReport[]) => {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line 
                 errors.forEach(error => {
                         if (error.customMessage.includes('angabenDeklaration')) {
                             this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
@@ -154,7 +154,7 @@ export class FreigabeComponent implements OnInit {
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
                 mergeMap(container => this.latsService.latsGemeindeAntragGeprueft(container))
             ).subscribe(container => {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (container.isInZweitPruefung()) {
                     const dialogConfigInfo = new MatDialogConfig();
                     dialogConfigInfo.data = {

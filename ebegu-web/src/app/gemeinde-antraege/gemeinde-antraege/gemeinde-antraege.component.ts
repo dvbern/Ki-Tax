@@ -275,7 +275,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         ).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line 
         }, err => {
             const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
             this.errorService.clearAll();
@@ -300,7 +300,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 {typ: antrag.antragTyp, periode: antrag.periodenString, gemeinde: antrag.gemeinde}));
             this.loadAntragList();
             this.cd.markForCheck();
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line 
         }, err => {
             const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
             this.errorService.clearAll();
@@ -409,7 +409,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();

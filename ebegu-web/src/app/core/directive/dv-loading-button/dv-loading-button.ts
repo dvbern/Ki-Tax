@@ -146,7 +146,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
             }
         }
 
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         return 4000;   // default delay = 4000 MS
     }
 

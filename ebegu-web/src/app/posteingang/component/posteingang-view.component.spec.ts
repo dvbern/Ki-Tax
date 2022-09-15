@@ -87,7 +87,7 @@ describe('PosteingangViewComponent', () => {
 
     function mockGetMitteilung(): void {
         const mockFall = new TSFall();
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         mockFall.fallNummer = 123;
         const mockDossier = new TSDossier();
         mockDossier.fall = mockFall;

@@ -120,7 +120,7 @@ describe('freigabeView', () => {
             spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(false);
 
             expect(controller.canBeFreigegeben()).toBe(false);
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepManager.hasStepGivenStatus)
                 .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
         });
@@ -156,7 +156,7 @@ describe('freigabeView', () => {
 
             const returned = controller.gesuchEinreichen();
             $scope.$apply();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -213,7 +213,7 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, false);
         });
     });

@@ -104,7 +104,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
                 this.resetBruttoLohnGS2();
             }
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
             if (this.isGemeinsam()) {

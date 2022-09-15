@@ -293,7 +293,7 @@ export class GesuchModelManager {
             : this.getGesuchstellerNumber() === 1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
             return gs === 2 ?
@@ -346,7 +346,7 @@ export class GesuchModelManager {
             return;
         }
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line 
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
                 this.gemeindeKonfiguration = konfigurationsListeElement;
                 this.gemeindeKonfiguration.initProperties();
@@ -574,7 +574,7 @@ export class GesuchModelManager {
     }
 
     public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line 
         return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
             this.gesuch = gesuchResponse;
 
@@ -1136,7 +1136,7 @@ export class GesuchModelManager {
     public findKindById(kindID: string): number {
         if (this.gesuch.kindContainers) {
             for (let i = 0; i < this.gesuch.kindContainers.length; i++) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line 
                 if (this.gesuch.kindContainers[i].id === kindID) {
                     this.setKindIndex(i);
 
@@ -1178,7 +1178,7 @@ export class GesuchModelManager {
         const kindToWorkWith = this.getKindToWorkWith();
         if (kindToWorkWith) {
             for (let i = 0; i < kindToWorkWith.betreuungen.length; i++) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (kindToWorkWith.betreuungen[i].id === betreuungID) {
                     this.setBetreuungIndex(i);
 
@@ -1569,7 +1569,7 @@ export class GesuchModelManager {
      * Antrag zurueckziehen
      */
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
             this.setGesuch(response);
 
@@ -1614,7 +1614,7 @@ export class GesuchModelManager {
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             // if getFall() is undefined, getFall()?.isSozialdienstfall() would return undefined. We have to use
             // literal-compare here
-            // tslint:disable-next-line: no-boolean-literal-compare
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
             const sozialdienstFallEntzogen = this.getFall()?.isSozialdienstFall() === true
                 && this.getFall()?.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
             return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;

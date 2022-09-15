@@ -86,7 +86,7 @@ describe('gesuchsperiodeRS', () => {
 
                 gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($http.get).toHaveBeenCalled();
             });
         });

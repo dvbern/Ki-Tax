@@ -241,7 +241,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
             );
             this.resetGruendeZusatzleistung();
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
         } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
             this.model.extractPensumFachstelle().pensum = 100;
         }

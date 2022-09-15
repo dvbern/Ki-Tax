@@ -161,7 +161,7 @@ export class TSControllingCalculator {
                     startWith(this._angabenForm.get('normlohnkostenBetreuungBerechnet').value),
                     map(parseFloat),
                 ),
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
         ]).subscribe(values => {
             this._anteilElternbeitraegeCurrentPeriode.next(
                 (this.toPercent(values[0] / values[1])),

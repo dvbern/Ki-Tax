@@ -50,7 +50,7 @@ export class TestFaelleRS {
     ): IHttpPromise<string> {
         // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
         // parameter to the method body
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfallgs/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}/${encodeURIComponent(
             username)}`;
         return this.http.get(url);
@@ -67,7 +67,7 @@ export class TestFaelleRS {
         bestaetigt: boolean,
         verfuegen: boolean,
     ): IHttpPromise<string> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
 
         return this.http.get(url);

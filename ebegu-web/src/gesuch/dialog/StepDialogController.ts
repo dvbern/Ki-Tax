@@ -89,7 +89,7 @@ export class StepDialogController {
         this.finishText = $translate.instant('KORREKTURZAHLUNG_DIALOG_FINISH');
 
         // Erklaerungen, nur fuer Institutiosnzahlungen relevant
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (isInstitutionszahlung) {
             this.radioYesCasesInfo = $translate.instant('KORREKTURZAHLUNG_YES_CASE_INFO');
             this.radioYesCases = [$translate.instant('KORREKTURZAHLUNG_YES_CASE_1')];

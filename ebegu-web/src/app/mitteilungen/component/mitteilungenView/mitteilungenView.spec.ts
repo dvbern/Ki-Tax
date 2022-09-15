@@ -95,7 +95,7 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        // tslint:disable-next-line:no-object-literal-type-assertion
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({} as TSGemeindeStammdaten));
     }));
 
@@ -184,12 +184,12 @@ describe('mitteilungenView', () => {
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ERLEDIGT); // von GELESEN auf ERLEDIGT
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
 
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.GELESEN); // von ERLEDIGT auf GELESEN
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
         });
     });

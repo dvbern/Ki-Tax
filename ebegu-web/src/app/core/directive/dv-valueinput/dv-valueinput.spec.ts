@@ -17,7 +17,7 @@ import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {ValueinputController} from './dv-valueinput';
 
-// tslint:disable:no-identical-functions
+/* eslint-disable */
 describe('dvValueinput', () => {
 
     let controller: ValueinputController;

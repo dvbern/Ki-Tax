@@ -177,7 +177,7 @@ export class TagesschulenAngabenComponent {
         }
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private setupRoleBasedPropertiesForPrincipal(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         angaben: TSLastenausgleichTagesschuleAngabenInstitutionContainer,

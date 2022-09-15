@@ -454,7 +454,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     public hasAnyJugendamtAngebot(): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line
             if (kind.betreuungen && kind.betreuungen.length > 0) {
                 for (const platz of kind.betreuungen) {
                     if (isJugendamt(platz.getAngebotTyp())) {

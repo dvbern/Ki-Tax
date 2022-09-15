@@ -76,7 +76,7 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
         if (changes.hiddenColumns) {
             this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (changes.data$ && !changes.data$.firstChange) {
             this.loadData();
         }

@@ -27,7 +27,7 @@ import {GuidedTourComponent, GuidedTourService, WindowRefService} from 'ngx-guid
 export class KiBonGuidedTourComponent extends GuidedTourComponent {
 
     public tourStepWidth = 500;
-    // tslint:disable
+    /* eslint-disable */
     public constructor(private readonly translate: TranslateService,
                        public readonly guidedTourService: GuidedTourService,
                        private readonly changeDetectorRef: ChangeDetectorRef,
@@ -36,7 +36,7 @@ export class KiBonGuidedTourComponent extends GuidedTourComponent {
         super(guidedTourService, window, domEl);
     }
 
-    // tslint:enable
+    /* eslint-enable */
     public updateStepLocation(): void {
         super.updateStepLocation();
         this.changeDetectorRef.markForCheck();

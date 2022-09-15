@@ -146,7 +146,7 @@ export class GuidedTourByRole implements GuidedTour {
             default:
         }
         // Step 3.5 Anmeldungen
-        // tslint:disable-next-line:no-small-switch
+        // eslint-disable-next-line
         switch (role) {
             case TSRole.ADMIN_TS:
                 this.steps.push(new KiBonTourStep(
@@ -288,7 +288,7 @@ export class KiBonTourStep implements TourStep {
         this.selector = selector;
         this.orientation = orientation;
 
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (state !== undefined && state !== null) {
             this.action = () => {
                 if (navigateToOpen) {

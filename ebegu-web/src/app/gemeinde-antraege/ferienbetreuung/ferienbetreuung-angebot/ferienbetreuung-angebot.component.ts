@@ -409,7 +409,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private adressValidValidator(): ValidatorFn {
         return control => {
             const strasse = control.get('strasse');

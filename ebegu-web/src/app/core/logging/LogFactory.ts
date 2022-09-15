@@ -74,7 +74,7 @@ class LogFunctions {
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
-        // tslint:disable-next-line:no-unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         super(console.error, console.warn, console.info, console.debug);
     }
 }
@@ -140,14 +140,14 @@ function formatColored(args: any[], formattedModuleName: string, colorSupport: C
  * Try very hard to get errors displayed... but do not crash the application (i.e.: treat IE/Edge well)
  */
 function logFuncFallback(loggingError: any, params: any[]): void {
-    // tslint:disable:no-console
+    /* eslint-disable no-console */
     try {
         console.log('Fallback log', loggingError, ...params);
     } catch (ignoredError) {
         // well... duh
         alert(ignoredError);
     }
-    // tslint:enable:no-console
+    /* eslint-enable no-console */
 }
 
 /**

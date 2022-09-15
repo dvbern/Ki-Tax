@@ -113,7 +113,7 @@ export class LastenausgleichTSService {
         this.lATSAngabenGemeindeContainerStore.next(savedContainer);
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
         return this.http.put(
             `${this.API_BASE_URL}/einreichen`,
@@ -142,7 +142,7 @@ export class LastenausgleichTSService {
         );
     }
 
-    // tslint:disable-next-line:max-line-length
+    // eslint-disable-next-line max-len
     public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/gemeinde/abschliessen`,

@@ -16,7 +16,7 @@
 import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
-// tslint:disable:no-import-side-effect
+/* eslint-disable import/no-unassigned-import */
 import 'angular-animate';
 import 'angular-aria';
 import 'angular-cookies';

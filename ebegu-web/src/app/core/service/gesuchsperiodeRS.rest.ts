@@ -146,7 +146,7 @@ export class GesuchsperiodeRS {
 
     public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
                                         dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.http.delete(`${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
 
@@ -160,7 +160,7 @@ export class GesuchsperiodeRS {
 
     public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
                                           dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.http.get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
             {responseType: 'blob'})
             .then((response: any) => {

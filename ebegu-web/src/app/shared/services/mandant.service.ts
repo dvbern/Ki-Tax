@@ -34,7 +34,7 @@ export class MandantService {
     ) {
         // Workaround, we somehow get a cyclic dependency when we try to inject this directly
         // TODO: reenable once ApplicationPropertyRS is migrated
-        // tslint:disable-next-line:no-commented-code
+        // eslint-disable-next-line
         // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
         //     this._multimandantActive$.next(properties.mulitmandantAktiv);
         // });

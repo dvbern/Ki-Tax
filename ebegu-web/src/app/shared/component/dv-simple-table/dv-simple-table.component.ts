@@ -48,7 +48,7 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (changes.data) {
             if (!this.columns) {
                 console.error('data can not be used without specifying the columns. Use the columns input');

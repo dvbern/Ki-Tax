@@ -111,7 +111,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
                 });
             });
         }
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
             return this.updateStatus(true).then(
                 onResult(true),
@@ -127,14 +127,14 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line 
     public getEinkommensverschlechterungGS1_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line 
     public getEinkommensverschlechterungGS1_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS1().ekvJABasisJahrPlus2 :
@@ -145,14 +145,14 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS2;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line 
     public getEinkommensverschlechterungGS2_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus2 :

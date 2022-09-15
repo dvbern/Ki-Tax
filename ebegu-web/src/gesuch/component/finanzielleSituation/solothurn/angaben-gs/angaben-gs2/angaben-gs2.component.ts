@@ -58,7 +58,7 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
         }

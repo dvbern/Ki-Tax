@@ -102,7 +102,7 @@ export abstract class AbstractFerienbetreuungFormular {
         );
     }
 
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     protected showUnerwarteteErrorMessage(): void {
         this.errorService.clearAll();
         this.errorService.addMesageAsError(
@@ -137,7 +137,7 @@ export abstract class AbstractFerienbetreuungFormular {
             } else {
                 this.setCanSeeNoActions();
             }
-            // tslint:disable-next-line:no-collapsible-if
+            // eslint-disable-next-line
         } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             if (angaben.isAbgeschlossen()) {
                 this.canSeeAbschliessen.next(false);

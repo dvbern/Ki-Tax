@@ -39,7 +39,7 @@ import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
 
-// tslint:disable:no-duplicate-string no-big-function max-line-length no-identical-functions
+/* eslint-disable max-len */
 describe('dvNavigation', () => {
 
     let navController: NavigatorController;

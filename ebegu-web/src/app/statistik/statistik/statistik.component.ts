@@ -165,7 +165,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         }, StatistikComponent.handleError);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public generateStatistik(form: NgForm, type?: string): void {
         if (!form.valid) {
             return;
@@ -603,7 +603,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         ]);
     }
 
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     public showGesuchstellerKinderBetreuungStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles([
             TSRole.SACHBEARBEITER_BG,

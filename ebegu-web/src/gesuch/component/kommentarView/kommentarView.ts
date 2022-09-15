@@ -202,7 +202,7 @@ export class KommentarViewController implements IController {
 
     private getNewest(dokumente: Array<TSDokument>): TSDokument {
         let newest = dokumente[0];
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
             if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
                 newest = dokumente[i];

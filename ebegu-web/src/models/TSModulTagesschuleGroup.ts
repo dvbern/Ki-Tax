@@ -61,7 +61,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
 
     public getZeitraumString(): string {
         if (this.zeitVon && this.zeitBis) {
-            // tslint:disable-next-line:prefer-template
+            // eslint-disable-next-line prefer-template
             return this.zeitVon + ' - ' + this.zeitBis;
         }
         return '';

@@ -147,7 +147,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private saveData(): void {
         this.errorService.clearAll();
         this.gesuchModelManager.saveFall().then(

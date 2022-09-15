@@ -1,4 +1,4 @@
-/* tslint:disable:early-exit */
+/* eslint-disable */
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland

@@ -209,7 +209,7 @@ export class ErwerbspensumListViewController
      * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        if (this.erwerbspensumRequired === false) { // tslint:disable-line:no-boolean-literal-compare
+        if (this.erwerbspensumRequired === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
             return false;
         }
 

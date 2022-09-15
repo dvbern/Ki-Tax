@@ -784,7 +784,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     // ist nicht identisch => return von anderem string
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line 
     public getDokumenteEinsatzplaeneTitle(rueckforderungFormular: TSRueckforderungFormular): string {
         if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
             return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_PRIVAT';
@@ -793,7 +793,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     // ist nicht identisch => return von anderem string
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     public getDokumenteAngabenTitle(rueckforderungFormular: TSRueckforderungFormular): string {
         if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
             return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';

@@ -188,7 +188,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.form.get('weitereKosten').setValidators([numberValidator(ValidationType.INTEGER)]);
         this.form.get('elterngebuehren').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
         this.form.get('weitereEinnahmen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.isDelegationsmodell) {
             this.form.get('sockelbeitrag').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
             this.form.get('beitraegeNachAnmeldungen').setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);

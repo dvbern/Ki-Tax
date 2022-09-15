@@ -264,13 +264,13 @@ export class GemeindeRS implements IEntityRS {
 
     public removeGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
                                                 dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.$http.delete(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
 
     public existGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
                                                dokumentTyp: TSDokumentTyp): IPromise<boolean> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.$http.get(`${this.serviceURL}/existGemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
             .then((response: any) => {
                 return response.data;
@@ -279,7 +279,7 @@ export class GemeindeRS implements IEntityRS {
 
     public downloadGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
                                                   dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.$http.get(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
             {responseType: 'blob'})
             .then((response: any) => {

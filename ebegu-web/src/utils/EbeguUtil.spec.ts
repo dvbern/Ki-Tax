@@ -24,7 +24,7 @@ import {EbeguUtil} from './EbeguUtil';
 import {TestDataUtil} from './TestDataUtil.spec';
 import IProvideService = angular.auto.IProvideService;
 
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 describe('EbeguUtil', () => {
 
     let ebeguUtil: EbeguUtil;
@@ -179,7 +179,7 @@ describe('EbeguUtil', () => {
     });
     describe('ZemisNummerToStandardZemisNummer', () => {
         it('Formate sollten in Standard Format konvertiert werden können', () => {
-            // tslint:disable-next-line:no-duplicate-string
+            // eslint-disable-next-line
                 const zemis1 = '12345678.9';
                 const zemis2 = '012345678.9';
                 const zemis3 = '012.345.678.9';

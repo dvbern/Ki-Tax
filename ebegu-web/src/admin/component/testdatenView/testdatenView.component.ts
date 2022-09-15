@@ -275,7 +275,7 @@ export class TestdatenViewComponent implements OnInit {
             return;
         }
 
-        // tslint:disable-next-line:no-collapsible-if
+        // eslint-disable-next-line
         if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
             if (!await this.confirmDialog(
                 'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {

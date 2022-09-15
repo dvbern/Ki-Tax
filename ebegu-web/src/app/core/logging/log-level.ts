@@ -33,7 +33,7 @@ export const LEVELS: { [k in LogLevel]: LogLevelEntry } = {
     NONE: {level: 0},
 };
 
-// tslint:enable:no-object-literal-type-assertion
+/* eslint-enable @typescript-eslint/consistent-type-assertions */
 
 /**
  * key: Name vom Logger (typischerweise der Klassenname)

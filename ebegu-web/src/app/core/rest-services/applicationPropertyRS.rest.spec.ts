@@ -25,7 +25,7 @@ describe('ApplicationPropertyRS', () => {
 
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     let REST_API: string;
     const testName = 'myTestName';
 

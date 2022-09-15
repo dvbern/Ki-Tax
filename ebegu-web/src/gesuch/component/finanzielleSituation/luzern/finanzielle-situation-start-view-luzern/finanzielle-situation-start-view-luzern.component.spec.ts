@@ -54,7 +54,7 @@ berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.
 
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
 
-// tslint:disable-next-line:no-big-function
+// eslint-disable-next-line
 describe('FinanzielleSituationStartViewLuzernComponent', () => {
     let component: FinanzielleSituationStartViewLuzernComponent;
     let fixture: ComponentFixture<FinanzielleSituationStartViewLuzernComponent>;

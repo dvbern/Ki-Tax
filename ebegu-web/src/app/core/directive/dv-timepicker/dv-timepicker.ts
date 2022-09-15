@@ -86,7 +86,7 @@ export class TimepickerController implements IController {
 
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public $onInit(): void {
 
         if (!this.ngModelCtrl) {

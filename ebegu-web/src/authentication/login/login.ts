@@ -23,7 +23,7 @@ import {IAuthenticationStateParams} from '../authentication.route';
 import {RedirectWarningDialogController} from '../redirect-warning-dialog/RedirectWarningDialogController';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
-// tslint:disable-next-line:naming-convention variable-name
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match
 export const LoginConfig: IComponentOptions = {
     transclude: false,
     template: require('./login.html'),
@@ -67,7 +67,7 @@ export class LoginController implements IController {
         }
 
         this.applicationPropertyRS.isDevMode().then(isDevMode => {
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line
             if (isDevMode) {
                 this.dvDialog.showDialog(dialogTemplate, RedirectWarningDialogController, {})
                     .then(() => {
@@ -101,7 +101,7 @@ export class LoginController implements IController {
     }
 
     public getBaseURL(): string {
-        // let port = (this.$location.port() === 80 || this.$location.port() === 443) ? '' : ':' + tslint:disable-line
+        // eslint-disable-line 
         // this.$location.port();
         const absURL = this.$location.absUrl();
         const index = absURL.indexOf(this.$location.url());

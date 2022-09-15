@@ -202,7 +202,7 @@ export class DossierToolbarController implements IDVFocusableController {
         this.$state.go('authentication.login', {type: 'logout'});
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line 
     private addWatchers($scope: IScope): void {
         // needed because of test is not able to inject $scope!
         if (!$scope) {
@@ -282,7 +282,7 @@ export class DossierToolbarController implements IDVFocusableController {
             && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public updateAntragDTOList(): void {
         if (this.dossierId) {
             this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
@@ -390,7 +390,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private updateGesuchperiodeList(): void {
         this.gesuchsperiodeList = {};
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const gs = this.antragList[i].gesuchsperiodeString;
 
@@ -403,7 +403,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private updateGesuchNavigationList(): void {
         this.gesuchNavigationList = {};  // clear
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const gs = this.antragList[i].gesuchsperiodeString;
             const antrag = this.antragList[i];
@@ -418,7 +418,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private updateAntragTypList(): void {
         this.antragTypList = {};  // clear
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag = this.antragList[i];
             if (!this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.isSame(antrag.gesuchsperiodeGueltigAb)) {
@@ -433,7 +433,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
     }
 
-    // tslint:disable-next-line:no-shadowed-variable
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     public getKeys(map: { [key: string]: Array<TSAntragDTO> }): Array<string> {
         const keys: Array<string> = [];
         for (const key in map) {
@@ -475,7 +475,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private getNewest(arrayTSAntragDTO: Array<TSAntragDTO>): TSAntragDTO {
         let newest = arrayTSAntragDTO[0];
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < arrayTSAntragDTO.length; i++) {
             // Wenn eines noch gar kein Eingangsdatum hat ist es sicher das neueste
             if (!arrayTSAntragDTO[i].eingangsdatum) {
@@ -510,7 +510,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public setAntragTypDatumMobile(gesuchperiodeKey: string, antragTypDatumKey: string): void {
         const tmpAntragList: { [key: string]: TSAntragDTO } = {};
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antrag = this.antragList[i];
             const gesuchsperiodeGueltigAb = this.gesuchsperiodeList[gesuchperiodeKey][0].gesuchsperiodeGueltigAb;
@@ -551,7 +551,7 @@ export class DossierToolbarController implements IDVFocusableController {
         }
 
         let mutierenGesperrt = false;
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antragItem = this.antragList[i];
             // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
@@ -590,7 +590,7 @@ export class DossierToolbarController implements IDVFocusableController {
             return;
         }
         let erneuernGesperrt = false;
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.antragList.length; i++) {
             const antragItem = this.antragList[i];
             // Wir muessen nur die Antraege der aktuell ausgewaehlten Gesuchsperiode beachten
@@ -725,7 +725,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private setAllFormsPristine(): void {
         const forms: [IFormController] = this.unsavedWarningSharedService.allForms();
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let index = 0; index < forms.length; index++) {
             const form = forms[index];
             form.$setPristine();

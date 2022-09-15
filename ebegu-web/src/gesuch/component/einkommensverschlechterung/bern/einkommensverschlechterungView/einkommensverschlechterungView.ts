@@ -153,7 +153,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         return this.berechnungsManager.getEinkommensverschlechterungResultate(this.model.getBasisJahrPlus());
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public initGeschaeftsgewinnFromFS(): void {
         if (!this.model.getFiSiConToWorkWith()
             || !this.model.getFiSiConToWorkWith().finanzielleSituationJA) {

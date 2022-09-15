@@ -28,7 +28,7 @@ import 'core-js/es6/reflect';
  * Zone JS is required by default for Angular itself.
  */
 (window as any).__Zone_enable_cross_context_check = true;
-// tslint:disable-next-line:no-import-side-effect
+// eslint-disable-next-line import/no-unassigned-import
 import 'zone.js'; // Included with Angular CLI.
 
 /**
@@ -36,7 +36,7 @@ import 'zone.js'; // Included with Angular CLI.
  * user can disable parts of macroTask/DomEvents patch by setting following flags
  */
 
-// tslint:disable-next-line:no-commented-code
+// eslint-disable-next-line
 // (window as any).__Zone_disable_requestAnimationFrame = true; // disable patch requestAnimationFrame
 // (window as any).__Zone_disable_on_property = true; // disable patch onProperty such as onclick
 // (window as any).__zone_symbol__BLACK_LISTED_EVENTS = ['scroll', 'mousemove']; // disable patch specified eventNames

@@ -16,7 +16,7 @@
 import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IScope} from 'angular';
 import {DVRoleElementController} from '../../controller/DVRoleElementController';
 
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 /**
  * Attribute Directive um Elementen aus- und einblenden. Erweitert ng-show
  * Die Direktive muss folgendermasse benutzt werden:
@@ -29,7 +29,7 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  *
  * ACHTUNG! Diese Direktive darf nicht mit ng-show zusammen benutzt werden
  */
-// tslint:enable:max-line-length
+/* eslint-enable max-len */
 export class DVDisplayElement implements IDirective {
 
     public static $inject: ReadonlyArray<string> = ['ngShowDirective'];

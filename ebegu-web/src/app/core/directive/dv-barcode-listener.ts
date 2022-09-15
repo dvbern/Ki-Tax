@@ -116,7 +116,7 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public barcodeOnKeyPressed(e: any): void {
         const key = e.keyCode || e.which || 0;
         const keyPressChar = String.fromCharCode(key);
@@ -185,7 +185,7 @@ export class DVBarcodeController implements IController {
                 this.$log.debug('End Barcode read');
                 this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
                 this.barcodeBuffer = [];
-                // tslint:disable-next-line:no-magic-numbers
+                // eslint-disable-next-line no-magic-numbers
             }, 2000);
         }
         this.barcodeReading = !this.barcodeReading;
