@@ -18,7 +18,12 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -26,8 +31,11 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.rules.MinimalPauschalbetragGemeindeRechnerRule;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
@@ -46,7 +54,11 @@ import static org.hamcrest.Matchers.is;
 public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
+	private final BGRechnerParameterDTO parameterGemeindeDTO = getParameter();
 	private final KitaBernRechner kitaRechner = new KitaBernRechner(Collections.emptyList());
+	private final KitaBernRechner kitaGemeindeRechner =
+		new KitaBernRechner(Arrays.asList(new MinimalPauschalbetragGemeindeRechnerRule(
+			Locale.GERMAN)));
 
 	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
 	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);
@@ -66,8 +78,18 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervall, 20, 20, 100000, 60.440);
 		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, intervall, 20, 20, 50000, 147.741);
 
-		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, intervallTag, 20, 20, 100000, 7.3261);
-		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervallTag, 20, 20, 100000, 5.495);
+		testWithParams(
+			geburtstagKind,
+			EinschulungTyp.VORSCHULALTER,
+			false,
+			false,
+			intervallTag,
+			20,
+			20,
+			100000,
+			7.3261);
+		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, false, false, intervallTag, 20, 20, 100000,
+			5.495);
 		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, true, true, intervallTag, 20, 20, 100000, 14.469);
 		testWithParams(geburtstagKind, EinschulungTyp.KINDERGARTEN1, true, true, intervallTag, 20, 20, 100000, 12.637);
 
@@ -108,6 +130,50 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 	}
 
 	@Test
+	public void gemeindeRechnerRuleTest() {
+		DateRange ganzerSeptember = new DateRange(
+			LocalDate.of(2022, Month.SEPTEMBER, 1),
+			LocalDate.of(2022, Month.SEPTEMBER, 30));
+		// Rules noch nicht aktiv, Max Einkommen erreicht
+		testGemeindeWithParams(
+			geburtstagKind,
+			EinschulungTyp.VORSCHULALTER,
+			true,
+			true,
+			ganzerSeptember,
+			100,
+			0,
+			160000,
+			onlyVerguenstigungMatcher(0.0));
+		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(true);
+		parameterGemeindeDTO.getGemeindeParameter()
+			.setGemeindePauschalbetragMassgebendenEinkommen(new BigDecimal(200000));
+		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetrag(new BigDecimal(8));
+		// Rules aktiv, Max Einkommen erreicht
+		testGemeindeWithParams(
+			geburtstagKind,
+			EinschulungTyp.VORSCHULALTER,
+			true,
+			true,
+			ganzerSeptember,
+			100,
+			0,
+			160000,
+			onlyVerguenstigungMatcher(160.0));  //8*20
+		// Rules aktiv, Max Einkommen erreicht und hoeher als der Max erlaubte Pauschal Betrag
+		testGemeindeWithParams(
+			geburtstagKind,
+			EinschulungTyp.VORSCHULALTER,
+			true,
+			true,
+			ganzerSeptember,
+			100,
+			0,
+			200001,
+			onlyVerguenstigungMatcher(0.0));
+	}
+
+	@Test
 	public void vollkostenMuessenAufVerguenstigtesPensumBezogenSein() {
 		DateRange ganzerSeptember = new DateRange(
 			LocalDate.of(2018, Month.SEPTEMBER, 1),
@@ -116,7 +182,16 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		IsPojo<BGCalculationResult> matcher = pojo(BGCalculationResult.class)
 			.where(BGCalculationResult::getVollkosten, comparesEqualTo(BigDecimal.valueOf(1000)));
 
-		testWithParams(geburtstagKind, EinschulungTyp.VORSCHULALTER, false, false, ganzerSeptember, 100, 50, 180607, matcher);
+		testWithParams(
+			geburtstagKind,
+			EinschulungTyp.VORSCHULALTER,
+			false,
+			false,
+			ganzerSeptember,
+			100,
+			50,
+			180607,
+			matcher);
 	}
 
 	private void testWithParams(
@@ -154,7 +229,23 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		int einkommen,
 		@Nonnull Matcher<BGCalculationResult> matcher
 	) {
+		BGCalculationInput inputAsiv = inputAsivVorbereiten(geburtstag, einschulungTyp, besondereBeduerfnisse,
+			besondereBeduerfnisseBestaetigt, intervall, betreuungspensum, anspruch, einkommen);
 
+		BGCalculationResult result = kitaRechner.calculateAsiv(inputAsiv, parameterDTO);
+
+		assertThat(result, matcher);
+	}
+
+	private BGCalculationInput inputAsivVorbereiten(
+		@Nonnull LocalDate geburtstag,
+		@Nonnull EinschulungTyp einschulungTyp,
+		boolean besondereBeduerfnisse,
+		boolean besondereBeduerfnisseBestaetigt,
+		@Nonnull DateRange intervall,
+		int betreuungspensum,
+		int anspruch,
+		int einkommen) {
 		Verfuegung verfuegung = prepareVerfuegungKita(
 			geburtstag,
 			intervall.getGueltigAb(),
@@ -173,19 +264,45 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		inputAsiv.setEinschulungTyp(einschulungTyp);
 		inputAsiv.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 		inputAsiv.setKostenAnteilMonat(calculateKostenAnteilMonat(inputAsiv, intervall));
+		return inputAsiv;
+	}
 
-		BGCalculationResult result = kitaRechner.calculateAsiv(inputAsiv, parameterDTO);
+	private void testGemeindeWithParams(
+		@Nonnull LocalDate geburtstag,
+		@Nonnull EinschulungTyp einschulungTyp,
+		boolean besondereBeduerfnisse,
+		boolean besondereBeduerfnisseBestaetigt,
+		@Nonnull DateRange intervall,
+		int betreuungspensum,
+		int anspruch,
+		int einkommen,
+		@Nonnull Matcher<BGCalculationResult> matcher
+	) {
 
-		assertThat(result, matcher);
+		BGCalculationInput inputAsiv = inputAsivVorbereiten(geburtstag, einschulungTyp, besondereBeduerfnisse,
+			besondereBeduerfnisseBestaetigt, intervall, betreuungspensum, anspruch, einkommen);
+		inputAsiv.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+		Optional<BGCalculationResult> result = kitaGemeindeRechner.calculateGemeinde(inputAsiv, parameterGemeindeDTO);
+
+		assertThat(result.get(), matcher);
 	}
 
 	@Nonnull
 	private IsPojo<BGCalculationResult> defaultMatcher(double expectedVerguenstigung) {
 		return pojo(BGCalculationResult.class)
-			.withProperty("verguenstigung",
+			.withProperty(
+				"verguenstigung",
 				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expectedVerguenstigung), BigDecimal.valueOf(0.0005)))
 			.withProperty("bgPensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("anspruchspensumZeiteinheit", IsBigDecimal.greaterZeroWithScale10())
 			.withProperty("zeiteinheit", is(PensumUnits.DAYS));
+	}
+
+	@Nonnull
+	private IsPojo<BGCalculationResult> onlyVerguenstigungMatcher(double expectedVerguenstigung) {
+		return pojo(BGCalculationResult.class)
+			.withProperty(
+				"verguenstigung",
+				BigDecimalCloseTo.closeTo(BigDecimal.valueOf(expectedVerguenstigung), BigDecimal.valueOf(0.0005)));
 	}
 }

@@ -164,16 +164,27 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		}
 	}
 
-	protected BigDecimal gemeindeRules(
-		 @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten
+	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein, @Nonnull BigDecimal betreuungsZeiteinheiten){
+		gutschein = gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(gutschein);
+		gutschein = gemeindeRulesUnabhengigVonVerfuegteZeiteinheit(gutschein, betreuungsZeiteinheiten);
+		return gutschein;
+	}
+
+	protected BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(
+		 @Nonnull BigDecimal gutschein
 	) {
 		// Zusaetzlicher Gutschein Gemeinde
-		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag(), betreuungsZeiteinheiten)));
+		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag(), this.verfuegteZeiteinheit)));
 		// Zusaetzlicher Baby-Gutschein
-		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherBabyGutscheinBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherBabyGutscheinBetrag(), betreuungsZeiteinheiten)));
+		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherBabyGutscheinBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherBabyGutscheinBetrag(), verfuegteZeiteinheit)));
+
+		return gutschein;
+	}
+
+	protected BigDecimal gemeindeRulesUnabhengigVonVerfuegteZeiteinheit ( @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten)
+	{
 		// Minimal Pauschalbetrag wenn nicht erreicht
 		gutschein = gutschein.compareTo(MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten)) < 0 ? MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten) : gutschein;
-
 		return gutschein;
 	}
 

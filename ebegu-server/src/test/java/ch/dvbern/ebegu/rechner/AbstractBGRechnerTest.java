@@ -204,6 +204,7 @@ public abstract class AbstractBGRechnerTest {
 		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
 		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		dto.getMahlzeitenverguenstigungParameter().setEnabled(false);
+		dto.getGemeindeParameter().setGemeindePauschalbetragEnabled(false);
 		return dto;
 	}
 
