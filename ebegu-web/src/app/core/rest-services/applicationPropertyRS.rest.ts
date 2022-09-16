@@ -117,9 +117,9 @@ export class ApplicationPropertyRS {
         });
     }
 
-    public getAllowedElements(): IPromise<string> {
+    public getActivatedDemoFeatures(): IPromise<string> {
         return this.getPublicPropertiesCached().then(response => {
-            return response.allowedElements;
+            return response.activatedDemoFeatures;
         });
     }
 

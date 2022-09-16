@@ -366,8 +366,8 @@ public class ApplicationPropertyResource {
 		ApplicationProperty zusatzinformationenInstitution =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION, mandant)
 						.orElseThrow(() -> notFound);
-		ApplicationProperty allowedElements =
-			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ALLOWED_ELEMENTS, mandant)
+		ApplicationProperty activatedDemoFeatures =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant)
 				.orElseThrow(() -> notFound);
 
 		String nodeName = "";
@@ -420,7 +420,7 @@ public class ApplicationPropertyResource {
 			isEbeguKibonAnfrageTestGuiEnabled,
 			steuerschnittstelleAktivAb.getValue(),
 			stringToBool(zusatzinformationenInstitution.getValue()),
-			allowedElements.getValue()
+			activatedDemoFeatures.getValue()
 			);
 		return Response.ok(pubAppConf).build();
 	}

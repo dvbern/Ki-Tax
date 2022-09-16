@@ -4437,7 +4437,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
-        publicAppConfigTS.allowedElements = data.allowedElements;
+        publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         return publicAppConfigTS;
 
     }

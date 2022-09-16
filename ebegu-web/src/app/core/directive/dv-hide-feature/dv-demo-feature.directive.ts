@@ -17,13 +17,14 @@
 
 import {Directive, ElementRef, Input, OnInit} from '@angular/core';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
+import {TSDemoFeature} from './TSDemoFeature';
 
 // Directive decorator
-@Directive({selector: '[dvHideFeature]'})
+@Directive({selector: '[dvDemoFeature]'})
 // Directive class
-export class DvHideFeatureDirective implements OnInit {
+export class DvDemoFeatureDirective implements OnInit {
 
-    @Input() public dvHideFeature = 'none';
+    @Input() public dvDemoFeature: TSDemoFeature;
 
     public constructor(
         private readonly elementRef: ElementRef,
@@ -37,9 +38,9 @@ export class DvHideFeatureDirective implements OnInit {
     }
 
     public checkIfAllowed(): void {
-        this.applicationPropertyRS.getAllowedElements().then(
+        this.applicationPropertyRS.getActivatedDemoFeatures().then(
             allowedElement => {
-                if (allowedElement.includes(this.dvHideFeature)) {
+                if (allowedElement.includes(this.dvDemoFeature.valueOf())) {
                     this.elementRef.nativeElement.style.display = 'block';
                 }
             },

@@ -44,6 +44,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
@@ -131,6 +132,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         predicate?: string,
         reverse?: boolean
     } = {};
+
+    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,

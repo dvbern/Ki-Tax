@@ -46,7 +46,7 @@ public class JaxPublicAppConfig {
 	private boolean ebeguKibonAnfrageTestGuiEnabled;
 	private final String steuerschnittstelleAktivAb;
 	private boolean zusatzinformationenInstitution;
-	private String allowedElements;
+	private String activatedDemoFeatures;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -82,7 +82,7 @@ public class JaxPublicAppConfig {
 			boolean ebeguKibonAnfrageTestGuiEnabled,
 			String steuerschnittstelleAktivAb,
 			boolean zusatzinformationenInstitution,
-			String allowedElements
+			String activatedDemoFeatures
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -117,7 +117,7 @@ public class JaxPublicAppConfig {
 		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
 		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
-		this.allowedElements = allowedElements;
+		this.activatedDemoFeatures = activatedDemoFeatures;
 	}
 
 	public String getCurrentNode() {
@@ -376,11 +376,11 @@ public class JaxPublicAppConfig {
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
 	}
 
-	public String getAllowedElements() {
-		return allowedElements;
+	public String getActivatedDemoFeatures() {
+		return activatedDemoFeatures;
 	}
 
-	public void setAllowedElements(String allowedElements) {
-		this.allowedElements = allowedElements;
+	public void setActivatedDemoFeatures(String activatedDemoFeatures) {
+		this.activatedDemoFeatures = activatedDemoFeatures;
 	}
 }
