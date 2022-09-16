@@ -4962,6 +4962,7 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilungToJAX(persistedMitteilung, jaxBetreuungsmitteilung);
 
 		jaxBetreuungsmitteilung.setApplied(persistedMitteilung.isApplied());
+		jaxBetreuungsmitteilung.setErrorMessage(persistedMitteilung.getErrorMessage());
 		jaxBetreuungsmitteilung.setBetreuungStornieren(persistedMitteilung.isBetreuungStornieren());
 		if (persistedMitteilung.getBetreuungspensen() != null) {
 			List<JaxBetreuungsmitteilungPensum> pensen = persistedMitteilung.getBetreuungspensen().stream()

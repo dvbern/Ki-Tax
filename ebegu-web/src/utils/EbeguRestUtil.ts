@@ -3838,6 +3838,8 @@ export class EbeguRestUtil {
         if (betreuungsmitteilungFromServer) {
             this.parseMitteilung(tsBetreuungsmitteilung, betreuungsmitteilungFromServer);
             tsBetreuungsmitteilung.applied = betreuungsmitteilungFromServer.applied;
+            tsBetreuungsmitteilung.errorMessage = betreuungsmitteilungFromServer.errorMessage;
+
             if (Array.isArray(betreuungsmitteilungFromServer.betreuungspensen)) {
                 tsBetreuungsmitteilung.betreuungspensen = betreuungsmitteilungFromServer.betreuungspensen
                     .map((bp: any) => this.parseBetreuungsmitteilungPensum(new TSBetreuungsmitteilungPensum(), bp));

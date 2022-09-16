@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
@@ -50,6 +51,9 @@ public class Betreuungsmitteilung extends Mitteilung {
 
 	private boolean applied;
 
+	@Transient
+	private String errorMessage;
+
 	private boolean betreuungStornieren = false;
 
 	public Set<BetreuungsmitteilungPensum> getBetreuungspensen() {
@@ -66,6 +70,14 @@ public class Betreuungsmitteilung extends Mitteilung {
 
 	public void setApplied(boolean applied) {
 		this.applied = applied;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	@Override

@@ -27,7 +27,8 @@
             <span>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</span>
             <br>
             <li class="nonapplied" *ngFor="let betreuungsmitteilung of betreuungsmitteilungsKo">
-                <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
+                <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>:
+                <i>{{betreuungsmitteilung.errorMessage}}</i>
             </li>
         </ul>
     </nav>
