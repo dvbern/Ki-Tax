@@ -27,8 +27,6 @@ import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -90,7 +88,6 @@ public class AnmeldungAblehnenEventKafkaConsumer {
 	}
 
 	@Schedule(info = "consume kafka events", second = "*/18", minute = "*", hour = "*", persistent = false)
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void runAnmeldungAblehnenConsumer() {
 		try {
 			if (consumer == null) {
