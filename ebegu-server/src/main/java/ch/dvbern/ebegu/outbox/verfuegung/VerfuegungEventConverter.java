@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -93,14 +94,14 @@ public class VerfuegungEventConverter {
 		Gesuch gesuch = betreuung.extractGesuch();
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
-		Kind kind = betreuung.getKind().getKindJA();
+		KindContainer kindContainer = betreuung.getKind();
 
 		DateRange periode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		LocalDateTime timestampErstellt = verfuegung.getTimestampErstellt();
 		Instant verfuegtAm = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
 
 		VerfuegungEventDTO.Builder builder = VerfuegungEventDTO.newBuilder()
-			.setKind(toKindDTO(kind))
+			.setKind(toKindDTO(kindContainer))
 			.setGesuchsteller(toGesuchstellerDTO(gesuchsteller))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()))
 			.setRefnr(betreuung.getBGNummer())
@@ -120,7 +121,8 @@ public class VerfuegungEventConverter {
 	}
 
 	@Nonnull
-	private KindDTO toKindDTO(@Nonnull Kind kind) {
+	private KindDTO toKindDTO(@Nonnull KindContainer kindContainer) {
+		Kind kind = kindContainer.getKindJA();
 		assert kind.getEinschulungTyp() != null;
 		assert kind.getSprichtAmtssprache() != null;
 		return KindDTO.newBuilder()
@@ -136,6 +138,8 @@ public class VerfuegungEventConverter {
 				false)
 			.setSprichtMuttersprache(kind.getSprichtAmtssprache().booleanValue())
 			.setAusserordentlicherAnspruch(kind.getPensumAusserordentlicherAnspruch() != null)
+			.setKindAusAsylwesenAngabeElternGemeinde(kind.getAusAsylwesen() != null ? kind.getAusAsylwesen() : false)
+			.setKeinSelbstbehaltDurchGemeinde(kindContainer.getKeinSelbstbehaltDurchGemeinde() != null ? kindContainer.getKeinSelbstbehaltDurchGemeinde() : false)
 			.build();
 	}
 
