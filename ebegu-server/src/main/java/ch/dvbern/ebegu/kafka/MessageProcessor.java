@@ -24,6 +24,8 @@ import java.time.ZoneId;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -44,6 +46,7 @@ public class MessageProcessor {
 	@Inject
 	private ReceivedEventService receivedEventService;
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public <T, H extends BaseEventHandler<T>> void process(
 		@Nonnull ConsumerRecord<String, T> record,
 		@Nonnull H handler) {
