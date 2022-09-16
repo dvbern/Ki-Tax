@@ -837,7 +837,7 @@ public class FerienbetreuungResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
 		SACHBEARBEITER_FERIENBETREUUNG })
-	public JaxFerienbetreuungAngabenKostenEinnahmen getFerienbetreuungReport(
+	public JaxFerienbetreuungAngabenKostenEinnahmen ferienbetreuungKostenEinnahmenFalscheAngaben(
 		@Nonnull @NotNull @Valid JaxFerienbetreuungAngabenKostenEinnahmen jaxKostenEinnahmen,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response,

@@ -48,7 +48,10 @@ public class LastenausgleichTagesschulenDataRow {
 	private BigDecimal kinderSek;
 
 	@Nullable
-	private BigDecimal kinderFaktor;
+	private BigDecimal kinderFaktor15;
+
+	@Nullable
+	private BigDecimal kinderFaktor3;
 
 	@Nullable
 	private BigDecimal kinderFrueh;
@@ -82,6 +85,66 @@ public class LastenausgleichTagesschulenDataRow {
 
 	@Nullable
 	private String bemerkungenTagesschule;
+
+	@Nullable
+	private Boolean fruehBetMo;
+
+	@Nullable
+	private Boolean fruehBetDi;
+
+	@Nullable
+	private Boolean fruehBetMi;
+
+	@Nullable
+	private Boolean fruehBetDo;
+
+	@Nullable
+	private Boolean fruehBetFr;
+
+	@Nullable
+	private Boolean mittagsBetMo;
+
+	@Nullable
+	private Boolean mittagsBetDi;
+
+	@Nullable
+	private Boolean mittagsBetMi;
+
+	@Nullable
+	private Boolean mittagsBetDo;
+
+	@Nullable
+	private Boolean mittagsBetFr;
+
+	@Nullable
+	private Boolean nachmittags1BetMo;
+
+	@Nullable
+	private Boolean nachmittags1BetDi;
+
+	@Nullable
+	private Boolean nachmittags1BetMi;
+
+	@Nullable
+	private Boolean nachmittags1BetDo;
+
+	@Nullable
+	private Boolean nachmittags1BetFr;
+
+	@Nullable
+	private Boolean nachmittags2BetMo;
+
+	@Nullable
+	private Boolean nachmittags2BetDi;
+
+	@Nullable
+	private Boolean nachmittags2BetMi;
+
+	@Nullable
+	private Boolean nachmittags2BetDo;
+
+	@Nullable
+	private Boolean nachmittags2BetFr;
 
 	@Nullable
 	public String getGemeindeFallnummerTS() {
@@ -156,12 +219,21 @@ public class LastenausgleichTagesschulenDataRow {
 	}
 
 	@Nullable
-	public BigDecimal getKinderFaktor() {
-		return kinderFaktor;
+	public BigDecimal getKinderFaktor15() {
+		return kinderFaktor15;
 	}
 
-	public void setKinderFaktor(@Nullable BigDecimal kinderFaktor) {
-		this.kinderFaktor = kinderFaktor;
+	public void setKinderFaktor15(@Nullable BigDecimal kinderFaktor15) {
+		this.kinderFaktor15 = kinderFaktor15;
+	}
+
+	@Nullable
+	public BigDecimal getKinderFaktor3() {
+		return kinderFaktor3;
+	}
+
+	public void setKinderFaktor3(@Nullable BigDecimal kinderFaktor3) {
+		this.kinderFaktor3 = kinderFaktor3;
 	}
 
 	@Nullable
@@ -261,5 +333,185 @@ public class LastenausgleichTagesschulenDataRow {
 
 	public void setBemerkungenTagesschule(@Nullable String bemerkungenTagesschule) {
 		this.bemerkungenTagesschule = bemerkungenTagesschule;
+	}
+
+	@Nullable
+	public Boolean getFruehBetMo() {
+		return fruehBetMo;
+	}
+
+	public void setFruehBetMo(@Nullable Boolean fruehBetMo) {
+		this.fruehBetMo = fruehBetMo;
+	}
+
+	@Nullable
+	public Boolean getFruehBetDi() {
+		return fruehBetDi;
+	}
+
+	public void setFruehBetDi(@Nullable Boolean fruehBetDi) {
+		this.fruehBetDi = fruehBetDi;
+	}
+
+	@Nullable
+	public Boolean getFruehBetMi() {
+		return fruehBetMi;
+	}
+
+	public void setFruehBetMi(@Nullable Boolean fruehBetMi) {
+		this.fruehBetMi = fruehBetMi;
+	}
+
+	@Nullable
+	public Boolean getFruehBetDo() {
+		return fruehBetDo;
+	}
+
+	public void setFruehBetDo(@Nullable Boolean fruehBetDo) {
+		this.fruehBetDo = fruehBetDo;
+	}
+
+	@Nullable
+	public Boolean getFruehBetFr() {
+		return fruehBetFr;
+	}
+
+	public void setFruehBetFr(@Nullable Boolean fruehBetFr) {
+		this.fruehBetFr = fruehBetFr;
+	}
+
+	@Nullable
+	public Boolean getMittagsBetMo() {
+		return mittagsBetMo;
+	}
+
+	public void setMittagsBetMo(@Nullable Boolean mittagsBetMo) {
+		this.mittagsBetMo = mittagsBetMo;
+	}
+
+	@Nullable
+	public Boolean getMittagsBetDi() {
+		return mittagsBetDi;
+	}
+
+	public void setMittagsBetDi(@Nullable Boolean mittagsBetDi) {
+		this.mittagsBetDi = mittagsBetDi;
+	}
+
+	@Nullable
+	public Boolean getMittagsBetMi() {
+		return mittagsBetMi;
+	}
+
+	public void setMittagsBetMi(@Nullable Boolean mittagsBetMi) {
+		this.mittagsBetMi = mittagsBetMi;
+	}
+
+	@Nullable
+	public Boolean getMittagsBetDo() {
+		return mittagsBetDo;
+	}
+
+	public void setMittagsBetDo(@Nullable Boolean mittagsBetDo) {
+		this.mittagsBetDo = mittagsBetDo;
+	}
+
+	@Nullable
+	public Boolean getMittagsBetFr() {
+		return mittagsBetFr;
+	}
+
+	public void setMittagsBetFr(@Nullable Boolean mittagsBetFr) {
+		this.mittagsBetFr = mittagsBetFr;
+	}
+
+	@Nullable
+	public Boolean getNachmittags1BetMo() {
+		return nachmittags1BetMo;
+	}
+
+	public void setNachmittags1BetMo(@Nullable Boolean nachmittags1BetMo) {
+		this.nachmittags1BetMo = nachmittags1BetMo;
+	}
+
+	@Nullable
+	public Boolean getNachmittags1BetDi() {
+		return nachmittags1BetDi;
+	}
+
+	public void setNachmittags1BetDi(@Nullable Boolean nachmittags1BetDi) {
+		this.nachmittags1BetDi = nachmittags1BetDi;
+	}
+
+	@Nullable
+	public Boolean getNachmittags1BetMi() {
+		return nachmittags1BetMi;
+	}
+
+	public void setNachmittags1BetMi(@Nullable Boolean nachmittags1BetMi) {
+		this.nachmittags1BetMi = nachmittags1BetMi;
+	}
+
+	@Nullable
+	public Boolean getNachmittags1BetDo() {
+		return nachmittags1BetDo;
+	}
+
+	public void setNachmittags1BetDo(@Nullable Boolean nachmittags1BetDo) {
+		this.nachmittags1BetDo = nachmittags1BetDo;
+	}
+
+	@Nullable
+	public Boolean getNachmittags1BetFr() {
+		return nachmittags1BetFr;
+	}
+
+	public void setNachmittags1BetFr(@Nullable Boolean nachmittags1BetFr) {
+		this.nachmittags1BetFr = nachmittags1BetFr;
+	}
+
+	@Nullable
+	public Boolean getNachmittags2BetMo() {
+		return nachmittags2BetMo;
+	}
+
+	public void setNachmittags2BetMo(@Nullable Boolean nachmittags2BetMo) {
+		this.nachmittags2BetMo = nachmittags2BetMo;
+	}
+
+	@Nullable
+	public Boolean getNachmittags2BetDi() {
+		return nachmittags2BetDi;
+	}
+
+	public void setNachmittags2BetDi(@Nullable Boolean nachmittags2BetDi) {
+		this.nachmittags2BetDi = nachmittags2BetDi;
+	}
+
+	@Nullable
+	public Boolean getNachmittags2BetMi() {
+		return nachmittags2BetMi;
+	}
+
+	public void setNachmittags2BetMi(@Nullable Boolean nachmittags2BetMi) {
+		this.nachmittags2BetMi = nachmittags2BetMi;
+	}
+
+	@Nullable
+	public Boolean getNachmittags2BetDo() {
+		return nachmittags2BetDo;
+	}
+
+	public void setNachmittags2BetDo(@Nullable Boolean nachmittags2BetDo) {
+		this.nachmittags2BetDo = nachmittags2BetDo;
+	}
+
+	@Nullable
+	public Boolean getNachmittags2BetFr() {
+		return nachmittags2BetFr;
+	}
+
+	public void setNachmittags2BetFr(@Nullable Boolean nachmittags2BetFr) {
+		this.nachmittags2BetFr = nachmittags2BetFr;
 	}
 }

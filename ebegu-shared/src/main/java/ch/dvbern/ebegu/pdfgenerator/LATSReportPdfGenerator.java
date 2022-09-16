@@ -369,12 +369,9 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenGemeinde getAngabenGemeinde() {
-		boolean neuOrInBearbeitungGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.isInStatusNeu()
-			|| lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde();
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-			neuOrInBearbeitungGemeinde ?
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
+		var angabenGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.getStatus().atLeastGeprueft() ?
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur() :
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration();
 		Objects.requireNonNull(angabenGemeinde);
 		return angabenGemeinde;
 	}
