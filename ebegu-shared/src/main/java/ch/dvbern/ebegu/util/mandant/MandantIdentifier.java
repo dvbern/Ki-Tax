@@ -51,6 +51,17 @@ public enum MandantIdentifier {
 		public String getUrlCode() {
 			return "so";
 		}
+	},
+	APPENZELL_AUSSERRHODEN {
+		@Override
+		public <T> T accept(MandantVisitor<T> visitor) {
+			return visitor.visitAppenzellAusserrhoden();
+		}
+
+		@Override
+		public String getUrlCode() {
+			return "ausserrhoden";
+		}
 	};
 
 	public abstract <T> T accept(MandantVisitor<T> visitor);

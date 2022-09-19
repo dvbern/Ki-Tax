@@ -61,4 +61,9 @@ public class FreigabequittungPdfQuittungVisitor implements MandantVisitor<Abstra
 	public AbstractFreigabequittungPdfGenerator visitSolothurn() {
 		return new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
 	}
+
+	@Override
+	public AbstractFreigabequittungPdfGenerator visitAppenzellAusserrhoden() {
+		return new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
+	}
 }
