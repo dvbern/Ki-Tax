@@ -21,13 +21,13 @@ import {StateService, TransitionService} from '@uirouter/core';
 @Component({
     selector: 'dv-tagesschulen-ui-view',
     templateUrl: './tagesschulen-ui-view.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TagesschulenUiViewComponent implements OnInit {
 
     public constructor(
         private readonly $state: StateService,
-        private readonly $transition: TransitionService,
+        private readonly $transition: TransitionService
     ) {
     }
 

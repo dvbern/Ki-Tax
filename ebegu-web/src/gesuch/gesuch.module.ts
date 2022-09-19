@@ -29,7 +29,7 @@ import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungV
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
 import {
     DossierToolbarComponentConfig,
-    DossierToolbarGesuchstellerComponentConfig,
+    DossierToolbarGesuchstellerComponentConfig
 } from './component/dossierToolbar/dossierToolbar';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
@@ -136,7 +136,7 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({
                 component: MultipleFileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
-                outputs: ['download', 'delete', 'uploadFile'],
+                outputs: ['download', 'delete', 'uploadFile']
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))

@@ -39,11 +39,11 @@ let alreadyAlerted = false;
  */
 
 export function mandantCheck(
-    $transitions: TransitionService,
+    $transitions: TransitionService
 ): void {
     // Register the "requires authentication" hook with the TransitionsService
     $transitions.onBefore({
-            to: state => !state.name.includes('mandant'),
+            to: state => !state.name.includes('mandant')
         },
         redirectToMandantSelection,
         {priority: OnBeforePriorities.AUTHENTICATION});
@@ -54,7 +54,7 @@ export function mandantCheck(
 // eslint-disable-next-line
 
 function redirectToMandantSelection(
-    transition: Transition,
+    transition: Transition
 ): HookResult {
 
     const mandantService: MandantService = transition.injector().get('MandantService');
@@ -62,7 +62,7 @@ function redirectToMandantSelection(
 
     return combineLatest([
         mandantService.mandant$,
-        mandantService.isMultimandantActive$(),
+        mandantService.isMultimandantActive$()
     ])
         .pipe(
             map(([mandant, isMultimandanActive]) => {
@@ -89,7 +89,7 @@ function redirectToMandantSelection(
                 // continue the original transition
                 return true;
             }),
-            take(1),
+            take(1)
         )
         .toPromise();
 }
@@ -98,7 +98,7 @@ function setDefaultCookies(
     mandantFromHostname: KiBonMandant,
     mandant: KiBonMandant,
     mandantService: MandantService,
-    mandantRedirectFromCookie: KiBonMandant,
+    mandantRedirectFromCookie: KiBonMandant
 ): void {
     if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
         alert('Multimandant ist nicht aktiviert');

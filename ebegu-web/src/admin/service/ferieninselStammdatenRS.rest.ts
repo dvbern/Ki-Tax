@@ -27,7 +27,7 @@ export class FerieninselStammdatenRS {
     public constructor(
         public http: IHttpService,
         REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${REST_API}ferieninselStammdaten`;
     }
@@ -36,35 +36,27 @@ export class FerieninselStammdatenRS {
         let stammdatenObj = {};
         stammdatenObj = this.ebeguRestUtil.ferieninselStammdatenToRestObject(stammdatenObj, stammdaten);
 
-        return this.http.put(this.serviceURL, stammdatenObj).then((response: any) => {
-            return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-        });
+        return this.http.put(this.serviceURL, stammdatenObj).then((response: any) => this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data));
     }
 
     public findFerieninselStammdaten(fachstelleID: string): IPromise<TSFerieninselStammdaten> {
         return this.http.get(`${this.serviceURL}/id/${encodeURIComponent(fachstelleID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data));
     }
 
     public findFerieninselStammdatenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSFerieninselStammdaten[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${encodeURIComponent(gesuchsperiodeId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdatenList(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseFerieninselStammdatenList(response.data));
     }
 
     public findFerieninselStammdatenByGesuchsperiodeAndFerien(
         gesuchsperiodeId: string,
         gemeindeId: string,
-        ferienname: TSFerienname,
+        ferienname: TSFerienname
     ): IPromise<TSFerieninselStammdaten> {
         const url = `${encodeURIComponent(gesuchsperiodeId)}/${encodeURIComponent(gemeindeId)}/${ferienname}`;
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${url}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseFerieninselStammdaten(new TSFerieninselStammdaten(), response.data));
     }
 
     public getServiceName(): string {

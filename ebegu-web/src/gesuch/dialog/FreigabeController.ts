@@ -60,7 +60,7 @@ export class FreigabeController {
         private readonly benutzerRS: BenutzerRSX,
         private readonly authService: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly dossierRS: DossierRS,
+        private readonly dossierRS: DossierRS
     ) {
         this.fallNummer = EbeguUtil.addZerosToFallNummer(gesuch.fallNummer);
         this.familie = gesuch.familienName;
@@ -160,9 +160,7 @@ export class FreigabeController {
 
     public freigeben(): IPromise<any> {
         return this.gesuchRS.antragFreigeben(this.docID, this.selectedUserBG, this.selectedUserTS)
-            .then(() => {
-                return this.$mdDialog.hide();
-            });
+            .then(() => this.$mdDialog.hide());
     }
 
     public cancel(): void {

@@ -31,7 +31,7 @@ import {LogFactory} from '../../../core/logging/LogFactory';
 const LOG = LogFactory.createLog('LastenausgleichTSService');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class LastenausgleichTSService {
 
@@ -44,7 +44,7 @@ export class LastenausgleichTSService {
     public constructor(
         private readonly http: HttpClient,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService,
+        private readonly translate: TranslateService
     ) {
     }
 
@@ -63,7 +63,7 @@ export class LastenausgleichTSService {
     public lATSAngabenGemeindeFuerInstitutionenFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.http.put(
             `${this.API_BASE_URL}/freigebenInstitution`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
             this.next(result);
         }, err => LOG.error(err));
@@ -73,7 +73,7 @@ export class LastenausgleichTSService {
         this.errorService.clearAll();
         this.http.put(
             `${this.API_BASE_URL}/save`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.next(result);
@@ -85,18 +85,18 @@ export class LastenausgleichTSService {
     public saveLATSKommentar(containerId: string, kommentar: string): Observable<void> {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveKommentar/${encodeURIComponent(containerId)}`,
-            kommentar,
+            kommentar
         ).pipe(
-            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
         );
     }
 
     public saveLATSVerantworlicher(containerId: string, username: string): Observable<void> {
         return this.http.put<void>(
             `${this.API_BASE_URL}/saveLATSVerantworlicher/${encodeURIComponent(containerId)}`,
-            username,
+            username
         ).pipe(
-            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId)),
+            tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId))
         );
     }
 
@@ -108,7 +108,7 @@ export class LastenausgleichTSService {
     private next(result: any): void {
         const savedContainer = this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-            result,
+            result
         );
         this.lATSAngabenGemeindeContainerStore.next(savedContainer);
     }
@@ -117,10 +117,10 @@ export class LastenausgleichTSService {
     public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
         return this.http.put(
             `${this.API_BASE_URL}/einreichen`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(tap(result => {
                 this.next(result);
-            }, error => LOG.error(error)),
+            }, error => LOG.error(error))
         );
     }
 
@@ -129,11 +129,11 @@ export class LastenausgleichTSService {
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/geprueft`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(
             tap(result => {
                     this.next(result);
-                },
+                }
             ),
             map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
                 new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
@@ -146,7 +146,7 @@ export class LastenausgleichTSService {
     public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/gemeinde/abschliessen`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         )
             .pipe(tap(result => this.next(result)),
                 map(result => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
@@ -157,7 +157,7 @@ export class LastenausgleichTSService {
     public falscheAngaben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.http.put(
             `${this.API_BASE_URL}/falsche-angaben`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(reopenendContainer => {
             this.errorService.clearAll();
             this.next(reopenendContainer);
@@ -165,43 +165,41 @@ export class LastenausgleichTSService {
     }
 
     public zurueckAnGemeinde(
-        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/zurueck-an-gemeinde`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(
             map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
                 new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-                restContainer),
+                restContainer)
             ),
-            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id))
         );
     }
 
     public getVerlauf(containerId: string): Observable<TSLastenausgleichTagesschulenStatusHistory[]> {
         return this.http.get<any[]>(
             `${this.API_BASE_URL}/verlauf/${containerId}`
-        ).pipe(map(data => {
-            return this.ebeguRestUtil.parseLatsHistoryList(data);
-        }));
+        ).pipe(map(data => this.ebeguRestUtil.parseLatsHistoryList(data)));
     }
 
     public findAntragOfPreviousPeriode(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
         Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.get<any>(
-            `${this.API_BASE_URL}/previous-antrag/${encodeURIComponent(antrag.id)}`,
+            `${this.API_BASE_URL}/previous-antrag/${encodeURIComponent(antrag.id)}`
         ).pipe(
             map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
                 new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-                restContainer),
+                restContainer)
             ));
     }
 
     public getErwarteteBetreuungsstunden(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
         Observable<number> {
         return this.http.get<number>(
-            `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`,
+            `${this.API_BASE_URL}/erwartete-betreuungsstunden/${encodeURIComponent(antrag.id)}`
         );
     }
 
@@ -213,7 +211,7 @@ export class LastenausgleichTSService {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,
             {betreuungsstundenPrognose},
-            {responseType: 'blob'},
+            {responseType: 'blob'}
         );
     }
 
@@ -222,13 +220,13 @@ export class LastenausgleichTSService {
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
         return this.http.put(
             `${this.API_BASE_URL}/zurueck-in-pruefung`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(
             map(restContainer => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
                 new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
-                restContainer),
+                restContainer)
             ),
-            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id)),
+            tap(parsedContainer => this.updateLATSAngabenGemeindeContainerStore(parsedContainer.id))
         );
     }
 
@@ -236,7 +234,7 @@ export class LastenausgleichTSService {
         Observable<void> {
         return this.http.put<void>(
             `${this.API_BASE_URL}/savePrognose/${encodeURIComponent(containerId)}`,
-            {prognose, bemerkungen},
+            {prognose, bemerkungen}
         ).pipe(
             tap(() => this.updateLATSAngabenGemeindeContainerStore(containerId), error => LOG.error(error))
         );
@@ -245,7 +243,7 @@ export class LastenausgleichTSService {
     public latsGemeindeAntragAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.http.put(
             `${this.API_BASE_URL}/abschliessen`,
-            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container),
+            this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => this.next(result), error => LOG.error(error));
     }
 

@@ -13,11 +13,11 @@ describe('DvMonthPickerComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         imports: [
-            SharedModule,
+            SharedModule
         ],
         providers: [
             WindowRef,
-            {provide: NgForm, useValue: new NgForm([], [])},
+            {provide: NgForm, useValue: new NgForm([], [])}
         ]
     })
         .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

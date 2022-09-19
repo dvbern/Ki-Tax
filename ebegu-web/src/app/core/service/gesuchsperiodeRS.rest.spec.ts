@@ -140,7 +140,7 @@ describe('gesuchsperiodeRS', () => {
 
     function checkFieldValues(
         createdGesuchsperiode: TSGesuchsperiode,
-        mockPeriode: TSGesuchsperiode,
+        mockPeriode: TSGesuchsperiode
     ): void {
         expect(createdGesuchsperiode).toBeDefined();
         expect(createdGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);

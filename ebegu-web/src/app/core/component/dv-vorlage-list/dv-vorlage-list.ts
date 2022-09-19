@@ -28,7 +28,7 @@ const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemp
 export class DVVorlageListConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        isReadonly: '&',
+        isReadonly: '&'
     };
     public template = require('./dv-vorlage-list.html');
     public controller = DVVorlageListController;
@@ -46,7 +46,7 @@ export class DVVorlageListController implements IController {
         private readonly downloadRS: DownloadRS,
         private readonly $log: ILogService,
         private readonly ebeguVorlageRS: EbeguVorlageRS,
-        private readonly dvDialog: DvDialog,
+        private readonly dvDialog: DvDialog
     ) {
     }
 
@@ -70,12 +70,12 @@ export class DVVorlageListController implements IController {
     }
 
     public download(ebeguVorlage: TSEbeguVorlage, attachment: boolean): void {
-        this.$log.debug('download vorlage ' + ebeguVorlage.vorlage.filename);
+        this.$log.debug(`download vorlage ${  ebeguVorlage.vorlage.filename}`);
         const win = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenVorlage(ebeguVorlage.vorlage.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug(`accessToken: ${  downloadFile.accessToken}`);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
             })
             .catch(ex => EbeguUtil.handleDownloadError(win, ex));
@@ -109,12 +109,12 @@ export class DVVorlageListController implements IController {
     }
 
     public remove(ebeguVorlage: TSEbeguVorlage): void {
-        this.$log.debug('component -> remove dokument ' + ebeguVorlage.vorlage.filename);
+        this.$log.debug(`component -> remove dokument ${  ebeguVorlage.vorlage.filename}`);
         this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
             deleteText: '',
             title: 'FILE_LOESCHEN',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         })
             .then(() => {   // User confirmed removal
 

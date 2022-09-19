@@ -42,7 +42,7 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
 @Component({
     selector: 'dv-add-institution',
     templateUrl: './add-institution.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddInstitutionComponent implements OnInit {
 
@@ -70,7 +70,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -116,7 +116,7 @@ export class AddInstitutionComponent implements OnInit {
             this.startDate,
             this.betreuungsangebot,
             this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
         ).then(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
@@ -128,7 +128,7 @@ export class AddInstitutionComponent implements OnInit {
                 dialogConfig.data = {
                     emailAdresse: this.adminMail,
                     administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1],
+                    gesuchstellerName: exception[0].argumentList[1]
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
@@ -140,7 +140,7 @@ export class AddInstitutionComponent implements OnInit {
                             this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
                                 () => {
                                     this.persistInstitution();
-                                },
+                                }
                             );
                         },
                         () => {
@@ -150,7 +150,7 @@ export class AddInstitutionComponent implements OnInit {
                     () => {
                         this.errorService.clearAll();
                         this.persistInstitution();
-                    },
+                    }
                 );
             }
         });
@@ -162,7 +162,7 @@ export class AddInstitutionComponent implements OnInit {
             this.startDate,
             this.betreuungsangebot,
             this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
         ).then(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
@@ -196,7 +196,7 @@ export class AddInstitutionComponent implements OnInit {
     private navigateToEdit(): void {
         this.$state.go('institution.edit', {
             institutionId: this.institution.id,
-            editMode: true,
+            editMode: true
         });
     }
 
@@ -215,7 +215,7 @@ export class AddInstitutionComponent implements OnInit {
                     this.gemeinden = this.isLatsInstitution ? gemeinden : gemeinden.filter(gemeinde => !gemeinde.nurLats);
                     this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
 
     }

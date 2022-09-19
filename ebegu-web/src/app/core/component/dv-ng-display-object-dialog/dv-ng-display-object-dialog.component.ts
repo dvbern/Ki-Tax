@@ -23,7 +23,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
     selector: 'dv-ng-display-object-dialog',
-    templateUrl: './dv-ng-display-object-dialog.template.html',
+    templateUrl: './dv-ng-display-object-dialog.template.html'
 })
 export class DvNgDisplayObjectDialogComponent {
 
@@ -31,7 +31,7 @@ export class DvNgDisplayObjectDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgDisplayObjectDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         if (data) {
             this.object = data.object;

@@ -184,7 +184,7 @@ const dependencies = [
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
-    'utf8-base64',
+    'utf8-base64'
 ];
 
 const dynamicDependencies = (): string[] => {

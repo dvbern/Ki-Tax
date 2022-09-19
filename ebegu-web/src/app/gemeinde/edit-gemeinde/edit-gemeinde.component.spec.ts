@@ -47,7 +47,7 @@ describe('EditGemeindeComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-        isOneOfRoles: true,
+        isOneOfRoles: true
     });
 
     beforeEach(waitForAsync(() => {
@@ -57,7 +57,7 @@ describe('EditGemeindeComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -66,11 +66,11 @@ describe('EditGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(

@@ -47,7 +47,7 @@ export class StammdatenHeaderComponent implements OnInit {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 

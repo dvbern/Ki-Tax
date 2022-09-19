@@ -2,7 +2,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
@@ -23,7 +23,7 @@ const LOG = LogFactory.createLog('AdminViewXComponent');
   selector: 'dv-admin-view-x',
   templateUrl: './admin-view-x.component.html',
   styleUrls: ['./admin-view-x.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminViewXComponent extends AbstractAdminViewX {
 
@@ -41,7 +41,7 @@ export class AdminViewXComponent extends AbstractAdminViewX {
         private readonly reindexRS: ReindexRS,
         private readonly dvDialog: MatDialog,
         private readonly cd: ChangeDetectorRef,
-        authServiceRS: AuthServiceRS,
+        authServiceRS: AuthServiceRS
     ) {
         super(authServiceRS);
     }
@@ -60,7 +60,7 @@ export class AdminViewXComponent extends AbstractAdminViewX {
             && this.applicationProperty.value === 'true') {
             this.dvDialog.open(DvNgRemoveDialogComponent, {data : {
                     title: 'CREATE_MASSENMUTATION_BERN_DIALOG_TITLE',
-                    text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT',
+                    text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT'
             }}).afterClosed().subscribe(() => {
                 this.doSave();
             }, err => {

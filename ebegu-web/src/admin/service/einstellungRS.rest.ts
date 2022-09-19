@@ -34,7 +34,7 @@ export class EinstellungRS {
         public readonly http: IHttpService,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly globalCacheService: GlobalCacheService,
+        private readonly globalCacheService: GlobalCacheService
     ) {
         this.serviceURL = `${REST_API}einstellung`;
     }
@@ -42,43 +42,33 @@ export class EinstellungRS {
     public saveEinstellung(tsEinstellung: TSEinstellung): IPromise<TSEinstellung> {
         let restEinstellung = {};
         restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
-        return this.http.put(this.serviceURL, restEinstellung).then((response: any) => {
-                return this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response.data);
-            },
+        return this.http.put(this.serviceURL, restEinstellung).then((response: any) => this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response.data)
         );
     }
 
     public findEinstellung(
         key: TSEinstellungKey,
         gemeindeId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSEinstellung> {
         return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`)
-            .then((param: IHttpResponse<TSEinstellung>) => {
-                return param.data;
-            });
+            .then((param: IHttpResponse<TSEinstellung>) => param.data);
     }
 
     public findEinstellungByKey(key: TSEinstellungKey): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/key/${key}`)
-            .then((param: IHttpResponse<TSEinstellung>) => {
-                return this.ebeguRestUtil.parseEinstellungList(param.data);
-            });
+            .then((param: IHttpResponse<TSEinstellung>) => this.ebeguRestUtil.parseEinstellungList(param.data));
     }
 
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseEinstellungList(response.data));
     }
 
     public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN);
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`, {cache})
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseEinstellungList(response.data));
     }
 
     public getPauschalbetraegeFerienbetreuung(container: TSFerienbetreuungAngabenContainer):
@@ -96,11 +86,9 @@ export class EinstellungRS {
         return forkJoin([
             findPauschale$,
             findPauschaleSonderschueler$
-        ]).pipe(map(([e1, e2]) => {
-            return [
+        ]).pipe(map(([e1, e2]) => [
                 parseFloat(e1.value),
                 parseFloat(e2.value)
-            ];
-        }));
+            ]));
     }
 }

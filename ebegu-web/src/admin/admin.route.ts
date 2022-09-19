@@ -23,9 +23,7 @@ export class IGesuchsperiodeStateParams {
 }
 
 const applicationPropertiesResolver = [
-    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
-        return applicationPropertyRS.getAllApplicationProperties();
-    },
+    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => applicationPropertyRS.getAllApplicationProperties()
 ];
 
 const ng1States: Ng1StateDeclaration[] = [
@@ -34,28 +32,28 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'admin',
         data: {
-            roles: TSRoleUtil.getAdministratorRoles(),
-        },
+            roles: TSRoleUtil.getAdministratorRoles()
+        }
     },
     {
         name: 'admin.view',
         component: 'dvAdminViewX',
         url: '/admin',
         resolve: {
-            applicationProperties: applicationPropertiesResolver,
+            applicationProperties: applicationPropertiesResolver
         },
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.benutzerlist',
         template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
         url: '/benutzerlist',
         data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
-    },
+            roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
+    }
 ];
 
 adminRun.$inject = ['RouterHelper'];

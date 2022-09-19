@@ -14,7 +14,7 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 @Component({
     selector: 'dv-finanzielle-situation-start-solothurn',
     templateUrl: './finanzielle-situation-solothurn.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
 

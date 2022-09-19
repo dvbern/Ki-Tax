@@ -56,7 +56,7 @@ export class GesuchRouteController implements IController {
         '$mdSidenav',
         'EwkRS',
         '$rootScope',
-        'EinstellungRS',
+        'EinstellungRS'
     ];
 
     public readonly TSRole = TSRole;
@@ -78,7 +78,7 @@ export class GesuchRouteController implements IController {
         private readonly $mdSidenav: ISidenavService,
         private readonly ewkRS: EwkRS,
         private readonly $rootScope: IRootScopeService,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
             .then(() => {
@@ -98,7 +98,7 @@ export class GesuchRouteController implements IController {
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
                 this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
+                this.gesuchModelManager.getGesuchsperiode().id
             )
                 .then(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
@@ -127,7 +127,7 @@ export class GesuchRouteController implements IController {
         this.$mdSidenav(componentId).close();
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     public getIcon(stepName: TSWizardStepName): string {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (!step || !this.getGesuch()) {
@@ -177,6 +177,7 @@ export class GesuchRouteController implements IController {
 
     /**
      * Steps are disabled when the field verfuegbar is false or if they are not allowed for the current role
+     *
      * @returns Sollte etwas schief gehen, true wird zurueckgegeben
      */
     public isWizardStepDisabled(stepName: TSWizardStepName): boolean {
@@ -294,7 +295,7 @@ export class GesuchRouteController implements IController {
                     'MENU_ERNEUERUNGSGESUCH_VOM' :
                     'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(k, {
-                    date: dateFromGesuch,
+                    date: dateFromGesuch
                 });
             }
             const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

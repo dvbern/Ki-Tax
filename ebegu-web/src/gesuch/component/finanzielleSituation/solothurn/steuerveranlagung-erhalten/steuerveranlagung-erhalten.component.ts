@@ -8,7 +8,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     selector: 'dv-steuerveranlagung-erhalten',
     templateUrl: './steuerveranlagung-erhalten.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class SteuerveranlagungErhaltenComponent implements OnInit {
 
@@ -17,7 +17,7 @@ export class SteuerveranlagungErhaltenComponent implements OnInit {
     @Output() public readonly steuerveranlagungErhaltenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public constructor(
-        public gesuchModelManager: GesuchModelManager,
+        public gesuchModelManager: GesuchModelManager
     ) {
     }
 

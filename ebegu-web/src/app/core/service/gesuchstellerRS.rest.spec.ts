@@ -103,7 +103,7 @@ describe('GesuchstellerRS', () => {
                     expect(foundGesuchsteller).toBeDefined();
                     expect(foundGesuchsteller.gesuchstellerJA.nachname)
                         .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
-                },
+                }
             );
         });
     });

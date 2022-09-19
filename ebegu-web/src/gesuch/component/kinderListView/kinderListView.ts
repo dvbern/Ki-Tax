@@ -39,7 +39,7 @@ const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 export class KinderListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        kinderDubletten: '<',
+        kinderDubletten: '<'
     };
     public template = require('./kinderListView.html');
     public controller = KinderListViewController;
@@ -109,11 +109,11 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
                 gs.id),
             this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
                 gemeinde.id,
-                gs.id),
+                gs.id)
         ]).then(einstellungen => {
             this.allFamilienPauschalAbzuegeZero = einstellungen.reduce((
                 isZero: boolean,
-                einstellung: TSEinstellung,
+                einstellung: TSEinstellung
             ) => isZero && parseInt(einstellung.value, 10) === 0, true);
         });
     }
@@ -164,7 +164,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             title: remTitleText,
             deleteText: 'KIND_LOESCHEN_BESCHREIBUNG',
             parentController: this,
-            elementID: `removeKindButton_${index}`,
+            elementID: `removeKindButton_${index}`
         })
             .then(() => {   // User confirmed removal
                 const kindIndex = this.gesuchModelManager.findKind(kind);
@@ -195,6 +195,6 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element('#' + elementID).first().focus();
+        angular.element(`#${  elementID}`).first().focus();
     }
 }

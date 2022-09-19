@@ -35,9 +35,9 @@ export class UploadRS {
         private readonly upload: any,
         public ebeguRestUtil: EbeguRestUtil,
         public q: IQService,
-        private readonly base64: any,
+        private readonly base64: any
     ) {
-        this.serviceURL = REST_API + 'upload';
+        this.serviceURL = `${REST_API  }upload`;
     }
 
     public uploadFile(files: any, dokumentGrund: TSDokumentGrund, gesuchID: string): IPromise<TSDokumentGrund> {
@@ -60,15 +60,13 @@ export class UploadRS {
             headers: {
                 // eslint-disable-next-line
                 'x-filename': names.join(';'),
-                'x-gesuchID': gesuchID,
+                'x-gesuchID': gesuchID
             },
             data: {
                 file: files,
-                dokumentGrund: restDokumentString,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
-        }, (response: any) => {
+                dokumentGrund: restDokumentString
+            }
+        }).then((response: any) => this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data), (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
@@ -77,21 +75,19 @@ export class UploadRS {
     }
 
     public uploadRueckforderungsDokumente(files: any, rueckforderungFormularId: string,
-                                          rueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
+                                          rueckforderungDokumentTyp: TSRueckforderungDokumentTyp
     ): IPromise<TSRueckforderungDokument[]> {
         const names = this.encodeFileNames(files);
         return this.upload.upload({
             url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
             method: 'POST',
             headers: {
-                'x-filename': names.join(';'),
+                'x-filename': names.join(';')
             },
             data: {
-                file: files,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseRueckforderungDokumente(response.data);
-        }, (response: any) => {
+                file: files
+            }
+        }).then((response: any) => this.ebeguRestUtil.parseRueckforderungDokumente(response.data), (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
@@ -106,14 +102,12 @@ export class UploadRS {
             url: `${this.serviceURL}/ferienbetreuungDokumente/${encodeURIComponent(ferienbetreuungContainerId)}`,
             method: 'POST',
             headers: {
-                'x-filename': names.join(';'),
+                'x-filename': names.join(';')
             },
             data: {
-                file: files,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseFerienbetreuungDokumente(response.data);
-        }, (response: any) => {
+                file: files
+            }
+        }).then((response: any) => this.ebeguRestUtil.parseFerienbetreuungDokumente(response.data), (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
@@ -137,38 +131,34 @@ export class UploadRS {
             url: `${this.serviceURL}/zemisExcel`,
             method: 'POST',
             headers: {
-                'x-filename': this.base64.encode(file.name),
+                'x-filename': this.base64.encode(file.name)
             },
             data: {
-                file,
-            },
-        }).then((response: any) => {
-            return response.data;
-        }, (response: any) => {
+                file
+            }
+        }).then((response: any) => response.data, (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         });
     }
 
     public uploadGesuchsperiodeDokument(file: any, sprache: TSSprache, periodeID: string,
-                                        dokumentTyp: TSDokumentTyp,
+                                        dokumentTyp: TSDokumentTyp
     ): IPromise<any> {
         return this.upload.upload({
             url: `${this.serviceURL}/gesuchsperiodeDokument/${sprache}/${periodeID}/${dokumentTyp}`,
             method: 'POST',
             data: {
-                file,
-            },
-        }).then((response: any) => {
-            return response.data;
-        }, (response: any) => {
+                file
+            }
+        }).then((response: any) => response.data, (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         });
     }
 
     public uploadGemeindeGesuchsperiodeDokument(file: any, sprache: TSSprache, gemeindeId: string, periodeID: string,
-                                                dokumentTyp: TSDokumentTyp,
+                                                dokumentTyp: TSDokumentTyp
     ): IPromise<any> {
         return this.upload.upload({
             // eslint-disable-next-line max-len
@@ -176,11 +166,9 @@ export class UploadRS {
                 periodeID)}/${sprache}/${dokumentTyp}`,
             method: 'POST',
             data: {
-                file,
-            },
-        }).then((response: any) => {
-            return response.data;
-        }, (response: any) => {
+                file
+            }
+        }).then((response: any) => response.data, (response: any) => {
             console.log('Upload Gesuchsperiode Gemeinde File: NOT SUCCESS');
             return this.q.reject(response);
         });
@@ -196,14 +184,12 @@ export class UploadRS {
             // eslint-disable-next-line max-len
             url: `${this.serviceURL}/uploadSozialdienstFallsDokument/${encodeURIComponent(fallId)}`,
             headers: {
-                'x-filename': encodedFilename,
+                'x-filename': encodedFilename
             },
             data: {
-                file: vollmacht,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseSozialdienstFallDokumente(response.data);
-        }, (response: any) => {
+                file: vollmacht
+            }
+        }).then((response: any) => this.ebeguRestUtil.parseSozialdienstFallDokumente(response.data), (response: any) => {
             console.log('Upload Vollmacht File: NOT SUCCESS');
             return this.q.reject(response);
         });

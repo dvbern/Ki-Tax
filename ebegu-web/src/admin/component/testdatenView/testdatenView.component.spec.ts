@@ -41,7 +41,7 @@ describe('testdatenView', () => {
         const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(TestFaelleRS.name,
             [
                 'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
-                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
+                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten'
             ]);
         const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
             ['getAllGesuchsteller']);
@@ -83,7 +83,7 @@ describe('testdatenView', () => {
             geresEnabledForMandant: true,
             ebeguKibonAnfrageTestGuiEnabled: false,
             steuerschnittstelleAktivAb: moment('2020-01-01'),
-            zusatzinformationenInstitution: true,
+            zusatzinformationenInstitution: true
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
@@ -96,7 +96,7 @@ describe('testdatenView', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
@@ -108,9 +108,9 @@ describe('testdatenView', () => {
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: GesuchRS, useValue: gesuchRSSpy},
+                {provide: GesuchRS, useValue: gesuchRSSpy}
             ],
-            declarations: [TestdatenViewComponent],
+            declarations: [TestdatenViewComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

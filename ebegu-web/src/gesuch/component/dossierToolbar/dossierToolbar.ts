@@ -29,7 +29,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     isAnyStatusOfVerfuegt,
     isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt,
+    isStatusVerfuegenVerfuegt
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
@@ -70,7 +70,7 @@ export class DossierToolbarComponentConfig implements IComponentOptions {
         dossierId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
-        forceLoadingFromFall: '@',
+        forceLoadingFromFall: '@'
     };
 
     public template = require('./dossierToolbar.html');
@@ -86,7 +86,7 @@ export class DossierToolbarGesuchstellerComponentConfig implements IComponentOpt
         fallId: '@',
         isDashboardScreen: '@',
         hideActionButtons: '@',
-        forceLoadingFromFall: '@',
+        forceLoadingFromFall: '@'
     };
     public template = require('./dossierToolbarGesuchsteller.html');
     public controller = DossierToolbarController;
@@ -114,7 +114,7 @@ export class DossierToolbarController implements IDVFocusableController {
         'GemeindeRS',
         'SozialdienstRS',
         '$translate',
-        'MandantService',
+        'MandantService'
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -157,7 +157,7 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly gemeindeRS: GemeindeRS,
                        private readonly sozialdienstRS: SozialdienstRS,
                        private readonly $translate: ITranslateService,
-                       private readonly mandantService: MandantService,
+                       private readonly mandantService: MandantService
     ) {
 
     }
@@ -202,16 +202,14 @@ export class DossierToolbarController implements IDVFocusableController {
         this.$state.go('authentication.login', {type: 'logout'});
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private addWatchers($scope: IScope): void {
         // needed because of test is not able to inject $scope!
         if (!$scope) {
             return;
         }
 
-        $scope.$watch(() => {
-            return this.gesuchid;
-        }, (newValue, oldValue) => {
+        $scope.$watch(() => this.gesuchid, (newValue, oldValue) => {
             if (newValue === oldValue) {
                 return;
             }
@@ -239,9 +237,7 @@ export class DossierToolbarController implements IDVFocusableController {
                 }
             });
         }
-        $scope.$watch(() => {
-            return this.dossierId;
-        }, (newValue, oldValue) => {
+        $scope.$watch(() => this.dossierId, (newValue, oldValue) => {
             if (newValue === oldValue) {
                 return;
             }
@@ -310,7 +306,7 @@ export class DossierToolbarController implements IDVFocusableController {
                         .toPromise()
                         .then(
                             stammdaten => this.gemeindeSozialdienstKontakteHtml =
-                                this.sozialdienstStammdatenToHtml(stammdaten),
+                                this.sozialdienstStammdatenToHtml(stammdaten)
                         );
                 }
 
@@ -499,7 +495,7 @@ export class DossierToolbarController implements IDVFocusableController {
         NavigationUtil.navigateToStartsiteOfGesuchForRole(
             this.authServiceRS.getPrincipalRole(),
             this.$state,
-            gesuchId,
+            gesuchId
         );
     }
 
@@ -580,7 +576,7 @@ export class DossierToolbarController implements IDVFocusableController {
             eingangsart,
             gesuchsperiodeId: this.getGesuch().gesuchsperiode.id,
             gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
-            dossierId: this.getGesuch().dossier.id,
+            dossierId: this.getGesuch().dossier.id
         });
     }
 
@@ -626,7 +622,7 @@ export class DossierToolbarController implements IDVFocusableController {
             eingangsart,
             gesuchsperiodeId: this.neuesteGesuchsperiode.id,
             dossierId: this.dossier.id,
-            gesuchId: this.getGesuchIdFuerMutationOrErneuerung(),
+            gesuchId: this.getGesuchIdFuerMutationOrErneuerung()
         });
     }
 
@@ -644,7 +640,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public openMitteilungen(): void {
         this.$state.go('mitteilungen.view', {
             dossierId: this.dossier.id,
-            fallId: this.dossier.fall.id,
+            fallId: this.dossier.fall.id
         });
     }
 
@@ -654,7 +650,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public openVerlauf(): void {
         this.$state.go('verlauf.view', {
-            gesuchId: this.getGesuch().id,
+            gesuchId: this.getGesuch().id
         });
     }
 
@@ -685,7 +681,7 @@ export class DossierToolbarController implements IDVFocusableController {
             title: titleDialog,
             deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN',
             parentController: this,
-            elementID: 'gesuchLoeschenButton',
+            elementID: 'gesuchLoeschenButton'
         }).then(() => {
             this.setAllFormsPristine();
             this.gesuchRS.removeAntrag(this.getGesuch().id).then(() => {
@@ -700,7 +696,7 @@ export class DossierToolbarController implements IDVFocusableController {
                     }
                     const navObj: any = {
                         gesuchId: this.antragList[0].antragId,
-                        dossierId: this.antragList[0].dossierId,
+                        dossierId: this.antragList[0].dossierId
                     };
                     this.$state.go('gesuch.fallcreation', navObj);
                 }
@@ -713,7 +709,7 @@ export class DossierToolbarController implements IDVFocusableController {
             title: 'CONFIRM_GESUCH_LOESCHEN_FORCED',
             deleteText: 'BESCHREIBUNG_GESUCH_LOESCHEN_FORCED',
             parentController: this,
-            elementID: 'gesuchLoeschenForcedButton',
+            elementID: 'gesuchLoeschenForcedButton'
         }).then(() => {
             this.setAllFormsPristine();
             this.gesuchRS.removeAntragForced(this.getGesuch().id).then(() => {
@@ -738,7 +734,7 @@ export class DossierToolbarController implements IDVFocusableController {
             return;
         }
         this.$state.go('alleVerfuegungen.view', {
-            dossierId: this.dossier.id,
+            dossierId: this.dossier.id
         });
     }
 
@@ -752,7 +748,7 @@ export class DossierToolbarController implements IDVFocusableController {
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text: this.kontaktdatenGemeindeAsHtml,
-            parentController: this,
+            parentController: this
         });
     }
 
@@ -767,7 +763,7 @@ export class DossierToolbarController implements IDVFocusableController {
                    <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
                    <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>`;
         } else {
-            html = htmlIntro + `${stammdaten.adresse.organisation ?
+            html = `${htmlIntro  }${stammdaten.adresse.organisation ?
                 stammdaten.adresse.organisation :
                 ''}
                           ${stammdaten.gemeindeName}</span><br>

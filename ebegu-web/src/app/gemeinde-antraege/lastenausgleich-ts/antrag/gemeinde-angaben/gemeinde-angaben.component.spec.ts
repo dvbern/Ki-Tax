@@ -71,7 +71,7 @@ describe('GemeindeAngabenComponent', () => {
                 HttpClientModule,
                 MaterialModule,
                 BrowserAnimationsModule,
-                WizardstepXModule,
+                WizardstepXModule
             ],
             declarations: [GemeindeAngabenComponent],
             providers: [
@@ -83,7 +83,7 @@ describe('GemeindeAngabenComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy}
-            ],
+            ]
 
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -99,11 +99,11 @@ describe('GemeindeAngabenComponent', () => {
         container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
         container.angabenInstitutionContainers = [];
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(container),
+            of(container)
         );
         authServiceSpy.principal$ = of(new TSBenutzer());
         einstellungServiceSpy.findEinstellung.and.returnValue(
-            of(new TSEinstellung()).toPromise(),
+            of(new TSEinstellung()).toPromise()
         );
         einstellungServiceSpy.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
         fixture = TestBed.createComponent(GemeindeAngabenComponent);

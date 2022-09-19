@@ -189,7 +189,7 @@ describe('verfuegenListViewTest', () => {
                     expect($state.go).toHaveBeenCalledWith(verfuegenView, {
                         betreuungNumber: 2,
                         kindNumber: 1,
-                        gesuchId: undefined,
+                        gesuchId: undefined
                     });
                 });
         });

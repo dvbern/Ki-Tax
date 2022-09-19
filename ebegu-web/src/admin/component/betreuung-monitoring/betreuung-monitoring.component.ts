@@ -11,7 +11,7 @@ import {BetreuungMonitoringRS} from '../../service/betreuungMonitoringRS.rest';
     selector: 'dv-betreuung-monitoring',
     templateUrl: './betreuung-monitoring.component.html',
     styleUrls: ['./betreuung-monitoring.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
@@ -32,7 +32,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
 
     public constructor(
         private readonly betreuungMonitoringRS: BetreuungMonitoringRS,
-        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly changeDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -96,8 +96,8 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
         this.sort.sort({
                 id: 'timestamp',
                 start: 'desc',
-                disableClear: false,
-            },
+                disableClear: false
+            }
         );
     }
 

@@ -67,11 +67,11 @@ describe('searchRS', () => {
                 tsAntragDTO.fallNummer = 1234;
                 const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
-                    paginationDTO: {totalItemCount: 1},
+                    paginationDTO: {totalItemCount: 1}
                 };
 
                 const filter: any = {};
-                $httpBackend.expectPOST(searchRS.serviceURL + '/jugendamt/', filter).respond(searchResult);
+                $httpBackend.expectPOST(`${searchRS.serviceURL  }/jugendamt/`, filter).respond(searchResult);
 
                 let foundPendenzen: TSAntragSearchresultDTO;
                 searchRS.getPendenzenList(filter).then(result => {

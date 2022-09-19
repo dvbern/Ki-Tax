@@ -50,7 +50,7 @@ const LOG = LogFactory.createLog('NavbarComponent');
     selector: 'dv-navbar',
     templateUrl: './navbar.component.html',
     styleUrls: ['./navbar.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavbarComponent implements OnDestroy, AfterViewInit {
 
@@ -74,7 +74,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly institutionService: InstitutionRS,
+        private readonly institutionService: InstitutionRS
     ) {
     }
 
@@ -85,7 +85,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             .pipe(
                 filter(principal => !!principal),
                 mergeMap(() => this.institutionService.isCurrentUserTagesschuleUser()),
-                takeUntil(this.unsubscribe$),
+                takeUntil(this.unsubscribe$)
             )
             .subscribe((isTSUser: boolean) => {
                     this.changeDetectorRef.markForCheck();
@@ -99,10 +99,10 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                                     TSRole.ADMIN_TRAEGERSCHAFT,
                                     TSRole.SACHBEARBEITER_TRAEGERSCHAFT
                                 ]) && !isTSUser)) ||
-                        this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG),
+                        this.authServiceRS.isOneOfRoles(PERMISSIONS.FERIENBETREUUNG)
                     );
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
 
         this.kibonGuidedTourService.guidedTour$
@@ -112,7 +112,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                     this.tourStart(next);
                     this.changeDetectorRef.markForCheck();
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
 
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
@@ -139,7 +139,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public createNewSozialdienstFall(): void {
         this.getSozialdienstIDFromUser$().pipe(
             take(1),
-            filter(sozialdienstId => !!sozialdienstId),
+            filter(sozialdienstId => !!sozialdienstId)
         )
             .subscribe(
                 sozialdienstId => {
@@ -154,7 +154,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                         });
                 }
                 ,
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -169,7 +169,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         this.getGemeindeIDFromUser$(EbeguUtil.isNotNullOrUndefined(sozialdienstId)).pipe(
             take(1),
             filter(result => !!result),
-            filter(result => !!result.gemeindeId),
+            filter(result => !!result.gemeindeId)
         )
             .subscribe(
                 result => {
@@ -185,7 +185,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                         gemeindeId: result.gemeindeId,
                         eingangsart: TSEingangsart.PAPIER,
                         sozialdienstId,
-                        fallId: null,
+                        fallId: null
                     };
                     if (sozialdienstId) {
                         this.$state.go('gesuch.sozialdienstfallcreation', params);
@@ -194,7 +194,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                     }
                 }
                 ,
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -231,14 +231,14 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                                                 dialogConfig.data = {gemeindeList, gesuchsperiodeList};
                                                 return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig)
                                                     .afterClosed();
-                                            },
+                                            }
                                         ));
                                 }
                                 dialogConfig.data = {gemeindeList};
                                 return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
-                            }),
+                            })
                         );
-                }),
+                })
             );
     }
 
@@ -257,9 +257,9 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                                 dialogConfig.data = {sozialdienstList};
 
                                 return this.dialog.open(DvNgSozialdienstDialogComponent, dialogConfig).afterClosed();
-                            }),
+                            })
                         );
-                }),
+                })
             );
     }
 

@@ -48,7 +48,7 @@ class GesuchGeneratorMock extends GesuchGenerator {
         _creationAction: TSCreationAction,
         _gesuchsperiodeId: string,
         _currentFall: TSFall,
-        _currentDossier: TSDossier,
+        _currentDossier: TSDossier
     ): angular.IPromise<TSGesuch> {
 
         const gesuch = new TSGesuch();

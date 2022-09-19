@@ -27,7 +27,7 @@ export class StepDialogController {
         '$translate',
         'institutionName',
         'institutionPhone',
-        'zahlungslaufTyp',
+        'zahlungslaufTyp'
     ];
 
     public title: string;
@@ -58,7 +58,7 @@ export class StepDialogController {
         $translate: ITranslateService,
         institutionName: string,
         institutionPhone: string,
-        zahlungslaufTyp: TSZahlungslaufTyp,
+        zahlungslaufTyp: TSZahlungslaufTyp
     ) {
         const isInstitutionszahlung = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === zahlungslaufTyp;
 

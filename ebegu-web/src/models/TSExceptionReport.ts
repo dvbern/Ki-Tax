@@ -161,7 +161,7 @@ export class TSExceptionReport {
         _constraintType: string,
         message: string,
         path: string,
-        value: string,
+        value: string
     ): TSExceptionReport {
         const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;

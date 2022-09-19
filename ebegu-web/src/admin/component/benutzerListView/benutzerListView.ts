@@ -26,7 +26,7 @@ import {AbstractAdminViewController} from '../../abstractAdminView';
 export class BenutzerListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        benutzer: '<',
+        benutzer: '<'
     };
     public template = require('./benutzerListView.html');
     public controller = BenutzerListViewController;
@@ -44,7 +44,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
         private readonly $state: StateService,
         private readonly $log: ILogService,
         authServiceRS: AuthServiceRS,
-        private readonly benutzerRS: BenutzerRSX,
+        private readonly benutzerRS: BenutzerRSX
     ) {
         super(authServiceRS);
     }
@@ -57,7 +57,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
 
             return response;
         });
-    }
+    };
 
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch

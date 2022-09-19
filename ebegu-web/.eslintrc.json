@@ -23,8 +23,26 @@
         "eslint-plugin-rxjs"
       ],
       "rules": {
-        "@angular-eslint/no-forward-ref": "error",
+        "@angular-eslint/component-selector": [
+          "error", {
+            "prefix": [
+              "dv"
+            ]
+          }
+        ],
+        "@angular-eslint/directive-selector": "warn",
+        "prefer-const": "warn",
+        "no-console": "warn",
+        "arrow-body-style": "warn",
         "@angular-eslint/prefer-output-readonly": "error",
+        "@typescript-eslint/no-unused-expressions": "warn",
+        "@angular-eslint/no-forward-ref": "error",
+        "@angular-eslint/no-output-on-prefix": "warn",
+        "@angular-eslint/directive-class-suffix": "warn",
+        "@angular-eslint/use-lifecycle-interface": "warn",
+        "@angular-eslint/component-class-suffix": "warn",
+        "@typescript-eslint/adjacent-overload-signatures": "warn",
+        "@typescript-eslint/ban-types": "warn",
         "@typescript-eslint/consistent-type-definitions": "error",
         "@typescript-eslint/explicit-member-accessibility": [
           "error",
@@ -35,6 +53,11 @@
               "constructors": "explicit"
             }
           }
+        ],
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          { "selector":  "enumMember", "format": ["UPPER_CASE"]}
         ],
         "@typescript-eslint/no-for-in-array": "error",
         "@typescript-eslint/no-inferrable-types": [
@@ -51,7 +74,7 @@
         "@typescript-eslint/prefer-readonly": "error",
         "@typescript-eslint/restrict-plus-operands": "error",
         "@typescript-eslint/triple-slash-reference": "error",
-        "@typescript-eslint/unbound-method": "error",
+        "@typescript-eslint/unbound-method": "warn",
         "arrow-parens": [
           "error",
           "as-needed"
@@ -66,14 +89,15 @@
           "error",
           "always"
         ],
+        "id-blacklist": "off",
         "import/no-extraneous-dependencies": [
-          "error",
+          "warn",
           {
             "devDependencies": false
           }
         ],
         "import/no-internal-modules": [
-          "error",
+          "warn",
           {
             "allow": [
               "@uirouter/core/*",
@@ -95,9 +119,9 @@
             ]
           }
         ],
-        "import/no-unassigned-import": "error",
+        "import/no-unassigned-import": "warn",
         "max-len": [
-          "error",
+          "warn",
           {
             "ignorePattern": "^import .*|^require\\(.*\\)|^export.*",
             "code": 120
@@ -108,7 +132,7 @@
         "no-invalid-this": "error",
         "no-irregular-whitespace": "error",
         "no-magic-numbers": [
-          "error",
+          "warn",
           {
             "ignore": [
               -1,
@@ -144,7 +168,9 @@
         "no-return-await": "error",
         "no-sparse-arrays": "error",
         "no-template-curly-in-string": "error",
+        "no-underscore-dangle": "off",
         "no-void": "error",
+        "prefer-arrow/prefer-arrow-functions": "warn",
         "prefer-object-spread": "error",
         "prefer-template": "error",
         "rxjs/no-create": "error",
@@ -164,10 +190,14 @@
       "files": [
         "*.html"
       ],
+      "parser": "@angular-eslint/template-parser",
       "extends": [
         "plugin:@angular-eslint/template/recommended"
       ],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/template/eqeqeq": "warn",
+        "@angular-eslint/template/no-negated-async": "warn"
+      }
     }
   ]
 }

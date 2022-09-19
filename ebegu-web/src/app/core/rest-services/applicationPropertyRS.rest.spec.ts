@@ -33,7 +33,7 @@ describe('ApplicationPropertyRS', () => {
 
     const mockApplicationPropertyRest = {
         name: testName,
-        value: 'myTestValue',
+        value: 'myTestValue'
     };
 
     beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));

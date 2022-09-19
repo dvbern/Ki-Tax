@@ -50,7 +50,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         '$q',
         '$scope',
         '$translate',
-        '$timeout',
+        '$timeout'
     ];
 
     public showSelbstaendig: boolean;
@@ -72,7 +72,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         private readonly $q: IQService,
         $scope: IScope,
         private readonly $translate: ITranslateService,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
         super(gesuchModelManager,
             berechnungsManager,

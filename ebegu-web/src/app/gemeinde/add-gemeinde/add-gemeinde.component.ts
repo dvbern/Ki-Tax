@@ -40,7 +40,7 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./add-gemeinde.component.less'],
+    styleUrls: ['./add-gemeinde.component.less']
 })
 export class AddGemeindeComponent implements OnInit {
 
@@ -160,7 +160,7 @@ export class AddGemeindeComponent implements OnInit {
                 dialogConfig.data = {
                     emailAdresse: this.adminMail,
                     administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1],
+                    gesuchstellerName: exception[0].argumentList[1]
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {

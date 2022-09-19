@@ -33,7 +33,7 @@ export class BetreuungInputConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
-        showBetreuungInputSwitch: '<',
+        showBetreuungInputSwitch: '<'
     };
     public controller = BetreuungInput;
     public controllerAs = 'vm';

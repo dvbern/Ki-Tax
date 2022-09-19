@@ -37,7 +37,7 @@ describe('FerienbetreuungBerechnungComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             providers: [
-                {provide: EinstellungRS, useValue: einstellungRSSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy}
             ],
             declarations: [FerienbetreuungBerechnungComponent],
             imports: [

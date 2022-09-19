@@ -43,7 +43,7 @@ const LOG = LogFactory.createLog('FallToolbarComponent');
 @Component({
     selector: 'dv-fall-toolbar',
     templateUrl: './fallToolbar.template.html',
-    styleUrls: ['./fallToolbar.less'],
+    styleUrls: ['./fallToolbar.less']
 })
 export class FallToolbarComponent implements OnChanges {
 
@@ -72,7 +72,7 @@ export class FallToolbarComponent implements OnChanges {
         private readonly $state: StateService,
         private readonly gesuchRS: GesuchRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -148,7 +148,7 @@ export class FallToolbarComponent implements OnChanges {
                 NavigationUtil.navigateToStartsiteOfGesuchForRole(
                     this.authServiceRS.getPrincipalRole(),
                     this.$state,
-                    newestGesuchID,
+                    newestGesuchID
                 );
             } else {
                 LOG.warn(
@@ -172,7 +172,7 @@ export class FallToolbarComponent implements OnChanges {
 
                     this.navigateToFallCreation(chosenGemeindeId.gemeindeId);
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -192,7 +192,7 @@ export class FallToolbarComponent implements OnChanges {
 
     private navigateToDashboard(): void {
         this.$state.go('gesuchsteller.dashboard', {
-            dossierId: this.selectedDossier.id,
+            dossierId: this.selectedDossier.id
         });
     }
 
@@ -205,7 +205,7 @@ export class FallToolbarComponent implements OnChanges {
             gemeindeId: chosenGemeindeId,
             eingangsart: this.getEingangsArt(),
             sozialdienstId: null,
-            fallId: null,
+            fallId: null
         };
         this.$state.go('gesuch.fallcreation', params);
     }
@@ -230,13 +230,13 @@ export class FallToolbarComponent implements OnChanges {
 
                     return from(this.gemeindeRS.getAktiveGueltigeGemeinden());
                 }),
-                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden)),
+                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden))
             )
             .subscribe(
                 gemeinden => {
                     this.availableGemeindeList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -251,10 +251,10 @@ export class FallToolbarComponent implements OnChanges {
     /**
      * A dialog will always be displayed when creating a new Dossier. So that the user
      */
-    private getGemeindeIDFromDialog$(): Observable<{ gemeindeId: string, gesuchsperiodeId?: string }> {
+    private getGemeindeIDFromDialog$(): Observable<{ gemeindeId: string; gesuchsperiodeId?: string }> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            gemeindeList: this.availableGemeindeList,
+            gemeindeList: this.availableGemeindeList
         };
 
         return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();

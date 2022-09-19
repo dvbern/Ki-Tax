@@ -30,7 +30,7 @@ describe('FallCreationViewXComponent', () => {
             'getGesuch',
             'isGesuchReadonly',
             'isGesuch',
-            'isGesuchSaved',
+            'isGesuchSaved'
         ]);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearAll']);
     const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
@@ -61,8 +61,8 @@ describe('FallCreationViewXComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: EinstellungRS, useValue: einstellungenRS},
-            ],
+                {provide: EinstellungRS, useValue: einstellungenRS}
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

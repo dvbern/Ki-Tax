@@ -120,7 +120,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
 
     public saveSozialhilfeZeitraum(
         familiensituation: TSFamiliensituationContainer,
-        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer,
+        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer
     ): IPromise<TSSozialhilfeZeitraumContainer> {
         if (sozialhilfeZeitraum.id) {
             return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)

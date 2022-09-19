@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
     selector: 'dv-ferienbetreuung-kosten-einnahmen',
     templateUrl: './ferienbetreuung-kosten-einnahmen.component.html',
     styleUrls: ['./ferienbetreuung-kosten-einnahmen.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetreuungFormular implements OnInit,
     OnDestroy {
@@ -59,7 +59,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -67,7 +67,7 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
     public ngOnInit(): void {
         combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
-            this.authService.principal$,
+            this.authService.principal$
         ]).pipe(takeUntil(this.unsubscribe$))
             .subscribe(([container, principal]) => {
             this.container = container;
@@ -95,47 +95,47 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         }
         this.form = this.fb.group({
             id: [
-                kostenEinnahmen.id,
+                kostenEinnahmen.id
             ],
             version: [
                 kostenEinnahmen?.version
             ],
             personalkosten: [
-                kostenEinnahmen.personalkosten,
+                kostenEinnahmen.personalkosten
             ],
             personalkostenLeitungAdmin: [
-                kostenEinnahmen.personalkostenLeitungAdmin,
+                kostenEinnahmen.personalkostenLeitungAdmin
             ],
             sachkosten: [
-                kostenEinnahmen.sachkosten,
+                kostenEinnahmen.sachkosten
             ],
             verpflegungskosten: [
-                kostenEinnahmen.verpflegungskosten,
+                kostenEinnahmen.verpflegungskosten
             ],
             weitereKosten: [
-                kostenEinnahmen.weitereKosten,
+                kostenEinnahmen.weitereKosten
             ],
             bemerkungenKosten: [
-                kostenEinnahmen.bemerkungenKosten,
+                kostenEinnahmen.bemerkungenKosten
             ],
             elterngebuehren: [
-                kostenEinnahmen.elterngebuehren,
+                kostenEinnahmen.elterngebuehren
             ],
             weitereEinnahmen: [
-                kostenEinnahmen.weitereEinnahmen,
+                kostenEinnahmen.weitereEinnahmen
             ],
             sockelbeitrag: [
-                kostenEinnahmen.sockelbeitrag,
+                kostenEinnahmen.sockelbeitrag
             ],
             beitraegeNachAnmeldungen: [
-                kostenEinnahmen.beitraegeNachAnmeldungen,
+                kostenEinnahmen.beitraegeNachAnmeldungen
             ],
             vorfinanzierteKantonsbeitraege: [
-                kostenEinnahmen.vorfinanzierteKantonsbeitraege,
+                kostenEinnahmen.vorfinanzierteKantonsbeitraege
             ],
             eigenleistungenGemeinde: [
-                kostenEinnahmen.eigenleistungenGemeinde,
-            ],
+                kostenEinnahmen.eigenleistungenGemeinde
+            ]
         });
         this.setBasicValidation();
     }
@@ -144,37 +144,37 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         this.removeAllValidators();
 
         this.form.get('personalkosten').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('personalkostenLeitungAdmin').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('sachkosten').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('verpflegungskosten').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('weitereKosten').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('elterngebuehren').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('weitereEinnahmen').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('sockelbeitrag').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('beitraegeNachAnmeldungen').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('vorfinanzierteKantonsbeitraege').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.form.get('eigenleistungenGemeinde').setValidators(
-            numberValidator(ValidationType.INTEGER),
+            numberValidator(ValidationType.INTEGER)
         );
         this.triggerFormValidation();
     }

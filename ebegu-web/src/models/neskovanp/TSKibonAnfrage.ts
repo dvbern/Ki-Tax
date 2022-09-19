@@ -30,7 +30,7 @@ export class TSKibonAnfrage {
         antragId: string,
         zpvNummer: number,
         gesuchsperiodeBeginnJahr: number,
-        geburtsdatum: moment.Moment,
+        geburtsdatum: moment.Moment
     ) {
         this.antragId = antragId;
         this.zpvNummer = zpvNummer;

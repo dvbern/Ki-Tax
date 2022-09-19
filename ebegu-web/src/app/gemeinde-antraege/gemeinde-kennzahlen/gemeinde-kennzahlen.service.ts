@@ -27,7 +27,7 @@ import {LogFactory} from '../../core/logging/LogFactory';
 const LOG = LogFactory.createLog('GemeindeKennzahlenService');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class GemeindeKennzahlenService {
 
@@ -46,7 +46,7 @@ export class GemeindeKennzahlenService {
     public updateGemeindeKennzahlenAntragStore(id: string): void {
         this.http.get<TSGemeindeKennzahlen>(`${this.API_URL}/${id}`)
             .pipe(
-                map(antrag => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(), antrag)),
+                map(antrag => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(), antrag))
             )
             .subscribe(antrag => this._gemeindeKennzahlenAntragStore$.next(antrag),
                 error => LOG.error(error));
@@ -58,7 +58,7 @@ export class GemeindeKennzahlenService {
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
                     antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)),
+                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
             );
     }
 
@@ -68,7 +68,7 @@ export class GemeindeKennzahlenService {
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
                     antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)),
+                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
             );
     }
 
@@ -78,7 +78,7 @@ export class GemeindeKennzahlenService {
             .pipe(
                 map(antragFromServer => this.restUtil.parseGemeindeKennzahlen(new TSGemeindeKennzahlen(),
                     antragFromServer)),
-                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag)),
+                tap(parsedAntrag => this._gemeindeKennzahlenAntragStore$.next(parsedAntrag))
             );
     }
 }

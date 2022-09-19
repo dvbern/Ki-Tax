@@ -104,11 +104,11 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
         spyOn(gesuchModelManager, 'isNeuestesGesuch').and.returnValue(true);
         // model = betreuung;
-        spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() => {
+        spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() =>
             // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
             // constructor der view und geben betreuung zurueck
-            return betreuungView ? betreuungView.model : betreuung;
-        });
+             betreuungView ? betreuungView.model : betreuung
+        );
         const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
@@ -144,7 +144,7 @@ describe('betreuungView', () => {
             undefined,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
-            ebeguRestUtil,
+            ebeguRestUtil
         );
         betreuungView.$onInit();
         $rootScope.$apply();

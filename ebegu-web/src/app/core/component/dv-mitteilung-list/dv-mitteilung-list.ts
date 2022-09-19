@@ -51,7 +51,7 @@ export class DVMitteilungListConfig implements IComponentOptions {
     public bindings = {
         dossier: '<',
         betreuung: '<',
-        form: '<',
+        form: '<'
     };
 
     public template = require('./dv-mitteilung-list.html');
@@ -163,7 +163,7 @@ export class DVMitteilungListController implements IOnInit {
 
             const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
             const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
-                TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
             );
             const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
             const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
@@ -200,7 +200,7 @@ export class DVMitteilungListController implements IOnInit {
                 key: null,
                 value: this.dossier.fall.sozialdienstFall ?
                     this.dossier.fall.sozialdienstFall.sozialdienst.name :
-                    this.ebeguUtil.translateString('GESUCHSTELLER'),
+                    this.ebeguUtil.translateString('GESUCHSTELLER')
             });
         }
         this.institutionRS.findAllInstitutionen(this.dossier.id).then(
@@ -209,10 +209,10 @@ export class DVMitteilungListController implements IOnInit {
                     institution =>
                         this.empfaengerValues.push({
                             key: institution,
-                            value: institution.name,
-                        }),
+                            value: institution.name
+                        })
                 );
-            },
+            }
         );
     }
 
@@ -334,7 +334,7 @@ export class DVMitteilungListController implements IOnInit {
                     title: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TITLE',
                     deleteText: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TEXT',
                     parentController: undefined,
-                    elementID: undefined,
+                    elementID: undefined
                 }).then(() => {
                     mitteilung.mitteilungStatus = TSMitteilungStatus.ERLEDIGT;
                     this.mitteilungRS.setMitteilungErledigt(mitteilung.id);
@@ -378,7 +378,7 @@ export class DVMitteilungListController implements IOnInit {
         this.$state.go('gesuch.betreuung', {
             betreuungNumber: mitteilung.betreuung.betreuungNummer,
             kindNumber: mitteilung.betreuung.kindNummer,
-            gesuchId: mitteilung.betreuung.gesuchId,
+            gesuchId: mitteilung.betreuung.gesuchId
         });
     }
 
@@ -414,7 +414,7 @@ export class DVMitteilungListController implements IOnInit {
             title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
             deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'Intro',
+            elementID: 'Intro'
         }).then(() => {   // User confirmed message
             const betreuungsmitteilung = mitteilung as TSBetreuungsmitteilung;
             // JaxID kommt als response

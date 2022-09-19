@@ -65,7 +65,7 @@ export class FinanzielleSituationAufteilungComponent implements OnInit {
         }
     }
 
-    private initAufteilngDTO (
+    private initAufteilngDTO(
         finSitGS1: TSFinanzielleSituationContainer,
         finSitGS2: TSFinanzielleSituationContainer
     ): void {

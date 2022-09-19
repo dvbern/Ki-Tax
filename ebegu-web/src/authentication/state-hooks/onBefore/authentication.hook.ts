@@ -39,7 +39,7 @@ authenticationHookRunBlock.$inject = ['$transitions', 'MandantService'];
 export function authenticationHookRunBlock($transitions: TransitionService, mandantService: MandantService): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS),
+        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS)
     };
 
     // Register the "requires authentication" hook with the TransitionsService
@@ -69,7 +69,7 @@ function redirectToLogin(transition: Transition, mandantService: MandantService)
 
             // continue the original transition
             return true;
-        }),
+        })
     )
     .toPromise();
 }

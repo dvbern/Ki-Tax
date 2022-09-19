@@ -50,7 +50,7 @@ require('ng-file-upload');
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
     BrowserDynamicTestingModule,
-    platformBrowserDynamicTesting(),
+    platformBrowserDynamicTesting()
 );
 
 // Then we find all the tests.

@@ -17,15 +17,13 @@ export class FerienbetreuungDokumentService {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        private readonly http: HttpClient,
+        private readonly http: HttpClient
     ) {
     }
 
     public getAllDokumente(containerId: string): Observable<TSFerienbetreuungDokument[]> {
         return this.http.get(`${this.API_BASE_URL}/all/${encodeURIComponent(containerId)}`)
-            .pipe(map(restDokumente => {
-                return this.ebeguRestUtil.parseFerienbetreuungDokumente(restDokumente);
-        }));
+            .pipe(map(restDokumente => this.ebeguRestUtil.parseFerienbetreuungDokumente(restDokumente)));
     }
 
     public deleteDokument(dokumentId: string): Observable<void> {
@@ -34,7 +32,7 @@ export class FerienbetreuungDokumentService {
 
     public generateVerfuegung(
         antrag: TSFerienbetreuungAngabenContainer,
-        sprache: TSSprache,
+        sprache: TSSprache
     ): Observable<any> {
         return this.http.post(
             `${this.API_BASE_URL}/docx-erstellen/${encodeURIComponent(antrag.id)}/${sprache}`,

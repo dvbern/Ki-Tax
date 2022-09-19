@@ -106,7 +106,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.isGesuchValid()) {
             this.form.$setPristine();
             return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
-                parentController: this,
+                parentController: this
             });
         }
         return undefined;

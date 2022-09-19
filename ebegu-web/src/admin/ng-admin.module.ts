@@ -29,7 +29,7 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
 @NgModule({
     imports: [
         SharedModule,
-        NgAdminRoutingModule,
+        NgAdminRoutingModule
     ],
     declarations: [
         TestdatenViewComponent,
@@ -38,9 +38,9 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         BetreuungMonitoringComponent,
         GesuchsperiodeViewXComponent,
         AdminViewXComponent,
-        GesuchsperiodeListViewXComponent,
+        GesuchsperiodeListViewXComponent
     ],
-    providers: [],
+    providers: []
 })
 export class NgAdminModule {
 }

@@ -22,7 +22,7 @@ import {GuidedTourComponent, GuidedTourService, WindowRefService} from 'ngx-guid
 @Component({
     selector: 'kibon-guided-tour',
     templateUrl: './kibon-guided-tour.component.html',
-    styleUrls: ['./kibon-guided-tour.component.scss'],
+    styleUrls: ['./kibon-guided-tour.component.scss']
 })
 export class KiBonGuidedTourComponent extends GuidedTourComponent {
 

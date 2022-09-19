@@ -44,9 +44,7 @@ export class VerlaufComponent implements OnInit {
     public verlauf: Array<TSAntragStatusHistory>;
     public readonly tableColumns: DvSimpleTableColumnDefinition[] = [
         {
-            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => {
-                return moment(d).format(CONSTANTS.DATE_FORMAT);
-            }
+            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
         },
         {displayedName: 'VERSION', attributeName: 'version'},
         {displayedName: 'AKTION', attributeName: 'status'},
@@ -89,7 +87,7 @@ export class VerlaufComponent implements OnInit {
             this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
                 item.antragTyp,
                 item.eingangsdatum,
-                item.laufnummer,
+                item.laufnummer
             );
         });
 
@@ -123,9 +121,7 @@ export class VerlaufComponent implements OnInit {
     }
 
     public getGesuch(gesuchid: string): TSGesuch {
-        this.gesuchRS.findGesuch(gesuchid).then(response => {
-            return response;
-        });
+        this.gesuchRS.findGesuch(gesuchid).then(response => response);
         return undefined;
     }
 

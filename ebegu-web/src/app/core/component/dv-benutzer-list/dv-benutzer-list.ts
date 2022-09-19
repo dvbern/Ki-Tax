@@ -42,7 +42,7 @@ export class DVBenutzerListConfig implements IComponentOptions {
         onFilterChange: '&',
         totalResultCount: '<',
         tableId: '@',
-        tableTitle: '@',
+        tableTitle: '@'
     };
     public template = require('./dv-benutzer-list.html');
     public controller = DVBenutzerListController;
@@ -59,7 +59,7 @@ export class DVBenutzerListController implements IOnInit {
         '$window',
         'GemeindeRS',
         'EinstellungRS',
-        'SozialdienstRS',
+        'SozialdienstRS'
     ];
 
     public totalResultCount: number;
@@ -98,7 +98,7 @@ export class DVBenutzerListController implements IOnInit {
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
         public readonly einstellungRS: EinstellungRS,
-        public readonly sozialdienstRS: SozialdienstRS,
+        public readonly sozialdienstRS: SozialdienstRS
     ) {
     }
 
@@ -143,7 +143,7 @@ export class DVBenutzerListController implements IOnInit {
                 gemeinden => {
                     this.gemeindeList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 

@@ -37,7 +37,7 @@ const LOG = LogFactory.createLog('authorisationHookRunBlock');
 export function authorisationHookRunBlock($transitions: TransitionService): void {
     // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: state => state.data && Array.isArray(state.data.roles),
+        to: state => state.data && Array.isArray(state.data.roles)
     };
 
     // Register the "requires authorisation" hook with the TransitionsService.
@@ -53,7 +53,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
             take(1),
             map(principal => {
                 const transitionTo = (transition ? transition.$to().name  : '-');
-                LOG.debug('check authorisation of principal for transition to ' + transitionTo, principal);
+                LOG.debug(`check authorisation of principal for transition to ${  transitionTo}`, principal);
                 const allowedRoles: TSRole[] = transition.to().data.roles;
 
                 if (!principal) {
@@ -96,7 +96,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 LOG.info('unauthorised navigation to', transition.to());
 
                 return false;
-            }),
+            })
         )
         .toPromise();
 }

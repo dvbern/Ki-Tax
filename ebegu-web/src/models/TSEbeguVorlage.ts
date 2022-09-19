@@ -26,7 +26,7 @@ export class TSEbeguVorlage extends TSAbstractDateRangedEntity {
     public constructor(
         name?: TSEbeguVorlageKey,
         vorlage?: TSVorlage,
-        gueltigkeit?: TSDateRange,
+        gueltigkeit?: TSDateRange
     ) {
         super(gueltigkeit);
         this._name = name;

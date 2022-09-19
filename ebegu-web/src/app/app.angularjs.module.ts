@@ -46,7 +46,7 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
         MITTEILUNGEN_JS_MODULE.name,
         SEARCH_JS_MODULE.name,
         ALLE_VERFUEGUNGEN_JS_MODULE.name,
-        QUICKSEARCH_JS_MODULE.name,
+        QUICKSEARCH_JS_MODULE.name
     ])
         .component('appRoot', APP_ANGULARJS_COMPONENT)
         .config(conf)
@@ -60,9 +60,9 @@ function conf($stateProvider: StateProvider): void {
         name: 'app',
         component: 'appRoot',
         redirectTo: 'onboarding.start',
-        abstract: true,
+        abstract: true
     };
     $stateProvider.state(
-        definition,
+        definition
     );
 }

@@ -29,7 +29,7 @@ import {bootstrap, html} from './test_helpers';
 @Component({
     selector: 'ng2',
     template: `
-        <div dvNewUserSelect></div>`,
+        <div dvNewUserSelect></div>`
 })
 class TestComponent {
 }
@@ -58,7 +58,7 @@ describe('NewUserSelectDirective', () => {
             @NgModule({
                 declarations: [NewUserSelectDirective, TestComponent],
                 entryComponents: [TestComponent],
-                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()],
+                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
             })
             class Ng2Module {
                 public ngDoBootstrap(): void {

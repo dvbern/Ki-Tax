@@ -11,7 +11,7 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
 @Component({
     selector: 'dv-angaben-gs2',
     templateUrl: '../angaben-gs.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     @ViewChild(NgForm) private readonly form: NgForm;

@@ -46,7 +46,7 @@ export class DvBisherComponentConfig implements IComponentOptions {
         specificBisherText: '<',
         blockExisted: '<',
         showIfBisherNone: '<',
-        showSpecificBisherTextIfBisherNone: '<',
+        showSpecificBisherTextIfBisherNone: '<'
     };
     public template = require('./dv-bisher.html');
     public controller = DvBisher;
@@ -71,7 +71,7 @@ export class DvBisher implements IController {
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: ITranslateService
     ) {
     }
 

@@ -24,7 +24,7 @@ import {WindowRef} from '../../core/service/windowRef.service';
 import ITranslateService = angular.translate.ITranslateService;
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class I18nServiceRSRest {
 
@@ -33,7 +33,7 @@ export class I18nServiceRSRest {
     public constructor(
         private readonly translate: TranslateService,
         private readonly $window: WindowRef,
-        private readonly dateAdapter: DateAdapter<any>,
+        private readonly dateAdapter: DateAdapter<any>
     ) {
         this.serviceURL =  `${CONSTANTS.REST_API}i18n`;
     }

@@ -37,7 +37,7 @@ import {Log, LogFactory} from '../../logging/LogFactory';
 @Component({
     selector: 'dv-navigation-x',
     templateUrl: './dv-navigation-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvNavigationXComponent implements OnInit {
 
@@ -63,7 +63,7 @@ export class DvNavigationXComponent implements OnInit {
         private readonly $state: StateService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -161,7 +161,7 @@ export class DvNavigationXComponent implements OnInit {
 
         this.wizardStepManager.isTransitionInProgress = true;
 
-        // eslint-disable-next-line 
+        // eslint-disable-next-line
         if (this.isSavingEnabled() && this.doesSaveExist()) {
             this.dvSave.emit({
                 onResult: (result: any) => {
@@ -172,7 +172,7 @@ export class DvNavigationXComponent implements OnInit {
                         // to move on
                         this.wizardStepManager.isTransitionInProgress = false;
                     }
-                },
+                }
             });
         } else {
             // do nothing if we are already saving
@@ -207,7 +207,7 @@ export class DvNavigationXComponent implements OnInit {
                         // to move on
                         this.wizardStepManager.isTransitionInProgress = false;
                     }
-                },
+                }
             });
         } else {
             this.navigateToPreviousStep();
@@ -228,7 +228,7 @@ export class DvNavigationXComponent implements OnInit {
      * Berechnet fuer den aktuellen Benutzer und Step, welcher der naechste Step ist und wechselt zu diesem.
      * Bay default wird es zum nae
      */
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateToNextStep(): void {
 
         this.errorService.clearAll();
@@ -315,7 +315,7 @@ export class DvNavigationXComponent implements OnInit {
      * Berechnet fuer den aktuellen Benutzer und Step, welcher der previous Step ist und wechselt zu diesem.
      * wenn es kein Sonderfall ist wird der letzte else case ausgefuehrt
      */
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateToPreviousStep(): void {
         this.errorService.clearAll();
 
@@ -384,7 +384,7 @@ export class DvNavigationXComponent implements OnInit {
 
     private navigateToSubStepFinanzielleSituation(
         navigateToSubStep: TSFinanzielleSituationSubStepName,
-        navigateToStepIfNoSubstep: TSWizardStepName,
+        navigateToStepIfNoSubstep: TSWizardStepName
     ): void {
         switch (navigateToSubStep) {
             case TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP:
@@ -489,7 +489,7 @@ export class DvNavigationXComponent implements OnInit {
     }
 
     private getFallCreationParams(): {
-        eingangsart: TSEingangsart; gesuchId: string; gesuchsperiodeId: string; dossierId: string; gemeindeId: string
+        eingangsart: TSEingangsart; gesuchId: string; gesuchsperiodeId: string; dossierId: string; gemeindeId: string;
     } {
         const gesuch = this.gesuchModelManager.getGesuch();
 
@@ -498,7 +498,7 @@ export class DvNavigationXComponent implements OnInit {
             gesuchId: gesuch.id,
             gesuchsperiodeId: gesuch.gesuchsperiode.id,
             dossierId: this.gesuchModelManager.getDossier().id,
-            gemeindeId: this.gesuchModelManager.getDossier().gemeinde.id,
+            gemeindeId: this.gesuchModelManager.getDossier().gemeinde.id
         };
     }
 
@@ -513,7 +513,7 @@ export class DvNavigationXComponent implements OnInit {
         return this.$state.go(stateName, {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
@@ -527,7 +527,7 @@ export class DvNavigationXComponent implements OnInit {
 
     private navigateToPath(path: string): TransitionPromise {
         return this.$state.go(path, {
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
@@ -541,42 +541,42 @@ export class DvNavigationXComponent implements OnInit {
         }
         return this.$state.go(stateName, {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
     private navigateToStepFinanzielleSituation(gsNumber: string): TransitionPromise {
         return this.$state.go('gesuch.finanzielleSituation', {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
     private navigateToLuzernStart(): any {
         return this.$state.go('gesuch.finanzielleSituationStartLuzern', {
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateToLuzernGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Luzern', {
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateToSolothurnStart(): any {
         return this.$state.go('gesuch.finanzielleSituationStartSolothurn', {
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateToSolothurnGS1(): any {
         return this.$state.go('gesuch.finanzielleSituationGS1Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 1,
+            gsNummer: 1
         });
     }
 
@@ -584,7 +584,7 @@ export class DvNavigationXComponent implements OnInit {
     private navigateToSolothurnGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
             gesuchId: this.getGesuchId(),
-            gsNummer: 2,
+            gsNummer: 2
         });
     }
 
@@ -598,7 +598,7 @@ export class DvNavigationXComponent implements OnInit {
     /**
      * Checks whether the button should be disable for the current conditions. By default (auch fuer Mutaionen) enabled
      */
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     public isNextButtonDisabled(): boolean {
         // Wenn das Gesuch disabled ist (z.B. in Rolle Mandant), darf man nur soweit navigieren, wie die Steps
         // besucht sind
@@ -657,7 +657,7 @@ export class DvNavigationXComponent implements OnInit {
         return undefined;
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private navigateNextEVSubStep3(): void {
         if ((this.gesuchModelManager.getBasisJahrPlusNumber() === 1)) {
             if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {

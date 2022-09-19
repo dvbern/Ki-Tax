@@ -33,63 +33,63 @@ const states: Ng2StateDeclaration[] = [
         url: '/testdaten',
         component: TestdatenViewComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.batchjobTrigger',
         url: '/batchjobTrigger',
-        component: BatchjobTriggerViewComponent,
+        component: BatchjobTriggerViewComponent
     },
     {
         name: 'admin.debugging',
         url: '/debug',
-        component: DebuggingComponent,
+        component: DebuggingComponent
     },
     {
         name: 'admin.benutzer',
         component: BenutzerComponent,
         url: '/benutzerlist/benutzer/:benutzerId',
         data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
+            roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
     },
     {
         name: 'admin.betreuungMonitoring',
         url: '/betreuungMonitoring',
         component: BetreuungMonitoringComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.gesuchsperioden',
         url: '/gesuchsperioden',
         component: GesuchsperiodeListViewXComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.gesuchsperiode',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         component: GesuchsperiodeViewXComponent,
         params: {
-            gesuchsperiodeId: '',
+            gesuchsperiodeId: ''
         },
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
-    },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class NgAdminRoutingModule {
 }

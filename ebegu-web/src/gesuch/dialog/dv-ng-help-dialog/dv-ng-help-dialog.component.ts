@@ -29,7 +29,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 @Component({
     selector: 'dv-ng-help-dialog',
     styleUrls: ['./dv-ng-help-dialog.component.less'],
-    templateUrl: './dv-ng-help-dialog.component.html',
+    templateUrl: './dv-ng-help-dialog.component.html'
 })
 export class DvNgHelpDialogComponent {
 

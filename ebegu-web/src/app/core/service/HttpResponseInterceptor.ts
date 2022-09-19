@@ -29,11 +29,11 @@ export class HttpResponseInterceptor implements IHttpInterceptor {
     public responseError = (response: any) => {
         this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
         return this.$q.reject(response);
-    }
+    };
 
     public response = (response: any) => {
         this.$rootScope.$broadcast(TSHTTPEvent[TSHTTPEvent.REQUEST_FINISHED], response);
         return response;
-    }
+    };
 
 }

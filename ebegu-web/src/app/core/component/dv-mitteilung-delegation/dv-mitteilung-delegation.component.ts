@@ -24,7 +24,7 @@ const LOG = LogFactory.createLog('DvMitteilungDelegationComponent');
 
 @Component({
     selector: 'dv-mitteilung-delegation',
-    templateUrl: './dv-mitteilung-delegation.component.html',
+    templateUrl: './dv-mitteilung-delegation.component.html'
 })
 export class DvMitteilungDelegationComponent {
 
@@ -45,6 +45,6 @@ export class DvMitteilungDelegationComponent {
             if (result) {
                 this.valueChange.emit();
             }
-        }, err => LOG.error(err), );
+        }, err => LOG.error(err) );
     }
 }

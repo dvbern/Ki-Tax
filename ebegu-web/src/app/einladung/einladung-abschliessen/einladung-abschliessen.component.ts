@@ -25,14 +25,14 @@ import {getEntityTargetState} from '../einladung-routing/einladung-helpers';
     selector: 'dv-einladung-abschliessen',
     templateUrl: './einladung-abschliessen.component.html',
     styleUrls: ['./einladung-abschliessen.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinladungAbschliessenComponent {
 
     @Input() public principal: TSBenutzer;
 
     public constructor(
-        private readonly transition: Transition,
+        private readonly transition: Transition
     ) {
     }
 
@@ -51,7 +51,7 @@ export class EinladungAbschliessenComponent {
         const typ = this.transition.params().typ;
         if (typ === TSEinladungTyp.GEMEINDE || typ === TSEinladungTyp.INSTITUTION) {
             return target.withParams({
-                isRegistering: true,
+                isRegistering: true
             });
         }
         return target;

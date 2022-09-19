@@ -37,7 +37,7 @@ import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.servic
     templateUrl: './freigabe.component.html',
     styleUrls: ['./freigabe.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class FreigabeComponent implements OnInit {
 
@@ -60,14 +60,14 @@ export class FreigabeComponent implements OnInit {
         private readonly latsService: LastenausgleichTSService,
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
-        private readonly authService: AuthServiceRS,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
     public ngOnInit(): void {
         combineLatest([
             this.latsService.getLATSAngabenGemeindeContainer(),
-            this.authService.principal$,
+            this.authService.principal$
         ]).subscribe(([container, principal]) => {
             this.container = container;
             if (container.isAbgeschlossen()) {
@@ -92,7 +92,7 @@ export class FreigabeComponent implements OnInit {
                 this.canSeeZurueckGemeindeButton.next(false);
                 this.canSeeFreigegebenText.next(container.isAtLeastInBearbeitungKanton());
             }
-            // eslint-disable-next-line 
+            // eslint-disable-next-line
             if (container.isGeprueft()) {
                 this.canSeeFreigabeButton.next(false);
                 this.canSeeGeprueftButton.next(false);
@@ -106,19 +106,19 @@ export class FreigabeComponent implements OnInit {
     public freigeben(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE'),
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE')
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
                 filter(result => !!result),
                 mergeMap(() => this.latsService.getLATSAngabenGemeindeContainer().pipe(first())),
-                mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container)),
+                mergeMap(container => this.latsService.latsGemeindeAntragFreigeben(container))
             )
             .subscribe(() => {
                 this.$state.go('gemeindeantraege.view');
             }, (errors: TSExceptionReport[]) => {
-                // eslint-disable-next-line 
+                // eslint-disable-next-line
                 errors.forEach(error => {
                         if (error.customMessage.includes('angabenDeklaration')) {
                             this.errorService.addMesageAsError(this.translate.instant('LATS_GEMEINDE_ANGABEN_ERROR'));
@@ -138,14 +138,14 @@ export class FreigabeComponent implements OnInit {
 
     public isInBearbeitungGemeinde(): Observable<boolean> {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
-            map(latsContainer => latsContainer.isInBearbeitungGemeinde()),
+            map(latsContainer => latsContainer.isInBearbeitungGemeinde())
         );
     }
 
     public geprueft(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT'),
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT')
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
@@ -169,7 +169,7 @@ export class FreigabeComponent implements OnInit {
     public async zurueckAnGemeinde(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN'),
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN')
         };
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
             .afterClosed()
@@ -185,7 +185,7 @@ export class FreigabeComponent implements OnInit {
         return this.latsService.getLATSAngabenGemeindeContainer().pipe(
             map(latsContainer => latsContainer.status ===
                 TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON ||
-                latsContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG),
+                latsContainer.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG)
         );
 
     }
@@ -203,7 +203,7 @@ export class FreigabeComponent implements OnInit {
     public async zurueckInPruefung(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('ZURUECK_IN_PRUEFUNG'),
+            frage: this.translate.instant('ZURUECK_IN_PRUEFUNG')
         };
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
             .afterClosed()

@@ -79,7 +79,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
         private readonly downloadRS: DownloadRS,
         private readonly globalCacheService: GlobalCacheService,
         authServiceRS: AuthServiceRS,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
         super(authServiceRS);
     }
@@ -112,10 +112,8 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
 
     private readEinstellungenByGesuchsperiode(): void {
         this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
-            response.sort((a, b) => {
-                return this.$translate.instant(a.key.toString())
-                    .localeCompare(this.$translate.instant(b.key.toString()));
-            });
+            response.sort((a, b) => this.$translate.instant(a.key.toString())
+                    .localeCompare(this.$translate.instant(b.key.toString())));
             this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
             this.cd.markForCheck();
         });
@@ -230,7 +228,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
         const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
             this.dvDialog.open(DvNgOkDialogComponent, {
-                data: { title: this.$translate.instant('FILE_ZU_GROSS')},
+                data: { title: this.$translate.instant('FILE_ZU_GROSS')}
             });
             return;
         }

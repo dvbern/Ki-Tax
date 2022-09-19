@@ -26,7 +26,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     getTSEinschulungTypValues,
     getTSEinschulungTypValuesLuzern,
-    TSEinschulungTyp,
+    TSEinschulungTyp
 } from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
@@ -180,7 +180,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
                 amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
             });
     }
 
@@ -198,10 +198,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungenFachstelle(
         minValueEinstellungKey: TSEinstellungKey,
-        maxValueEinstellungKey: TSEinstellungKey,
+        maxValueEinstellungKey: TSEinstellungKey
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => {
@@ -232,13 +232,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION
             );
             this.resetGruendeZusatzleistung();
         } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION
             );
             this.resetGruendeZusatzleistung();
             // eslint-disable-next-line max-len
@@ -452,7 +452,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 integration: integrationTyp,
                 pensum: fachstelle.pensum,
                 von: vonText,
-                bis: bisText,
+                bis: bisText
             });
         }
 

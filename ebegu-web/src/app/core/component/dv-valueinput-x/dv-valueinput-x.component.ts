@@ -28,9 +28,9 @@ import {EbeguNumberPipe} from '../../../shared/pipe/ebegu-number.pipe';
 export class DvValueinputXComponent {
 
     private readonly patternBetrag: string = '([0-9]{1,3}\')?([0-9]{3}\'){0,2}([0-9]{1,3})';
-    private readonly patternBetragWithDecimals: string =  this.patternBetrag + '(\\.[0-9]{1,2})?';
-    private readonly patternBetragNegativ: string = '(-?)' + this.patternBetrag;
-    private readonly patternBetragNegativWithDecimals: string = '(-?)' + this.patternBetragWithDecimals;
+    private readonly patternBetragWithDecimals: string =  `${this.patternBetrag  }(\\.[0-9]{1,2})?`;
+    private readonly patternBetragNegativ: string = `(-?)${  this.patternBetrag}`;
+    private readonly patternBetragNegativWithDecimals: string = `(-?)${  this.patternBetragWithDecimals}`;
 
     @Input() public inputId: string = 'inputFieldId';
     @Input() public model: any;

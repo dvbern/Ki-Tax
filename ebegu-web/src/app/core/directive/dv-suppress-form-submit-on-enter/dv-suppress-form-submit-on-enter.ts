@@ -63,7 +63,7 @@ export class DVSuppressFormSubmitOnEnterController {
     public constructor(
         private readonly $mdConstant: any,
         private readonly $mdUtil: any,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
 
     }

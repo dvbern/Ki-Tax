@@ -21,12 +21,12 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -68,7 +68,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         '$scope',
         'FamiliensituationRS',
         'EinstellungRS',
-        '$timeout',
+        '$timeout'
     ];
     private familienstatusValues: Array<TSFamilienstatus>;
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -89,7 +89,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         $scope: IScope,
         private readonly familiensituationRS: FamiliensituationRS,
         private readonly einstellungRS: EinstellungRS,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
 
         super(gesuchModelManager,
@@ -109,7 +109,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public $onInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
@@ -145,14 +145,14 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.getGesuch().gesuchsteller2
-                        ? this.getGesuch().gesuchsteller2.extractFullName() : '',
+                        ? this.getGesuch().gesuchsteller2.extractFullName() : ''
                 });
                 return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'FAMILIENSITUATION_WARNING',
-                    deleteText: descriptionText,
-                }).then(() => {   // User confirmed changes
-                    return this.save();
-                });
+                    deleteText: descriptionText
+                }).then(() =>    // User confirmed changes
+                     this.save()
+                );
             }
 
             return this.save();
@@ -165,14 +165,12 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.errorService.clearAll();
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
-            this.getGesuch().id,
+            this.getGesuch().id
         ).then((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.getGesuch().familiensituationContainer = familienContainerResponse;
             // Gesuchsteller may changed...
-            return this.gesuchModelManager.reloadGesuch().then(() => {
-                return this.model;
-            });
+            return this.gesuchModelManager.reloadGesuch().then(() => this.model);
         });
     }
 

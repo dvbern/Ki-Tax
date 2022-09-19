@@ -86,7 +86,7 @@ describe('AuthServiceRS', () => {
                 nachname: 'Gerber',
                 username: 'geem',
                 email: 'emma.gerber@example.com',
-                role: 'GESUCHSTELLER',
+                role: 'GESUCHSTELLER'
             };
             const encodedUser = Buffer.from(JSON.stringify(cookieContent).split('_').join('')).toString('base64');
             spyOn($cookies, 'get').and.returnValue(encodedUser);

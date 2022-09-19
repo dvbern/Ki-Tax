@@ -25,7 +25,7 @@ import {
     ModuleWithProviders,
     NgModule,
     Optional,
-    SkipSelf,
+    SkipSelf
 } from '@angular/core';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
@@ -62,7 +62,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         // only those modules required by the providers/components of the core module
         // (other global modules go to shared module)
         TranslateModule,
-        UIRouterUpgradeModule,
+        UIRouterUpgradeModule
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
@@ -70,7 +70,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
             provide: APP_INITIALIZER,
             useFactory: initMandantCookie,
             deps: [MandantService],
-            multi: true,
+            multi: true
         },
         ...UPGRADED_PROVIDERS,
         ...UPGRADED_HTTP_INTERCEPTOR_PROVIDERS,
@@ -87,7 +87,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
         // This module should be used only to provide services
-    ],
+    ]
 })
 export class CoreModule {
 
@@ -112,9 +112,9 @@ export class CoreModule {
                 {
                     provide: MatPaginatorIntl,
                     deps: [TranslateService],
-                    useFactory: paginatorI18nFactory,
-                },
-            ],
+                    useFactory: paginatorI18nFactory
+                }
+            ]
         };
     }
 }

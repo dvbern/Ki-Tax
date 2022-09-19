@@ -27,7 +27,7 @@ import {
     Output,
     SimpleChanges,
     ViewChild,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
@@ -44,7 +44,7 @@ import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enu
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
@@ -71,7 +71,7 @@ const LOG = LogFactory.createLog('DVAntragListController');
     styleUrls: ['./new-antrag-list.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     // we need this to overwrite angular material styles
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
@@ -82,7 +82,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     /**
      * Emits when the user clicks on a row
      */
-    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO, event: MouseEvent }> = new EventEmitter<any>();
+    @Output() public readonly rowClicked: EventEmitter<{ antrag: TSAntragDTO; event: MouseEvent }> = new EventEmitter<any>();
 
     /**
      * Can be one of
@@ -128,11 +128,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
      * Emits any time the sort changes. Only emits when the data$ input is provided.
      */
     @Output() public readonly sortChange: EventEmitter<{
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     }> = new EventEmitter<{
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     }>();
 
     /**
@@ -260,8 +260,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     private readonly timeoutMS = 700;
     private readonly sort: {
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     } = {};
 
     public paginationItems: number[];
@@ -287,7 +287,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly benutzerRS: BenutzerRSX,
+        private readonly benutzerRS: BenutzerRSX
     ) {
     }
 
@@ -311,7 +311,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.updateColumns();
         }
 
-        // eslint-disable-next-line 
+        // eslint-disable-next-line
         if (changes.data$) {
             this.customData = !!this.data$;
             if (!changes.data$.firstChange) {
@@ -357,7 +357,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private initSort(): void {
         // eslint-disable-next-line
         if (this.stateStoreId && this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string; reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
             this.matSort.active = stored.predicate;
@@ -389,7 +389,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                     this.gemeindenList = gemeinden;
                     gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -414,18 +414,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         const body = {
             pagination: {
                 number: this.pageSize,
-                start: this.page * this.pageSize,
+                start: this.page * this.pageSize
             },
             search: {
-                predicateObject: this.filterPredicate,
+                predicateObject: this.filterPredicate
             },
-            sort: this.sort,
+            sort: this.sort
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => {
-                return result.antragDTOs.map(antragDto => {
-                    return {
+            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,
@@ -445,10 +443,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
                         hasBesitzer: () => antragDto.hasBesitzer(),
-                        isSozialdienst: antragDto.isSozialdienst,
-                    };
-                });
-            }));
+                        isSozialdienst: antragDto.isSozialdienst
+                    }))));
 
         dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
@@ -469,7 +465,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     private loadTotalCount(body: {
         search: { predicateObject: DVAntragListFilter };
         pagination: { number: any; start: number };
-        sort: { predicate?: string; reverse?: boolean }
+        sort: { predicate?: string; reverse?: boolean };
     }): void {
         if (!EbeguUtil.isNullOrUndefined(this.data$)) {
             return;
@@ -511,7 +507,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (this.customData) {
             this.paginationEvent.emit({
                 page: this.page,
-                pageSize: this.pageSize,
+                pageSize: this.pageSize
             });
         }
         this.loadData();
@@ -598,7 +594,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             query ?
                 this.allInstitutionen.filter(institution => institution.name.toLocaleLowerCase()
                     .includes(query.toLocaleLowerCase())) :
-                this.allInstitutionen,
+                this.allInstitutionen
         );
         this.filterPredicate.institutionen = query.length > 0 ? query : null;
         this.applyFilter();
@@ -649,7 +645,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             return of('');
         }
         return forkJoin(angebote.map(angebot => this.translate.get(angebot)))
-            .pipe(map(translatedAngebote => translatedAngebote.join(', '),
+            .pipe(map(translatedAngebote => translatedAngebote.join(', ')
             ));
     }
 

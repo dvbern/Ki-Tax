@@ -30,65 +30,65 @@ const states: NgHybridStateDeclaration[] = [
         name: 'institution',
         abstract: true,
         url: '/institution',
-        component: UiViewComponent,
+        component: UiViewComponent
     },
     {
         name: 'institution.list',
         url: '/list',
         component: InstitutionListComponent,
         data: {
-            roles: TSRoleUtil.getInstitutionProfilRoles(),
-        },
+            roles: TSRoleUtil.getInstitutionProfilRoles()
+        }
     },
     {
         name: 'institution.add',
         url: '/add',
         component: AddInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getInstitutionProfilRoles(),
+            roles: TSRoleUtil.getInstitutionProfilRoles()
         },
         params: {
             betreuungsangebote: {
                 type: 'any',
-                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN],
+                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN]
             },
             betreuungsangebot: {
-                type: 'any',
+                type: 'any'
             },
             latsOnly: {
                 type: 'any',
                 value: false
             }
-        },
+        }
     },
     {
         name: 'institution.edit',
         url: '/edit/:institutionId/:isRegistering',
         component: EditInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getInstitutionProfilRoles(),
+            roles: TSRoleUtil.getInstitutionProfilRoles()
         },
         params: {
             isRegistering: {
                 type: 'bool',
                 // this parameter is optional: specify a default value
-                value: false,
+                value: false
             },
             editMode: {
                 type: 'bool',
-                value: false,
-            },
-        },
-    },
+                value: false
+            }
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class InstitutionRoutingModule {
 }

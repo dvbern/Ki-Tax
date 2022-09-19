@@ -32,7 +32,7 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
  */
 @Component({
     selector: 'dv-ng-mitteilung-delegation-dialog',
-    templateUrl: './dv-ng-mitteilung-delegation-dialog.component.html',
+    templateUrl: './dv-ng-mitteilung-delegation-dialog.component.html'
 })
 export class DvNgMitteilungDelegationDialogComponent {
 
@@ -47,7 +47,7 @@ export class DvNgMitteilungDelegationDialogComponent {
         private readonly dialogSupport: MatDialog,
         private readonly mitteilungRS: MitteilungRS,
         private readonly benutzerRS: BenutzerRSX,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.mitteilungId = data.mitteilungId;
         this.selectedBenutzer = null;

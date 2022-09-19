@@ -57,7 +57,7 @@ export class DVDisplayElement implements IDirective {
         element: IAugmentedJQuery,
         attributes: IAttributes,
         controller: DVRoleElementController,
-        $transclude: any,
+        $transclude: any
     ) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in
         // ES3 and ES5. Consider using a standard function expression.
@@ -81,9 +81,7 @@ export class DVDisplayElement implements IDirective {
      * VORSICHT. Sollte diese Methode X-Mal aufgerufen werden, wird das Element dann X-Mall angezeigt
      */
     private callNgShowThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>): void {
-        attributes.ngShow = () => {
-            return (controller.checkValidity());
-        };
+        attributes.ngShow = () => (controller.checkValidity());
         this.ngShow.link.apply(this.ngShow, arguments2);
     }
 }

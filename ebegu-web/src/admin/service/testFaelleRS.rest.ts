@@ -31,7 +31,7 @@ export class TestFaelleRS {
     public constructor(
         public http: IHttpService,
         REST_API: string,
-        public readonly ebeguRestUtil: EbeguRestUtil,
+        public readonly ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${REST_API}testfaelle`;
     }
@@ -46,7 +46,7 @@ export class TestFaelleRS {
         gemeindeId: string,
         bestaetigt: boolean,
         verfuegen: boolean,
-        username: string,
+        username: string
     ): IHttpPromise<string> {
         // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
         // parameter to the method body
@@ -65,7 +65,7 @@ export class TestFaelleRS {
         gesuchsperiodeId: string,
         gemeindeId: string,
         bestaetigt: boolean,
-        verfuegen: boolean,
+        verfuegen: boolean
     ): IHttpPromise<string> {
         // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
@@ -77,13 +77,13 @@ export class TestFaelleRS {
         dossierid: string,
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
-        aenderungper: moment.Moment,
+        aenderungper: moment.Moment
     ): IHttpPromise<string> {
         return this.http.get(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                aenderungper: DateUtil.momentToLocalDate(aenderungper),
-            },
+                aenderungper: DateUtil.momentToLocalDate(aenderungper)
+            }
         });
     }
 
@@ -95,15 +95,15 @@ export class TestFaelleRS {
         dossierid: string,
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
-        aenderungper: moment.Moment,
+        aenderungper: moment.Moment
     ): IHttpPromise<string> {
         const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
         return this.http.get(url,
             {
                 params: {
                     mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                    aenderungper: DateUtil.momentToLocalDate(aenderungper),
-                },
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
+                }
             });
     }
 
@@ -124,9 +124,7 @@ export class TestFaelleRS {
     }
 
     public getSchulungBenutzer(): IPromise<string[]> {
-        return this.http.get(`${this.serviceURL}/schulung/public/user`).then((response: any) => {
-            return response.data;
-        });
+        return this.http.get(`${this.serviceURL}/schulung/public/user`).then((response: any) => response.data);
     }
 
     public processScript(scriptNr: string): IHttpPromise<any> {
@@ -137,13 +135,13 @@ export class TestFaelleRS {
         antragTyp: TSGemeindeAntragTyp,
         gesuchsperiode: TSGesuchsperiode,
         gemeinde: TSGemeinde,
-        status: string,
+        status: string
     ): IPromise<string> {
         return this.http.post<string>(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
             {
                 gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject({}, gesuchsperiode),
                 gemeinde: this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde),
-                status,
+                status
             })
             .then(response => response.data);
     }

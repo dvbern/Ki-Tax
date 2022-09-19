@@ -21,6 +21,6 @@ import {RouterHelperProvider} from './route-helper-provider';
 
 export default angular.module('dvbAngular.router', [
     uiRouter,
-    upgradeModule.name,
+    upgradeModule.name
 ]).provider('RouterHelper', RouterHelperProvider)
 ;

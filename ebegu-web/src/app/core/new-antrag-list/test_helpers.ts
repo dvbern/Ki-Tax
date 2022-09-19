@@ -41,7 +41,9 @@ export function bootstrap(
         const ngZone = ref.injector.get<NgZone>(NgZone);
         const upgrade = ref.injector.get(UpgradeModule);
         const failHardModule: any = ($provide: any) => {
-            $provide.value('$exceptionHandler', (err: any) => { throw err; });
+            $provide.value('$exceptionHandler', (err: any) => {
+ throw err;
+});
         };
 
         // The `bootstrap()` helper is used for convenience in tests, so that we don't have to inject

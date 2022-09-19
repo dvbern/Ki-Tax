@@ -31,7 +31,7 @@ describe('WizardSideNavComponent', () => {
     let component: WizardSideNavComponent;
     let fixture: ComponentFixture<WizardSideNavComponent>;
     const wizardSTepXRS = jasmine.createSpyObj<WizardStepXRS>(WizardStepXRS.name, {
-        getAllSteps: of([]),
+        getAllSteps: of([])
     });
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -39,16 +39,16 @@ describe('WizardSideNavComponent', () => {
                 WindowRef,
                 {
                     provide: WizardStepXRS,
-                    useValue: wizardSTepXRS,
-                },
+                    useValue: wizardSTepXRS
+                }
             ],
             declarations: [WizardSideNavComponent],
             imports: [
                 UIRouterModule.forRoot({useHash: true}),
                 TranslateModule,
                 MatToolbarModule,
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

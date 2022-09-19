@@ -51,7 +51,7 @@ export class TSFinanzModel {
         basisjahr: number,
         gesuchsteller2Required: boolean,
         gesuchstellerNumber: number,
-        basisjahrPlus?: number,
+        basisjahrPlus?: number
     ) {
         this.basisjahr = basisjahr;
         this.basisjahrPlus = basisjahrPlus;
@@ -301,7 +301,7 @@ export class TSFinanzModel {
             this.getEkvOfBsj_JA(this.einkommensverschlechterungContainerGS1);
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     private getEkvOfBsj_JA(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
     ): TSEinkommensverschlechterung {
         return this.basisjahrPlus === 2 ?
@@ -309,7 +309,7 @@ export class TSFinanzModel {
             einkommensverschlechterungContainer.ekvJABasisJahrPlus1;
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     public getEkvToWorkWith_GS(): TSEinkommensverschlechterung {
         return this.gesuchstellerNumber === 2 ?
             this.getEkvOfBsj_GS(this.einkommensverschlechterungContainerGS2) :

@@ -41,7 +41,7 @@ import SpyObj = jasmine.SpyObj;
 
 export class SolothurnFinSitTestHelpers {
 
-    public static getMockProvidersExceptGesuchModelManager(): { provide: any, useValue: any }[] {
+    public static getMockProvidersExceptGesuchModelManager(): { provide: any; useValue: any }[] {
         const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(
             WizardStepManager.name,
             ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
@@ -57,7 +57,7 @@ export class SolothurnFinSitTestHelpers {
             {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
             {provide: StateService, useValue: stateServiceSpy},
             {provide: ErrorService, useValue: errorServiceSpy},
-            {provide: AuthServiceRS, useValue: authServiceSpy},
+            {provide: AuthServiceRS, useValue: authServiceSpy}
         ];
     }
 
@@ -83,7 +83,7 @@ export class SolothurnFinSitTestHelpers {
             ]);
     }
 
-    public static getMockProvidersExceptFinSitSolothurnServiceMock(): { provide: any, useValue: any }[] {
+    public static getMockProvidersExceptFinSitSolothurnServiceMock(): { provide: any; useValue: any }[] {
         const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(
             BerechnungsManager.name,
             ['calculateFinanzielleSituationTemp']);

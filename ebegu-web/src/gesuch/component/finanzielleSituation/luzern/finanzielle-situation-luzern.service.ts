@@ -25,14 +25,14 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FinanzielleSituationLuzernService {
 
     private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
 
     public constructor(
-        private readonly berechnungsManager: BerechnungsManager,
+        private readonly berechnungsManager: BerechnungsManager
     ) {
     }
 

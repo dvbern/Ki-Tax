@@ -47,29 +47,25 @@ export class FinanzielleSituationRS {
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.serviceURL = `${REST_API}finanzielleSituation`;
     }
 
     public saveFinanzielleSituation(
         gesuchId: string,
-        gesuchsteller: TSGesuchstellerContainer,
+        gesuchsteller: TSGesuchstellerContainer
     ): IPromise<TSFinanzielleSituationContainer> {
         const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
             gesuchsteller.id)}`;
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
-        return this.$http.put(url, finSitContainerToSend).then(response => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                    response.data);
-            });
-        });
+        return this.$http.put(url, finSitContainerToSend).then(response => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                    response.data)));
     }
 
     public saveFinanzielleSituationStart(
-        gesuch: TSGesuch,
+        gesuch: TSGesuch
     ): IPromise<TSGesuch> {
         const sentGesuch = this.ebeguRestUtil.gesuchToRestObject({}, gesuch);
         const url = `${this.serviceURL}/finanzielleSituationStart`;
@@ -80,20 +76,14 @@ export class FinanzielleSituationRS {
                 + ' Service will be called anyway and it will throw a NPE');
         }
 
-        return this.$http.put(url, sentGesuch).then(response => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
-        });
+        return this.$http.put(url, sentGesuch).then(response => this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data)));
     }
 
     public calculateFinanzielleSituation(gesuch: TSGesuch): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
-        return this.$http.post(`${this.serviceURL}/calculate`, gesuchToSend).then((httpresponse: any) => {
-            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
-                httpresponse.data);
-        });
+        return this.$http.post(`${this.serviceURL}/calculate`, gesuchToSend).then((httpresponse: any) => this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
+                httpresponse.data));
     }
 
     public calculateFinanzielleSituationTemp(finSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
@@ -101,8 +91,8 @@ export class FinanzielleSituationRS {
         finSitModelToSend = this.ebeguRestUtil.finanzModelToRestObject(finSitModelToSend, finSitModel);
         return this.$http.post(`${this.serviceURL}/calculateTemp`, finSitModelToSend, {
             headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-            }),
+                'Content-Type': 'application/json'
+            })
         }).then((httpresponse: any) => {
             this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
             return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
@@ -121,31 +111,29 @@ export class FinanzielleSituationRS {
 
     public getFinanzielleSituationTyp(
         gesuchsperiode: TSGesuchsperiode,
-        gemeinde: TSGemeinde,
+        gemeinde: TSGemeinde
     ): Observable<TSFinanzielleSituationTyp> {
         return from(this.einstellungRS.findEinstellung(
             TSEinstellungKey.FINANZIELLE_SITUATION_TYP,
             gemeinde.id,
-            gesuchsperiode.id,
+            gesuchsperiode.id
         ))
             .pipe(
-                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
+                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value))
             );
     }
 
     public updateFinSitMitSteuerdaten(
         gesuchId: string,
         gesuchsteller: TSGesuchstellerContainer,
-        isGemeinsam: boolean,
+        isGemeinsam: boolean
     ): IPromise<TSFinanzielleSituationContainer> {
         const url = `${this.serviceURL}/kibonanfrage/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
             gesuchsteller.id)}/${isGemeinsam}`;
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
-        return this.$http.put(url, finSitContainerToSend).then(response => {
-            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                response.data);
-        });
+        return this.$http.put(url, finSitContainerToSend).then(response => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                response.data));
     }
 
     public updateFromAufteilung(aufteilungDTO: TSFinanzielleSituationAufteilungDTO, gesuch: TSGesuch): IPromise<any> {
@@ -157,16 +145,14 @@ export class FinanzielleSituationRS {
     public resetKiBonAnfrageFinSit(
         gesuchId: string,
         gesuchsteller: TSGesuchstellerContainer,
-        isGemeinsam: boolean,
+        isGemeinsam: boolean
     ): IPromise<TSFinanzielleSituationContainer> {
         const url = `${this.serviceURL}/kibonanfrage/reset/${encodeURIComponent(gesuchId)}/${encodeURIComponent(
             gesuchsteller.id)}/${isGemeinsam}`;
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
-        return this.$http.put(url, finSitContainerToSend).then(response => {
-            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                response.data);
-        });
+        return this.$http.put(url, finSitContainerToSend).then(response => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                response.data));
     }
 
     public geburtsdatumMatchesSteuerabfrage(geburtsdatum: moment.Moment, finSitContainerId: string): IPromise<boolean> {

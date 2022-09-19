@@ -66,9 +66,9 @@ describe('PosteingangViewComponent', () => {
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: BenutzerRSX, useValue: benutzerSpy},
+                {provide: BenutzerRSX, useValue: benutzerSpy}
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         benutzerSpy.getAllBenutzerBgTsOrGemeinde.and.returnValue(Promise.resolve([]));

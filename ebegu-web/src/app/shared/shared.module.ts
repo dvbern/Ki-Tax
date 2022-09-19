@@ -110,11 +110,11 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),
-                deps: [HttpClient, MandantService],
-            },
+                deps: [HttpClient, MandantService]
+            }
         }),
         GuidedTourModule.forRoot(),
-        MatMenuModule,
+        MatMenuModule
     ],
     declarations: [
         AccordionDirective,
@@ -257,17 +257,17 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent,
+        WarningComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
-    ],
+    ]
 })
 export class SharedModule {
 
     public constructor(
         translate: TranslateService,
-        i18nServiceRS: I18nServiceRSRest,
+        i18nServiceRS: I18nServiceRSRest
     ) {
         SharedModule.initTranslateService(translate, i18nServiceRS);
     }

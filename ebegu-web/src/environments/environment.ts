@@ -7,5 +7,5 @@ export const environment: Environment = {
     test: false,
     hmr: false,
     logLevel: LogLevel.INFO,
-    logModules: {},
+    logModules: {}
 };

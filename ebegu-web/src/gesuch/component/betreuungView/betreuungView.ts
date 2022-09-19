@@ -33,7 +33,7 @@ import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../m
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -192,7 +192,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }, err => LOG.error(err));
     }
 
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
         this.mutationsmeldungModel = undefined;
@@ -228,7 +228,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
-                    // eslint-disable-next-line 
+                    // eslint-disable-next-line
                     if (obj.key === this.$stateParams.betreuungsangebotTyp
                         && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
                     ) {
@@ -259,7 +259,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             // just to read!
             this.kindModel = this.gesuchModelManager.getKindToWorkWith();
         } else {
-            this.$log.error('There is no kind available with kind-number:' + this.$stateParams.kindNumber);
+            this.$log.error(`There is no kind available with kind-number:${  this.$stateParams.kindNumber}`);
         }
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
@@ -283,7 +283,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.loadInfomaZahlungenActive();
 
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
@@ -333,7 +333,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
         });
@@ -341,7 +341,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id,
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
@@ -429,9 +429,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private getBetreuungsangebotFromInstitutionList(): any {
-        return $.grep(this.betreuungsangebotValues, (value: any) => {
-            return value.key === this.getInstitutionSD().betreuungsangebotTyp;
-        })[0];
+        return $.grep(this.betreuungsangebotValues, (value: any) => value.key === this.getInstitutionSD().betreuungsangebotTyp)[0];
     }
 
     public getKindModel(): TSKindContainer {
@@ -477,7 +475,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public setErsterSchultag(): void {
-        // eslint-disable-next-line 
+        // eslint-disable-next-line
         if (this.minEintrittsdatum && !this.getBetreuungModel().keineDetailinformationen
         ) {
             if (!this.getBetreuungModel().belegungTagesschule) {
@@ -538,7 +536,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         if (this.erneutePlatzbestaetigungErforderlich) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT',
+                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT'
             }).then(() => {
                 this.platzAnfordern();
             });
@@ -611,7 +609,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.copyBGNumberLToClipboard();
             this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
+                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : ''
             }).then(() => {
                 let betreuungsstatus: TSBetreuungsstatus;
 
@@ -696,7 +694,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.betreuungsangebotValues.push({
             key: TSBetreuungsangebotTyp.TAGESSCHULE,
-            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE),
+            value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
         });
     }
 
@@ -744,10 +742,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         if (einstellungTagesschule.gesuchsperiode.id === this.getBetreuungModel().gesuchsperiode.id) {
                             isTagi = einstellungTagesschule.tagi;
                         }
-                    },
+                    }
                 );
                 return isTagi;
-            },
+            }
         );
     }
 
@@ -864,7 +862,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'BG_ANMELDUNG_ERNEUT_OEFFNEN',
             deleteText: '',
             cancelText: 'LABEL_NEIN',
-            confirmText: 'LABEL_JA',
+            confirmText: 'LABEL_JA'
         }).then(() => {
             this.platzAnfordern();
         });
@@ -880,7 +878,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 })
                     .then(() => {   // User confirmed removal
                         this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
@@ -907,7 +905,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
             deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
             cancelText: 'LABEL_ABBRECHEN',
-            confirmText: 'LABEL_SPEICHERN',
+            confirmText: 'LABEL_SPEICHERN'
         })
             .then(() => {   // User confirmed removal
                 this.save(
@@ -929,7 +927,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'BESTAETIGUNG_BETREUUNG_IN_GEMEINDE_POPUP_TEXT',
                     deleteText: 'WOLLEN_SIE_FORTFAHREN',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 });
             } catch {
                 return;
@@ -941,7 +939,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     title: 'KEINE_KITA_PLUS_BESTAETIGUNG_POPUP_TEXT',
                     deleteText: 'WOLLEN_SIE_FORTFAHREN',
                     cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
+                    confirmText: 'LABEL_SPEICHERN'
                 });
             } catch {
                 return;
@@ -959,7 +957,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
                 deleteText: 'WOLLEN_SIE_FORTFAHREN',
                 cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
+                confirmText: 'LABEL_SPEICHERN'
             })
                 .then(() => {
                     this.savePlatzBestaetigung();
@@ -1171,7 +1169,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_TITLE',
                 deleteText: 'MUTATIONSMELDUNG_OVERRIDE_EXISTING_BODY',
                 parentController: undefined,
-                elementID: undefined,
+                elementID: undefined
             }).then(() => {   // User confirmed removal
                 this.mutationsmeldungSenden();
             });
@@ -1180,7 +1178,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'MUTATIONSMELDUNG_CONFIRMATION',
                 deleteText: 'MUTATIONSMELDUNG_BESCHREIBUNG',
                 parentController: undefined,
-                elementID: undefined,
+                elementID: undefined
             }).then(() => {
                 this.mutationsmeldungSenden();
             });
@@ -1244,7 +1242,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: this.getBetreuungModel().id,
-            mitteilungId: this.existingMutationsMeldung.id,
+            mitteilungId: this.existingMutationsMeldung.id
         });
     }
 

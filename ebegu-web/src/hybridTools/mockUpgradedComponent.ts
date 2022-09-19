@@ -28,7 +28,7 @@ import {MandantService} from '../app/shared/services/mandant.service';
  * to avoid conflicts with dependencies
  */
 @Directive({
-    selector: 'dv-loading-button',
+    selector: 'dv-loading-button'
 })
 export class MockDvLoadingButton {
 
@@ -44,7 +44,7 @@ export class MockDvLoadingButton {
 }
 
 @Directive({
-    selector: 'dv-tooltip',
+    selector: 'dv-tooltip'
 })
 export class MockTooltipDirective {
 
@@ -69,7 +69,7 @@ export const SHARED_MODULE_OVERRIDES = {
     remove: {
         declarations: [LoadingButtonDirective, TooltipDirective],
         exports: [LoadingButtonDirective, TooltipDirective],
-        providers: [MandantService],
+        providers: [MandantService]
     },
     add: {
         declarations: [MockDvLoadingButton, MockTooltipDirective],
@@ -78,8 +78,8 @@ export const SHARED_MODULE_OVERRIDES = {
             WindowRef,
             {
                 provide: MandantService,
-                useClass: MockMandantService,
-            },
-        ],
-    },
+                useClass: MockMandantService
+            }
+        ]
+    }
 };

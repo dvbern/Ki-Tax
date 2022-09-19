@@ -29,8 +29,8 @@ export const LoginConfig: IComponentOptions = {
     template: require('./login.html'),
     controllerAs: 'vm',
     bindings: {
-        returnTo: '<',
-    },
+        returnTo: '<'
+    }
 };
 
 const dialogTemplate = require('../redirect-warning-dialog/redirectWarningDialogTemplate.html');
@@ -55,7 +55,7 @@ export class LoginController implements IController {
         private readonly authService: AuthServiceRS,
         private readonly $location: ILocationService,
         private readonly dvDialog: DvDialog,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -163,7 +163,7 @@ export class LoginController implements IController {
             this.$timeout(this.doCountdown, 1000);
         }
 
-    }
+    };
 }
 
 LoginConfig.controller = LoginController;

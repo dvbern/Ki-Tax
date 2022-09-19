@@ -38,7 +38,7 @@ export class EbeguVorlageRS {
 
     public uploadVorlage(
         file: any,
-        ebeguVorlage: TSEbeguVorlage,
+        ebeguVorlage: TSEbeguVorlage
     ): IPromise<TSEbeguVorlage> {
 
         let restEbeguVorlage = {};
@@ -50,14 +50,12 @@ export class EbeguVorlageRS {
             method: 'POST',
             headers: {
                 'x-filename': encodedFilename,
-                'x-vorlagekey': ebeguVorlage.name,
+                'x-vorlagekey': ebeguVorlage.name
             },
             data: {
-                file,
-            },
-        }).then((response: any) => {
-            return this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data);
-        }, (response: any) => {
+                file
+            }
+        }).then((response: any) => this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data), (response: any) => {
             console.log('Upload File: NOT SUCCESS');
             return this.$q.reject(response);
         }, (evt: any) => {
@@ -76,8 +74,6 @@ export class EbeguVorlageRS {
 
     public getEbeguVorlagenWithoutGesuchsperiode(): IPromise<TSEbeguVorlage[]> {
         return this.http.get(`${this.serviceURL}/nogesuchsperiode/`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseEbeguVorlages(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseEbeguVorlages(response.data));
     }
 }

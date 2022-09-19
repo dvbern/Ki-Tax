@@ -55,7 +55,7 @@ describe('errorService', () => {
                 const msgKey = 'TEST';
                 const args = {
                     fieldName: 'field',
-                    minlenght: '10',
+                    minlenght: '10'
                 };
                 expect(args).toBeTruthy();
                 errorService.addValidationError(msgKey, args);

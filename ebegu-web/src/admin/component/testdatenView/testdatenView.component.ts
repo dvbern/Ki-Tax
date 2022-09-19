@@ -42,7 +42,7 @@ import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 @Component({
     selector: 'dv-testdaten-view',
     templateUrl: './testdatenView.component.html',
-    styleUrls: ['./testdatenView.component.less'],
+    styleUrls: ['./testdatenView.component.less']
 })
 export class TestdatenViewComponent implements OnInit {
 
@@ -86,7 +86,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
         private readonly gemeindeAntragRS: GemeindeAntragService,
-        private readonly gesuchRS: GesuchRS,
+        private readonly gesuchRS: GesuchRS
     ) {
     }
 
@@ -155,7 +155,7 @@ export class TestdatenViewComponent implements OnInit {
         gesuchsperiodeId: string,
         gemeindeId: string,
         bestaetigt: boolean,
-        verfuegen: boolean,
+        verfuegen: boolean
     ): void {
         this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(
             response => {
@@ -169,7 +169,7 @@ export class TestdatenViewComponent implements OnInit {
         gemeindeId: string,
         bestaetigt: boolean,
         verfuegen: boolean,
-        username: string,
+        username: string
     ): void {
         this.testFaelleRS.createTestFallGS(testFall,
             gesuchsperiodeId,
@@ -263,7 +263,7 @@ export class TestdatenViewComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title,
-            link,
+            link
         };
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
     }
@@ -319,7 +319,7 @@ export class TestdatenViewComponent implements OnInit {
                 console.log(result);
                 this.dialog.open(DvNgDisplayObjectDialogComponent,
                     {data: {object: result}});
-            },
+            }
         );
     }
 
@@ -327,13 +327,13 @@ export class TestdatenViewComponent implements OnInit {
         const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
                 antragTyp: this.gemeindeAntragTyp,
                 gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
-                gemeinde: this.gemeindeForGemeindeAntrag.name,
+                gemeinde: this.gemeindeForGemeindeAntrag.name
             },
             {},
-            new TSPagination(),
+            new TSPagination()
         ).toPromise();
         return antraege.resultList.length === 0 || this.confirmDialog(
-            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
+            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?'
         );
     }
 
@@ -364,8 +364,8 @@ export class TestdatenViewComponent implements OnInit {
     private async confirmDialog(text: string): Promise<boolean> {
         return this.dialog.open(DvNgConfirmDialogComponent, {
             data: {
-                frage: text,
-            },
+                frage: text
+            }
         }).afterClosed()
             .toPromise();
     }

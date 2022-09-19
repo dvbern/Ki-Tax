@@ -7,5 +7,5 @@ export const environment: Environment = {
     test: true,
     hmr: false,
     logLevel: LogLevel.WARN,
-    logColorsEnabled: false,
+    logColorsEnabled: false
 };

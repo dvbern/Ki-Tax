@@ -195,7 +195,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 CONSTANTS.END_OF_TIME_STRING;
             return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
                 von: vonText,
-                bis: bisText,
+                bis: bisText
             });
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');

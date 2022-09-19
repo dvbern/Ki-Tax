@@ -28,7 +28,7 @@ export class DvLanguageSelectorComponentConfig implements IComponentOptions {
     public transclude = true;
     public template = require('./dv-language-selector.html');
     public bindings = {
-        hideForLoggedUser: '<',
+        hideForLoggedUser: '<'
     };
     public controller = DvLanguageSelector;
     public controllerAs = 'vm';
@@ -39,7 +39,7 @@ export class DvLanguageSelector implements IController {
     public static $inject: ReadonlyArray<string> = [
         'AuthServiceRS',
         '$translate',
-        'I18nServiceRSRest',
+        'I18nServiceRSRest'
     ];
 
     public readonly TSBrowserLanguage = TSBrowserLanguage;
@@ -48,7 +48,7 @@ export class DvLanguageSelector implements IController {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
-        private readonly i18nServiceRS: I18nServiceRSRest,
+        private readonly i18nServiceRS: I18nServiceRSRest
     ) {
     }
 

@@ -22,7 +22,7 @@ export class DailyBatchRS {
     public serviceURL: string;
 
     public constructor(public http: IHttpService, REST_API: string) {
-        this.serviceURL = REST_API + 'dailybatch';
+        this.serviceURL = `${REST_API  }dailybatch`;
     }
 
     public getServiceName(): string {
@@ -30,21 +30,21 @@ export class DailyBatchRS {
     }
 
     public runBatchCleanDownloadFiles(): IPromise<boolean> {
-        return this.callServer(this.serviceURL + '/cleanDownloadFiles');
+        return this.callServer(`${this.serviceURL  }/cleanDownloadFiles`);
     }
 
     public runBatchMahnungFristablauf(): IPromise<boolean> {
-        return this.callServer(this.serviceURL + '/mahnungFristAblauf');
+        return this.callServer(`${this.serviceURL  }/mahnungFristAblauf`);
     }
 
     public runBatchUpdateGemeindeForBGInstitutionen(): IPromise<boolean> {
-        return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
+        return this.callServer(`${this.serviceURL  }/updateGemeindeForBGInstitutionen`);
     }
 
     private callServer(url: string): IPromise<boolean> {
         return this.http.get(url)
-            .then((response: any) => {
-                return response; // FIXME müsste es nicht response.data sein?
-            });
+            .then((response: any) =>
+                 response // FIXME müsste es nicht response.data sein?
+            );
     }
 }

@@ -45,7 +45,7 @@ const LOG = LogFactory.createLog('FerienbetreuungAngebotComponent');
     selector: 'dv-ferienbetreuung-angebot',
     templateUrl: './ferienbetreuung-angebot.component.html',
     styleUrls: ['./ferienbetreuung-angebot.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
@@ -75,8 +75,8 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
     public ngOnInit(): void {
         combineLatest([
                 this.ferienbetreuungService.getFerienbetreuungContainer(),
-                this.authService.principal$.pipe(filter(principal => !!principal)),
-            ],
+                this.authService.principal$.pipe(filter(principal => !!principal))
+            ]
         ).pipe(takeUntil(this.unsubscribe$))
             .subscribe(([container, principal]) => {
             this.container = container;
@@ -106,32 +106,32 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         }
         this.form = this.fb.group({
             id: [
-                angebot?.id,
+                angebot?.id
             ],
             version: [
                 angebot?.version
             ],
             angebot: [
-                angebot?.angebot,
+                angebot?.angebot
             ],
             angebotAdresse: this.fb.group({
                 kontaktpersonVorname: [
-                    angebot?.angebotKontaktpersonVorname,
+                    angebot?.angebotKontaktpersonVorname
                 ],
                 kontaktpersonNachname: [
-                    angebot?.angebotKontaktpersonNachname,
+                    angebot?.angebotKontaktpersonNachname
                 ],
                 strasse: [
-                    angebot?.angebotAdresse?.strasse,
+                    angebot?.angebotAdresse?.strasse
                 ],
                 hausnummer: [
-                    angebot?.angebotAdresse?.hausnummer,
+                    angebot?.angebotAdresse?.hausnummer
                 ],
                 plz: [
-                    angebot?.angebotAdresse?.plz,
+                    angebot?.angebotAdresse?.plz
                 ],
                 ort: [
-                    angebot?.angebotAdresse?.ort,
+                    angebot?.angebotAdresse?.ort
                 ],
                 zusatzzeile: [
                     angebot?.angebotAdresse?.zusatzzeile
@@ -144,25 +144,25 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 angebot?.anzahlFerienwochenHerbstferien
             ],
             anzahlFerienwochenWinterferien: [
-                angebot?.anzahlFerienwochenWinterferien,
+                angebot?.anzahlFerienwochenWinterferien
             ],
             anzahlFerienwochenSportferien: [
-                angebot?.anzahlFerienwochenSportferien,
+                angebot?.anzahlFerienwochenSportferien
             ],
             anzahlFerienwochenFruehlingsferien: [
-                angebot?.anzahlFerienwochenFruehlingsferien,
+                angebot?.anzahlFerienwochenFruehlingsferien
             ],
             anzahlFerienwochenSommerferien: [
-                angebot?.anzahlFerienwochenSommerferien,
+                angebot?.anzahlFerienwochenSommerferien
             ],
             anzahlTage: [
-                angebot?.anzahlTage,
+                angebot?.anzahlTage
             ],
             bemerkungenAnzahlFerienwochen: [
                 angebot?.bemerkungenAnzahlFerienwochen
             ],
             anzahlStundenProBetreuungstag: [
-                angebot?.anzahlStundenProBetreuungstag,
+                angebot?.anzahlStundenProBetreuungstag
             ],
             betreuungErfolgtTagsueber: [
                 angebot?.betreuungErfolgtTagsueber
@@ -171,56 +171,56 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
                 angebot?.bemerkungenOeffnungszeiten
             ],
             finanziellBeteiligteGemeinden: [
-                angebot?.finanziellBeteiligteGemeinden,
+                angebot?.finanziellBeteiligteGemeinden
             ],
             gemeindeFuehrtAngebotSelber: [
-                angebot?.gemeindeFuehrtAngebotSelber,
+                angebot?.gemeindeFuehrtAngebotSelber
             ],
             gemeindeFuehrtAngebotInKooperation: [
-                angebot?.gemeindeFuehrtAngebotInKooperation,
+                angebot?.gemeindeFuehrtAngebotInKooperation
             ],
             gemeindeBeauftragtExterneAnbieter: [
-                angebot?.gemeindeBeauftragtExterneAnbieter,
+                angebot?.gemeindeBeauftragtExterneAnbieter
             ],
             angebotVereineUndPrivateIntegriert: [
-                angebot?.angebotVereineUndPrivateIntegriert,
+                angebot?.angebotVereineUndPrivateIntegriert
             ],
             bemerkungenKooperation: [
-                angebot?.bemerkungenKooperation,
+                angebot?.bemerkungenKooperation
             ],
             leitungDurchPersonMitAusbildung: [
-                angebot?.leitungDurchPersonMitAusbildung,
+                angebot?.leitungDurchPersonMitAusbildung
             ],
             betreuungDurchPersonenMitErfahrung: [
-                angebot?.betreuungDurchPersonenMitErfahrung,
+                angebot?.betreuungDurchPersonenMitErfahrung
             ],
             anzahlKinderAngemessen: [
-                angebot?.anzahlKinderAngemessen,
+                angebot?.anzahlKinderAngemessen
             ],
             betreuungsschluessel: [
-                angebot?.betreuungsschluessel,
+                angebot?.betreuungsschluessel
             ],
             bemerkungenPersonal: [
-                angebot?.bemerkungenPersonal,
+                angebot?.bemerkungenPersonal
             ],
             fixerTarifKinderDerGemeinde: [
-                angebot?.fixerTarifKinderDerGemeinde,
+                angebot?.fixerTarifKinderDerGemeinde
             ],
             einkommensabhaengigerTarifKinderDerGemeinde: [
-                angebot?.einkommensabhaengigerTarifKinderDerGemeinde,
+                angebot?.einkommensabhaengigerTarifKinderDerGemeinde
             ],
             tagesschuleTarifGiltFuerFerienbetreuung: [
-                angebot?.tagesschuleTarifGiltFuerFerienbetreuung,
+                angebot?.tagesschuleTarifGiltFuerFerienbetreuung
             ],
             ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet: [
-                angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet,
+                angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet
             ],
             kinderAusAnderenGemeindenZahlenAnderenTarif: [
-                angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif,
+                angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif
             ],
             bemerkungenTarifsystem: [
-                angebot?.bemerkungenTarifsystem,
-            ],
+                angebot?.bemerkungenTarifsystem
+            ]
         });
         this.setBasicValidation();
     }

@@ -56,7 +56,7 @@ const LOG = LogFactory.createLog('EditInstitutionTagesschuleComponent');
     templateUrl: './edit-institution-tagesschule.component.html',
     styleUrls: ['./edit-institution-tagesschule.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 
 export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
@@ -77,7 +77,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
         private readonly ref: ChangeDetectorRef,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -110,7 +110,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     private sortByPeriod(): void {
         this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule =
             TagesschuleUtil.sortEinstellungenTagesschuleByPeriod(
-                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule,
+                this.stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
             );
     }
 
@@ -143,7 +143,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             title: 'TS_DIALOG_FIRSTMODUL_TITLE',
             text: 'TS_DIALOG_FIRSTMODUL_TEXT',
             actionOneButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION1',
-            actionTwoButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION2',
+            actionTwoButtonLabel: 'TS_DIALOG_FIRSTMODUL_ACTION2'
         };
         dialogConfig.role = 'dialog';
         this.dialog.open(DvNgThreeButtonDialogComponent, dialogConfig).afterClosed().toPromise().then(result => {
@@ -168,7 +168,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public editModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): void {
         if (this.canEditModule(einstellungenTagesschule, group)) {
             this.openModul(einstellungenTagesschule, group);
@@ -177,7 +177,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     private openModul(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): void {
         if (!this.editMode) {
             return;
@@ -195,7 +195,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public removeModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): void {
         const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
@@ -205,7 +205,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public applyModulTagesschuleGroup(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): void {
         const index = this.getIndexOfElementwithIdentifier(group, einstellungenTagesschule.modulTagesschuleGroups);
         if (index > -1) {
@@ -220,7 +220,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public getIndexOfElementwithIdentifier(
         entityToSearch: TSModulTagesschuleGroup,
-        listToSearchIn: Array<TSModulTagesschuleGroup>,
+        listToSearchIn: Array<TSModulTagesschuleGroup>
     ): number {
         if (EbeguUtil.isNullOrUndefined(entityToSearch)) {
             return -1;
@@ -243,7 +243,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'MODUL_TYP_DYNAMISCH_TITLE',
-            text: 'MODUL_TYP_DYNAMISCH_INFO',
+            text: 'MODUL_TYP_DYNAMISCH_INFO'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
@@ -260,7 +260,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
-                },
+                }
             );
     }
 
@@ -268,7 +268,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'MODUL_TYP_SCOLARIS_TITLE',
-            text: 'MODUL_TYP_SCOLARIS_INFO',
+            text: 'MODUL_TYP_SCOLARIS_INFO'
         };
         dialogConfig.panelClass = this.panelClass;
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
@@ -283,7 +283,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
                 },
                 () => {
                     this.errorService.addMesageAsError('error');
-                },
+                }
             );
     }
 
@@ -302,7 +302,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         });
     }
 
-    private createModulGroupScolaris(modulname: TSModulTagesschuleName,
+    private createModulGroupScolaris(modulname: TSModulTagesschuleName
     ): TSModulTagesschuleGroup {
         const group = new TSModulTagesschuleGroup();
         group.modulTagesschuleName = modulname;
@@ -360,7 +360,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         }
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            institutionList,
+            institutionList
         };
         dialogConfig.panelClass = this.panelClass;
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
@@ -377,7 +377,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             .map(ordinal => getWeekdaysValues().indexOf(ordinal))
             // eslint-disable-next-line
             .sort()
-            .map((tag: number) => this.translate.instant(getWeekdaysValues()[tag] + '_SHORT'))
+            .map((tag: number) => this.translate.instant(`${getWeekdaysValues()[tag]  }_SHORT`))
             .join(', ');
     }
 
@@ -403,7 +403,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public canEditModule(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): boolean {
         if (group.isNew()) {
             return true;
@@ -426,7 +426,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
 
     public getEditDeleteButtonTooltip(
         einstellungenTagesschule: TSEinstellungenTagesschule,
-        group: TSModulTagesschuleGroup,
+        group: TSModulTagesschuleGroup
     ): string {
         if (!this.canEditModule(einstellungenTagesschule, group)) {
             return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');

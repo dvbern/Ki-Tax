@@ -33,7 +33,7 @@ export class HttpVersionInterceptor implements IHttpInterceptor {
 
     public constructor(
         private readonly $rootScope: IRootScopeService,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
     }
 

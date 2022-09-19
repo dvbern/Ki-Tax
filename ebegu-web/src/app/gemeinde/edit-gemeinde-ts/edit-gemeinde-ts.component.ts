@@ -34,7 +34,7 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
     templateUrl: './edit-gemeinde-ts.component.html',
     styleUrls: ['./edit-gemeinde-ts.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class EditGemeindeComponentTS implements OnInit {
 
@@ -57,7 +57,7 @@ export class EditGemeindeComponentTS implements OnInit {
 
     public constructor(
         private readonly $state: StateService,
-        private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRS
     ) {
     }
 
@@ -89,7 +89,7 @@ export class EditGemeindeComponentTS implements OnInit {
             result => {
                 this._tagesschulen = result;
                 this._tagesschulen.sort((a, b) => a.name.localeCompare(b.name));
-            },
+            }
         );
     }
 

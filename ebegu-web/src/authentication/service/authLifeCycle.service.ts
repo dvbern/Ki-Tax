@@ -24,7 +24,7 @@ import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
  * will let every class using this service know, that something happened.
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class AuthLifeCycleService {
 

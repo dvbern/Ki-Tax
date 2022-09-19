@@ -24,7 +24,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 @Component({
     selector: 'dv-benutzer-entry',
     templateUrl: './dv-benutzer-entry.component.html',
-    styleUrls: ['./dv-benutzer-entry.component.less'],
+    styleUrls: ['./dv-benutzer-entry.component.less']
 })
 export class DvBenutzerEntry {
 
@@ -54,7 +54,7 @@ export class DvBenutzerEntry {
             case TSRole.SACHBEARBEITER_GEMEINDE:
                 return [
                     ['fa fa-gift', TSVerantwortung.VERANTWORTUNG_BG],
-                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS],
+                    ['fa fa-graduation-cap', TSVerantwortung.VERANTWORTUNG_TS]
                 ];
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:

@@ -27,7 +27,7 @@ import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 export const SCHULUNG_CONFIG: IComponentOptions = {
     transclude: false,
     template: require('./schulungView.html'),
-    controllerAs: 'vm',
+    controllerAs: 'vm'
 };
 
 export class SchulungViewController implements IController {
@@ -45,7 +45,7 @@ export class SchulungViewController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly testFaelleRS: TestFaelleRS,
+        private readonly testFaelleRS: TestFaelleRS
     ) {
 
         this.mandant = this.getMandant();
@@ -55,7 +55,7 @@ export class SchulungViewController implements IController {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
-                const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
+                const username = `sch${  ((i + 1) < 10) ? `0${  (i + 1).toString()}` : (i + 1).toString()}`;
                 const benutzer = new TSBenutzer('Sandra',
                     name,
                     username,

@@ -27,7 +27,7 @@ export class SearchRS implements IEntityRS {
     public constructor(
         public $http: IHttpService,
         REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${REST_API}search`;
     }
@@ -43,9 +43,7 @@ export class SearchRS implements IEntityRS {
 
     public countAntraege(antragSearch: any): IPromise<number> {
         return this.$http.post(`${this.serviceURL}/search/count`, antragSearch)
-            .then((response: any) => {
-                 return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
@@ -55,9 +53,7 @@ export class SearchRS implements IEntityRS {
 
     public countPendenzenList(antragSearch: any): IPromise<number> {
         return this.$http.post(`${this.serviceURL}/jugendamt/count`, antragSearch)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
@@ -68,8 +64,6 @@ export class SearchRS implements IEntityRS {
 
     public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {
         return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseAntragDTOs(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
     }
 }

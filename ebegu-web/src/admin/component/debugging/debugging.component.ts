@@ -30,7 +30,7 @@ const LOG = LogFactory.createLog('DebuggingComponent');
     selector: 'dv-debugging',
     templateUrl: './debugging.component.html',
     styleUrls: ['./debugging.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DebuggingComponent implements OnInit, OnDestroy {
 
@@ -74,11 +74,11 @@ export class DebuggingComponent implements OnInit, OnDestroy {
                 filter(values => !!values && values.hasOwnProperty('routerTraceCategories')),
                 map(values => values.routerTraceCategories),
                 distinctUntilChanged(),
-                takeUntil(this.unsubscribe$),
+                takeUntil(this.unsubscribe$)
             )
             .subscribe(
                 (categories: Category[]) => categories.forEach(c => this.router.trace.enable(c)),
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 

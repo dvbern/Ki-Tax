@@ -52,7 +52,7 @@ export class GemeindeRS implements IEntityRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService,
         private readonly globalCacheService: GlobalCacheService,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
         this.serviceURL = `${REST_API}gemeinde`;
 
@@ -101,17 +101,13 @@ export class GemeindeRS implements IEntityRS {
                 gemeinden => {
                     this.principalGemeindenSubject$.next(gemeinden);
 
-                    const gemeindenTS = angular.copy(gemeinden.filter(g => {
-                        return g.angebotTS;
-                    }));
-                    const gemeindenFI = angular.copy(gemeinden.filter(g => {
-                        return g.angebotFI;
-                    }));
+                    const gemeindenTS = angular.copy(gemeinden.filter(g => g.angebotTS));
+                    const gemeindenFI = angular.copy(gemeinden.filter(g => g.angebotFI));
 
                     this.principalGemeindenSubjectTS$.next(gemeindenTS);
                     this.principalGemeindenSubjectFI$.next(gemeindenFI);
                 },
-                err => this.$log.error(err),
+                err => this.$log.error(err)
             );
     }
 
@@ -139,7 +135,7 @@ export class GemeindeRS implements IEntityRS {
             {
                 params: {
                     adminMail: email
-                },
+                }
             })
             .then(response => {
                 this.resetGemeindeCache(); // damit die neue Gemeinde in der Liste erscheint
@@ -230,9 +226,7 @@ export class GemeindeRS implements IEntityRS {
     }
 
     public hasGemeindenInStatusAngemeldet(): IPromise<boolean> {
-        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
-            return response.data;
-        });
+        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => response.data);
     }
 
     public getGemeindenRegistrierung(gemeindeBGId: string, gemeindenTSIds: string[]
@@ -243,7 +237,7 @@ export class GemeindeRS implements IEntityRS {
         let gemeindenTSIdOrNull = '';
         gemeindenTSIds.forEach(
             id => (gemeindenTSIdOrNull.length > 0
-                ? gemeindenTSIdOrNull += ',' + encodeURIComponent(id)
+                ? gemeindenTSIdOrNull += `,${  encodeURIComponent(id)}`
                 : gemeindenTSIdOrNull += encodeURIComponent(id)));
         return this.$http.get(
             `${this.serviceURL}/gemeindeRegistrierung/${gemeindeBGIdOrNull}/${gemeindenTSIdOrNull.length !== 0 ?
@@ -272,9 +266,7 @@ export class GemeindeRS implements IEntityRS {
                                                dokumentTyp: TSDokumentTyp): IPromise<boolean> {
         // eslint-disable-next-line max-len
         return this.$http.get(`${this.serviceURL}/existGemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public downloadGemeindeGesuchsperiodeDokument(gemeindeId: string, gesuchsperiodeId: string, sprache: TSSprache,
@@ -282,9 +274,7 @@ export class GemeindeRS implements IEntityRS {
         // eslint-disable-next-line max-len
         return this.$http.get(`${this.serviceURL}/gemeindeGesuchsperiodeDoku/${encodeURIComponent(gemeindeId)}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
             {responseType: 'blob'})
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getExternalClients(gemeindeId: string): IPromise<TSExternalClientAssignment> {
@@ -305,9 +295,7 @@ export class GemeindeRS implements IEntityRS {
     public downloadMusterDokument(gemeindeId: string): IPromise<BlobPart> {
         return this.$http.get(`${this.serviceURL}/musterdokument/${encodeURIComponent(gemeindeId)}`,
             {responseType: 'blob'})
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {

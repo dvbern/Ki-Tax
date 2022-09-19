@@ -43,7 +43,7 @@ export class DvQuicksearchboxController {
         '$translate',
         '$state',
         'AuthServiceRS',
-        '$injector',
+        '$injector'
     ];
 
     public noCache: boolean = true;
@@ -63,7 +63,7 @@ export class DvQuicksearchboxController {
         private readonly $translate: ITranslateService,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly $injector: IInjectorService,
+        private readonly $injector: IInjectorService
     ) {
     }
 
@@ -96,7 +96,7 @@ export class DvQuicksearchboxController {
 
     private addFakeTotalResultEntry(
         quickSearchResult: TSQuickSearchResult,
-        limitedResults: TSSearchResultEntry[],
+        limitedResults: TSSearchResultEntry[]
     ): void {
         if (angular.isArray(limitedResults) && limitedResults.length > 0) {
             const totalResEntry = new TSSearchResultEntry();
@@ -145,7 +145,7 @@ export class DvQuicksearchboxController {
             // open mitteilung
             this.$state.go('mitteilungen.view', {
                 dossierId: this.selectedItem.dossierId,
-                fallId: this.selectedItem.fallID,
+                fallId: this.selectedItem.fallID
             });
         } else {
             this.$state.go('search.list-view', {searchString: this.searchString});
@@ -163,7 +163,7 @@ export class DvQuicksearchboxController {
             gesuchId: antrag.antragId,
             dossierId: antrag.dossierId,
             fallId: antrag.fallId,
-            gemeindeId: antrag.gemeindeId,
+            gemeindeId: antrag.gemeindeId
         };
         if (inNewTab) {
             const url = this.$state.href(urlToGoTo, navObj);

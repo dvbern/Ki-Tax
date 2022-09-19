@@ -54,7 +54,7 @@ export const GUIDED_TOUR_SUPPORTED_ROLES = new Set<TSRole>(
         TSRole.SACHBEARBEITER_BG,
         TSRole.JURIST,
         TSRole.REVISOR,
-        TSRole.STEUERAMT,
+        TSRole.STEUERAMT
     ]
 );
 

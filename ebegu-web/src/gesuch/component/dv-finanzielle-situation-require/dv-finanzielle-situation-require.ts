@@ -32,7 +32,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
         areThereAnyBgBetreuungen: '=',
-        form: '=',
+        form: '='
     };
     public template = require('./dv-finanzielle-situation-require.html');
     public controller = DVFinanzielleSituationRequireController;

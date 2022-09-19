@@ -28,7 +28,7 @@ export class OkDialogController {
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
         title: string,
-        _okText: string,
+        _okText: string
     ) {
 
         this.title = EbeguUtil.isNotNullOrUndefined(title) ?

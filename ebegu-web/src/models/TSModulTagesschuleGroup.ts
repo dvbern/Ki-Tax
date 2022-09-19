@@ -50,7 +50,7 @@ export class TSModulTagesschuleGroup extends TSAbstractEntity {
     public constructor(
         modulTagesschuleName?: TSModulTagesschuleName,
         zeitVon?: string,
-        zeitBis?: string,
+        zeitBis?: string
     ) {
         super();
         this.modulTagesschuleName = modulTagesschuleName;

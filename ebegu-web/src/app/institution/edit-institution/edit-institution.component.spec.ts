@@ -39,10 +39,9 @@ describe('EditInstitutionComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -53,11 +52,10 @@ describe('EditInstitutionComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
-            declarations: [EditInstitutionComponent],
+            declarations: [EditInstitutionComponent]
         })
-            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);

@@ -24,7 +24,7 @@ export class FinanzielleSituationAufteilungDialogController {
     public bemerkungen: string;
 
     public constructor(
-        private readonly $mdDialog: IDialogService,
+        private readonly $mdDialog: IDialogService
     ) {
     }
 

@@ -29,23 +29,23 @@ const states: NgHybridStateDeclaration[] = [
         url: '/verlauf',
         component: UiViewComponent,
         data: {
-            roles: TSRoleUtil.getJugendamtAndSchulamtRole(),
-        },
+            roles: TSRoleUtil.getJugendamtAndSchulamtRole()
+        }
     },
     {
         name: 'verlauf.view',
         url: '/:gesuchId',
-        component: VerlaufComponent,
+        component: VerlaufComponent
     }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class VerlaufRoutingModule {
 }
