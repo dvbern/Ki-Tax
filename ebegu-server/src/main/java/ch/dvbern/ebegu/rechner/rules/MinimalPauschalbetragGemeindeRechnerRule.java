@@ -60,8 +60,17 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull RechnerRuleParameterDTO rechnerParameter) {
-		rechnerParameter.setMinimalPauschalBetrag(parameterDTO.getGemeindeParameter().getGemeindePauschalbetrag());
-		inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT, locale, parameterDTO.getGemeindeParameter().getGemeindePauschalbetrag());
+		if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
+			rechnerParameter.setMinimalPauschalBetrag(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragKita());
+			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_KITA, locale,
+				parameterDTO.getGemeindeParameter().getGemeindePauschalbetragKita());
+		} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
+			rechnerParameter.setMinimalPauschalBetrag(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragTfo());
+			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_TFO, locale,
+				parameterDTO.getGemeindeParameter().getGemeindePauschalbetragTfo());
+		} else {
+			throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
+		}
 	}
 
 	@Override

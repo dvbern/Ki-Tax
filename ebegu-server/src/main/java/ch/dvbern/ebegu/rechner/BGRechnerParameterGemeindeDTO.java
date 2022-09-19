@@ -30,6 +30,10 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED;
@@ -38,9 +42,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -65,7 +66,8 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	// (3) Minimal Betrag-Gutschein
 	private Boolean gemeindePauschalbetragEnabled;
-	private BigDecimal gemeindePauschalbetrag;
+	private BigDecimal gemeindePauschalbetragKita;
+	private BigDecimal gemeindePauschalbetragTfo;
 	private BigDecimal gemeindePauschalbetragMassgebendenEinkommen;
 
 
@@ -83,7 +85,9 @@ public final class BGRechnerParameterGemeindeDTO {
 		this.setGemeindeZusaetzlicherBabyGutscheinBetragTfo(asBigDecimal(paramMap, GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO, gesuchsperiode, gemeinde));
 		// (3) Minimal Betrag-Gutschein
 		this.setGemeindePauschalbetragEnabled(asBoolean(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT, gesuchsperiode, gemeinde));
-		this.setGemeindePauschalbetrag(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG, gesuchsperiode, gemeinde));
+		this.setGemeindePauschalbetragKita(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA, gesuchsperiode, gemeinde));
+		this.setGemeindePauschalbetragTfo(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, gesuchsperiode, gemeinde));
+
 		this.setGemeindePauschalbetragMassgebendenEinkommen(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN, gesuchsperiode, gemeinde));
 	}
 
@@ -208,12 +212,20 @@ public final class BGRechnerParameterGemeindeDTO {
 		this.gemeindePauschalbetragEnabled = gemeindePauschalbetragEnabled;
 	}
 
-	public BigDecimal getGemeindePauschalbetrag() {
-		return gemeindePauschalbetrag;
+	public BigDecimal getGemeindePauschalbetragKita() {
+		return gemeindePauschalbetragKita;
 	}
 
-	public void setGemeindePauschalbetrag(BigDecimal gemeindePauschalbetrag) {
-		this.gemeindePauschalbetrag = gemeindePauschalbetrag;
+	public void setGemeindePauschalbetragKita(BigDecimal gemeindePauschalbetragKita) {
+		this.gemeindePauschalbetragKita = gemeindePauschalbetragKita;
+	}
+
+	public BigDecimal getGemeindePauschalbetragTfo() {
+		return gemeindePauschalbetragTfo;
+	}
+
+	public void setGemeindePauschalbetragTfo(BigDecimal gemeindePauschalbetragTfo) {
+		this.gemeindePauschalbetragTfo = gemeindePauschalbetragTfo;
 	}
 
 	public BigDecimal getGemeindePauschalbetragMassgebendenEinkommen() {

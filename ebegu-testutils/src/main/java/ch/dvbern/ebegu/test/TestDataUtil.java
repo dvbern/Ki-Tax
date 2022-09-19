@@ -200,7 +200,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_PENSUM_AUSSERORDENTL
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN;
@@ -217,6 +216,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
@@ -231,9 +234,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCH
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KESB_PLATZIERUNG_DEAKTIVIEREN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
@@ -271,6 +271,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
@@ -1980,7 +1981,8 @@ public final class TestDataUtil {
 		saveEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT, "2",
 			gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT, "false", gesuchsperiode, persistence);
-		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG, "0", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA, "0", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, "0", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN, "200000", gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode, persistence);

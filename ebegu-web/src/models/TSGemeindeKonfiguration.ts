@@ -55,7 +55,8 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
     public konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit: number; // only on client
     public konfigHoheEinkommensklassenAktiviert: boolean; // only on client
-    public konfigHoheEinkommensklassenBetrag: number; // only on client
+    public konfigHoheEinkommensklassenBetragKita: number; // only on client
+    public konfigHoheEinkommensklassenBetragTfo: number; // only on client
     public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
@@ -255,8 +256,12 @@ export class TSGemeindeKonfiguration {
                     this.konfigHoheEinkommensklassenAktiviert = (property.value === 'true');
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG: {
-                    this.konfigHoheEinkommensklassenBetrag = Number(property.value);
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA: {
+                    this.konfigHoheEinkommensklassenBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO: {
+                    this.konfigHoheEinkommensklassenBetragTfo = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {

@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -109,7 +110,8 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 				bezahltVollkosten);
 		// Zusaetzlicher Gutschein Gemeinde
 		verguenstigungProZeiteinheit =
-			EXACT.addNullSafe(verguenstigungProZeiteinheit,
+			EXACT.addNullSafe(
+				verguenstigungProZeiteinheit,
 				rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
 		// Zusaetzlicher Baby-Gutschein
 		verguenstigungProZeiteinheit =
@@ -121,7 +123,8 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 	@Override
 	protected BigDecimal unhabaengigeAnspruchRegelnDurchfuehren(
 		BigDecimal verguenstigung,
-		BigDecimal betreuungspensumZeiteinheit) {
+		BigDecimal betreuungspensumZeiteinheit,
+		BetreuungsangebotTyp betreuungsangebotTyp) {
 		// Minimal Pauschalbetrag wenn nicht erreicht
 		verguenstigung = verguenstigung.compareTo(MathUtil.EXACT.multiply(
 			rechnerParameter.getMinimalPauschalBetrag(),

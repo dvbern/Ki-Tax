@@ -90,7 +90,10 @@ public enum EinstellungKey {
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT(EinstellungTyp.GEMEINDE),
 
 	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen
-	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG(EinstellungTyp.GEMEINDE),
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA(EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO(EinstellungTyp.GEMEINDE),
 
 	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(EinstellungTyp.GEMEINDE),

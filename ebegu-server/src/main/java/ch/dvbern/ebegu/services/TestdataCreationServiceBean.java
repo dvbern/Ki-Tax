@@ -79,8 +79,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
-import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED;
@@ -120,6 +120,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG;
@@ -129,9 +133,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRU
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA;
@@ -616,7 +617,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
 		saveEinstellung(GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT, "false", gesuchsperiode);
-		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG, "0", gesuchsperiode);
+		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA, "0", gesuchsperiode);
+		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, "0", gesuchsperiode);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN, "200000", gesuchsperiode);
 		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode);
 		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode);

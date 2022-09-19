@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -109,7 +110,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinVorAbzugSelbstbehalt = EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, zuschlag);
 
 		// Gemeinde Rules berücksichtigen
-		BigDecimal gutscheinVorAbzugSelbstbehaltMitGemeindeRules = gemeindeRules(gutscheinVorAbzugSelbstbehalt, betreuungsZeiteinheiten);
+		BigDecimal gutscheinVorAbzugSelbstbehaltMitGemeindeRules = gemeindeRules(gutscheinVorAbzugSelbstbehalt, betreuungsZeiteinheiten, input.getBetreuungsangebotTyp());
 
 		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehaltMitGemeindeRules, selbstbehaltDerEltern);
 		// Gutschein darf nie null oder negativ sein
@@ -164,9 +165,10 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		}
 	}
 
-	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein, @Nonnull BigDecimal betreuungsZeiteinheiten){
+	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein, @Nonnull BigDecimal betreuungsZeiteinheiten, @Nonnull
+		BetreuungsangebotTyp betreuungsangebotTyp){
 		gutschein = gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(gutschein);
-		gutschein = gemeindeRulesUnabhengigVonVerfuegteZeiteinheit(gutschein, betreuungsZeiteinheiten);
+		gutschein = gemeindeRulesUnabhengigVonVerfuegteZeiteinheit(gutschein, betreuungsZeiteinheiten, betreuungsangebotTyp);
 		return gutschein;
 	}
 
@@ -181,10 +183,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return gutschein;
 	}
 
-	protected BigDecimal gemeindeRulesUnabhengigVonVerfuegteZeiteinheit ( @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten)
+	protected BigDecimal gemeindeRulesUnabhengigVonVerfuegteZeiteinheit ( @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp)
 	{
 		// Minimal Pauschalbetrag wenn nicht erreicht
 		gutschein = gutschein.compareTo(MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten)) < 0 ? MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten) : gutschein;
+
 		return gutschein;
 	}
 

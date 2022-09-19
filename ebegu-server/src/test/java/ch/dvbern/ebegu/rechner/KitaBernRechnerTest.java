@@ -18,10 +18,8 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -35,7 +33,6 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.MinimalPauschalbetragGemeindeRechnerRule;
-import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.spotify.hamcrest.pojo.IsPojo;
@@ -148,7 +145,7 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(true);
 		parameterGemeindeDTO.getGemeindeParameter()
 			.setGemeindePauschalbetragMassgebendenEinkommen(new BigDecimal(200000));
-		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetrag(new BigDecimal(8));
+		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetragKita(new BigDecimal(8));
 		// Rules aktiv, Max Einkommen erreicht
 		testGemeindeWithParams(
 			geburtstagKind,

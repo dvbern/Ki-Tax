@@ -2989,9 +2989,11 @@
     "KIBON_MITTEILUNGEN": "kiBon-Mitteilungen",
     "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN": "Pauschalbetrag von X CHF pro Tag für hohe Einkommensklassen",
-    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG": "Betrag in CHF pro Tag",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA": "Betrag in CHF pro Tag",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO": "Betrag in CHF pro Stunde",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN": "Bis zu einem massgebenden Einkommen in CHF von",
-    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_VALUE_READONLY": "Betrag pro Tag: {{value}} CHF",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY": "Betrag pro Tag: {{value}} CHF",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY": "Betrag pro Stunde: {{value}} CHF",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY": "Bis zu einem massgebenden Einkommen von: {{value}} CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -1122,22 +1122,43 @@
                                                 <!-- Höhere Einkommensklassen Betrag pro Tag-->
                                                 <div class="form-group"
                                                      *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
-                                                    <label for="hohe_einkommensklassen_betrag_id_{{i}}"
+                                                    <label for="hohe_einkommensklassen_betrag_kita_id_{{i}}"
                                                            class="required"
-                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG</label>
-                                                    <input id="hohe_einkommensklassen_betrag_id_{{i}}"
-                                                           name="hohe_einkommensklassen_betrag_id_{{i}}"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA</label>
+                                                    <input id="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_kita_id_{{i}}"
                                                            class="form-control"
                                                            type="number"
-                                                           #hohe_einkommensklassen_betrag='ngModel'
+                                                           #hohe_einkommensklassen_betrag_kita='ngModel'
                                                            required
                                                            customMinMax
                                                            [minValue]="0"
-                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetrag"
-                                                           (change)="changeKonfigHoheEinkommensklassenBetrag(konfigurationsListe[i])">
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKita"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragKita(konfigurationsListe[i])">
 
-                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_id_{{i}}"
-                                                                       [errorObject]="hohe_einkommensklassen_betrag.errors">
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <!-- Höhere Einkommensklassen Betrag pro Tag-->
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO</label>
+                                                    <input id="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_betrag_tfo='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragTfo"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragTfo(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_tfo.errors">
                                                     </dv-error-messages>
                                                 </div>
                                                 <!-- Höhere Einkommensklassen bis Massgebendeneinkommen -->
@@ -1537,8 +1558,12 @@
                                                 <strong>{{'GEMEINDE_HOHE_EINKOMMENSKLASSEN' | translate}}
                                                     :</strong>
                                                 <p translate
-                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenBetrag}">
-                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_VALUE_READONLY
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenBetragKita}">
+                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY
+                                                </p>
+                                                <p translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenBetragTfo}">
+                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY
                                                 </p>
                                                 <p translate
                                                    [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenMassgebendenEinkommen}">
