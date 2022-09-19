@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import ch.dvbern.ebegu.util.Constants;
 import com.google.common.base.Preconditions;
 import org.hibernate.envers.Audited;
 
@@ -61,7 +62,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean angebotVerfuegbarFuerAlleSchulstufen;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen;
 
@@ -132,6 +133,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	private String bemerkungenWeitereKostenUndErtraege;
 
 	// E: Kontrollfragen
@@ -141,7 +143,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean betreuungsstundenDokumentiertUndUeberprueft;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String betreuungsstundenDokumentiertUndUeberprueftBemerkung;
 
@@ -150,7 +152,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean elterngebuehrenGemaessVerordnungBerechnet;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String elterngebuehrenGemaessVerordnungBerechnetBemerkung;
 
@@ -159,7 +161,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean einkommenElternBelegt;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String einkommenElternBelegtBemerkung;
 
@@ -168,7 +170,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean maximalTarif;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String maximalTarifBemerkung;
 
@@ -177,7 +179,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(name="mindestens50prozent_betreuungszeit_bemerkung", nullable = true)
 	private String mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung;
 
@@ -186,14 +188,14 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	private Boolean ausbildungenMitarbeitendeBelegt;
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String ausbildungenMitarbeitendeBelegtBemerkung;
 
 	// Bemerkungen
 
 	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Column(nullable = true)
 	private String bemerkungen;
 
@@ -494,10 +496,15 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		);
 		assert getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse() != null;
 		assert getGeleisteteBetreuungsstundenBesondereBeduerfnisse() != null;
-		return getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
-			getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
-			.compareTo(getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
-				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete())) == 0;
+
+		final BigDecimal angabenStunden = getGeleisteteBetreuungsstundenBesondereBeduerfnisse().add(
+				getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()).add(
+				getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
+		final BigDecimal angabenStundenSplittedByNormlohn = getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().add(
+				getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+
+		return angabenStunden
+				.compareTo(angabenStundenSplittedByNormlohn) == 0;
 	}
 
 	@Nullable

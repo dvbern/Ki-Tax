@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -13,6 +14,7 @@ import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaFooter;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaHeader;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaStammdatenFinanzbuchhaltung;
 import ch.dvbern.ebegu.services.zahlungen.infoma.InfomaStammdatenZahlung;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.ZahlungsauftragBuilder;
 import ch.dvbern.ebegu.types.DateRange;
 import org.junit.jupiter.api.Assertions;
@@ -49,16 +51,17 @@ class ZahlungsfileGeneratorInfomaTest {
 				LocalDate.of(2022, Month.SEPTEMBER, 30)))
 			.withBeschrieb("Zahlungslauf August 2022")
 			.withZahlung(BigDecimal.valueOf(423.25), "Kita Brünnen", "419081")
+			.withMandant(TestDataUtil.getMandantLuzern())
 		);
 		Zahlung zahlung = auftrag.getZahlungen().get(0);
 
-		final String actualZahlung = InfomaStammdatenZahlung.with(zahlung, 200001);
-		final String externeId = "21.000001.002.1.1";
-		final String expectedZahlung = "1|2|BGR200001|" + externeId + "|31.08.2022||2|419081||||Kita Bruennen - Zahlungslauf August 2022|1|215|||||||||||||||||-423.25||31.08.2022|||||||||||||||||||||||||||||||010|||||BG 2022, 8/9, Kita Bruennen|||\n";
+		final String actualZahlung = InfomaStammdatenZahlung.with(zahlung, 200001, Locale.GERMAN);
+		final String externeId = "21000001.00211_08_31";
+		final String expectedZahlung = "1|2|BGR200001|" + externeId + "|31.08.2022||2|419081||||Kita Brünnen - Zahlungslauf August 2022|1|215|||||||||||||||||-423.25||31.08.2022|||||||||||||||||||||||||||||||010|||||Kita Brünnen, Betreuungsgutscheine August 2022|||\n";
 		Assertions.assertEquals(expectedZahlung, actualZahlung);
 
-		final String actualFinanzbuchhaltung = InfomaStammdatenFinanzbuchhaltung.with(zahlung, 200001);
-		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3637.010||||Kita Bruennen - Zahlungslauf August 2022|1|215|||2158303||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||BG 2022, 8/9, Kita Bruennen|||\n";
+		final String actualFinanzbuchhaltung = InfomaStammdatenFinanzbuchhaltung.with(zahlung, 200001, Locale.GERMAN);
+		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3637.010||||Kita Brünnen - Zahlungslauf August 2022|1|215|||2158303||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||Kita Brünnen, Betreuungsgutscheine August 2022|||\n";
 		Assertions.assertEquals(expectedFinanzbuchhaltung, actualFinanzbuchhaltung);
 	}
 }

@@ -252,7 +252,7 @@ public class BenutzerResource {
 	public List<JaxBenutzerNoDetails> getAllBenutzerMandant() {
 		Mandant mandant = principalBean.getMandant();
 
-		return benutzerService.getAllBenutzerMandant(mandant).stream()
+		return benutzerService.getAllActiveBenutzerMandant(mandant).stream()
 			.map(converter::benutzerToJaxBenutzerNoDetails)
 			.collect(Collectors.toList());
 	}

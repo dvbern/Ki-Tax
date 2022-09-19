@@ -760,9 +760,11 @@ export class GemeindeAngabenComponent implements OnInit {
                 'LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'));
             this.angabenForm.markAsPristine();
             this.unsavedChangesService.registerForm(this.angabenForm);
-        } else {
-            this.errorService.clearAll();
+            return;
         }
+
+        this.errorService.clearAll();
+
         this.dialog.open(DvNgOkDialogComponent, {
             data: {
                 title: this.translateService.instant(container.isInBearbeitungGemeinde() ?

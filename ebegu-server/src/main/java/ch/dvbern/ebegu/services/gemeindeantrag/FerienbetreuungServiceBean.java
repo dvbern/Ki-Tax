@@ -285,7 +285,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 			Optional<FerienbetreuungAngabenContainer> antragOfpreviousYear =
 					findFerienbetreuungAngabenVorgaengerContainer(container)
-							.filter(FerienbetreuungAngabenContainer::isGeprueft);
+							.filter(FerienbetreuungAngabenContainer::isAtLeastGeprueft);
 
 			antragOfpreviousYear.ifPresent(ferienbetreuungAngabenContainer ->
 					ferienbetreuungAngabenContainer.copyForErneuerung(container));

@@ -17,6 +17,8 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -127,9 +129,14 @@ export class TagesschulenListComponent implements OnInit {
                 return;
             }
             this.tableColumns = [
-                {displayedName: 'Tagesschule', attributeName: 'institutionName'},
+                {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
                 {displayedName: 'STATUS', attributeName: 'status'}
             ];
         }, error => console.error(error));
+    }
+
+    public isInBearbeitungGemeinde(): Observable<boolean> {
+        return this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .pipe(map(container => container.isInBearbeitungGemeinde()));
     }
 }
