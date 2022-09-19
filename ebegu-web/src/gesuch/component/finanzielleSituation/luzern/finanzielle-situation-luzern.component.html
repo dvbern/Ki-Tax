@@ -49,12 +49,14 @@
                 <div class="row" *ngIf="getGesuch().isMutation() && isGS1()">
                     <div class="col-md-12 dv-input-container-medium margin-bottom-20">
                         <dv-input-container class="form-group">
-                            <label class="md-no-float required" for="finSitGueltigAbDatum">
+                            <label class="md-no-float " for="finSitGueltigAbDatum">
                                 <span [translate]="'FINANZIELLE_SITUATION_GUELTIG_AB'"></span>
-                            </label>
+                            </label><div class="margin-bottom-10" *ngIf="showFinSitDatumGueltigAbText()">
+                            <p class="italic">{{getFinSitDatumGueltigAbText()}}</p>
+                        </div>
                             <div class="dv-input-container-medium-label">
                                 <dv-date-picker-x [(date)]="getGesuch().finSitAenderungGueltigAbDatum"
-                                                  [required]="true"
+
                                                   [disabled]="!isRoleGemeindeOrSuperAdmin()"
                                                   [inputId]="'finSitGueltigAbDatum'"
                                                   id="finSitGueltigAbDatum"

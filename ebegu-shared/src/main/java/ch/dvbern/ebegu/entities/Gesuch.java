@@ -994,7 +994,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 				.getVerguenstigungGewuenscht())) {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
-			copyFinSitAenderungGueltigAbDatumIfNeeded(target);
+			target.setFinSitAenderungGueltigAbDatum(getFinSitAenderungGueltigAbDatum());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -1015,16 +1015,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			break;
 		}
 		return target;
-	}
-
-	private void copyFinSitAenderungGueltigAbDatumIfNeeded(Gesuch target) {
-		if (finSitTyp != FinanzielleSituationTyp.LUZERN) {
-			return;
-		}
-
-		target.setFinSitAenderungGueltigAbDatum(
-			Objects.requireNonNullElseGet(finSitAenderungGueltigAbDatum,
-			() -> gesuchsperiode.getGueltigkeit().getGueltigAb()));
 	}
 
 	private void copyFamiliensituation(
@@ -1390,6 +1380,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Nonnull
 	public Mandant extractMandant() {
 		return Objects.requireNonNull(getFall().getMandant());
+	}
+
+	@Nullable
+	public LocalDate getFinSitAenderungStartDatum() {
+		if (finSitAenderungGueltigAbDatum == null) {
+			return getRegelStartDatum();
+		}
+
+		return finSitAenderungGueltigAbDatum;
 	}
 
 	@Nullable
