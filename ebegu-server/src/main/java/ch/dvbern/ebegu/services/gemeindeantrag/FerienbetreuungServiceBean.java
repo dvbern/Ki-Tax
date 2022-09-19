@@ -744,6 +744,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 		GemeindeStammdaten gemeindeStammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
 						.orElse(new GemeindeStammdaten());
+		gemeindeStammdaten.setGemeinde(container.getGemeinde());
 		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, sprache);
 	}
 }
