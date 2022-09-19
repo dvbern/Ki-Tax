@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -59,6 +60,7 @@ import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 @ApplicationScoped
 public class VerfuegungEventConverter {
@@ -123,24 +125,41 @@ public class VerfuegungEventConverter {
 	@Nonnull
 	private KindDTO toKindDTO(@Nonnull KindContainer kindContainer) {
 		Kind kind = kindContainer.getKindJA();
-		assert kind.getEinschulungTyp() != null;
-		assert kind.getSprichtAmtssprache() != null;
+
 		return KindDTO.newBuilder()
 			.setVorname(kind.getVorname())
 			.setNachname(kind.getNachname())
 			.setGeburtsdatum(kind.getGeburtsdatum())
-			.setStufe(EinschulungTyp.valueOf(kind.getEinschulungTyp().name()))
-			.setHatSozialeIndikation(kind.getPensumFachstelle() != null ?
-				kind.getPensumFachstelle().getIntegrationTyp().equals(IntegrationTyp.SOZIALE_INTEGRATION) :
-				false)
-			.setHatSprachlicheIndikation(kind.getPensumFachstelle() != null ?
-				kind.getPensumFachstelle().getIntegrationTyp().equals(IntegrationTyp.SPRACHLICHE_INTEGRATION) :
-				false)
-			.setSprichtMuttersprache(kind.getSprichtAmtssprache().booleanValue())
+			.setStufe(EinschulungTyp.valueOf(requireNonNull(kind.getEinschulungTyp()).name()))
+			.setHatSozialeIndikation(hatSozialeIndikation(kind))
+			.setHatSprachlicheIndikation(hatSprachlicheIndikation(kind))
+			.setSprichtMuttersprache(requireNonNull(kind.getSprichtAmtssprache()))
 			.setAusserordentlicherAnspruch(kind.getPensumAusserordentlicherAnspruch() != null)
-			.setKindAusAsylwesenAngabeElternGemeinde(kind.getAusAsylwesen() != null ? kind.getAusAsylwesen() : false)
-			.setKeinSelbstbehaltDurchGemeinde(kindContainer.getKeinSelbstbehaltDurchGemeinde() != null ? kindContainer.getKeinSelbstbehaltDurchGemeinde() : false)
+			.setKindAusAsylwesenAngabeElternGemeinde(isAusAsylwesen(kind))
+			.setKeinSelbstbehaltDurchGemeinde(isKeinSelbstbehaltDurchGemeinde(kindContainer))
 			.build();
+	}
+
+	private static boolean isKeinSelbstbehaltDurchGemeinde(@Nonnull KindContainer kindContainer) {
+		return requireNonNullElse(kindContainer.getKeinSelbstbehaltDurchGemeinde(), false);
+	}
+
+	private static boolean isAusAsylwesen(@Nonnull Kind kind) {
+		return requireNonNullElse(kind.getAusAsylwesen(), false);
+	}
+
+	private static boolean hatSozialeIndikation(@Nonnull Kind kind) {
+		PensumFachstelle pf = kind.getPensumFachstelle();
+
+		return pf != null
+			&& pf.getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION;
+	}
+
+	private static boolean hatSprachlicheIndikation(@Nonnull Kind kind) {
+		PensumFachstelle pf = kind.getPensumFachstelle();
+
+		return pf != null
+			&& pf.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION;
 	}
 
 	@Nonnull
@@ -156,8 +175,7 @@ public class VerfuegungEventConverter {
 	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
-			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatusInstitution()
-				.isIgnoriertIgnorierend()));
+			.collect(Collectors.partitioningBy(z -> z.getZahlungsstatusInstitution().isIgnoriertIgnorierend()));
 
 		List<VerfuegungZeitabschnitt> ignoredAbschnitte = abschnitteByIgnored.getOrDefault(true, emptyList());
 		List<VerfuegungZeitabschnitt> verrechnetAbschnitte = abschnitteByIgnored.getOrDefault(false, emptyList());
