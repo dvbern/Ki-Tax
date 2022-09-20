@@ -60,11 +60,11 @@ public enum MandantIdentifier {
 
 		@Override
 		public String getUrlCode() {
-			return "ausserrhoden";
+			return "ar";
 		}
 	};
 
 	public abstract <T> T accept(MandantVisitor<T> visitor);
 	public abstract String getUrlCode();
-};
+}
 
