@@ -35,6 +35,6 @@ public class VerfuegungDownloadAuthenticatorVisitor implements MandantVisitor<Bo
 
 	@Override
 	public Boolean visitAppenzellAusserrhoden() {
-		return Boolean.TRUE;
+		return !this.role.isInstitutionRole();
 	}
 }

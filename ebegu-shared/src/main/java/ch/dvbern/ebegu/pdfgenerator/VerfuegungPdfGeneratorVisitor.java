@@ -72,6 +72,6 @@ public class VerfuegungPdfGeneratorVisitor implements MandantVisitor<AbstractVer
 
 	@Override
 	public AbstractVerfuegungPdfGenerator visitAppenzellAusserrhoden() {
-		return new VerfuegungPdfGeneratorSolothurn(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
+		return new VerfuegungPdfGeneratorBern(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
 	}
 }
