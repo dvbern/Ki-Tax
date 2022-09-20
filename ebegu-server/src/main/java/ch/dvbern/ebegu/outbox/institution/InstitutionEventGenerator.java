@@ -61,20 +61,23 @@ public class InstitutionEventGenerator {
 		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution);
 
 		Predicate isNotPublished = cb.isFalse(institutionJoin.get(Institution_.eventPublished));
+		var statusParam = cb.parameter(InstitutionStatus.class, Institution_.STATUS);
+		Predicate notLatsStatus = cb.notEqual(institutionJoin.get(Institution_.status), statusParam);
 
-		query.where(isNotPublished);
+		query.where(isNotPublished, notLatsStatus);
 
 		List<InstitutionStammdaten> institutions = persistence.getEntityManager().createQuery(query)
+			.setParameter(statusParam, InstitutionStatus.NUR_LATS)
 			.getResultList();
 
-		institutions.forEach(stammdaten -> {
-			if (!stammdaten.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)){
+		institutions.stream()
+			.filter(InstitutionEventUtil::isExportable)
+			.forEach(stammdaten -> {
 				event.fire(institutionEventConverter.of(stammdaten));
 				Institution institution = stammdaten.getInstitution();
 				institution.setSkipPreUpdate(true);
 				institution.setEventPublished(true);
 				persistence.merge(institution);
-			}
-		});
+			});
 	}
 }
