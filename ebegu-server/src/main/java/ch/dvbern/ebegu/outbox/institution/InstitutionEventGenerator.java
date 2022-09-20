@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -67,12 +68,13 @@ public class InstitutionEventGenerator {
 			.getResultList();
 
 		institutions.forEach(stammdaten -> {
-			event.fire(institutionEventConverter.of(stammdaten));
-
-			Institution institution = stammdaten.getInstitution();
-			institution.setSkipPreUpdate(true);
-			institution.setEventPublished(true);
-			persistence.merge(institution);
+			if (!stammdaten.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)){
+				event.fire(institutionEventConverter.of(stammdaten));
+				Institution institution = stammdaten.getInstitution();
+				institution.setSkipPreUpdate(true);
+				institution.setEventPublished(true);
+				persistence.merge(institution);
+			}
 		});
 	}
 }
