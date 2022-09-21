@@ -24,6 +24,7 @@ SET @traegerschaft_solothurn_id = UNHEX(REPLACE('c256ebf1-3999-11ed-a63d-b05cda4
 SET @bruennen_id = UNHEX(REPLACE('caa83a6b-3999-11ed-a63d-b05cda43de9c', '-', ''));
 SET @weissenstein_id = UNHEX(REPLACE('d0bb7d2a-3999-11ed-a63d-b05cda43de9c', '-', ''));
 SET @tfo_id = UNHEX(REPLACE('d6c10415-3999-11ed-a63d-b05cda43de9c', '-', ''));
+SET @ts_id = UNHEX(REPLACE('5c136a35-39a9-11ed-a63d-b05cda43de9c', '-', ''));
 
 # APPLICATION PROPERTIES
 UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = @mandant_id_ar;
@@ -173,7 +174,7 @@ update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = @tes
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 								vorgaenger_id, name, status, mandant_id, traegerschaft_id, stammdaten_check_required,
 								event_published)
-VALUES (UNHEX(REPLACE('5c136a35-39a9-11ed-a63d-b05cda43de9c', '-', '')), '2020-02-28 09:48:18', '2020-02-28 10:11:35',
+VALUES (UNHEX(REPLACE(@ts_id, '-', '')), '2020-02-28 09:48:18', '2020-02-28 10:11:35',
 		'flyway', 'flyway', 0, NULL, 'Tagesschule Appenzell Ausserrhoden', 'AKTIV',
 		@mandant_id_ar, NULL, FALSE, TRUE);
 
