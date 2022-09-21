@@ -2887,7 +2887,7 @@
     "KORRESPONDENZ_LOGO_SPACING_TOP": "Distance du logo en haut",
     "KORRESPONDENZ_MUSTERDOKUMENT_LINK": "Télécharger un document type pour vérifier les paramètres",
     "KORRESPONDENZ_MUSTERDOKUMENT": "Modèle de document.pdf",
-    "CREATE_MISSING_FORMULARE": "Ajouter une école à journée continue",
+    "CREATE_MISSING_FORMULARE": "Créer les formulaires d’école à journée continue manquant",
     "ALL_TAGESSCHULE_FORMULARE_CREATED": "Tous les formulaires pour les écoles à journée continue ont été crées",
     "ANGABEN_VORJAHR": "Donnée {{gp}}",
     "ALLE_ABWAEHLEN": "Tout déselectionner",
