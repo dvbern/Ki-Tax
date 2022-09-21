@@ -161,6 +161,9 @@ export class LocalLoginComponent {
             case KiBonMandant.SO:
                 datum = LOCALLOGIN_DATA.SO;
                 break;
+            case KiBonMandant.AR:
+                datum = LOCALLOGIN_DATA.SO;
+                break;
             default:
                 datum = LOCALLOGIN_DATA.BE;
                 break;

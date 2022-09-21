@@ -58,14 +58,13 @@ export function getUnknowKitaIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000003';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000006';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000006';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000000';
-            break;
     }
 }
 
@@ -74,14 +73,13 @@ export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000004';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000007';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000007';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000001';
-            break;
     }
 }
 
@@ -90,14 +88,13 @@ export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string 
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000005';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000008';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000008';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000002';
-            break;
     }
 }
 
