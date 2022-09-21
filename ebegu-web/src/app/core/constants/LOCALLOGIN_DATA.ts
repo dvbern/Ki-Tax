@@ -98,6 +98,32 @@ export const LOCALLOGIN_DATA = {
             name: 'Testgemeinde Solothurn',
         },
     },
+    AR: {
+        mandant: {
+            id: '5b9e6fa4-3991-11ed-a63d-b05cda43de9c',
+            name: 'Kanton Appenzell Ausserrhoden',
+        },
+        traegerschaft: {
+            id: 'c256ebf1-3999-11ed-a63d-b05cda43de9c',
+            name: 'Kitas & Tagis Appenzell Ausserrhoden',
+        },
+        institution: {
+            id: 'caa83a6b-3999-11ed-a63d-b05cda43de9c',
+            name: 'Kita Brünnen SO',
+        },
+        tagesschule: {
+            id: '5c136a35-39a9-11ed-a63d-b05cda43de9c',
+            name: 'Tagesschule Appenzell Ausserrhoden',
+        },
+        sozialdienst: {
+            id: '1653a0c7-39ab-11ed-a63d-b05cda43de9c',
+            name: 'Appenzell Ausserrhodener Sozialdienst',
+        },
+        default_gemeinde: {
+            id: 'b3e44f85-3999-11ed-a63d-b05cda43de9c',
+            name: 'Testgemeinde Appenzell Ausserrhoden',
+        },
+    },
 };
 
 export interface LocalloginDatum {
