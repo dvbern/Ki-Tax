@@ -60,3 +60,20 @@ VALUES
 	(UUID(), @mandant_id_ar, 'AR', 3036, 'Wald (AR)', '1960-01-01'),
 	(UUID(), @mandant_id_ar, 'AR', 3037, 'Walzenhausen', '1960-01-01'),
 	(UUID(), @mandant_id_ar, 'AR', 3038, 'Wolfhalden', '1960-01-01');
+
+INSERT IGNORE INTO gesuchsperiode
+VALUES (UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', '')), NOW(), NOW(), 'system', 'system', 0, 0, '2023-08-01', '2024-07-31', NULL,
+		'ENTWURF', NULL, NULL, NULL,
+		NULL, NULL, NULL, @mandant_id_ar, NULL,
+		NULL);
+
+INSERT IGNORE INTO einstellung
+SELECT UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(), 'system', 'system', 0, einstellung_key, value, NULL,
+	(SELECT gesuchsperiode.id
+	 FROM gesuchsperiode
+			  INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+	 WHERE mandant_identifier = 'APPENZELL_AUSSERRHODEN'), NULL
+FROM einstellung
+		 INNER JOIN gesuchsperiode g ON einstellung.gesuchsperiode_id = g.id
+		 INNER JOIN mandant m2 ON g.mandant_id = m2.id
+WHERE m2.mandant_identifier = 'SOLOTHURN' AND gueltig_ab = '2022-08-01' AND gemeinde_id IS NULL AND einstellung.mandant_id is NULL;
