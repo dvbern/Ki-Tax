@@ -509,7 +509,14 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				isInfomaZahlung);
 			zahlungsposition.setZahlung(zahlung);
 			zahlung.getZahlungspositionen().add(zahlungsposition);
-			helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+			helper.setZahlungsstatus(zeitabschnitt, getZahluntsstatusVerrechnet(zeitabschnitt));
+	}
+
+	private VerfuegungsZeitabschnittZahlungsstatus getZahluntsstatusVerrechnet(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+			return zeitabschnitt.hasBetreuungspensum() ?
+				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET :
+				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
 	}
 
 	/**
@@ -868,9 +875,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Die nextBelegnummerInfoma hochzaehlen
 		final Mandant mandant = zahlungsauftrag.getMandant();
 		Objects.requireNonNull(mandant);
-		final long oldNextNummer = mandant.getNextInfomaBelegnummer();
+		final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
 		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
-		mandantService.updateNextInfomaBelegnummer(mandant, oldNextNummer + anzahlNeueZahlungen);
+		mandantService.updateNextInfomaBelegnummer(mandant, zahlungsauftrag.getZahlungslaufTyp(), oldNextNummer + anzahlNeueZahlungen);
 		return persistence.merge(zahlungsauftrag);
 	}
 

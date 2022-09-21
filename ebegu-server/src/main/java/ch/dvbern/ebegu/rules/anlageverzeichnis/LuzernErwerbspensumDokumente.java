@@ -73,6 +73,8 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
 		case NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG:
 			return EbeguUtil.isNotNullAndTrue(erwerbspensum.getUnregelmaessigeArbeitszeiten());
+		case NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 		default:
 			return false;
 		}
@@ -119,6 +121,12 @@ public class LuzernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensu
 					mandant), anlageVerzeichnis);
 				add(getDokument(gesuchstellerNumber, erwerbspensum, NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG,
 					local, mandant), anlageVerzeichnis);
+				add(getDokument(
+					gesuchstellerNumber,
+					erwerbspensum,
+					DokumentTyp.NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
+					local,
+					mandant), anlageVerzeichnis);
 			});
 	}
 

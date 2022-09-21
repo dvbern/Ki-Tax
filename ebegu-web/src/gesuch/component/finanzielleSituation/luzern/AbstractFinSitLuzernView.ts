@@ -17,7 +17,9 @@
 
 import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
+import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
+import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
@@ -25,6 +27,7 @@ import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleS
 import {TSFinanzielleSituationSelbstdeklaration} from '../../../../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../models/TSGesuch';
+import {DateUtil} from '../../../../utils/DateUtil';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -34,14 +37,13 @@ import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
-    public readonly: boolean = false;
-
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
         protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
-        protected authServiceRS: AuthServiceRS
+        protected authServiceRS: AuthServiceRS,
+        protected readonly translate: TranslateService
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -200,6 +202,10 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.gesuchModelManager.getGesuch();
     }
 
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
+
     public showInfomaFields(): boolean {
         return this.getAntragstellerNummer() === 1;
     }
@@ -276,5 +282,18 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public isRoleGemeindeOrSuperAdmin(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    public showFinSitDatumGueltigAbText(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.getGesuch().finSitAenderungGueltigAbDatum);
+    }
+
+    public getFinSitDatumGueltigAbText(): string {
+        const eingangsdatum = EbeguUtil.isNotNullOrUndefined(this.getGesuch().regelnGueltigAb) ?
+            this.getGesuch().regelnGueltigAb :
+            this.getGesuch().eingangsdatum;
+
+        const formatedDate = DateUtil.momentToLocalDateFormat(eingangsdatum, CONSTANTS.DATE_FORMAT);
+        return this.translate.instant('FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO', {datum: formatedDate});
     }
 }

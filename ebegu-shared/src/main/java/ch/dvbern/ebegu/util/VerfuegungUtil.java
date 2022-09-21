@@ -159,6 +159,7 @@ public final class VerfuegungUtil {
 					if (oldZeitabschnitt.isPresent()) {
 						statusOldZeitabchnitt = zahlungslaufHelper.getZahlungsstatus(oldZeitabschnitt.get());
 					}
+					//TODO what happens here ????
 					zahlungslaufHelper.setZahlungsstatus(newZeitabschnitt, statusOldZeitabchnitt);
 
 				}

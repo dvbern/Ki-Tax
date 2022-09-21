@@ -129,7 +129,7 @@ export class TagesschulenListComponent implements OnInit {
                 return;
             }
             this.tableColumns = [
-                {displayedName: 'Tagesschule', attributeName: 'institutionName'},
+                {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
                 {displayedName: 'STATUS', attributeName: 'status'}
             ];
         }, error => console.error(error));

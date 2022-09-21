@@ -1,5 +1,7 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -17,14 +19,15 @@ public class InfomaStammdatenFinanzbuchhaltung extends InfomaStammdaten {
 
 	private InfomaStammdatenFinanzbuchhaltung(
 		@NonNull Zahlung zahlung,
-		long belegnummer
+		long belegnummer,
+		Locale locale
 	) {
-		super(zahlung, belegnummer);
+		super(zahlung, belegnummer, locale);
 	}
 
 	@Nonnull
-	public static String with(@NonNull Zahlung zahlung, long belegnummer) {
-		InfomaStammdatenFinanzbuchhaltung stammdaten = new InfomaStammdatenFinanzbuchhaltung(zahlung, belegnummer);
+	public static String with(@NonNull Zahlung zahlung, long belegnummer, Locale locale) {
+		InfomaStammdatenFinanzbuchhaltung stammdaten = new InfomaStammdatenFinanzbuchhaltung(zahlung, belegnummer, locale);
 		return stammdaten.toString();
 	}
 

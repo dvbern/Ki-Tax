@@ -58,8 +58,6 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	protected static final String NORMLOHNKOSTEN_BETREUUNG = "PdfGeneration_normlohnkostenBetreuung";
 	protected static final String TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN =
 			"PdfGeneration_tatsachlicheEinnahmenElterngebuehren";
-	protected static final String RUCKERSTATTUNG_ELTERN = "PdfGeneration_ruckerstattungEltern";
-	protected static final String TS_TEILWEISE_GESCHLOSSEN = "PdfGeneration_tsTeilweiseGeschlossen";
 
 	protected static final String LATS_BETRAG = "PdfGeneration_latsBetrag";
 	protected static final String ERSTE_RATE = "PdfGeneration_ersteRate";
@@ -89,7 +87,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	protected static final String ELTERN_MAXTARIF = "PdfGeneration_elternMaxtarif";
 	protected static final String HAELFTE_AUSGEBILDET = "PdfGeneration_haelfteAusgebildet";
 	protected static final String AUSBILDUNGEN_ZERTIFIZIERT = "PdfGeneration_ausbildungenZertifiziert";
-	protected static final String BEMERKUNGEN = "Reports_bemerkungTitle";
+	protected static final String BEMERKUNGEN = "PdfGeneration_bemerkungen";
 
 	@Nonnull
 	private final LastenausgleichTagesschuleAngabenGemeindeContainer
@@ -219,14 +217,6 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		table.addRow(
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
-		table.addRow(
-				translate(TS_TEILWEISE_GESCHLOSSEN, mandant, getSchuljahrAsString()),
-				getBooleanAsString(angabenGemeinde.getTagesschuleTeilweiseGeschlossen()));
-		if(Boolean.TRUE.equals(angabenGemeinde.getTagesschuleTeilweiseGeschlossen())) {
-			table.addRow(
-					translate(RUCKERSTATTUNG_ELTERN, mandant),
-					angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
-		}
 
 		table.addRow(
 				translate(LATS_BETRAG, mandant, getSchuljahrAsString()),
@@ -379,12 +369,9 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenGemeinde getAngabenGemeinde() {
-		boolean neuOrInBearbeitungGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.isInStatusNeu()
-			|| lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde();
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-			neuOrInBearbeitungGemeinde ?
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
+		var angabenGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.getStatus().atLeastGeprueft() ?
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur() :
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration();
 		Objects.requireNonNull(angabenGemeinde);
 		return angabenGemeinde;
 	}
