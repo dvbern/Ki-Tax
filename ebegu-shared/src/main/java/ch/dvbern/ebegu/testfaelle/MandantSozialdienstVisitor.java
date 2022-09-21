@@ -30,7 +30,7 @@ public final class MandantSozialdienstVisitor implements MandantVisitor<Sozialdi
 	private static final String ID_BERNER_SOZIALDIENST = "f44a68f2-dda2-4bf2-936a-68e20264b620";
 	private static final String ID_LUZERNER_SOZIALDIENST = "7049ec48-30ab-11ec-a86f-b89a2ae4a038";
 	private static final String ID_SOLOTHURNER_SOZIALDIENST = "1b1b4208-5394-11ec-98e8-f4390979fa3e";
-	private static final String ID_APPENZELL_AUSSERRHODENER_SOZIALDIENST = "1b1b4208-5394-11ec-98e8-f4390979fa3e";
+	private static final String ID_APPENZELL_AUSSERRHODENER_SOZIALDIENST = "1653a0c7-39ab-11ed-a63d-b05cda43de9c";
 
 
 	private final SozialdienstService sozialdienstService;
