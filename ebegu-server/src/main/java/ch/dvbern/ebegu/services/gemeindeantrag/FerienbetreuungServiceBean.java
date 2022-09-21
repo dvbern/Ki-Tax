@@ -741,9 +741,15 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	@Override
 	public byte[] generateFerienbetreuungReportDokument(
 		@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) throws MergeDocException {
-		GemeindeStammdaten gemeindeStammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
-						.orElse(new GemeindeStammdaten());
+		Optional<GemeindeStammdaten> gemeindeStammdatenOpt =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId());
+		GemeindeStammdaten gemeindeStammdaten;
+		if (gemeindeStammdatenOpt.isEmpty()) {
+			gemeindeStammdaten = new GemeindeStammdaten();
+			gemeindeStammdaten.setGemeinde(container.getGemeinde());
+		} else {
+			gemeindeStammdaten = gemeindeStammdatenOpt.get();
+		}
 		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, sprache);
 	}
 }
