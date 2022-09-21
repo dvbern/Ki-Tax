@@ -35,6 +35,7 @@ WHERE mandant_id = @mandant_id_solothurn AND
 
 UPDATE application_property SET value = 'logo-kibon-ar.svg' WHERE name = 'LOGO_FILE_NAME' and mandant_id = @mandant_id_ar;
 UPDATE application_property SET value = 'logo-kibon--white-ar.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' and mandant_id = @mandant_id_ar;
+UPDATE application_property SET value = 'false' WHERE name = 'FRENCH_ENABLED' and mandant_id = @mandant_id_ar;
 
 # BFS Gemeinden
 INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab)
