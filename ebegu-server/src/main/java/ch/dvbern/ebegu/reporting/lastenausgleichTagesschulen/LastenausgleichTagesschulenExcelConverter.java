@@ -46,13 +46,14 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 
 		excelMerger.addValue(MergeFieldLastenausgleichTS.datumGeneriert, LocalDate.now());
 
-		data.forEach( lastenausgleichGemeindenDataRow -> {
+		data.forEach(lastenausgleichGemeindenDataRow -> {
 			ExcelMergerDTO gemeindenAngabenGroup = excelMerger.createGroup(MergeFieldLastenausgleichTS.rowGemeindenRepeat);
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.nameGemeinde, lastenausgleichGemeindenDataRow.getNameGemeinde());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.bfsNummer, lastenausgleichGemeindenDataRow.getBfsNummer());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.gemeindeFallNummer, lastenausgleichGemeindenDataRow.getGemeindeFallNummer());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.periode, lastenausgleichGemeindenDataRow.getPeriode());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.status, lastenausgleichGemeindenDataRow.getStatus());
+			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.timestampMutiert, lastenausgleichGemeindenDataRow.getTimestampMutiert());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.alleAnmeldungenKibon, lastenausgleichGemeindenDataRow.getAlleAnmeldungenKibon());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.bedarfAbgeklaert, lastenausgleichGemeindenDataRow.getBedarfAbgeklaert());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.ferienbetreuung, lastenausgleichGemeindenDataRow.getFerienbetreuung());
@@ -60,6 +61,7 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.grundZugangEingeschraenkt, lastenausgleichGemeindenDataRow.getGrundZugangEingeschraenkt());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenFaktor1, lastenausgleichGemeindenDataRow.getBetreuungsstundenFaktor1());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenFaktor15, lastenausgleichGemeindenDataRow.getBetreuungsstundenFaktor15());
+			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenFaktor3, lastenausgleichGemeindenDataRow.getBetreuungsstundenFaktor3());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenPaed, lastenausgleichGemeindenDataRow.getBetreuungsstundenPaed());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsstundenNichtPaed, lastenausgleichGemeindenDataRow.getBetreuungsstundenNichtPaed());
 			gemeindenAngabenGroup.addValue(MergeFieldLastenausgleichTS.elterngebuehrenBetreuung, lastenausgleichGemeindenDataRow.getElterngebuehrenBetreuung());
@@ -93,7 +95,8 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderKindergarten, lastenausgleichTagesschulenDataRow.getKinderKindergarten());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderPrimar, lastenausgleichTagesschulenDataRow.getKinderPrimar());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderSek, lastenausgleichTagesschulenDataRow.getKinderSek());
-				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderFaktor, lastenausgleichTagesschulenDataRow.getKinderFaktor());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderFaktor15, lastenausgleichTagesschulenDataRow.getKinderFaktor15());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderFaktor3, lastenausgleichTagesschulenDataRow.getKinderFaktor3());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderFrueh, lastenausgleichTagesschulenDataRow.getKinderFrueh());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderMittag, lastenausgleichTagesschulenDataRow.getKinderMittag());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.kinderNachmittag1, lastenausgleichTagesschulenDataRow.getKinderNachmittag1());
@@ -105,6 +108,26 @@ public class LastenausgleichTagesschulenExcelConverter implements ExcelConverter
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.betreuungsVerhaeltnis, lastenausgleichTagesschulenDataRow.getBetreuungsVerhaeltnis());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.ernaehrung, lastenausgleichTagesschulenDataRow.getErnaehrung());
 				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.bemerkungenTagesschule, lastenausgleichTagesschulenDataRow.getBemerkungenTagesschule());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.fruehBetMo, lastenausgleichTagesschulenDataRow.getFruehBetMo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.fruehBetDi, lastenausgleichTagesschulenDataRow.getFruehBetDi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.fruehBetMi, lastenausgleichTagesschulenDataRow.getFruehBetMi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.fruehBetDo, lastenausgleichTagesschulenDataRow.getFruehBetDo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.fruehBetFr, lastenausgleichTagesschulenDataRow.getFruehBetFr());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.mittagsBetMo, lastenausgleichTagesschulenDataRow.getMittagsBetMo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.mittagsBetDi, lastenausgleichTagesschulenDataRow.getMittagsBetDi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.mittagsBetMi, lastenausgleichTagesschulenDataRow.getMittagsBetMi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.mittagsBetDo, lastenausgleichTagesschulenDataRow.getMittagsBetDo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.mittagsBetFr, lastenausgleichTagesschulenDataRow.getMittagsBetFr());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags1BetMo, lastenausgleichTagesschulenDataRow.getNachmittags1BetMo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags1BetDi, lastenausgleichTagesschulenDataRow.getNachmittags1BetDi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags1BetMi, lastenausgleichTagesschulenDataRow.getNachmittags1BetMi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags1BetDo, lastenausgleichTagesschulenDataRow.getNachmittags1BetDo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags1BetFr, lastenausgleichTagesschulenDataRow.getNachmittags1BetFr());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags2BetMo, lastenausgleichTagesschulenDataRow.getNachmittags2BetMo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags2BetDi, lastenausgleichTagesschulenDataRow.getNachmittags2BetDi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags2BetMi, lastenausgleichTagesschulenDataRow.getNachmittags2BetMi());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags2BetDo, lastenausgleichTagesschulenDataRow.getNachmittags2BetDo());
+				tagesschuleAngabenGroup.addValue(MergeFieldLastenausgleichTS.nachmittags2BetFr, lastenausgleichTagesschulenDataRow.getNachmittags2BetFr());
 			});
 		});
 

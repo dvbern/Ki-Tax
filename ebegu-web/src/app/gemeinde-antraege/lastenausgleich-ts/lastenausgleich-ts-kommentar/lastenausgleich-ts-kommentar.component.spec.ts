@@ -37,7 +37,7 @@ const lastenausgleichTSServiceSpy = jasmine.createSpyObj<LastenausgleichTSServic
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
-    ['getAllBenutzerMandant']);
+    ['getAllActiveBenutzerMandant']);
 
 describe('LastenausgleichTsKommentarComponent', () => {
     let component: LastenausgleichTsKommentarComponent;
@@ -72,7 +72,7 @@ describe('LastenausgleichTsKommentarComponent', () => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
         );
-        benuzerRSSpy.getAllBenutzerMandant.and.returnValue(Promise.resolve([]));
+        benuzerRSSpy.getAllActiveBenutzerMandant.and.returnValue(Promise.resolve([]));
         fixture = TestBed.createComponent(LastenausgleichTsKommentarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

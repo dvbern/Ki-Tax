@@ -33,6 +33,7 @@ import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/c
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
 import {FjkvKinderabzugExchangeService} from '../../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
+import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {ColorService} from '../shared/services/color.service';
 import {MandantService} from '../shared/services/mandant.service';
@@ -82,6 +83,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         MandantService,
         CookieService,
         ColorService,
+        SearchRS,
         FjkvKinderabzugExchangeService
     ],
     declarations: [

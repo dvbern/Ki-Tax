@@ -63,6 +63,10 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	legendeVolleKosten(new SimpleMergeField<>("legendeVolleKosten", STRING_CONVERTER)),
 	legendeZweiwoechentlich(new SimpleMergeField<>("legendeZweiwoechentlich", STRING_CONVERTER)),
 	legendeOhneVerpflegung(new SimpleMergeField<>("legendeOhneVerpflegung", STRING_CONVERTER)),
+	anzahlBestaetigteAnmeldungen(new SimpleMergeField<>("anzahlBestaetigteAnmeldungen", STRING_CONVERTER)),
+	anzahlAbgelehnteAnmeldungen(new SimpleMergeField<>("anzahlAbgelehnteAnmeldungen", STRING_CONVERTER)),
+	anzahlOffeneAnmeldungen(new SimpleMergeField<>("anzahlOffeneAnmeldungen", STRING_CONVERTER)),
+	anzahlNichtFreigegebeneAnmeldungen(new SimpleMergeField<>("anzahlNichtFreigegebeneAnmeldungen", STRING_CONVERTER)),
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	repeatRow2(new RepeatRowMergeField("repeatRow2")),
@@ -89,6 +93,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 
 	abweichung(new SimpleMergeField<>("isAbweichung", BOOLEAN_X_CONVERTER)),
 	bemerkung(new SimpleMergeField<>("bemerkung", STRING_CONVERTER)),
+
 
 	repeatCol1(new RepeatColMergeField<>("repeatCol1", STRING_CONVERTER)),
 	repeatCol2(new RepeatColMergeField<>("repeatCol2", STRING_CONVERTER)),

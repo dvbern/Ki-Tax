@@ -176,9 +176,8 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	@Nonnull
 	private PdfPTable createTableStammdaten() {
 		FerienbetreuungAngabenStammdaten stammdaten =
-				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenStammdaten();
+				getAngabenForPDF().getFerienbetreuungAngabenStammdaten();
+
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(STAMMDATEN, mandant), "");
 		table.addRow(
@@ -215,10 +214,7 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 
 	@Nonnull
 	private PdfPTable createTableAngebot() {
-		FerienbetreuungAngabenAngebot angebot =
-				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenAngebot();
+		FerienbetreuungAngabenAngebot angebot = getAngabenForPDF().getFerienbetreuungAngabenAngebot();
 
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
@@ -332,10 +328,7 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 
 	@Nonnull
 	private PdfPTable createTableNutzung() {
-		FerienbetreuungAngabenNutzung nutzung =
-				(Objects.requireNonNull(ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-						ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-						ferienbetreuungAngabenContainer.getAngabenKorrektur())).getFerienbetreuungAngabenNutzung();
+		FerienbetreuungAngabenNutzung nutzung = getAngabenForPDF().getFerienbetreuungAngabenNutzung();
 
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 
@@ -382,9 +375,7 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	@Nonnull
 	private PdfPTable createTableKostenEinnahmen() {
 
-		FerienbetreuungAngaben angaben = ferienbetreuungAngabenContainer.isInBearbeitungGemeinde() ?
-			ferienbetreuungAngabenContainer.getAngabenDeklaration() :
-			ferienbetreuungAngabenContainer.getAngabenKorrektur();
+		FerienbetreuungAngaben angaben = getAngabenForPDF();
 
 		FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen = angaben.getFerienbetreuungAngabenKostenEinnahmen();
 		FerienbetreuungAngabenAngebot angebot = angaben.getFerienbetreuungAngabenAngebot();
@@ -428,6 +419,15 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
 
 		return pdfPTable;
+	}
+
+	@Nonnull
+	private FerienbetreuungAngaben getAngabenForPDF() {
+		var angaben = ferienbetreuungAngabenContainer.isAtLeastGeprueft() ?
+			ferienbetreuungAngabenContainer.getAngabenKorrektur() :
+			ferienbetreuungAngabenContainer.getAngabenDeklaration();
+		Objects.requireNonNull(angaben);
+		return angaben;
 	}
 
 	@Nonnull

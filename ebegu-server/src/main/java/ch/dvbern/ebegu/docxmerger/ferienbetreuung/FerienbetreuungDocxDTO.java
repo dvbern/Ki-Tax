@@ -26,6 +26,7 @@ public class FerienbetreuungDocxDTO {
 	@Nullable private String userEmail;
 	@Nullable private String gemeindeAnschrift;
 	@Nullable private String gemeindeStrasse;
+	@Nullable private String gemeindeNamen;
 	@Nullable private String gemeindeNr;
 	@Nullable private String gemeindePLZ;
 	@Nullable private String gemeindeOrt;
@@ -229,5 +230,14 @@ public class FerienbetreuungDocxDTO {
 
 	public void setPauschaleSonderschueler(@Nullable BigDecimal pauschaleSonderschueler) {
 		this.pauschaleSonderschueler = pauschaleSonderschueler;
+	}
+
+	@Nullable
+	public String getGemeindeNamen() {
+		return gemeindeNamen;
+	}
+
+	public void setGemeindeNamen(@Nullable String gemeindeNamen) {
+		this.gemeindeNamen = gemeindeNamen;
 	}
 }

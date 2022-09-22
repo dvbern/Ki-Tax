@@ -357,6 +357,10 @@ public class BGCalculationInput {
 		return bezahltVollkostenMonatAnteil;
 	}
 
+	public @NotNull BigDecimal getMonatAnteilVollkostenNichtBezahlt() {
+		return MathUtil.EXACT.subtract(BigDecimal.ONE, bezahltVollkostenMonatAnteil);
+	}
+
 	// In den RechnerRules kann nur gesetzt werden, das die Eltern die Vollkosten während des kompleten Zeitabschnittes
 	// also zu 100 % tragen. Einzig beim berchnen des prozentualen Anteils (@see BgCalculationInput#calculateInputValuesProportionaly)
 	// wird hier ein Wert zwischen 0 und 1 gesetzt

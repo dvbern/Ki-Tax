@@ -172,6 +172,7 @@ public class FerienbetreuungDokumentServiceBean extends AbstractBaseService
 		);
 
 		dto.setGemeindeAnschrift(stammdaten.getAdresse().getOrganisation());
+		dto.setGemeindeNamen(stammdaten.getGemeinde().getName());
 		dto.setGemeindeStrasse(stammdaten.getAdresse().getStrasse());
 		dto.setGemeindeNr(stammdaten.getAdresse().getHausnummer());
 		dto.setGemeindePLZ(stammdaten.getAdresse().getPlz());

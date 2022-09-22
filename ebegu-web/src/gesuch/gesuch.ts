@@ -369,4 +369,10 @@ export class GesuchRouteController implements IController {
     public isSozialdienstFall(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getDossier().fall.sozialdienstFall);
     }
+
+    public extractNachnameGS1(): string {
+        return this.getGesuch() && this.getGesuch().gesuchsteller1
+            ? this.getGesuch().gesuchsteller1.extractNachname()
+            : '';
+    }
 }
