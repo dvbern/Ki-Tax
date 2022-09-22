@@ -43,6 +43,7 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -53,6 +54,7 @@ import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/d
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
@@ -126,6 +128,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvBenutzerEntry,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
@@ -164,7 +167,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
-        DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
@@ -205,6 +208,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvBenutzerEntry,
@@ -236,6 +240,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,

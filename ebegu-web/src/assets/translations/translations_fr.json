@@ -1819,6 +1819,7 @@
     "STADT_BERN_ASIV_CONFIGURED": "La configuration de la ville de Berne pour les règles OPIS est définie, les périodes seront calculées après le passage à OPIS",
     "STADT_BERN_ASIV_START_DATUM": "Date à partir de laquelle les bons seront calculés selon OPIS",
     "UPLOAD_FILETYPES_WHITELIST": "Types de fichier-liste blanche",
+    "ACTIVATED_DEMO_FEATURES": "Aktivierte Demo Features",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Délais de soumission publique par défault selon l'ordonnance cantonale de nécessité",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Délais de soumission privé par défault selon l'ordonnance cantonale de nécessité",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
@@ -2906,5 +2907,10 @@
     "PDF_GENERIERUNG": "Génération - PDF",
     "KIBON_MITTEILUNGEN": "kiBon - Messages",
     "GEMEINDE_ANGEBOT_NUR_LATS": "Seulement pour la compensation des charges écoles à journée continue",
+    "ALLE_MUTATIONSMEDLUNG_AUTOMATISCH_BEARBEITEN": "Traiter les annonces de changement automatiquement",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind werden automatisch bearbeitet und falls möglich direkt verfügt.",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
+    "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

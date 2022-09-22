@@ -47,4 +47,5 @@ export class TSPublicAppConfig {
     public ebeguKibonAnfrageTestGuiEnabled: boolean;
     public steuerschnittstelleAktivAb: moment.Moment;
     public zusatzinformationenInstitution: boolean;
+    public activatedDemoFeatures: string;
 }
