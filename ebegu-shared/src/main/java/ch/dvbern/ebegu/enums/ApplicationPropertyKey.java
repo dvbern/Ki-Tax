@@ -192,7 +192,7 @@ public enum ApplicationPropertyKey {
 	 * Falls true wird eine Checkbox bei den Zahlungen angezeigt, mit der die Auszahlungen in der Zukunft
 	 * ausbezahlt werden können
 	 */
-	CHECKBOX_AUSZAHLEN_IN_ZUKUNFT;
+	CHECKBOX_AUSZAHLEN_IN_ZUKUNFT,
 
 	/**
 	 * Einige Features sollen in der Produktion noch ausgeblendet werden. Auf den Testungebungen können diese Features

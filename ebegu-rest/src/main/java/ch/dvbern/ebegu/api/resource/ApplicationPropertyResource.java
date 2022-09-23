@@ -424,7 +424,6 @@ public class ApplicationPropertyResource {
 			steuerschnittstelleAktivAb.getValue(),
 			stringToBool(zusatzinformationenInstitution.getValue()),
 			activatedDemoFeatures.getValue(),
-			stringToBool(zusatzinformationenInstitution.getValue()),
 			stringToBool(checkboxAuszahlungInZukunft.getValue())
 			);
 		return Response.ok(pubAppConf).build();

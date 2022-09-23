@@ -223,7 +223,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 			bern.getId(),
 			LocalDate.now(),
 			"Testauftrag",
-			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0), mandant);
+			false,
+			mandant);
 
 		//check all objects exist
 		Assert.assertEquals(2, readGesucheAsAdmin().size());
