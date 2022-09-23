@@ -36,4 +36,11 @@ public enum Sprache {
 	public Locale getLocale() {
 		return locale;
 	}
+
+	public static Sprache fromLocale(Locale locale) {
+		if (locale.equals(Locale.FRENCH)) {
+			return FRANZOESISCH;
+		}
+		return Sprache.DEUTSCH;
+	}
 }

@@ -79,7 +79,6 @@ import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordi
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
 import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
-import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
@@ -112,6 +111,7 @@ import {DVDatepicker} from './directive/dv-datepicker/dv-datepicker';
 import {DvDialog} from './directive/dv-dialog/dv-dialog';
 import {DVDisplayElement} from './directive/dv-display-element/dv-display-element';
 import {DVEnableElement} from './directive/dv-enable-element/dv-enable-element';
+import {DvIsNotQrIban} from './directive/dv-is-not-qr-iban/dv-is-not-qr-iban';
 import {DVLoadingButton} from './directive/dv-loading-button/dv-loading-button';
 import {DVLoading} from './directive/dv-loading/dv-loading';
 import {DVMaxLength} from './directive/dv-max-length';
@@ -215,7 +215,6 @@ export const CORE_JS_MODULE = angular
     .service('FamiliensituationRS', FamiliensituationRS)
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
-    .service('SearchRS', SearchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
     .service('EinkommensverschlechterungContainerRS', EinkommensverschlechterungContainerRS)
     .service('EinkommensverschlechterungInfoRS', EinkommensverschlechterungInfoRS)
@@ -254,10 +253,12 @@ export const CORE_JS_MODULE = angular
     .factory('ErrorServiceX', downgradeInjectable(ErrorServiceX) as any)
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
+    .factory('SearchRS', downgradeInjectable(SearchRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
+    .directive('dvIsNotQrIban', DvIsNotQrIban.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
     .directive('dvValueinput', DVValueinput.factory())
@@ -306,7 +307,6 @@ export const CORE_JS_MODULE = angular
     .component('dvAccordion', new DvAccordionComponentConfig())
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
-    .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
     .component('dvInputContainer', new DvInputContainerComponentConfig())

@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.outbox.institution.InstitutionEventUtil.isExportable;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -139,7 +140,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
-		if (!updatedStammdaten.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
+		if (isExportable(updatedStammdaten)) {
 			event.fire(institutionEventConverter.of(updatedStammdaten));
 		}
 	}
@@ -464,5 +465,18 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			return true;
 		}
 		return change.getGueltigBis().isBefore(current.getGueltigBis());
+	}
+
+	public void deleteInstitutionKennzahlenFields() {
+		var stammdatenList = this.getAllInstitonStammdatenForBatchjobs();
+		for (InstitutionStammdaten i : stammdatenList) {
+			var stammdatenBetreuungsgutscheine = i.getInstitutionStammdatenBetreuungsgutscheine();
+			if (stammdatenBetreuungsgutscheine != null) {
+				stammdatenBetreuungsgutscheine.setAuslastungInstitutionen(null);
+				stammdatenBetreuungsgutscheine.setAnzahlKinderWarteliste(null);
+				stammdatenBetreuungsgutscheine.setSummePensumWarteliste(null);
+				stammdatenBetreuungsgutscheine.setDauerWarteliste(null);
+			}
+		}
 	}
 }

@@ -95,14 +95,14 @@ export class PendenzenListViewComponent {
     }
 
     private countData(): void {
-        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
-            response => this.pagination.totalItemCount = response ? response : 0,
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).subscribe(
+            response => this.pagination.totalItemCount = response ? response : 0, error => LOG.error(error)
         );
     }
 
     private loadData(): void {
         this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
-            .then(response => {
+            .subscribe(response => {
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => {
                     return {
@@ -128,7 +128,7 @@ export class PendenzenListViewComponent {
                         isSozialdienst: antragDto.isSozialdienst,
                     };
                 }));
-            });
+            }, error => LOG.error(error));
     }
 
     public onFilterChange(listFilter: DVAntragListFilter): void {
@@ -136,6 +136,7 @@ export class PendenzenListViewComponent {
             ...listFilter,
         };
         this.loadData();
+        this.countData();
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {

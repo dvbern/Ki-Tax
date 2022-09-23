@@ -43,6 +43,7 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -53,6 +54,7 @@ import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/d
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
@@ -69,11 +71,12 @@ import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picke
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
-import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
-import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {SavingInfo} from './component/save-input-info/saving-info.component';
+import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
+import {WarningComponent} from './component/warning/warning.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {EnableElementDirective} from './directive/enable-element.directive';
@@ -90,7 +93,7 @@ import {NextPeriodeStrPipe} from './pipe/next-periode-str.pipe';
 import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
-import { WarningComponent } from './component/warning/warning.component';
+import {QrIbanValidatorDirective} from './validators/qr-iban-validator.directive';
 
 export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
@@ -119,11 +122,13 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         AccordionDirective,
         AccordionTabDirective,
         NumbersMinMaxDirective,
+        QrIbanValidatorDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvBenutzerEntry,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
@@ -162,7 +167,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
-        DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
@@ -197,11 +202,13 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         AccordionDirective,
         AccordionTabDirective,
         NumbersMinMaxDirective,
+        QrIbanValidatorDirective,
         BenutzerRolleComponent,
         BerechtigungComponent,
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvBenutzerEntry,
@@ -233,6 +240,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,

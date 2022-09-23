@@ -215,6 +215,13 @@ public interface BenutzerService {
 	Collection<Benutzer> getAllBenutzerTsOrGemeinde();
 
 	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen SACHBEARBEITER_MANDANT oder ADMIN_MANDANT zurueck.
+	 *
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getAllActiveBenutzerMandant(@Nonnull Mandant mandant);
+
+	/**
 	 * @return Liste saemtlicher Gesuchsteller aus der DB
 	 */
 	@Nonnull

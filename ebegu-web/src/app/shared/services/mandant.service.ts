@@ -188,7 +188,7 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /(local|dev|uat|iat|replica)?(?=(-.*)?\.(kibon))/;
+        const environmentRegex = /(local|dev|uat|iat|demo|replica)?(?=(-.*)?\.(kibon))/;
         const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
         if (matches === null) {
             return '';

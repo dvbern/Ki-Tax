@@ -607,30 +607,32 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public anmeldungSchulamtUebernehmen(isScolaris: { isScolaris: boolean }): void {
-        this.copyBGNumberLToClipboard();
-        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'CONFIRM_UEBERNAHME_SCHULAMT',
-            deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
-        }).then(() => {
-            let betreuungsstatus: TSBetreuungsstatus;
+        this.gesuchModelManager.reloadGesuch().then(() => {
+            this.copyBGNumberLToClipboard();
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'CONFIRM_UEBERNAHME_SCHULAMT',
+                deleteText: isScolaris ? 'BESCHREIBUNG_UEBERNAHME_SCHULAMT' : '',
+            }).then(() => {
+                let betreuungsstatus: TSBetreuungsstatus;
 
-            if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
-                betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
-                    ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
-                    : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
-            } else {
-                betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
-            }
+                if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESSCHULE) {
+                    betreuungsstatus = this.anmeldungTagesschuleDirektUebernehmen()
+                        ? TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN
+                        : TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT;
+                } else {
+                    betreuungsstatus = TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN;
+                }
 
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                this.save(betreuungsstatus,
-                    PENDENZEN_BETREUUNG,
-                    undefined);
-            } else {
-                this.save(betreuungsstatus,
-                    GESUCH_BETREUUNGEN,
-                    {gesuchId: this.getGesuchId()});
-            }
+                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                    this.save(betreuungsstatus,
+                        PENDENZEN_BETREUUNG,
+                        undefined);
+                } else {
+                    this.save(betreuungsstatus,
+                        GESUCH_BETREUUNGEN,
+                        {gesuchId: this.getGesuchId()});
+                }
+            });
         });
     }
 
@@ -723,10 +725,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         let institutionenSDList = this.gesuchModelManager.getActiveInstitutionenForGemeindeList()
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
 
-        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE
-            && this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
-            institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
+            institutionenSDList = institutionenSDList.filter(instStamm =>  instStamm.institution.status !== TSInstitutionStatus.NUR_LATS);
+
+            if (this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
+                institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
+            }
         }
+
         return institutionenSDList;
     }
 

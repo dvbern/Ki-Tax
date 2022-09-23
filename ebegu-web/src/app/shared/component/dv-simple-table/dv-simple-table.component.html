@@ -11,7 +11,7 @@
                     <span>{{column.displayedName | translate}}</span>
                 </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="ellipsis">
-                    <span [title]="getDisplayValue(element, column)  | translate">{{getDisplayValue(element, column) | translate}}</span>
+                    <span [title]="getDisplayValue(element, column)  | translate" [innerHTML]="getDisplayValue(element, column) | translate"></span>
                 </mat-cell>
             </ng-container>
 

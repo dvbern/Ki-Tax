@@ -368,7 +368,7 @@
                 required>
                     {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
                     <dv-tooltip
-                        [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{jahr: gemeindeAntragContainer?.gesuchsperiode?.getBasisJahrPlus3()}"></dv-tooltip>
+                        [text]="'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE_INFO' | translate:{jahr: gemeindeAntragContainer?.gesuchsperiode?.getBasisJahrPlus2  ()}"></dv-tooltip>
                 </label>
                 <mat-form-field floatLabel="always">
                     <input matInput
@@ -570,11 +570,11 @@
                 </tr>
                 <tr>
                     <td translate class="big-border-left">OEFFNUNGSZEIT_FRUEHBETREUUNG</td>
-                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.montag" (change)="fruehbetreuungOeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.dienstag" (change)="fruehbetreuungOeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.mittwoch" (change)="fruehbetreuungOeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.donnerstag" (change)="fruehbetreuungOeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
-                    <td class="big-border-right"><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.freitag" (change)="fruehbetreuungOeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.montag" (change)="fruehbetreuungOeffnungszeiten.montag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.dienstag" (change)="fruehbetreuungOeffnungszeiten.dienstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.mittwoch" (change)="fruehbetreuungOeffnungszeiten.mittwoch = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.donnerstag" (change)="fruehbetreuungOeffnungszeiten.donnerstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="fruehbetreuungOeffnungszeiten.freitag" (change)="fruehbetreuungOeffnungszeiten.freitag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
                 </tr>
                 <tr class="dunkel">
                     <td class="big-border-left"></td>
@@ -582,27 +582,27 @@
                 </tr>
                 <tr>
                     <td translate class="big-border-left">OEFFNUNGSZEIT_MITTAGSBETREUUNG</td>
-                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.montag" (change)="mittagsbetreuungOeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.dienstag" (change)="mittagsbetreuungOeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.mittwoch" (change)="mittagsbetreuungOeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.donnerstag" (change)="mittagsbetreuungOeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
-                    <td class="big-border-right"><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.freitag" (change)="mittagsbetreuungOeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.montag" (change)="mittagsbetreuungOeffnungszeiten.montag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.dienstag" (change)="mittagsbetreuungOeffnungszeiten.dienstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.mittwoch" (change)="mittagsbetreuungOeffnungszeiten.mittwoch = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.donnerstag" (change)="mittagsbetreuungOeffnungszeiten.donnerstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="mittagsbetreuungOeffnungszeiten.freitag" (change)="mittagsbetreuungOeffnungszeiten.freitag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
                 </tr>
                 <tr>
                     <td [innerHTML]="'OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_1' | translate" class="big-border-left"></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.montag" (change)="nachmittagsbetreuung1Oeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung1Oeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
-                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung1Oeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.montag" (change)="nachmittagsbetreuung1Oeffnungszeiten.montag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.dienstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung1Oeffnungszeiten.mittwoch = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung1Oeffnungszeiten.donnerstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung1Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung1Oeffnungszeiten.freitag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
                 </tr>
                 <tr>
                     <td [innerHTML]="'OEFFNUNGSZEIT_NACHMITTAGSBETREUUNG_2' | translate" class="big-border-left"></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.montag" (change)="nachmittagsbetreuung2Oeffnungszeiten.montag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.dienstag = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung2Oeffnungszeiten.mittwoch = $event.checked"></mat-checkbox></td>
-                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.donnerstag = $event.checked"></mat-checkbox></td>
-                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung2Oeffnungszeiten.freitag = $event.checked"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.montag" (change)="nachmittagsbetreuung2Oeffnungszeiten.montag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.dienstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.dienstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.mittwoch" (change)="nachmittagsbetreuung2Oeffnungszeiten.mittwoch = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.donnerstag" (change)="nachmittagsbetreuung2Oeffnungszeiten.donnerstag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
+                    <td class="big-border-right"><mat-checkbox [checked]="nachmittagsbetreuung2Oeffnungszeiten.freitag" (change)="nachmittagsbetreuung2Oeffnungszeiten.freitag = $event.checked" [disabled]="!canEditForm()"></mat-checkbox></td>
                 </tr>
             </table>
         </div>

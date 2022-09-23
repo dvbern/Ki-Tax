@@ -45,6 +45,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckIBANNotQR;
 import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.ebegu.validators.CheckKontodatenGemeinde;
 import ch.dvbern.ebegu.validators.ExternalClientOfType;
@@ -152,6 +153,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true)
 	@Embedded
 	@CheckIBANUppercase
+	@CheckIBANNotQR
 	@Valid
 	private IBAN iban;
 

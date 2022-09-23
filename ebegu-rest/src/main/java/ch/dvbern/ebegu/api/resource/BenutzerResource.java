@@ -240,6 +240,23 @@ public class BenutzerResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle SACHBEARBEITER_MANDANT und ADMIN_MANDANT für den Mandanten zurueck",
+		responseContainer = "List",
+		response = JaxBenutzerNoDetails.class)
+	@Nonnull
+	@GET
+	@Path("/mandant/all")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN,  ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public List<JaxBenutzerNoDetails> getAllBenutzerMandant() {
+		Mandant mandant = principalBean.getMandant();
+
+		return benutzerService.getAllActiveBenutzerMandant(mandant).stream()
+			.map(converter::benutzerToJaxBenutzerNoDetails)
+			.collect(Collectors.toList());
+	}
+
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
 		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",

@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.reporting.lastenausgleichTagesschulen;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +42,9 @@ public class LastenausgleichGemeindenDataRow {
 	private String status;
 
 	@Nullable
+	private LocalDateTime timestampMutiert;
+
+	@Nullable
 	private Boolean alleAnmeldungenKibon;
 
 	@Nullable
@@ -60,6 +64,9 @@ public class LastenausgleichGemeindenDataRow {
 
 	@Nullable
 	private BigDecimal betreuungsstundenFaktor15;
+
+	@Nullable
+	private BigDecimal betreuungsstundenFaktor3;
 
 	@Nullable
 	private BigDecimal betreuungsstundenPaed;
@@ -122,6 +129,9 @@ public class LastenausgleichGemeindenDataRow {
 	private String betreuungsstundenPrognoseKibon;
 
 	@Nullable
+	private String betreuungsstundenPrognoseBemerkungen;
+
+	@Nullable
 	private BigDecimal betreuungsstundenPrognose;
 
 	private Set<LastenausgleichTagesschulenDataRow> lastenausgleichTagesschulenDaten = new HashSet<>();
@@ -169,6 +179,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setStatus(@Nullable String status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public LocalDateTime getTimestampMutiert() {
+		return timestampMutiert;
+	}
+
+	public void setTimestampMutiert(@Nullable LocalDateTime timestampMutiert) {
+		this.timestampMutiert = timestampMutiert;
 	}
 
 	@Nullable
@@ -232,6 +251,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBetreuungsstundenFaktor15(@Nullable BigDecimal betreuungsstundenFaktor15) {
 		this.betreuungsstundenFaktor15 = betreuungsstundenFaktor15;
+	}
+
+	@Nullable
+	public BigDecimal getBetreuungsstundenFaktor3() {
+		return betreuungsstundenFaktor3;
+	}
+
+	public void setBetreuungsstundenFaktor3(@Nullable BigDecimal betreuungsstundenFaktor3) {
+		this.betreuungsstundenFaktor3 = betreuungsstundenFaktor3;
 	}
 
 	@Nullable
@@ -412,6 +440,15 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBetreuungsstundenPrognoseKibon(@Nullable String betreuungsstundenPrognoseKibon) {
 		this.betreuungsstundenPrognoseKibon = betreuungsstundenPrognoseKibon;
+	}
+
+	@Nullable
+	public String getBetreuungsstundenPrognoseBemerkungen() {
+		return betreuungsstundenPrognoseBemerkungen;
+	}
+
+	public void setBetreuungsstundenPrognoseBemerkungen(@Nullable String betreuungsstundenPrognoseBemerkungen) {
+		this.betreuungsstundenPrognoseBemerkungen = betreuungsstundenPrognoseBemerkungen;
 	}
 
 	public Set<LastenausgleichTagesschulenDataRow> getLastenausgleichTagesschulenDaten() {

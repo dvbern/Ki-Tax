@@ -206,7 +206,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -302,6 +301,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.InstitutionExternalClientId;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
@@ -309,7 +309,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -2844,6 +2843,7 @@ public class JaxBConverter extends AbstractConverter {
 		selbstdeklaration.setEinkunftUeberige(jaxSelbstdeklaration.getEinkunftUeberige());
 		selbstdeklaration.setEinkunftLiegenschaften(jaxSelbstdeklaration.getEinkunftLiegenschaften());
 		selbstdeklaration.setAbzugBerufsauslagen(jaxSelbstdeklaration.getAbzugBerufsauslagen());
+		selbstdeklaration.setAbzugSchuldzinsen(jaxSelbstdeklaration.getAbzugSchuldzinsen());
 		selbstdeklaration.setAbzugUnterhaltsbeitragKinder(jaxSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		selbstdeklaration.setAbzugSaeule3A(jaxSelbstdeklaration.getAbzugSaeule3A());
 		selbstdeklaration.setAbzugVersicherungspraemien(jaxSelbstdeklaration.getAbzugVersicherungspraemien());
@@ -2908,6 +2908,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setEinkunftUeberige(persistedSelbstdeklaration.getEinkunftUeberige());
 		jaxSelbstdeklaration.setEinkunftLiegenschaften(persistedSelbstdeklaration.getEinkunftLiegenschaften());
 		jaxSelbstdeklaration.setAbzugBerufsauslagen(persistedSelbstdeklaration.getAbzugBerufsauslagen());
+		jaxSelbstdeklaration.setAbzugSchuldzinsen(persistedSelbstdeklaration.getAbzugSchuldzinsen());
 		jaxSelbstdeklaration.setAbzugUnterhaltsbeitragKinder(persistedSelbstdeklaration.getAbzugUnterhaltsbeitragKinder());
 		jaxSelbstdeklaration.setAbzugSaeule3A(persistedSelbstdeklaration.getAbzugSaeule3A());
 		jaxSelbstdeklaration.setAbzugVersicherungspraemien(persistedSelbstdeklaration.getAbzugVersicherungspraemien());
@@ -4960,6 +4961,7 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilungToJAX(persistedMitteilung, jaxBetreuungsmitteilung);
 
 		jaxBetreuungsmitteilung.setApplied(persistedMitteilung.isApplied());
+		jaxBetreuungsmitteilung.setErrorMessage(persistedMitteilung.getErrorMessage());
 		jaxBetreuungsmitteilung.setBetreuungStornieren(persistedMitteilung.isBetreuungStornieren());
 		if (persistedMitteilung.getBetreuungspensen() != null) {
 			List<JaxBetreuungsmitteilungPensum> pensen = persistedMitteilung.getBetreuungspensen().stream()
@@ -5319,10 +5321,6 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
-		stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
-		convertAbstractFieldsToJAX(
-			stammdaten.getGemeindeStammdatenKorrespondenz(),
-			jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
 
 		return stammdaten;
@@ -6144,6 +6142,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeAntrag.setStatusString(gemeindeAntrag.getStatusString());
 		jaxGemeindeAntrag.setAntragAbgeschlossen(gemeindeAntrag.isAntragAbgeschlossen());
 
+		if (gemeindeAntrag.getVerantwortlicher() != null) {
+			jaxGemeindeAntrag.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
+		}
+
 		return jaxGemeindeAntrag;
 	}
 
@@ -6167,6 +6169,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setGesuchsperiode(gesuchsperiodeToJAX(gemeindeContainer.getGesuchsperiode()));
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
+		if (gemeindeContainer.getVerantwortlicher() != null) {
+			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeContainer.getVerantwortlicher()));
+		}
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
 		}
@@ -6177,6 +6182,7 @@ public class JaxBConverter extends AbstractConverter {
 			lastenausgleichTagesschuleAngabenInstitutionContainerListToJax(gemeindeContainer.getAngabenInstitutionContainers());
 		jaxGemeindeContainer.setAngabenInstitutionContainers(institutionContainerList);
 		jaxGemeindeContainer.setBetreuungsstundenPrognose(gemeindeContainer.getBetreuungsstundenPrognose());
+		jaxGemeindeContainer.setBemerkungenBetreuungsstundenPrognose(gemeindeContainer.getBemerkungenBetreuungsstundenPrognose());
 
 		return jaxGemeindeContainer;
 	}
@@ -6199,6 +6205,13 @@ public class JaxBConverter extends AbstractConverter {
 
 		gemeindeContainer.setAlleAngabenInKibonErfasst(jaxGemeindeContainer.getAlleAngabenInKibonErfasst());
 		gemeindeContainer.setInternerKommentar(jaxGemeindeContainer.getInternerKommentar());
+
+
+		if (jaxGemeindeContainer.getVerantwortlicher() != null) {
+			benutzerService.findBenutzer(jaxGemeindeContainer.getVerantwortlicher().getUsername(),
+					gemeindeContainer.getGemeinde().getMandant())
+				.ifPresent(gemeindeContainer::setVerantwortlicher);
+		}
 
 		if (jaxGemeindeContainer.getAngabenDeklaration() != null) {
 			if (gemeindeContainer.getAngabenDeklaration() != null) {
@@ -6496,11 +6509,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+	public static OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
 		try {
-			return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
+			return EbeguUtil.convertOeffnungszeiten(oeffnungszeiten);
 		} catch(JsonProcessingException e) {
 			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
 			return new OeffnungszeitenTagesschuleDTO[]{};

@@ -26,6 +26,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -44,6 +45,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	gemeindeFallNummer(new SimpleMergeField<>("gemeindeFallNummer", STRING_CONVERTER)),
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
+	timestampMutiert(new SimpleMergeField<>("timestampMutiert", DATETIME_CONVERTER)),
 	alleAnmeldungenKibon(new SimpleMergeField<>("alleAnmeldungenKibon", BOOLEAN_X_CONVERTER)),
 	bedarfAbgeklaert(new SimpleMergeField<>("bedarfAbgeklaert", BOOLEAN_X_CONVERTER)),
 	ferienbetreuung(new SimpleMergeField<>("ferienbetreuung", BOOLEAN_X_CONVERTER)),
@@ -51,6 +53,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	grundZugangEingeschraenkt(new SimpleMergeField<>("grundZugangEingeschraenkt", STRING_CONVERTER)),
 	betreuungsstundenFaktor1(new SimpleMergeField<>("betreuungsstundenFaktor1", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenFaktor15(new SimpleMergeField<>("betreuungsstundenFaktor15", BIGDECIMAL_CONVERTER)),
+	betreuungsstundenFaktor3(new SimpleMergeField<>("betreuungsstundenFaktor3", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPaed(new SimpleMergeField<>("betreuungsstundenPaed", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenNichtPaed(new SimpleMergeField<>("betreuungsstundenNichtPaed", BIGDECIMAL_CONVERTER)),
 	elterngebuehrenBetreuung(new SimpleMergeField<>("elterngebuehrenBetreuung", BIGDECIMAL_CONVERTER)),
@@ -72,6 +75,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	bemerkungenGemeinde(new SimpleMergeField<>("bemerkungenGemeinde", STRING_CONVERTER)),
 	betreuungsstundenPrognose(new SimpleMergeField<>("betreuungsstundenPrognose", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPrognoseKibon(new SimpleMergeField<>("betreuungsstundenPrognoseKibon", STRING_CONVERTER)),
+	betreuungsstundenPrognoseBemerkungen(new SimpleMergeField<>("betreuungsstundenPrognoseBemerkungen", STRING_CONVERTER)),
 
 	// Tagesschulen
 	gemeindeFallnummerTS(new SimpleMergeField<>("gemeindeFallnummerTS", STRING_CONVERTER)),
@@ -82,7 +86,8 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	kinderKindergarten(new SimpleMergeField<>("kinderKindergarten", BIGDECIMAL_CONVERTER)),
 	kinderPrimar(new SimpleMergeField<>("kinderPrimar", BIGDECIMAL_CONVERTER)),
 	kinderSek(new SimpleMergeField<>("kinderSek", BIGDECIMAL_CONVERTER)),
-	kinderFaktor(new SimpleMergeField<>("kinderFaktor", BIGDECIMAL_CONVERTER)),
+	kinderFaktor15(new SimpleMergeField<>("kinderFaktor15", BIGDECIMAL_CONVERTER)),
+	kinderFaktor3(new SimpleMergeField<>("kinderFaktor3", BIGDECIMAL_CONVERTER)),
 	kinderFrueh(new SimpleMergeField<>("kinderFrueh", BIGDECIMAL_CONVERTER)),
 	kinderMittag(new SimpleMergeField<>("kinderMittag", BIGDECIMAL_CONVERTER)),
 	kinderNachmittag1(new SimpleMergeField<>("kinderNachmittag1", BIGDECIMAL_CONVERTER)),
@@ -93,7 +98,28 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	raeumeGeeignet(new SimpleMergeField<>("raeumeGeeignet", BOOLEAN_X_CONVERTER)),
 	betreuungsVerhaeltnis(new SimpleMergeField<>("betreuungsVerhaeltnis", BOOLEAN_X_CONVERTER)),
 	ernaehrung(new SimpleMergeField<>("ernaehrung", BOOLEAN_X_CONVERTER)),
-	bemerkungenTagesschule(new SimpleMergeField<>("bemerkungenTagesschule", STRING_CONVERTER))
+	bemerkungenTagesschule(new SimpleMergeField<>("bemerkungenTagesschule", STRING_CONVERTER)),
+
+	fruehBetMo(new SimpleMergeField<>("fruehBetMo", BOOLEAN_X_CONVERTER)),
+	fruehBetDi(new SimpleMergeField<>("fruehBetDi", BOOLEAN_X_CONVERTER)),
+	fruehBetMi(new SimpleMergeField<>("fruehBetMi", BOOLEAN_X_CONVERTER)),
+	fruehBetDo(new SimpleMergeField<>("fruehBetDo", BOOLEAN_X_CONVERTER)),
+	fruehBetFr(new SimpleMergeField<>("fruehBetFr", BOOLEAN_X_CONVERTER)),
+	mittagsBetMo(new SimpleMergeField<>("mittagsBetMo", BOOLEAN_X_CONVERTER)),
+	mittagsBetDi(new SimpleMergeField<>("mittagsBetDi", BOOLEAN_X_CONVERTER)),
+	mittagsBetMi(new SimpleMergeField<>("mittagsBetMi", BOOLEAN_X_CONVERTER)),
+	mittagsBetDo(new SimpleMergeField<>("mittagsBetDo", BOOLEAN_X_CONVERTER)),
+	mittagsBetFr(new SimpleMergeField<>("mittagsBetFr", BOOLEAN_X_CONVERTER)),
+	nachmittags1BetMo(new SimpleMergeField<>("nachmittags1BetMo", BOOLEAN_X_CONVERTER)),
+	nachmittags1BetDi(new SimpleMergeField<>("nachmittags1BetDi", BOOLEAN_X_CONVERTER)),
+	nachmittags1BetMi(new SimpleMergeField<>("nachmittags1BetMi", BOOLEAN_X_CONVERTER)),
+	nachmittags1BetDo(new SimpleMergeField<>("nachmittags1BetDo", BOOLEAN_X_CONVERTER)),
+	nachmittags1BetFr(new SimpleMergeField<>("nachmittags1BetFr", BOOLEAN_X_CONVERTER)),
+	nachmittags2BetMo(new SimpleMergeField<>("nachmittags2BetMo", BOOLEAN_X_CONVERTER)),
+	nachmittags2BetDi(new SimpleMergeField<>("nachmittags2BetDi", BOOLEAN_X_CONVERTER)),
+	nachmittags2BetMi(new SimpleMergeField<>("nachmittags2BetMi", BOOLEAN_X_CONVERTER)),
+	nachmittags2BetDo(new SimpleMergeField<>("nachmittags2BetDo", BOOLEAN_X_CONVERTER)),
+	nachmittags2BetFr(new SimpleMergeField<>("nachmittags2BetFr", BOOLEAN_X_CONVERTER)),
 	;
 
 	@Nonnull

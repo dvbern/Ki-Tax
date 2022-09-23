@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -114,6 +115,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getMandantRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getTsBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setAntragstellerFilterForCurrentUser;
@@ -561,6 +563,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	public Collection<Benutzer> getAllBenutzerTsOrGemeinde() {
 		return getBenutzersOfRoles(getTsAndGemeindeRoles());
+	}
+
+	@Override
+	public Collection<Benutzer> getAllActiveBenutzerMandant(@Nonnull Mandant mandant) {
+		return getBenutzersOfRoles(getMandantRoles())
+			.stream()
+			.filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.filter(benutzer -> !benutzer.isGesperrt())
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -1180,6 +1191,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 					return new ImmutablePair<>(0L, Collections.emptyList());
 				}
 			}
+			// roleGueltigAb
+			if (predicateObjectDto.getRoleGueltigAb() != null) {
+				try {
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getRoleGueltigAb(), Constants.DATE_FORMATTER);
+					predicates.add(cb.equal(currentBerechtigungJoin.get(AbstractDateRangedEntity_.gueltigkeit)
+						.get(DateRange_.gueltigAb), searchDate));
+				} catch (DateTimeParseException e) {
+					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
+					return new ImmutablePair<>(0L, Collections.emptyList());
+				}
+			}
 			// gemeinde
 			if (predicateObjectDto.getGemeinde() != null) {
 				predicates.add(cb.equal(gemeindeSetJoin.get(Gemeinde_.name), predicateObjectDto.getGemeinde()));
@@ -1318,6 +1341,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				break;
 			case "role":
 				expression = currentBerechtigung.get(Berechtigung_.role);
+				break;
+			case "roleGueltigAb":
+				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb);
 				break;
 			case "roleGueltigBis":
 				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis);

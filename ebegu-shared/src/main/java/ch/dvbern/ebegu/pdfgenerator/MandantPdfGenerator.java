@@ -61,7 +61,7 @@ public abstract class MandantPdfGenerator {
 	protected static final String POSTFACH = "PdfGeneration_Postfach";
 	protected static final String PLZ_ORT = "PdfGeneration_PlzOrt";
 	// verwendet werden
-	protected Locale sprache;
+	protected Locale locale;
 	protected Mandant mandant;
 
 	@Nonnull
@@ -84,9 +84,9 @@ public abstract class MandantPdfGenerator {
 
 	private void initSprache(Sprache spracheToSet){
 		if(spracheToSet != null) {
-			this.sprache = spracheToSet.getLocale();
+			this.locale = spracheToSet.getLocale();
 		} else{
-			this.sprache = Sprache.DEUTSCH.getLocale();
+			this.locale = Sprache.DEUTSCH.getLocale();
 		}
 	}
 
@@ -150,9 +150,9 @@ public abstract class MandantPdfGenerator {
 		sb.append(Constants.LINE_BREAK);
 		sb.append("Rathausgasse 1");
 		sb.append(Constants.LINE_BREAK);
-		sb.append(ServerMessageUtil.getMessage(POSTFACH, sprache, mandant));
+		sb.append(ServerMessageUtil.getMessage(POSTFACH, locale, mandant));
 		sb.append(Constants.LINE_BREAK);
-		sb.append(ServerMessageUtil.getMessage(PLZ_ORT, sprache, mandant));
+		sb.append(ServerMessageUtil.getMessage(PLZ_ORT, locale, mandant));
 		sb.append(Constants.LINE_BREAK);
 		return sb.toString();
 	}
@@ -173,7 +173,7 @@ public abstract class MandantPdfGenerator {
 
 	@Nonnull
 	protected String translate(String key, Mandant mandant, Object... args) {
-		return ServerMessageUtil.getMessage(key, sprache, mandant, args);
+		return ServerMessageUtil.getMessage(key, locale, mandant, args);
 	}
 
 	protected void createFusszeile(

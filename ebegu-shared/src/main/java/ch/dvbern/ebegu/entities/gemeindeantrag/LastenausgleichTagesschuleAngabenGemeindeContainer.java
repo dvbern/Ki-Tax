@@ -39,6 +39,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
@@ -88,6 +89,11 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	private String internerKommentar;
 
 	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_angaben_gemeinde_container_verantwortlicher_id"))
+	private Benutzer verantwortlicher = null;
+
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_lats_fall_container_falldeklaration_id"), nullable = true)
@@ -107,6 +113,10 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal betreuungsstundenPrognose;
+
+	@Nullable
+	@Column(nullable = true)
+	private String bemerkungenBetreuungsstundenPrognose;
 
 	@Nonnull
 	public LastenausgleichTagesschuleAngabenGemeindeStatus getStatus() {
@@ -352,6 +362,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 		return formular.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
 			.add(formular.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse())
+			.add(formular.getGeleisteteBetreuungsstundenBesondereVolksschulangebot())
 			.compareTo(sumTagesschulen) == 0;
 	}
 
@@ -410,5 +421,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 
 	public boolean isAtLeastInPruefungKantonOrZurueckgegeben() {
 		return this.status.atLeastInPruefungKantonOrZurueckgegeben();
+	}
+
+	@Override
+	@Nullable
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(@Nullable Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
+	}
+
+	@Nullable
+	public String getBemerkungenBetreuungsstundenPrognose() {
+		return bemerkungenBetreuungsstundenPrognose;
+	}
+
+	public void setBemerkungenBetreuungsstundenPrognose(@Nullable String bemerkungenBetreuungsstundenPrognose) {
+		this.bemerkungenBetreuungsstundenPrognose = bemerkungenBetreuungsstundenPrognose;
 	}
 }

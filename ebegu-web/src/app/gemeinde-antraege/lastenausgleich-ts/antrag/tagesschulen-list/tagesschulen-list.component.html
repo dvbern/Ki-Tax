@@ -22,8 +22,8 @@
     </div>
 </div>
 
-<dv-simple-table [data]="data" [columns]="tableColumns" (rowClicked)="navigate($event)"></dv-simple-table>
+<dv-simple-table *ngIf="tableColumns" [data]="data" [columns]="tableColumns" (rowClicked)="navigate($event)"></dv-simple-table>
 <button class="dv-btn cancel-button margin-top-20"
-        *ngIf="isGemeindeSuperadmin()"
+        *ngIf="isGemeindeMandantOrSuperadmin() && (isInBearbeitungGemeinde() | async)"
         (click)="createMissingTagesschuleFormulare()"
         [textContent]="'CREATE_MISSING_FORMULARE' | translate"></button>

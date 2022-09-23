@@ -37,6 +37,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -107,6 +108,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
     public isLuzern: boolean;
+    private isAuszahlungAnAntragstellerEnabled: boolean = false;
 
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
@@ -195,20 +197,21 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.showHours = this.showPensumInHours();
         this.showDays = this.showPensumInDays();
         this.showVerfuegung = this.showVerfuegen();
-
-        this.initDevModeParameter();
     }
 
     private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegteVerfuegungsrelevanteDaten();
-        this.setFragenObIgnorieren();
         this.setMahlzeitenChanges();
+        this.initProperties();
     }
 
-    private initDevModeParameter(): void {
-        this.applicationPropertyRS.isDevMode().then((response: boolean) => {
+    private initProperties(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then((response: TSPublicAppConfig) => {
             // Schemas are only visible in devmode
-            this.showSchemas = response;
+            this.showSchemas = response.devmode;
+            this.isAuszahlungAnAntragstellerEnabled = response.infomaZahlungen;
+
+            this.setFragenObIgnorieren();
         });
     }
 
@@ -235,7 +238,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.fragenObIgnorieren = false; // by default
         this.fragenObIgnorierenMahlzeiten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
+            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren(!this.isAuszahlungAnAntragstellerEnabled);
             this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
         }
     }
@@ -591,6 +594,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showVerfuegungPdfLink(): boolean {
+        if (this.isLuzern && this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            return false;
+        }
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
@@ -759,11 +765,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnInstitutionenRow(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
+            return false;
+        }
+
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt nicht an die Eltern ausbezahlt wird soll die
         // Auszahlung an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnInstitutionen)) {
-            this.showAuszahlungAnInstitutionen = this.getVerfuegungZeitabschnitte()
-                .some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
+            this.showAuszahlungAnInstitutionen =
+                 this.getVerfuegungZeitabschnitte().some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
         }
 
         return this.showAuszahlungAnInstitutionen;
@@ -774,11 +784,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnElternRow(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
+            return false;
+        }
+
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt an die Eltern ausbezahlt wird soll die Auszahlung
         // an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnEltern)) {
-            this.showAuszahlungAnEltern =  this.getVerfuegungZeitabschnitte()
-                .some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
+            this.showAuszahlungAnEltern = this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
         }
 
         return this.showAuszahlungAnEltern;

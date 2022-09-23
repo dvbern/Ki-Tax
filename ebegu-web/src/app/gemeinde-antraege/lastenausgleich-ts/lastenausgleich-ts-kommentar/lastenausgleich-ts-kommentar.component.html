@@ -37,6 +37,21 @@
                     <span translate>VERLAUF_ANZEIGEN</span>
                 </button>
             </div>
+            <div class="margin-top-30 verantwortlicher-view">
+                <div class="form-group">
+                    <mat-select [(ngModel)]="lATSAngabenGemeindeContainer.verantwortlicher"
+                                id="verantwortlicher"
+                                class="form-control"
+                                (selectionChange)="saveVerantwortlicher()"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder=" {{'VERANTWORTLICHER' | translate:{name: getVerantwortlicherFullName()} }}">
+
+                        <mat-option [value]="undefined"> {{'NO_VERANTWORTLICHER_SELECTED' | translate }}</mat-option>
+                        <mat-option *ngFor="let benutzer of userList"
+                                    [value]="benutzer"> {{'VERANTWORTLICHER' | translate:{name: benutzer.getFullName()} }}</mat-option>
+                    </mat-select>
+                </div>
+            </div>
         </div>
     </form>
 </div>

@@ -14,13 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
+import {DvSimpleTableColumnDefinition} from '../../../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 import {GemeindeAntragService} from '../../../services/gemeinde-antrag.service';
 import {LastenausgleichTSService} from '../../services/lastenausgleich-ts.service';
 
@@ -30,16 +35,14 @@ const LOG = LogFactory.createLog('TagesschulenListComponent');
     selector: 'dv-tagesschulen-list',
     templateUrl: './tagesschulen-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class TagesschulenListComponent implements OnInit {
 
     @Input() public lastenausgleichId: string;
 
-    public data: { institutionName: string; status: string }[];
-    public tableColumns = [
-        {displayedName: 'Tagesschule', attributeName: 'institutionName'},
-        {displayedName: 'STATUS', attributeName: 'status'},
-    ];
+    public data: { institutionName: string; status: string; kontrollfragenOk: boolean }[];
+    public tableColumns: DvSimpleTableColumnDefinition[];
 
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
@@ -48,12 +51,20 @@ export class TagesschulenListComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly $state: StateService,
-        private readonly authService: AuthServiceRS
+        private readonly authService: AuthServiceRS,
     ) {
+    }
+
+    private static areKontrollfragenOk(latsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): boolean | null {
+        const latsInstiAngaben = latsInstitutionContainer.isAtLeastInBearbeitungGemeinde() ?
+            latsInstitutionContainer.angabenKorrektur :
+            latsInstitutionContainer.angabenDeklaration;
+        return latsInstiAngaben.areKontrollfragenAnswered() ? latsInstiAngaben.areKontrollfragenOk() : null;
     }
 
     public ngOnInit(): void {
         this.getAllVisibleTagesschulenAngabenForTSLastenausgleich();
+        this.initTableColumns();
     }
 
     private getAllVisibleTagesschulenAngabenForTSLastenausgleich(): void {
@@ -64,6 +75,7 @@ export class TagesschulenListComponent implements OnInit {
                             id: latsInstitutionContainer.id,
                             institutionName: latsInstitutionContainer.institution.name,
                             status: `LATS_STATUS_${latsInstitutionContainer.status}`,
+                            kontrollfragenOk: TagesschulenListComponent.areKontrollfragenOk(latsInstitutionContainer),
                         };
                     },
                 );
@@ -91,7 +103,40 @@ export class TagesschulenListComponent implements OnInit {
             });
     }
 
-    public isGemeindeSuperadmin(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
+    public isGemeindeMandantOrSuperadmin(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantOnlyRoles()));
+    }
+
+    private initTableColumns(): void {
+        this.lastenausgleichTSService.getLATSAngabenGemeindeContainer().subscribe(container => {
+            if (container.isAtLeastInBearbeitungKanton() && this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
+                this.tableColumns = [
+                    {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
+                    {displayedName: 'STATUS', attributeName: 'status'},
+                    {
+                        displayedName: 'KONTROLLFRAGEN',
+                        attributeName: 'kontrollfragenOk',
+                        displayFunction: (isOk: boolean) => {
+                            if (EbeguUtil.isNullOrUndefined(isOk)) {
+                                return '';
+                            }
+                            return isOk ?
+                                '<i class="fa fa-check padding-left-60 green"></i>' :
+                                '<i class="fa fa-close padding-left-60 red"></i>';
+                        },
+                    },
+                ];
+                return;
+            }
+            this.tableColumns = [
+                {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
+                {displayedName: 'STATUS', attributeName: 'status'}
+            ];
+        }, error => console.error(error));
+    }
+
+    public isInBearbeitungGemeinde(): Observable<boolean> {
+        return this.lastenausgleichTSService.getLATSAngabenGemeindeContainer()
+            .pipe(map(container => container.isInBearbeitungGemeinde()));
     }
 }

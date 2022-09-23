@@ -39,6 +39,8 @@ public interface DailyBatch {
 
 	void runBatchInfoOffenePendenzenNeueMitteilungInstitution();
 
+	void deleteInstitutionKennzahlenFields();
+
 	void runBatchInstitutionCheckRequired();
 
 	void runBatchSendEmailsForNewGesuchsperiode();

@@ -18,8 +18,8 @@
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,9 +51,9 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxBetreuungsstundenPrognose;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschulePrognose;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.authentication.AuthorizerImpl;
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeService;
@@ -390,6 +391,24 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	}
 
 	@ApiOperation(
+		value = "Speichert den Verantwortlichen eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
+		response = Void.class)
+	@PUT
+	@Path("/saveLATSVerantworlicher/{containerId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public void saveLATSVerantworlicher(
+		@Nullable String username,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(containerId);
+
+		angabenGemeindeService.saveVerantwortlicher(containerId.getId(), username);
+	}
+
+	@ApiOperation(
 		value = "Speichert die Betreuungsstunden Prognose eines LastenausgleichTagesschuleAngabenGemeindeContainer in der Datenbank",
 		response = Void.class)
 	@PUT
@@ -397,15 +416,15 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void saveLATSPrognose(
-		@Nonnull BigDecimal prognose,
+		@Nonnull JaxLastenausgleichTagesschulePrognose jaxPrognose,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response,
 		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
 	) {
 		Objects.requireNonNull(containerId);
-		Objects.requireNonNull(prognose);
+		Objects.requireNonNull(jaxPrognose);
 
-		angabenGemeindeService.savePrognose(containerId.getId(), prognose);
+		angabenGemeindeService.savePrognose(containerId.getId(), jaxPrognose.getPrognose(), jaxPrognose.getBemerkungen());
 	}
 
 	@ApiOperation(
@@ -658,7 +677,9 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		authorizer.checkReadAuthorization(container);
 
-		final byte[] content = latsDokumentService.generateLATSReportDokument(container);
+		final Locale locale = LocaleThreadLocal.get();
+		Sprache sprache = Sprache.fromLocale(locale);
+		final byte[] content = latsDokumentService.generateLATSReportDokument(container, sprache);
 
 		if (content != null && content.length > 0) {
 			try {

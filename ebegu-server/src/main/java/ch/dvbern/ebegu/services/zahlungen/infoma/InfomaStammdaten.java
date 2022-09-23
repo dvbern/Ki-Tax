@@ -1,9 +1,17 @@
 package ch.dvbern.ebegu.services.zahlungen.infoma;
 
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -33,18 +41,18 @@ public abstract class InfomaStammdaten {
 	private final String bankcode;
 	private final String kundenspezifischesFeld2;
 
-	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer) {
+	protected InfomaStammdaten(@NonNull Zahlung zahlung, long belegnummer, Locale locale) {
 		this.belegnummer = BELEGNUMMER_PRAEFIX + belegnummer;
-		this.externeNummer = getBgNummer(zahlung);
+		this.externeNummer = getExterneNummer(zahlung, locale);
 		this.buchungsdatum = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
 		this.kontoart = getKontoart();
 		this.kontonummer = getKontonummer(zahlung);
-		this.buchungstext = getBuchungstext(zahlung);
+		this.buchungstext = getBuchungstext(zahlung, locale);
 		this.dimensionswert3 = getDimensionswert3();
 		this.betrag = getBetrag(zahlung);
 		this.faelligkeitsdatum = getFaelligkeitsdatum(zahlung);
 		this.bankcode = getBankCode(zahlung);
-		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung);
+		this.kundenspezifischesFeld2 = getKundenspezifischesFeld2(zahlung, locale);
 	}
 
 	@Nonnull
@@ -66,31 +74,41 @@ public abstract class InfomaStammdaten {
 	protected abstract String getBankCode(@Nonnull Zahlung zahlung);
 
 	@Nonnull
-	private String getBuchungstext(Zahlung zahlung) {
-		return zahlung.getEmpfaengerName() + " - " + zahlung.getZahlungsauftrag().getBeschrieb();
+	private String getBuchungstext(Zahlung zahlung, Locale locale) {
+		final String kontoinhaber =
+			zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER ?
+				zahlung.getAuszahlungsdaten().getKontoinhaber() :
+				zahlung.getEmpfaengerName();
+
+		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
+		var monthBezeichnung = getMonthBezeichnung(zahlung, locale);
+		var year = getYearValueDatumGeneriert(zahlung);
+		return kontoinhaber + ", Betreuungsgutscheine " + monthBezeichnung + ' ' + year;
 	}
 
 	@Nonnull
-	private String getKundenspezifischesFeld2(Zahlung zahlung) {
-		final int monthValueVon = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonthValue();
-		final int monthValueBis = zahlung.getZahlungsauftrag().getGueltigkeit().getGueltigBis().getMonthValue();
-		String monthBezeichnung = "";
-		if (monthValueVon == monthValueBis) {
-			monthBezeichnung = String.valueOf(monthValueVon);
-		} else {
-			monthBezeichnung = monthValueVon + "/" + monthValueBis;
-		}
-		return "BG "
-			+ zahlung.getZahlungsauftrag().getDatumGeneriert().getYear()
-			+ ", "
-			+ monthBezeichnung
-			+ ", "
-			+ zahlung.getEmpfaengerName();
+	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung, Locale locale) {
+		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
+		var monthBezeichnung = getMonthBezeichnung(zahlung, locale);
+		var year = getYearValueDatumGeneriert(zahlung);
+		return "Betreuungsgutscheine " + monthBezeichnung + ' ' + year;
+	}
+
+	private String getMonthBezeichnung(@Nonnull Zahlung zahlung, @Nonnull Locale locale) {
+		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
+		return ServerMessageUtil
+			.translateEnumValue(monthValueDatumGeneriert, locale, zahlung.getZahlungsauftrag().getMandant());
+	}
+
+	private String getYearValueDatumGeneriert(@Nonnull Zahlung zahlung) {
+		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
+		return yearValueDatumGeneriert + "";
 	}
 
 	@Nonnull
-	private String getBgNummer(@Nonnull Zahlung zahlung) {
-		return zahlung
+	private String getExterneNummer(@Nonnull Zahlung zahlung, Locale locale) {
+		final String bgNummer =
+			zahlung
 			.getZahlungspositionen()
 			.stream()
 			.findFirst()
@@ -99,6 +117,20 @@ public abstract class InfomaStammdaten {
 			.getVerfuegung()
 			.getPlatz()
 			.getBGNummer();
+
+		final String month = zahlung.getZahlungsauftrag().getDatumGeneriert()
+			.format(DateTimeFormatter.ofPattern("_MM_dd", locale));
+		return formatBgNummer(bgNummer) +  month;
+	}
+
+	/**
+	 * Die BG-Nummer soll folendermaasen formatiert werden:
+	 * 22.000461.391.1.1 -> 22000461.39111
+	 */
+	@Nonnull
+	private String formatBgNummer(@Nonnull String bgNummer) {
+		String[] splitedBgNummer = bgNummer.split("\\.", 3);
+		return splitedBgNummer[0] + splitedBgNummer[1] + "." + splitedBgNummer[2].replace(".", "");
 	}
 
 	@Nonnull

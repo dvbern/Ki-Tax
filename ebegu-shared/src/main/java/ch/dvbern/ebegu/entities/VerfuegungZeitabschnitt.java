@@ -628,6 +628,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setAuszahlungAnEltern(auszahlungAnEltern);
 	}
 
+	public boolean hasBetreuungspensum() {
+		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

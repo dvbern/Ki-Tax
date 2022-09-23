@@ -139,7 +139,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			inputData.setKeinAnspruchAufgrundEinkommen(true);
 			if (!hasErweiterteBetreuung || pauschalBeiAnspruch) {
 				// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
-				inputData.setBezahltVollkosten(true);
+				inputData.setBezahltVollkostenKomplett();
 				if (platz.getBetreuungsangebotTyp().isJugendamt()) {
 					// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
 					// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen

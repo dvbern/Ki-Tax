@@ -37,6 +37,7 @@
 
             <div class="pull-right dossier-element fall-nummer"
                  [ngClass]="{'fall-nummer-gesuchsteller': isGesuchsteller()}">
+                <span [textContent]="nameGs" class="fall-toolbar-symbol-padding"></span>
                 <span [textContent]="fallNummer" class="fall-toolbar-symbol-padding"></span>
                 <span class="kitax-link" *ngIf="kitaxResponse && isGemeindeUserOrSuperAdmin()">
                     (<a target="_blank" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
@@ -45,9 +46,7 @@
                    class="fa"
                    [ngClass]="{'fa-desktop': isOnlineGesuch() && ! isSozialdienstGesuch(), 'fa-file-text-o': !isOnlineGesuch() && ! isSozialdienstGesuch(), 'fa-handshake-o': isSozialdienstGesuch()}"></i>
             </div>
-
         </div>
-
     </div>
 </div>
 <ng-template #mobileModeTemplate>

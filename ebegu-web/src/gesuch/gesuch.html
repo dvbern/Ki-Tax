@@ -15,7 +15,9 @@
 <dv-fall-toolbar [fall-id]="vm.getFallId()"
                  [kitax-enabled]="vm.gesuchModelManager.gemeindeKonfiguration.konfigSchnittstelleKitaxEnabled"
                  [dossier-id]="vm.getDossierId()"
-                 [current-dossier]="vm.getDossier()" hide-xs hide-sm>
+                 [current-dossier]="vm.getDossier()"
+                 [name-gs]="vm.extractNachnameGS1()"
+                 hide-xs hide-sm>
 </dv-fall-toolbar>
 
 <dossier-toolbar flex="nogrow" gesuchid="{{vm.getGesuchId()}}" dossier-id="{{vm.getDossierId()}}"

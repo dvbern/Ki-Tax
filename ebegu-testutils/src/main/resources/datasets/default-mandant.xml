@@ -28,5 +28,6 @@
 			 angebotts="false"
 			 angebotfi="false"
 			 activated="true"
-			 next_infoma_belegnummer="1"/>
+			 next_infoma_belegnummer_antragsteller="1"
+			 next_infoma_belegnummer_institutionen="80001"/>
 </dataset>

@@ -46,6 +46,7 @@ public class JaxPublicAppConfig {
 	private boolean ebeguKibonAnfrageTestGuiEnabled;
 	private final String steuerschnittstelleAktivAb;
 	private boolean zusatzinformationenInstitution;
+	private String activatedDemoFeatures;
 	private final boolean checkboxAuszahlungInZukunft;
 
 	public JaxPublicAppConfig(
@@ -82,6 +83,7 @@ public class JaxPublicAppConfig {
 			boolean ebeguKibonAnfrageTestGuiEnabled,
 			String steuerschnittstelleAktivAb,
 			boolean zusatzinformationenInstitution,
+			String activatedDemoFeatures,
 			boolean checkboxAuszahlungInZukunft
 		) {
 		this.currentNode = currentNode;
@@ -117,6 +119,7 @@ public class JaxPublicAppConfig {
 		this.ebeguKibonAnfrageTestGuiEnabled = ebeguKibonAnfrageTestGuiEnabled;
 		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
+		this.activatedDemoFeatures = activatedDemoFeatures;
 		this.checkboxAuszahlungInZukunft = checkboxAuszahlungInZukunft;
 	}
 
@@ -374,6 +377,14 @@ public class JaxPublicAppConfig {
 
 	public void setZusatzinformationenInstitution(boolean zusatzinformationenInstitution) {
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
+	}
+
+	public String getActivatedDemoFeatures() {
+		return activatedDemoFeatures;
+	}
+
+	public void setActivatedDemoFeatures(String activatedDemoFeatures) {
+		this.activatedDemoFeatures = activatedDemoFeatures;
 	}
 
 	public boolean isCheckboxAuszahlungInZukunft() {

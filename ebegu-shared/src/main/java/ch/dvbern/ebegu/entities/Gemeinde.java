@@ -111,10 +111,17 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean angebotFI = false;
 
+	@Column(nullable = false)
+	private boolean eventPublished = true;
+
 	@Nonnull
 	@NotNull
 	@Column(nullable = false)
 	private boolean besondereVolksschule = false;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean nurLats = false;
 
 	@Nonnull
 	@NotNull
@@ -206,6 +213,14 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 		this.besondereVolksschule = besondereVolksschule;
 	}
 
+	public boolean isNurLats() {
+		return nurLats;
+	}
+
+	public void setNurLats(boolean nurLATS) {
+		this.nurLats = nurLATS;
+	}
+
 	@Nonnull
 	public LocalDate getGueltigBis() {
 		return gueltigBis;
@@ -267,6 +282,14 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setFerieninselanmeldungenStartdatum(@Nonnull LocalDate ferieninselanmeldungenStartdatum) {
 		this.ferieninselanmeldungenStartdatum = ferieninselanmeldungenStartdatum;
+	}
+
+	public boolean isEventPublished() {
+		return eventPublished;
+	}
+
+	public void setEventPublished(boolean eventPublished) {
+		this.eventPublished = eventPublished;
 	}
 
 	public boolean isGesuchsperiodeRelevantForGemeinde(@Nonnull Gesuchsperiode gesuchsperiode) {

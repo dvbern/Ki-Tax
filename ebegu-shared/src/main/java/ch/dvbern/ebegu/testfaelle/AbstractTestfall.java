@@ -233,7 +233,7 @@ public abstract class AbstractTestfall {
 
 	private void setAuszahlungsdatenInforma(@NotNull Familiensituation familiensituation) {
 		Auszahlungsdaten auszahlungsdatenInforma = new Auszahlungsdaten();
-		auszahlungsdatenInforma.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		auszahlungsdatenInforma.setIban(new IBAN("CH2089144969768441935"));
 		if (gesuch.getGesuchsteller1() != null) {
 			auszahlungsdatenInforma.setKontoinhaber(gesuch.getGesuchsteller1().extractFullName());
 		} else {

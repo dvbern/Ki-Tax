@@ -22,8 +22,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';
 
 const LOG = LogFactory.createLog('LastenausgleichTsKommentarComponent');
@@ -42,12 +44,15 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
     public saving$ = new ReplaySubject(1);
     private subscription: Subscription;
 
+    public userList: Array<TSBenutzerNoDetails>;
+
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly ref: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly $state: StateService,
+        private readonly benutzerRS: BenutzerRSX,
     ) {
     }
 
@@ -74,11 +79,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
             this.kommentarControl.value
         ).subscribe(() => {
             this.saving$.next(false);
-        }, (error: HttpErrorResponse) => {
-            LOG.error(error);
-            const translated = this.translate.instant('ERROR_LATS_KOMMENTAR_SAVE');
-            this.errorService.addMesageAsError(translated);
-        });
+        }, (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_LATS_KOMMENTAR_SAVE'));
     }
 
     private initForm(): void {
@@ -91,10 +92,41 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         if (this.lATSAngabenGemeindeContainer?.isAbgeschlossen()) {
             this.form.disable();
         }
+        this.loadUserList();
         this.ref.detectChanges();
     }
 
     public showVerlauf(): void {
         this.$state.go('LASTENAUSGLEICH_TAGESSCHULEN.VERLAUF');
     }
+
+    public getVerantwortlicherFullName(): string {
+        if (this.lATSAngabenGemeindeContainer?.verantwortlicher) {
+            return this.lATSAngabenGemeindeContainer.verantwortlicher.getFullName();
+        }
+
+        return this.translate.instant('NO_VERANTWORTLICHER_SELECTED');
+    }
+
+    public saveVerantwortlicher(): void {
+        this.lastenausgleichTSService.saveLATSVerantworlicher(this.lATSAngabenGemeindeContainer.id,
+            this.lATSAngabenGemeindeContainer.verantwortlicher?.username)
+            .subscribe(
+                () => {},
+                (error: HttpErrorResponse) => this.handleErrorOnSave(error, 'ERROR_VERANTWORTLICHER_SAVE'));
+    }
+
+    private handleErrorOnSave(error: HttpErrorResponse, errorMsgKey: string): void {
+        LOG.error(error);
+        const translated = this.translate.instant(errorMsgKey);
+        this.errorService.addMesageAsError(translated);
+    }
+
+    private loadUserList(): void {
+        this.benutzerRS.getAllActiveBenutzerMandant()
+            .then(response => {
+                this.userList = response;
+            });
+    }
+
 }

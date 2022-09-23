@@ -106,7 +106,7 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
-        return this.searchRS.getAntraegeOfDossier(this.dossier.id).then((response: any) => {
+        return this.searchRS.getAntraegeOfDossier(this.dossier.id).toPromise().then((response: any) => {
             this.antragList = angular.copy(response);
             this.getAmountNewMitteilungen();
             this.updateActiveGesuchsperiodenList();
@@ -268,7 +268,8 @@ export class GesuchstellerDashboardViewController implements IController {
     private showAnmeldungCreateTS(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
         const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
-        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung();
+        const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung()
+            && !this.gemeindeStammdaten.gemeinde.nurLats;
         return tsEnabledForMandant
             && tsEnabledForGemeinde
             && !!antrag

@@ -486,6 +486,10 @@ public enum MathUtil {
 		return value.compareTo(BigDecimal.ZERO) < 0;
 	}
 
+	public static boolean isZero(@Nonnull BigDecimal value) {
+		return value.compareTo(BigDecimal.ZERO) == 0;
+	}
+
 	@Nonnull
 	public static BigDecimal toOneKommastelle(@Nonnull BigDecimal value) {
 		return MathUtil.EINE_NACHKOMMASTELLE.from(value);

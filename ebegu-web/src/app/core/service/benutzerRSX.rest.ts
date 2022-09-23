@@ -16,6 +16,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
+import {TSBenutzerTableFilterDTO} from '../../../models/dto/TSBenutzerTableFilterDTO';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSBerechtigungHistory} from '../../../models/TSBerechtigungHistory';
@@ -89,6 +90,13 @@ export class BenutzerRSX {
         return this.getBenutzerNoDetail(`${this.serviceURL}/BgTsOrGemeinde/all`);
     }
 
+    /**
+     * Gibt alle existierenden, aktiven Benutzer mit den Rollen SACHBEARBEITER_MANDANT und ADMIN_MANDANT zurueck.
+     */
+    public getAllActiveBenutzerMandant(): Promise<TSBenutzerNoDetails[]> {
+        return this.getBenutzerNoDetail(`${this.serviceURL}/mandant/all`);
+    }
+
     public getAllGesuchsteller(): Promise<TSBenutzerNoDetails[]> {
         return this.getBenutzerNoDetail(`${this.serviceURL}/gesuchsteller`);
     }
@@ -114,8 +122,11 @@ export class BenutzerRSX {
             })).toPromise();
     }
 
-    public searchUsers(userSearch: any): Promise<TSUserSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/search/`, userSearch).pipe(map((response: any) => {
+    public searchUsers(userSearch: TSBenutzerTableFilterDTO): Promise<TSUserSearchresultDTO> {
+        return this.$http.post(
+            `${this.serviceURL}/search/`,
+            this.ebeguRestUtil.benutzerTableFilterDTOToRestObject(userSearch)
+        ).pipe(map((response: any) => {
             this.LOG.debug('PARSING benutzer REST array object', response);
             const tsBenutzers = this.ebeguRestUtil.parseUserList(response.benutzerDTOs);
 

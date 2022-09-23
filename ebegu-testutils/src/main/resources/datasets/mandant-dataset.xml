@@ -28,7 +28,8 @@
 			 angebotts="false"
 			 angebotfi="false"
 			 activated="true"
-			 next_infoma_belegnummer="1"/>
+			 next_infoma_belegnummer_antragsteller="1"
+			 next_infoma_belegnummer_institutionen="80001"/>
 	<gesuchsperiode id="BiH7XaGHWpGrr4qBPE0qqg=="
 					timestamp_erstellt="2013-05-30 16:39:38.0"
 					timestamp_mutiert="2013-05-30 16:39:38.0"
@@ -67,7 +68,10 @@
 			  angebotts="true"
 			  angebotfi="false"
 			  gueltig_bis="9999-12-31"
-			  besondere_volksschule="false"/>
+			  besondere_volksschule="false"
+			  nur_lats="false"
+			  event_published="true"/>
+			  />
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6Hdw=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"
@@ -85,8 +89,10 @@
 			  angebotbg="true"
 			  angebotts="false"
 			  angebotfi="false"
+			  nur_lats="false"
 			  gueltig_bis="9999-12-31"
-			  besondere_volksschule="false"/>
+			  besondere_volksschule="false"
+			  event_published="true"/>
 	<sequence id="43RuuG7vQO+eUparSNjyIA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"

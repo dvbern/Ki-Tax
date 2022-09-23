@@ -139,7 +139,7 @@ export class MitteilungRS {
 
     public searchMitteilungen(antragSearch: any, includeClosed: boolean): IPromise<TSMtteilungSearchresultDTO> {
         return this.$http.post(`${this.serviceURL}/search/${includeClosed}`, antragSearch).then((response: any) => {
-            this.$log.debug('PARSING antraege REST array object', response);
+            this.$log.debug('PARSING Mitteilung REST array object', response);
             return new TSMtteilungSearchresultDTO(this.ebeguRestUtil.parseMitteilungen(response.data.mitteilungDTOs),
                 response.data.paginationDTO.totalItemCount);
         });
@@ -176,5 +176,11 @@ export class MitteilungRS {
             .then(response => {
                 return this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data);
             });
+    }
+
+    public applyAlleBetreuungsmitteilungen(antragSearch: any): IPromise<Array<TSMitteilung>> {
+        return this.$http.post(`${this.serviceURL}/applyAlleBetreuungsmitteilungen`, antragSearch).then((response: any) => {
+            return this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen);
+        });
     }
 }

@@ -157,6 +157,9 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean auszahlungAnEltern;
 
+	@Column(nullable = false)
+	private boolean babyTarif;
+
 	@Valid
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -214,6 +217,7 @@ public class BGCalculationResult extends AbstractEntity {
 		}
 
 		this.auszahlungAnEltern = toCopy.auszahlungAnEltern;
+		this.babyTarif = toCopy.babyTarif;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -293,6 +297,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("massgebendesEinkommenVorAbzugFamgr", massgebendesEinkommenVorAbzugFamgr)
 			.add("abzugFamGroesse", abzugFamGroesse)
 			.add("auszahlungAnEltern", auszahlungAnEltern)
+			.add("babyTarif", babyTarif)
 			.toString();
 	}
 
@@ -320,7 +325,8 @@ public class BGCalculationResult extends AbstractEntity {
 			Objects.equals(einkommensjahr, otherResult.einkommensjahr) &&
 			besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
 			MathUtil.isSame(verguenstigungProZeiteinheit, otherResult.verguenstigungProZeiteinheit) &&
-			auszahlungAnEltern == otherResult.isAuszahlungAnEltern();
+			auszahlungAnEltern == otherResult.isAuszahlungAnEltern() &&
+			babyTarif == otherResult.babyTarif;
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -345,7 +351,8 @@ public class BGCalculationResult extends AbstractEntity {
 					thisEntity.tsCalculationResultOhnePaedagogischerBetreuung,
 					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung) &&
 				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
-				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
+				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
+					thisEntity.babyTarif == otherEntity.babyTarif
 		));
 	}
 
@@ -359,7 +366,8 @@ public class BGCalculationResult extends AbstractEntity {
 			MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 			MathUtil.isSame(thisEntity.getBgPensumProzent(), otherEntity.getBgPensumProzent()) &&
 			MathUtil.isSame(thisEntity.minimalerElternbeitragGekuerzt, otherEntity.minimalerElternbeitragGekuerzt) &&
-			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent
+			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
+			thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
 		));
 	}
 
@@ -396,7 +404,8 @@ public class BGCalculationResult extends AbstractEntity {
 				Objects.equals(thisEntity.einkommensjahr, otherEntity.einkommensjahr) &&
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
 				isSameZeiteinheiten(thisEntity, otherEntity) &&
-				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
+				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
+					thisEntity.babyTarif == otherEntity.babyTarif
 		));
 	}
 
@@ -697,5 +706,13 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
 		this.auszahlungAnEltern = auszahlungAnEltern;
+	}
+
+	public boolean isBabyTarif() {
+		return babyTarif;
+	}
+
+	public void setBabyTarif(boolean babyTarif) {
+		this.babyTarif = babyTarif;
 	}
 }
