@@ -189,12 +189,13 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		lastenausgleich.setJahr(jahr);
 		lastenausgleich.setMandant(mandant);
 
-		AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
-
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 		int counter = 0;
 		for (Gemeinde gemeinde : aktiveGemeinden) {
+			AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr, gemeinde, grundlagenErhebungsjahr);
+			lastenausgleichRechner.logLastenausgleichRechnerType(jahr);
+
 			LastenausgleichDetail detailErhebung =
 				lastenausgleichRechner.createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
 			if (detailErhebung != null) {
@@ -264,7 +265,8 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull LastenausgleichGrundlagen grundlagenKorrekturjahr,
 		@Nonnull StringBuilder logBuilder) {
 		logBuilder.append("Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
-		AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(korrekturJahr);
+		AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(korrekturJahr, gemeinde, grundlagenKorrekturjahr);
+		lastenausgleichRechner.logLastenausgleichRechnerType(korrekturJahr);
 
 		// Wir ermitteln für die Gemeinde und das Korrekurjahr den aktuell gültigen Wert
 		LastenausgleichDetail detailAktuellesTotalKorrekturjahr =
@@ -308,11 +310,15 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	}
 
 	@Nonnull
-	private AbstractLastenausgleichRechner getLastenausgleichRechnerForYear(int jahr) {
+	private AbstractLastenausgleichRechner getLastenausgleichRechnerForYear(
+		int jahr,
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull LastenausgleichGrundlagen grundlagen
+	) {
 		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
-			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService);
+			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService, gemeinde, grundlagen);
 		}
-		return new LastenausgleichRechnerOhneSelbstbehalt(verfuegungService);
+		return new LastenausgleichRechnerOhneSelbstbehalt(verfuegungService, gemeinde, grundlagen);
 	}
 
 	@Nonnull

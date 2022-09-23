@@ -18,61 +18,36 @@
 package ch.dvbern.ebegu.lastenausgleich;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.services.VerfuegungService;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class LastenausgleichRechnerMitSelbstbehalt extends AbstractLastenausgleichRechner {
 
-	public LastenausgleichRechnerMitSelbstbehalt(@Nonnull VerfuegungService verfuegungService) {
-		super(verfuegungService);
+	public LastenausgleichRechnerMitSelbstbehalt(
+		@Nonnull VerfuegungService verfuegungService,
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull LastenausgleichGrundlagen grundlagen
+	) {
+		super(verfuegungService, gemeinde, grundlagen);
 	}
 
 	@Override
 	@Nullable
 	public LastenausgleichDetail createLastenausgleichDetail(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich, @Nonnull LastenausgleichGrundlagen grundlagen) {
-		Collection<VerfuegungZeitabschnitt> abschnitteProGemeindeUndJahr =
-			getZeitabschnitte(gemeinde, grundlagen.getJahr());
+		abschnitteProGemeindeUndJahr = getZeitabschnitte(gemeinde, grundlagen.getJahr());
 		if (abschnitteProGemeindeUndJahr.isEmpty()) {
 			return null;
 		}
+		calculateTotals();
 
-		// Total Belegung = Totals aller Pensum * AnteilDesMonats / 12
-		BigDecimal totalBelegungInProzent = BigDecimal.ZERO;
-		// Total Gutscheine: Totals aller aktuell gültigen Zeitabschnitte, die im Kalenderjahr liegen
-		BigDecimal totalGutscheine = BigDecimal.ZERO;
-		// Total Belegung = Totals aller Pensum ohne selbstbehalt * AnteilDesMonats / 12
-		BigDecimal totalBelegungOhneSelbstbeahltInProzent = BigDecimal.ZERO;
-		// Total Gutscheine: Totals aller aktuell gültigen Zeitabschnitte ohne Selbstbehalt, die im Kalenderjahr liegen
-		BigDecimal totalGutscheineOhneSelbstbeahlt = BigDecimal.ZERO;
-		for (VerfuegungZeitabschnitt abschnitt : abschnitteProGemeindeUndJahr) {
-			BigDecimal anteilKalenderjahr = getAnteilKalenderjahr(abschnitt);
-			BigDecimal gutschein = abschnitt.getBgCalculationResultAsiv().getVerguenstigung();
-			Betreuung betreuung = abschnitt.getVerfuegung().getBetreuung();
-			if (betreuung != null
-				&& betreuung.getKind().getKeinSelbstbehaltDurchGemeinde() != null
-				&& betreuung.getKind().getKeinSelbstbehaltDurchGemeinde()) {
-				totalBelegungOhneSelbstbeahltInProzent =
-					MathUtil.EXACT.addNullSafe(totalBelegungOhneSelbstbeahltInProzent, anteilKalenderjahr);
-				totalGutscheineOhneSelbstbeahlt =
-					MathUtil.EXACT.addNullSafe(totalGutscheineOhneSelbstbeahlt, gutschein);
-			} else {
-				totalBelegungInProzent = MathUtil.EXACT.addNullSafe(totalBelegungInProzent, anteilKalenderjahr);
-				totalGutscheine = MathUtil.EXACT.addNullSafe(totalGutscheine, gutschein);
-			}
-
-		}
 		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
 		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));
 		BigDecimal selbstbehaltGemeinde =
@@ -112,16 +87,5 @@ public class LastenausgleichRechnerMitSelbstbehalt extends AbstractLastenausglei
 	@Override
 	public String logLastenausgleichRechnerType(int jahr) {
 		return "Lastenausgleichrechner mit Selbstbehalt für Jahr " + jahr;
-	}
-
-	@Nonnull
-	private BigDecimal getAnteilKalenderjahr(@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-		// Pensum * AnteilDesMonats / 12. Beispiel 80% ganzer Monat = 6.67% AnteilKalenderjahr
-		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
-			zeitabschnitt.getGueltigkeit().getGueltigAb(),
-			zeitabschnitt.getGueltigkeit().getGueltigBis());
-		BigDecimal pensum = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
-		BigDecimal pensumAnteilMonat = MathUtil.EXACT.multiplyNullSafe(anteilMonat, pensum);
-		return MathUtil.EXACT.divide(pensumAnteilMonat, MathUtil.EXACT.from(12d));
 	}
 }
