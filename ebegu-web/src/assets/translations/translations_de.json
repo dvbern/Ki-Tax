@@ -1889,6 +1889,7 @@
     "STADT_BERN_ASIV_CONFIGURED": "Die Konfiguration der Stadt Bern fuer die ASIV Regeln ist definiert, die Zeiträume nach dem Wechsel zu ASIV werden berechnet",
     "STADT_BERN_ASIV_START_DATUM": "Datum, ab welchem die Stadt Bern die Gutscheine gemäss ASIV berechnet",
     "UPLOAD_FILETYPES_WHITELIST": "Dateitypen-Whitelist",
+    "ACTIVATED_DEMO_FEATURES": "Aktivierte Demo Features",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
@@ -2988,5 +2989,10 @@
     "PDF_GENERIERUNG": "PDF-Generierung",
     "KIBON_MITTEILUNGEN": "kiBon-Mitteilungen",
     "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
+    "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Alle Mutationsmeldungen automatisch bearbeiten",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind werden automatisch bearbeitet und falls möglich direkt verfügt.",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
+    "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
