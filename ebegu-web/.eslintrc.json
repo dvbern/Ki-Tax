@@ -18,7 +18,8 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "plugins": [
-        "eslint-plugin-rxjs"
+        "eslint-plugin-rxjs",
+        "eslint-plugin-jsdoc"
       ],
       "rules": {
         "@angular-eslint/component-selector": [
