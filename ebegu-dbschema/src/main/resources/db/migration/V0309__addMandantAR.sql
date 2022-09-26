@@ -34,7 +34,7 @@ WHERE mandant_id = @mandant_id_solothurn AND
 					   a_p.name = application_property.name);
 
 UPDATE application_property SET value = 'logo-kibon-ar.svg' WHERE name = 'LOGO_FILE_NAME' and mandant_id = @mandant_id_ar;
-UPDATE application_property SET value = 'logo-kibon--white-ar.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' and mandant_id = @mandant_id_ar;
+UPDATE application_property SET value = 'logo-kibon-white-ar.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' and mandant_id = @mandant_id_ar;
 UPDATE application_property SET value = 'false' WHERE name = 'FRENCH_ENABLED' and mandant_id = @mandant_id_ar;
 
 # BFS Gemeinden
@@ -77,3 +77,15 @@ FROM einstellung
 		 INNER JOIN gesuchsperiode g ON einstellung.gesuchsperiode_id = g.id
 		 INNER JOIN mandant m2 ON g.mandant_id = m2.id
 WHERE m2.mandant_identifier = 'SOLOTHURN' AND gueltig_ab = '2022-08-01' AND gemeinde_id IS NULL AND einstellung.mandant_id is NULL;
+
+INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
+VALUES (
+	UNHEX(REPLACE('ed455784-3a51-11ed-a0ae-00090ffe0001', '-', '')), # id
+	'2018-01-01 00:00:00', # timestamp_erstellt
+	'2018-01-01 00:00:00', # timestamp_mutiert
+	'flyway', # user_erstellt
+	'flyway', # user_mutiert
+	0, # version
+	'FALL_NUMMER', # sequence_type
+	100, # current_value
+	@mandant_id_ar);

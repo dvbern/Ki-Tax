@@ -27,10 +27,10 @@ public class InstitutionStammdatenBuilderAr extends InstitutionStammdatenBuilder
 	public InstitutionStammdatenBuilderAr(InstitutionStammdatenService institutionStammdatenService) {
 		super(
 				institutionStammdatenService,
-				"d0bb7d2a-3999-11ed-a63d-b05cda43de9c",
-				"caa83a6b-3999-11ed-a63d-b05cda43de9c",
-				"d6c10415-3999-11ed-a63d-b05cda43de9c",
-				"5c136a35-39a9-11ed-a63d-b05cda43de9c");
+				"51451c92-39a9-11ed-a63d-b05cda43de9c",
+				"56aa13db-39a9-11ed-a63d-b05cda43de9c",
+				"458bee8d-39a9-11ed-a63d-b05cda43de9c",
+				"f89d4bf4-39aa-11ed-a63d-b05cda43de9c");
 	}
 
 	@Override

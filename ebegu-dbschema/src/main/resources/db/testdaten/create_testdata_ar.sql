@@ -17,6 +17,8 @@
 SET @mandant_id_ar = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', ''));
 
 SET @mandant_id_so = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
+SET @testgemeinde_solothurn_id = UNHEX(REPLACE('47c4b3a8-5379-11ec-98e8-f4390979fa3e', '-', ''));
+
 SET @gesuchperiode_23_id = UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', ''));
 SET @testgemeinde_ar_id = UNHEX(REPLACE('b3e44f85-3999-11ed-a63d-b05cda43de9c', '-', ''));
 SET @testgemeinde_ar_bfs_nr = 99995;
@@ -29,6 +31,7 @@ SET @ts_id = UNHEX(REPLACE('5c136a35-39a9-11ed-a63d-b05cda43de9c', '-', ''));
 # APPLICATION PROPERTIES
 UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = @mandant_id_ar;
 UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = @mandant_id_ar;
+UPDATE mandant SET activated = TRUE WHERE id = @mandant_id_ar;
 
 # noinspection SqlWithoutWhere
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_23_id;
@@ -62,9 +65,26 @@ VALUES (UNHEX(REPLACE('e7cf727f-39a8-11ed-a63d-b05cda43de9c', '-', '')), '2018-1
 		'herisau@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.herisau.ch', null, 'DE', 'BIC', 'CH2089144969768441935',
 		'Herisau Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('ae69aa8a-39a8-11ed-a63d-b05cda43de9c', '-', '')));
 
+INSERT INTO einstellung
+SELECT DISTINCT *
+FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) AS id,
+		  '2020-01-01 00:00:00' AS timestamp_erstellt,
+		  '2020-01-01 00:00:00' AS timestamp_mutiert,
+		  'flyway' AS user_erstellt,
+		  'flyway' AS user_mutiert,
+		  0 AS version,
+		  einstellung_key as einstellung_key,
+		  value as value,
+		  @testgemeinde_ar_id AS gemeinde_id,
+		  @gesuchperiode_23_id AS gesuchsperiode_id,
+		  @mandant_id_ar AS mandant_id
+	  FROM einstellung
+	  WHERE gemeinde_id = @testgemeinde_solothurn_id
+	  GROUP BY einstellung_key) AS inserttable
+
 # Test-Institutionen erstellen
-INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
-	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Appenzell Ausserrhoden', true);
+INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
+	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Appenzell Ausserrhoden', true, @mandant_id_ar);
 
 # Kita und Tagesfamilien
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
@@ -174,7 +194,7 @@ update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = @tes
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 								vorgaenger_id, name, status, mandant_id, traegerschaft_id, stammdaten_check_required,
 								event_published)
-VALUES (UNHEX(REPLACE(@ts_id, '-', '')), '2020-02-28 09:48:18', '2020-02-28 10:11:35',
+VALUES (@ts_id, '2020-02-28 09:48:18', '2020-02-28 10:11:35',
 		'flyway', 'flyway', 0, NULL, 'Tagesschule Appenzell Ausserrhoden', 'AKTIV',
 		@mandant_id_ar, NULL, FALSE, TRUE);
 
@@ -198,8 +218,7 @@ INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mut
 										   institution_stammdaten_betreuungsgutscheine_id)
 VALUES (UNHEX(REPLACE('f89d4bf4-39aa-11ed-a63d-b05cda43de9c', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
 		'flyway', 'flyway', 0, NULL, '2020-08-01', '9999-12-31', 'TAGESSCHULE', 'tagesschule-ar@mailbucket.dvbern.ch', NULL, NULL,
-		UNHEX(REPLACE('648f4d9f-39a9-11ed-a63d-b05cda43de9c', '-', '')),
-		UNHEX(REPLACE('5c136a35-39a9-11ed-a63d-b05cda43de9c', '-', '')), NULL,
+		UNHEX(REPLACE('648f4d9f-39a9-11ed-a63d-b05cda43de9c', '-', '')), @ts_id, NULL,
 		UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e', '-', '')), TRUE, NULL);
 
 INSERT IGNORE INTO einstellungen_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
