@@ -70,7 +70,7 @@
     "detect-browser": "^5.0.0",
     "eslint": "^8.17.0",
     "eslint-plugin-import": "latest",
-    "eslint-plugin-jsdoc": "^39.3.6",
+    "eslint-plugin-jsdoc": "^38.1.6",
     "eslint-plugin-prefer-arrow": "latest",
     "eslint-plugin-rxjs": "latest",
     "font-awesome": "~4.7.0",
