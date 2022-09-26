@@ -35,7 +35,7 @@
     "start": "npm run server",
     "start:ie": "npm run server:ie",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && npx mkdirp build"
+    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && mkdirp build"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^13.0.0",
