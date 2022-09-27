@@ -116,9 +116,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Nonnull
 	private ZahlungslaufHelper zahlungslaufHelper;
 
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
 	private List<String> potentielleFehlerList = new ArrayList<>();
 	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	private int anzahlMonateInZukunft;
@@ -166,7 +163,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		// Auf dem Front End gibt es z.B. bei Luzern eine Checkbox, die definiert, ob der Folgemonat auch ausbezahlt werden soll.
 		// Falls die Checkbox aktiv ist, wird der Folgemonat auch ausbezahlt. z.B. ausloesen am 15.8. ergibt eine
 		// Zahlung bis 30.09.
-		int anzahlMonateInZukunft = auszahlungInZukunft ? 1 : 0;
+		anzahlMonateInZukunft = auszahlungInZukunft ? 1 : 0;
 
 		ermittleIstAndSollAndCheckFuerGPs(gemeinde, containedGesuchsperioden, datumLetzteZahlung);
 
