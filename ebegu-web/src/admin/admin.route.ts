@@ -45,14 +45,6 @@ const ng1States: Ng1StateDeclaration[] = [
         data: {
             roles: TSRoleUtil.getSuperAdminRoles()
         }
-    },
-    {
-        name: 'admin.benutzerlist',
-        template: '<benutzer-list-view flex="auto" class="overflow-scroll"></benutzer-list-view>',
-        url: '/benutzerlist',
-        data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole()
-        }
     }
 ];
 

@@ -42,8 +42,9 @@ export const CONSTANTS = {
     BERN_BFS_NUMMER: 351,
     MANDANT_LOCAL_STORAGE_KEY: 'mandant',
     NUR_LATS_STARTDATUM: '2021-08-01',
-    QR_IBAN_PATTERN: /(LI|CH)\d{2}3[01]\d{3}\w{12}/
-
+    QR_IBAN_PATTERN: /(LI|CH)\d{2}3[01]\d{3}\w{12}/,
+    // used for debounce input elements
+    KEYUP_TIMEOUT: 700
 };
 
 export const DEFAULT_LOCALE = 'de-CH';

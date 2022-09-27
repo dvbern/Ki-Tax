@@ -100,7 +100,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
      * All Ignorierte Zeitabschnitte must be ignored because they will always be ignored
      * Entscheidet, ob die Frage nach dem Ignorieren gestellt werden soll
      */
-    public fragenObIgnorieren(): boolean {
+    public fragenObIgnorieren(showIfVerrechnetAberKeineBetreuung: boolean): boolean {
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const zeitabschnitt = this._zeitabschnitte[i];
@@ -112,9 +112,12 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // eslint-disable-next-line
             if (zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                     && !zeitabschnitt.sameAusbezahlteVerguenstigung) {
-                // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
-                // gestellt werden
-                return true;
+                if (showIfVerrechnetAberKeineBetreuung
+                    || zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG) {
+                    // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
+                    // gestellt werden
+                    return true;
+                }
             }
         }
         return false;

@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
@@ -145,7 +146,7 @@ describe('DVQuicksearchList', () => {
         mockAntrag.gesuchsperiodeGueltigAb = undefined;
         mockAntrag.gesuchsperiodeGueltigBis = undefined;
         spyOn(searchRS, 'getPendenzenList')
-            .and.returnValue($q.resolve(new TSAntragSearchresultDTO([mockAntrag])));
+            .and.returnValue(of(new TSAntragSearchresultDTO([mockAntrag])));
         return mockAntrag;
     }
 

@@ -15,7 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, IPromise} from 'angular';
-import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../../admin/service/ferieninselStammdatenRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -26,6 +25,7 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {getWeekdaysValues} from '../../../models/enums/TSDayOfWeek';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
 import {TSBelegungFerieninsel} from '../../../models/TSBelegungFerieninsel';
 import {TSBelegungFerieninselTag} from '../../../models/TSBelegungFerieninselTag';
@@ -320,10 +320,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getMomentWeekdays(): string[] {
-        const weekdays = moment.weekdays();
-        weekdays.splice(0, 1);
-        weekdays.splice(5, 1);
-        return weekdays;
+        return getWeekdaysValues();
     }
 
     public displayBreak(

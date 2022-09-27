@@ -28,6 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.ReceivedEvent;
+import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.services.ReceivedEventService;
 import ch.dvbern.kibon.exchange.commons.util.EventUtil;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -43,6 +44,9 @@ public class MessageProcessor {
 
 	@Inject
 	private ReceivedEventService receivedEventService;
+
+	@Inject
+	private TransactionHelper transactionHelper;
 
 	public <T, H extends BaseEventHandler<T>> void process(
 		@Nonnull ConsumerRecord<String, T> record,
@@ -91,9 +95,10 @@ public class MessageProcessor {
 			}
 
 			try {
-				handler.onEvent(key, eventTime, eventType, eventDTO, clientNameOpt.get());
-
-				receivedEventService.processingSuccess(receivedEvent);
+				transactionHelper.runInNewTransaction(() -> {
+					handler.onEvent(key, eventTime, eventType, eventDTO, clientNameOpt.get(), eventId);
+					receivedEventService.processingSuccess(receivedEvent);
+				});
 			} catch (Exception e) {
 				receivedEventService.processingFailure(receivedEvent, e);
 				LOG.error("Message processing failure. Persisting ReceivedEvent " + record, e);

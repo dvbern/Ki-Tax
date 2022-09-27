@@ -42,6 +42,7 @@ export class VerlaufComponent implements OnInit {
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
+    public gs1Name: string;
     public readonly tableColumns: DvSimpleTableColumnDefinition[] = [
         {
             displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
@@ -77,6 +78,7 @@ export class VerlaufComponent implements OnInit {
 
         const gesuchResponse = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
         this.dossier = gesuchResponse.dossier;
+        this.gs1Name = gesuchResponse.gesuchsteller1?.extractNachname();
         const gesuchsperiode = gesuchResponse.gesuchsperiode;
         if (this.dossier === undefined) {
             this.cancel();

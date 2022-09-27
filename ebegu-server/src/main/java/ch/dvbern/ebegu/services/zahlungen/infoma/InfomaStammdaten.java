@@ -47,7 +47,7 @@ public abstract class InfomaStammdaten {
 		this.buchungsdatum = DATE_FORMAT.format(zahlung.getZahlungsauftrag().getDatumFaellig());
 		this.kontoart = getKontoart();
 		this.kontonummer = getKontonummer(zahlung);
-		this.buchungstext = getBuchungstext(zahlung);
+		this.buchungstext = getBuchungstext(zahlung, locale);
 		this.dimensionswert3 = getDimensionswert3();
 		this.betrag = getBetrag(zahlung);
 		this.faelligkeitsdatum = getFaelligkeitsdatum(zahlung);
@@ -74,24 +74,35 @@ public abstract class InfomaStammdaten {
 	protected abstract String getBankCode(@Nonnull Zahlung zahlung);
 
 	@Nonnull
-	private String getBuchungstext(Zahlung zahlung) {
-		return zahlung.getEmpfaengerName() + " - " + zahlung.getZahlungsauftrag().getBeschrieb();
+	private String getBuchungstext(Zahlung zahlung, Locale locale) {
+		final String kontoinhaber =
+			zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER ?
+				zahlung.getAuszahlungsdaten().getKontoinhaber() :
+				zahlung.getEmpfaengerName();
+
+		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
+		var monthBezeichnung = getMonthBezeichnung(zahlung, locale);
+		var year = getYearValueDatumGeneriert(zahlung);
+		return kontoinhaber + ", Betreuungsgutscheine " + monthBezeichnung + ' ' + year;
 	}
 
 	@Nonnull
 	private String getKundenspezifischesFeld2(@NotNull Zahlung zahlung, Locale locale) {
-		final String kontoinhaber =
-				zahlung.getZahlungsauftrag().getZahlungslaufTyp() == ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER ?
-						zahlung.getAuszahlungsdaten().getKontoinhaber() :
-						zahlung.getEmpfaengerName();
-		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
-		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
-
 		Objects.requireNonNull(zahlung.getZahlungsauftrag().getMandant());
+		var monthBezeichnung = getMonthBezeichnung(zahlung, locale);
+		var year = getYearValueDatumGeneriert(zahlung);
+		return "Betreuungsgutscheine " + monthBezeichnung + ' ' + year;
+	}
 
-		String monthBezeichnung = ServerMessageUtil
+	private String getMonthBezeichnung(@Nonnull Zahlung zahlung, @Nonnull Locale locale) {
+		final Month monthValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getMonth();
+		return ServerMessageUtil
 			.translateEnumValue(monthValueDatumGeneriert, locale, zahlung.getZahlungsauftrag().getMandant());
-		return kontoinhaber + ", Betreuungsgutscheine " + monthBezeichnung + ' ' + yearValueDatumGeneriert;
+	}
+
+	private String getYearValueDatumGeneriert(@Nonnull Zahlung zahlung) {
+		final int yearValueDatumGeneriert = zahlung.getZahlungsauftrag().getDatumGeneriert().getYear();
+		return yearValueDatumGeneriert + "";
 	}
 
 	@Nonnull

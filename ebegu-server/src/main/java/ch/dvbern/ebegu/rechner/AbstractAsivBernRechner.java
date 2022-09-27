@@ -75,8 +75,10 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
 
+		// Falls die Eltern ein Teil des Monats die Vollkosten komplett tragen, wird ausgerechnet an wie vielen Tagen
+		// die Zeiteinheiten effektiv ausbezahlt werden
 		BigDecimal effektivAusbezahlteZeiteinheiten =
-				getAnzahlEffektivAusbezahlteZeiteinheiten(verfuegteZeiteinheiten, input.getBezahltVollkostenMonatAnteil());
+			EXACT.multiply(verfuegteZeiteinheiten,input.getMonatAnteilVollkostenNichtBezahlt());
 
 		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
@@ -120,28 +122,9 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 		result.setBabyTarif(unter12Monate);
-		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		return result;
-	}
-
-	private BigDecimal getAnzahlEffektivAusbezahlteZeiteinheiten(
-		BigDecimal verfuegteZeiteinheiten,
-		BigDecimal bezahltVollkostenAnteil) {
-
-		// Eltern tragen die Vollkosten nie komplett -> alle verfügten Zeiteinheite werden ausbezahlt
-		if (bezahltVollkostenAnteil.compareTo(BigDecimal.ZERO) == 0) {
-			return verfuegteZeiteinheiten;
-		}
-
-		// Eltern tragen die Vollkosten komplett -> keine Zeiteinheiten werden effektiv ausbezahlt
-		if (bezahltVollkostenAnteil.compareTo(BigDecimal.ONE) == 0) {
-			return BigDecimal.ZERO;
-		}
-
-		// Ein Teil des Monats tragen die Eltern die Vollkosten komplett -> hier wird ausgerechnet an wie vielen Tagen
-		// die Eltern die Vollkosten NICHT komplett tragen
-		return EXACT.multiply(verfuegteZeiteinheiten, EXACT.subtract(BigDecimal.ONE, bezahltVollkostenAnteil));
 	}
 
 	/**
@@ -231,5 +214,5 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	protected abstract PensumUnits getZeiteinheit();
 
 	@Nonnull
-	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat);
+	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
 }

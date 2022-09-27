@@ -55,10 +55,10 @@ export class PendenzenSteueramtListViewController implements IController {
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        this.searchRS.countAntraege(tableFilterState).then((response: any) => {
+        this.searchRS.countAntraege(tableFilterState).toPromise().then((response: any) => {
             this.totalResultCount = response ? response.toString() : '0';
         });
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => response);
+        return this.searchRS.searchAntraege(tableFilterState).toPromise().then((response: TSAntragSearchresultDTO) => response);
     };
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {

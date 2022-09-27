@@ -35,6 +35,7 @@
         "arrow-body-style": "warn",
         "@angular-eslint/prefer-output-readonly": "error",
         "@typescript-eslint/no-unused-expressions": "warn",
+        "@angular-eslint/no-host-metadata-property": "warn",
         "@angular-eslint/no-forward-ref": "error",
         "@angular-eslint/no-output-on-prefix": "warn",
         "@angular-eslint/directive-class-suffix": "warn",

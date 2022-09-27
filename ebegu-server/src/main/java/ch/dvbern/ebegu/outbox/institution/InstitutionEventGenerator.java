@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -60,19 +61,23 @@ public class InstitutionEventGenerator {
 		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution);
 
 		Predicate isNotPublished = cb.isFalse(institutionJoin.get(Institution_.eventPublished));
+		var statusParam = cb.parameter(InstitutionStatus.class, Institution_.STATUS);
+		Predicate notLatsStatus = cb.notEqual(institutionJoin.get(Institution_.status), statusParam);
 
-		query.where(isNotPublished);
+		query.where(isNotPublished, notLatsStatus);
 
 		List<InstitutionStammdaten> institutions = persistence.getEntityManager().createQuery(query)
+			.setParameter(statusParam, InstitutionStatus.NUR_LATS)
 			.getResultList();
 
-		institutions.forEach(stammdaten -> {
-			event.fire(institutionEventConverter.of(stammdaten));
-
-			Institution institution = stammdaten.getInstitution();
-			institution.setSkipPreUpdate(true);
-			institution.setEventPublished(true);
-			persistence.merge(institution);
-		});
+		institutions.stream()
+			.filter(InstitutionEventUtil::isExportable)
+			.forEach(stammdaten -> {
+				event.fire(institutionEventConverter.of(stammdaten));
+				Institution institution = stammdaten.getInstitution();
+				institution.setSkipPreUpdate(true);
+				institution.setEventPublished(true);
+				persistence.merge(institution);
+			});
 	}
 }

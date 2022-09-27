@@ -30,7 +30,6 @@ import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
-import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {EbeguUtil} from '../../utils/EbeguUtil';
@@ -304,18 +303,6 @@ export const uploadRSProvider = {
     useFactory: uploadRSServiceFactory,
     deps: ['$injector'],
 };
-
-// SearchRS
-export function searchRSServiceFactory(i: IInjectorService): SearchRS {
-    return i.get('SearchRS');
-}
-
-export const searchRSProvider = {
-    provide: SearchRS,
-    useFactory: searchRSServiceFactory,
-    deps: ['$injector'],
-};
-
 // GesuchModelManager
 export function gesuchModelManagerFactory(i: IInjectorService): GesuchModelManager {
     return i.get('GesuchModelManager');
@@ -427,7 +414,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     supportRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
-    searchRSProvider,
     gesuchModelManagerProvider,
     reportRSProvider,
     ebeguUtilProvider,

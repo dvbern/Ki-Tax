@@ -13,57 +13,53 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpResponse, IHttpService, IPromise} from 'angular';
-import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
-export class SearchRS implements IEntityRS {
+@Injectable({
+    providedIn: 'root'
+})
+export class SearchRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-    public serviceURL: string;
+    private readonly serviceURL = `${CONSTANTS.REST_API}search`;
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public $http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil
-    ) {
-        this.serviceURL = `${REST_API}search`;
+        public http: HttpClient
+    ) {}
+
+    public searchAntraege(antragSearch: any): Observable<TSAntragSearchresultDTO> {
+        return this.http.post(`${this.serviceURL}/search/`, antragSearch)
+            .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
-    public getServiceName(): string {
-        return 'SearchRS';
+    public countAntraege(antragSearch: any): Observable<number> {
+        return this.http.post<number>(`${this.serviceURL}/search/count`, antragSearch);
     }
 
-    public searchAntraege(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/search/`, antragSearch)
-            .then(response => this.toAntragSearchresult(response));
+    public getPendenzenList(antragSearch: any): Observable<TSAntragSearchresultDTO> {
+        return this.http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
+            .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
-    public countAntraege(antragSearch: any): IPromise<number> {
-        return this.$http.post(`${this.serviceURL}/search/count`, antragSearch)
-            .then((response: any) => response.data);
+    public countPendenzenList(antragSearch: any): Observable<number> {
+        return this.http.post<number>(`${this.serviceURL}/jugendamt/count`, antragSearch);
     }
 
-    public getPendenzenList(antragSearch: any): IPromise<TSAntragSearchresultDTO> {
-        return this.$http.post(`${this.serviceURL}/jugendamt/`, antragSearch)
-            .then(response => this.toAntragSearchresult(response));
-    }
-
-    public countPendenzenList(antragSearch: any): IPromise<number> {
-        return this.$http.post(`${this.serviceURL}/jugendamt/count`, antragSearch)
-            .then((response: any) => response.data);
-    }
-
-    private toAntragSearchresult(response: IHttpResponse<any>): TSAntragSearchresultDTO {
-        const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.data.antragDTOs);
+    private toAntragSearchresult(response: any): TSAntragSearchresultDTO {
+        const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.antragDTOs);
 
         return new TSAntragSearchresultDTO(tsAntragDTOS);
     }
 
-    public getAntraegeOfDossier(dossierId: string): IPromise<Array<TSAntragDTO>> {
-        return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
-            .then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
+    public getAntraegeOfDossier(dossierId: string): Observable<Array<TSAntragDTO>> {
+        return this.http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseAntragDTOs(response)));
     }
 }

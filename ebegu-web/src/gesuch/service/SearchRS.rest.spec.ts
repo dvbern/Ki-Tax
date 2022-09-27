@@ -13,73 +13,56 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpBackendService} from 'angular';
-import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {translationsMock} from '../../hybridTools/translationsMock';
-import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
-import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp';
+import {HttpClient} from '@angular/common/http';
+import {TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
-import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {SearchRS} from './searchRS.rest';
 
 /* eslint-disable no-magic-numbers */
 describe('searchRS', () => {
 
-    let searchRS: SearchRS;
-    let $httpBackend: IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
-    let mockPendenz: TSAntragDTO;
-
-    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
-
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.module(translationsMock));
-
-    beforeEach(angular.mock.inject($injector => {
-        searchRS = $injector.get('SearchRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    let service: SearchRS;
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['post']);
+    const fallNummer = 1234;
 
     beforeEach(() => {
-        mockPendenz = new TSAntragDTO();
-        mockPendenz.antragId = 'id1';
-        mockPendenz.fallNummer = 123;
-        mockPendenz.familienName = 'name';
-        mockPendenz.antragTyp = TSAntragTyp.ERSTGESUCH;
-        mockPendenz.angebote = [TSBetreuungsangebotTyp.KITA];
-        mockPendenz.institutionen = ['Inst1, Inst2'];
-        mockPendenz.verantwortlicherBG = 'Juan Arbolado';
-        mockPendenz.verantwortlicherTS = 'Juan Arbolado';
-        ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
+        TestBed.configureTestingModule({
+            providers: [
+                {
+                    provide: HttpClient,
+                    useValue: mockHttpClient
+                }
+            ]
+        });
+        service = TestBed.inject(SearchRS);
+    });
 
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+    it('should be created', () => {
+        expect(service).toBeTruthy();
     });
 
     describe('API Usage', () => {
         describe('getPendenzenList', () => {
             it('should return all pending Antraege', () => {
                 const tsAntragDTO = new TSAntragDTO();
-                tsAntragDTO.fallNummer = 1234;
+                tsAntragDTO.fallNummer = fallNummer;
                 const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
                     paginationDTO: {totalItemCount: 1}
                 };
 
                 const filter: any = {};
-                $httpBackend.expectPOST(`${searchRS.serviceURL  }/jugendamt/`, filter).respond(searchResult);
+                mockHttpClient.post.and.returnValue(of(searchResult));
 
                 let foundPendenzen: TSAntragSearchresultDTO;
-                searchRS.getPendenzenList(filter).then(result => {
+                service.getPendenzenList(filter).subscribe(result => {
                     foundPendenzen = result;
-                });
-                $httpBackend.flush();
-                expect(foundPendenzen).toBeDefined();
-                TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
+                    expect(foundPendenzen).toBeDefined();
+                    TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
+                }, error => console.error(error));
             });
         });
     });

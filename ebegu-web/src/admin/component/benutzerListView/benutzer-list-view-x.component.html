@@ -1,32 +1,32 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2018 City of Bern Switzerland
+  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="dv-view">
     <div class="benutzer-list-view admin-modul">
-        <dv-benutzer-list
-            table-title="BENUTZER"
-            table-id="alleBenutzer"
-            on-filter-change="vm.passFilterToServer(tableState)"
-            on-edit="vm.editBenutzer(user, event)"
-            total-result-count="vm.totalResultCount"
-            pendenz="false">
-        </dv-benutzer-list>
+        <dv-benutzer-list-x
+            [tableTitle]="'BENUTZER'"
+            [tableId]="'alleBenutzer'"
+            (edit)="editBenutzer($event.user)"
+            [pendenz]="false">
+        </dv-benutzer-list-x>
 
-        <div dv-show-element dv-show-allowed-roles="vm.PERMISSION_BENUTZER_EINLADEN">
-            <dv-loading-button button-click="vm.onBenutzerEinladen()">
-                <span class="fa fa-plus"></span>
+        <div *ngIf="showEinladen()" class="margin-top-20">
+            <dv-loading-button (buttonClick)="benutzerEinladen()">
+                <span class="fa fa-plus"></span>&nbsp;
                 <span translate>BENUTZER_ADD</span>
             </dv-loading-button>
         </div>

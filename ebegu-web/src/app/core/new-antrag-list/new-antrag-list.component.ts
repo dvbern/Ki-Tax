@@ -35,7 +35,7 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, from, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -57,6 +57,7 @@ import {DVAntragListFilter} from '../../shared/interfaces/DVAntragListFilter';
 import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
+import {CONSTANTS} from '../constants/CONSTANTS';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
@@ -250,15 +251,16 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public filterPredicate: DVAntragListFilter;
 
     private readonly unsubscribe$ = new Subject<void>();
+
+    // used to cancel the previous subscription so we don't have two data loads racing each other
+    private dataLoadingSubscription: Subscription;
     /**
      * Filter change should not be triggered when user is still typing. Filter change is triggered
      * after user stopped typing for timeoutMS milliseconds
-     * We use 700ms because community proposes 500ms as a starting value
-     * and we add some more extra for slow typers
      */
     private keyupTimeout: NodeJS.Timeout;
+    private readonly timeoutMS = CONSTANTS.KEYUP_TIMEOUT;
 
-    private readonly timeoutMS = 700;
     private readonly sort: {
         predicate?: string;
         reverse?: boolean;
@@ -423,7 +425,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            from(this.searchRS.searchAntraege(body)).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
+            this.searchRS.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,
@@ -446,12 +448,12 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                         isSozialdienst: antragDto.isSozialdienst
                     }))));
 
-        dataToLoad$.subscribe((result: DVAntragListItem[]) => {
+        // cancel previous subscription if not closed
+        this.dataLoadingSubscription?.unsubscribe();
+
+        this.dataLoadingSubscription = dataToLoad$.subscribe((result: DVAntragListItem[]) => {
             this.datasource.data = result;
             this.updatePagination();
-            // TODO: we need this because the angualarJS Service returns an IPromise. Angular does not detect changes in
-            //  these since they are not zone-aware. Remove once the service is migrated
-            this.changeDetectorRef.markForCheck();
         }, error => {
             this.translate.get('DATA_RETRIEVAL_ERROR', error).subscribe(message => {
                 this.errorService.addMesageAsError(message);
@@ -470,10 +472,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         if (!EbeguUtil.isNullOrUndefined(this.data$)) {
             return;
         }
-        this.searchRS.countAntraege(body).then(result => {
+        this.searchRS.countAntraege(body).subscribe(result => {
             this.totalItems = result;
-            this.changeDetectorRef.markForCheck();
-        });
+        }, error => LOG.error(error));
     }
 
     private updatePagination(): void {
@@ -743,7 +744,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             return;
         }
 
-        this.benutzerRS.getAllBenutzerMandant().then(response => {
+        this.benutzerRS.getAllActiveBenutzerMandant().then(response => {
             this.userListGemeindeantraege = response;
             this.changeDetectorRef.markForCheck();
         });

@@ -3,7 +3,7 @@
     "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
     "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
-    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% vom angegebenen massgebenden Einkommen ab?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT": "Sie müssen nur das eigene Einkommen für die Einkommensänderung angeben",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
 	"SPRACHLICHE_INTEGRATION": "Das Kind hat nach der «Elternumfrage zu den Deutschkenntnissen von Vorschulkindern» eine Empfehlung (Brief) der Stadt Luzern für die Sprachförderung in einer Kita erhalten",
@@ -175,6 +175,7 @@
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "JA_KORREKTUR_FACHSTELLE": "{{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
     "FINANZIELLE_SITUATION_GUELTIG_AB": "Änderung der finanziellen Situation ab",
+    "FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO": "Wenn kein Datum gesetzt wird, ist die finanzielle Situation ab dem {{datum}} gültig",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
