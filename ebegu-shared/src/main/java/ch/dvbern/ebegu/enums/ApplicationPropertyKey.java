@@ -195,4 +195,9 @@ public enum ApplicationPropertyKey {
 	 */
 	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
 
+	/**
+	 * Einige Features sollen in der Produktion noch ausgeblendet werden. Auf den Testungebungen können diese Features
+	 * mit dieser Einstellung aktiviert werden. Eine Liste aller möglichen Features sind in TSDemoFeature.ts zu finden.
+	 */
+	ACTIVATED_DEMO_FEATURES;
 }

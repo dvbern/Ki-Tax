@@ -244,6 +244,7 @@ public class VerfuegungEventConverter {
 			.setMassgebendesEinkommen(zeitabschnitt.getMassgebendesEinkommen())
 			.setBetreuungsgutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
 				.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
+			.setBabyTarif(zeitabschnitt.getBgCalculationResultAsiv().isBabyTarif())
 			.build();
 	}
 }
