@@ -249,7 +249,7 @@ export class MandantService {
             case KiBonMandant.SO:
                 return 'logo-kibon-solothurn.svg';
             case KiBonMandant.AR:
-                return 'logo-kibon-solothurn.svg';
+                return 'logo-kibon-ar.png';
             default:
                 return 'logo-kibon-bern.svg';
         }
