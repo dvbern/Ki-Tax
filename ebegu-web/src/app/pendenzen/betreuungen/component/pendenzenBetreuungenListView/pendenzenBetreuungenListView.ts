@@ -130,7 +130,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.institutionenList = response;
         });
     }
@@ -194,7 +194,7 @@ export class PendenzenBetreuungenListViewController implements IController {
             return;
         }
         this.institutionRS.hasInstitutionenInStatusAngemeldet()
-            .then(result => {
+            .subscribe(result => {
                 this.hasInstitutionenInStatusAngemeldet = result;
             });
     }
@@ -204,7 +204,7 @@ export class PendenzenBetreuungenListViewController implements IController {
             return;
         }
         this.institutionRS.isStammdatenCheckRequired()
-            .then(result => {
+            .subscribe(result => {
                 this.isStammdatenCheckRequired = result;
             });
     }

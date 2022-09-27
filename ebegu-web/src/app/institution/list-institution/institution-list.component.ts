@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
-import {combineLatest, from, Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -85,8 +85,8 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
 
     public loadData(): void {
         const deleteAllowed = this.isDeleteAllowed();
-        this.antragList$ = from(this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
-            .then(institutionList => {
+        this.antragList$ = this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
+            .pipe(map((institutionList => {
                 const entitaetListItems: DVEntitaetListItem[] = [];
                 institutionList.forEach(
                     institution => {
@@ -105,7 +105,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                 );
                 this.cd.markForCheck();
                 return entitaetListItems;
-            }));
+            })));
     }
 
     public removeInstitution(institutionEventId: string): void {
@@ -119,7 +119,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                     if (!userAccepted) {
                         return;
                     }
-                    this.institutionRS.removeInstitution(institutionEventId).then(() => {
+                    this.institutionRS.removeInstitution(institutionEventId).subscribe(() => {
                         this.loadData();
                     });
                 },

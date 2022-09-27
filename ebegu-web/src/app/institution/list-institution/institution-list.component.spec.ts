@@ -68,8 +68,8 @@ describe('InstitutionListComponent', () => {
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
-        insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
+        insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(of([]));
 
     }));
 

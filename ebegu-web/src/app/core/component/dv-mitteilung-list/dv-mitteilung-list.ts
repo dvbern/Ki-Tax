@@ -203,7 +203,7 @@ export class DVMitteilungListController implements IOnInit {
                     this.ebeguUtil.translateString('GESUCHSTELLER'),
             });
         }
-        this.institutionRS.findAllInstitutionen(this.dossier.id).then(
+        this.institutionRS.findAllInstitutionen(this.dossier.id).subscribe(
             institutionen => {
                 institutionen.forEach(
                     institution =>

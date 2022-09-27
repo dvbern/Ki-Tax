@@ -53,7 +53,7 @@ describe('BenutzerEinladenComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));

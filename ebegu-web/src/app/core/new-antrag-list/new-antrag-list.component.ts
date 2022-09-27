@@ -367,7 +367,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.allInstitutionen = response;
             this.institutionenList$.next(this.allInstitutionen);
         });

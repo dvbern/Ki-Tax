@@ -223,7 +223,7 @@ export class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
             if (!Array.isArray(institutionList)) {
                 return;
             }

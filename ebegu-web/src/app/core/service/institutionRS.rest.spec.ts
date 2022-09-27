@@ -62,7 +62,7 @@ describe('institutionRS', () => {
                 mockHttpClient.get.and.returnValue(of(mockInstitutionRest));
 
                 let foundInstitution: TSInstitution;
-                institutionRS.findInstitution(mockInstitution.id).then(result => {
+                institutionRS.findInstitution(mockInstitution.id).subscribe(result => {
                     foundInstitution = result;
                     checkFieldValues(foundInstitution, mockInstitution);
                 });
@@ -76,7 +76,7 @@ describe('institutionRS', () => {
                 mockHttpClient.get.and.returnValue(of(institutionenRestArray));
 
                 let returnedInstitution: Array<TSInstitution>;
-                institutionRS.getAllInstitutionen().then(result => {
+                institutionRS.getAllInstitutionen().subscribe(result => {
                     returnedInstitution = result;
 
                     expect(returnedInstitution).toBeDefined();

@@ -35,22 +35,19 @@ export class DailyBatchRS {
         return 'DailyBatchRS';
     }
 
-    public runBatchCleanDownloadFiles(): Observable<boolean> {
+    public runBatchCleanDownloadFiles(): Observable<string> {
         return this.callServer(this.serviceURL + '/cleanDownloadFiles');
     }
 
-    public runBatchMahnungFristablauf(): Observable<boolean> {
+    public runBatchMahnungFristablauf(): Observable<string> {
         return this.callServer(this.serviceURL + '/mahnungFristAblauf');
     }
 
-    public runBatchUpdateGemeindeForBGInstitutionen(): Observable<boolean> {
+    public runBatchUpdateGemeindeForBGInstitutionen(): Observable<string> {
         return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
     }
 
-    private callServer(url: string): Observable<boolean> {
-        return this.$http.get<boolean>(url)
-            .pipe(map((response: any) => {
-                return response;
-            }));
+    private callServer(url: string): Observable<string> {
+        return this.$http.get(url, {responseType: 'text'});
     }
 }

@@ -111,7 +111,7 @@ describe('NewAntragListComponent', () => {
         })
             .compileComponents();
 
-        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(of([]));
         gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         authRSSpy.getPrincipalRole.and.returnValue(undefined);
