@@ -15,6 +15,7 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {CoreModule} from '../../app/core/core.module';
@@ -34,22 +35,22 @@ export class DailyBatchRS {
         return 'DailyBatchRS';
     }
 
-    public runBatchCleanDownloadFiles(): Promise<boolean> {
+    public runBatchCleanDownloadFiles(): Observable<boolean> {
         return this.callServer(this.serviceURL + '/cleanDownloadFiles');
     }
 
-    public runBatchMahnungFristablauf(): Promise<boolean> {
+    public runBatchMahnungFristablauf(): Observable<boolean> {
         return this.callServer(this.serviceURL + '/mahnungFristAblauf');
     }
 
-    public runBatchUpdateGemeindeForBGInstitutionen(): Promise<boolean> {
+    public runBatchUpdateGemeindeForBGInstitutionen(): Observable<boolean> {
         return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
     }
 
-    private callServer(url: string): Promise<boolean> {
+    private callServer(url: string): Observable<boolean> {
         return this.$http.get<boolean>(url)
             .pipe(map((response: any) => {
                 return response;
-            })).toPromise();
+            }));
     }
 }

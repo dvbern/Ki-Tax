@@ -38,21 +38,21 @@ export class BatchjobTriggerViewComponent {
     }
 
     public runBatchCleanDownloadFiles(): void {
-        this.dailyBatchRS.runBatchCleanDownloadFiles().then(response => {
+        this.dailyBatchRS.runBatchCleanDownloadFiles().subscribe(response => {
             const title = response ? 'CLEANDOWNLOADFILES_BATCH_EXECUTED_OK' : 'CLEANDOWNLOADFILES_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });
     }
 
     public runBatchMahnungFristablauf(): void {
-        this.dailyBatchRS.runBatchMahnungFristablauf().then(response => {
+        this.dailyBatchRS.runBatchMahnungFristablauf().subscribe(response => {
             const title = response ? 'MAHNUNG_BATCH_EXECUTED_OK' : 'MAHNUNG_BATCH_EXECUTED_ERROR';
             this.createAndOpenDialog(title);
         });
     }
 
     public runBatchUpdateGemeindeForBGInstitutionen(): void {
-        this.dailyBatchRS.runBatchUpdateGemeindeForBGInstitutionen().then(response => {
+        this.dailyBatchRS.runBatchUpdateGemeindeForBGInstitutionen().subscribe(response => {
             const title = response ? 'Gemeinden erfolgreich aktualisiert' : 'Fehler beim aktualisieren der Gemeinden';
             this.createAndOpenDialog(title);
         });
