@@ -23,6 +23,8 @@
     "lint": "concurrently 'npm:lint:ng' 'npm:lint:tsc' 'npm:lint:style'",
     "lint:ci": "concurrently 'npm:lint:ng:ci' 'npm:lint:tsc'",
     "lint:ng": "ng lint",
+    "lint:ng:fix": "ng lint --fix",
+    "lint:ng:quiet": "ng lint --quiet",
     "lint:style": "stylelint -s less \"**/*.less\"",
     "lint:style:fix": "stylelint --fix -s less \"**/*.less\"",
     "lint:ng:ci": "ng lint --format checkstyle > build/tslint-checkstyle-report.xml",
