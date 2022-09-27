@@ -77,13 +77,13 @@ export class TestFaelleRS {
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
         aenderungper: moment.Moment,
-    ): Promise<string> {
+    ): Observable<string> {
         return this.http.get<string>(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
                 aenderungper: DateUtil.momentToLocalDate(aenderungper),
             },
-        }).toPromise();
+        });
     }
 
     public testAllMails(mailadresse: string): Observable<void> {
@@ -95,7 +95,7 @@ export class TestFaelleRS {
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
         aenderungper: moment.Moment,
-    ): Promise<string> {
+    ): Observable<string> {
         const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
         return this.http.get(url,
             {
@@ -104,23 +104,23 @@ export class TestFaelleRS {
                     aenderungper: DateUtil.momentToLocalDate(aenderungper),
                 },
                 responseType: 'text'
-            }).toPromise();
+            });
     }
 
-    public resetSchulungsdaten(): Promise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/reset`, {responseType: 'text'}).toPromise();
+    public resetSchulungsdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/reset`, {responseType: 'text'});
     }
 
-    public createSchulungsdaten(): Promise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/create`, {responseType: 'text'}).toPromise();
+    public createSchulungsdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/create`, {responseType: 'text'});
     }
 
-    public deleteSchulungsdaten(): Promise<string> {
-        return this.http.delete(`${this.serviceURL}/schulung/delete`, {responseType: 'text'}).toPromise();
+    public deleteSchulungsdaten(): Observable<string> {
+        return this.http.delete(`${this.serviceURL}/schulung/delete`, {responseType: 'text'});
     }
 
-    public createTutorialdaten(): Promise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`, {responseType: 'text'}).toPromise();
+    public createTutorialdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`, {responseType: 'text'});
     }
 
     public getSchulungBenutzer(): Observable<string[]> {
@@ -130,8 +130,8 @@ export class TestFaelleRS {
             }));
     }
 
-    public processScript(scriptNr: string): Promise<any> {
-        return this.http.get(`${this.serviceURL}/processscript/${scriptNr}`).toPromise();
+    public processScript(scriptNr: string): Observable<any> {
+        return this.http.get(`${this.serviceURL}/processscript/${scriptNr}`);
     }
 
     public createGemeindeAntragTestDaten(

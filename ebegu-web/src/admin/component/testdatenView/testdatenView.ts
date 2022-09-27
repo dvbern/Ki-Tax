@@ -198,12 +198,12 @@ export class TestdatenViewComponent implements OnInit {
             });
     }
 
-    public mutiereFallHeirat(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallHeirat(this.dossierid,
+    public mutiereFallHeirat(): void {
+        this.testFaelleRS.mutiereFallHeirat(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
+            .subscribe(response => {
                 this.createAndOpenOkDialog(response);
             });
     }
@@ -212,30 +212,30 @@ export class TestdatenViewComponent implements OnInit {
         return this.testFaelleRS.testAllMails(this.mailadresse);
     }
 
-    public mutiereFallScheidung(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallScheidung(this.dossierid,
+    public mutiereFallScheidung(): void {
+        this.testFaelleRS.mutiereFallScheidung(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
+            .subscribe(response => {
                 this.createAndOpenOkDialog(response);
             });
     }
 
-    public resetSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.resetSchulungsdaten().then(response => {
+    public resetSchulungsdaten(): void {
+        this.testFaelleRS.resetSchulungsdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
         });
     }
 
-    public deleteSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.deleteSchulungsdaten().then(response => {
+    public deleteSchulungsdaten(): void {
+        this.testFaelleRS.deleteSchulungsdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
         });
     }
 
-    public createTutorialdaten(): IPromise<any> {
-        return this.testFaelleRS.createTutorialdaten().then(response => {
+    public createTutorialdaten(): void {
+        this.testFaelleRS.createTutorialdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
         });
     }
