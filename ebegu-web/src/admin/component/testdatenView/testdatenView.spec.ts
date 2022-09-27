@@ -85,6 +85,7 @@ describe('testdatenView', () => {
             steuerschnittstelleAktivAb: moment('2020-01-01'),
             zusatzinformationenInstitution: true,
             activatedDemoFeatures: '',
+            checkboxAuszahlungInZukunft: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
