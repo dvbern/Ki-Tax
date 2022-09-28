@@ -69,7 +69,7 @@ export class DVFinanzielleSituationRequireController implements IController {
         this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(response => {
+            .subscribe(response => {
                 this.maxMassgebendesEinkommen = parseInt(response.value, 10);
             });
 

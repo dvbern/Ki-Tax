@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import {combineLatest} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -97,7 +98,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
     private initEinstellungen(): void {
         const gemeinde = this.gesuchModelManager.getGemeinde();
         const gs = this.gesuchModelManager.getGesuchsperiode();
-        Promise.all([
+        combineLatest([
             this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
                 gemeinde.id,
                 gs.id),
@@ -110,7 +111,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
             this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
                 gemeinde.id,
                 gs.id),
-        ]).then(einstellungen => {
+        ]).subscribe(einstellungen => {
             this.allFamilienPauschalAbzuegeZero = einstellungen.reduce((
                 isZero: boolean,
                 einstellung: TSEinstellung,

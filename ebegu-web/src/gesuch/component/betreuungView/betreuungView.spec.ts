@@ -14,6 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
@@ -119,9 +120,9 @@ describe('betreuungView', () => {
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(authServiceRS, 'getPrincipal').and.returnValue(TestDataUtil.createSuperadmin());
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue($q.when([]) as Promise<any>);
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([]));
         spyOn(applicationPropertyRS, 'getPublicPropertiesCached').and.resolveTo(({}));
-        spyOn(einstellungRS, 'findEinstellung').and.returnValue($q.when(new TSEinstellung()) as Promise<any>);
+        spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(new TSEinstellung()));
         spyOn(institutionStammdatenRS, 'getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde')
             .and.returnValue($q.resolve([]));
 

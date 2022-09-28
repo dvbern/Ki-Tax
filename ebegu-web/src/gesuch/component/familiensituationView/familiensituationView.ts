@@ -110,7 +110,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public $onInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
                     this.situationFKJV = value.getValueAsBoolean();

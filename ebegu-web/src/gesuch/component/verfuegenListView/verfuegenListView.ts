@@ -163,7 +163,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+            ).subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
                 });
 
@@ -171,7 +171,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+            ).subscribe(response => {
                     this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
                 });
         }

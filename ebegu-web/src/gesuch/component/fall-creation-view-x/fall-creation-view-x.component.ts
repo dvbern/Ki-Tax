@@ -90,7 +90,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         this.einstellungService.findEinstellung(TSEinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellung => {
+            .subscribe(einstellung => {
                 this.isBegruendungMutationActiv = einstellung.value === 'true';
                 this.cd.markForCheck();
             });

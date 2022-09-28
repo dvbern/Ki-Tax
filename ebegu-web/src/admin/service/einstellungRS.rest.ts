@@ -17,7 +17,7 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
@@ -41,54 +41,47 @@ export class EinstellungRS {
         this.serviceURL = `${CONSTANTS.REST_API}einstellung`;
     }
 
-    public saveEinstellung(tsEinstellung: TSEinstellung): Promise<TSEinstellung> {
+    public saveEinstellung(tsEinstellung: TSEinstellung): Observable<TSEinstellung> {
         let restEinstellung = {};
         restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
         return this.http.put(this.serviceURL, restEinstellung)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response);
-            }))
-            .toPromise();
+            }));
     }
 
     public findEinstellung(
         key: TSEinstellungKey,
         gemeindeId: string,
         gesuchsperiodeId: string,
-    ): Promise<TSEinstellung> {
-        return this.http.get(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`)
-            .pipe(map((param: any) => {
-                return param;
-            }))
-            .toPromise();
+    ): Observable<TSEinstellung> {
+        return this.http.get<TSEinstellung>(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`);
     }
 
-    public findEinstellungByKey(key: TSEinstellungKey): Promise<TSEinstellung[]> {
+    public findEinstellungByKey(key: TSEinstellungKey): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/key/${key}`)
             .pipe(map((param: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(param);
-            }))
-            .toPromise();
+            }));
     }
 
-    public getAllEinstellungenBySystem(gesuchsperiodeId: string): Promise<TSEinstellung[]> {
+    public getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .pipe(map((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response);
-            }))
-            .toPromise();
+            }));
     }
 
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Promise<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
         if (this._einstellungenCacheMap.has(gesuchsperiodeId)) {
-            return Promise.resolve(this._einstellungenCacheMap.get(gesuchsperiodeId));
+            return of(this._einstellungenCacheMap.get(gesuchsperiodeId));
         }
 
         return this.getAllEinstellungenBySystem(gesuchsperiodeId)
-            .then(result => {
+            .pipe(map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
-            });
+            }));
     }
 
     public getPauschalbetraegeFerienbetreuung(container: TSFerienbetreuungAngabenContainer):

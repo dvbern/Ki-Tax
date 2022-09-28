@@ -530,7 +530,7 @@ export class WizardStepManager {
             this.einstellungRS.findEinstellung(TSEinstellungKey.ABWESENHEIT_AKTIV,
                 gesuch.dossier.gemeinde.id,
                 gesuch.gesuchsperiode.id)
-                .then(abwesenheitAktiv => {
+                .subscribe(abwesenheitAktiv => {
                     if (abwesenheitAktiv.value === 'false') {
                         this.hideStep(TSWizardStepName.ABWESENHEIT);
                         return;

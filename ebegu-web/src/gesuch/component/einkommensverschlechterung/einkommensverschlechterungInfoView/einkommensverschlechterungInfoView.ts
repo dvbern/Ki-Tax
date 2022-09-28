@@ -397,11 +397,11 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private getEinkommensverschlechterungBis$(): Observable<number> {
-        return from(this.einstellungRS.findEinstellung(
+        return this.einstellungRS.findEinstellung(
             TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        )).pipe(
+        ).pipe(
             filter(ekvBisEinstellung => EinkommensverschlechterungInfoViewController.isEkvBisEinstellungActivated(
                 ekvBisEinstellung)),
             map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10)),

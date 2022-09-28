@@ -285,7 +285,7 @@ export class ErwerbspensumListViewController
 
     private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
         this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
+            .subscribe(einstellungen => {
                 const einstellung = einstellungen
                     .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
                 this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.value === 'true';

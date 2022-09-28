@@ -103,9 +103,9 @@ describe('GemeindeAngabenComponent', () => {
         );
         authServiceSpy.principal$ = of(new TSBenutzer());
         einstellungServiceSpy.findEinstellung.and.returnValue(
-            of(new TSEinstellung()).toPromise(),
+            of(new TSEinstellung()),
         );
-        einstellungServiceSpy.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
+        einstellungServiceSpy.findEinstellung.and.returnValue(of(new TSEinstellung()));
         fixture = TestBed.createComponent(GemeindeAngabenComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

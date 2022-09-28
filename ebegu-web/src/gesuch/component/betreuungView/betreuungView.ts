@@ -284,7 +284,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
@@ -334,7 +334,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then(res => {
+        ).subscribe(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
         });
 
@@ -342,7 +342,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then(res => {
+        ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         });
     }

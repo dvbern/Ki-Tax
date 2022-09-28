@@ -63,7 +63,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         this.einstellungRS.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
             this.gesuchModelManager.getGemeinde()?.id,
             this.gesuchModelManager.getGesuchsperiode()?.id)
-            .then(setting => {
+            .subscribe(setting => {
                 this.steuerSchnittstelleAktivForPeriode = (setting.value === 'true');
             });
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {

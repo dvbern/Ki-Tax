@@ -123,14 +123,13 @@ export class FinanzielleSituationRS {
         gesuchsperiode: TSGesuchsperiode,
         gemeinde: TSGemeinde,
     ): Observable<TSFinanzielleSituationTyp> {
-        return from(this.einstellungRS.findEinstellung(
+        return this.einstellungRS.findEinstellung(
             TSEinstellungKey.FINANZIELLE_SITUATION_TYP,
             gemeinde.id,
             gesuchsperiode.id,
-        ))
-            .pipe(
-                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
-            );
+        ).pipe(
+            map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
+        );
     }
 
     public updateFinSitMitSteuerdaten(

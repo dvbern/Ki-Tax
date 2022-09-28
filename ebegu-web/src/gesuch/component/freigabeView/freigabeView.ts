@@ -88,7 +88,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         this.einstellungService.findEinstellung(TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellung => {
+            .subscribe(einstellung => {
                 this.isFreigabequittungEinlesenRequired = einstellung.value === 'true';
             });
         this.initViewModel();

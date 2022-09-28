@@ -113,7 +113,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             TSEinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id
-        ).then(einstellung => {
+        ).subscribe(einstellung => {
             this.maxTageAbwesenheit = parseInt(einstellung.value, 10);
         });
     }

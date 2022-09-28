@@ -317,7 +317,7 @@ describe('wizardStepManager', () => {
         it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
             const einstellungAbwesenheit = new TSEinstellung();
             einstellungAbwesenheit.value = 'true';
-            spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(einstellungAbwesenheit).toPromise());
+            spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(einstellungAbwesenheit));
             createAllSteps(TSWizardStepStatus.OK);
             const gesuch = new TSGesuch();
             gesuch.eingangsart = TSEingangsart.PAPIER;

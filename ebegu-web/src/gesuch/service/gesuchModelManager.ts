@@ -229,7 +229,7 @@ export class GesuchModelManager {
 
         if (this.getGesuchsperiode()) {
             this.einstellungenRS.getAllEinstellungenBySystemCached(this.getGesuchsperiode().id)
-                .then(einstellungen => {
+                .subscribe(einstellungen => {
                     const einstellung = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     this.isFKJVTexte = einstellung.getValueAsBoolean();
