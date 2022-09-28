@@ -63,6 +63,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 	}
 
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
