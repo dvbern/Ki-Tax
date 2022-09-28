@@ -111,13 +111,14 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     private readEinstellungenByGesuchsperiode(): void {
-        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
-            response.sort((a, b) => {
-                return this.$translate.instant(a.key.toString())
-                    .localeCompare(this.$translate.instant(b.key.toString()));
-            });
-            this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
-            this.cd.markForCheck();
+        this.einstellungenRS.getAllEinstellungenActiveForMandantBySystem(this.gesuchsperiode.id)
+            .then((response: TSEinstellung[]) => {
+                response.sort((a, b) => {
+                    return this.$translate.instant(a.key.toString())
+                        .localeCompare(this.$translate.instant(b.key.toString()));
+                });
+                this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
+                this.cd.markForCheck();
         });
     }
 

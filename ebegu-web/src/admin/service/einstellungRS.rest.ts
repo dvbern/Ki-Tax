@@ -66,8 +66,8 @@ export class EinstellungRS {
             });
     }
 
-    public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+    public getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/mandant/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
