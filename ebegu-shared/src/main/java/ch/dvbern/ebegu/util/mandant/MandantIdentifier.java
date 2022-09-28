@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.util.mandant;
 
+import java.util.List;
+
 public enum MandantIdentifier {
 
 	BERN {
@@ -55,5 +57,9 @@ public enum MandantIdentifier {
 
 	public abstract <T> T accept(MandantVisitor<T> visitor);
 	public abstract String getUrlCode();
+
+	public static List<MandantIdentifier> getAll() {
+		return List.of(MandantIdentifier.values());
+	}
 };
 
