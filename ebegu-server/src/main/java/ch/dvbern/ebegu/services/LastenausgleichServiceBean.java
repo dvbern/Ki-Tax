@@ -193,7 +193,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 		int counter = 0;
 		for (Gemeinde gemeinde : aktiveGemeinden) {
-			AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr, gemeinde, grundlagenErhebungsjahr);
+			AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
 			lastenausgleichRechner.logLastenausgleichRechnerType(jahr);
 
 			LastenausgleichDetail detailErhebung =
@@ -265,7 +265,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull LastenausgleichGrundlagen grundlagenKorrekturjahr,
 		@Nonnull StringBuilder logBuilder) {
 		logBuilder.append("Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
-		AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(korrekturJahr, gemeinde, grundlagenKorrekturjahr);
+		AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(korrekturJahr);
 		lastenausgleichRechner.logLastenausgleichRechnerType(korrekturJahr);
 
 		// Wir ermitteln für die Gemeinde und das Korrekurjahr den aktuell gültigen Wert
@@ -311,9 +311,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	@Nonnull
 	private AbstractLastenausgleichRechner getLastenausgleichRechnerForYear(
-		int jahr,
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull LastenausgleichGrundlagen grundlagen
+		int jahr
 	) {
 		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
 			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService);
