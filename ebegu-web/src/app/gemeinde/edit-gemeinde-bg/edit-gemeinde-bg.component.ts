@@ -484,4 +484,8 @@ export class EditGemeindeComponentBG implements OnInit {
         }
         return this.dauerBabyTarife.find(einstellung => einstellung.gesuchsperiodeId === gesuchsperiode.id)?.value;
     }
+
+    public isUndefined(data: any): boolean {
+        return EbeguUtil.isUndefined(data);
+    }
 }

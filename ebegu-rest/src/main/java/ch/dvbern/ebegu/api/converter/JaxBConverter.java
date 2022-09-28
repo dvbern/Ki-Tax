@@ -5552,7 +5552,7 @@ public class JaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
 		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
-			.getGemeindeEinstellungenOnlyAsMap(gemeinde, gesuchsperiode);
+			.getGemeindeEinstellungenActiveForMandantOnlyAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(gemeindeKonfigurationMap.entrySet().stream()
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));

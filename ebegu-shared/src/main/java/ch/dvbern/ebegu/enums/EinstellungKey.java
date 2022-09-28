@@ -69,7 +69,7 @@ public enum EinstellungKey {
 	GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// Die Gemeinde gewährt eine Mahlzeitenvergünsgigung
-	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED(MandantIdentifier.BERN, EinstellungTyp.GEMEINDE),
+	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// Mahlzeitenverguenstigungsstufen Verguenstigung Haupt- und Nebenmahlzeit sowie Maximaleinkommen
 	GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),

@@ -177,6 +177,18 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		return getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 	}
 
+	@Nonnull
+	@Override
+	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenActiveForMandantOnlyAsMap(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		Collection<Einstellung> paramsForGesuchsperiode = getAllEinstellungenBySystem(gesuchsperiode);
+		paramsForGesuchsperiode.stream()
+			.filter(einstellung -> einstellung.getKey().isEinstellungActivForMandant(gemeinde.getMandant().getMandantIdentifier()))
+			.forEach(ebeguParameter -> result.put(ebeguParameter.getKey(), ebeguParameter));
+		return result;
+	}
+
 	@Override
 	public void copyEinstellungenToNewGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,

@@ -116,12 +116,6 @@ export class TSGemeindeKonfiguration {
     }
 
     public initProperties(): void {
-        this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-        this.konfigKontingentierung = false;
-        this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigFerieninselAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigTagesschuleTagisEnabled = false;
         this.konfigurationen.forEach(property => {
             // tslint:disable-next-line:max-switch-cases
             switch (property.key) {
