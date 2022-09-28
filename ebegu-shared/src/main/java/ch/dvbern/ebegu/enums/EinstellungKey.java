@@ -298,7 +298,10 @@ public enum EinstellungKey {
 	ABWESENHEIT_AKTIV,
 
 	// Aktiviert das Input Feld zur Eingabe einer Begründung einer Mutation (KIBON-2538)
-	BEGRUENDUNG_MUTATION_AKTIVIERT;
+	BEGRUENDUNG_MUTATION_AKTIVIERT,
+
+	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
+	VERFUEGUNG_EXPORT_ENABLED;
 
 
 	private EinstellungTyp typ;
