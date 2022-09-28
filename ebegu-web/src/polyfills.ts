@@ -15,21 +15,20 @@
  */
 
 /***************************************************************************************************
-* BROWSER POLYFILLS
-*/
-import 'core-js/es5';
+ * BROWSER POLYFILLS
+ */
 import 'core-js/es7/array';
 import 'core-js/es7/object';
+// eslint-disable-next-line import/no-unassigned-import
+import 'zone.js'; // Included with Angular CLI.
 
 /** IE10 and IE11 requires the following for the Reflect API. */
 
-import 'core-js/es6/reflect';
+// import 'core-js/es6/reflect';
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
 (window as any).__Zone_enable_cross_context_check = true;
-// eslint-disable-next-line import/no-unassigned-import
-import 'zone.js'; // Included with Angular CLI.
 
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents

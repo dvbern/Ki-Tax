@@ -99,9 +99,6 @@
             "production": {
               "browserTarget": "ebegu:build:production"
             },
-            "ie": {
-              "browserTarget": "ebegu:build:es5"
-            },
             "development": {
               "browserTarget": "ebegu:build:development"
             }
