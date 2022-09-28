@@ -17,6 +17,7 @@
 package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichBerechnung;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -41,6 +43,7 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<LastenausgleichBerechnungDataRow> data,
 		int year,
+		@Nonnull LocalDateTime timestampLastenausgleichErstellt,
 		@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
@@ -52,19 +55,22 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltProHundertProzentPlatz, selbstbehaltPro100ProzentPlatz);
 
 		//Titel
-		this.setHeaders(excelMerger, locale, mandant);
+		this.setHeaders(excelMerger, locale, mandant, timestampLastenausgleichErstellt);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO rowGroup = excelMerger.createGroup(MergeFieldLastenausgleichBerechnung.repeatRow);
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.gemeinde, dataRow.getGemeinde());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.bfsNummer, dataRow.getBfsNummer());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.verrechnungsjahr, dataRow.getVerrechnungsjahr());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegungMitSelbstbehalt());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheineMitSelbstbehalt());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenProHundertProzentPlatz, dataRow.getKostenPro100ProzentPlatz());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltGemeinde, dataRow.getSelbstbehaltGemeinde());
-			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.eingabeLastenausgleich, dataRow.getEingabeLastenausgleich());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.korrektur, dataRow.isKorrektur());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegung, dataRow.getTotalBelegung());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheine, dataRow.getTotalGutscheine());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.selbstbehaltGemeinde, dataRow.getSelbstbehaltGemeinde());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalEingabeLastenausgleich, dataRow.getTotalEingabeLastenausgleich());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegungMitSelbstbehalt, dataRow.getTotalBelegungMitSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheineMitSelbstbehalt, dataRow.getTotalGutscheineMitSelbstbehalt());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenProHundertProzentPlatzMitSelbstbehalt, dataRow.getKostenPro100ProzentPlatz());
+			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.eingabeLastenausgleichMitSelbstbehalt, dataRow.getEingabeLastenausgleich());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalBelegungOhneSelbstbehalt, dataRow.getTotalBelegungOhneSelbstbehalt());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.totalGutscheineOhneSelbstbehalt, dataRow.getTotalGutscheineOhneSelbstbehalt());
 			rowGroup.addValue(MergeFieldLastenausgleichBerechnung.kostenFuerSelbstbehalt, dataRow.getKostenFuerSelbstbehalt());
@@ -73,7 +79,12 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		return excelMerger;
 	}
 
-	private void setHeaders(ExcelMergerDTO excelMerger, Locale locale, Mandant mandant) {
+	private void setHeaders(
+		ExcelMergerDTO excelMerger,
+		Locale locale,
+		Mandant mandant,
+		@Nonnull LocalDateTime timestampLastenausgleichErstellt
+	) {
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.lastenausgleichTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_lastenausgleichTitel", locale, mandant));
@@ -92,6 +103,15 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.bfsNummerTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale, mandant));
+		excelMerger.addValue(
+			MergeFieldLastenausgleichBerechnung.bgTotalGemaessStichtagTitle.getMergeField(),
+			ServerMessageUtil.getMessage(
+				"Reports_bgTotalGemaessStichtagTitle",
+				locale,
+				mandant,
+				timestampLastenausgleichErstellt.format(Constants.DATE_FORMATTER)
+			)
+		);
 		excelMerger.addValue(
 			MergeFieldLastenausgleichBerechnung.totalBelegungTitel.getMergeField(),
 			ServerMessageUtil.getMessage("Reports_totalBelegungTitel", locale, mandant));

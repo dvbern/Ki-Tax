@@ -119,10 +119,19 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 				.toExcelMergerDTO(
 					reportData,
 					lastenausgleich.getJahr(),
+					lastenausgleich.getTimestampErstellt(),
 					grundlagen.getSelbstbehaltPro100ProzentPlatz(),
 					locale, Objects.requireNonNull(principal.getMandant()));
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+
+			// Zeilen und Spalten ausblenden, die für Berechnung von Lastenausgleich ohne Selbstbehalt Gemeinde
+			// (ab 2022) nicht nötig sind.
+			if (sheet.getRow(8).getCell(1).getNumericCellValue() == 0) {
+				sheet.getRow(8).setZeroHeight(true);
+				sheet.setColumnHidden(10, true);
+			}
+
 			lastenausgleichExcelConverter.applyAutoSize(sheet);
 
 			byte[] bytes = createWorkbook(workbook);
@@ -173,6 +182,9 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 				dataRow.setGemeinde(detail.getGemeinde().getName());
 				dataRow.setBfsNummer(String.valueOf(detail.getGemeinde().getBfsNummer()));
 				dataRow.setVerrechnungsjahr(String.valueOf(detail.getJahr()));
+				dataRow.setTotalBelegung(detail.getTotalBelegung());
+				dataRow.setTotalGutscheine(detail.getTotalGutscheine());
+				dataRow.setTotalEingabeLastenausgleich(detail.getTotalEingabeLastenausgleich());
 				dataRow.setTotalBelegungMitSelbstbehalt(detail.getTotalBelegungenMitSelbstbehalt());
 				dataRow.setTotalAnrechenbar(detail.getTotalAnrechenbar());
 				dataRow.setTotalGutscheineMitSelbstbehalt(detail.getTotalBetragGutscheineMitSelbstbehalt());
