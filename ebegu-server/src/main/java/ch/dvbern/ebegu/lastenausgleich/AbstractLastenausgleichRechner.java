@@ -36,8 +36,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 public abstract class AbstractLastenausgleichRechner {
 
 	private final VerfuegungService verfuegungService;
-	private final Gemeinde gemeinde;
-	private final LastenausgleichGrundlagen grundlagen;
 
 	protected Collection<VerfuegungZeitabschnitt> abschnitteProGemeindeUndJahr;
 	// Total Belegung = Totals aller Pensum * AnteilDesMonats / 12
@@ -49,14 +47,8 @@ public abstract class AbstractLastenausgleichRechner {
 	// Total Gutscheine: Totals aller aktuell gültigen Zeitabschnitte ohne Selbstbehalt, die im Kalenderjahr liegen
 	protected BigDecimal totalGutscheineOhneSelbstbeahlt = BigDecimal.ZERO;
 
-	AbstractLastenausgleichRechner(
-		@Nonnull VerfuegungService verfuegungService,
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull LastenausgleichGrundlagen grundlagen
-	) {
+	AbstractLastenausgleichRechner(@Nonnull VerfuegungService verfuegungService) {
 		this.verfuegungService = verfuegungService;
-		this.gemeinde = gemeinde;
-		this.grundlagen = grundlagen;
 	}
 
 	@Nullable

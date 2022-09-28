@@ -31,12 +31,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 
 public class LastenausgleichRechnerMitSelbstbehalt extends AbstractLastenausgleichRechner {
 
-	public LastenausgleichRechnerMitSelbstbehalt(
-		@Nonnull VerfuegungService verfuegungService,
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull LastenausgleichGrundlagen grundlagen
-	) {
-		super(verfuegungService, gemeinde, grundlagen);
+	public LastenausgleichRechnerMitSelbstbehalt(@Nonnull VerfuegungService verfuegungService) {
+		super(verfuegungService);
 	}
 
 	@Override

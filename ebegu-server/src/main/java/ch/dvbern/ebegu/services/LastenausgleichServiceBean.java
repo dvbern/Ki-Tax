@@ -316,9 +316,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull LastenausgleichGrundlagen grundlagen
 	) {
 		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
-			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService, gemeinde, grundlagen);
+			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService);
 		}
-		return new LastenausgleichRechnerOhneSelbstbehalt(verfuegungService, gemeinde, grundlagen);
+		return new LastenausgleichRechnerOhneSelbstbehalt(verfuegungService);
 	}
 
 	@Nonnull
