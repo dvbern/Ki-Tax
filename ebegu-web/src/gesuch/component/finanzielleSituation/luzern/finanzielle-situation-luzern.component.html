@@ -74,6 +74,8 @@
                                                     (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
                 </dv-finanzielle-situation-require-x>
 
+                <dv-warning *ngIf="isSozialhilfeBezueger()">SOZIALHILFEBEZUEGER_WARNING</dv-warning>
+
                 <div *ngIf="model.sozialhilfeBezueger">
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
