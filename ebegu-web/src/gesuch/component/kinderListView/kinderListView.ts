@@ -19,6 +19,7 @@ import {combineLatest} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -36,6 +37,8 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('KinderListViewComponent');
 
 export class KinderListViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -116,7 +119,7 @@ export class KinderListViewController extends AbstractGesuchViewController<any> 
                 isZero: boolean,
                 einstellung: TSEinstellung,
             ) => isZero && parseInt(einstellung.value, 10) === 0, true);
-        });
+        }, error => LOG.error(error));
     }
 
     public getKinderList(): Array<TSKindContainer> {

@@ -536,7 +536,7 @@ export class WizardStepManager {
                         return;
                     }
                     this.unhideStep(TSWizardStepName.ABWESENHEIT);
-                });
+                }, error => LOG.error(error));
         } else {
             this.hideStep(TSWizardStepName.ABWESENHEIT);
         }

@@ -166,7 +166,7 @@ export class AddInstitutionComponent implements OnInit {
         ).subscribe(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-        });
+        }, error => LOG.error(error));
     }
 
     private initInstitution(): void {

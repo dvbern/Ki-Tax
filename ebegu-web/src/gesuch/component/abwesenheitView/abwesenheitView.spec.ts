@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -64,7 +65,7 @@ describe('abwesenheitView', () => {
 
     beforeEach(() => {
         spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.when(new TSEinstellung()) as Promise<any>);
+            .and.returnValue(of(new TSEinstellung()));
         spyOn(gesuchModelManager, 'getGemeinde')
             .and.returnValue(new TSGemeinde());
         spyOn(gesuchModelManager, 'getGesuchsperiode')

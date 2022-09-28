@@ -65,7 +65,7 @@ describe('institutionRS', () => {
                 institutionRS.findInstitution(mockInstitution.id).subscribe(result => {
                     foundInstitution = result;
                     checkFieldValues(foundInstitution, mockInstitution);
-                });
+                }, error => console.error(error));
             });
 
         });
@@ -83,7 +83,7 @@ describe('institutionRS', () => {
                     expect(returnedInstitution.length).toEqual(2);
                     checkFieldValues(returnedInstitution[0], institutionenRestArray[0]);
                     checkFieldValues(returnedInstitution[1], institutionenRestArray[1]);
-                });
+                }, error => console.error(error));
             });
         });
 

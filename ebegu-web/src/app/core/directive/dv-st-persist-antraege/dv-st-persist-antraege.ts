@@ -232,7 +232,7 @@ export class DVSTPersistAntraege implements IDirective {
             if (found) {
                 antragListController.selectedInstitution = found;
             }
-        });
+        }, error => LOG.error(error));
     }
 
     private setGemeindeFromName(antragListController: DVAntragListController, gemeinde: string): void {

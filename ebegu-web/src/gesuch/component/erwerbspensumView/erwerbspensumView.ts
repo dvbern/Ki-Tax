@@ -208,6 +208,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(unbezahlterUrlaubAktivEinsellung => {
                 this.isUnbezahlterUrlaubAktiv = unbezahlterUrlaubAktivEinsellung.value === 'true';
-            });
+            }, error => LOG.error(error));
     }
 }

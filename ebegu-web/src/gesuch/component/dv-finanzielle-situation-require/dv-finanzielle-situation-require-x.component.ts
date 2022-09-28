@@ -83,7 +83,7 @@ export class DvFinanzielleSituationRequireX implements OnInit {
             this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(response => {
                 this.maxMassgebendesEinkommen = parseInt(response.value, 10);
-            });
+            }, error => LOG.error(error));
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
 
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),

@@ -370,7 +370,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.allInstitutionen = response;
             this.institutionenList$.next(this.allInstitutionen);
-        });
+        }, error => LOG.error(error));
     }
 
     public updateGesuchsperiodenList(): void {

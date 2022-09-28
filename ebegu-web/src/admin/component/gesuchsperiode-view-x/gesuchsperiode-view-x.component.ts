@@ -119,7 +119,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
                 });
                 this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     public cancelGesuchsperiode(): void {
@@ -178,7 +178,8 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param).subscribe());
+        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param)
+            .subscribe(() => {}, error => LOG.error(error)));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();

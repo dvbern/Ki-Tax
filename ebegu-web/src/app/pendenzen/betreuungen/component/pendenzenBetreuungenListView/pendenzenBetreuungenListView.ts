@@ -132,7 +132,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.institutionenList = response;
-        });
+        }, error => LOG.error(error));
     }
 
     public updateBetreuungsangebotTypList(): void {
@@ -196,7 +196,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.institutionRS.hasInstitutionenInStatusAngemeldet()
             .subscribe(result => {
                 this.hasInstitutionenInStatusAngemeldet = result;
-            });
+            }, error => LOG.error(error));
     }
 
     private initIsStammdatenCheckRequired(): void {
@@ -206,6 +206,6 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.institutionRS.isStammdatenCheckRequired()
             .subscribe(result => {
                 this.isStammdatenCheckRequired = result;
-            });
+            }, error => LOG.error(error));
     }
 }

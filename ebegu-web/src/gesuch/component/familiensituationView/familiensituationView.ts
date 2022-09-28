@@ -17,6 +17,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
@@ -46,6 +47,8 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -121,7 +124,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                 .forEach(value => {
                     this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                 });
-        });
+        }, error => LOG.error(error));
     }
 
     private initViewModel(): void {

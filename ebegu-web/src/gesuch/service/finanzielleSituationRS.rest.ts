@@ -16,7 +16,7 @@
 import {HttpHeaders} from '@angular/common/http';
 import {IHttpService} from 'angular';
 import * as moment from 'moment';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';

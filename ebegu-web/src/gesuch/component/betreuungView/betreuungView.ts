@@ -328,7 +328,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
                 });
-        });
+        }, error => LOG.error(error));
 
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
@@ -336,7 +336,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.gesuchModelManager.getGesuchsperiode().id,
         ).subscribe(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
-        });
+        }, error => LOG.error(error));
 
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
@@ -344,7 +344,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.gesuchModelManager.getGesuchsperiode().id,
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
-        });
+        }, error => LOG.error(error));
     }
 
     private loadInfomaZahlungenActive(): void {

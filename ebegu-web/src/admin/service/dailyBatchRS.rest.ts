@@ -16,7 +16,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {CoreModule} from '../../app/core/core.module';
 

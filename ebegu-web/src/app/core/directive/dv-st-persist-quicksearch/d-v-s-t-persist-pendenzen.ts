@@ -16,9 +16,12 @@
 import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
+import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+
+const LOG = LogFactory.createLog('DVSTPersistPendenzen');
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -146,7 +149,7 @@ export class DVSTPersistPendenzen implements IDirective {
 
         this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
             quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
-        });
+        }, error => LOG.error(error));
     }
 
     private setGemeindeFromName(quicksearchListController: DVQuicksearchListController, gemeinde: string): void {

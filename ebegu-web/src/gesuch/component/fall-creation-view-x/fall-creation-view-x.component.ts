@@ -4,6 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -21,6 +22,8 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
+
+const LOG = LogFactory.createLog('FallCreationViewXComponent');
 
 @Component({
     selector: 'dv-fall-creation-view-x',
@@ -93,7 +96,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             .subscribe(einstellung => {
                 this.isBegruendungMutationActiv = einstellung.value === 'true';
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     // tslint:disable-next-line:cognitive-complexity

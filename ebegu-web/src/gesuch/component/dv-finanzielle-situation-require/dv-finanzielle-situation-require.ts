@@ -71,7 +71,7 @@ export class DVFinanzielleSituationRequireController implements IController {
             this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(response => {
                 this.maxMassgebendesEinkommen = parseInt(response.value, 10);
-            });
+            }, error => LOG.error(error));
 
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
             this.gesuchModelManager.getGemeinde())

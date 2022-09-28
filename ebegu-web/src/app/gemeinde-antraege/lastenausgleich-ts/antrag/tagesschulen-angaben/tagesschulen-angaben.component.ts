@@ -694,7 +694,7 @@ export class TagesschulenAngabenComponent {
             .subscribe(setting => {
                 const date = moment(setting.value).format(CONSTANTS.DATE_FORMAT);
                 this.stichtag.next(date);
-            });
+            }, error => LOG.error(error));
     }
 
     public manageSaveErrorCodes(errors: TSExceptionReport[]): void {

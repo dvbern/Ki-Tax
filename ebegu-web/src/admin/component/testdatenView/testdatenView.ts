@@ -15,7 +15,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -205,7 +204,7 @@ export class TestdatenViewComponent implements OnInit {
             this.ereignisdatum)
             .subscribe(response => {
                 this.createAndOpenOkDialog(response);
-            });
+            }, error => LOG.error(error));
     }
 
     public testAllMails(): Observable<any> {
@@ -219,25 +218,25 @@ export class TestdatenViewComponent implements OnInit {
             this.ereignisdatum)
             .subscribe(response => {
                 this.createAndOpenOkDialog(response);
-            });
+            }, error => LOG.error(error));
     }
 
     public resetSchulungsdaten(): void {
         this.testFaelleRS.resetSchulungsdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
-        });
+        }, error => LOG.error(error));
     }
 
     public deleteSchulungsdaten(): void {
         this.testFaelleRS.deleteSchulungsdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
-        });
+        }, error => LOG.error(error));
     }
 
     public createTutorialdaten(): void {
         this.testFaelleRS.createTutorialdaten().subscribe(response => {
             this.createAndOpenOkDialog(response);
-        });
+        }, error => LOG.error(error));
     }
 
     private createAndOpenOkDialog(title: string): void {

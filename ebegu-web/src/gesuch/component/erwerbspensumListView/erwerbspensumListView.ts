@@ -20,6 +20,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
@@ -40,6 +41,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const LOG = LogFactory.createLog('ErwerbspensumListViewComponent');
 
 export class ErwerbspensumListViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -289,6 +291,6 @@ export class ErwerbspensumListViewController
                 const einstellung = einstellungen
                     .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
                 this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.value === 'true';
-            });
+            }, error => LOG.error(error));
     }
 }

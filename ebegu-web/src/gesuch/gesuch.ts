@@ -102,7 +102,7 @@ export class GesuchRouteController implements IController {
             )
                 .subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
         }
 
     }

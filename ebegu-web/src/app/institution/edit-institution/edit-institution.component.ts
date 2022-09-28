@@ -58,11 +58,14 @@ import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+
+const LOG = LogFactory.createLog('EditInstitutionComponent');
 
 @Component({
     selector: 'dv-edit-institution',
@@ -147,7 +150,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private fetchExternalClients(institutionId: string): void {
         this.institutionRS.getExternalClients(institutionId)
-            .subscribe(externalClients => this.initExternalClients(externalClients));
+            .subscribe(externalClients => this.initExternalClients(externalClients), error => LOG.error(error));
     }
 
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
@@ -175,7 +178,7 @@ export class EditInstitutionComponent implements OnInit {
     private fetchInstitutionAndStammdaten(institutionId: string): void {
         this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institutionId)
             .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten)
-                .subscribe(stammdaten => this.initModel(stammdaten)));
+                .subscribe(stammdaten => this.initModel(stammdaten), error => LOG.error(error)));
     }
 
     private getOrCreateStammdaten(
@@ -346,17 +349,18 @@ export class EditInstitutionComponent implements OnInit {
                                 return;
                             }
                             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten));
+                                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten),
+                                        error => LOG.error(error));
                         },
                         () => {
                         });
             } else {
                 this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                    .subscribe(stammdaten => this.setValuesAfterSave(stammdaten));
+                    .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
             }
         } else {
             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten));
+                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
         }
     }
 
@@ -465,7 +469,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public deactivateStammdatenCheckRequired(): void {
         this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
-            .subscribe(() => this.navigateBack());
+            .subscribe(() => this.navigateBack(), error => LOG.error(error));
     }
 
     public isCheckRequiredEnabled(): boolean {

@@ -17,6 +17,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -36,6 +37,8 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('AbwesenheitViewComponent');
 
 export class AbwesenheitViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -115,7 +118,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             this.gesuchModelManager.getGesuchsperiode().id
         ).subscribe(einstellung => {
             this.maxTageAbwesenheit = parseInt(einstellung.value, 10);
-        });
+        }, error => LOG.error(error));
     }
 
     /**

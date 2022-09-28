@@ -114,7 +114,7 @@ export class EditGemeindeComponentBG implements OnInit {
             .subscribe(einstellungen => {
                 this.dauerBabyTarife = einstellungen;
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     private initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap(): void {
@@ -129,7 +129,7 @@ export class EditGemeindeComponentBG implements OnInit {
                     }
                 });
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     private loadGemeindespezifischeBgKonfigurationen(gesuchsperiodeId: string): void {
@@ -149,7 +149,7 @@ export class EditGemeindeComponentBG implements OnInit {
                         .sort((a, b) => this.sortGemeindespezifischeConfigs(a, b));
                     gemeindeKonfig.konfigurationen.push(einstellung);
                     this.cd.markForCheck();
-                });
+                }, error => LOG.error(error));
         });
     }
 
@@ -462,7 +462,7 @@ export class EditGemeindeComponentBG implements OnInit {
                         .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
                     config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
                         einstellungAnspruchUnabhaengigBeschaeftigung.getValueAsBoolean();
-                });
+                }, error => LOG.error(error));
         });
     }
 

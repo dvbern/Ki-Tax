@@ -17,6 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -38,6 +39,8 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('FreigabeViewComponent');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -90,7 +93,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
             this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(einstellung => {
                 this.isFreigabequittungEinlesenRequired = einstellung.value === 'true';
-            });
+            }, error => LOG.error(error));
         this.initViewModel();
     }
 

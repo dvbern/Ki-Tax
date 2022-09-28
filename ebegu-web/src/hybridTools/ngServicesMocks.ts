@@ -116,23 +116,23 @@ class MandantServiceMock extends MandantService {
 class EinstellungRSMock extends EinstellungRS {
     // tslint:disable-next-line:no-unused
     public findEinstellung(key: TSEinstellungKey, gemeindeId: string, gesuchsperiodeId: string):
-        Promise<TSEinstellung> {
-        return Promise.resolve(new TSEinstellung());
+        Observable<TSEinstellung> {
+        return of(new TSEinstellung());
     }
 
     // tslint:disable-next-line:no-unused
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Promise<TSEinstellung[]> {
-        return Promise.resolve([]);
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return of([]);
     }
 }
 
 class InstitutionRSMock extends InstitutionRS {
-    public getInstitutionenEditableForCurrentBenutzer(): Promise<TSInstitution[]> {
-        return Promise.resolve([]);
+    public getInstitutionenEditableForCurrentBenutzer(): Observable<TSInstitution[]> {
+        return of([]);
     }
 
-    public getInstitutionenReadableForCurrentBenutzer(): Promise<TSInstitution[]> {
-        return Promise.resolve([]);
+    public getInstitutionenReadableForCurrentBenutzer(): Observable<TSInstitution[]> {
+        return of([]);
     }
 }
 
