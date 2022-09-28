@@ -144,10 +144,10 @@ export class BenutzerListXComponent implements OnInit {
     }
 
     private updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenEditableForCurrentBenutzer().then((response: TSInstitution[]) => {
+        this.institutionRS.getInstitutionenEditableForCurrentBenutzer().subscribe((response: TSInstitution[]) => {
             this.institutionenList = response;
             this.cd.markForCheck();
-        });
+        }, error => LOG.error(error));
     }
 
     private updateTraegerschaftenList(): void {

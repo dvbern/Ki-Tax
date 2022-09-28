@@ -111,16 +111,16 @@ export class EditGemeindeComponentBG implements OnInit {
 
     private initDauerBabytarifEinstellungen(): void {
         this.einstellungRS.findEinstellungByKey(TSEinstellungKey.DAUER_BABYTARIF)
-            .then(einstellungen => {
+            .subscribe(einstellungen => {
                 this.dauerBabyTarife = einstellungen;
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     private initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap(): void {
         this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap = new Map();
         this.einstellungRS.findEinstellungByKey(TSEinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN)
-            .then((response: TSEinstellung[]) => {
+            .subscribe((response: TSEinstellung[]) => {
                 response.forEach(config => {
                     this.gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap
                         .set(config.gesuchsperiodeId, config.getValueAsBoolean());
@@ -129,7 +129,7 @@ export class EditGemeindeComponentBG implements OnInit {
                     }
                 });
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
     private loadGemeindespezifischeBgKonfigurationen(gesuchsperiodeId: string): void {
@@ -142,14 +142,14 @@ export class EditGemeindeComponentBG implements OnInit {
 
         getGemeindspezifischeBGConfigKeys().forEach(einstellungenKey => {
             this.einstellungRS.findEinstellung(einstellungenKey, this.gemeindeId, gesuchsperiodeId)
-                .then(einstellung => {
+                .subscribe(einstellung => {
                     einstellung.gemeindeId = this.gemeindeId;
                     gemeindeKonfig.gemeindespezifischeBGKonfigurationen.push(einstellung);
                     gemeindeKonfig.gemeindespezifischeBGKonfigurationen
                         .sort((a, b) => this.sortGemeindespezifischeConfigs(a, b));
                     gemeindeKonfig.konfigurationen.push(einstellung);
                     this.cd.markForCheck();
-                });
+                }, error => LOG.error(error));
         });
     }
 
@@ -453,7 +453,7 @@ export class EditGemeindeComponentBG implements OnInit {
         this.konfigurationsListe.forEach(config => {
             config.initProperties();
             this.einstellungRS.getAllEinstellungenBySystemCached(config.gesuchsperiode.id)
-                .then(einstellungen => {
+                .subscribe(einstellungen => {
                     const einstellungFKJVTexte = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
@@ -462,7 +462,7 @@ export class EditGemeindeComponentBG implements OnInit {
                         .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
                     config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
                         einstellungAnspruchUnabhaengigBeschaeftigung.getValueAsBoolean();
-                });
+                }, error => LOG.error(error));
         });
     }
 

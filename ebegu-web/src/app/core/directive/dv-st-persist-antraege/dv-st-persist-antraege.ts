@@ -223,7 +223,7 @@ export class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
             if (!Array.isArray(institutionList)) {
                 return;
             }
@@ -232,7 +232,7 @@ export class DVSTPersistAntraege implements IDirective {
             if (found) {
                 antragListController.selectedInstitution = found;
             }
-        });
+        }, error => LOG.error(error));
     }
 
     private setGemeindeFromName(antragListController: DVAntragListController, gemeinde: string): void {

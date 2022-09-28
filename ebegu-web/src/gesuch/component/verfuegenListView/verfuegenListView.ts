@@ -18,6 +18,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -53,6 +54,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
+
+const LOG = LogFactory.createLog('VerfuegenListViewComponent');
 
 export class VerfuegenListViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -163,17 +166,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+            ).subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
 
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+            ).subscribe(response => {
                     this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
         }
     }
 

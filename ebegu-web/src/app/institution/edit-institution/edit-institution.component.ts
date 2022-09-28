@@ -29,8 +29,9 @@ import {MatCheckboxChange} from '@angular/material/checkbox';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {IPromise} from 'angular';
 import * as moment from 'moment';
+import {Observable, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {
     getBgInstitutionenAndTsBetreuungsangebote,
@@ -57,11 +58,14 @@ import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+
+const LOG = LogFactory.createLog('EditInstitutionComponent');
 
 @Component({
     selector: 'dv-edit-institution',
@@ -146,7 +150,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private fetchExternalClients(institutionId: string): void {
         this.institutionRS.getExternalClients(institutionId)
-            .then(externalClients => this.initExternalClients(externalClients));
+            .subscribe(externalClients => this.initExternalClients(externalClients), error => LOG.error(error));
     }
 
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
@@ -173,23 +177,23 @@ export class EditInstitutionComponent implements OnInit {
 
     private fetchInstitutionAndStammdaten(institutionId: string): void {
         this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institutionId)
-            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten))
-            .then(stammdaten => this.initModel(stammdaten));
+            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten)
+                .subscribe(stammdaten => this.initModel(stammdaten), error => LOG.error(error)));
     }
 
     private getOrCreateStammdaten(
         institutionId: string,
         optionalStammdaten?: TSInstitutionStammdaten | null,
-    ): IPromise<TSInstitutionStammdaten> {
+    ): Observable<TSInstitutionStammdaten> {
 
         if (optionalStammdaten) {
             this.preEditGueltigkeit = new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
-            return Promise.resolve(optionalStammdaten);
+            return of(optionalStammdaten);
         }
 
-        return this.institutionRS.findInstitution(institutionId).then(institution => {
+        return this.institutionRS.findInstitution(institutionId).pipe(map(institution => {
             return EditInstitutionComponent.createInstitutionStammdaten(institution);
-        });
+        }));
     }
 
     private initModel(stammdaten: TSInstitutionStammdaten): void {
@@ -345,17 +349,18 @@ export class EditInstitutionComponent implements OnInit {
                                 return;
                             }
                             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten),
+                                        error => LOG.error(error));
                         },
                         () => {
                         });
             } else {
                 this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                    .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                    .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
             }
         } else {
             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
         }
     }
 
@@ -464,7 +469,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public deactivateStammdatenCheckRequired(): void {
         this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
-            .then(() => this.navigateBack());
+            .subscribe(() => this.navigateBack(), error => LOG.error(error));
     }
 
     public isCheckRequiredEnabled(): boolean {

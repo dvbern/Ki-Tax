@@ -84,9 +84,7 @@ describe('TagesschulenAngabenComponent', () => {
             of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
         );
         authServiceSpy.principal$ = of(new TSBenutzer());
-        einstellungRSSpy.findEinstellung.and.returnValue(
-            of(null).toPromise()
-        );
+        einstellungRSSpy.findEinstellung.and.returnValue(of(null));
         fixture = TestBed.createComponent(TagesschulenAngabenComponent);
         component = fixture.componentInstance;
         component.fruehbetreuungOeffnungszeiten = new TSOeffnungszeitenTagesschule();

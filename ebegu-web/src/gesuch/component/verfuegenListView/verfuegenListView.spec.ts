@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope} from 'angular';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -87,7 +88,7 @@ describe('verfuegenListViewTest', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung')
           .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
         spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.resolve(new TSEinstellung()));
+            .and.returnValue(of(new TSEinstellung(null, null, 'true')));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         verfuegenListView = new VerfuegenListViewController($state,

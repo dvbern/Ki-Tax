@@ -117,10 +117,10 @@ export class AddInstitutionComponent implements OnInit {
             this.betreuungsangebot,
             this.adminMail,
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-        ).then(neueinstitution => {
+        ).subscribe(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-        }).catch((exception: TSExceptionReport[]) => {
+        }, ((exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const adminRolle = 'TSRole_ADMIN_INSTITUTION';
@@ -153,7 +153,7 @@ export class AddInstitutionComponent implements OnInit {
                     },
                 );
             }
-        });
+        }));
     }
 
     private persistInstitution(): void {
@@ -163,10 +163,10 @@ export class AddInstitutionComponent implements OnInit {
             this.betreuungsangebot,
             this.adminMail,
             this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-        ).then(neueinstitution => {
+        ).subscribe(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-        });
+        }, error => LOG.error(error));
     }
 
     private initInstitution(): void {

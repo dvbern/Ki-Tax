@@ -18,6 +18,7 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -74,7 +75,7 @@ describe('BenutzerComponent', () => {
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        insitutionSpy.getAllInstitutionen.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getAllInstitutionen.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({benutzerId: undefined});
     }));

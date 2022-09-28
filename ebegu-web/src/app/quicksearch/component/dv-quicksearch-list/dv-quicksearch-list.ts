@@ -146,9 +146,9 @@ export class DVQuicksearchListController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getAllInstitutionen().then((response: any) => {
-            this.institutionenList = angular.copy(response);
-        });
+        this.institutionRS.getAllInstitutionen().subscribe((response: any) => {
+            this.institutionenList = response;
+        }, error => LOG.error(error));
     }
 
     private updateGemeindenList(): void {

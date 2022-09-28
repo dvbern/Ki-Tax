@@ -100,9 +100,9 @@ export class GesuchRouteController implements IController {
                 this.gesuchModelManager.getDossier().gemeinde.id,
                 this.gesuchModelManager.getGesuchsperiode().id,
             )
-                .then(response => {
+                .subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
         }
 
     }

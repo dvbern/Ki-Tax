@@ -13,30 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpBackendService} from 'angular';
-import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {translationsMock} from '../../hybridTools/translationsMock';
-import {TestDataUtil} from '../../utils/TestDataUtil.spec';
-import {ADMIN_JS_MODULE} from '../admin.module';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
 describe('TestFaelleRS', () => {
 
     let testFaelleRS: TestFaelleRS;
-    let $httpBackend: IHttpBackendService;
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['get']);
 
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
-
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.module(translationsMock));
-
-    beforeEach(angular.mock.inject($injector => {
-        testFaelleRS = $injector.get('TestFaelleRS');
-        $httpBackend = $injector.get('$httpBackend');
-
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-    }));
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [{provide: HttpClient, useValue: mockHttpClient}],
+        });
+        testFaelleRS = TestBed.inject(TestFaelleRS);
+    });
 
     describe('Public API', () => {
         it('check URI', () => {
@@ -47,10 +40,8 @@ describe('TestFaelleRS', () => {
     describe('API Usage', () => {
         describe('createTestFall', () => {
             it('should call createTestFall', () => {
-                const url = `${testFaelleRS.serviceURL}/testfall/${encodeURIComponent('1')}/null/null/false/false`;
-                $httpBackend.expectGET(url).respond({});
+                mockHttpClient.get.and.returnValue(of({}));
                 testFaelleRS.createTestFall('1', null, null, false, false);
-                $httpBackend.flush();
             });
         });
     });

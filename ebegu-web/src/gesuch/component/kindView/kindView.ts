@@ -202,7 +202,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => {
                     this.minValueAllowed = Number(value.value);
@@ -215,7 +215,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             if (this.isOnlyOneValueAllowed()) {
                 this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
             }
-        });
+        }, error => LOG.error(error));
     }
 
     private isOnlyOneValueAllowed(): boolean {
@@ -537,14 +537,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
+            .subscribe(einstellungen => {
                 this.loadEinstellungZemisDisabled(einstellungen);
                 this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
                 this.loadEinstellungKinderabzugTyp(einstellungen);
                 this.loadEinstellungAnspruchUnabhaengig(einstellungen);
                 this.loadEinstellungSpracheAmtsprache(einstellungen);
                 this.loadEinstellungFachstellenTyp(einstellungen);
-            });
+            }, error => LOG.error(error));
     }
 
     private loadEinstellungSpracheAmtsprache(einstellungen: TSEinstellung[]): void {

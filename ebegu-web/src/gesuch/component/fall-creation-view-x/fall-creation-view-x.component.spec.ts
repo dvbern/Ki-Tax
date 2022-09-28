@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -46,7 +47,7 @@ describe('FallCreationViewXComponent', () => {
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
     authServiceSpy.isOneOfRoles.and.returnValue(false);
-    einstellungenRS.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
+    einstellungenRS.findEinstellung.and.returnValue(of(new TSEinstellung()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({

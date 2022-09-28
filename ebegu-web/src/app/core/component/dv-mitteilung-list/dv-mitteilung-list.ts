@@ -33,6 +33,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../logging/LogFactory';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
@@ -44,6 +45,7 @@ import ITimeoutService = angular.ITimeoutService;
 import IWindowService = angular.IWindowService;
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
+const LOG = LogFactory.createLog('DVMitteilungListConfig');
 
 export class DVMitteilungListConfig implements IComponentOptions {
     public transclude = false;
@@ -203,7 +205,7 @@ export class DVMitteilungListController implements IOnInit {
                     this.ebeguUtil.translateString('GESUCHSTELLER'),
             });
         }
-        this.institutionRS.findAllInstitutionen(this.dossier.id).then(
+        this.institutionRS.findAllInstitutionen(this.dossier.id).subscribe(
             institutionen => {
                 institutionen.forEach(
                     institution =>
@@ -212,7 +214,7 @@ export class DVMitteilungListController implements IOnInit {
                             value: institution.name,
                         }),
                 );
-            },
+            }, error => LOG.error(error)
         );
     }
 

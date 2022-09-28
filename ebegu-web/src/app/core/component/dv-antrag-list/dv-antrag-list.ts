@@ -168,9 +168,9 @@ export class DVAntragListController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.institutionenList = response;
-        });
+        }, error => LOG.error(error));
     }
 
     public updateGesuchsperiodenList(): void {

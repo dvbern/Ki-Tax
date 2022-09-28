@@ -27,7 +27,10 @@ import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSInstitutionListDTO} from '../../../models/TSInstitutionListDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+
+const LOG = LogFactory.createLog('EditGemeidneComponentTS');
 
 @Component({
     selector: 'dv-edit-gemeinde-ts',
@@ -85,11 +88,11 @@ export class EditGemeindeComponentTS implements OnInit {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).then(
+        this.institutionRS.getInstitutionenForGemeinde(this.gemeindeId).subscribe(
             result => {
                 this._tagesschulen = result;
                 this._tagesschulen.sort((a, b) => a.name.localeCompare(b.name));
-            },
+            }, error => LOG.error(error)
         );
     }
 

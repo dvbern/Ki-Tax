@@ -16,7 +16,7 @@
 import {HttpHeaders} from '@angular/common/http';
 import {IHttpService} from 'angular';
 import * as moment from 'moment';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
@@ -123,14 +123,13 @@ export class FinanzielleSituationRS {
         gesuchsperiode: TSGesuchsperiode,
         gemeinde: TSGemeinde,
     ): Observable<TSFinanzielleSituationTyp> {
-        return from(this.einstellungRS.findEinstellung(
+        return this.einstellungRS.findEinstellung(
             TSEinstellungKey.FINANZIELLE_SITUATION_TYP,
             gemeinde.id,
             gesuchsperiode.id,
-        ))
-            .pipe(
-                map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
-            );
+        ).pipe(
+            map((einstellung: TSEinstellung) => this.ebeguRestUtil.parseFinanzielleSituationTyp(einstellung.value)),
+        );
     }
 
     public updateFinSitMitSteuerdaten(

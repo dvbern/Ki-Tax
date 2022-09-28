@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSInstitution} from '../../models/TSInstitution';
@@ -29,6 +30,8 @@ export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
     template: require('./schulung.component.html'),
     controllerAs: 'vm',
 };
+
+const LOG = LogFactory.createLog('SchulungViewController');
 
 export class SchulungViewController implements IController {
 
@@ -51,7 +54,7 @@ export class SchulungViewController implements IController {
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
         this.institutionForelle = this.getInstitutionForelle();
-        this.testFaelleRS.getSchulungBenutzer().then((response: any) => {
+        this.testFaelleRS.getSchulungBenutzer().subscribe((response: any) => {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
@@ -68,7 +71,7 @@ export class SchulungViewController implements IController {
 
             this.setInstitutionUsers();
             this.setAmtUsers();
-        });
+        }, err => LOG.error(err));
     }
 
     private setInstitutionUsers(): void {

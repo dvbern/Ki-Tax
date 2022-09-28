@@ -284,7 +284,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
@@ -328,23 +328,23 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
                 });
-        });
+        }, error => LOG.error(error));
 
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then(res => {
+        ).subscribe(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
-        });
+        }, error => LOG.error(error));
 
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then(res => {
+        ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
-        });
+        }, error => LOG.error(error));
     }
 
     private loadInfomaZahlungenActive(): void {

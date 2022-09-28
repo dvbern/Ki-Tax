@@ -32,6 +32,7 @@ import {MatPaginatorIntl} from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {FjkvKinderabzugExchangeService} from '../../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
 import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
@@ -42,6 +43,7 @@ import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
+import {InstitutionRS} from './service/institutionRS.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -84,7 +86,9 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         CookieService,
         ColorService,
         SearchRS,
-        FjkvKinderabzugExchangeService
+        FjkvKinderabzugExchangeService,
+        InstitutionRS,
+        EinstellungRS
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.

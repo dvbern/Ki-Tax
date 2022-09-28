@@ -3,6 +3,7 @@ import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -61,7 +62,7 @@ describe('EditInstitutionComponent', () => {
             .compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);
-        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.resolveTo([]);
+        insitutionServiceSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
     }));

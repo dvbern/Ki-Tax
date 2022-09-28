@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
@@ -33,6 +34,8 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../abstractGesuchView';
+
+const LOG = LogFactory.createLog('AbstractFinSitBernView');
 
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
@@ -63,9 +66,9 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         this.einstellungRS.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
             this.gesuchModelManager.getGemeinde()?.id,
             this.gesuchModelManager.getGesuchsperiode()?.id)
-            .then(setting => {
+            .subscribe(setting => {
                 this.steuerSchnittstelleAktivForPeriode = (setting.value === 'true');
-            });
+            }, error => LOG.error(error));
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.steuerSchnittstelleAkivAbInPast = moment().isAfter(properties.steuerschnittstelleAktivAb);
             this.steuerSchnittstelleAktivAbStr = properties.steuerschnittstelleAktivAb.format(CONSTANTS.DATE_FORMAT);

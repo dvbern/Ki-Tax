@@ -691,10 +691,10 @@ export class TagesschulenAngabenComponent {
         this.settings.findEinstellung(TSEinstellungKey.LATS_STICHTAG,
             this.gemeindeAntragContainer.gemeinde?.id,
             this.gemeindeAntragContainer.gesuchsperiode?.id)
-            .then(setting => {
+            .subscribe(setting => {
                 const date = moment(setting.value).format(CONSTANTS.DATE_FORMAT);
                 this.stichtag.next(date);
-            });
+            }, error => LOG.error(error));
     }
 
     public manageSaveErrorCodes(errors: TSExceptionReport[]): void {

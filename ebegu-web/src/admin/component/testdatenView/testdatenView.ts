@@ -15,7 +15,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -24,6 +23,7 @@ import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-di
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -38,6 +38,8 @@ import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
+
+const LOG = LogFactory.createLog('TestdatenView');
 
 @Component({
     selector: 'dv-testdaten-view',
@@ -157,10 +159,10 @@ export class TestdatenViewComponent implements OnInit {
         bestaetigt: boolean,
         verfuegen: boolean,
     ): void {
-        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(
+        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).subscribe(
             response => {
                 this.createLinkDialog(response);
-            });
+            }, err => LOG.error(err));
     }
 
     private createTestFallGS(
@@ -176,15 +178,15 @@ export class TestdatenViewComponent implements OnInit {
             gemeindeId,
             bestaetigt,
             verfuegen,
-            username).then(response => {
+            username).subscribe(response => {
             this.createLinkDialog(response);
-        });
+        }, err => LOG.error(err));
     }
 
     public removeGesucheGS(): void {
-        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).then(() => {
+        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).subscribe(() => {
             this.errorService.addMesageAsInfo(`Gesuche entfernt fuer ${this.selectedBesitzer.username}`);
-        });
+        }, err => LOG.error(err));
     }
 
     public removeGesuchsperiode(): void {
@@ -195,46 +197,46 @@ export class TestdatenViewComponent implements OnInit {
             });
     }
 
-    public mutiereFallHeirat(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallHeirat(this.dossierid,
+    public mutiereFallHeirat(): void {
+        this.testFaelleRS.mutiereFallHeirat(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
-                this.createAndOpenOkDialog(response.data);
-            });
+            .subscribe(response => {
+                this.createAndOpenOkDialog(response);
+            }, error => LOG.error(error));
     }
 
-    public testAllMails(): IPromise<any> {
+    public testAllMails(): Observable<any> {
         return this.testFaelleRS.testAllMails(this.mailadresse);
     }
 
-    public mutiereFallScheidung(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallScheidung(this.dossierid,
+    public mutiereFallScheidung(): void {
+        this.testFaelleRS.mutiereFallScheidung(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
-                this.createAndOpenOkDialog(response.data);
-            });
+            .subscribe(response => {
+                this.createAndOpenOkDialog(response);
+            }, error => LOG.error(error));
     }
 
-    public resetSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.resetSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public resetSchulungsdaten(): void {
+        this.testFaelleRS.resetSchulungsdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
-    public deleteSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.deleteSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public deleteSchulungsdaten(): void {
+        this.testFaelleRS.deleteSchulungsdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
-    public createTutorialdaten(): IPromise<any> {
-        return this.testFaelleRS.createTutorialdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public createTutorialdaten(): void {
+        this.testFaelleRS.createTutorialdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
     private createAndOpenOkDialog(title: string): void {
@@ -254,9 +256,9 @@ export class TestdatenViewComponent implements OnInit {
     private createLinkDialog(response: any): void {
         // einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
         const uuidLength = -36;
-        const uuidPartOfString = response.data ? response.data.slice(uuidLength) : '';
+        const uuidPartOfString = response ? response.slice(uuidLength) : '';
         // nicht alle Parameter werden benoetigt, deswegen sind sie leer
-        this.createAndOpenLinkDialog$(response.data, `#/gesuch/fall////${uuidPartOfString}//`);
+        this.createAndOpenLinkDialog$(response, `#/gesuch/fall////${uuidPartOfString}//`);
     }
 
     private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
@@ -296,7 +298,7 @@ export class TestdatenViewComponent implements OnInit {
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeForGemeindeAntrag,
-            this.gemeindeAntragStatus).then(response => {
+            this.gemeindeAntragStatus).subscribe(response => {
             this.errorService.clearAll();
             if (this.ferienbetreuungSelected()) {
                 this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,

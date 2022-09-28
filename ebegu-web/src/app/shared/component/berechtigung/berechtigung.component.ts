@@ -73,7 +73,7 @@ export class BerechtigungComponent {
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
         this.sozialdienstId = 'sozialdienst-' + this.inputId;
 
-        this.institutionen$ = from(this.institutionRS.getInstitutionenEditableForCurrentBenutzer())
+        this.institutionen$ = this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
             .pipe(map(BerechtigungComponent.sortByName));
 
         this.traegerschaften$ = this.traegerschaftenForPrincipal$();

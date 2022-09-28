@@ -111,14 +111,15 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     private readEinstellungenByGesuchsperiode(): void {
-        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
-            response.sort((a, b) => {
-                return this.$translate.instant(a.key.toString())
-                    .localeCompare(this.$translate.instant(b.key.toString()));
-            });
-            this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
-            this.cd.markForCheck();
-        });
+        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id)
+            .subscribe((response: TSEinstellung[]) => {
+                response.sort((a, b) => {
+                    return this.$translate.instant(a.key.toString())
+                        .localeCompare(this.$translate.instant(b.key.toString()));
+                });
+                this.einstellungenGesuchsperiode = new MatTableDataSource<TSEinstellung>(response);
+                this.cd.markForCheck();
+            }, error => LOG.error(error));
     }
 
     public cancelGesuchsperiode(): void {
@@ -177,7 +178,8 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param));
+        this.einstellungenGesuchsperiode.data.forEach(param => this.einstellungenRS.saveEinstellung(param)
+            .subscribe(() => {}, error => LOG.error(error)));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();

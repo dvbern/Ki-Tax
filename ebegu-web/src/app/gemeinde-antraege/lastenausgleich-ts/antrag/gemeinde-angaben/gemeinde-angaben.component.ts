@@ -115,11 +115,13 @@ export class GemeindeAngabenComponent implements OnInit {
             this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN,
                 this.lATSAngabenGemeindeContainer.gemeinde?.id,
                 this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
-                .then(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting));
+                .subscribe(setting => this.lohnnormkostenSettingMoreThanFifty$.next(setting),
+                        error => LOG.error(error));
             this.settings.findEinstellung(TSEinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
                 this.lATSAngabenGemeindeContainer.gemeinde?.id,
                 this.lATSAngabenGemeindeContainer.gesuchsperiode?.id)
-                .then(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting));
+                .subscribe(setting => this.lohnnormkostenSettingLessThanFifty$.next(setting),
+                    error => LOG.error(error));
             this.unsavedChangesService.registerForm(this.angabenForm);
             this.initControlling();
             this.cd.markForCheck();

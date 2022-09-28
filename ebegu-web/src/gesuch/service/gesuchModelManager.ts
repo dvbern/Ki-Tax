@@ -19,6 +19,7 @@ import {Subscription} from 'rxjs';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
 import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
@@ -92,6 +93,8 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
+
+const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
 
@@ -229,11 +232,11 @@ export class GesuchModelManager {
 
         if (this.getGesuchsperiode()) {
             this.einstellungenRS.getAllEinstellungenBySystemCached(this.getGesuchsperiode().id)
-                .then(einstellungen => {
+                .subscribe(einstellungen => {
                     const einstellung = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
-                    this.isFKJVTexte = einstellung.getValueAsBoolean();
-                });
+                    this.isFKJVTexte = einstellung?.getValueAsBoolean();
+                }, error => LOG.error(error));
         }
 
         return gesuch;

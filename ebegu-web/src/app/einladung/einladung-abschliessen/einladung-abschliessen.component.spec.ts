@@ -53,7 +53,7 @@ describe('EinladungAbschliessenComponent', () => {
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({inputId: undefined});

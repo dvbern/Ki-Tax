@@ -20,7 +20,7 @@ import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -34,7 +34,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
   templateUrl: './traegerschaft-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit {
+export class TraegerschaftListComponent extends AbstractAdminViewX implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('TraegerschaftListComponent');
 
