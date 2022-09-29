@@ -29,7 +29,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 import { Observable } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class InstitutionRS {
 
@@ -37,25 +37,21 @@ export class InstitutionRS {
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public $http: HttpClient,
+        public $http: HttpClient
     ) {
         this.serviceURL = `${CONSTANTS.REST_API}institutionen`;
     }
 
     public findInstitution(institutionID: string): Observable<TSInstitution> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionID)}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
     }
 
     public updateInstitution(institutionID: string, update: TSInstitutionUpdate): Observable<TSInstitutionStammdaten> {
         const restInstitution = this.ebeguRestUtil.institutionUpdateToRestObject(update);
 
         return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionID)}`, restInstitution)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response)));
     }
 
     /**
@@ -126,9 +122,7 @@ export class InstitutionRS {
 
     public isCurrentUserTagesschuleUser(): Observable<boolean> {
         return this.$http.get(`${this.serviceURL}/istagesschulenutzende/currentuser`)
-            .pipe(map((response: any) => {
-                return response;
-            }));
+            .pipe(map((response: any) => response));
     }
 
     public getInstitutionenForGemeinde(gemeindeId: string): Observable<TSInstitutionListDTO[]> {

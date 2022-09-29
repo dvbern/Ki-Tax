@@ -26,7 +26,7 @@ import {DateUtil} from '../../utils/DateUtil';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class TestFaelleRS {
 
@@ -101,7 +101,7 @@ export class TestFaelleRS {
             {
                 params: {
                     mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                    aenderungper: DateUtil.momentToLocalDate(aenderungper),
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
                 },
                 responseType: 'text'
             });
@@ -125,9 +125,7 @@ export class TestFaelleRS {
 
     public getSchulungBenutzer(): Observable<string[]> {
         return this.http.get(`${this.serviceURL}/schulung/public/user`)
-            .pipe(map((response: any) => {
-                return response;
-            }));
+            .pipe(map((response: any) => response));
     }
 
     public processScript(scriptNr: string): Observable<any> {

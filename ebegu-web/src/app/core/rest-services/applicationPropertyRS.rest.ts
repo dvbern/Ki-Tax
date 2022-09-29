@@ -98,9 +98,7 @@ export class ApplicationPropertyRS {
     }
 
     public getActivatedDemoFeatures(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.activatedDemoFeatures;
-        });
+        return this.getPublicPropertiesCached().then(response => response.activatedDemoFeatures);
     }
 
     public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {

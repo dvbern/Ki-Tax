@@ -420,7 +420,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public alleMutationsmeldungVerfuegen(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: 'ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE',
+            frage: 'ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE'
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -430,12 +430,12 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                     const body = {
                         pagination: {
                             number: this.pageSize,
-                            start: this.page * this.pageSize,
+                            start: this.page * this.pageSize
                         },
                         search: {
-                            predicateObject: this.filterPredicate,
+                            predicateObject: this.filterPredicate
                         },
-                        sort: this.sort,
+                        sort: this.sort
                     };
                     this.mitteilungRS.applyAlleBetreuungsmitteilungen(body).then(
                         resultList => {
@@ -447,10 +447,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                                         this.getMitteilungenCount();
                                     },
                                     () => {
-                                    },
+                                    }
                                 )
                             ;
-                        },
+                        }
                     );
                 },
                 () => {

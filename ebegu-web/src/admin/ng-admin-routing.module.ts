@@ -31,9 +31,7 @@ import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/ge
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
 
 const applicationPropertiesResolver = [
-    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
-        return applicationPropertyRS.getAllApplicationProperties();
-    },
+    'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => applicationPropertyRS.getAllApplicationProperties()
 ];
 
 const states: Ng2StateDeclaration[] = [
@@ -42,19 +40,19 @@ const states: Ng2StateDeclaration[] = [
         abstract: true,
         name: 'admin',
         data: {
-            roles: TSRoleUtil.getAdministratorRoles(),
-        },
+            roles: TSRoleUtil.getAdministratorRoles()
+        }
     },
     {
         name: 'admin.view',
         component: AdminViewXComponent,
         url: '/admin',
         resolve: {
-            applicationProperties: applicationPropertiesResolver,
+            applicationProperties: applicationPropertiesResolver
         },
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.testdaten',

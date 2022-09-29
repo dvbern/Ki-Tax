@@ -26,7 +26,7 @@ describe('TestFaelleRS', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            providers: [{provide: HttpClient, useValue: mockHttpClient}],
+            providers: [{provide: HttpClient, useValue: mockHttpClient}]
         });
         testFaelleRS = TestBed.inject(TestFaelleRS);
     });

@@ -20,14 +20,14 @@ import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {CoreModule} from '../../app/core/core.module';
 
 @Injectable({
-    providedIn: CoreModule,
+    providedIn: CoreModule
 })
 export class DailyBatchRS {
 
     public readonly serviceURL: string;
 
     public constructor(public $http: HttpClient) {
-        this.serviceURL = CONSTANTS.REST_API + 'dailybatch';
+        this.serviceURL = `${CONSTANTS.REST_API  }dailybatch`;
     }
 
     public getServiceName(): string {

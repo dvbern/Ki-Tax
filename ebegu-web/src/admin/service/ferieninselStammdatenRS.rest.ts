@@ -22,7 +22,7 @@ import {TSFerieninselStammdaten} from '../../models/TSFerieninselStammdaten';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FerieninselStammdatenRS {
 

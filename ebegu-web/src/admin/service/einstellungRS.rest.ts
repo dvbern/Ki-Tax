@@ -26,7 +26,7 @@ import {TSEinstellung} from '../../models/TSEinstellung';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class EinstellungRS {
 
@@ -36,7 +36,7 @@ export class EinstellungRS {
     private readonly _einstellungenCacheMap = new Map<string, TSEinstellung[]>();
 
     public constructor(
-        public readonly http: HttpClient,
+        public readonly http: HttpClient
     ) {
         this.serviceURL = `${CONSTANTS.REST_API}einstellung`;
     }
@@ -45,15 +45,13 @@ export class EinstellungRS {
         let restEinstellung = {};
         restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
         return this.http.put(this.serviceURL, restEinstellung)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response)));
     }
 
     public findEinstellung(
         key: TSEinstellungKey,
         gemeindeId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): Observable<TSEinstellung> {
         return this.http.get<TSEinstellung>(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`);
     }
