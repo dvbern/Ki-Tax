@@ -22,13 +22,13 @@ import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {AdminViewXComponent} from './component/admin-view-x/admin-view-x.component';
-import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView.component';
 import {BenutzerListViewXComponent} from './component/benutzerListView/benutzer-list-view-x.component';
 import {BetreuungMonitoringComponent} from './component/betreuung-monitoring/betreuung-monitoring.component';
 import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
+import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
 
 const applicationPropertiesResolver = [
     'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
@@ -61,71 +61,71 @@ const states: Ng2StateDeclaration[] = [
         url: '/testdaten',
         component: TestdatenViewComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.batchjobTrigger',
         url: '/batchjobTrigger',
-        component: BatchjobTriggerViewComponent,
+        component: BatchjobTriggerViewComponent
     },
     {
         name: 'admin.debugging',
         url: '/debug',
-        component: DebuggingComponent,
+        component: DebuggingComponent
     },
     {
         name: 'admin.benutzer',
         component: BenutzerComponent,
         url: '/benutzerlist/benutzer/:benutzerId',
         data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
+            roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
     },
     {
         name: 'admin.betreuungMonitoring',
         url: '/betreuungMonitoring',
         component: BetreuungMonitoringComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.gesuchsperioden',
         url: '/gesuchsperioden',
         component: GesuchsperiodeListViewXComponent,
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.gesuchsperiode',
         url: '/parameter/gesuchsperiode/:gesuchsperiodeId',
         component: GesuchsperiodeViewXComponent,
         params: {
-            gesuchsperiodeId: '',
+            gesuchsperiodeId: ''
         },
         data: {
-            roles: TSRoleUtil.getSuperAdminRoles(),
-        },
+            roles: TSRoleUtil.getSuperAdminRoles()
+        }
     },
     {
         name: 'admin.benutzerlist',
         url: '/benutzerlist',
         component: BenutzerListViewXComponent,
         data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
-    },
+            roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class NgAdminRoutingModule {
 }

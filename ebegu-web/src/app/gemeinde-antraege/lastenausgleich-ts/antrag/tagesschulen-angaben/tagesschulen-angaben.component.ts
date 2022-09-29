@@ -59,7 +59,7 @@ const LOG = LogFactory.createLog('TagesschulenAngabenComponent');
     templateUrl: './tagesschulen-angaben.component.html',
     styleUrls: ['./tagesschulen-angaben.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class TagesschulenAngabenComponent {
 
@@ -108,20 +108,18 @@ export class TagesschulenAngabenComponent {
         private readonly routerGlobals: UIRouterGlobals,
         private readonly settings: EinstellungRS,
         private readonly wizardRS: WizardStepXRS,
-        private readonly unsavedChangesService: UnsavedChangesService,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
     }
 
     public ngOnInit(): void {
         this.subscription = combineLatest([
             this.lastenausgleichTSService.getLATSAngabenGemeindeContainer(),
-            this.authService.principal$,
+            this.authService.principal$
         ]).subscribe(([container, principal]) => {
             this.gemeindeAntragContainer = container;
             this.latsAngabenInstitutionContainer =
-                container.angabenInstitutionContainers?.find(institutionContainer => {
-                    return institutionContainer.id === this.institutionContainerId;
-                });
+                container.angabenInstitutionContainers?.find(institutionContainer => institutionContainer.id === this.institutionContainerId);
             this.gesuchsPeriode = container.gesuchsperiode;
             const angaben = this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 this.latsAngabenInstitutionContainer?.angabenDeklaration :
@@ -177,11 +175,11 @@ export class TagesschulenAngabenComponent {
         }
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private setupRoleBasedPropertiesForPrincipal(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         angaben: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
-        principal: TSBenutzer,
+        principal: TSBenutzer
     ): void {
         if (container.isAtLeastInBearbeitungKanton()) {
             this.canSeeDurchKibonAusfuellen.next(false);
@@ -251,60 +249,60 @@ export class TagesschulenAngabenComponent {
             // B
             anzahlEingeschriebeneKinder: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinder,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderKindergarten: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderSekundarstufe: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderPrimarstufe: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderPrimarstufe,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderVolksschulangebot: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderVolksschulangebot,
-                numberValidator(ValidationType.POSITIVE_INTEGER),
+                numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             durchschnittKinderProTagFruehbetreuung: [
                 latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
                 Validators.compose([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
-                ]),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
             ],
             durchschnittKinderProTagMittag: [
                 latsAngabenInstiution?.durchschnittKinderProTagMittag,
                 Validators.compose([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
-                ]),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
             ],
             durchschnittKinderProTagNachmittag1: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
                 Validators.compose([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
-                ]),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
             ],
             durchschnittKinderProTagNachmittag2: [
                 latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
                 Validators.compose([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
-                ]),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
             ],
             betreuungsstundenEinschliesslichBesondereBeduerfnisse:
                 [
                     latsAngabenInstiution?.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
-                    numberValidator(ValidationType.POSITIVE_INTEGER),
+                    numberValidator(ValidationType.POSITIVE_INTEGER)
                 ],
             // C
             schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution?.schuleAufBasisOrganisatorischesKonzept,
@@ -315,7 +313,7 @@ export class TagesschulenAngabenComponent {
             // Bemerkungen
             bemerkungen: latsAngabenInstiution?.bemerkungen,
             // hidden fields
-            version: latsAngabenInstiution?.version,
+            version: latsAngabenInstiution?.version
         });
 
         return form;
@@ -335,8 +333,8 @@ export class TagesschulenAngabenComponent {
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
                 this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                     .valueChanges
-                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0)),
-            ],
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0))
+            ]
         ).subscribe(values => {
             this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3];
             this.cd.markForCheck();
@@ -349,7 +347,7 @@ export class TagesschulenAngabenComponent {
         this.resetBasicValidation();
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
-                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
             );
             return;
         }
@@ -379,7 +377,7 @@ export class TagesschulenAngabenComponent {
             this.fruehbetreuungOeffnungszeiten,
             this.mittagsbetreuungOeffnungszeiten,
             this.nachmittagsbetreuung1Oeffnungszeiten,
-            this.nachmittagsbetreuung2Oeffnungszeiten,
+            this.nachmittagsbetreuung2Oeffnungszeiten
         ];
     }
 
@@ -399,7 +397,7 @@ export class TagesschulenAngabenComponent {
         this.errorService.clearAll();
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
-                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
             );
             return;
         }
@@ -427,7 +425,7 @@ export class TagesschulenAngabenComponent {
     private confirmDialog(frageKey: string): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant(frageKey),
+            frage: this.translate.instant(frageKey)
         };
         return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
@@ -440,7 +438,7 @@ export class TagesschulenAngabenComponent {
 
         if (!this.form.valid) {
             this.errorService.addMesageAsError(
-                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+                this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
             );
             return;
         }
@@ -481,22 +479,22 @@ export class TagesschulenAngabenComponent {
         this.form.get('durchschnittKinderProTagFruehbetreuung')
             .setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
         this.form.get('durchschnittKinderProTagMittag')
             .setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
         this.form.get('durchschnittKinderProTagNachmittag1')
             .setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
         this.form.get('durchschnittKinderProTagNachmittag2')
             .setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
-                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
         this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
@@ -607,22 +605,22 @@ export class TagesschulenAngabenComponent {
             this.form.get('durchschnittKinderProTagFruehbetreuung')
                 .setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
             this.form.get('durchschnittKinderProTagMittag')
                 .setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
             this.form.get('durchschnittKinderProTagNachmittag1')
                 .setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
             this.form.get('durchschnittKinderProTagNachmittag2')
                 .setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
             this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);

@@ -30,7 +30,7 @@ import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboardin
     selector: 'dv-onboarding-neu-benutzer',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-neu-benutzer.component.html',
-    styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less'],
+    styleUrls: ['./onboarding-neu-benutzer.component.less', '../onboarding.less']
 })
 export class OnboardingNeuBenutzerComponent {
 
@@ -88,7 +88,7 @@ export class OnboardingNeuBenutzerComponent {
         });
         this.stateService.go(this.nextState, {
             gemeindeBGId: this.gemeinde !== undefined ? this.gemeinde.id : null,
-            gemeindenId: listIds,
+            gemeindenId: listIds
         });
     }
 

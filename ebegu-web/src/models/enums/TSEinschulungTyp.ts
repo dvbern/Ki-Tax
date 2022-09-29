@@ -44,7 +44,7 @@ export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {
         TSEinschulungTyp.KLASSE6,
         TSEinschulungTyp.KLASSE7,
         TSEinschulungTyp.KLASSE8,
-        TSEinschulungTyp.KLASSE9,
+        TSEinschulungTyp.KLASSE9
     ];
 }
 
@@ -53,7 +53,7 @@ export function getTSEinschulungTypValuesLuzern(): Array<TSEinschulungTyp> {
         TSEinschulungTyp.VORSCHULALTER,
         TSEinschulungTyp.FREIWILLIGER_KINDERGARTEN,
         TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN,
-        TSEinschulungTyp.PRIMAR_SEKUNDAR_STUFE,
+        TSEinschulungTyp.PRIMAR_SEKUNDAR_STUFE
     ];
 }
 
@@ -61,6 +61,6 @@ export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {
     return [
         TSEinschulungTyp.VORSCHULALTER,
         TSEinschulungTyp.KINDERGARTEN1,
-        TSEinschulungTyp.KINDERGARTEN2,
+        TSEinschulungTyp.KINDERGARTEN2
     ];
 }

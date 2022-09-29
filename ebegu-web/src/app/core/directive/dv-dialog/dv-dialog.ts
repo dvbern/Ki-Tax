@@ -27,6 +27,7 @@ export class DvDialog {
 
     /**
      * Erstellt einen neuen confim Dialog mit den uebergegebenen Parametern
+     *
      * @param template Man kann ein belibiges Template eingeben in dem man das Layout des ganzen Dialogs gestaltet.
      * @param controller Hier implementiert man die verschiedenen Funktionen, die benoetigt sind
      * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller
@@ -44,7 +45,7 @@ export class DvDialog {
             template,
             controller,
             controllerAs: 'vm',
-            locals: params,
+            locals: params
         };
         return this.$mdDialog.show(confirm);
     }
@@ -54,6 +55,7 @@ export class DvDialog {
      * Diese Methode soll fuer den RemoveDialog verwendet werden, da sie zwingend ein Form verlangt. Das
      * Form wird benoetigt um das Form beim clicken von CANCEL wieder dirty zu setzen. Falls man kein form hat kann auc
      * undefined uebergeben werden
+     *
      * @param template Man kann ein belibiges Template eingeben in dem man das Layout des ganzen Dialogs gestaltet.
      * @param form Fuer den RemoveDialog muss zwingend ein Form mitgegeben werden, damit beim Abbrechen das Form wieder
      *         dirty gesetzt werden kann.
@@ -65,7 +67,7 @@ export class DvDialog {
         template: string,
         form: IFormController,
         controller?: any,
-        params?: { [k in RemoveDialogParams]?: any },
+        params?: { [k in RemoveDialogParams]?: any }
     ): IPromise<any> {
         // form is the only required parameter, thus it's explicitly kept in the method signature
         params.form = form;
@@ -73,7 +75,7 @@ export class DvDialog {
             template,
             controller,
             controllerAs: 'vm',
-            locals: {params},
+            locals: {params}
         };
         return this.$mdDialog.show(confirm);
     }
@@ -84,7 +86,7 @@ export class DvDialog {
             controller,
             controllerAs: 'vm',
             fullscreen: true,
-            locals: params,
+            locals: params
         };
         return this.$mdDialog.show(confirm);
     }

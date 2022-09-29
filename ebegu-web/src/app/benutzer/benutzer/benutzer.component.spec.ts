@@ -40,7 +40,7 @@ describe('BenutzerComponent', () => {
         const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
             [
                 'getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
-                'inactivateBenutzer', 'reactivateBenutzer',
+                'inactivateBenutzer', 'reactivateBenutzer'
             ]);
 
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
@@ -55,22 +55,22 @@ describe('BenutzerComponent', () => {
             providers: [
                 {
                     provide: InstitutionRS,
-                    useValue: insitutionSpy,
+                    useValue: insitutionSpy
                 },
                 {
                     provide: TraegerschaftRS,
-                    useValue: traegerschaftSpy,
+                    useValue: traegerschaftSpy
                 },
                 {
                     provide: BenutzerRSX,
-                    useValue: benutzerSpy,
+                    useValue: benutzerSpy
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-            ],
+                {provide: ErrorService, useValue: errorServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

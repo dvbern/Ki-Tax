@@ -29,7 +29,7 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
 @Component({
     selector: 'dv-onboarding',
     templateUrl: './onboarding.component.html',
-    styleUrls: ['./onboarding.component.less', '../onboarding.less'],
+    styleUrls: ['./onboarding.component.less', '../onboarding.less']
 })
 export class OnboardingComponent implements OnInit {
 
@@ -49,7 +49,7 @@ export class OnboardingComponent implements OnInit {
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
-        private readonly mandantService: MandantService,
+        private readonly mandantService: MandantService
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
         this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());

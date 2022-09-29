@@ -93,7 +93,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'DownloadRS',
         'ApplicationPropertyRS',
         'DokumenteRS',
-        'MandantService',
+        'MandantService'
     ];
 
     public filesTooBig: File[];
@@ -395,7 +395,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             const zusatzzeile = adr.zusatzzeile ? adr.zusatzzeile : '-';
             const plz = adr.plz ? adr.plz : '-';
             const ort = adr.ort ? adr.ort : '-';
-            const land = this.$translate.instant('Land_' + adr.land);
+            const land = this.$translate.instant(`Land_${  adr.land}`);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
                 organisation,
                 strasse,
@@ -403,7 +403,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 zusatzzeile,
                 plz,
                 ort,
-                land,
+                land
             });
         }
 

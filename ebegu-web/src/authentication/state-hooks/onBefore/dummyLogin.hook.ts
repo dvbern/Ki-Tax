@@ -30,7 +30,7 @@ dummyLoginHookRunBlock.$inject = ['$transitions'];
 export function dummyLoginHookRunBlock($transitions: TransitionService): void {
     // Matches all states the require dummy login
     const requiresDummyLogin: HookMatchCriteria = {
-        to: state => state.data && state.data.requiresDummyLogin,
+        to: state => state.data && state.data.requiresDummyLogin
     };
 
     $transitions.onBefore(requiresDummyLogin, checkDummyLogin, {priority: OnBeforePriorities.DUMMY_LOGIN});

@@ -21,14 +21,14 @@ describe('ZpvNrSuccessComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ],
             declarations: [ZpvNrSuccessComponent],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GesuchRS, useValue: gesuchRSSpy},
-                {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-            ],
+                {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

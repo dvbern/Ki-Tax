@@ -25,8 +25,8 @@ import {MitteilungRS} from '../../service/mitteilungRS.rest';
 
 @Component({
     selector: 'dv-posteingang',
-    templateUrl: './dv-posteingang.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './dv-posteingang.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvPosteingangComponent implements OnDestroy {
 
@@ -38,7 +38,7 @@ export class DvPosteingangComponent implements OnDestroy {
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly posteingangService: PosteingangService,
+        private readonly posteingangService: PosteingangService
     ) {
 
         const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
@@ -71,7 +71,7 @@ export class DvPosteingangComponent implements OnDestroy {
                     }
 
                     return of(0);
-                }),
+                })
             );
     }
 

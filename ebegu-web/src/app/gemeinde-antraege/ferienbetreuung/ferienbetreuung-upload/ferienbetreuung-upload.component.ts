@@ -44,7 +44,7 @@ const LOG = LogFactory.createLog('FerienbetreuungUploadComponent');
     selector: 'dv-ferienbetreuung-upload',
     templateUrl: './ferienbetreuung-upload.component.html',
     styleUrls: ['./ferienbetreuung-upload.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
 
@@ -64,7 +64,7 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
         private readonly dialog: MatDialog,
         private readonly downloadRS: DownloadRS,
         private readonly wizardRS: WizardStepXRS,
-        private readonly authService: AuthServiceRS,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
@@ -100,7 +100,7 @@ export class FerienbetreuungUploadComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
-            text: '',
+            text: ''
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()

@@ -35,15 +35,15 @@ export class DailyBatchRS {
     }
 
     public runBatchCleanDownloadFiles(): Observable<string> {
-        return this.callServer(this.serviceURL + '/cleanDownloadFiles');
+        return this.callServer(`${this.serviceURL  }/cleanDownloadFiles`);
     }
 
     public runBatchMahnungFristablauf(): Observable<string> {
-        return this.callServer(this.serviceURL + '/mahnungFristAblauf');
+        return this.callServer(`${this.serviceURL  }/mahnungFristAblauf`);
     }
 
     public runBatchUpdateGemeindeForBGInstitutionen(): Observable<string> {
-        return this.callServer(this.serviceURL + '/updateGemeindeForBGInstitutionen');
+        return this.callServer(`${this.serviceURL  }/updateGemeindeForBGInstitutionen`);
     }
 
     private callServer(url: string): Observable<string> {

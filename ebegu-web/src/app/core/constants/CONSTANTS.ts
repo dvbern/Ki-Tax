@@ -69,7 +69,7 @@ export function getUnknowKitaIdForMandant(mandant: KiBonMandant): string {
     }
 }
 
-// tslint:disable-next-line:no-identical-functions
+// eslint-disable-next-line
 export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
@@ -85,7 +85,7 @@ export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
     }
 }
 
-// tslint:disable-next-line:no-identical-functions
+// eslint-disable-next-line
 export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
@@ -107,5 +107,5 @@ export const HTTP_CODES = {
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,
     FORBIDDEN: 403,
-    CONFLICT: 409,
+    CONFLICT: 409
 };

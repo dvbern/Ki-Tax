@@ -25,7 +25,7 @@ export function getTSFeriennameValues(): Array<TSFerienname> {
         TSFerienname.HERBSTFERIEN,
         TSFerienname.SPORTFERIEN,
         TSFerienname.FRUEHLINGSFERIEN,
-        TSFerienname.SOMMERFERIEN,
+        TSFerienname.SOMMERFERIEN
     ];
 }
 

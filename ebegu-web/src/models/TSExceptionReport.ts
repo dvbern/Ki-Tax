@@ -161,7 +161,7 @@ export class TSExceptionReport {
         _constraintType: string,
         message: string,
         path: string,
-        value: string,
+        value: string
     ): TSExceptionReport {
         const report = new TSExceptionReport(TSErrorType.VALIDATION, TSErrorLevel.SEVERE, message, value);
         report.path = path;
@@ -197,7 +197,7 @@ export class TSExceptionReport {
 
     public isConstantValue(constant: any, value: any): boolean {
         const keys = Object.keys(constant);
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < keys.length; i++) {
             if (value === constant[keys[i]]) {
                 return true;

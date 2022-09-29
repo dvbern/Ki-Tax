@@ -225,7 +225,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
             title: remTitleText,
             deleteText: '',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {   // User confirmed removal
             this.removeAbwesenheit(abwesenheit);
         });

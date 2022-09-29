@@ -30,6 +30,6 @@ export function getZahlungsstatusAlreadyHandeledInZahlungsauftrag(): Array<TSVer
         TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG,
         TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT,
         TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT,
-        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT,
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT
     ];
 }

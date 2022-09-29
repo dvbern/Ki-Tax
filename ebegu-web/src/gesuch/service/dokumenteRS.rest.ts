@@ -33,7 +33,7 @@ export class DokumenteRS {
         public http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
+        public log: ILogService
     ) {
         this.serviceURL = `${REST_API}dokumente`;
     }
@@ -49,7 +49,7 @@ export class DokumenteRS {
     public getDokumenteByTypeCached(
         gesuch: TSGesuch,
         dokumentGrundTyp: TSDokumentGrundTyp,
-        cache: ICacheObject,
+        cache: ICacheObject
     ): IPromise<TSDokumenteDTO> {
         const grund = encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]);
         const url = `${this.serviceURL}/byTyp/${encodeURIComponent(gesuch.id)}/${grund}`;

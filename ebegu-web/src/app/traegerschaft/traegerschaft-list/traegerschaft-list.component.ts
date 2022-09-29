@@ -51,7 +51,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
         private readonly dialog: MatDialog,
         authServiceRS: AuthServiceRS,
         private readonly $state: StateService,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
 
         super(authServiceRS);
@@ -74,10 +74,10 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
                             name: traegerschaft.name,
                             institutionCount: traegerschaft.institutionCount,
                             canEdit: readDeleteAllowed,
-                            canRemove: readDeleteAllowed,
+                            canRemove: readDeleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    },
+                    }
                 );
                 this.cd.markForCheck();
                 return entitaetListItems;
@@ -101,7 +101,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
     public removeTraegerschaft(id: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'LOESCHEN_DIALOG_TITLE',
+            title: 'LOESCHEN_DIALOG_TITLE'
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
@@ -126,7 +126,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewX implements On
 
     private setDisplayedColumns(): void {
         this.hiddenDVTableColumns = this.isReadDeleteAllowed()
-            ? ['status', 'type', ]
+            ? ['status', 'type' ]
             : ['status', 'type', 'remove'];
     }
 }

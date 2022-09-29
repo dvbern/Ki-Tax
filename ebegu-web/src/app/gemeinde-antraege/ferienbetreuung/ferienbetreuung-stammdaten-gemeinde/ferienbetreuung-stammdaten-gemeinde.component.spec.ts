@@ -38,7 +38,7 @@ import {FerienbetreuungStammdatenGemeindeComponent} from './ferienbetreuung-stam
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer'],
+    ['getFerienbetreuungContainer']
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -76,7 +76,7 @@ describe('FerienbetreuungStammdatenGemeindeComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
-            ],
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

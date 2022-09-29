@@ -25,10 +25,10 @@ import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
-export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
+export const SCHULUNG_CONFIG: IComponentOptions = {
     transclude: false,
-    template: require('./schulung.component.html'),
-    controllerAs: 'vm',
+    template: require('./schulungView.html'),
+    controllerAs: 'vm'
 };
 
 const LOG = LogFactory.createLog('SchulungViewController');
@@ -48,7 +48,7 @@ export class SchulungViewController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly testFaelleRS: TestFaelleRS,
+        private readonly testFaelleRS: TestFaelleRS
     ) {
 
         this.mandant = this.getMandant();
@@ -58,7 +58,7 @@ export class SchulungViewController implements IController {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
-                const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
+                const username = `sch${  ((i + 1) < 10) ? `0${  (i + 1).toString()}` : (i + 1).toString()}`;
                 const benutzer = new TSBenutzer('Sandra',
                     name,
                     username,
@@ -133,4 +133,4 @@ export class SchulungViewController implements IController {
     }
 }
 
-SCHULUNG_COMPONENT_CONFIG.controller = SchulungViewController;
+SCHULUNG_CONFIG.controller = SchulungViewController;

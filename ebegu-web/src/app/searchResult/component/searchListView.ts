@@ -39,7 +39,7 @@ export class SearchListViewController {
     public constructor(
         private readonly $log: ILogService,
         $stateParams: ISearchResultateStateParams,
-        private readonly searchIndexRS: SearchIndexRS,
+        private readonly searchIndexRS: SearchIndexRS
     ) {
         this.searchString = $stateParams.searchString;
         this.initViewModel();

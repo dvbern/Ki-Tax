@@ -38,7 +38,7 @@ export class DVSTPersistPendenzen implements IDirective {
         private readonly benutzerRS: BenutzerRSX,
         private readonly institutionRS: InstitutionRS,
         private readonly dVsTPersistService: DVsTPersistService,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
         this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             const nameSpace: string = attrs.dvStPersistQuicksearch;
@@ -89,7 +89,7 @@ export class DVSTPersistPendenzen implements IDirective {
             benutzerRS: any,
             institutionRS: any,
             dVsTPersistService: any,
-            gemeindeRS: any,
+            gemeindeRS: any
         ) => new DVSTPersistPendenzen(benutzerRS,
             institutionRS,
             dVsTPersistService,
@@ -105,7 +105,7 @@ export class DVSTPersistPendenzen implements IDirective {
      */
     private setVerantwortlicherBGFromName(
         quicksearchListController: DVQuicksearchListController,
-        verantwortlicherBGFullname: string,
+        verantwortlicherBGFullname: string
     ): void {
         if (!(verantwortlicherBGFullname && quicksearchListController)) {
             return;
@@ -125,7 +125,7 @@ export class DVSTPersistPendenzen implements IDirective {
      */
     private setVerantwortlicherTSFromName(
         quicksearchListController: DVQuicksearchListController,
-        verantwortlicherTSFullname: string,
+        verantwortlicherTSFullname: string
     ): void {
         if (!(verantwortlicherTSFullname && quicksearchListController)) {
             return;

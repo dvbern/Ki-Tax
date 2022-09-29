@@ -60,16 +60,12 @@ export class EinstellungRS {
 
     public findEinstellungByKey(key: TSEinstellungKey): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/key/${key}`)
-            .pipe(map((param: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(param);
-            }));
+            .pipe(map((param: any) => this.ebeguRestUtil.parseEinstellungList(param)));
     }
 
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
     }
 
     public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
@@ -99,11 +95,9 @@ export class EinstellungRS {
         return forkJoin([
             findPauschale$,
             findPauschaleSonderschueler$
-        ]).pipe(map(([e1, e2]) => {
-            return [
+        ]).pipe(map(([e1, e2]) => [
                 parseFloat(e1.value),
                 parseFloat(e2.value)
-            ];
-        }));
+            ]));
     }
 }

@@ -28,8 +28,8 @@ describe('AngabenGs1Component', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptGesuchModelManager(),
                 {provide: FinanzielleSituationSolothurnService, useValue: finSitSolothurnServiceMock},
-                ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock(),
-            ],
+                ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

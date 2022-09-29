@@ -55,13 +55,13 @@ describe('GemeindeRS', () => {
                     expect(gemeinden[0]).toEqual(user.extractCurrentGemeinden()[0]);
                     done();
                 },
-                err => done.fail(err),
+                err => done.fail(err)
             );
         });
 
         it('should give all gemeinden for a role without gemeinde', done => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            $httpBackend.expectGET(gemeindeRS.serviceURL + '/all').respond(allGemeinde);
+            $httpBackend.expectGET(`${gemeindeRS.serviceURL  }/all`).respond(allGemeinde);
             const user = createUser(TSRole.SACHBEARBEITER_INSTITUTION, false);
 
             gemeindeRS.toGemeindenForPrincipal$(user).subscribe(
@@ -72,7 +72,7 @@ describe('GemeindeRS', () => {
                     expect(gemeinden[1]).toEqual(allGemeinde[1]);
                     done();
                 },
-                err => done.fail(err),
+                err => done.fail(err)
             );
 
             $httpBackend.flush();
@@ -84,7 +84,7 @@ describe('GemeindeRS', () => {
                     expect(gemeinden.length).toBe(0);
                     done();
                 },
-                err => done.fail(err),
+                err => done.fail(err)
             );
         });
     });
@@ -98,7 +98,7 @@ describe('GemeindeRS', () => {
     function createAllGemeinden(): void {
         allGemeinde = [
             TestDataUtil.createGemeindeParis(),
-            TestDataUtil.createGemeindeLondon(),
+            TestDataUtil.createGemeindeLondon()
         ];
     }
 });

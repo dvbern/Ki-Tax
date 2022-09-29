@@ -95,7 +95,7 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
-        // tslint:disable-next-line:no-object-literal-type-assertion
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({} as TSGemeindeStammdaten));
     }));
 
@@ -120,9 +120,7 @@ describe('mitteilungenView', () => {
         it('should create an empty TSMItteilung for JA', () => {
             const sachbearbeiterBG = new TSBenutzer();
             sachbearbeiterBG.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
-            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
-                return roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0;
-            });
+            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0);
 
             createMitteilungForUser(sachbearbeiterBG);
 
@@ -132,9 +130,7 @@ describe('mitteilungenView', () => {
         it('should create an empty TSMItteilung for Institution', () => {
             const sachbearbeiterInst = new TSBenutzer();
             sachbearbeiterInst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
-            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => {
-                return roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0;
-            });
+            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0);
 
             createMitteilungForUser(sachbearbeiterInst);
 
@@ -184,12 +180,12 @@ describe('mitteilungenView', () => {
             mitteilung.mitteilungStatus = TSMitteilungStatus.GELESEN;
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.ERLEDIGT); // von GELESEN auf ERLEDIGT
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
 
             controller.setErledigt(mitteilung);
             expect(mitteilung.mitteilungStatus).toBe(TSMitteilungStatus.GELESEN); // von ERLEDIGT auf GELESEN
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(mitteilungRS.setMitteilungErledigt).toHaveBeenCalledWith('123');
         });
     });

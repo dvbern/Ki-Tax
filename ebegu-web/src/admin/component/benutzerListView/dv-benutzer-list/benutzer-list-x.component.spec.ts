@@ -52,11 +52,11 @@ describe('DvBenutzerListXComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: BenutzerRSX, useValue: benutzerRSSpy},
+                {provide: BenutzerRSX, useValue: benutzerRSSpy}
             ],
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

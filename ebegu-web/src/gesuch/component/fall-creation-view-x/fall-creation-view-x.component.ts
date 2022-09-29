@@ -29,7 +29,7 @@ const LOG = LogFactory.createLog('FallCreationViewXComponent');
     selector: 'dv-fall-creation-view-x',
     templateUrl: './fall-creation-view-x.component.html',
     styleUrls: [],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
@@ -99,7 +99,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             }, error => LOG.error(error));
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public save(navigateFunction: Function): void {
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
@@ -109,8 +109,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            // eslint-disable-next-line
             Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
+            return;
         }
         this.errorService.clearAll();
         this.gesuchModelManager.saveGesuchAndFall().then(
@@ -121,8 +122,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
                 }
                 this.cd.markForCheck();
                 return gesuch;
-            },
-            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            }
+            // eslint-disable-next-line
         ).catch(err => console.error(err)).then(gesuch => navigateFunction(gesuch));
     }
 
@@ -172,7 +173,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
                 'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
                 'KITAX_ERSTGESUCH_PERIODE';
             return this.$translate.instant(k, {
-                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString,
+                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
             });
         }
         const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

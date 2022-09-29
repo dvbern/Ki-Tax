@@ -22,7 +22,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    SimpleChanges,
+    SimpleChanges
 } from '@angular/core';
 import {FormGroup} from '@angular/forms';
 import {combineLatest, Subscription} from 'rxjs';
@@ -40,7 +40,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     selector: 'dv-ferienbetreuung-berechnung',
     templateUrl: './ferienbetreuung-berechnung.component.html',
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
-    changeDetection: ChangeDetectionStrategy.Default,
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
 
@@ -57,7 +57,7 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -94,35 +94,35 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
         const angaben = this.getAngabenForStatus();
         combineLatest([
             this.form.get('personalkosten').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.personalkosten),
+                startWith(angaben?.kostenEinnahmen.personalkosten)
             ),
             this.form.get('sachkosten').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.sachkosten),
+                startWith(angaben?.kostenEinnahmen.sachkosten)
             ),
             this.form.get('verpflegungskosten').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.verpflegungskosten),
+                startWith(angaben?.kostenEinnahmen.verpflegungskosten)
             ),
             this.form.get('weitereKosten').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.weitereKosten),
+                startWith(angaben?.kostenEinnahmen.weitereKosten)
             ),
             this.form.get('elterngebuehren').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.elterngebuehren),
+                startWith(angaben?.kostenEinnahmen.elterngebuehren)
             ),
             this.form.get('weitereEinnahmen').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.weitereEinnahmen),
+                startWith(angaben?.kostenEinnahmen.weitereEinnahmen)
             ),
             this.form.get('sockelbeitrag').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.sockelbeitrag),
+                startWith(angaben?.kostenEinnahmen.sockelbeitrag)
             ),
             this.form.get('beitraegeNachAnmeldungen').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.beitraegeNachAnmeldungen),
+                startWith(angaben?.kostenEinnahmen.beitraegeNachAnmeldungen)
             ),
             this.form.get('vorfinanzierteKantonsbeitraege').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.vorfinanzierteKantonsbeitraege),
+                startWith(angaben?.kostenEinnahmen.vorfinanzierteKantonsbeitraege)
             ),
             this.form.get('eigenleistungenGemeinde').valueChanges.pipe(
-                startWith(angaben?.kostenEinnahmen.eigenleistungenGemeinde),
-            ),
+                startWith(angaben?.kostenEinnahmen.eigenleistungenGemeinde)
+            )
         ]).subscribe(formValues => {
             this.berechnung.personalkosten = formValues[0];
             this.berechnung.sachkosten = formValues[1];

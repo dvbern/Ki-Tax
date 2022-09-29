@@ -42,9 +42,9 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'lastenausgleichId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().id),
-            },
-        ],
+                    (trans.params().id)
+            }
+        ]
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_GEMEINDE',
@@ -55,25 +55,25 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'triggerValidationOnInit',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    trans.params().triggerValidation,
+                    trans.params().triggerValidation
             },
             {
                 token: 'lastenausgleichId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().id),
-            },
-        ],
+                    (trans.params().id)
+            }
+        ]
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN',
         url: '/angaben-tagesschulen',
-        component: TagesschulenUiViewComponent,
+        component: TagesschulenUiViewComponent
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.LIST',
         url: '/list',
-        component: TagesschulenListComponent,
+        component: TagesschulenListComponent
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.ANGABEN_TAGESSCHULEN.DETAIL',
@@ -84,14 +84,14 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'institutionContainerId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().institutionId),
-            },
-        ],
+                    (trans.params().institutionId)
+            }
+        ]
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.FREIGABE',
         url: '/freigabe',
-        component: FreigabeComponent,
+        component: FreigabeComponent
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.VERLAUF',
@@ -102,24 +102,24 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'institutionContainerId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().institutionId),
-            },
-        ],
+                    (trans.params().institutionId)
+            }
+        ]
     },
     {
         name: 'LASTENAUSGLEICH_TAGESSCHULEN.LASTENAUSGLEICH',
         url: '/lastenausgleich',
-        component: LastenausgleichTsBerechnungComponent,
-    },
+        component: LastenausgleichTsBerechnungComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class LastenausgleichTsRoutingModule {
 }

@@ -64,10 +64,10 @@ describe('NotrechtComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy}
             ],
-            declarations: [],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            declarations: []
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
         notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo([]);
     }));

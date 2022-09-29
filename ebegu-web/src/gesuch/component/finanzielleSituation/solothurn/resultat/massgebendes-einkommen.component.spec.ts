@@ -39,8 +39,8 @@ describe('ResultatComponent', () => {
                 NgForm
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

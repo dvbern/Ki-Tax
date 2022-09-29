@@ -47,7 +47,7 @@ const LOG = LogFactory.createLog('GesuchGenerator');
  * it won't be saved in the DB The create-methods will take the given object and save it in the DB.
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class GesuchGenerator {
 
@@ -60,32 +60,31 @@ export class GesuchGenerator {
         private readonly wizardStepManager: WizardStepManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly fallRS: FallRS,
-        private readonly sozialdienstRS: SozialdienstRS,
+        private readonly sozialdienstRS: SozialdienstRS
     ) {
     }
 
     /**
      * Erstellt ein neues Gesuch mit der angegebenen Eingangsart und Gesuchsperiode. Damit dies im resolve des
      * routing gemacht werden kann, wird das ganze als promise gehandhabt
+     *
      * @return a void promise that is resolved once all subpromises are done
      */
     public initFall(
         eingangsart: TSEingangsart,
         gemeindeId: string,
         sozialdienstId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSGesuch> {
         if (EbeguUtil.isNotNullOrUndefined(sozialdienstId)) {
             return this.sozialdienstRS.getSozialdienstStammdaten(sozialdienstId).toPromise().then(
-                sozialdienstStammdaten => {
-                    return this.initDossier(eingangsart,
+                sozialdienstStammdaten => this.initDossier(eingangsart,
                         gemeindeId,
                         TSCreationAction.CREATE_NEW_FALL,
                         undefined,
                         undefined,
                         sozialdienstStammdaten.sozialdienst,
-                        gesuchsperiodeId);
-                },
+                        gesuchsperiodeId)
             );
         }
         return this.initDossier(eingangsart,
@@ -104,7 +103,7 @@ export class GesuchGenerator {
         eingangsart: TSEingangsart,
         gemeindeId: string,
         currentFall: TSFall,
-        sozialdienst: TSSozialdienst,
+        sozialdienst: TSSozialdienst
     ): IPromise<TSGesuch> {
 
         return this.initDossier(eingangsart,
@@ -127,18 +126,16 @@ export class GesuchGenerator {
         currentFall: TSFall,
         currentDossier: TSDossier,
         sozialdienst: TSSozialdienst,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSGesuch> {
 
         return this.initGesuch(eingangsart, creationAction, gesuchsperiodeId, currentFall, currentDossier, sozialdienst)
-            .then(gesuch => {
-                return this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
+            .then(gesuch => this.gemeindeRS.findGemeinde(gemeindeId).then(foundGemeinde => {
                     gesuch.dossier.gemeinde = foundGemeinde;
                     LOG.debug('initialized new dossier for Current fall', gesuch);
 
                     return gesuch;
-                });
-            });
+                }));
     }
 
     /**
@@ -151,7 +148,7 @@ export class GesuchGenerator {
         gesuchsperiodeId: string,
         currentFall: TSFall,
         currentDossier: TSDossier,
-        sozialdienst: TSSozialdienst,
+        sozialdienst: TSSozialdienst
     ): IPromise<TSGesuch> {
 
         const gesuch = this.initAntrag(TSAntragTyp.ERSTGESUCH,
@@ -166,15 +163,11 @@ export class GesuchGenerator {
         if (gesuchsperiodeId) {
             return this.gesuchsperiodeRS.findGesuchsperiode(gesuchsperiodeId).then(periode => {
                 gesuch.gesuchsperiode = periode;
-                return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => {
-                    return gesuch;
-                });
+                return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => gesuch);
             });
         }
 
-        return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => {
-            return gesuch;
-        });
+        return this.antragStatusHistoryRS.loadLastStatusChange(gesuch).then(() => gesuch);
     }
 
     /**
@@ -189,7 +182,7 @@ export class GesuchGenerator {
         gesuchsperiodeId: string,
         dossierId: string,
         currentFall: TSFall,
-        currentDossier: TSDossier,
+        currentDossier: TSDossier
     ): IPromise<TSGesuch> {
 
         return this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId,
@@ -207,7 +200,7 @@ export class GesuchGenerator {
         gesuchsperiodeId: string,
         dossierId: string,
         currentFall: TSFall,
-        currentDossier: TSDossier,
+        currentDossier: TSDossier
     ): IPromise<TSGesuch> {
 
         return this.initCopyOfGesuch(gesuchID, eingangsart, gesuchsperiodeId, dossierId,
@@ -223,7 +216,7 @@ export class GesuchGenerator {
         antragTyp: TSAntragTyp,
         creationAction: TSCreationAction,
         currentFall: TSFall,
-        currentDossier: TSDossier,
+        currentDossier: TSDossier
     ): IPromise<TSGesuch> {
 
         const gesuch = this.initAntrag(antragTyp, eingangsart, creationAction, currentFall, currentDossier, null);
@@ -249,7 +242,7 @@ export class GesuchGenerator {
         creationAction: TSCreationAction,
         currentFall: TSFall,
         currentDossier: TSDossier,
-        sozialdienst: TSSozialdienst,
+        sozialdienst: TSSozialdienst
     ): TSGesuch {
 
         const gesuch = new TSGesuch();
@@ -313,7 +306,7 @@ export class GesuchGenerator {
         fallId: string,
         gemeindeId: string,
         gesuchId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSGesuch> {
         return this.fallRS.findFall(fallId).then(
             fall => {
@@ -328,7 +321,7 @@ export class GesuchGenerator {
                     new TSDossier(),
                     undefined,
                     gesuchsperiodeId);
-            },
+            }
         );
     }
 }

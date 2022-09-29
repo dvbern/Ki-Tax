@@ -27,7 +27,7 @@ import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
     selector: 'dv-wizard-side-nav',
     templateUrl: './wizard-side-nav.component.html',
     styleUrls: ['./wizard-side-nav.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WizardSideNavComponent implements OnInit {
 

@@ -34,8 +34,8 @@ describe('DvSearchListComponent', () => {
         TestBed.configureTestingModule({
             declarations: [DvSearchListComponent],
             imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
-            providers: [],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            providers: []
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
     }));
 
@@ -48,7 +48,7 @@ describe('DvSearchListComponent', () => {
             status: 'test',
             type: TSBetreuungsangebotTyp.KITA,
             canEdit: false,
-            canRemove: false,
+            canRemove: false
         };
         component.data$ = of([item]);
         fixture.detectChanges();

@@ -89,7 +89,7 @@ describe('pendenzenBetreuungenListView', () => {
                 pendenzBetreuungenListViewController.$onInit();
 
                 $scope.$apply();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(pendenzBetreuungenRS.getPendenzenBetreuungenList).toHaveBeenCalled();
 
                 const list = pendenzBetreuungenListViewController.getPendenzenList();

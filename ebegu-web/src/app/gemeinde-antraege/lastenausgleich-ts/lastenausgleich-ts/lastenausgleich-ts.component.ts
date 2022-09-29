@@ -90,7 +90,7 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
         filename = this.translate.instant('LATS_REPORT_NAME',
             {
                 gemeinde: this.lATSAngabenGemeindeContainer.gemeinde.name,
-                gp: this.lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString,
+                gp: this.lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString
             });
         this.downloadRS.openDownload(file, filename);
     }

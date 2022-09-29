@@ -33,17 +33,17 @@ const states: NgHybridStateDeclaration[] = [
     {
         name: 'gemeindeantrage.view',
         url: '/gemeinde-antraege',
-        component: GemeindeAntraegeComponent,
-    },
+        component: GemeindeAntraegeComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class GemeindeAntraegeRoutingModule {
 }

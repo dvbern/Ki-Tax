@@ -147,7 +147,7 @@ export class PendenzenBetreuungenListViewController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -179,7 +179,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         const navObj: any = {
             betreuungNumber,
             kindNumber,
-            gesuchId: pendenz.gesuchId,
+            gesuchId: pendenz.gesuchId
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.betreuung', navObj);

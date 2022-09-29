@@ -24,15 +24,15 @@ const LOG = LogFactory.createLog('BatchjobTriggerViewComponent');
 
 @Component({
     selector: 'dv-batchjob-trigger-view',
-    templateUrl: './batchjobTriggerView.html',
-    styleUrls: ['./batchjobTrigger.less'],
+    templateUrl: './batchjobTriggerView.component.html',
+    styleUrls: ['./batchjobTrigger.component.less']
 })
 export class BatchjobTriggerViewComponent {
 
     public constructor(
         private readonly dialog: MatDialog,
         private readonly databaseMigrationRS: DatabaseMigrationRS,
-        private readonly dailyBatchRS: DailyBatchRS,
+        private readonly dailyBatchRS: DailyBatchRS
     ) {
     }
 

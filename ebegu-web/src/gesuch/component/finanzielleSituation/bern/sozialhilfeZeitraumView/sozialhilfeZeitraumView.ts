@@ -88,7 +88,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
             $timeout);
 
         this.familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer;
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.familiensituation) {
             if ($stateParams.sozialhilfeZeitraumNum) {
                 const ewpNum = parseInt($stateParams.sozialhilfeZeitraumNum, 10) || 0;
@@ -120,7 +120,7 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
 
     public saveSozialhilfeZeitraum(
         familiensituation: TSFamiliensituationContainer,
-        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer,
+        sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer
     ): IPromise<TSSozialhilfeZeitraumContainer> {
         if (sozialhilfeZeitraum.id) {
             return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)

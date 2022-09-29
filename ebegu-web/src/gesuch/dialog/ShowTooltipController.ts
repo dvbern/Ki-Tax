@@ -30,7 +30,7 @@ export class ShowTooltipController {
         $translate: ITranslateService,
         _title: string,
         text: string,
-        private readonly parentController: IDVFocusableController,
+        private readonly parentController: IDVFocusableController
     ) {
 
         this.text = text !== undefined && text !== null ? $translate.instant(text) : 'test';

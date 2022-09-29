@@ -37,7 +37,7 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         protected stepName: TSWizardStepName,
-        protected readonly $transition$: Transition,
+        protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager, wizardStepManager, stepName);
         const parsedBasisJahrPlusNum = parseInt(this.$transition$.params().basisjahrPlus, 10);

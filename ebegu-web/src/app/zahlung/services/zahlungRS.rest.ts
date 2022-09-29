@@ -36,7 +36,7 @@ import {LogFactory} from '../../core/logging/LogFactory';
 const LOG = LogFactory.createLog('ZahlungRS');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class ZahlungRS {
 
@@ -44,7 +44,7 @@ export class ZahlungRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        private readonly http: HttpClient,
+        private readonly http: HttpClient
     ) {
     }
 
@@ -86,7 +86,7 @@ export class ZahlungRS {
         return this.http.get(`${this.serviceURL}/all`, {
             params: searchParams
         }).pipe(
-            map(response => this.parseZahlungenResultDTO(response)),
+            map(response => this.parseZahlungenResultDTO(response))
         );
     }
 
@@ -94,7 +94,7 @@ export class ZahlungRS {
         return this.http.get(`${this.serviceURL}/institution`, {
             params: searchParams
         }).pipe(
-            map(response => this.parseZahlungenResultDTO(response)),
+            map(response => this.parseZahlungenResultDTO(response))
         );
     }
 
@@ -108,9 +108,7 @@ export class ZahlungRS {
     public getZahlungsauftrag(zahlungsauftragId: string): Observable<TSZahlungsauftrag> {
         return this.http.get(`${this.serviceURL}/zahlungsauftrag/${encodeURIComponent(zahlungsauftragId)}`)
             .pipe(
-                map((response: any) => {
-                    return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response);
-                }),
+                map((response: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response))
             );
     }
 
@@ -118,9 +116,7 @@ export class ZahlungRS {
         return this.http.get(`${this.serviceURL}/zahlungsauftraginstitution/${encodeURIComponent(
             zahlungsauftragId)}`)
             .pipe(
-                map((response: any) => {
-                    return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response);
-                }),
+                map((response: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response))
             );
     }
 
@@ -131,16 +127,14 @@ export class ZahlungRS {
                 map((response: any) => {
                     LOG.debug('PARSING user REST array object', response);
                     return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), response);
-                }),
+                })
             );
     }
 
     public zahlungBestaetigen(zahlungId: string): Observable<TSZahlung> {
         return this.http.put(`${this.serviceURL}/bestaetigen/${encodeURIComponent(zahlungId)}`, null)
             .pipe(
-                map((response: any) => {
-                    return this.ebeguRestUtil.parseZahlung(new TSZahlung(), response);
-                }),
+                map((response: any) => this.ebeguRestUtil.parseZahlung(new TSZahlung(), response))
             );
     }
 
@@ -149,13 +143,13 @@ export class ZahlungRS {
         gemeinde: TSGemeinde,
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
-        datumGeneriert: moment.Moment | undefined,
+        datumGeneriert: moment.Moment | undefined
     ): Observable<TSZahlungsauftrag> {
         const params: any = {
             zahlungslaufTyp: zahlungslaufTyp.toString(),
             gemeindeId: gemeinde.id,
             faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-            beschrieb,
+            beschrieb
         };
         if (datumGeneriert) {
             params.datumGeneriert = DateUtil.momentToLocalDate(datumGeneriert);
@@ -164,31 +158,27 @@ export class ZahlungRS {
         return this.http.get(`${this.serviceURL}/create`,
             {
                 params
-            },
+            }
         ).pipe(
-            map((httpresponse: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse);
-            }),
+            map((httpresponse: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse))
         );
     }
 
     public updateZahlungsauftrag(
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
-        id: string,
+        id: string
     ): Observable<TSZahlungsauftrag> {
         return this.http.get(`${this.serviceURL}/update`,
             {
                 params: {
                     beschrieb,
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-                    id,
-                },
-            },
+                    id
+                }
+            }
         ).pipe(
-            map((httpresponse: any) => {
-                return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse);
-            }),
+            map((httpresponse: any) => this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse))
         );
     }
 

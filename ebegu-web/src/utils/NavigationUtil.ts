@@ -22,21 +22,21 @@ export class NavigationUtil {
     public static navigateToStartsiteOfGesuchForRole(role: TSRole, state: StateService, gesuchID: string): void {
         if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role)) {
             state.go('gesuch.betreuungen', {
-                gesuchId: gesuchID,
+                gesuchId: gesuchID
             });
         } else if (role === TSRole.STEUERAMT) {
             state.go('gesuch.familiensituation', {
-                gesuchId: gesuchID,
+                gesuchId: gesuchID
             });
         } else if (TSRoleUtil.isSozialdienstRole(role)) {
             state.go('gesuch.sozialdienstfallcreation', {
-                gesuchId: gesuchID,
+                gesuchId: gesuchID
             });
         } else if (role === TSRole.ADMIN_FERIENBETREUUNG || role === TSRole.SACHBEARBEITER_FERIENBETREUUNG) {
             state.go('gemeindeantrage.view');
         } else {
             state.go('gesuch.fallcreation', {
-                gesuchId: gesuchID,
+                gesuchId: gesuchID
             });
         }
     }

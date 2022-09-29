@@ -31,7 +31,7 @@ export class TSAntragStatusHistory extends TSAbstractMutableEntity {
         benutzer?: TSBenutzer,
         timestampVon?: moment.Moment,
         timestampBis?: moment.Moment,
-        status?: TSAntragStatus,
+        status?: TSAntragStatus
     ) {
         super();
         this._gesuchId = gesuchId;

@@ -31,7 +31,7 @@ import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
 @NgModule({
     imports: [
         SharedModule,
-        OnboardingRoutingModule,
+        OnboardingRoutingModule
     ],
     declarations: [
         OnboardingComponent,
@@ -45,7 +45,7 @@ import {ZpvNrSuccessComponent} from './zpv-nr-success/zpv-nr-success.component';
         ZpvNrSuccessComponent,
         PortalSelectionComponent,
         OnboardingHelpDialogComponent
-    ],
+    ]
 })
 class OnboardingModule {
 }

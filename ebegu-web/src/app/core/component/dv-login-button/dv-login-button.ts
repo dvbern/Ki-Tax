@@ -41,7 +41,7 @@ export class DVLoginButtonController implements IController {
     public principal?: TSBenutzer = undefined;
 
     public constructor(
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 

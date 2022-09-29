@@ -37,7 +37,7 @@ import {PaginationDTO} from '../../shared/interfaces/PaginationDTO';
 const LOG = LogFactory.createLog('GemeindeAntragService');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class GemeindeAntragService {
 
@@ -46,17 +46,17 @@ export class GemeindeAntragService {
 
     public constructor(
         private readonly http: HttpClient,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
     public getGemeindeAntraege(
         filter: DVAntragListFilter,
         sort: {
-            predicate?: string,
-            reverse?: boolean
+            predicate?: string;
+            reverse?: boolean;
         },
-        paginationDTO: PaginationDTO,
+        paginationDTO: PaginationDTO
     ): Observable<TSPaginationResultDTO<TSGemeindeAntrag>> {
 
         let params = new HttpParams();
@@ -88,14 +88,14 @@ export class GemeindeAntragService {
         params = params.append('paginationNumber', paginationDTO.number.toFixed(0));
 
         return this.http.get<any>(this.API_BASE_URL, {
-            params,
+            params
         }).pipe(
             map(result => {
                 const dto = new TSPaginationResultDTO<TSGemeindeAntrag>();
                 dto.resultList = this.ebeguRestUtil.parseGemeindeAntragList(result.resultList);
                 dto.totalResultSize = result.totalCount;
                 return dto;
-            }),
+            })
         );
     }
 
@@ -104,7 +104,7 @@ export class GemeindeAntragService {
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             return [
                 TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
-                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN
             ];
         }
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getFerienbetreuungGemeindeRolesOnly())) {
@@ -117,7 +117,7 @@ export class GemeindeAntragService {
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
             return [
                 TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN, TSGemeindeAntragTyp.FERIENBETREUUNG,
-                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN
             ];
         }
         return [TSGemeindeAntragTyp.FERIENBETREUUNG];
@@ -125,7 +125,7 @@ export class GemeindeAntragService {
 
     public createAllAntrage(
         toCreate: { periode: string; antragTyp: string},
-        gemeinden: TSGemeinde[],
+        gemeinden: TSGemeinde[]
     ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
             `${this.API_BASE_URL}/createAllAntraege/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}`,
@@ -144,15 +144,15 @@ export class GemeindeAntragService {
     public deleteGemeindeAntrag(
         gesuchsperiode: TSGesuchsperiode,
         gemeindeName: string,
-        antragTyp: string,
+        antragTyp: string
     ): Observable<void> {
         return this.http.delete<void>(
-            `${this.API_BASE_URL}/deleteAntrag/${antragTyp}/gesuchsperiode/${encodeURIComponent(gesuchsperiode.id)}/gemeinde/${gemeindeName}`,
+            `${this.API_BASE_URL}/deleteAntrag/${antragTyp}/gesuchsperiode/${encodeURIComponent(gesuchsperiode.id)}/gemeinde/${gemeindeName}`
         );
     }
 
     public createAntrag(
-        toCreate: { periode: string, antragTyp: string, gemeinde: string },
+        toCreate: { periode: string; antragTyp: string; gemeinde: string }
     ): Observable<TSGemeindeAntrag[]> {
         return this.http.post<TSGemeindeAntrag[]>(
             `${this.API_BASE_URL}/create/${toCreate.antragTyp}/gesuchsperiode/${toCreate.periode}/gemeinde/${toCreate.gemeinde}`,
@@ -182,7 +182,7 @@ export class GemeindeAntragService {
         return this.http.get<TSLastenausgleichTagesschuleAngabenInstitution[]>(`${this.API_BASE_URL}/${lastenausgleichId}/tagesschulenantraege`)
             .pipe(
                 map(lastenausgleichAngabenList => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
-                    lastenausgleichAngabenList)),
+                    lastenausgleichAngabenList))
             );
     }
 }
