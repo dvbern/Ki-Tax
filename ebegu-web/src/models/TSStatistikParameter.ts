@@ -36,7 +36,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _kantonSelbstbehalt: number;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
-                       von?: moment.Moment, bis?: moment.Moment,
+                       von?: moment.Moment, bis?: moment.Moment
     ) {
         super();
         this._gesuchsperiode = gesuchsperiode;

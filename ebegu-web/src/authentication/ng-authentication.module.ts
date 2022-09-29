@@ -23,16 +23,16 @@ import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution
 @NgModule({
     imports: [
         SharedModule,
-        NgAuthenticationRoutingModule,
+        NgAuthenticationRoutingModule
     ],
     declarations: [
         LocalLoginComponent,
         TutorialInstitutionLoginComponent,
-        TutorialGemeindeLoginComponent,
+        TutorialGemeindeLoginComponent
     ],
     providers: [
         // use providedIn in the class instead
-    ],
+    ]
 })
 
 export class NgAuthenticationModule {

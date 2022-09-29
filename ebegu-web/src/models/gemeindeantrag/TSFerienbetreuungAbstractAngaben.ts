@@ -35,7 +35,7 @@ export class TSFerienbetreuungAbstractAngaben extends TSAbstractEntity {
 
     public isAbgeschlossen(): boolean {
         return [
-            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN,
+            TSFerienbetreuungFormularStatus.ABGESCHLOSSEN
         ].includes(this.status);
     }
 }

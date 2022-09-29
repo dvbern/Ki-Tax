@@ -47,7 +47,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         message?: string,
         mitteilungStatus?: TSMitteilungStatus,
         sentDatum?: moment.Moment,
-        institution?: TSInstitution,
+        institution?: TSInstitution
     ) {
         super();
         this._dossier = dossier;
@@ -161,9 +161,9 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     public get senderAsString(): string {
         let senderAsString: string;
         if (this.sender.currentBerechtigung.institution) {
-            senderAsString = this.sender.currentBerechtigung.institution.name + ', ';
+            senderAsString = `${this.sender.currentBerechtigung.institution.name  }, `;
         } else if (this.sender.currentBerechtigung.traegerschaft) {
-            senderAsString = this.sender.currentBerechtigung.traegerschaft.name + ', ';
+            senderAsString = `${this.sender.currentBerechtigung.traegerschaft.name  }, `;
         }
         if (senderAsString) {
             return senderAsString + this.sender.getFullName();

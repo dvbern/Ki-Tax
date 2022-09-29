@@ -25,7 +25,7 @@ import {StatistikComponent} from './statistik/statistik.component';
     imports: [
         SharedModule,
         CommonModule,
-        StatistikRoutingModule,
+        StatistikRoutingModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -34,7 +34,7 @@ import {StatistikComponent} from './statistik/statistik.component';
     declarations: [
         StatistikComponent
     ],
-    providers: [],
+    providers: []
 })
 export class StatistikModule {
 }

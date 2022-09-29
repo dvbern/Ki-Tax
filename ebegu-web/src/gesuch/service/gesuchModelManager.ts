@@ -37,7 +37,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -104,7 +104,7 @@ export class GesuchModelManager {
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager', 'FamiliensituationRS',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
         'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'InternePendenzenRS', 'EinstellungRS',
-        'MandantService',
+        'MandantService'
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -154,7 +154,7 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS,
+        private readonly einstellungenRS: EinstellungRS
     ) {
     }
 
@@ -164,7 +164,7 @@ export class GesuchModelManager {
                     this.setGesuch(undefined);
                     this.log.debug('Cleared gesuch on logout');
                 },
-                err => this.log.error(err),
+                err => this.log.error(err)
             );
     }
 
@@ -190,7 +190,7 @@ export class GesuchModelManager {
                         this.initGemeindeKonfiguration();
                     }
                     return gesuch;
-                })),
+                }))
             );
     }
 
@@ -208,7 +208,7 @@ export class GesuchModelManager {
             // Es soll nur einmalig geprueft werden, ob das aktuelle Gesuch das neueste dieses Falls fuer die
             // gewuenschte Periode ist.
             this.checkIfGesuchIsNeustes().then(response =>
-                this.neustesGesuch = response,
+                this.neustesGesuch = response
             );
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeBgTSMandantRoles())) {
                 this.subscription = this.internePendenzenRS.getPendenzCountUpdated$(this.getGesuch())
@@ -296,7 +296,7 @@ export class GesuchModelManager {
             : this.getGesuchstellerNumber() === 1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
             return gs === 2 ?
@@ -349,7 +349,7 @@ export class GesuchModelManager {
             return;
         }
         for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line
             if (konfigurationsListeElement.gesuchsperiode.id === this.getGesuchsperiode().id) {
                 this.gemeindeKonfiguration = konfigurationsListeElement;
                 this.gemeindeKonfiguration.initProperties();
@@ -410,9 +410,7 @@ export class GesuchModelManager {
      */
     public getUnknownInstitutionStammdaten(unknownInstitutionStammdatenId: string): IPromise<TSInstitutionStammdaten> {
         return this.instStamRS.findInstitutionStammdaten(unknownInstitutionStammdatenId)
-            .then((response: TSInstitutionStammdaten) => {
-                return response;
-            });
+            .then((response: TSInstitutionStammdaten) => response);
     }
 
     /**
@@ -426,7 +424,7 @@ export class GesuchModelManager {
         gemeindeId: string,
         gesuchsperiodeId: string,
         creationAction: TSCreationAction,
-        sozialdienstId: string,
+        sozialdienstId: string
     ): IPromise<TSGesuch> {
 
         switch (creationAction) {
@@ -577,7 +575,7 @@ export class GesuchModelManager {
     }
 
     public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
             this.gesuch = gesuchResponse;
 
@@ -799,14 +797,14 @@ export class GesuchModelManager {
     public initGesuch(
         eingangsart: TSEingangsart,
         creationAction: TSCreationAction,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSGesuch> {
         return this.gesuchGenerator.initGesuch(eingangsart,
             creationAction,
             gesuchsperiodeId,
             this.getFall(),
             this.getDossier(),
-            null,
+            null
         )
             .then(gesuch => {
                 this.gesuch = gesuch;
@@ -935,7 +933,7 @@ export class GesuchModelManager {
     public saveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
-        abwesenheit: boolean,
+        abwesenheit: boolean
     ): IPromise<TSBetreuung> {
         const handleStatus = (betreuungenStatus: TSGesuchBetreuungenStatus, storedBetreuung: TSBetreuung) => {
             this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
@@ -951,7 +949,7 @@ export class GesuchModelManager {
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
-        abwesenheit: boolean,
+        abwesenheit: boolean
     ): IPromise<TSBetreuung> {
 
         switch (betreuungsstatusNeu) {
@@ -1015,9 +1013,7 @@ export class GesuchModelManager {
      * Sucht das KindToWorkWith im Server und aktualisiert es mit dem bekommenen Daten
      */
     private getKindFromServer(): IPromise<TSKindContainer> {
-        return this.kindRS.findKind(this.getKindToWorkWith().id).then(kindResponse => {
-            return this.setKindToWorkWith(kindResponse);
-        });
+        return this.kindRS.findKind(this.getKindToWorkWith().id).then(kindResponse => this.setKindToWorkWith(kindResponse));
     }
 
     /**
@@ -1139,7 +1135,7 @@ export class GesuchModelManager {
     public findKindById(kindID: string): number {
         if (this.gesuch.kindContainers) {
             for (let i = 0; i < this.gesuch.kindContainers.length; i++) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (this.gesuch.kindContainers[i].id === kindID) {
                     this.setKindIndex(i);
 
@@ -1181,7 +1177,7 @@ export class GesuchModelManager {
         const kindToWorkWith = this.getKindToWorkWith();
         if (kindToWorkWith) {
             for (let i = 0; i < kindToWorkWith.betreuungen.length; i++) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (kindToWorkWith.betreuungen[i].id === betreuungID) {
                     this.setBetreuungIndex(i);
 
@@ -1196,7 +1192,7 @@ export class GesuchModelManager {
     public removeBetreuung(): IPromise<void> {
         return this.betreuungRS.removeBetreuung(
             this.getBetreuungToWorkWith().id,
-            this.gesuch.id,
+            this.gesuch.id
         ).then(() => {
             this.removeBetreuungFromKind();
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
@@ -1243,7 +1239,7 @@ export class GesuchModelManager {
 
     public saveErwerbspensum(
         gesuchsteller: TSGesuchstellerContainer,
-        erwerbspensum: TSErwerbspensumContainer,
+        erwerbspensum: TSErwerbspensumContainer
     ): IPromise<TSErwerbspensumContainer> {
         if (erwerbspensum.id) {
             return this.erwerbspensumRS.saveErwerbspensum(erwerbspensum, gesuchsteller.id, this.gesuch.id)
@@ -1347,7 +1343,7 @@ export class GesuchModelManager {
     public saveVerfuegung(
         ignorieren: boolean,
         ignorierenMahlzeiten: boolean,
-        bemerkungen: string,
+        bemerkungen: string
     ): IPromise<TSVerfuegung> {
         const manuelleBemerkungen = EbeguUtil.isNullOrUndefined(bemerkungen) ? '' : bemerkungen;
         return this.verfuegungRS.saveVerfuegung(
@@ -1355,7 +1351,7 @@ export class GesuchModelManager {
             this.gesuch.id,
             this.getBetreuungToWorkWith().id,
             ignorieren,
-            ignorierenMahlzeiten,
+            ignorierenMahlzeiten
         ).then((response: TSVerfuegung) => {
             this.setVerfuegenToWorkWith(response);
             this.getBetreuungToWorkWith().betreuungsstatus = TSBetreuungsstatus.VERFUEGT;
@@ -1545,13 +1541,11 @@ export class GesuchModelManager {
      */
     public saveGesuchStatus(status: TSAntragStatus): IPromise<TSAntragStatus> | undefined {
         if (!this.isGesuchStatus(status)) {
-            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status).then(() => {
-                return this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
+            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status).then(() => this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
                     this.gesuch.status = this.calculateNewStatus(status);
 
                     return this.gesuch.status;
-                });
-            });
+                }));
         }
 
         return undefined;
@@ -1572,7 +1566,7 @@ export class GesuchModelManager {
      * Antrag zurueckziehen
      */
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
             this.setGesuch(response);
 
@@ -1617,7 +1611,7 @@ export class GesuchModelManager {
             const gesuchReadonly = !this.getGesuch() || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status);
             // if getFall() is undefined, getFall()?.isSozialdienstfall() would return undefined. We have to use
             // literal-compare here
-            // tslint:disable-next-line: no-boolean-literal-compare
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
             const sozialdienstFallEntzogen = this.getFall()?.isSozialdienstFall() === true
                 && this.getFall()?.sozialdienstFall.status === TSSozialdienstFallStatus.ENTZOGEN;
             return gesuchReadonly || periodeReadonly || sozialdienstFallEntzogen;
@@ -1693,7 +1687,7 @@ export class GesuchModelManager {
      */
     public updateBetreuungen(
         betreuungenToUpdate: Array<TSBetreuung>,
-        saveForAbwesenheit: boolean,
+        saveForAbwesenheit: boolean
     ): IPromise<Array<TSBetreuung>> {
         if (betreuungenToUpdate && betreuungenToUpdate.length > 0) {
             return this.betreuungRS.saveBetreuungen(betreuungenToUpdate,
@@ -1797,7 +1791,7 @@ export class GesuchModelManager {
         fallId: string,
         gemeindeId: string,
         gesuchId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): IPromise<TSGesuch> {
         return this.gesuchGenerator.initSozialdienstFall(fallId, gemeindeId, gesuchId, gesuchsperiodeId)
             .then(gesuch => {
@@ -1806,7 +1800,7 @@ export class GesuchModelManager {
                         return gesuch;
                     }
                     return this.createNewDossierForCurrentFall();
-                },
+                }
             );
     }
 

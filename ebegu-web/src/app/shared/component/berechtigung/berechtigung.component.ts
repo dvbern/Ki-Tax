@@ -39,7 +39,7 @@ let nextId = 0;
     templateUrl: './berechtigung.component.html',
     styleUrls: ['./berechtigung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BerechtigungComponent {
 
@@ -66,12 +66,12 @@ export class BerechtigungComponent {
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftenRS: TraegerschaftRS,
         private readonly sozialdienstRS: SozialdienstRS,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
-        this.rolleId = 'rolle-' + this.inputId;
-        this.institutionId = 'institution-' + this.inputId;
-        this.traegerschaftId = 'treagerschaft-' + this.inputId;
-        this.sozialdienstId = 'sozialdienst-' + this.inputId;
+        this.rolleId = `rolle-${  this.inputId}`;
+        this.institutionId = `institution-${  this.inputId}`;
+        this.traegerschaftId = `treagerschaft-${  this.inputId}`;
+        this.sozialdienstId = `sozialdienst-${  this.inputId}`;
 
         this.institutionen$ = this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
             .pipe(map(BerechtigungComponent.sortByName));
@@ -105,7 +105,7 @@ export class BerechtigungComponent {
 
                     return of([]);
                 }),
-                map(BerechtigungComponent.sortByName),
+                map(BerechtigungComponent.sortByName)
             );
     }
 
@@ -128,7 +128,7 @@ export class BerechtigungComponent {
 
                     return of([]);
                 }),
-                map(BerechtigungComponent.sortByName),
+                map(BerechtigungComponent.sortByName)
             );
     }
 

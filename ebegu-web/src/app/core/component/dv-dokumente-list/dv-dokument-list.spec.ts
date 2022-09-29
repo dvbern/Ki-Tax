@@ -24,7 +24,7 @@ import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DVDokumenteListController} from './dv-dokumente-list';
 
-// tslint:disable:no-duplicate-string no-identical-functions
+/* eslint-disable */
 describe('dvDokumenteList', () => {
 
     let controller: DVDokumenteListController;

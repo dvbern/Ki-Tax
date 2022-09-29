@@ -66,10 +66,10 @@ describe('RueckforderungFormularComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: UploadRS, useValue: uploadRSSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ],
-            declarations: [],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            declarations: []
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});

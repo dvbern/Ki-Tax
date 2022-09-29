@@ -60,10 +60,10 @@ describe('EinladungAbschliessenComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
+                SharedModule
             ],
             declarations: [
-                EinladungAbschliessenComponent,
+                EinladungAbschliessenComponent
             ],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
@@ -72,7 +72,7 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

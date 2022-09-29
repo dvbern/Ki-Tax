@@ -30,7 +30,7 @@ export class VerfuegungRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}verfuegung`;
     }
@@ -58,20 +58,14 @@ export class VerfuegungRS {
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}/${ignorierenMahlzeiten}`;
 
-        return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
-            });
-        });
+        return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data)));
     }
 
     public verfuegungSchliessenOhneVerfuegen(gesuchId: string, betreuungId: string): IPromise<void> {
         return this.http.post(`${this.serviceURL}/schliessenOhneVerfuegen/${encodeURIComponent(betreuungId)}`, {})
-            .then(() => {
-                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+            .then(() => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     return;
-                });
-            });
+                }));
     }
 
     public nichtEintreten(gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {
@@ -80,12 +74,10 @@ export class VerfuegungRS {
         const url = `${this.serviceURL}/nichtEintreten/${gesuchIdEnc}/${betreuungIdEnc}`;
 
         return this.http.get(url)
-            .then((response: any) => {
-                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     this.log.debug('PARSING Verfuegung REST object ', response.data);
                     return this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data);
-                });
-            });
+                }));
     }
 
     public anmeldungUebernehmen(

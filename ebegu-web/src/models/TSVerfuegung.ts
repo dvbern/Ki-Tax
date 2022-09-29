@@ -101,7 +101,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
      * Entscheidet, ob die Frage nach dem Ignorieren gestellt werden soll
      */
     public fragenObIgnorieren(showIfVerrechnetAberKeineBetreuung: boolean): boolean {
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const zeitabschnitt = this._zeitabschnitte[i];
             // Wir muessen alle Zeitabschnitte kontrollieren, die in irgendeiner Form schon verrechnet
@@ -109,7 +109,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // tslint:disable-next-line:early-exit no-collapsible-if
+            // eslint-disable-next-line
             if (zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                     && !zeitabschnitt.sameAusbezahlteVerguenstigung) {
                 if (showIfVerrechnetAberKeineBetreuung
@@ -124,7 +124,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     }
 
     public fragenObIgnorierenMahlzeiten(): boolean {
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const zeitabschnitt = this._zeitabschnitte[i];
             // Wir muessen alle Zeitabschnitte kontrollieren, die in irgendeiner Form schon verrechnet
@@ -132,7 +132,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // Entsprechend muss sichergestellt werden, dass wenn die Ignorieren-Frage mit "uebernehmen"
             // beantwortet wurde, die betroffenen Zeitabschnitte nicht NEU sondern  VERRECHNEND sind.
             // Sonst wird die Frage in einem solchen Fall nicht wieder gestellt!
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line
             if (zeitabschnitt.zahlungsstatusAntragsteller !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                 && !zeitabschnitt.sameAusbezahlteMahlzeiten) {
                 // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
@@ -144,7 +144,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     }
 
     public isAlreadyIgnored(): boolean {
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
@@ -158,7 +158,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     }
 
     public isAlreadyIgnoredMahlzeiten(): boolean {
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
@@ -172,7 +172,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     }
 
     public mahlzeitenChangedSincePreviousVerfuegung(): boolean {
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             const abschnitt = this._zeitabschnitte[i];
             if (!abschnitt.sameVerfuegteMahlzeitenVerguenstigung) {

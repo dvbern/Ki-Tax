@@ -39,14 +39,14 @@ describe('BenutzerRolleComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
+                SharedModule
             ],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-            ],
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

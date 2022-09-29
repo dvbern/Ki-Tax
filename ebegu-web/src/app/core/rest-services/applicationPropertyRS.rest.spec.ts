@@ -26,7 +26,7 @@ describe('ApplicationPropertyRS', () => {
 
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     const REST_API = CONSTANTS.REST_API;
     const testName = 'myTestName';
 
@@ -34,7 +34,7 @@ describe('ApplicationPropertyRS', () => {
 
     const mockApplicationPropertyRest = {
         name: testName,
-        value: 'myTestValue',
+        value: 'myTestValue'
     };
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));

@@ -42,85 +42,85 @@ export const STATES: NgHybridStateDeclaration[] = [
         parent: 'app',
         name: 'onboarding',
         abstract: true,
-        component: OnboardingMainComponent,
+        component: OnboardingMainComponent
     },
     {
         name: 'onboarding.start',
         url: '/',
         data: {
-            roles: TSRoleUtil.getAllRoles(),
+            roles: TSRoleUtil.getAllRoles()
         },
-        onEnter: redirectToLandingPage,
+        onEnter: redirectToLandingPage
     },
     {
         name: 'onboarding.mandant',
         url: '/mandant?path',
         data: {
-            roles: TSRoleUtil.getAllRoles(),
+            roles: TSRoleUtil.getAllRoles()
         },
-        component: PortalSelectionComponent,
+        component: PortalSelectionComponent
     },
     {
         name: 'onboarding.anmeldung',
         url: '/anmeldung',
         component: OnboardingComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'onboarding.be-login',
         url: '/:gemeindeBGId/{gemeindenId}',
         component: OnboardingBeLoginComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'onboarding.gesuchsteller',
         abstract: true,
         component: UiViewComponent,
         data: {
-            roles: [TSRole.GESUCHSTELLER],
+            roles: [TSRole.GESUCHSTELLER]
         },
-        onEnter: disableWhenDossierExists,
+        onEnter: disableWhenDossierExists
     },
     {
         name: 'onboarding.gesuchsteller.registration',
         url: '/registration/:gemeindeBGId/{gemeindenId}',
-        component: OnboardingGsAbschliessenComponent,
+        component: OnboardingGsAbschliessenComponent
     },
     {
         name: 'onboarding.gesuchsteller.registration-incomplete',
         url: '/registration-abschliessen',
         component: OnboardingNeuBenutzerComponent,
         resolve: {
-            nextState,
-        },
+            nextState
+        }
     },
     {
         name: 'onboarding.neubenutzer',
         url: '/neu-benutzer',
         component: OnboardingNeuBenutzerComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'onboarding.infogemeinde',
         url: '/info-gemeinde',
         component: OnboardingInfoGemeindeComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'onboarding.infoinstitution',
         url: '/info-institution',
         component: OnboardingInfoInstitutionComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'onboarding.initzpv',
@@ -155,7 +155,7 @@ export function redirectToLandingPage(transition: Transition): HookResult {
 
                 // no principal and not allowed to access the target state: redirect to default ANONYMOUS state
                 return getRoleBasedTargetState(principal.currentBerechtigung.role, transition.router.stateService);
-            }),
+            })
         ).toPromise();
 }
 
@@ -173,12 +173,12 @@ export function disableWhenDossierExists(transition: Transition): HookResult {
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: STATES}),
+        UIRouterUpgradeModule.forChild({states: STATES})
     ],
     exports: [
-        UIRouterUpgradeModule,
+        UIRouterUpgradeModule
     ],
-    declarations: [],
+    declarations: []
 })
 export class OnboardingRoutingModule {
 }

@@ -43,15 +43,15 @@ describe('AddSozialdienstComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             providers: [
                 WindowRef,
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRSX, useValue: benutzerServiceSpy},
-            ],
+                {provide: BenutzerRSX, useValue: benutzerServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

@@ -25,7 +25,7 @@ import {
     Input,
     OnChanges,
     Output,
-    SimpleChanges,
+    SimpleChanges
 } from '@angular/core';
 
 /**
@@ -40,13 +40,13 @@ import {
         trigger('switchValue', [
             // ...
             state('0', style({
-                'margin-left': '0',
+                'margin-left': '0'
             })),
             state('1', style({
-                'margin-left': '50%',
-            })),
-        ]),
-    ],
+                'margin-left': '50%'
+            }))
+        ])
+    ]
 })
 export class DvSwitchComponent<T> implements OnChanges {
 

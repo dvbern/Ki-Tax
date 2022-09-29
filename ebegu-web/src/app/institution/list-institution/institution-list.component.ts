@@ -39,7 +39,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 @Component({
     selector: 'dv-institution-list',
     templateUrl: './institution-list.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstitutionListComponent extends AbstractAdminViewX implements OnInit {
 
@@ -60,7 +60,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
         super(authServiceRS);
     }
@@ -74,7 +74,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     private setupGemeindeAndRoleSpecificProperties(): void {
         combineLatest([
             this.gemeindeRS.getGemeindenForPrincipal$(),
-            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin())),
+            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin()))
         ]).subscribe(([gemeinden, isSuperadmin]) => {
             this.userHasGemeindeWithTSEnabled = isSuperadmin ||
                 EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => (gemeinde.angebotTS && !gemeinde.nurLats)));
@@ -98,10 +98,10 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                                 : institution.status.toString(),
                             type: institution.betreuungsangebotTyp,
                             canEdit: this.hatBerechtigungEditieren(institution),
-                            canRemove: deleteAllowed,
+                            canRemove: deleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    },
+                    }
                 );
                 this.cd.markForCheck();
                 return entitaetListItems;
@@ -111,7 +111,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     public removeInstitution(institutionEventId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'LOESCHEN_DIALOG_TITLE',
+            title: 'LOESCHEN_DIALOG_TITLE'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
@@ -125,7 +125,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                 },
                 () => {
                     this.log.error('error in observable. removeInstitution');
-                },
+                }
             );
     }
 
@@ -136,7 +136,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     public createInstitutionTS(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
-            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE]
         });
     }
 
@@ -144,14 +144,14 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
             betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
-            latsOnly: true,
+            latsOnly: true
         });
     }
 
     public createInstitutionFI(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.FERIENINSEL,
-            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL],
+            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL]
         });
     }
 
@@ -165,7 +165,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
      */
     public openInstitution(institutionEventId: string): void {
         this.$state.go('institution.edit', {
-            institutionId: institutionEventId,
+            institutionId: institutionEventId
         });
     }
 
@@ -186,7 +186,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
 
     private isCurrentUserTraegerschaftAdminOfSelectedInstitution(
         institution: TSInstitution,
-        currentBerechtigung: TSBerechtigung,
+        currentBerechtigung: TSBerechtigung
     ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
             && (currentBerechtigung.traegerschaft && institution.traegerschaft
@@ -195,7 +195,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
 
     private isCurrentUserInstitutionAdminOfSelectedInstitution(
         institution: TSInstitution,
-        currentBerechtigung: TSBerechtigung,
+        currentBerechtigung: TSBerechtigung
     ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
             && (currentBerechtigung.institution

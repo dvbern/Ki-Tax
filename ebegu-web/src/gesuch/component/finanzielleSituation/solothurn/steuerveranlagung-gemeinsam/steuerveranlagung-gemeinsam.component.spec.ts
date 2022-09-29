@@ -21,11 +21,11 @@ describe('SteuerveranlagungGemeinsamComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: NgForm, useValue: new NgForm([], [])}
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

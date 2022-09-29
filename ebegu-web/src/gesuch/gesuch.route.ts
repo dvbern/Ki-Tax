@@ -42,7 +42,7 @@ import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 
-// tslint:disable:no-duplicate-string
+/* eslint-disable */
 
 const gesuchTpl = require('./gesuch.html');
 
@@ -1073,7 +1073,7 @@ export class ISozialhilfeZeitraumStateParams {
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
 export function getMahnungen(
-    MahnungRS: MahnungRS, // tslint:disable-line:variable-name no-shadowed-variable
+    MahnungRS: MahnungRS, // eslint-disable-line @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match, @typescript-eslint/no-shadow
     $stateParams: IGesuchStateParams,
     $q: IQService,
     $log: ILogService,

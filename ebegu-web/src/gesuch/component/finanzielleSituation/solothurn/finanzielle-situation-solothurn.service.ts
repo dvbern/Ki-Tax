@@ -23,13 +23,13 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class FinanzielleSituationSolothurnService {
 
     private readonly _massgebendesEinkommenStore: Subject<TSFinanzielleSituationResultateDTO> = new ReplaySubject(1);
 
-    public constructor (private readonly berechnungsManager: BerechnungsManager) {
+    public constructor(private readonly berechnungsManager: BerechnungsManager) {
     }
 
     public static finSitIsGemeinsam(gesuchModelManager: GesuchModelManager): boolean {

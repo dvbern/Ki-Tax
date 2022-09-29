@@ -25,7 +25,7 @@ export class HttpAuthInterceptor implements IHttpInterceptor {
     public constructor(
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly $q: IQService,
-        private readonly CONSTANTS: any,
+        private readonly CONSTANTS: any
     ) {
     }
 
@@ -53,5 +53,5 @@ export class HttpAuthInterceptor implements IHttpInterceptor {
             default:
                 return this.$q.reject(response);
         }
-    }
+    };
 }

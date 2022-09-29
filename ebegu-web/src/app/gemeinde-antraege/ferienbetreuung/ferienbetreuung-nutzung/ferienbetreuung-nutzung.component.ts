@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('FerienbetreuungNutzungComponent');
     selector: 'dv-ferienbetreuung-nutzung',
     templateUrl: './ferienbetreuung-nutzung.component.html',
     styleUrls: ['./ferienbetreuung-nutzung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungFormular implements OnInit, OnDestroy {
 
@@ -57,7 +57,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly uiRouterGlobals: UIRouterGlobals,
         private readonly fb: FormBuilder,
         private readonly authService: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -65,7 +65,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
     public ngOnInit(): void {
         combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
-            this.authService.principal$,
+            this.authService.principal$
         ]).pipe(
             takeUntil(this.unsubscribe$)
         ).subscribe(([container, principal]) => {
@@ -120,7 +120,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value);
             if (diff !== 0) {
                 return {
-                    betreuungstageError: control.value,
+                    betreuungstageError: control.value
                 };
             }
             return null;
@@ -131,19 +131,19 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
                 parseFloat(this.form.get('betreuungstageKinderDieserGemeindeSonderschueler').value);
             if (diff < 0) {
                 return {
-                    sonderschuelerError: control.value,
+                    sonderschuelerError: control.value
                 };
             }
             return null;
         });
         // sonderschueler 2
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').setValidators(control => {
             const diff = parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeinden').value) -
                 parseFloat(this.form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value);
             if (diff < 0) {
                 return {
-                    sonderschuelerError: control.value,
+                    sonderschuelerError: control.value
                 };
             }
             return null;
@@ -157,38 +157,38 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         this.form = this.fb.group({
             id: [nutzung.id],
             version: [
-                nutzung.version,
+                nutzung.version
             ],
             anzahlBetreuungstageKinderBern: [
-                nutzung.anzahlBetreuungstageKinderBern,
+                nutzung.anzahlBetreuungstageKinderBern
             ],
             betreuungstageKinderDieserGemeinde: [
-                nutzung.betreuungstageKinderDieserGemeinde,
+                nutzung.betreuungstageKinderDieserGemeinde
             ],
             betreuungstageKinderDieserGemeindeSonderschueler: [
-                nutzung.betreuungstageKinderDieserGemeindeSonderschueler,
+                nutzung.betreuungstageKinderDieserGemeindeSonderschueler
             ],
             davonBetreuungstageKinderAndererGemeinden: [
-                nutzung.davonBetreuungstageKinderAndererGemeinden,
+                nutzung.davonBetreuungstageKinderAndererGemeinden
             ],
             davonBetreuungstageKinderAndererGemeindenSonderschueler: [
-                nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler,
+                nutzung.davonBetreuungstageKinderAndererGemeindenSonderschueler
             ],
             anzahlBetreuteKinder: [
-                nutzung.anzahlBetreuteKinder,
+                nutzung.anzahlBetreuteKinder
             ],
             anzahlBetreuteKinderSonderschueler: [
-                nutzung.anzahlBetreuteKinderSonderschueler,
+                nutzung.anzahlBetreuteKinderSonderschueler
             ],
             anzahlBetreuteKinder1Zyklus: [
-                nutzung.anzahlBetreuteKinder1Zyklus,
+                nutzung.anzahlBetreuteKinder1Zyklus
             ],
             anzahlBetreuteKinder2Zyklus: [
-                nutzung.anzahlBetreuteKinder2Zyklus,
+                nutzung.anzahlBetreuteKinder2Zyklus
             ],
             anzahlBetreuteKinder3Zyklus: [
-                nutzung.anzahlBetreuteKinder3Zyklus,
-            ],
+                nutzung.anzahlBetreuteKinder3Zyklus
+            ]
         });
         this.setBasicValidation();
     }

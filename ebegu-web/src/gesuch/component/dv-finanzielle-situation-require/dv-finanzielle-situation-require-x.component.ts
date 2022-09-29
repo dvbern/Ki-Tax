@@ -32,7 +32,7 @@ const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
 @Component({
     selector: 'dv-finanzielle-situation-require-x',
     templateUrl: './dv-finanzielle-situation-require-x.component.html',
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvFinanzielleSituationRequireX implements OnInit {
 

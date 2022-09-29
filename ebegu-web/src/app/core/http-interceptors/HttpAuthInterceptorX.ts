@@ -25,7 +25,7 @@ import {CONSTANTS, HTTP_CODES} from '../constants/CONSTANTS';
 import {HttpErrorInterceptorX} from '../errors/service/HttpErrorInterceptorX';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class HttpAuthInterceptorX implements HttpInterceptor {
 
@@ -59,7 +59,7 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                     default:
                         throw err;
                 }
-            }),
+            })
         );
 
     }

@@ -27,7 +27,7 @@ const LOG = LogFactory.createLog('ResultatComponent');
     selector: 'dv-resultat',
     templateUrl: './resultat.component.html',
     styleUrls: ['./resultat.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResultatComponent implements OnInit {
 
@@ -57,7 +57,7 @@ export class ResultatComponent implements OnInit {
         this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error),
+            }, error => LOG.error(error)
         );
     }
 

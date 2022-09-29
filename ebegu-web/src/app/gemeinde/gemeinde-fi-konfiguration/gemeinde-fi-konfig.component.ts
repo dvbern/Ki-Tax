@@ -36,7 +36,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     templateUrl: './gemeinde-fi-konfig.component.html',
     styleUrls: ['./gemeinde-fi-konfig.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class GemeindeFiKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
@@ -48,7 +48,7 @@ export class GemeindeFiKonfigComponent implements OnInit {
     private navigationDest: StateDeclaration;
 
     public constructor(
-        private readonly $transition$: Transition,
+        private readonly $transition$: Transition
     ) {
     }
 

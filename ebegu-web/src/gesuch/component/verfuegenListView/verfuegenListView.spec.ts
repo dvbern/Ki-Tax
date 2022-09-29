@@ -125,7 +125,7 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.findKind).not.toHaveBeenCalled();
             });
             it('does not find the Kind, so it stops loading and does not move to the next page', () => {
@@ -137,13 +137,13 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.convertKindNumberToKindIndex)
                     .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
             });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -158,14 +158,14 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
                 });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -181,16 +181,16 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect($state.go).toHaveBeenCalledWith(verfuegenView, {
                         betreuungNumber: 2,
                         kindNumber: 1,
-                        gesuchId: undefined,
+                        gesuchId: undefined
                     });
                 });
         });

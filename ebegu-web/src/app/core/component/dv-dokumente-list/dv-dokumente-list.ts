@@ -47,7 +47,7 @@ export class DVDokumenteListConfig implements IComponentOptions {
         titleValue: '<',
         onUploadDone: '&',
         onRemove: '&',
-        sonstige: '<',
+        sonstige: '<'
 
     };
     public template = require('./dv-dokumente-list.html');
@@ -66,7 +66,7 @@ export class DVDokumenteListController implements IController {
         '$log',
         'AuthServiceRS',
         '$translate',
-        'ApplicationPropertyRS',
+        'ApplicationPropertyRS'
     ];
 
     public dokumente: TSDokumentGrund[];
@@ -88,7 +88,7 @@ export class DVDokumenteListController implements IController {
         private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
     }
@@ -133,7 +133,7 @@ export class DVDokumenteListController implements IController {
             returnString += '</ul>';
 
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: returnString,
+                title: returnString
             });
         }
 
@@ -181,7 +181,7 @@ export class DVDokumenteListController implements IController {
                 TSRole.ADMIN_GEMEINDE,
                 TSRole.SACHBEARBEITER_TS,
                 TSRole.ADMIN_TS,
-                TSRole.SUPER_ADMIN,
+                TSRole.SUPER_ADMIN
             ];
             documentUploadedByAmt = amtroles.includes(roleDocumentUpload);
         }
@@ -211,7 +211,7 @@ export class DVDokumenteListController implements IController {
             deleteText: '',
             title: 'FILE_LOESCHEN',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         })
             .then(() => {   // User confirmed removal
                 this.onRemove({dokumentGrund, dokument});

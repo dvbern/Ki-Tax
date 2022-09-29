@@ -33,7 +33,7 @@ function getMockWindow(): any {
         scroll: () => {},
         scrollTo: () => {},
         addEventListener: () => {},
-        removeEventListener: () => {},
+        removeEventListener: () => {}
     };
 }
 

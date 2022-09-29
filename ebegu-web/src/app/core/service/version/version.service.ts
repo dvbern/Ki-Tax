@@ -27,7 +27,7 @@ const LOG = LogFactory.createLog('VersionService');
  * This service handles the kibon backend version and mismatches with the frontend version
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class VersionService implements OnDestroy {
 
@@ -50,13 +50,13 @@ export class VersionService implements OnDestroy {
     public get $versionMismatch(): Observable<string> {
         return this._$versionMismatch.asObservable()
                 .pipe(
-                        takeUntil(this._$unsubcribe),
+                        takeUntil(this._$unsubcribe)
                 );
     }
 
     public get $backendVersionChange(): Observable<string> {
         return this._$backendVersionChange.pipe(
-            takeUntil(this._$unsubcribe),
+            takeUntil(this._$unsubcribe)
         );
     }
 

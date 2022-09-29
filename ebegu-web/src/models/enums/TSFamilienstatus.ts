@@ -25,6 +25,6 @@ export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
         TSFamilienstatus.VERHEIRATET,
         TSFamilienstatus.KONKUBINAT,
         TSFamilienstatus.KONKUBINAT_KEIN_KIND,
-        TSFamilienstatus.ALLEINERZIEHEND,
+        TSFamilienstatus.ALLEINERZIEHEND
     ];
 }

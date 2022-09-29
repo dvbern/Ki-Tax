@@ -27,7 +27,7 @@ export class EwkRS {
         public readonly http: IHttpService,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
-        public readonly log: ILogService,
+        public readonly log: ILogService
     ) {
         this.serviceURL = `${REST_API}gesuche`;
     }
@@ -35,9 +35,7 @@ export class EwkRS {
     public sucheInEwk(gesuchId: string): IPromise<TSEWKResultat> {
 
         return this.http.get(`${this.serviceURL}/ewk/searchgesuch/${gesuchId}`)
-            .then((response: any) => {
-                return this.handlePersonSucheResult(response);
-            });
+            .then((response: any) => this.handlePersonSucheResult(response));
     }
 
     private handlePersonSucheResult(response: any): TSEWKResultat {

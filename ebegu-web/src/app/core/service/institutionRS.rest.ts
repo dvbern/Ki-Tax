@@ -29,7 +29,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 import { Observable } from 'rxjs';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class InstitutionRS {
 
@@ -37,25 +37,21 @@ export class InstitutionRS {
     public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public $http: HttpClient,
+        public $http: HttpClient
     ) {
         this.serviceURL = `${CONSTANTS.REST_API}institutionen`;
     }
 
     public findInstitution(institutionID: string): Observable<TSInstitution> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(institutionID)}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
     }
 
     public updateInstitution(institutionID: string, update: TSInstitutionUpdate): Observable<TSInstitutionStammdaten> {
         const restInstitution = this.ebeguRestUtil.institutionUpdateToRestObject(update);
 
         return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institutionID)}`, restInstitution)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response)));
     }
 
     /**
@@ -67,7 +63,7 @@ export class InstitutionRS {
         startDate: moment.Moment,
         betreuungsangebot: TSBetreuungsangebotTyp,
         adminMail: string,
-        gemeindeId: string,
+        gemeindeId: string
     ): Observable<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
@@ -76,12 +72,10 @@ export class InstitutionRS {
                     date: DateUtil.momentToLocalDate(startDate),
                     betreuung: betreuungsangebot,
                     adminMail,
-                    gemeindeId,
-                },
+                    gemeindeId
+                }
             })
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
     }
 
     public removeInstitution(institutionID: string): Observable<any> {
@@ -90,30 +84,22 @@ export class InstitutionRS {
 
     public getAllInstitutionen(): Observable<TSInstitution[]> {
         return this.$http.get(this.serviceURL)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionen(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
 
     public getInstitutionenEditableForCurrentBenutzer(): Observable<TSInstitution[]> {
         return this.$http.get(`${this.serviceURL}/editable/currentuser`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionen(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
 
     public getInstitutionenListDTOEditableForCurrentBenutzer(): Observable<TSInstitutionListDTO[]> {
         return this.$http.get(`${this.serviceURL}/editable/currentuser/listdto`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionenListDTO(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionenListDTO(response)));
     }
 
     public getInstitutionenReadableForCurrentBenutzer(): Observable<TSInstitution[]> {
         return this.$http.get(`${this.serviceURL}/readable/currentuser`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionen(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
 
     public hasInstitutionenInStatusAngemeldet(): Observable<boolean> {
@@ -131,29 +117,21 @@ export class InstitutionRS {
 
     public deactivateStammdatenCheckRequired(institutionId: string): Observable<TSInstitution> {
         return this.$http.put(`${this.serviceURL}/deactivateStammdatenCheckRequired/${institutionId}`, {})
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
     }
 
     public isCurrentUserTagesschuleUser(): Observable<boolean> {
         return this.$http.get(`${this.serviceURL}/istagesschulenutzende/currentuser`)
-            .pipe(map((response: any) => {
-                return response;
-            }));
+            .pipe(map((response: any) => response));
     }
 
     public getInstitutionenForGemeinde(gemeindeId: string): Observable<TSInstitutionListDTO[]> {
         return this.$http.get(`${this.serviceURL}/gemeinde/listdto/${gemeindeId}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionenListDTO(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionenListDTO(response)));
     }
 
     public findAllInstitutionen(dossierId: string): Observable<Array<TSInstitution>> {
         return this.$http.get(`${this.serviceURL}/findAllInstitutionen/${encodeURIComponent(dossierId)}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionen(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
 }

@@ -14,13 +14,13 @@
  */
 
 import {upgradeModule} from '@uirouter/angular-hybrid';
-// tslint:disable-next-line:match-default-export-name
+// eslint-disable-next-line
 import uiRouter from '@uirouter/angularjs';
 import * as angular from 'angular';
 import {RouterHelperProvider} from './route-helper-provider';
 
 export default angular.module('dvbAngular.router', [
     uiRouter,
-    upgradeModule.name,
+    upgradeModule.name
 ]).provider('RouterHelper', RouterHelperProvider)
 ;

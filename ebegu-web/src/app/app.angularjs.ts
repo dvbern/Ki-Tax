@@ -23,7 +23,7 @@ export class AppAngularjsComponent implements IController {
 
     public constructor(
         private readonly $element: IAugmentedJQuery,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -54,6 +54,6 @@ export class AppAngularjsComponent implements IController {
 }
 
 export const APP_ANGULARJS_COMPONENT: IComponentOptions = {
-    template: require('./app.angularjs.component.html'),
-    controller: AppAngularjsComponent,
+    template: require('./app.angularjs.html'),
+    controller: AppAngularjsComponent
 };

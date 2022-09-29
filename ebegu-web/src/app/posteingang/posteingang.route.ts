@@ -24,23 +24,23 @@ const states: NgHybridStateDeclaration[] = [
         abstract: true,
         name: 'posteingang',
         data: {
-            roles: TSRoleUtil.getAllRolesForPosteingang(),
-        },
+            roles: TSRoleUtil.getAllRolesForPosteingang()
+        }
     },
     {
         name: 'posteingang.view',
         url: '/posteingang',
-        component: PosteingangViewComponent,
-    },
+        component: PosteingangViewComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 
 export class PosteingangRoutingModule {

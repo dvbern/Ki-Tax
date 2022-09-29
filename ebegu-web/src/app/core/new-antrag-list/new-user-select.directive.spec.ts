@@ -29,7 +29,7 @@ import {bootstrap, html} from './test_helpers';
 @Component({
     selector: 'ng2',
     template: `
-        <div dvNewUserSelect></div>`,
+        <div dvNewUserSelect></div>`
 })
 class TestComponent {
 }
@@ -58,7 +58,7 @@ describe('NewUserSelectDirective', () => {
             @NgModule({
                 declarations: [NewUserSelectDirective, TestComponent],
                 entryComponents: [TestComponent],
-                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()],
+                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
             })
             class Ng2Module {
                 public ngDoBootstrap(): void {
@@ -67,7 +67,7 @@ describe('NewUserSelectDirective', () => {
 
             element = html(`<ng2></ng2>`);
 
-            // tslint:disable-next-line:no-unused
+            // eslint-disable-next-line
             bootstrap(platformBrowserDynamic(), Ng2Module, element, ng1Module).then(upgrade => {
                 expect(element).toBeTruthy();
             });

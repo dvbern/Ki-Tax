@@ -29,7 +29,7 @@ export class DvVerantwortlicherselect implements IDirective {
     public controllerAs = 'vm';
     public bindToController = {
         isSchulamt: '<',
-        gemeindeId: '<',
+        gemeindeId: '<'
     };
     public template = require('./dv-verantwortlicherselect.html');
 
@@ -54,7 +54,7 @@ export class VerantwortlicherselectController implements IController {
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: ITranslateService
     ) {
     }
 

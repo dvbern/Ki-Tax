@@ -54,11 +54,11 @@ describe('LastenausgleichTSComponent', () => {
                 WindowRef,
                 {
                     provide: AuthServiceRS,
-                    useValue: authServiceRSSpy,
+                    useValue: authServiceRSSpy
                 },
                 {
                     provide: LastenausgleichTSService,
-                    useValue: latsTSServiceSpy,
+                    useValue: latsTSServiceSpy
                 },
                 {
                     provide: DownloadRS,
@@ -67,7 +67,7 @@ describe('LastenausgleichTSComponent', () => {
             ],
             declarations: [
                 LastenausgleichTSComponent,
-                LastenausgleichTsKommentarComponent,
+                LastenausgleichTsKommentarComponent
             ],
             imports: [
                 SharedModule,
@@ -88,10 +88,10 @@ describe('LastenausgleichTSComponent', () => {
         container.angabenDeklaration = new TSLastenausgleichTagesschuleAngabenGemeinde();
         container.angabenKorrektur = new TSLastenausgleichTagesschuleAngabenGemeinde();
         latsTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(container),
+            of(container)
         );
         latsTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(),
+            of()
         );
         fixture = TestBed.createComponent(LastenausgleichTSComponent);
         component = fixture.componentInstance;

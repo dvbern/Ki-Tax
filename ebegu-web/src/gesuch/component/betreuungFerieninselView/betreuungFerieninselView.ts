@@ -58,7 +58,7 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
         cancel: '&',
-        form: '=',
+        form: '='
     };
     public template = require('./betreuungFerieninselView.html');
     public controller = BetreuungFerieninselViewController;
@@ -120,7 +120,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         applicationPropertyRS: ApplicationPropertyRS,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
         mandantService: MandantService,
-        ebeguRestUtil: EbeguRestUtil,
+        ebeguRestUtil: EbeguRestUtil
     ) {
         super($state,
             gesuchModelManager,
@@ -188,7 +188,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             const terminValue = DateUtil.momentToLocalDateFormat(
                 this.gesuchModelManager.gemeindeKonfiguration.konfigFerieninselAktivierungsdatum, 'DD.MM.YYYY');
             return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_AB_INFO', {
-                termin: terminValue,
+                termin: terminValue
             });
         }
         return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_INFO');
@@ -279,7 +279,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
                     title: 'CONFIRM_SAVE_FERIENINSEL',
                     deleteText: 'BESCHREIBUNG_SAVE_FERIENINSEL',
                     parentController: undefined,
-                    elementID: undefined,
+                    elementID: undefined
                 }).then(() => {
                     this.onSave();
                 });
@@ -326,7 +326,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     public displayBreak(
         tag: TSBelegungFerieninselTag,
         index: number,
-        dayArray: Array<TSBelegungFerieninselTag>,
+        dayArray: Array<TSBelegungFerieninselTag>
     ): boolean {
         return dayArray[index + 1] ? tag.tag.week() !== dayArray[index + 1].tag.week() : false;
     }
@@ -334,7 +334,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     public displayWeekRow(
         tag: TSBelegungFerieninselTag,
         index: number,
-        dayArray: Array<TSBelegungFerieninselTag>,
+        dayArray: Array<TSBelegungFerieninselTag>
     ): boolean {
         return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }

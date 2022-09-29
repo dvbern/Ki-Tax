@@ -29,14 +29,14 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'search',
         data: {
-            roles: TSRoleUtil.getAllRolesButGesuchsteller(),
-        },
+            roles: TSRoleUtil.getAllRolesButGesuchsteller()
+        }
     },
     {
         name: 'search.list-view',
         template: '<search-list-view flex="auto" class="overflow-scroll">',
-        url: '/search/:searchString',
-    },
+        url: '/search/:searchString'
+    }
 ];
 
 // TODO hefa implizite Parameter definition

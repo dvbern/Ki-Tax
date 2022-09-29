@@ -80,7 +80,7 @@ describe('betreuungListViewTest', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.betreuung', {
                     betreuungNumber: undefined,
                     kindNumber: 1,
-                    gesuchId: '',
+                    gesuchId: ''
                 });
             });
         });

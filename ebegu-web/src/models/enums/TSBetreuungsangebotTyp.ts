@@ -61,7 +61,7 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.TAGESSCHULE,
-        TSBetreuungsangebotTyp.FERIENINSEL,
+        TSBetreuungsangebotTyp.FERIENINSEL
     ];
 }
 
@@ -72,7 +72,7 @@ export function getBgInstitutionenAndTsBetreuungsangebote(): ReadonlyArray<TSBet
 export function getBgInstitutionenBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN
     ];
 }
 
@@ -89,7 +89,7 @@ export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
  */
 export function isOfAnyBetreuungsangebotTyp(
     betreuungsangebotTyp: TSBetreuungsangebotTyp,
-    types: ReadonlyArray<TSBetreuungsangebotTyp>,
+    types: ReadonlyArray<TSBetreuungsangebotTyp>
 ): boolean {
     return types.filter(type => betreuungsangebotTyp === type).length > 0;
 }

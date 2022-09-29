@@ -16,7 +16,7 @@
 import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
-// tslint:disable:no-import-side-effect
+/* eslint-disable import/no-unassigned-import */
 import 'angular-animate';
 import 'angular-aria';
 import 'angular-cookies';
@@ -68,7 +68,7 @@ import {WizardStepRS} from '../../gesuch/service/WizardStepRS.rest';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
-import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector.component';
+import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector';
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
@@ -78,18 +78,18 @@ import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion'
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
-import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
 import {DvErrorMessagesComponentConfig} from './component/dv-error-messages/dv-error-messages';
 import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-erwerbspensum-list';
 import {DvFooterComponentConfig} from './component/dv-footer/dv-footer';
-import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
+import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu.component';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
-import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
 import {DvMobileNavigationToggleComponentConfig} from './component/dv-mobile-navigation-toggle/dv-mobile-navigation-toggle';
 import {DvPulldownUserMenuComponentConfig} from './component/dv-pulldown-user-menu/dv-pulldown-user-menu';
@@ -182,7 +182,7 @@ const dependencies = [
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
-    'utf8-base64',
+    'utf8-base64'
 ];
 
 const dynamicDependencies = (): string[] => {
