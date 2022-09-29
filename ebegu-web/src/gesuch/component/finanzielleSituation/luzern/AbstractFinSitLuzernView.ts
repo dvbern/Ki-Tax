@@ -296,4 +296,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         const formatedDate = DateUtil.momentToLocalDateFormat(eingangsdatum, CONSTANTS.DATE_FORMAT);
         return this.translate.instant('FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO', {datum: formatedDate});
     }
+
+    public isSozialhilfeBezueger(): boolean {
+        return EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
+    }
 }
