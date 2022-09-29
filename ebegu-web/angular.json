@@ -42,7 +42,9 @@
               "baseHref": "/web/",
               "optimization": {
                 "scripts": true,
-                "styles": true,
+                "styles": {
+                  "inlineCritical": false
+                },
                 "fonts": {
                   "inline": false
                 }
