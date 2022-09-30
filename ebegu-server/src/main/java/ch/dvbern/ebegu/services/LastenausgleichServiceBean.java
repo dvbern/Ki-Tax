@@ -49,8 +49,8 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.lastenausgleich.AbstractLastenausgleichRechner;
-import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerMitSelbstbehalt;
-import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerOhneSelbstbehalt;
+import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerNew;
+import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerOld;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -125,7 +125,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Override
 	@Nonnull
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Lastenausgleich createLastenausgleichWithSelbstbehalt(
+	public Lastenausgleich createLastenausgleichOld(
 			int jahr,
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
 			Mandant mandant) {
@@ -158,7 +158,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@Override
 	@Nonnull
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public Lastenausgleich createLastenausgleichWithoutSelbstbehalt(
+	public Lastenausgleich createLastenausgleichNew(
 		int jahr,
 		Mandant mandant) {
 
@@ -314,9 +314,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		int jahr
 	) {
 		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
-			return new LastenausgleichRechnerMitSelbstbehalt(verfuegungService);
+			return new LastenausgleichRechnerOld(verfuegungService);
 		}
-		return new LastenausgleichRechnerOhneSelbstbehalt(verfuegungService);
+		return new LastenausgleichRechnerNew(verfuegungService);
 	}
 
 	@Nonnull

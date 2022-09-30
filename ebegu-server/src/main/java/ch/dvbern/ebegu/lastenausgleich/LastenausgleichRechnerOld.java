@@ -29,41 +29,38 @@ import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.MathUtil;
 
-public class LastenausgleichRechnerOhneSelbstbehalt extends AbstractLastenausgleichRechner {
+public class LastenausgleichRechnerOld extends AbstractLastenausgleichRechner {
 
-	public LastenausgleichRechnerOhneSelbstbehalt(@Nonnull VerfuegungService verfuegungService) {
+	public LastenausgleichRechnerOld(@Nonnull VerfuegungService verfuegungService) {
 		super(verfuegungService);
 	}
 
 	@Override
 	@Nullable
-	public LastenausgleichDetail createLastenausgleichDetail(
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull Lastenausgleich lastenausgleich,
-		@Nonnull LastenausgleichGrundlagen grundlagen
-	) {
-		abschnitteProGemeindeUndJahr =
-			getZeitabschnitte(gemeinde, grundlagen.getJahr());
+	public LastenausgleichDetail createLastenausgleichDetail(@Nonnull Gemeinde gemeinde, @Nonnull Lastenausgleich lastenausgleich, @Nonnull LastenausgleichGrundlagen grundlagen) {
+		abschnitteProGemeindeUndJahr = getZeitabschnitte(gemeinde, grundlagen.getJahr());
 		if (abschnitteProGemeindeUndJahr.isEmpty()) {
 			return null;
 		}
 		calculateTotals();
 
-		// Eingabe Lastenausgleich = Total Belegung * 80%
-		BigDecimal eingabeLastenausgleich =
-			MathUtil.EXACT.multiplyNullSafe(totalGutscheine, BigDecimal.valueOf(0.8));
-
-		// Selbstbehalt Gemeinde = Total Belegung * 20%
+		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
+		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));
 		BigDecimal selbstbehaltGemeinde =
-			MathUtil.EXACT.subtractNullSafe(totalGutscheine, eingabeLastenausgleich);
+			MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getSelbstbehaltPro100ProzentPlatz());
+		// Eingabe Lastenausgleich = Total Gutscheine - Selbstbehalt Gemeinde
+		BigDecimal eingabeLastenausgleich = MathUtil.EXACT.subtractNullSafe(totalGutscheine, selbstbehaltGemeinde);
 
 		// Total anrechenbar = total belegung * Kosten pro 100% Platz
-		BigDecimal totalAnrechenbar = totalBelegungInProzent;
+		BigDecimal totalAnrechenbar =
+			MathUtil.EXACT.multiplyNullSafe(totalBelegung, grundlagen.getKostenPro100ProzentPlatz());
 
-		// Ohne Selbstbehalt Gemeinde Kosten = Total Gutscheine ohne Selbstbehalt * 0.2
+		// Ohne Selbstbehalt Gemeinde Kosten = Total Belegung ohne Selbstbehalt * Selbstbehalt pro 100% Platz
+		BigDecimal totalBelegungOhneSelbstbehalt =
+			MathUtil.EXACT.divide(totalBelegungOhneSelbstbeahltInProzent, MathUtil.EXACT.from(100));
 		BigDecimal kostenOhneSelbstbehaltGemeinde = MathUtil.EXACT.multiplyNullSafe(
-			totalGutscheineOhneSelbstbeahlt,
-			BigDecimal.valueOf(0.2));
+			totalBelegungOhneSelbstbehalt,
+			grundlagen.getSelbstbehaltPro100ProzentPlatz());
 
 		LastenausgleichDetail detail = new LastenausgleichDetail();
 		detail.setJahr(grundlagen.getJahr());
@@ -85,6 +82,6 @@ public class LastenausgleichRechnerOhneSelbstbehalt extends AbstractLastenausgle
 	@Nonnull
 	@Override
 	public String logLastenausgleichRechnerType(int jahr) {
-		return "Lastenausgleichrechner ohne Selbstbehalt für Jahr " + jahr;
+		return "Lastenausgleichrechner mit Selbstbehalt für Jahr " + jahr;
 	}
 }

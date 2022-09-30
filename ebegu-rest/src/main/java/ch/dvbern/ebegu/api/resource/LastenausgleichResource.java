@@ -153,9 +153,9 @@ public class LastenausgleichResource {
 		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
 			Objects.requireNonNull(sSelbstbehaltPro100ProzentPlatz);
 			selbstbehaltPro100ProzentPlatz = MathUtil.DEFAULT.from(sSelbstbehaltPro100ProzentPlatz);
-			lastenausgleich = lastenausgleichService.createLastenausgleichWithSelbstbehalt(jahr, selbstbehaltPro100ProzentPlatz, mandant);
+			lastenausgleich = lastenausgleichService.createLastenausgleichOld(jahr, selbstbehaltPro100ProzentPlatz, mandant);
 		} else {
-			lastenausgleich = lastenausgleichService.createLastenausgleichWithoutSelbstbehalt(jahr, mandant);
+			lastenausgleich = lastenausgleichService.createLastenausgleichNew(jahr, mandant);
 		}
 
 		lastenausgleichService.sendEmailsToGemeinden(lastenausgleich);
