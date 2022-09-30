@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.lastenausgleich;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +44,10 @@ public class LastenausgleichRechnerOld extends AbstractLastenausgleichRechner {
 			return null;
 		}
 		calculateTotals();
+
+		// Mit alter Berechnung dürfen diese beiden Werte nicht NULL sein
+		Objects.requireNonNull(grundlagen.getSelbstbehaltPro100ProzentPlatz());
+		Objects.requireNonNull(grundlagen.getKostenPro100ProzentPlatz());
 
 		// Selbstbehalt Gemeinde = Total Belegung * Kosten pro 100% Platz * 20%
 		BigDecimal totalBelegung = MathUtil.EXACT.divide(totalBelegungInProzent, MathUtil.EXACT.from(100));

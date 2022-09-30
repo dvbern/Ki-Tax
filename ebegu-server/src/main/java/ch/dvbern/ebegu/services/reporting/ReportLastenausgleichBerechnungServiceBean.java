@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.StringUtil;
@@ -115,6 +116,8 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 			List<LastenausgleichBerechnungDataRow> reportData =
 				getReportLastenausgleichBerechnung(lastenausgleichDetails);
 
+			Objects.requireNonNull(lastenausgleich.getTimestampErstellt());
+
 			ExcelMergerDTO excelMergerDTO = lastenausgleichExcelConverter
 				.toExcelMergerDTO(
 					reportData,
@@ -127,7 +130,8 @@ public class ReportLastenausgleichBerechnungServiceBean extends AbstractReportSe
 
 			// Zeilen und Spalten ausblenden, die für Berechnung von Lastenausgleich ohne Selbstbehalt Gemeinde
 			// (ab 2022) nicht nötig sind.
-			if (sheet.getRow(8).getCell(1).getNumericCellValue() == 0) {
+			// Falls kein Selbstbehalt, ist der Wert der Zelle "" und der Zelltyp ist String
+			if (sheet.getRow(8).getCell(1).getCellType().equals(CellType.STRING)) {
 				sheet.getRow(8).setZeroHeight(true);
 				sheet.setColumnHidden(10, true);
 			}

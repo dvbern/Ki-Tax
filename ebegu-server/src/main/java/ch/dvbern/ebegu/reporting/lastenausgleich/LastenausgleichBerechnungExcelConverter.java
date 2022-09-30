@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichBerechnung;
@@ -44,7 +45,7 @@ public class LastenausgleichBerechnungExcelConverter implements ExcelConverter {
 		@Nonnull List<LastenausgleichBerechnungDataRow> data,
 		int year,
 		@Nonnull LocalDateTime timestampLastenausgleichErstellt,
-		@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
+		@Nullable BigDecimal selbstbehaltPro100ProzentPlatz,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
 	) {

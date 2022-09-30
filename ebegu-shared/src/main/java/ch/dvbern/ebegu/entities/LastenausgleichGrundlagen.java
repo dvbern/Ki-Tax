@@ -47,15 +47,15 @@ public class LastenausgleichGrundlagen extends AbstractEntity {
 	@Column(nullable = false)
 	private Integer jahr = 0;
 
-	@NotNull @Nonnull
+	@Nullable
 	@Column(nullable = false)
 	@Min(0)
-	private BigDecimal selbstbehaltPro100ProzentPlatz = BigDecimal.ZERO;
+	private BigDecimal selbstbehaltPro100ProzentPlatz;
 
-	@NotNull @Nonnull
+	@Nullable
 	@Column(nullable = false)
 	@Min(0)
-	private BigDecimal kostenPro100ProzentPlatz = BigDecimal.ZERO;
+	private BigDecimal kostenPro100ProzentPlatz;
 
 
 	public LastenausgleichGrundlagen() {
@@ -71,7 +71,7 @@ public class LastenausgleichGrundlagen extends AbstractEntity {
 		this.jahr = jahr;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getSelbstbehaltPro100ProzentPlatz() {
 		return selbstbehaltPro100ProzentPlatz;
 	}
@@ -80,7 +80,7 @@ public class LastenausgleichGrundlagen extends AbstractEntity {
 		this.selbstbehaltPro100ProzentPlatz = selbstbehaltPro100ProzentPlatz;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getKostenPro100ProzentPlatz() {
 		return kostenPro100ProzentPlatz;
 	}
