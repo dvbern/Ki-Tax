@@ -59,6 +59,9 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	private Gesuchsperiode gp1718;
 	private Gesuchsperiode gp1819;
 
+	private Gesuchsperiode gp2021;
+	private Gesuchsperiode gp2122;
+
 
 	@Inject
 	private LastenausgleichService lastenausgleichServiceBean;
@@ -77,8 +80,14 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 	public void init() {
 		gp1718 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2017, 2018);
 		gp1819 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2018, 2019);
+
+		gp2021 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2020, 2021);
+		gp2122 = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, 2021, 2022);
 		TestDataUtil.prepareParameters(gp1718, persistence);
 		TestDataUtil.prepareParameters(gp1819, persistence);
+
+		TestDataUtil.prepareParameters(gp2021, persistence);
+		TestDataUtil.prepareParameters(gp2122, persistence);
 		insertInstitutionen();
 		gemeinde = TestDataUtil.getGemeindeParis(persistence).getId();
 		mandant = TestDataUtil.getMandantKantonBernAndPersist(persistence);
@@ -282,6 +291,61 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 				mandant);
 		Assert.assertEquals(4, lastenausgleich2019.getLastenausgleichDetails().size());
 
+	}
+
+	@Test
+	public void createLastenausgleichNeueBerechnung() {
+		Gesuch gesuch = createGesuch(gp2122);
+
+		// Lastenausgleich erstellen
+		Lastenausgleich lastenausgleich = lastenausgleichServiceBean.createLastenausgleichNew(2022, mandant);
+		Assert.assertNotNull(lastenausgleich);
+		Assert.assertEquals(2022, lastenausgleich.getJahr().longValue());
+		Assert.assertEquals(1, lastenausgleich.getLastenausgleichDetails().size());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), lastenausgleich.getTotalAlleGemeinden());
+
+		LastenausgleichGrundlagen grundlagen = lastenausgleichServiceBean.findLastenausgleichGrundlagen(2022).get();
+		Assert.assertNotNull(grundlagen.getSelbstbehaltPro100ProzentPlatz());
+		Assert.assertNotNull(grundlagen.getKostenPro100ProzentPlatz());
+
+		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
+		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
+		Assert.assertEquals(2022, detail.getJahr().longValue());
+		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail.getTotalBetragGutscheineMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(1161.04), detail.getSelbstbehaltGemeinde());
+		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), detail.getBetragLastenausgleich());
+	}
+
+	@Test
+	public void createLastenausgleichKorrekturenDifferentCalculations() {
+
+		// Lastenausgleich 2021: 1 aus Erhebung
+		createGesuch(gp2021);
+		Lastenausgleich lastenausgleich21 = lastenausgleichServiceBean.createLastenausgleichOld(2021, waeltiSelbstbehaltPro100Prozent,
+			mandant);
+		Assert.assertEquals(1, lastenausgleich21.getLastenausgleichDetails().size());
+
+		// Lastenausgleich 2022: 1 aus Erhebung, 1 aus Korrektur 2021
+		createGesuch(gp2021);
+		createGesuch(gp2122);
+		Lastenausgleich lastenausgleich22 = lastenausgleichServiceBean.createLastenausgleichNew(2022,
+			mandant);
+		Assert.assertEquals(2, lastenausgleich22.getLastenausgleichDetails().size());
+
+		// lastenausgleich Details 1 müsste nach neuer Berechnung berechnet sein
+		var detail0 = lastenausgleich22.getLastenausgleichDetails().get(0);
+		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail0.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail0.getTotalBetragGutscheineMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(1161.04), detail0.getSelbstbehaltGemeinde());
+		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), detail0.getBetragLastenausgleich());
+
+		// lastenausgleich Details 1 müsste nach alter Berechnung berechnet sein
+		var detail1 = lastenausgleich22.getLastenausgleichDetails().get(0);
+		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail1.getTotalBelegungenMitSelbstbehalt());
+		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail1.getTotalBetragGutscheineMitSelbstbehalt());
+		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail1.getSelbstbehaltGemeinde());
+		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail1.getBetragLastenausgleich());
 	}
 
 	private Gesuch createGesuch(Gesuchsperiode gesuchsperiode) {
