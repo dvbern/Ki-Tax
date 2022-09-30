@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,6 +41,9 @@ public class JaxBetreuungsmitteilung extends JaxMitteilung {
 	@NotNull
 	private Boolean applied = false;
 
+	@Nullable
+	private String errorMessage;
+
 	@NotNull
 	private Boolean betreuungStornieren = false;
 
@@ -57,6 +61,15 @@ public class JaxBetreuungsmitteilung extends JaxMitteilung {
 
 	public void setApplied(Boolean applied) {
 		this.applied = applied;
+	}
+
+	@Nullable
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(@Nullable String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	public Boolean getBetreuungStornieren() {

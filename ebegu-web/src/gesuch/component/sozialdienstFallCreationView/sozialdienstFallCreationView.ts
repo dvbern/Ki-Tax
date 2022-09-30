@@ -74,7 +74,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         'FallRS',
         'DownloadRS',
         'DvDialog',
-        '$timeout',
+        '$timeout'
     ];
 
     private gesuchsperiodeId: string;
@@ -96,7 +96,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         private readonly fallRS: FallRS,
         private readonly downloadRS: DownloadRS,
         private readonly dvDialog: DvDialog,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -123,7 +123,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             return;
         }
         this.fallRS.getAllVollmachtDokumente(this.gesuchModelManager.getFall().sozialdienstFall.id).then(
-            dokumente => this.dokumente = dokumente,
+            dokumente => this.dokumente = dokumente
         );
     }
 
@@ -147,7 +147,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         }
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private saveData(): void {
         this.errorService.clearAll();
         this.gesuchModelManager.saveFall().then(
@@ -156,7 +156,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
                     this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
                 }
                 this.navigateToSozialdienstFallCreation(fall);
-            },
+            }
         ).catch(err => {
             LOG.error('Could not save SozialdienstFall', err);
             this.navigateToSozialdienstFallCreation(this.gesuchModelManager.getFall());
@@ -174,7 +174,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             gemeindeId: this.gesuchModelManager.getGemeinde().id,
             eingangsart: null,
             sozialdienstId: fall.sozialdienstFall.sozialdienst.id,
-            fallId: fall.id,
+            fallId: fall.id
         };
         this.$state.go('gesuch.sozialdienstfallcreation', params);
     }
@@ -190,7 +190,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             gemeindeId: this.gesuchModelManager.getGemeinde().id,
             eingangsart: null,
             sozialdienstId: null,
-            fallId: this.gesuchModelManager.getFall().id,
+            fallId: this.gesuchModelManager.getFall().id
         };
         this.$state.go('gesuch.fallcreation', params);
     }
@@ -256,12 +256,12 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
             title: 'CONFIRM_VOLLMACHT_ENTZIEHEN',
             deleteText: 'BESCHREIBUNG_VOLLMACHT_ENTZIEHEN',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {
             this.fallRS.sozialdienstFallEntziehen(this.gesuchModelManager.getFall().id).then(
                 fall => {
                     this.gesuchModelManager.getDossier().fall = fall;
-                },
+                }
             );
         });
     }
@@ -274,7 +274,7 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
         const selectedFile = files[0];
         if (selectedFile.size > MAX_FILE_SIZE) {
             this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                title: this.$translate.instant('FILE_ZU_GROSS'),
+                title: this.$translate.instant('FILE_ZU_GROSS')
             });
             return;
         }

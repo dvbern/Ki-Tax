@@ -24,9 +24,9 @@ import {LoginInfoComponent} from './login-info/login-info.component';
 @NgModule({
     imports: [
         SharedModule,
-        EinladungRoutingModule,
+        EinladungRoutingModule
     ],
-    declarations: [LoginInfoComponent, EinladungAbschliessenComponent],
+    declarations: [LoginInfoComponent, EinladungAbschliessenComponent]
 })
 export class EinladungModule {
 }

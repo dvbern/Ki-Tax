@@ -44,14 +44,14 @@ const LOG = LogFactory.createLog('FerienbetreuungStammdatenGemeindeComponent');
 
 export const MY_FORMATS = {
     parse: {
-        dateInput: 'MM/YYYY',
+        dateInput: 'MM/YYYY'
     },
     display: {
         dateInput: 'MM/YYYY',
         monthYearLabel: 'MMM YYYY',
         dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM YYYY',
-    },
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
 };
 
 @Component({
@@ -60,8 +60,8 @@ export const MY_FORMATS = {
     styleUrls: ['./ferienbetreuung-stammdaten-gemeinde.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-    ],
+        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
+    ]
 })
 export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbetreuungFormular implements OnInit {
 
@@ -83,7 +83,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         private readonly fb: FormBuilder,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly unsavedChangesService: UnsavedChangesService,
+        private readonly unsavedChangesService: UnsavedChangesService
     ) {
         super(errorService, translate, dialog, cd, wizardRS, uiRouterGlobals);
     }
@@ -91,7 +91,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     public ngOnInit(): void {
         this.subscription = combineLatest([
             this.ferienbetreuungService.getFerienbetreuungContainer(),
-            this.authServiceRS.principal$,
+            this.authServiceRS.principal$
         ]).subscribe(([container, principal]) => {
             this.container = container;
             this.stammdaten = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
@@ -118,87 +118,87 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         }
         this.form = this.fb.group({
             version: [
-                stammdaten?.version,
+                stammdaten?.version
             ],
             traegerschaft: [
-                stammdaten?.traegerschaft,
+                stammdaten?.traegerschaft
             ],
             amAngebotBeteiligteGemeinden: [
-                stammdaten?.amAngebotBeteiligteGemeinden,
+                stammdaten?.amAngebotBeteiligteGemeinden
             ],
             seitWannFerienbetreuungen: [
-                stammdaten?.seitWannFerienbetreuungen,
+                stammdaten?.seitWannFerienbetreuungen
             ],
             stammdatenAdresse: this.fb.group({
                 organisation: [
-                    stammdaten?.stammdatenAdresse?.organisation,
+                    stammdaten?.stammdatenAdresse?.organisation
                 ],
                 zusatzzeile: [
-                    stammdaten?.stammdatenAdresse?.zusatzzeile,
+                    stammdaten?.stammdatenAdresse?.zusatzzeile
                 ],
                 strasse: [
-                    stammdaten?.stammdatenAdresse?.strasse,
+                    stammdaten?.stammdatenAdresse?.strasse
                 ],
                 hausnummer: [
-                    stammdaten?.stammdatenAdresse?.hausnummer,
+                    stammdaten?.stammdatenAdresse?.hausnummer
                 ],
                 plz: [
-                    stammdaten?.stammdatenAdresse?.plz,
+                    stammdaten?.stammdatenAdresse?.plz
                 ],
                 ort: [
-                    stammdaten?.stammdatenAdresse?.ort,
+                    stammdaten?.stammdatenAdresse?.ort
                 ],
                 version: [
-                    stammdaten?.stammdatenAdresse?.version,
-                ],
+                    stammdaten?.stammdatenAdresse?.version
+                ]
             }),
             stammdatenKontaktpersonVorname: [
-                stammdaten?.stammdatenKontaktpersonVorname,
+                stammdaten?.stammdatenKontaktpersonVorname
             ],
             stammdatenKontaktpersonNachname: [
-                stammdaten?.stammdatenKontaktpersonNachname,
+                stammdaten?.stammdatenKontaktpersonNachname
             ],
             stammdatenKontaktpersonFunktion: [
-                stammdaten?.stammdatenKontaktpersonFunktion,
+                stammdaten?.stammdatenKontaktpersonFunktion
             ],
             stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon,
+                stammdaten?.stammdatenKontaktpersonTelefon
             ],
             stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail,
+                stammdaten?.stammdatenKontaktpersonEmail
             ],
             auszahlungsdaten: this.fb.group({
                 kontoinhaber: [
-                    stammdaten?.kontoinhaber,
+                    stammdaten?.kontoinhaber
                 ],
                 adresseKontoinhaber: this.fb.group({
                     strasse: [
-                        stammdaten?.adresseKontoinhaber?.strasse,
+                        stammdaten?.adresseKontoinhaber?.strasse
                     ],
                     hausnummer: [
-                        stammdaten?.adresseKontoinhaber?.hausnummer,
+                        stammdaten?.adresseKontoinhaber?.hausnummer
                     ],
                     ort: [
-                        stammdaten?.adresseKontoinhaber?.ort,
+                        stammdaten?.adresseKontoinhaber?.ort
                     ],
                     plz: [
-                        stammdaten?.adresseKontoinhaber?.plz,
+                        stammdaten?.adresseKontoinhaber?.plz
                     ],
                     zusatzzeile: [
-                        stammdaten?.adresseKontoinhaber?.zusatzzeile,
+                        stammdaten?.adresseKontoinhaber?.zusatzzeile
                     ],
                     version: [
-                        stammdaten?.adresseKontoinhaber?.version,
-                    ],
+                        stammdaten?.adresseKontoinhaber?.version
+                    ]
                 }),
                 iban: [
                     stammdaten?.iban,
-                    ibanValidator(),
+                    ibanValidator()
                 ],
                 vermerkAuszahlung: [
-                    stammdaten?.vermerkAuszahlung,
-                ],
-            }),
+                    stammdaten?.vermerkAuszahlung
+                ]
+            })
         });
         this.setBasicValidation();
     }
@@ -207,17 +207,17 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.removeAllValidators();
 
         this.form.get('stammdatenKontaktpersonTelefon').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_PHONE),
+            Validators.pattern(CONSTANTS.PATTERN_PHONE)
         );
         this.form.get('stammdatenKontaktpersonEmail').setValidators(
-            Validators.pattern(CONSTANTS.PATTERN_EMAIL),
+            Validators.pattern(CONSTANTS.PATTERN_EMAIL)
         );
 
         this.enableStammdatenAuszahlungValidation();
         this.triggerFormValidation();
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private adressValidValidator(): ValidatorFn {
         return control => {
             const strasse = control.get('strasse');
@@ -254,7 +254,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         };
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private auszahlungsdatenValidation(): ValidatorFn {
         return control => {
             const kontoinhaber = control.get('kontoinhaber');

@@ -28,7 +28,7 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     templateUrl: './veranlagung.component.html',
     styleUrls: ['./veranlagung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class VeranlagungComponent implements OnInit {
 
@@ -51,7 +51,7 @@ export class VeranlagungComponent implements OnInit {
 
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
-        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -61,7 +61,7 @@ export class VeranlagungComponent implements OnInit {
 
     public onValueChangeFunction = (): void => {
         this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
-    }
+    };
 
     public antragsteller1Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();

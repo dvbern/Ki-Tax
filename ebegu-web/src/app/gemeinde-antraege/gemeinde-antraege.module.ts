@@ -30,7 +30,7 @@ import {UnsavedChangesService} from './services/unsaved-changes.service';
 @NgModule({
     declarations: [
         GemeindeAntraegeComponent,
-        VerlaufComponent,
+        VerlaufComponent
     ],
     imports: [
         CommonModule,
@@ -44,7 +44,7 @@ import {UnsavedChangesService} from './services/unsaved-changes.service';
     ],
     exports: [
         LastenausgleichTSModule,
-        FerienbetreuungModule,
+        FerienbetreuungModule
     ],
     providers: [
         UnsavedChangesService

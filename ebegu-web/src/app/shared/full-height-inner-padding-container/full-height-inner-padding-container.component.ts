@@ -21,7 +21,7 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
     selector: 'dv-full-height-inner-padding-container',
     templateUrl: './full-height-inner-padding-container.component.html',
     styleUrls: ['./full-height-inner-padding-container.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FullHeightInnerPaddingContainerComponent {
 

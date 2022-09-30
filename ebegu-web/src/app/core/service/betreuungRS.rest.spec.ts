@@ -97,7 +97,7 @@ describe('betreuungRS', () => {
                         createdBetreuung = result;
                     });
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(createdBetreuung).toBeDefined();
                 TestDataUtil.compareDefinedProperties(createdBetreuung, mockBetreuung);
@@ -115,7 +115,7 @@ describe('betreuungRS', () => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(deleteResult).toBeDefined();
                 expect(deleteResult.status).toEqual(status);

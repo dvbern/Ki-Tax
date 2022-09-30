@@ -92,7 +92,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
             'jahr',
             'lastenausgleichGeneneriert',
             'totalAlleGemeinden',
-            'lastenausgleichExcel',
+            'lastenausgleichExcel'
         ];
         if (this.showCSVDownload()) {
             this.columndefs.push('lastenausgleichCsv');
@@ -121,7 +121,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('LASTENAUSGLEICH_ERSTELLEN_TITLE'),
-            text: this.translate.instant('LASTENAUSGLEICH_ERSTELLEN_INFO'),
+            text: this.translate.instant('LASTENAUSGLEICH_ERSTELLEN_INFO')
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
@@ -234,13 +234,13 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('LASTENAUSGLEICH_LOESCHEN_DIALOG_TITLE'),
-            text: this.translate.instant('LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT'),
+            text: this.translate.instant('LASTENAUSGLEICH_LOESCHEN_DIALOG_TEXT')
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
-                mergeMap(() => this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id)),
+                mergeMap(() => this.lastenausgleichRS.removeLastenausgleich(lastenausgleich.id))
             )
             .subscribe(() => {
                 this.getAllLastenausgleiche();

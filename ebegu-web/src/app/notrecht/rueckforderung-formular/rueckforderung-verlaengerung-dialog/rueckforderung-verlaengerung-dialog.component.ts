@@ -35,7 +35,7 @@ export class RueckforderungVerlaengerungDialogComponent {
 
     public constructor(private readonly dialogRef: MatDialogRef<RueckforderungVerlaengerungDialogComponent>,
                        private readonly notrechtRS: NotrechtRS,
-                       @Inject(MAT_DIALOG_DATA) data: any,
+                       @Inject(MAT_DIALOG_DATA) data: any
                        ) {
         this.rueckforderungFormular = data.rueckforderungFormular;
     }

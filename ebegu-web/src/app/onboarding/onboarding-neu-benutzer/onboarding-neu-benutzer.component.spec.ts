@@ -45,14 +45,14 @@ describe('OnboardingNeuBenutzerComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true}),
+                UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingNeuBenutzerComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-            ],
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

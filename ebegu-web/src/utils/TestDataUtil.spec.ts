@@ -45,7 +45,7 @@ import {TSWizardStep} from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
 
-// tslint:disable:no-magic-numbers no-identical-functions
+/* eslint-disable no-magic-numbers */
 export class TestDataUtil {
 
     public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity): void {
@@ -82,7 +82,7 @@ export class TestDataUtil {
 
     public static checkGueltigkeitAndSetIfSame(
         first: TSAbstractDateRangedEntity,
-        second: TSAbstractDateRangedEntity,
+        second: TSAbstractDateRangedEntity
     ): void {
         // Dieses hack wird gebraucht weil um 2 Moment zu vergleichen kann man nicht einfach equal() benutzen sondern
         // isSame
@@ -182,11 +182,11 @@ export class TestDataUtil {
                         constraintType: 'PARAMETER',
                         path: 'markAsRead.arg1',
                         message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
-                        value: '8a146418-ab12-456f-9b17-aad6990f51',
-                    },
+                        value: '8a146418-ab12-456f-9b17-aad6990f51'
+                    }
                 ],
-                returnValueViolations: [],
-            },
+                returnValueViolations: []
+            }
         };
     }
 
@@ -201,8 +201,8 @@ export class TestDataUtil {
                 translatedMessage: '',
                 customMessage: 'test',
                 objectId: '44-55-66-77',
-                argumentList: null,
-            },
+                argumentList: null
+            }
         };
     }
 

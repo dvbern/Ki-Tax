@@ -39,15 +39,15 @@ describe('EditGemeindeComponentFI', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [],
             providers: [
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
     }));

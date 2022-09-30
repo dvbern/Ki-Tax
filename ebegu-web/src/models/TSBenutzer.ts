@@ -53,7 +53,7 @@ export class TSBenutzer {
         gemeinde?: TSGemeinde[],
         sozialdienst?: TSSozialdienst,
         status: TSBenutzerStatus = TSBenutzerStatus.AKTIV,
-        externalUUID?: string,
+        externalUUID?: string
     ) {
         this._vorname = vorname;
         this._nachname = nachname;

@@ -72,7 +72,7 @@ export class EinkommensverschlechterungInfoViewController
         'EinkommensverschlechterungContainerRS',
         '$timeout',
         '$translate',
-        'EinstellungRS',
+        'EinstellungRS'
     ];
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
@@ -80,7 +80,7 @@ export class EinkommensverschlechterungInfoViewController
     public basisJahrUndPeriode = {
         jahr1periode: this.getBasisjahrPlus1(),
         jahr2periode: this.getBasisjahrPlus2(),
-        basisjahr: this.getBasisjahr(),
+        basisjahr: this.getBasisjahr()
     };
     public maxAllowedEinkommenForEKV: number;
     public currentMinEinkommenEKV: number;
@@ -99,7 +99,7 @@ export class EinkommensverschlechterungInfoViewController
         private readonly ekvContainerRS: EinkommensverschlechterungContainerRS,
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -174,22 +174,22 @@ export class EinkommensverschlechterungInfoViewController
         if (this.isConfirmationDeleteDataRequired()) {
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'EINKVERS_WARNING',
-                deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
-            }).then(() => {   // User confirmed changes
-                return this.save();
-            });
+                deleteText: 'EINKVERS_WARNING_BESCHREIBUNG'
+            }).then(() =>    // User confirmed changes
+                 this.save()
+            );
         }
         if (this.isConfirmationOnlyOnePeriodeRequired()) {
             const descriptionText: any = this.$translate.instant(
                 'EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG',
-                this.basisJahrUndPeriode,
+                this.basisJahrUndPeriode
             );
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'EINKVERS_ONE_PERIODE_WARNING',
-                deleteText: descriptionText,
-            }).then(() => {   // User confirmed changes
-                return this.save();
-            });
+                deleteText: descriptionText
+            }).then(() =>    // User confirmed changes
+                 this.save()
+            );
         }
         return this.save();
     }
@@ -250,9 +250,7 @@ export class EinkommensverschlechterungInfoViewController
             this.getEinkommensverschlechterungsInfoContainer(), this.gesuchModelManager.getGesuch().id)
             .then((ekvInfoRespo: TSEinkommensverschlechterungInfoContainer) => {
                 this.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer = ekvInfoRespo;
-                return this.loadEKVContainersFromServer().then(() => {
-                    return ekvInfoRespo;
-                });
+                return this.loadEKVContainersFromServer().then(() => ekvInfoRespo);
             });
 
     }
@@ -382,8 +380,8 @@ export class EinkommensverschlechterungInfoViewController
             .pipe(
                 mergeMap(einkommensverschlechterungBis => this.getMinMassgebendesEinkommen$().pipe(
                     map(
-                        minMassgebendenEinkommen => [einkommensverschlechterungBis, minMassgebendenEinkommen])),
-                ),
+                        minMassgebendenEinkommen => [einkommensverschlechterungBis, minMassgebendenEinkommen]))
+                )
             ).subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
             this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
             this.currentMinEinkommenEKV = minMassgebendenEinkommen;
@@ -397,21 +395,21 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private getEinkommensverschlechterungBis$(): Observable<number> {
-        return from(this.einstellungRS.findEinstellung(
+        return this.einstellungRS.findEinstellung(
             TSEinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id,
-        )).pipe(
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).pipe(
             filter(ekvBisEinstellung => EinkommensverschlechterungInfoViewController.isEkvBisEinstellungActivated(
                 ekvBisEinstellung)),
-            map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10)),
+            map(ekvBisEinstellung => parseInt(ekvBisEinstellung.value, 10))
         );
     }
 
     public getMaxEinkommenTranslateValues(): any {
         return {
             maxEinkommenEKV: this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
-            massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch'),
+            massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch')
         };
     }
 }

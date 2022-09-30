@@ -38,7 +38,7 @@ describe('BenutzerListViewXComponent', () => {
             providers: [
                 {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: StateService, useValue: stateServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ],
             declarations: [BenutzerListViewXComponent]
         })

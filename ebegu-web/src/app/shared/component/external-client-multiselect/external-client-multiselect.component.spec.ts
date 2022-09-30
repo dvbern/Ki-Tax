@@ -37,12 +37,12 @@ describe('ExternalClientMultiselectComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             providers: [
                 WindowRef,
-                {provide: NgForm, useValue: new NgForm([], [])},
-            ],
+                {provide: NgForm, useValue: new NgForm([], [])}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

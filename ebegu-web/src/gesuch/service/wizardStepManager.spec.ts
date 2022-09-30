@@ -43,7 +43,7 @@ import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {WizardStepManager} from './wizardStepManager';
 import {WizardStepRS} from './WizardStepRS.rest';
 
-// tslint:disable:no-big-function
+/* eslint-disable */
 describe('wizardStepManager', () => {
 
     let authServiceRS: AuthServiceRS;
@@ -109,13 +109,13 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
             expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
             expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
-            // tslint:disable-next-line:no-magic-numbers
+            // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
-            // tslint:disable-next-line:no-magic-numbers
+            // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.DOKUMENTE);
-            // tslint:disable-next-line:no-magic-numbers
+            // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.FREIGABE);
-            // tslint:disable-next-line:no-magic-numbers
+            // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
@@ -129,7 +129,7 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
             expect(wizardStepManager.getWizardSteps().length).toBe(1);
@@ -142,7 +142,7 @@ describe('wizardStepManager', () => {
             wizardStepManager.findStepsFromGesuch('123');
             scope.$apply();
 
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepRS.findWizardStepsFromGesuch).toHaveBeenCalledWith('123');
             expect(wizardStepManager.getWizardSteps()).toBeDefined();
             expect(wizardStepManager.getWizardSteps().length).toBe(2); // erste 2 states sind definiert
@@ -317,7 +317,7 @@ describe('wizardStepManager', () => {
         it('should unhide the steps ABWESENHEIT and UMZUG for Mutation and hide FREIGABE for PAPIER Gesuch', () => {
             const einstellungAbwesenheit = new TSEinstellung();
             einstellungAbwesenheit.value = 'true';
-            spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(einstellungAbwesenheit).toPromise());
+            spyOn(einstellungRS, 'findEinstellung').and.returnValue(of(einstellungAbwesenheit));
             createAllSteps(TSWizardStepStatus.OK);
             const gesuch = new TSGesuch();
             gesuch.eingangsart = TSEingangsart.PAPIER;

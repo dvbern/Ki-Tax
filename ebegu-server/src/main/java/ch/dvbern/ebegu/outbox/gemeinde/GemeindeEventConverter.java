@@ -52,7 +52,10 @@ public class GemeindeEventConverter {
 			.setBfsNummer(gemeinde.getBfsNummer())
 			.setBetreuungsgutscheineAnbietenAb(gemeinde.getBetreuungsgutscheineStartdatum())
 			.setGueltigBis(gemeinde.getGueltigBis())
-			.setMandant(Mandant.valueOf(gemeinde.getMandant().getMandantIdentifier().name()));
+			.setMandant(Mandant.valueOf(gemeinde.getMandant().getMandantIdentifier().name()))
+			.setAngebotBG(gemeinde.isAngebotBG())
+			.setAngebotTS(gemeinde.isAngebotTS())
+			.setAngebotFI(gemeinde.isAngebotFI());
 		return builder.build();
 	}
 }

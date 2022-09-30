@@ -22,20 +22,21 @@ import {
     OnInit,
     QueryList,
     ViewChild,
-    ViewChildren,
+    ViewChildren
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatCheckboxChange} from '@angular/material/checkbox';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {IPromise} from 'angular';
 import * as moment from 'moment';
+import {Observable, of} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {
     getBgInstitutionenAndTsBetreuungsangebote,
     isJugendamt,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -57,17 +58,20 @@ import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
 
+const LOG = LogFactory.createLog('EditInstitutionComponent');
+
 @Component({
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
     styleUrls: ['./edit-institution.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -108,7 +112,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -146,7 +150,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private fetchExternalClients(institutionId: string): void {
         this.institutionRS.getExternalClients(institutionId)
-            .then(externalClients => this.initExternalClients(externalClients));
+            .subscribe(externalClients => this.initExternalClients(externalClients), error => LOG.error(error));
     }
 
     private initExternalClients(externalClients: TSInstitutionExternalClientAssignment): void {
@@ -173,23 +177,21 @@ export class EditInstitutionComponent implements OnInit {
 
     private fetchInstitutionAndStammdaten(institutionId: string): void {
         this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institutionId)
-            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten))
-            .then(stammdaten => this.initModel(stammdaten));
+            .then(optionalStammdaten => this.getOrCreateStammdaten(institutionId, optionalStammdaten)
+                .subscribe(stammdaten => this.initModel(stammdaten), error => LOG.error(error)));
     }
 
     private getOrCreateStammdaten(
         institutionId: string,
-        optionalStammdaten?: TSInstitutionStammdaten | null,
-    ): IPromise<TSInstitutionStammdaten> {
+        optionalStammdaten?: TSInstitutionStammdaten | null
+    ): Observable<TSInstitutionStammdaten> {
 
         if (optionalStammdaten) {
             this.preEditGueltigkeit = new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
-            return Promise.resolve(optionalStammdaten);
+            return of(optionalStammdaten);
         }
 
-        return this.institutionRS.findInstitution(institutionId).then(institution => {
-            return EditInstitutionComponent.createInstitutionStammdaten(institution);
-        });
+        return this.institutionRS.findInstitution(institutionId).pipe(map(institution => EditInstitutionComponent.createInstitutionStammdaten(institution)));
     }
 
     private initModel(stammdaten: TSInstitutionStammdaten): void {
@@ -232,7 +234,7 @@ export class EditInstitutionComponent implements OnInit {
     public getHeaderPreTitle(): string {
         let result = '';
         if (this.stammdaten.institution.traegerschaft) {
-            result += this.stammdaten.institution.traegerschaft.name + ' - ';
+            result += `${this.stammdaten.institution.traegerschaft.name  } - `;
         }
         result += this.translate.instant(this.stammdaten.betreuungsangebotTyp);
         return result;
@@ -305,7 +307,7 @@ export class EditInstitutionComponent implements OnInit {
         this.updateInstitution(updateModel);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private async updateInstitution(updateModel: TSInstitutionUpdate): Promise<void> {
         if (this.stammdaten.institutionStammdatenBetreuungsgutscheine) {
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =
@@ -325,19 +327,19 @@ export class EditInstitutionComponent implements OnInit {
             this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
             this.externalClients.assignedClients.filter(assignedClient =>
-                this.initiallyAssignedClients.indexOf(assignedClient) < 0,
+                this.initiallyAssignedClients.indexOf(assignedClient) < 0
             ).forEach(assignedClient =>
                 drittanwendungen.length > 0 ?
-                    drittanwendungen += ', ' + assignedClient.externalClient.clientName
-                    : drittanwendungen = assignedClient.externalClient.clientName,
+                    drittanwendungen += `, ${  assignedClient.externalClient.clientName}`
+                    : drittanwendungen = assignedClient.externalClient.clientName
             );
             // show warning popup only when added client
             if (drittanwendungen.length > 0) {
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
                     frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
-                        NAME_DRITTANWENDUNGEN: drittanwendungen,
-                    }),
+                        NAME_DRITTANWENDUNGEN: drittanwendungen
+                    })
                 };
                 this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
@@ -345,17 +347,18 @@ export class EditInstitutionComponent implements OnInit {
                                 return;
                             }
                             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten),
+                                        error => LOG.error(error));
                         },
                         () => {
                         });
             } else {
                 this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                    .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                    .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
             }
         } else {
             this.institutionRS.updateInstitution(this.stammdaten.institution.id, updateModel)
-                .then(stammdaten => this.setValuesAfterSave(stammdaten));
+                .subscribe(stammdaten => this.setValuesAfterSave(stammdaten), error => LOG.error(error));
         }
     }
 
@@ -377,7 +380,7 @@ export class EditInstitutionComponent implements OnInit {
     private isSameInstitutionClient(
         a: TSInstitutionExternalClient[],
         b: TSInstitutionExternalClient[],
-        checkGueltigkeit: boolean,
+        checkGueltigkeit: boolean
     ): boolean {
         if (a.length !== b.length) {
             return false;
@@ -464,7 +467,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public deactivateStammdatenCheckRequired(): void {
         this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
-            .then(() => this.navigateBack());
+            .subscribe(() => this.navigateBack(), error => LOG.error(error));
     }
 
     public isCheckRequiredEnabled(): boolean {
@@ -567,7 +570,7 @@ export class EditInstitutionComponent implements OnInit {
     public getSortedAssignedClients(): TSInstitutionExternalClient[] {
         return this.externalClients.assignedClients.sort((
             a: TSInstitutionExternalClient,
-            b: TSInstitutionExternalClient,
+            b: TSInstitutionExternalClient
         ) => {
             if (a.externalClient.clientName < b.externalClient.clientName) {
                 return -1;

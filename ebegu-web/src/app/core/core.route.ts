@@ -49,7 +49,7 @@ appRun.$inject = [
     'GesuchsperiodeRS',
     'GlobalCacheService',
     'GemeindeRS',
-    'LOCALE_ID',
+    'LOCALE_ID'
 ];
 
 export function appRun(
@@ -65,12 +65,12 @@ export function appRun(
     gesuchsperiodeRS: GesuchsperiodeRS,
     globalCacheService: GlobalCacheService,
     gemeindeRS: GemeindeRS,
-    LOCALE_ID: string,
+    LOCALE_ID: string
 ): void {
     const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
     const mandantService = $injector.get<MandantService>('MandantService');
     mandantService.mandant$.pipe(
-        take(1),
+        take(1)
     ).subscribe(() => {
         applicationPropertyRS.getPublicPropertiesCached()
             .then(response => {
@@ -93,7 +93,7 @@ export function appRun(
             'fedletSSOInit',
             'sendRedirectForValidation',
             'locallogin',
-            'tutorial',
+            'tutorial'
         ];
 
         if (loginConnectorPaths.some(path => currentPath.includes(path))) {
@@ -120,13 +120,13 @@ export function appRun(
     authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
         .subscribe(
             onLoginSuccess,
-            err => LOG.error(err),
+            err => LOG.error(err)
         );
 
     authLifeCycleService.get$(TSAuthEvent.NOT_AUTHENTICATED)
         .subscribe(
             onNotAuthenticated,
-            err => LOG.error(err),
+            err => LOG.error(err)
         );
 
     angularMomentConfig.format = 'DD.MM.YYYY';
@@ -141,7 +141,7 @@ export function appRun(
     hotkeys.add({
         combo: 'ctrl+shift+x',
         description: 'Press the last button with style class .next',
-        callback: () => $timeout(() => angular.element('.next').last().trigger('click')),
+        callback: () => $timeout(() => angular.element('.next').last().trigger('click'))
     });
 
 }

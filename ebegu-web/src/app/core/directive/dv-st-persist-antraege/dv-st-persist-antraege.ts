@@ -37,7 +37,7 @@ export class DVSTPersistAntraege implements IDirective {
     public static $inject: string[] = [
         'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService',
         'GemeindeRS',
-        'AuthLifeCycleService',
+        'AuthLifeCycleService'
     ];
 
     public restrict = 'A';
@@ -51,7 +51,7 @@ export class DVSTPersistAntraege implements IDirective {
         private readonly authServiceRS: AuthServiceRS,
         private readonly dVsTPersistService: DVsTPersistService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly authLifeCycleService: AuthLifeCycleService
     ) {
 
         this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
@@ -72,7 +72,7 @@ export class DVSTPersistAntraege implements IDirective {
             authServiceRS: any,
             dVsTPersistService: any,
             gemeindeRS: any,
-            authLifeCycleService: any,
+            authLifeCycleService: any
         ) =>
             new DVSTPersistAntraege(benutzerRS,
                 institutionRS,
@@ -83,7 +83,7 @@ export class DVSTPersistAntraege implements IDirective {
 
         directive.$inject = [
             'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
-            'AuthLifeCycleService',
+            'AuthLifeCycleService'
         ];
         return directive;
     }
@@ -105,7 +105,7 @@ export class DVSTPersistAntraege implements IDirective {
         attrs: IAttributes,
         ctrlArray: any,
         scope: IScope,
-        dVsTPersistService: DVsTPersistService,
+        dVsTPersistService: DVsTPersistService
     ): void {
         // just to be sure that the user has the required role
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) {
@@ -162,7 +162,7 @@ export class DVSTPersistAntraege implements IDirective {
      */
     private setVerantwortlicherBGFromName(
         antragListController: DVAntragListController,
-        verantwortlicherBGFullname: string,
+        verantwortlicherBGFullname: string
     ): void {
         if (!(verantwortlicherBGFullname && antragListController)) {
             return;
@@ -182,7 +182,7 @@ export class DVSTPersistAntraege implements IDirective {
      */
     private setVerantwortlicherTSFromName(
         antragListController: DVAntragListController,
-        verantwortlicherTSFullname: string,
+        verantwortlicherTSFullname: string
     ): void {
         if (!(verantwortlicherTSFullname && antragListController)) {
             return;
@@ -202,7 +202,7 @@ export class DVSTPersistAntraege implements IDirective {
      */
     private setVerantwortlicherGemeindeFromName(
         antragListController: DVAntragListController,
-        verantwortlicherGemeindeFullname: string,
+        verantwortlicherGemeindeFullname: string
     ): void {
         if (!(verantwortlicherGemeindeFullname && antragListController)) {
             return;
@@ -223,7 +223,7 @@ export class DVSTPersistAntraege implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
             if (!Array.isArray(institutionList)) {
                 return;
             }
@@ -232,7 +232,7 @@ export class DVSTPersistAntraege implements IDirective {
             if (found) {
                 antragListController.selectedInstitution = found;
             }
-        });
+        }, error => LOG.error(error));
     }
 
     private setGemeindeFromName(antragListController: DVAntragListController, gemeinde: string): void {

@@ -37,7 +37,7 @@ export class GesuchRS implements IEntityRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly $rootScope: IRootScopeService,
+        private readonly $rootScope: IRootScopeService
     ) {
         this.serviceURL = `${REST_API}gesuche`;
     }
@@ -47,41 +47,29 @@ export class GesuchRS implements IEntityRS {
         sentGesuch = this.ebeguRestUtil.gesuchToRestObject(sentGesuch, gesuch);
         return this.$http.post(this.serviceURL, sentGesuch).then((response: any) => {
             const convertedGesuch = this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            return this.wizardStepManager.updateFirstWizardStep(convertedGesuch.id).then(() => {
-                return convertedGesuch;
-            });
+            return this.wizardStepManager.updateFirstWizardStep(convertedGesuch.id).then(() => convertedGesuch);
         });
     }
 
     public updateGesuch(gesuch: TSGesuch): IPromise<TSGesuch> {
         let sentGesuch = {};
         sentGesuch = this.ebeguRestUtil.gesuchToRestObject(sentGesuch, gesuch);
-        return this.$http.put(this.serviceURL, sentGesuch).then(response => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
-        });
+        return this.$http.put(this.serviceURL, sentGesuch).then(response => this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data)));
     }
 
     public findGesuch(gesuchID: string): IPromise<TSGesuch> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public findGesuchForFreigabe(gesuchID: string, anzZurueckgezogen: string): IPromise<TSAntragDTO> {
         return this.$http.get(`${this.serviceURL}/freigabe/${encodeURIComponent(gesuchID)}/${anzZurueckgezogen}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseAntragDTO(new TSAntragDTO(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseAntragDTO(new TSAntragDTO(), response.data));
     }
 
     public findGesuchForInstitution(gesuchID: string): IPromise<TSGesuch> {
         return this.$http.get(`${this.serviceURL}/institution/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public updateBemerkung(gesuchID: string, bemerkung: string): IHttpPromise<any> {
@@ -98,69 +86,51 @@ export class GesuchRS implements IEntityRS {
     }
 
     public getAllAntragDTOForDossier(dossierId: string): IPromise<TSAntragDTO[]> {
-        return this.$http.get(`${this.serviceURL}/dossier/${encodeURIComponent(dossierId)}`).then((response: any) => {
-            return this.ebeguRestUtil.parseAntragDTOs(response.data);
-        });
+        return this.$http.get(`${this.serviceURL}/dossier/${encodeURIComponent(dossierId)}`).then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
     }
 
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}/JA/${usernameJA}/SCH/${usernameSCH}`;
         return this.$http.post(url, null, {
-            headers: {'Content-Type': 'text/plain'},
-        }).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+            headers: {'Content-Type': 'text/plain'}
+        }).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/zurueckziehen/${encodeURIComponent(antragId)}`;
         return this.$http.post(url, null, {
-            headers: {'Content-Type': 'text/plain'},
-        }).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+            headers: {'Content-Type': 'text/plain'}
+        }).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public setBeschwerdeHaengig(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/setBeschwerde/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public setAbschliessen(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/setAbschliessen/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public sendGesuchToSTV(antragId: string, bemerkungen: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/sendToSTV/${encodeURIComponent(antragId)}`, bemerkungen, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public gesuchBySTVFreigeben(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/freigebenSTV/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public stvPruefungAbschliessen(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/stvPruefungAbschliessen/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public removeBeschwerdeHaengig(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/removeBeschwerde/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public removeOnlineMutation(dossierID: string, gesuchsperiodeId: string): IPromise<boolean> {
@@ -180,44 +150,32 @@ export class GesuchRS implements IEntityRS {
             gesuchsperiodeId)}`;
 
         return this.$http.delete(url)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public removeAntrag(gesuchId: string): IPromise<boolean> {
         return this.$http.delete(`${this.serviceURL}/removeAntrag/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public removeAntragForced(gesuchId: string): IPromise<boolean> {
         return this.$http.delete(`${this.serviceURL}/removeAntragForced/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public closeWithoutAngebot(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/closeWithoutAngebot/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public verfuegenStarten(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/verfuegenStarten/${encodeURIComponent(antragId)}`,
-            null).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+            null).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public getGesuchBetreuungenStatus(gesuchId: string): IPromise<TSGesuchBetreuungenStatus> {
         return this.$http.get(`${this.serviceURL}/gesuchBetreuungenStatus/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public changeFinSitStatus(antragId: string, finSitStatus: TSFinSitStatus): IPromise<any> {
@@ -227,9 +185,7 @@ export class GesuchRS implements IEntityRS {
 
     public isNeuestesGesuch(gesuchID: string): IPromise<boolean> {
         return this.$http.get(`${this.serviceURL}/newest/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getIdOfNewestGesuchForGesuchsperiode(gesuchsperiodeId: string, dossierId: string): IPromise<string> {
@@ -238,67 +194,47 @@ export class GesuchRS implements IEntityRS {
             dossierId)}`;
 
         return this.$http.get(url)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getIdOfNewestGesuchForDossier(dossierId: string): IPromise<string> {
         return this.$http.get(`${this.serviceURL}/newestid/fall/${encodeURIComponent(dossierId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public isAusserordentlicherAnspruchPossible(antragId: string): IPromise<boolean> {
         return this.$http.get(`${this.serviceURL}/ausserordentlicheranspruchpossible/${encodeURIComponent(antragId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getMassenversandTexteForGesuch(gesuchID: string): IPromise<string[]> {
         return this.$http.get(`${this.serviceURL}/massenversand/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public setKeinKontingent(antragId: string): IPromise<TSGesuch> {
         return this.$http.post(`${this.serviceURL}/setKeinKontingent/${encodeURIComponent(antragId)}`, null).then(
-            response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
-        return this.$http.put(this.serviceURL + '/updateAlwaysEditableProperties', properties).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
+        return this.$http.put(`${this.serviceURL  }/updateAlwaysEditableProperties`, properties).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public getSteuerdaten(kibonAnfrage: any): IPromise<TSSteuerdatenResponse> {
         let sentKibonAnfrage = {};
         sentKibonAnfrage = this.ebeguRestUtil.kibonAnfrageToRestObject(sentKibonAnfrage, kibonAnfrage);
-        return this.$http.post(this.serviceURL + '/kibonanfrage/getsteuerdaten', sentKibonAnfrage).then(response => {
-            return this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data);
-        });
+        return this.$http.post(`${this.serviceURL  }/kibonanfrage/getsteuerdaten`, sentKibonAnfrage).then(response => this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data));
     }
 
     public lookupKitax(url: string, userUuid: string): IPromise<TSKitaxResponse> {
         return this.$http.get(`${url}/${userUuid}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseKitaxResponse(response.data);
-            }).catch( () => {
-                return undefined;
-            });
+            .then((response: any) => this.ebeguRestUtil.parseKitaxResponse(response.data)).catch( () => undefined);
     }
 
     public findGesuchOfGesuchsteller(gesuchstellerId: string): IPromise<TSGesuch> {
         return this.$http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(gesuchstellerId)}`)
-            .then(response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
+            .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
 
     }
 }

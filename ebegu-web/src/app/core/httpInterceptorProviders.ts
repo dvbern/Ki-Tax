@@ -19,7 +19,7 @@ import {Provider} from '@angular/core';
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import IInjectorService = angular.auto.IInjectorService;
 
-// tslint:disable:naming-convention
+/* eslint-disable */
 
 // HttpI18nInterceptor
 export function httpI18nInterceptorFactory(i: IInjectorService): HttpI18nInterceptor {

@@ -29,7 +29,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 @Component({
     selector: 'modul-tagesschule-dialog',
     templateUrl: './modul-tagesschule-dialog.template.html',
-    styleUrls: ['./modul-tagesschule-dialog.component.less'],
+    styleUrls: ['./modul-tagesschule-dialog.component.less']
 })
 export class ModulTagesschuleDialogComponent {
 
@@ -42,7 +42,7 @@ export class ModulTagesschuleDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
     }

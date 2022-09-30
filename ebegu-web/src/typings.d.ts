@@ -14,7 +14,7 @@
  */
 
 declare module 'randomcolor' {
-    // tslint:disable:max-union-size
+    /* eslint-disable  */
     interface RandomColorOptions {
         hue?: number | 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple' | 'pink' | 'monochrome' | 'random';
         luminosity?: 'bright' | 'light' | 'dark' | 'random';
@@ -23,7 +23,7 @@ declare module 'randomcolor' {
         format?: 'hsvArray' | 'hslArray' | 'hsl' | 'hsla' | 'rgbArray' | 'rgb' | 'rgba' | 'hex';
     }
 
-    // tslint:enable:max-union-size
+    /* eslint-enable */
 
     declare function randomColor(options?: RandomColorOptions): string;
 }

@@ -63,6 +63,7 @@ export class ErrorServiceX {
 
     /**
      * This can be used to add a client-siede global error
+     *
      * @param msgKey translation key
      * @param [args] message parameters
      */

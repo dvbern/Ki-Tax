@@ -26,7 +26,7 @@ let nextId = 0;
     selector: 'dv-external-client-multiselect',
     templateUrl: './external-client-multiselect.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class ExternalClientMultiselectComponent implements OnChanges {
 
@@ -35,7 +35,7 @@ export class ExternalClientMultiselectComponent implements OnChanges {
     public inputId = `external-client-multiselect-${nextId++}`;
     public options: TSExternalClient[] = [];
 
-    public constructor(public readonly form: NgForm,
+    public constructor(public readonly form: NgForm
     ) {
     }
 

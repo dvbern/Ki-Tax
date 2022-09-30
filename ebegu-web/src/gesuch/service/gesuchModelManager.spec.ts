@@ -56,7 +56,7 @@ import {GesuchModelManager} from './gesuchModelManager';
 import {GesuchRS} from './gesuchRS.rest';
 import {WizardStepManager} from './wizardStepManager';
 
-// tslint:disable:no-big-function no-duplicate-string
+/* eslint-disable */
 describe('gesuchModelManager', () => {
 
     let gesuchModelManager: GesuchModelManager;
@@ -133,11 +133,11 @@ describe('gesuchModelManager', () => {
                         false);
                     scope.$apply();
 
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(betreuungRS.saveBetreuung).toHaveBeenCalledWith(gesuchModelManager.getBetreuungToWorkWith(),
                         undefined,
                         false);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(kindRS.findKind).toHaveBeenCalledWith('2afc9d9a-957e-4550-9a22-97624a000feb');
                     expect(gesuchModelManager.getKindToWorkWith().nextNumberBetreuung).toEqual(5);
                     expect(gesuchModelManager.getGesuch().gesuchBetreuungenStatus)
@@ -169,7 +169,7 @@ describe('gesuchModelManager', () => {
                     gesuchModelManager.saveGesuchAndFall();
 
                     scope.$apply();
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchRS.updateGesuch).toHaveBeenCalled();
                 });
             }));
@@ -407,7 +407,7 @@ describe('gesuchModelManager', () => {
                 });
 
                 scope.$apply();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(betreuungRS.saveBetreuungen).toHaveBeenCalledWith(betreuungen, myGesuch.id, true);
                 expect(promiseExecuted.length).toBe(1);
                 expect(promiseExecuted[0]).toEqual(betreuung);
@@ -431,7 +431,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchRS.findGesuchForInstitution).toHaveBeenCalledWith(gesuch.id);
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });
@@ -452,7 +452,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.openGesuch(gesuch.id);
                 scope.$apply();
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchRS.findGesuch).toHaveBeenCalledWith(gesuch.id);
                 expect(gesuchModelManager.getGesuch()).toEqual(gesuch);
             });

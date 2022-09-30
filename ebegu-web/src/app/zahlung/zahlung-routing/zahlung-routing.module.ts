@@ -33,16 +33,16 @@ const states: NgHybridStateDeclaration[] = [
         url: '/zahlung',
         component: UiViewComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForZahlungen(),
-        },
+            roles: TSRoleUtil.getAllRolesForZahlungen()
+        }
     },
     {
         name: 'zahlung.view',
         url: '/:zahlungsauftragId',
         component: ZahlungviewXComponent,
         params: {
-            isMahlzeitenzahlungen: IBooleanStateParams,
-        },
+            isMahlzeitenzahlungen: IBooleanStateParams
+        }
     },
     {
         parent: 'app',
@@ -51,26 +51,26 @@ const states: NgHybridStateDeclaration[] = [
         component: UiViewComponent,
         url: '/zahlungsauftrag',
         data: {
-            roles: TSRoleUtil.getAllRolesForZahlungen(),
-        },
+            roles: TSRoleUtil.getAllRolesForZahlungen()
+        }
     },
     {
         name: 'zahlungsauftrag.view',
         component: ZahlungsauftragViewXComponent,
         url: '',
         params: {
-            isMahlzeitenzahlungen: false,
-        },
-    },
+            isMahlzeitenzahlungen: false
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class ZahlungRoutingModule {
 }

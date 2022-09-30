@@ -25,7 +25,7 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 export class HttpI18nInterceptorX implements HttpInterceptor {
 
     public constructor(
-            private readonly i18nService: I18nServiceRSRest,
+            private readonly i18nService: I18nServiceRSRest
     ) {
     }
 

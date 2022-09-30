@@ -24,21 +24,19 @@ export class ExportRS {
     public constructor(
         public $http: IHttpService,
         REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${REST_API}export`;
     }
 
     public getJsonSchemaString(): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/meta/jsonschema`).then((response: any) => {
-            return JSON.stringify(response.data, undefined, 2);  // prettyprint
-        });
+        return this.$http.get(`${this.serviceURL}/meta/jsonschema`).then((response: any) =>
+             JSON.stringify(response.data, undefined, 2)  // prettyprint
+        );
     }
 
     public getXmlSchemaString(): IPromise<any> {
-        return this.$http.get(`${this.serviceURL}/meta/xsd`).then((response: any) => {
-            return response.data;
-        });
+        return this.$http.get(`${this.serviceURL}/meta/xsd`).then((response: any) => response.data);
     }
 
 }

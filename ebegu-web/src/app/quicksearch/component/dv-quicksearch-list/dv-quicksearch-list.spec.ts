@@ -83,7 +83,7 @@ describe('DVQuicksearchList', () => {
                     gemeindeRS);
                 const list: Array<TSBetreuungsangebotTyp> = [
                     TSBetreuungsangebotTyp.KITA,
-                    TSBetreuungsangebotTyp.TAGESFAMILIEN,
+                    TSBetreuungsangebotTyp.TAGESFAMILIEN
                 ];
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(list))
                     .toEqual('Kita, Tagesfamilien');
@@ -121,7 +121,7 @@ describe('DVQuicksearchList', () => {
 
                 expect($state.go).toHaveBeenCalledWith('gesuch.fallcreation', {
                     gesuchId: '66345345',
-                    dossierId: mockAntrag.dossierId,
+                    dossierId: mockAntrag.dossierId
                 });
 
             });

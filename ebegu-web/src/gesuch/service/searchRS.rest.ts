@@ -23,7 +23,7 @@ import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class SearchRS {
 
@@ -31,7 +31,7 @@ export class SearchRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: HttpClient,
+        public http: HttpClient
     ) {}
 
     public searchAntraege(antragSearch: any): Observable<TSAntragSearchresultDTO> {
@@ -60,8 +60,6 @@ export class SearchRS {
 
     public getAntraegeOfDossier(dossierId: string): Observable<Array<TSAntragDTO>> {
         return this.http.get(`${this.serviceURL}/gesuchsteller/${encodeURIComponent(dossierId)}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseAntragDTOs(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseAntragDTOs(response)));
     }
 }

@@ -19,63 +19,51 @@ import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {CONSTANTS} from '../constants/CONSTANTS';
 
 export class ApplicationPropertyRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
+    public static $inject = ['$http', 'EbeguRestUtil', 'GlobalCacheService'];
 
     public serviceURL: string;
 
     public constructor(
         public http: IHttpService,
-        REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        private readonly globalCacheService: GlobalCacheService,
+        private readonly globalCacheService: GlobalCacheService
     ) {
-        this.serviceURL = `${REST_API}application-properties`;
+        this.serviceURL = `${CONSTANTS.REST_API}application-properties`;
     }
 
     public getAllowedMimetypes(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.whitelist;
-        });
+        return this.getPublicPropertiesCached().then(response => response.whitelist);
     }
 
     public isDevMode(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.devmode;
-        });
+        return this.getPublicPropertiesCached().then(response => response.devmode);
     }
 
     public isDummyMode(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.dummyMode;
-        });
+        return this.getPublicPropertiesCached().then(response => response.dummyMode);
     }
 
     public isMultimandantEnabled(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.mulitmandantAktiv;
-        });
+        return this.getPublicPropertiesCached().then(response => response.mulitmandantAktiv);
     }
 
     public getSentryEnvName(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.sentryEnvName;
-        });
+        return this.getPublicPropertiesCached().then(response => response.sentryEnvName);
     }
 
     public isEbeguKibonAnfrageTestGuiEnabled(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.ebeguKibonAnfrageTestGuiEnabled;
-        });
+        return this.getPublicPropertiesCached().then(response => response.ebeguKibonAnfrageTestGuiEnabled);
     }
 
     public create(name: string, value: string): IHttpPromise<any> {
         return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {
-                'Content-Type': 'text/plain',
-            },
+                'Content-Type': 'text/plain'
+            }
         });
     }
 
@@ -89,75 +77,59 @@ export class ApplicationPropertyRS {
 
     public getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
         return this.http.get(`${this.serviceURL}/`).then(
-            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data),
+            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data)
         );
     }
 
     public isZahlungenTestMode(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.zahlungentestmode;
-        });
+        return this.getPublicPropertiesCached().then(response => response.zahlungentestmode);
     }
 
     public isPersonensucheDisabledForSystem(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.personenSucheDisabled;
-        });
+        return this.getPublicPropertiesCached().then(response => response.personenSucheDisabled);
     }
 
     public getKitaxHost(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.kitaxHost;
-        });
+        return this.getPublicPropertiesCached().then(response => response.kitaxHost);
     }
 
     public getKitaxUrl(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.kitaxHost + response.kitaxEndpoint;
-        });
+        return this.getPublicPropertiesCached().then(response => response.kitaxHost + response.kitaxEndpoint);
+    }
+
+    public getActivatedDemoFeatures(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => response.activatedDemoFeatures);
     }
 
     public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {
         const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
         return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(
-            (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response.data),
+            (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response.data)
         );
     }
 
     // we keep this method because it is used to perform healthchecks
     public getBackgroundColorFromServer(): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/public/background`).then(response => {
-            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-        });
+        return this.http.get(`${this.serviceURL}/public/background`).then(response => this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data));
     }
 
     public getNotverordnungDefaultEinreichefristPrivat(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.notverordnungDefaultEinreichefristOeffentlich;
-        });
+        return this.getPublicPropertiesCached().then(response => response.notverordnungDefaultEinreichefristOeffentlich);
     }
 
     public getNotverordnungDefaultEinreichefristOeffentlich(): IPromise<string> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.notverordnungDefaultEinreichefristPrivat;
-        });
+        return this.getPublicPropertiesCached().then(response => response.notverordnungDefaultEinreichefristPrivat);
     }
 
     public getFrenchEnabled(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.frenchEnabled;
-        });
+        return this.getPublicPropertiesCached().then(response => response.frenchEnabled);
     }
 
     public getGeresEnabledForMandant(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.geresEnabledForMandant;
-        });
+        return this.getPublicPropertiesCached().then(response => response.geresEnabledForMandant);
     }
 
     public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => {
-            return response.zusatzinformationenInstitution;
-        });
+        return this.getPublicPropertiesCached().then(response => response.zusatzinformationenInstitution);
     }
 }

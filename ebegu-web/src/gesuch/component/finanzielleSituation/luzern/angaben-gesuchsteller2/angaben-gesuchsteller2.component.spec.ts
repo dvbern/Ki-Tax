@@ -83,8 +83,8 @@ describe('AngabenGesuchsteller2Component', () => {
             imports: [
                 FormsModule,
                 ReactiveFormsModule,
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

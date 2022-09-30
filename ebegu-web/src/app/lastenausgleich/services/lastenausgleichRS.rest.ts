@@ -34,19 +34,17 @@ export class LastenausgleichRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: HttpClient,
+        public http: HttpClient
     ) {}
 
     public getAllLastenausgleiche(): Observable<TSLastenausgleich[]> {
         return this.http.get(`${this.API_BASE_URL}/all`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseLastenausgleichList(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseLastenausgleichList(response)));
     }
 
     public createLastenausgleich(
         jahr: number,
-        selbstbehaltPro100ProzentPlatz: number,
+        selbstbehaltPro100ProzentPlatz: number
     ): Observable<TSLastenausgleich> {
 
         let params = new HttpParams();
@@ -58,10 +56,8 @@ export class LastenausgleichRS {
 
         return this.http.get(`${this.API_BASE_URL}/create`,
             {
-                params,
-            }).pipe(map((httpresponse: any) => {
-            return this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse);
-        }));
+                params
+            }).pipe(map((httpresponse: any) => this.ebeguRestUtil.parseLastenausgleich(new TSLastenausgleich(), httpresponse)));
     }
 
     public getLastenausgleichReportExcel(lastenausgleichId: string): Observable<TSDownloadFile> {
@@ -72,9 +68,7 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/excel`,
             {
                 params
-            }).pipe(map((response: any) => {
-            return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
-        }));
+            }).pipe(map((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response)));
     }
 
     public getLastenausgleichReportCSV(lastenausgleichId: string): Observable<TSDownloadFile> {
@@ -85,9 +79,7 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/csv`,
             {
                 params
-            }).pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
-        }));
+            }).pipe(map((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response)));
     }
 
     public getZemisExcel(jahr: number): Observable<TSDownloadFile> {
@@ -98,9 +90,7 @@ export class LastenausgleichRS {
         return this.http.get(`${this.API_BASE_URL}/zemisexcel`,
             {
                 params
-            }).pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response);
-        }));
+            }).pipe(map((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response)));
     }
 
     public removeLastenausgleich(lastenausgleichId: string): Observable<any> {

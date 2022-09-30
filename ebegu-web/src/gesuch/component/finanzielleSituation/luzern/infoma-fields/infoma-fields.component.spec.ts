@@ -44,7 +44,7 @@ describe('InfomaFieldsComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 FormsModule,
-                SharedModule,
+                SharedModule
             ],
             declarations: [
                 InfomaFieldsComponent
@@ -53,7 +53,7 @@ describe('InfomaFieldsComponent', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ListResourceRS, useValue: listResourceRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: NgForm, useValue: new NgForm([], [])}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

@@ -38,6 +38,6 @@ export function getTSModulTagesschuleNameValues(): Array<TSModulTagesschuleName>
         TSModulTagesschuleName.SCOLARIS_07,
         TSModulTagesschuleName.SCOLARIS_08,
         TSModulTagesschuleName.SCOLARIS_09,
-        TSModulTagesschuleName.SCOLARIS_10,
+        TSModulTagesschuleName.SCOLARIS_10
     ];
 }

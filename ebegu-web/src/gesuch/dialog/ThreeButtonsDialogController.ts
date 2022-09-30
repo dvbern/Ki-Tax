@@ -26,7 +26,7 @@ export class ThreeButtonsDialogController {
         'confirmationText',
         'cancelText',
         'firstOkText',
-        'secondOkText',
+        'secondOkText'
     ];
 
     public confirmationText: string;
@@ -42,7 +42,7 @@ export class ThreeButtonsDialogController {
         confirmationText: string,
         cancelText: string,
         firstOkText: string,
-        secondOkText: string,
+        secondOkText: string
     ) {
         this.title = $translate.instant(title);
         this.confirmationText = $translate.instant(confirmationText);

@@ -43,7 +43,7 @@ describe('GemeindeKennzahlenUiComponent', () => {
                     useValue: gemeindeKennzahlenServiceSpy
                 }
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

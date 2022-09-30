@@ -27,18 +27,18 @@ const states: NgHybridStateDeclaration[] = [
         url: '/welcome',
         component: WelcomeMainComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesButGesuchsteller(),
-        },
-    },
+            roles: TSRoleUtil.getAllRolesButGesuchsteller()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class WelcomeRoutingModule {
 }

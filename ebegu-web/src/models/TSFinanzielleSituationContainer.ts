@@ -25,7 +25,7 @@ export class TSFinanzielleSituationContainer extends TSAbstractMutableEntity {
     public constructor(
         jahr?: number,
         finanzielleSituationGS?: TSFinanzielleSituation,
-        finanzielleSituationJA?: TSFinanzielleSituation,
+        finanzielleSituationJA?: TSFinanzielleSituation
     ) {
         super();
         this._jahr = jahr;

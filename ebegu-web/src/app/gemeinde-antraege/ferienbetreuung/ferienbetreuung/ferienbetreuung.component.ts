@@ -50,7 +50,7 @@ export class FerienbetreuungComponent implements OnInit {
         private readonly ferienbetreuungService: FerienbetreuungService,
         private readonly wizardStepXRS: WizardStepXRS,
         private readonly downloadRS: DownloadRS,
-        private readonly translate: TranslateService,
+        private readonly translate: TranslateService
     ) {
     }
 
@@ -85,7 +85,7 @@ export class FerienbetreuungComponent implements OnInit {
         filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
             {
                 gemeinde: this.ferienbetreuungContainer.gemeinde.name,
-                gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString,
+                gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString
             });
         this.downloadRS.openDownload(file, filename);
     }

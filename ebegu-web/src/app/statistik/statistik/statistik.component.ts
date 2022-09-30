@@ -98,9 +98,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     private static sortInstitutions(stammdaten: TSInstitutionStammdaten[]): TSInstitutionStammdaten[] {
-        return stammdaten.sort((a, b) => {
-            return a.institution.name.localeCompare(b.institution.name);
-        });
+        return stammdaten.sort((a, b) => a.institution.name.localeCompare(b.institution.name));
     }
 
     private static handleError(err: Error): void {
@@ -165,7 +163,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         }, StatistikComponent.handleError);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public generateStatistik(form: NgForm, type?: string): void {
         if (!form.valid) {
             return;
@@ -343,7 +341,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
-            text: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO'),
+            text: this.translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO')
         };
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
     }
@@ -367,7 +365,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     private informReportGenerationStarted(res: {workjobId: string}): void {
-        LOG.debug('executionID: ' + res.workjobId);
+        LOG.debug(`executionID: ${  res.workjobId}`);
         const startmsg = this.translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
@@ -384,7 +382,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         }
 
         const win = this.downloadRS.prepareDownloadWindow();
-        LOG.debug('accessToken: ' + row.resultData);
+        LOG.debug(`accessToken: ${  row.resultData}`);
         this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
     }
 
@@ -394,9 +392,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public showAllJobs(): void {
         this.batchJobRS.getAllJobs().subscribe((result: TSWorkJob[]) => {
             let res: TSBatchJobInformation[] = [];
-            res = res.concat(result.map(value => {
-                return value.execution || undefined;
-            }));
+            res = res.concat(result.map(value => value.execution || undefined));
             this.allJobs = res;
             this.cd.markForCheck();
         }, StatistikComponent.handleError);
@@ -421,11 +417,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
-        return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => {
-            return d.gesuchsperiode;
-        }).sort((a, b) => {
-            return b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString);
-        });
+        return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => d.gesuchsperiode).sort((a, b) => b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString));
     }
 
     public showMahlzeitenverguenstigungStatistik(): boolean {
@@ -603,7 +595,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         ]);
     }
 
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     public showGesuchstellerKinderBetreuungStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles([
             TSRole.SACHBEARBEITER_BG,

@@ -57,7 +57,7 @@ describe('AddGemeindeComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
@@ -68,10 +68,10 @@ describe('AddGemeindeComponent', () => {
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
             declarations: [
-                AddGemeindeComponent,
+                AddGemeindeComponent
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

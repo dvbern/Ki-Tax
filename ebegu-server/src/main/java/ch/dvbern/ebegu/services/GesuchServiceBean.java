@@ -1469,9 +1469,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
-	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
+	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull boolean checkNeusteGesuchAuthorization) {
 		authorizer.checkReadAuthorization(gesuch);
-		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
+		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), checkNeusteGesuchAuthorization);
 	}
 
 	@Override

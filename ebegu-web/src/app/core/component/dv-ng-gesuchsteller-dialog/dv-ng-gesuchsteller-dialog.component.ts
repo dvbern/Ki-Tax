@@ -27,7 +27,7 @@ import {TranslateService} from '@ngx-translate/core';
  */
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
-    templateUrl: './dv-ng-gesuchsteller-dialog.template.html',
+    templateUrl: './dv-ng-gesuchsteller-dialog.template.html'
 })
 export class DvNgGesuchstellerDialogComponent {
 
@@ -41,7 +41,7 @@ export class DvNgGesuchstellerDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgGesuchstellerDialogComponent>,
         private readonly translate: TranslateService,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.emailAdresse = data.emailAdresse;
         this.administratorRolle = this.translate.instant(data.administratorRolle);
@@ -49,10 +49,10 @@ export class DvNgGesuchstellerDialogComponent {
         this.confirmGesuchDelete = false;
         this.question = this.translate.instant('GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE', {
             emailAdresse: this.emailAdresse,
-            administratorRolle: this.administratorRolle,
+            administratorRolle: this.administratorRolle
         });
         this.confirmationText = this.translate.instant('GESUCHSTELLER_DIALOG_CONFIRM_DELETE', {
-            gesuchstellerName: this.gesuchstellerName,
+            gesuchstellerName: this.gesuchstellerName
         });
     }
 

@@ -36,7 +36,7 @@ export class PaginatorI18n extends MatPaginatorIntl {
         super();
         this.translate.onLangChange.subscribe(
             () => this.translateLabels(),
-            (err: any) => LOG.error(err),
+            (err: any) => LOG.error(err)
         );
 
         this.translateLabels();

@@ -44,7 +44,7 @@ export class DvCountdownController implements IController {
         '$interval',
         '$rootScope',
         'DvDialog',
-        'GesuchModelManager',
+        'GesuchModelManager'
     ];
 
     public readonly TSRoleUtil = TSRoleUtil;
@@ -58,7 +58,7 @@ export class DvCountdownController implements IController {
         private readonly $rootScope: IRootScopeService,
         private readonly dvDialog: DvDialog,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly uiRouterGlobals: UIRouterGlobals
     ) {
     }
 
@@ -83,7 +83,7 @@ export class DvCountdownController implements IController {
 
     public getTimeLeft(): string {
         if (this.timer && this.timer.asMinutes() < 5) {
-            const seconds = this.timer.seconds() < 10 ? '0' + String(this.timer.seconds()) : this.timer.seconds();
+            const seconds = this.timer.seconds() < 10 ? `0${  String(this.timer.seconds())}` : this.timer.seconds();
             return `${this.timer.minutes()} : ${seconds}`;
         }
         return '';
@@ -105,7 +105,7 @@ export class DvCountdownController implements IController {
     public stopTimer(): void {
         this.cancelInterval();
         this.dvDialog.showDialog(dialogTemplate, OkDialogController, {
-            title: 'Bitte fahren Sie mit der Bearbeitung fort',
+            title: 'Bitte fahren Sie mit der Bearbeitung fort'
         });
     }
 
