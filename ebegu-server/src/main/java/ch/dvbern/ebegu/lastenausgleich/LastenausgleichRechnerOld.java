@@ -79,9 +79,10 @@ public class LastenausgleichRechnerOld extends AbstractLastenausgleichRechner {
 		return detail;
 	}
 
-	@Nonnull
 	@Override
-	public String logLastenausgleichRechnerType(int jahr) {
-		return "Lastenausgleichrechner mit Selbstbehalt für Jahr " + jahr;
+	public void logLastenausgleichRechnerType(int jahr, StringBuilder sb) {
+		sb.append("Lastenausgleichrechner mit Selbstbehalt pro 100% Platz für Jahr ");
+		sb.append(jahr);
+		sb.append('\n');
 	}
 }

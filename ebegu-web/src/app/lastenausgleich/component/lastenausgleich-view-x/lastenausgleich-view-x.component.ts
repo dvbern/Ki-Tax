@@ -267,4 +267,10 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         }
         return this.jahr < this.FIRST_YEAR_WITHOUT_SELBSTBEHALT;
     }
+
+    public clearSelbstbehaltIfHidden(): void {
+        if (!this.showLastenausgleichSelbstbehalt()) {
+            this.selbstbehaltPro100ProzentPlatz = undefined;
+        }
+    }
 }

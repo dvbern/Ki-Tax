@@ -28,6 +28,7 @@
                                for="jahr">LASTENAUSGLEICH_JAHR</label>
                         <input id="jahr" name="jahr"
                                [(ngModel)]="jahr"
+                               (ngModelChange)="clearSelbstbehaltIfHidden()"
                                type="number"
                                min="2000"
                                step="1"

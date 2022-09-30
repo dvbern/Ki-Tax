@@ -57,7 +57,7 @@ public class LastenausgleichRechnerNew extends AbstractLastenausgleichRechner {
 		BigDecimal selbstbehaltGemeinde =
 			MathUtil.EXACT.subtractNullSafe(totalGutscheine, eingabeLastenausgleich);
 
-		// Total anrechenbar = total belegung * Kosten pro 100% Platz
+		// Total anrechenbar => in neuer Berechnung ist total Anrechenbar das gleiche wie total Gutscheine
 		BigDecimal totalAnrechenbar = totalBelegungInProzent;
 
 		// Ohne Selbstbehalt Gemeinde Kosten = Total Gutscheine ohne Selbstbehalt * 0.2
@@ -82,9 +82,10 @@ public class LastenausgleichRechnerNew extends AbstractLastenausgleichRechner {
 		return detail;
 	}
 
-	@Nonnull
 	@Override
-	public String logLastenausgleichRechnerType(int jahr) {
-		return "Lastenausgleichrechner ohne Selbstbehalt für Jahr " + jahr;
+	public void logLastenausgleichRechnerType(int jahr, StringBuilder sb) {
+		sb.append("Lastenausgleichrechner ohne Selbstbehalt für Jahr ");
+		sb.append(jahr);
+		sb.append('\n');
 	}
 }

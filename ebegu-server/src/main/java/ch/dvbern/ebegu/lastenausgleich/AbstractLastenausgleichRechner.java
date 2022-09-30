@@ -79,8 +79,7 @@ public abstract class AbstractLastenausgleichRechner {
 		return detail;
 	}
 
-	@Nonnull
-	public abstract String logLastenausgleichRechnerType(int jahr);
+	public abstract void logLastenausgleichRechnerType(int jahr, StringBuilder sb);
 
 	protected void calculateTotals() {
 		for (VerfuegungZeitabschnitt abschnitt : abschnitteProGemeindeUndJahr) {
