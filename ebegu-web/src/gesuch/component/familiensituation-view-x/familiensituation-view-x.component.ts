@@ -13,13 +13,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
@@ -53,7 +55,7 @@ const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
     templateUrl: './familiensituation-view-x.component.html',
     styleUrls: ['./familiensituation-view-x.component.less']
 })
-export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamiliensituationContainer> {
+export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamiliensituationContainer> implements OnInit{
 
     private familienstatusValues: Array<TSFamilienstatus>;
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -79,15 +81,15 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             TSWizardStepName.FAMILIENSITUATION);
         this.gesuchModelManager.initFamiliensituation();
         //TODO: ????
-        this.model = Object.assign({}, this.getGesuch().familiensituationContainer);
-        this.initialFamiliensituation = Object.assign({}, this.gesuchModelManager.getFamiliensituation());
+        this.model = this.getGesuch().familiensituationContainer;
+        this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
 
     }
 
-    public $onInit(): void {
+    public ngOnInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id
         ).subscribe((response: TSEinstellung[]) => {
@@ -372,5 +374,11 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public getTraegerschaftInstitutionSteueramtOnlyRoles(): ReadonlyArray<TSRole> {
         return TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles();
+    }
+
+    public showBisher(): boolean {
+        return this.gesuchModelManager.getGesuch()
+            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }
 }
