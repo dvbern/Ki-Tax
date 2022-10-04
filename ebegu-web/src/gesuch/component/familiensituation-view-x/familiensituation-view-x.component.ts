@@ -113,7 +113,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
-    public confirmAndSave(onResult: Function): Promise<TSFamiliensituationContainer> {
+    public async confirmAndSave(onResult: Function): Promise<void> {
         this.savedClicked = true;
         if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
             if (!this.form.dirty) {
@@ -122,7 +122,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                 // Update wizardStepStatus also if the form is empty and not dirty
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
                 onResult(this.getGesuch().familiensituationContainer);
-                return Promise.resolve(this.getGesuch().familiensituationContainer);
+                return;
             }
 
             if (this.isConfirmationRequired()) {
@@ -130,20 +130,24 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                     gsfullname: this.getGesuch().gesuchsteller2
                         ? this.getGesuch().gesuchsteller2.extractFullName() : ''
                 });
-                return this.dialog.open(DvNgRemoveDialogComponent, {
+                const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
                     data: {
                         title: 'FAMILIENSITUATION_WARNING',
                         deleteText: descriptionText,
                     },
-                }).afterClosed().toPromise().then(() =>    // User confirmed changes
-                    this.save().then(result => onResult(result))
-                );
+                }).afterClosed().toPromise();
+
+                if (dialogResult) {
+                    const result = await this.save();
+                    onResult(result);
+                }
+                return;
+
             }
 
-            this.save().then(result => onResult(result));
-
+            const result = await this.save();
+            onResult(result);
         }
-        return undefined;
     }
 
     private save(): Promise<TSFamiliensituationContainer> {
