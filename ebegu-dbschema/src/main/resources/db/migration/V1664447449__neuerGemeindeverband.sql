@@ -16,5 +16,5 @@
  */
 
 -- 10049	Schulgemeindeverband Matzwil
-INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab) VALUES
+INSERT IGNORE INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab) VALUES
 	('0b1e3ddc-3fe2-11ed-a1c0-00090ffe0001', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')), 'BE', 10049, 'Schulgemeindeverband Matzwil', '2010-01-01');
