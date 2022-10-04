@@ -45,7 +45,7 @@ import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumLis
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
-import {FamiliensituationViewComponentConfig} from './component/familiensituationView/familiensituationView';
+import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
 import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
@@ -76,7 +76,7 @@ import {gesuchRun} from './gesuch.route';
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
-        .component('familiensituationView', new FamiliensituationViewComponentConfig())
+        .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
         .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())
