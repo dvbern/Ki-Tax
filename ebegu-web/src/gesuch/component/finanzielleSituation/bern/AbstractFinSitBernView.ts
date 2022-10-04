@@ -143,4 +143,20 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     public einkommenInVereinfachtemVerfarenClicked(): void {
         this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
     }
+
+    protected showZugriffAufSteuerdaten(): boolean {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
+            return false;
+        }
+
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+            return false;
+        }
+
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS);
+    }
 }

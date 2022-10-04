@@ -181,16 +181,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktivForPeriode) {
-            return false;
-        }
-
-        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
-            return false;
-        }
-
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung
-            && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
+        return super.showZugriffAufSteuerdaten() && !this.model.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
