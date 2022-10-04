@@ -56,7 +56,7 @@ export class GesuchRouteController implements IController {
         '$mdSidenav',
         'EwkRS',
         '$rootScope',
-        'EinstellungRS',
+        'EinstellungRS'
     ];
 
     public readonly TSRole = TSRole;
@@ -78,7 +78,7 @@ export class GesuchRouteController implements IController {
         private readonly $mdSidenav: ISidenavService,
         private readonly ewkRS: EwkRS,
         private readonly $rootScope: IRootScopeService,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
             .then(() => {
@@ -90,7 +90,7 @@ export class GesuchRouteController implements IController {
                     err => LOG.error(err));
             });
 
-        // tslint:disable-next-line
+        // eslint-disable-next-line
         if (this.gesuchModelManager.getDossier()
             && this.gesuchModelManager.getDossier().gemeinde
             && this.gesuchModelManager.getGesuchsperiode()
@@ -98,11 +98,11 @@ export class GesuchRouteController implements IController {
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
                 this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
+                this.gesuchModelManager.getGesuchsperiode().id
             )
-                .then(response => {
+                .subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
         }
 
     }
@@ -127,7 +127,7 @@ export class GesuchRouteController implements IController {
         this.$mdSidenav(componentId).close();
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public getIcon(stepName: TSWizardStepName): string {
         const step = this.wizardStepManager.getStepByName(stepName);
         if (!step || !this.getGesuch()) {
@@ -143,7 +143,7 @@ export class GesuchRouteController implements IController {
                     if (step.wizardStepName === TSWizardStepName.FREIGABE
                         && (this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_GS
                         || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST)) {
-                        // tslint:disable-next-line:no-duplicate-string
+                        // eslint-disable-next-line
                         return 'fa-pencil black';
                     }
                     if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
@@ -177,6 +177,7 @@ export class GesuchRouteController implements IController {
 
     /**
      * Steps are disabled when the field verfuegbar is false or if they are not allowed for the current role
+     *
      * @returns Sollte etwas schief gehen, true wird zurueckgegeben
      */
     public isWizardStepDisabled(stepName: TSWizardStepName): boolean {
@@ -202,7 +203,7 @@ export class GesuchRouteController implements IController {
      * Uebersetzt den Status des Gesuchs und gibt ihn zurueck. Sollte das Gesuch noch keinen Status haben
      * IN_BEARBEITUNG_JA wird zurueckgegeben
      */
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public getGesuchStatusTranslation(): string {
         let toTranslate = TSAntragStatus.IN_BEARBEITUNG_JA;
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().status) {
@@ -294,7 +295,7 @@ export class GesuchRouteController implements IController {
                     'MENU_ERNEUERUNGSGESUCH_VOM' :
                     'MENU_ERSTGESUCH_VOM';
                 return this.$translate.instant(k, {
-                    date: dateFromGesuch,
+                    date: dateFromGesuch
                 });
             }
             const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

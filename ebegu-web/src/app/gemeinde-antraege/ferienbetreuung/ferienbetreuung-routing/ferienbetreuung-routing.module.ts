@@ -41,49 +41,49 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'ferienbetreuungId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().id),
-            },
-        ],
+                    (trans.params().id)
+            }
+        ]
     },
     {
         name: 'FERIENBETREUUNG.STAMMDATEN_GEMEINDE',
         url: '/stammdaten-gemeinde',
-        component: FerienbetreuungStammdatenGemeindeComponent,
+        component: FerienbetreuungStammdatenGemeindeComponent
     },
     {
         name: 'FERIENBETREUUNG.ANGEBOT',
         url: '/angebot',
-        component: FerienbetreuungAngebotComponent,
+        component: FerienbetreuungAngebotComponent
     },
     {
         name: 'FERIENBETREUUNG.NUTZUNG',
         url: '/nutzung',
-        component: FerienbetreuungNutzungComponent,
+        component: FerienbetreuungNutzungComponent
     },
     {
         name: 'FERIENBETREUUNG.KOSTEN_EINNAHMEN',
         url: '/kosten-einnahmen',
-        component: FerienbetreuungKostenEinnahmenComponent,
+        component: FerienbetreuungKostenEinnahmenComponent
     },
     {
         name: 'FERIENBETREUUNG.UPLOAD',
         url: '/upload',
-        component: FerienbetreuungUploadComponent,
+        component: FerienbetreuungUploadComponent
     },
     {
         name: 'FERIENBETREUUNG.ABSCHLUSS',
         url: '/verfuegung',
-        component: FerienbetreuungAbschlussComponent,
-    },
+        component: FerienbetreuungAbschlussComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class FerienbetreuungRoutingModule {
 }

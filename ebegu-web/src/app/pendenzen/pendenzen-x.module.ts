@@ -24,6 +24,6 @@ import {PendenzenListViewComponent} from './default/component/pendenzenListView/
     imports: [SharedModule, UIRouterModule],
     declarations: [PendenzenListViewComponent],
     exports: [PendenzenListViewComponent],
-    entryComponents: [PendenzenListViewComponent],
+    entryComponents: [PendenzenListViewComponent]
 })
 export class PendenzenXModule {}

@@ -21,7 +21,7 @@ import {
     IHttpService,
     IPromise,
     IScope,
-    ITimeoutService,
+    ITimeoutService
 } from 'angular';
 
 export class DVLoading implements IDirective {
@@ -40,7 +40,7 @@ export class DVLoading implements IDirective {
         scope: IScope,
         element: IAugmentedJQuery,
         _attributes: IAttributes,
-        controller: DVLoadingController,
+        controller: DVLoadingController
     ) => {
         let promise: IPromise<any>;
         scope.$watch(controller.isLoading, v => {
@@ -58,7 +58,7 @@ export class DVLoading implements IDirective {
 
             }
         });
-    }
+    };
 }
 
 /**
@@ -71,8 +71,6 @@ export class DVLoadingController {
     public isLoading: () => {};
 
     public constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService) {
-        this.isLoading = (): boolean => {
-            return this.$http.pendingRequests.length > 0;
-        };
+        this.isLoading = (): boolean => this.$http.pendingRequests.length > 0;
     }
 }

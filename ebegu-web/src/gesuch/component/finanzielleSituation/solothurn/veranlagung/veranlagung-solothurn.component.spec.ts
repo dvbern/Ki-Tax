@@ -15,11 +15,11 @@ describe('VeranlagungSolothurnComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [VeranlagungSolothurnComponent],
             providers: [
-                {provide: NgForm, useValue: formMock},
+                {provide: NgForm, useValue: formMock}
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

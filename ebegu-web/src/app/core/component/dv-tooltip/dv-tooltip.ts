@@ -27,7 +27,7 @@ export class DvTooltipComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
     public bindings = {
         text: '<',
-        inputId: '@',
+        inputId: '@'
     };
 }
 
@@ -44,7 +44,7 @@ export class DvTooltipController implements IDVFocusableController {
         this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
             text: info,
-            parentController: this,
+            parentController: this
         });
     }
 

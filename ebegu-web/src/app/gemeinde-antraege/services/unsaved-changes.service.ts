@@ -15,16 +15,14 @@ export class UnsavedChangesService {
 
     public constructor(
         private readonly $transition: TransitionService,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
-        this.$transition.onStart({}, async() => {
-            return this.checkUnsavedChanges().then(userAccepted => {
+        this.$transition.onStart({}, async () => this.checkUnsavedChanges().then(userAccepted => {
                 if (userAccepted) {
                     this.unregisterForm();
                 }
                 return userAccepted;
-            });
-        });
+            }));
     }
 
     public registerForm(formGroup: FormGroup): void {
@@ -49,14 +47,14 @@ export class UnsavedChangesService {
     private openDialog(): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'UNSAVED_WARNING',
+            title: 'UNSAVED_WARNING'
         };
         return this.dialog.open(DvNgBackDialogComponent, dialogConfig)
             .afterClosed()
-            .pipe(map(answer => {
+            .pipe(map(answer =>
                 // answer is undefined, if cancel is pressed. we need a boolean here
-                return answer === true;
-            }));
+                 answer === true
+            ));
     }
 
     private unregisterForm(): void {

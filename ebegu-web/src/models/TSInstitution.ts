@@ -31,7 +31,7 @@ export class TSInstitution extends TSAbstractMutableEntity {
         name?: string,
         tragerschaft?: TSTraegerschaft,
         mandant?: TSMandant,
-        status?: TSInstitutionStatus,
+        status?: TSInstitutionStatus
     ) {
         super();
         this.name = name;

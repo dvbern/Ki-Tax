@@ -35,7 +35,7 @@ const LOG = LogFactory.createLog('LastenausgleichTsBerechnungComponent');
     selector: 'dv-lastenausgleich-ts-berechnung',
     templateUrl: './lastenausgleich-ts-berechnung.component.html',
     styleUrls: ['./lastenausgleich-ts-berechnung.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichTsBerechnungComponent implements OnInit {
 
@@ -57,14 +57,14 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         private readonly latsService: LastenausgleichTSService,
         private readonly authService: AuthServiceRS,
         private readonly downloadRS: DownloadRS,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
         combineLatest([
             this.latsService.getLATSAngabenGemeindeContainer(),
-            this.authService.principal$,
+            this.authService.principal$
         ]).subscribe(values => {
             this.latsContainer = values[0];
             this.principal = values[1];
@@ -81,7 +81,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.DEUTSCH,
-            this.latsContainer.betreuungsstundenPrognose,
+            this.latsContainer.betreuungsstundenPrognose
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.DEUTSCH);
@@ -100,7 +100,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
         this.latsService.latsDocxErstellen(
             this.latsContainer,
             TSSprache.FRANZOESISCH,
-            this.latsContainer.betreuungsstundenPrognose,
+            this.latsContainer.betreuungsstundenPrognose
         ).subscribe(
             response => {
                 this.createDownloadFile(response, TSSprache.FRANZOESISCH);
@@ -111,7 +111,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
                 this.errorService.addMesageAsError(err?.translatedMessage || this.translate.instant(
                     'ERROR_UNEXPECTED'));
                 this.downloadingFrFile.next(false);
-            },
+            }
         );
     }
 

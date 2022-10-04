@@ -45,7 +45,7 @@ describe('SelbstdeklarationComponent', () => {
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
-                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

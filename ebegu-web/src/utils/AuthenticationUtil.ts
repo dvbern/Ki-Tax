@@ -55,7 +55,7 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.ADMIN_SOZIALDIENST]: pendenzen,
         [TSRole.SACHBEARBEITER_SOZIALDIENST]: pendenzen,
         [TSRole.ADMIN_FERIENBETREUUNG]: gemeindeAntraege,
-        [TSRole.SACHBEARBEITER_FERIENBETREUUNG]: gemeindeAntraege,
+        [TSRole.SACHBEARBEITER_FERIENBETREUUNG]: gemeindeAntraege
     };
 
     return $state.target(stateByRole[currentRole]);

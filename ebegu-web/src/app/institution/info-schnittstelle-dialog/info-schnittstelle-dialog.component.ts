@@ -24,7 +24,7 @@ import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 @Component({
     selector: 'modul-tagesschule-dialog',
     templateUrl: './info-schnittstelle-dialog.template.html',
-    styleUrls: ['./info-schnittstelle-dialog.component.less'],
+    styleUrls: ['./info-schnittstelle-dialog.component.less']
 })
 export class InfoSchnittstelleDialogComponent {
 

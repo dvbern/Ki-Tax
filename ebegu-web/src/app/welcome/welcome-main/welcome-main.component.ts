@@ -28,7 +28,7 @@ import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourSer
     selector: 'dv-welcome-main',
     templateUrl: './welcome-main.component.html',
     styleUrls: ['./welcome-main.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeMainComponent implements OnInit {
 
@@ -54,7 +54,7 @@ export class WelcomeMainComponent implements OnInit {
 
     public navigateToStartPage(): void {
         const params: ITourParams = {
-            tourType: 'startTour',
+            tourType: 'startTour'
         };
         navigateToStartPageForRoleWithParams(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state, params);
         this.kibonGuidedTourService.emit();

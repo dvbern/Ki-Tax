@@ -43,7 +43,7 @@ const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
     templateUrl: './ferienbetreuung-abschluss.component.html',
     styleUrls: ['./ferienbetreuung-abschluss.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class FerienbetreuungAbschlussComponent implements OnInit {
 
@@ -66,14 +66,14 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         private readonly authService: AuthServiceRS,
         private readonly stateService: StateService,
         private readonly ferienbetreuungDokumentService: FerienbetreuungDokumentService,
-        private readonly downloadRS: DownloadRS,
+        private readonly downloadRS: DownloadRS
     ) {
     }
 
     public ngOnInit(): void {
         this.ferienbetreuungsService.getFerienbetreuungContainer()
             .pipe(
-                takeUntil(this.unsubscribe),
+                takeUntil(this.unsubscribe)
             )
             .subscribe(container => this.container = container,
                 () => this.errorService.addMesageAsError(this.translate.instant('DATA_RETRIEVAL_ERROR')));
@@ -84,14 +84,12 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
                 map(latsContainer => latsContainer.status ===
                     FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE),
-                takeUntil(this.unsubscribe),
-            ), this.authService.principal$,
+                takeUntil(this.unsubscribe)
+            ), this.authService.principal$
         ]).pipe(
-            map(([inBearbeitungGemeinde, principal]) => {
-                return (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
+            map(([inBearbeitungGemeinde, principal]) => (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
                     (principal.hasOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()) &&
-                        !principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()));
-            }),
+                        !principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())))
         );
     }
 
@@ -99,19 +97,17 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
                 map(latsContainer => latsContainer.isAtLeastInPruefungKanton()),
-                takeUntil(this.unsubscribe),
-            ), this.authService.principal$,
+                takeUntil(this.unsubscribe)
+            ), this.authService.principal$
         ]).pipe(
-            map(([alLeastInPruefungKanton, principal]) => {
-                return principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton;
-            }),
+            map(([alLeastInPruefungKanton, principal]) => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton)
         );
     }
 
     public freigeben(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE'),
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE')
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
@@ -119,7 +115,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 filter(result => !!result),
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenFreigeben(container)),
-                takeUntil(this.unsubscribe),
+                takeUntil(this.unsubscribe)
             )
             .subscribe(() => {
                 this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id);
@@ -132,7 +128,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public geprueft(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT'),
+            frage: this.translate.instant('LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT')
         };
         this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
@@ -140,7 +136,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
                 filter(result => !!result),
                 mergeMap(() => this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(first())),
                 mergeMap(container => this.ferienbetreuungsService.ferienbetreuungAngabenGeprueft(container)),
-                takeUntil(this.unsubscribe),
+                takeUntil(this.unsubscribe)
             ).subscribe(() => this.wizardRS.updateSteps(this.WIZARD_TYPE, this.container.id),
             () => this.errorService.addMesageAsError(this.translate.instant('ERROR_UNEXPECTED')));
     }
@@ -176,7 +172,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public async zurueckAnGemeinde(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN'),
+            frage: this.translate.instant('ZURUECK_AN_GEMEINDE_GEBEN')
         };
 
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
@@ -202,7 +198,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
         downloadingFile$.next(true);
         this.ferienbetreuungDokumentService.generateVerfuegung(
             this.container,
-            language,
+            language
         ).subscribe(
             response => {
                 this.createDownloadFile(response, language);
@@ -235,7 +231,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public async abschliessen(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('FERIENBETREUUNG_ABSCHLIESSEN_FRAGE'),
+            frage: this.translate.instant('FERIENBETREUUNG_ABSCHLIESSEN_FRAGE')
         };
 
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))
@@ -252,7 +248,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     public async zurueckAnKanton(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE'),
+            frage: this.translate.instant('FERIENBETREUUNG_ZURUECK_AN_KANTON_FRAGE')
         };
 
         if (!await (this.dialog.open(DvNgConfirmDialogComponent, dialogConfig))

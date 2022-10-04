@@ -28,7 +28,7 @@ export class ReportRS {
         REST_API: string,
         public log: ILogService,
         public ebeguRestUtil: EbeguRestUtil,
-        public http: IHttpService,
+        public http: IHttpService
     ) {
         this.serviceURL = `${REST_API}reporting`;
     }
@@ -36,25 +36,21 @@ export class ReportRS {
     public getZahlungsauftragReportExcel(zahlungsauftragID: string): IPromise<TSDownloadFile> {
 
         const reportParams = this.httpParamSerializer({
-            zahlungsauftragID,
+            zahlungsauftragID
         });
 
         return this.http.get(`${this.serviceURL}/excel/zahlungsauftrag?${reportParams}`,
             {timeout: this.reportingTimeout})
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));
     }
 
     public getZahlungReportExcel(zahlungID: string): IPromise<TSDownloadFile> {
 
         const reportParams = this.httpParamSerializer({
-            zahlungID,
+            zahlungID
         });
 
         return this.http.get(`${this.serviceURL}/excel/zahlung?${reportParams}`, {timeout: this.reportingTimeout})
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));
     }
 }

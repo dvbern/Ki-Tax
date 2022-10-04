@@ -4,7 +4,7 @@ import {
     Input,
     OnChanges,
     Optional,
-    Self,
+    Self
 } from '@angular/core';
 import {NgControl} from '@angular/forms';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -12,7 +12,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 @Directive({
-    selector: '[dvEnableElement]',
+    selector: '[dvEnableElement]'
 })
 export class EnableElementDirective implements OnChanges {
 
@@ -22,7 +22,7 @@ export class EnableElementDirective implements OnChanges {
     public constructor(
         private readonly el: ElementRef,
         private readonly authService: AuthServiceRS,
-        @Optional() @Self() public ngControl: NgControl,
+        @Optional() @Self() public ngControl: NgControl
     ) {
     }
 

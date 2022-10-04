@@ -40,7 +40,7 @@ export class RouterHelperProvider implements IServiceProvider {
     public constructor(
         $locationProvider: ILocationProvider,
         $stateProvider: StateProvider,
-        $uiRouterProvider: UIRouter,
+        $uiRouterProvider: UIRouter
     ) {
         $locationProvider.html5Mode(false);
         this.routerHelper = new RouterHelper($stateProvider, $uiRouterProvider);

@@ -25,7 +25,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'dv-ng-three-button-dialog',
     templateUrl: './dv-ng-three-button-dialog.template.html',
-    styleUrls: ['./dv-ng-three-button-dialog.less'],
+    styleUrls: ['./dv-ng-three-button-dialog.less']
 })
 export class DvNgThreeButtonDialogComponent {
 
@@ -37,7 +37,7 @@ export class DvNgThreeButtonDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgThreeButtonDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         if (!data) {
             return;

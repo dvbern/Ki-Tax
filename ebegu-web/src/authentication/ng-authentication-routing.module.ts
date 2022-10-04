@@ -30,13 +30,13 @@ export const LOCALLOGIN_STATE: NgHybridStateDeclaration = {
         {
             token: 'returnTo',
             deps: [Transition],
-            resolveFn: returnTo,
-        },
+            resolveFn: returnTo
+        }
     ],
     data: {
         roles: getTSRoleValues(),
-        requiresDummyLogin: true,
-    },
+        requiresDummyLogin: true
+    }
 };
 
 export const TUTORIAL_INSTITUTION_LOGIN_STATE: NgHybridStateDeclaration = {
@@ -47,13 +47,13 @@ export const TUTORIAL_INSTITUTION_LOGIN_STATE: NgHybridStateDeclaration = {
         {
             token: 'returnTo',
             deps: [Transition],
-            resolveFn: returnTo,
-        },
+            resolveFn: returnTo
+        }
     ],
     data: {
         roles: getTSRoleValues(),
-        requiresDummyLogin: true,
-    },
+        requiresDummyLogin: true
+    }
 };
 
 export const TUTORIAL_GEMEINDE_LOGIN_STATE: NgHybridStateDeclaration = {
@@ -64,13 +64,13 @@ export const TUTORIAL_GEMEINDE_LOGIN_STATE: NgHybridStateDeclaration = {
         {
             token: 'returnTo',
             deps: [Transition],
-            resolveFn: returnTo,
-        },
+            resolveFn: returnTo
+        }
     ],
     data: {
         roles: getTSRoleValues(),
-        requiresDummyLogin: true,
-    },
+        requiresDummyLogin: true
+    }
 };
 
 @NgModule({
@@ -80,12 +80,12 @@ export const TUTORIAL_GEMEINDE_LOGIN_STATE: NgHybridStateDeclaration = {
                 states: [
                     LOCALLOGIN_STATE,
                     TUTORIAL_INSTITUTION_LOGIN_STATE,
-                    TUTORIAL_GEMEINDE_LOGIN_STATE,
-                ],
-            },
-        ),
+                    TUTORIAL_GEMEINDE_LOGIN_STATE
+                ]
+            }
+        )
     ],
-    exports: [],
+    exports: []
 })
 export class NgAuthenticationRoutingModule {
 }

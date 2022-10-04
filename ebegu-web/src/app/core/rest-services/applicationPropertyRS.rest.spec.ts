@@ -13,11 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
+import {CONSTANTS} from '../constants/CONSTANTS';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 
@@ -25,18 +26,18 @@ describe('ApplicationPropertyRS', () => {
 
     let applicationPropertyRS: ApplicationPropertyRS;
     let $httpBackend: IHttpBackendService;
-    // tslint:disable-next-line:naming-convention
-    let REST_API: string;
+    // eslint-disable-next-line
+    const REST_API = CONSTANTS.REST_API;
     const testName = 'myTestName';
 
     const mockApplicationProp = new TSApplicationProperty(testName, 'myTestValue');
 
     const mockApplicationPropertyRest = {
         name: testName,
-        value: 'myTestValue',
+        value: 'myTestValue'
     };
 
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -45,7 +46,6 @@ describe('ApplicationPropertyRS', () => {
     beforeEach(angular.mock.inject($injector => {
         applicationPropertyRS = $injector.get('ApplicationPropertyRS');
         $httpBackend = $injector.get('$httpBackend');
-        REST_API = $injector.get('REST_API');
     }));
 
     // set the mock response

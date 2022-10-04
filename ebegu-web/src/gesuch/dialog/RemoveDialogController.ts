@@ -36,7 +36,7 @@ export class RemoveDialogController {
         '$translate',
         '$q',
         '$log',
-        'params',
+        'params'
     ];
 
     public deleteText: string;
@@ -49,7 +49,7 @@ export class RemoveDialogController {
         $translate: ITranslateService,
         private readonly $q: IQService,
         private readonly $log: ILogService,
-        private readonly params: { [key in RemoveDialogParams]?: any },
+        private readonly params: { [key in RemoveDialogParams]?: any }
     ) {
 
         this.deleteText = EbeguUtil.isNotNullOrUndefined(params.deleteText) ?

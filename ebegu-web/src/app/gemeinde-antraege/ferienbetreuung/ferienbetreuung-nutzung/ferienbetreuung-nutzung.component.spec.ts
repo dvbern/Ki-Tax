@@ -36,7 +36,7 @@ import {FerienbetreuungNutzungComponent} from './ferienbetreuung-nutzung.compone
 
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer'],
+    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer']
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -76,7 +76,7 @@ describe('FerienbetreuungNutzungComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
-            ],
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

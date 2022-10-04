@@ -32,8 +32,8 @@ import {GemeindeKennzahlenUiComponent} from './gemeinde-kennzahlen-ui/gemeinde-k
         WizardstepXModule,
         GemeindeKennzahlenRoutingModule,
         SharedModule,
-        ReactiveFormsModule,
-    ],
+        ReactiveFormsModule
+    ]
 })
 export class GemeindeKennzahlenModule {
 }

@@ -32,7 +32,7 @@ import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
     selector: 'dv-edit-sozialdienst',
     templateUrl: './edit-sozialdienst.component.html',
     styleUrls: ['./edit-sozialdienst.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditSozialdienstComponent implements OnInit {
     public readonly CONSTANTS: any = CONSTANTS;
@@ -51,7 +51,7 @@ export class EditSozialdienstComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly translate: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -79,7 +79,7 @@ export class EditSozialdienstComponent implements OnInit {
     public isStammdatenEditable(): boolean {
         return this.authServiceRS.isOneOfRoles([
             TSRole.SUPER_ADMIN,
-            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ]);
     }
 

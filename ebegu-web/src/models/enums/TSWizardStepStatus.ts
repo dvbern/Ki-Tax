@@ -31,6 +31,6 @@ export function getTSWizardStepStatusValues(): Array<TSWizardStepStatus> {
         TSWizardStepStatus.PLATZBESTAETIGUNG,
         TSWizardStepStatus.WARTEN,
         TSWizardStepStatus.IN_BEARBEITUNG,
-        TSWizardStepStatus.UNBESUCHT,
+        TSWizardStepStatus.UNBESUCHT
     ];
 }

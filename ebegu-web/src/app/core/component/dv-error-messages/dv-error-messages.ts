@@ -24,7 +24,7 @@ export class DvErrorMessagesComponentConfig implements IComponentOptions {
         maxValue: '<',
         step: '<',
         startGp: '<',
-        endGp: '<',
+        endGp: '<'
     };
     public template = require('./dv-error-messages.html');
     public controller = DvErrorMessages;

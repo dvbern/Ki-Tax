@@ -32,7 +32,7 @@ export class TagesschuleUtil {
     public static initModuleTagesschule(
         betreuung: TSBetreuung,
         gesuchsPeriode: TSGesuchsperiode,
-        verfuegungView: boolean,
+        verfuegungView: boolean
     ): TSBelegungTagesschuleModulGroup[] {
         if (!(betreuung.institutionStammdaten
             && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
@@ -52,7 +52,7 @@ export class TagesschuleUtil {
         betreuung: TSBetreuung,
         oldInstitutionStammdaten: TSInstitutionStammdatenSummary,
         gesuchsPeriode: TSGesuchsperiode,
-        verfuegungView: boolean,
+        verfuegungView: boolean
     ): TSBelegungTagesschuleModulGroup[] {
         if (!(betreuung.institutionStammdaten
             && betreuung.institutionStammdaten.institutionStammdatenTagesschule)
@@ -72,7 +72,7 @@ export class TagesschuleUtil {
         moduleAngemeldet: TSBelegungTagesschuleModul[],
         moduleAngeboten: TSModulTagesschuleGroup[],
         verfuegungView: boolean,
-        copyFromOtherInstitution: boolean,
+        copyFromOtherInstitution: boolean
     ): TSBelegungTagesschuleModulGroup[] {
         const modulGroups: TSBelegungTagesschuleModulGroup[] = [];
         const moduleAngebotenSorted = this.sortModulTagesschuleGroups(moduleAngeboten);
@@ -107,7 +107,7 @@ export class TagesschuleUtil {
     private static setAlreadyAngemeldetModule(
         group: TSBelegungTagesschuleModulGroup,
         moduleAngemeldet: TSBelegungTagesschuleModul[],
-        moduleOfGroupId: string,
+        moduleOfGroupId: string
     ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
@@ -126,7 +126,7 @@ export class TagesschuleUtil {
         group: TSBelegungTagesschuleModulGroup,
         moduleAngemeldet: TSBelegungTagesschuleModul[],
         newTagesschuleGroup: TSModulTagesschuleGroup,
-        moduleOfGroup: TSModulTagesschule,
+        moduleOfGroup: TSModulTagesschule
     ): boolean {
         let foundInAngemeldete = false;
         for (const angMod of moduleAngemeldet) {
@@ -168,7 +168,7 @@ export class TagesschuleUtil {
 
     private static loadAngeboteneModuleForTagesschule(
         betreuung: TSBetreuung,
-        gesuchsPeriode: TSGesuchsperiode,
+        gesuchsPeriode: TSGesuchsperiode
     ): TSModulTagesschuleGroup[] {
         const tsEinstellungenTagesschule =
             betreuung.institutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -184,7 +184,7 @@ export class TagesschuleUtil {
     private static setModuleGroupNameAndBezeichnungForAngemeldeteModule(
         moduleAngemeldet: TSBelegungTagesschuleModul[],
         oldInstitutionStammdaten: TSInstitutionStammdatenSummary,
-        gesuchsPeriode: TSGesuchsperiode,
+        gesuchsPeriode: TSGesuchsperiode
     ): void {
         const tsEinstellungenTagesschule =
             oldInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
@@ -271,9 +271,7 @@ export class TagesschuleUtil {
 
     public static sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
         TSModulTagesschuleGroup[] {
-        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
-            return a.modulTagesschuleName.localeCompare(b.modulTagesschuleName);
-        });
+        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => a.modulTagesschuleName.localeCompare(b.modulTagesschuleName));
     }
 
     /**

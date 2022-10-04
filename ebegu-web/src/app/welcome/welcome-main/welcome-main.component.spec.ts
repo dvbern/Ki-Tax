@@ -44,19 +44,19 @@ describe('WelcomeMainComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
+                SharedModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ],
             declarations: [
                 WelcomeMainComponent
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
     }));

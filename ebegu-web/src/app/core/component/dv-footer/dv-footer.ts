@@ -33,7 +33,7 @@ export class DvFooterComponent implements IController {
 
     public static $inject: ReadonlyArray<string> = [
         '$translate',
-        'DvDialog',
+        'DvDialog'
     ];
 
     public constructor( private readonly $translate: ITranslateService,
@@ -44,7 +44,7 @@ export class DvFooterComponent implements IController {
         this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
             text: this.$translate.instant(info),
-            parentController: this,
+            parentController: this
         });
     }
 

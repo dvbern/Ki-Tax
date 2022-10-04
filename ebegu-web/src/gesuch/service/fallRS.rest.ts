@@ -28,9 +28,9 @@ export class FallRS {
         public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
-        this.serviceURL = REST_API + 'falle';
+        this.serviceURL = `${REST_API  }falle`;
     }
 
     public createFall(fall: TSFall): IPromise<any> {
@@ -47,8 +47,8 @@ export class FallRS {
 
         return this.$http.put(this.serviceURL, fallObject, {
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
         }).then((response: any) => {
             this.$log.debug('PARSING fall REST object ', response.data);
             this.$log.debug('PARSed fall REST object ', this.ebeguRestUtil.parseFall(new TSFall(), response.data));
@@ -70,9 +70,7 @@ export class FallRS {
 
     public getAllVollmachtDokumente(sozialdienstFallId: string): IPromise<TSSozialdienstFallDokument[]> {
         return this.$http.get(`${this.serviceURL}/vollmachtDokumente/${encodeURIComponent(sozialdienstFallId)}`)
-            .then(restDokumente => {
-                return this.ebeguRestUtil.parseSozialdienstFallDokumente(restDokumente.data);
-            });
+            .then(restDokumente => this.ebeguRestUtil.parseSozialdienstFallDokumente(restDokumente.data));
     }
 
     public getServiceName(): string {
@@ -81,13 +79,11 @@ export class FallRS {
 
     public getVollmachtDokumentAccessTokenGeneratedDokument(
         fallId: string,
-        sprache: TSSprache,
+        sprache: TSSprache
     ): angular.IPromise<BlobPart> {
         return this.$http.get(`${this.serviceURL}/generateVollmachtDokument/${encodeURIComponent(fallId)}/${sprache}`,
             {responseType: 'blob'})
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public sozialdienstFallEntziehen(fallId: string): IPromise<TSFall> {

@@ -35,7 +35,7 @@ export class ZemisDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<ZemisDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.upload = data?.upload;
     }

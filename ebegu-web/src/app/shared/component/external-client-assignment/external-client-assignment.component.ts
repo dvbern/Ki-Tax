@@ -23,7 +23,7 @@ import {TSExternalClientAssignment} from '../../../../models/TSExternalClientAss
 @Component({
     selector: 'dv-external-client-assignment',
     templateUrl: './external-client-assignment.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExternalClientAssignmentComponent implements OnChanges {
 

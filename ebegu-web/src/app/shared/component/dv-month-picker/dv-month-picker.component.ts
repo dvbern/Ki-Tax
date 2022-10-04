@@ -24,14 +24,14 @@ import * as moment from 'moment';
 
 export const MY_FORMATS = {
     parse: {
-        dateInput: 'MM/YYYY',
+        dateInput: 'MM/YYYY'
     },
     display: {
         dateInput: 'MM/YYYY',
         monthYearLabel: 'MMM YYYY',
         dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM YYYY',
-    },
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
 };
 
 let nextId = 0;
@@ -42,8 +42,8 @@ let nextId = 0;
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
     providers: [
-        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-    ],
+        {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS}
+    ]
 })
 export class DvMonthPickerComponent {
 

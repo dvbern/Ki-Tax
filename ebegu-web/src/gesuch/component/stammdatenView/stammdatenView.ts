@@ -93,7 +93,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'DownloadRS',
         'ApplicationPropertyRS',
         'DokumenteRS',
-        'MandantService',
+        'MandantService'
     ];
 
     public filesTooBig: File[];
@@ -183,14 +183,14 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.setLastVerfuegtesGesuch();
         this.einstellungRS.findEinstellung(TSEinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).then(diplomatenStatusDisabled => {
+            this.gesuchModelManager.getGesuchsperiode().id).subscribe(diplomatenStatusDisabled => {
             this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
-        });
+        }, error => LOG.error(error));
         this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).then(ausweisNachweisRequired => {
+            this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
             this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
-        });
+        }, error => LOG.error(error));
     }
 
     public korrespondenzAdrClicked(): void {
@@ -395,7 +395,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             const zusatzzeile = adr.zusatzzeile ? adr.zusatzzeile : '-';
             const plz = adr.plz ? adr.plz : '-';
             const ort = adr.ort ? adr.ort : '-';
-            const land = this.$translate.instant('Land_' + adr.land);
+            const land = this.$translate.instant(`Land_${  adr.land}`);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
                 organisation,
                 strasse,
@@ -403,7 +403,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 zusatzzeile,
                 plz,
                 ort,
-                land,
+                land
             });
         }
 

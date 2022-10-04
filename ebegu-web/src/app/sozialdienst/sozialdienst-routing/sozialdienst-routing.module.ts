@@ -29,41 +29,41 @@ const states: NgHybridStateDeclaration[] = [
         name: 'sozialdienst',
         abstract: true,
         url: '/unterstuetzungsdienst',
-        component: UiViewComponent,
+        component: UiViewComponent
     },
     {
         name: 'sozialdienst.list',
         url: '/list',
         component: ListSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForSozialdienst(),
-        },
+            roles: TSRoleUtil.getAllRolesForSozialdienst()
+        }
     },
     {
         name: 'sozialdienst.add',
         url: '/add',
         component: AddSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
+            roles: TSRoleUtil.getMandantRoles()
+        }
     },
     {
         name: 'sozialdienst.edit',
         url: '/edit/:sozialdienstId',
         component: EditSozialdienstComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForSozialdienst(),
-        },
-    },
+            roles: TSRoleUtil.getAllRolesForSozialdienst()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class SozialdienstRoutingModule {
 }

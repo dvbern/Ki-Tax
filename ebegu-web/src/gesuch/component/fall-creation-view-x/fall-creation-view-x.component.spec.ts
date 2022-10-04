@@ -1,6 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -30,7 +31,7 @@ describe('FallCreationViewXComponent', () => {
             'getGesuch',
             'isGesuchReadonly',
             'isGesuch',
-            'isGesuchSaved',
+            'isGesuchSaved'
         ]);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearAll']);
     const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
@@ -46,7 +47,7 @@ describe('FallCreationViewXComponent', () => {
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
     authServiceSpy.isOneOfRoles.and.returnValue(false);
-    einstellungenRS.findEinstellung.and.returnValue(Promise.resolve(new TSEinstellung()));
+    einstellungenRS.findEinstellung.and.returnValue(of(new TSEinstellung()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -61,8 +62,8 @@ describe('FallCreationViewXComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: EinstellungRS, useValue: einstellungenRS},
-            ],
+                {provide: EinstellungRS, useValue: einstellungenRS}
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });
