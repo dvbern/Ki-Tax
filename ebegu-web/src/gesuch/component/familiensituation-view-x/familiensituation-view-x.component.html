@@ -252,7 +252,7 @@
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
 													 aria-described-by="gesuchstellerKardinalitaet-error">
 										<mat-radio-button *ngFor="let kardinalitaet of gesuchstellerKardinalitaetValues"
-														  [value]="kardinalitaet">{{kardinalitaet}}</mat-radio-button>
+														  [value]="kardinalitaet">{{kardinalitaet | translate}}</mat-radio-button>
 									</mat-radio-group>
 								</dv-radio-container-x>
 								<dv-error-messages *ngIf="savedClicked || gesuchstellerKardinalitaet.touched" [inputId]="'gesuchstellerKardinalitaet'"
