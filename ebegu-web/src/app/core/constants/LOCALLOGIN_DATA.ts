@@ -109,7 +109,7 @@ export const LOCALLOGIN_DATA = {
         },
         institution: {
             id: 'caa83a6b-3999-11ed-a63d-b05cda43de9c',
-            name: 'Kita Brünnen SO',
+            name: 'Kita Brünnen Appenzell Ausserrhoden',
         },
         tagesschule: {
             id: '5c136a35-39a9-11ed-a63d-b05cda43de9c',
