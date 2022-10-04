@@ -250,19 +250,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    public isGesuchValid(form: NgForm): boolean {
-        if (!form.valid) {
-            for (const control in form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
-                    form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return form.valid;
-    }
-
     protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragsteller2Name(): string {
