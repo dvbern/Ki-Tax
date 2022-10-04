@@ -29,7 +29,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     templateUrl: './edit-institution-ferieninsel.component.html',
     styleUrls: ['./edit-institution-ferieninsel.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ],
+    viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
 })
 
 export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
@@ -40,7 +40,7 @@ export class EditInstitutionFerieninselComponent implements OnInit, OnChanges {
     public gemeindeList: TSGemeinde[] = [];
 
     public constructor(
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 

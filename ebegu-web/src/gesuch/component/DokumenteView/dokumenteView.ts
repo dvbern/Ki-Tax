@@ -58,7 +58,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         '$scope',
         '$timeout',
         'GesuchRS',
-        'AuthServiceRS',
+        'AuthServiceRS'
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -83,7 +83,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         $scope: IScope,
         $timeout: ITimeoutService,
         private readonly gesuchRS: GesuchRS,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -127,7 +127,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     private searchDokumente(
         alleDokumente: TSDokumenteDTO,
         dokumenteForType: TSDokumentGrund[],
-        dokumentGrundTyp: TSDokumentGrundTyp,
+        dokumentGrundTyp: TSDokumentGrundTyp
     ): void {
 
         alleDokumente.dokumentGruende

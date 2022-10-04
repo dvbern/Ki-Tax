@@ -27,7 +27,7 @@ export class TSEinkommensverschlechterungContainer extends TSAbstractMutableEnti
         ekvGSBasisJahrPlus1?: TSEinkommensverschlechterung,
         ekvGSBasisJahrPlus2?: TSEinkommensverschlechterung,
         ekvJABasisJahrPlus1?: TSEinkommensverschlechterung,
-        ekvJABasisJahrPlus2?: TSEinkommensverschlechterung,
+        ekvJABasisJahrPlus2?: TSEinkommensverschlechterung
     ) {
         super();
         this._ekvGSBasisJahrPlus1 = ekvGSBasisJahrPlus1;

@@ -24,7 +24,7 @@ import {TSDateRange} from './types/TSDateRange';
 export class TSUnbezahlterUrlaub extends TSAbstractDateRangedEntity {
 
     public constructor(
-        gueltigkeit?: TSDateRange,
+        gueltigkeit?: TSDateRange
     ) {
         super(gueltigkeit);
     }

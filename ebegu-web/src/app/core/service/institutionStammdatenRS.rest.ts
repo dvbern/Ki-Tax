@@ -31,7 +31,7 @@ export class InstitutionStammdatenRS {
     public constructor(public $http: IHttpService,
                        REST_API: string,
                        public ebeguRestUtil: EbeguRestUtil,
-                       public $log: ILogService, private readonly globalCacheService: GlobalCacheService,
+                       public $log: ILogService, private readonly globalCacheService: GlobalCacheService
     ) {
         this.serviceURL = `${REST_API}institutionstammdaten`;
     }
@@ -57,9 +57,7 @@ export class InstitutionStammdatenRS {
         restInstitutionStammdaten =
             this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
 
-        return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
-            },
+        return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data)
         );
     }
 
@@ -69,27 +67,21 @@ export class InstitutionStammdatenRS {
         return this.$http.get(`${this.serviceURL}/gesuchsperiode/gemeinde/active`, {
             params: {
                 gesuchsperiodeId,
-                gemeindeId,
+                gemeindeId
             },
             cache
         })
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data));
     }
 
     public fetchInstitutionStammdatenByInstitution(institutionID: string): IPromise<TSInstitutionStammdaten> {
         return this.$http.get(`${this.serviceURL}/institutionornull/${encodeURIComponent(institutionID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data));
     }
 
     public getBetreuungsangeboteForInstitutionenOfCurrentBenutzer(): IPromise<TSBetreuungsangebotTyp[]> {
         return this.$http.get(`${this.serviceURL}/currentuser`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public getServiceName(): string {
@@ -98,8 +90,6 @@ export class InstitutionStammdatenRS {
 
     public getAllTagesschulenForCurrentBenutzer(): IPromise<TSInstitutionStammdaten[]> {
         return this.$http.get(`${this.serviceURL}/tagesschulen/currentuser`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data));
     }
 }

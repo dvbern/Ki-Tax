@@ -20,7 +20,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {DVRoleElementController} from './DVRoleElementController';
 
-// tslint:disable:no-identical-functions
+/* eslint-disable */
 describe('DVElementController', () => {
 
     let authServiceRS: AuthServiceRS;

@@ -24,7 +24,7 @@ export class TSBfsGemeinde extends TSAbstractEntity {
 
     public constructor(
         gemeinde?: string,
-        bfsNummer?: number,
+        bfsNummer?: number
     ) {
         super();
         this._name = gemeinde;

@@ -28,7 +28,6 @@ public class MutationsMergerFinanzielleSituationLuzern extends AbstractMutations
 		if(!isFinSitGueltigInZeitabschnitt(finSitGueltigAb, inputAktuel.getParent())) {
 			//Wenn FinSit Daten noch nicht gültig sind in Zeitabschnitt, sollen die Daten aus dem Vorgänger genommen werden
 			setFinSitDataFromResultToInput(inputAktuel, resultVorgaenger);
-			inputAktuel.setAnspruchspensumProzent(resultVorgaenger.getAnspruchspensumProzent());
 		}
 	}
 

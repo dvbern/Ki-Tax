@@ -49,7 +49,7 @@ export class AlleVerfuegungenViewController implements IController {
         '$log',
         '$timeout',
         'DossierRS',
-        'EbeguUtil',
+        'EbeguUtil'
     ];
 
     public dossier: TSDossier;
@@ -67,7 +67,7 @@ export class AlleVerfuegungenViewController implements IController {
         private readonly $log: ILogService,
         private readonly $timeout: ITimeoutService,
         private readonly dossierRS: DossierRS,
-        private readonly ebeguUtil: EbeguUtil,
+        private readonly ebeguUtil: EbeguUtil
     ) {
     }
 
@@ -111,7 +111,7 @@ export class AlleVerfuegungenViewController implements IController {
         this.$state.go('gesuch.verfuegenView', {
             betreuungNumber: betreuungNummer,
             kindNumber: kindNummer,
-            gesuchId,
+            gesuchId
         });
     }
 
@@ -132,7 +132,7 @@ export class AlleVerfuegungenViewController implements IController {
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(betreuung.gesuchId,
             betreuung.id, false, '')
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug(`accessToken: ${  downloadFile.accessToken}`);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(() => {
@@ -145,7 +145,7 @@ export class AlleVerfuegungenViewController implements IController {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenNichteintretenGeneratedDokument(betreuung.id, false)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug(`accessToken: ${  downloadFile.accessToken}`);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
             .catch(() => {

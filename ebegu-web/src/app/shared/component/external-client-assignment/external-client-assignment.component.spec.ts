@@ -35,10 +35,10 @@ describe('ExternalClientAssignmentComponent', () => {
             providers: [
                 {
                     provide: TranslateService,
-                    useValue: translateServiceSpy,
-                },
+                    useValue: translateServiceSpy
+                }
             ],
-            declarations: [ExternalClientAssignmentComponent],
+            declarations: [ExternalClientAssignmentComponent]
         })
             .compileComponents();
     }));

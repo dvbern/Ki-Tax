@@ -60,7 +60,7 @@ export class DVBarcodeController implements IController {
         '$log',
         'AuthLifeCycleService',
         'GesuchRS',
-        '$translate',
+        '$translate'
     ];
 
     private readonly unsubscribe$ = new Subject<void>();
@@ -77,7 +77,7 @@ export class DVBarcodeController implements IController {
         private readonly $log: ILogService,
         private readonly authLifeCycleService: AuthLifeCycleService,
         private readonly gesuchRS: GesuchRS,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: ITranslateService
     ) {
     }
 
@@ -116,7 +116,7 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public barcodeOnKeyPressed(e: any): void {
         const key = e.keyCode || e.which || 0;
         const keyPressChar = String.fromCharCode(key);
@@ -125,7 +125,7 @@ export class DVBarcodeController implements IController {
             e.preventDefault();
             if (keyPressChar !== '§') {
                 this.barcodeBuffer.push(keyPressChar);
-                this.$log.debug('Current buffer: ' + this.barcodeBuffer.join(''));
+                this.$log.debug(`Current buffer: ${  this.barcodeBuffer.join('')}`);
             }
         }
 
@@ -137,7 +137,7 @@ export class DVBarcodeController implements IController {
             this.$log.debug('End Barcode read');
 
             let barcodeRead = this.barcodeBuffer.join('');
-            this.$log.debug('Barcode read:' + barcodeRead);
+            this.$log.debug(`Barcode read:${  barcodeRead}`);
             barcodeRead = barcodeRead.replace('§', '');
 
             const barcodeParts = barcodeRead.split('|');
@@ -148,10 +148,10 @@ export class DVBarcodeController implements IController {
                 const barcodeDocID = barcodeParts[2];
                 const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || '0';
 
-                this.$log.debug('Barcode Doc Type: ' + barcodeDocType);
-                this.$log.debug('Barcode Doc Function: ' + barcodeDocFunction);
-                this.$log.debug('Barcode Doc ID: ' + barcodeDocID);
-                this.$log.debug('Barcode Doc Anzahl Zurueckgezogen: ' + barcodeDocAnzahlZurueckgezogen);
+                this.$log.debug(`Barcode Doc Type: ${  barcodeDocType}`);
+                this.$log.debug(`Barcode Doc Function: ${  barcodeDocFunction}`);
+                this.$log.debug(`Barcode Doc ID: ${  barcodeDocID}`);
+                this.$log.debug(`Barcode Doc Anzahl Zurueckgezogen: ${  barcodeDocAnzahlZurueckgezogen}`);
 
                 this.barcodeBuffer = [];
                 this.$timeout.cancel(this.barcodeReadtimeout);
@@ -183,9 +183,9 @@ export class DVBarcodeController implements IController {
             this.barcodeReadtimeout = this.$timeout(() => {
                 this.barcodeReading = false;
                 this.$log.debug('End Barcode read');
-                this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
+                this.$log.debug(`Clearing buffer: ${  this.barcodeBuffer.join('')}`);
                 this.barcodeBuffer = [];
-                // tslint:disable-next-line:no-magic-numbers
+                // eslint-disable-next-line no-magic-numbers
             }, 2000);
         }
         this.barcodeReading = !this.barcodeReading;

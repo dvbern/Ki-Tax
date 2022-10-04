@@ -9,7 +9,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     selector: 'dv-zpv-nr-success',
     templateUrl: './zpv-nr-success.component.html',
     styleUrls: ['./zpv-nr-success.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
@@ -19,7 +19,7 @@ export class ZpvNrSuccessComponent implements OnInit {
     public constructor(
         private readonly authService: AuthServiceRS,
         private readonly gesuchRS: GesuchRS,
-        private readonly uiRouterGlobals: UIRouterGlobals,
+        private readonly uiRouterGlobals: UIRouterGlobals
     ) {
     }
 

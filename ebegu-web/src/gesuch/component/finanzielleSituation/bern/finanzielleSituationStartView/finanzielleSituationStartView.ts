@@ -66,7 +66,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
-        'ApplicationPropertyRS',
+        'ApplicationPropertyRS'
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -89,7 +89,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
-        applicationPropertyRS: ApplicationPropertyRS,
+        applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -157,9 +157,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     private save(): IPromise<TSGesuch> {
         this.errorService.clearAll();
         return this.gesuchModelManager.saveFinanzielleSituationStart()
-            .then((gesuch: TSGesuch) => {
-                return gesuch;
-            }).catch(error => {
+            .then((gesuch: TSGesuch) => gesuch).catch(error => {
                 this.initialModel.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
                 throw(error);
             });
@@ -174,9 +172,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         if (!this.form.$dirty) {
             if (this.updateStepDueToSozialhilfeOhneBenoetigteZeitraeume()) {
                 return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-                    TSWizardStepStatus.OK).then(() => {
-                    return this.gesuchModelManager.getGesuch();
-                });
+                    TSWizardStepStatus.OK).then(() => this.gesuchModelManager.getGesuch());
             }
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
@@ -185,10 +181,10 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         if (this.finanzielleSituationTurnedNotRequired()) {
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'FINSIT_WARNING',
-                deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
-            }).then(() => {   // User confirmed changes
-                return this.save();
-            });
+                deleteText: 'FINSIT_WARNING_BESCHREIBUNG'
+            }).then(() =>    // User confirmed changes
+                 this.save()
+            );
         }
         return this.save();
     }
@@ -393,7 +389,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
-                },
+                }
             );
     }
 
@@ -410,7 +406,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                         TSWizardStepStatus.NOK);
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
-                },
+                }
             );
     }
 }

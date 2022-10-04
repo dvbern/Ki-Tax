@@ -34,7 +34,7 @@ import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
 const LOG = LogFactory.createLog('LocalLoginComponent');
 
-// tslint:disable:no-duplicate-string no-identical-functions
+/* eslint-disable */
 @Component({
     selector: 'dv-local-login',
     templateUrl: './local-login.component.html',

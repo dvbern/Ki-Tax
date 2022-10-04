@@ -20,8 +20,8 @@ describe('BruttolohnComponent', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

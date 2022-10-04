@@ -42,7 +42,7 @@ export class TSControllingCalculator {
 
     public constructor(
         angabenForm: FormGroup,
-        previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+        previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ) {
         this._angabenForm = angabenForm;
         this._previousAntrag = previousAntrag;
@@ -111,21 +111,21 @@ export class TSControllingCalculator {
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('geleisteteBetreuungsstundenBesondereBeduerfnisse').value),
-                        map(parseFloat),
+                        map(parseFloat)
                     ),
                 this._angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot')
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').value),
-                        map(parseFloat),
+                        map(parseFloat)
                     ),
             this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
                 .valueChanges
                 .pipe(
                     startWith(this._angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value),
-                    map(parseFloat),
-                ),
-            ],
+                    map(parseFloat)
+                )
+            ]
         ).subscribe(values => {
             if ((values[0] + values[1]) === 0) {
                 this._anteilStundenBesondereBeduerfnisseCurrentPeriode.next('0');
@@ -153,18 +153,18 @@ export class TSControllingCalculator {
                 .valueChanges
                 .pipe(
                     startWith(this._angabenForm.get('einnahmenElterngebuehren').value),
-                    map(parseFloat),
+                    map(parseFloat)
                 ),
             this._angabenForm.get('normlohnkostenBetreuungBerechnet')
                 .valueChanges
                 .pipe(
                     startWith(this._angabenForm.get('normlohnkostenBetreuungBerechnet').value),
-                    map(parseFloat),
-                ),
-            // tslint:disable-next-line:no-identical-functions
+                    map(parseFloat)
+                )
+            // eslint-disable-next-line
         ]).subscribe(values => {
             this._anteilElternbeitraegeCurrentPeriode.next(
-                (this.toPercent(values[0] / values[1])),
+                (this.toPercent(values[0] / values[1]))
             );
         }, err => this.handleError(err));
     }
@@ -186,14 +186,14 @@ export class TSControllingCalculator {
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('kostenbeitragGemeinde').value),
-                        map(parseFloat),
+                        map(parseFloat)
                     ),
                 this._angabenForm.get('gesamtKostenTagesschule')
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('gesamtKostenTagesschule').value),
-                        map(parseFloat),
-                    ),
+                        map(parseFloat)
+                    )
             ]
         ).subscribe(values => {
             if (isNaN(values[0])) {
@@ -212,14 +212,14 @@ export class TSControllingCalculator {
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('kostenueberschussGemeinde').value),
-                        map(parseFloat),
+                        map(parseFloat)
                     ),
                 this._angabenForm.get('gesamtKostenTagesschule')
                     .valueChanges
                     .pipe(
                         startWith(this._angabenForm.get('gesamtKostenTagesschule').value),
-                        map(parseFloat),
-                    ),
+                        map(parseFloat)
+                    )
             ]
         ).subscribe(values => {
             if (isNaN(values[0])) {
@@ -232,7 +232,7 @@ export class TSControllingCalculator {
     }
 
     private toPercent(value: number): string {
-        return (value * 100).toFixed(1) + '%';
+        return `${(value * 100).toFixed(1)  }%`;
     }
 
     private handleError(error: Error): void {

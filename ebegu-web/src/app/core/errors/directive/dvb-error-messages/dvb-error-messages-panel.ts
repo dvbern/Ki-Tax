@@ -96,7 +96,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         this.show();
     };
 
-    public displayMessagesX = (report: {type: any, payload: any}) => {
+    public displayMessagesX = (report: {type: any; payload: any}) => {
         this.resetTransitionInProgressFlag();
         // TODO: remove once migrated to angularX
         setTimeout(() => {
@@ -132,7 +132,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_MUTATION_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_MUTATION_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineMutation(objectId, gesuchsperiodeId);
         });
@@ -143,7 +143,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
             title: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_CONFIRMATION',
             deleteText: 'REMOVE_ONLINE_ERNEUERUNGSGESUCH_BESCHREIBUNG',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {   // User confirmed removal
             this.gesuchRS.removeOnlineFolgegesuch(objectId, gesuchsperiodeId);
         });

@@ -53,14 +53,14 @@ describe('BenutzerEinladenComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot(),
+                UIRouterModule.forRoot()
             ],
             declarations: [BenutzerEinladenComponent],
             providers: [
@@ -72,8 +72,8 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-            ],
+                {provide: ErrorService, useValue: errorServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

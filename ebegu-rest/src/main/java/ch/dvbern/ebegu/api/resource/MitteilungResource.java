@@ -49,6 +49,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungen;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
@@ -174,8 +175,11 @@ public class MitteilungResource {
 				));
 
 		// we need to check if Betreuung was storniert and has an other one for the same institution whos not
-		if(!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
-			throw new EbeguRuntimeException(KibonLogLevel.WARN, "sendBetreuungsmitteilung", ErrorCodeEnum.ERROR_BETREUUNG_STORNIERT_UND_UNGUELTIG);
+		if (!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.WARN,
+				"sendBetreuungsmitteilung",
+				ErrorCodeEnum.ERROR_BETREUUNG_STORNIERT_UND_UNGUELTIG);
 		}
 
 		// we first clear all the Mutationsmeldungen for the current Betreuung
@@ -617,5 +621,44 @@ public class MitteilungResource {
 
 		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
+	}
+
+	@ApiOperation(value = "Automatisch uebernimmt alle MutationsMitteilungen mit den uebergebenen Suchkriterien/Filtern",
+		response = JaxMitteilungSearchresultDTO.class)
+	@Nonnull
+	@POST
+	@Path("/applyAlleBetreuungsmitteilungen")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public JaxBetreuungsmitteilungen applyAlleBetreuungsmitteilungen(
+		@Nonnull @NotNull MitteilungTableFilterDTO tableFilterDTO,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		// Wir setzen die Pagination zu null als wir alle Meldungen bearbeiten wollen
+		tableFilterDTO.setPagination(null);
+
+		Pair<Long, List<Mitteilung>> searchResultPair = mitteilungService
+			.searchMitteilungen(tableFilterDTO, false);
+		List<Mitteilung> foundMitteilungen = searchResultPair.getRight();
+
+		List<Betreuungsmitteilung> betreuungsmitteilungs = new ArrayList<>();
+
+		for (Mitteilung mitteilung : foundMitteilungen) {
+			final Optional<Betreuungsmitteilung> betreuungsmitteilung =
+				mitteilungService.findBetreuungsmitteilung(mitteilung.getId());
+			if (betreuungsmitteilung.isPresent()) {
+				Betreuungsmitteilung result = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung.get());
+				betreuungsmitteilungs.add(result);
+			}
+		}
+		List<JaxBetreuungsmitteilung> jaxResult = new ArrayList<>();
+		betreuungsmitteilungs.stream().forEach(betreuungsmitteilung -> jaxResult.add(converter.betreuungsmitteilungToJAX(betreuungsmitteilung)));
+		JaxBetreuungsmitteilungen jaxBetreuungsmitteilungen = new JaxBetreuungsmitteilungen();
+		jaxBetreuungsmitteilungen.setBetreuungsmitteilungen(jaxResult);
+		return jaxBetreuungsmitteilungen;
 	}
 }

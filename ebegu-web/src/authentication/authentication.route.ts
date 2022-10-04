@@ -29,18 +29,18 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         parent: 'app',
         abstract: true,
-        name: 'authentication',
+        name: 'authentication'
     },
     {
         name: 'authentication.login',
         component: 'dvLogin',
         url: '/login?type',
         resolve: {
-            returnTo,
+            returnTo
         },
         data: {
-            roles: getTSRoleValues(),
-        },
+            roles: getTSRoleValues()
+        }
     },
     {
 
@@ -49,9 +49,9 @@ const ng1States: Ng1StateDeclaration[] = [
         url: '/schulung',
         data: {
             roles: getTSRoleValues(),
-            requiresDummyLogin: true,
-        },
-    },
+            requiresDummyLogin: true
+        }
+    }
 ];
 
 export class IAuthenticationStateParams {
@@ -83,7 +83,7 @@ export function returnTo($transition$: Transition): TargetState {
         'authentication.login',
         'authentication.locallogin',
         'authentication.tutorialInstitutionLogin',
-        'authentication.tutorialGemeindeLogin',
+        'authentication.tutorialGemeindeLogin'
     ];
     if (!prohibitetReturnStates.includes($transition$.from().name)) {
         return $state.target($transition$.from(), $transition$.params('from'));

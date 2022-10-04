@@ -21,7 +21,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
     selector: 'dv-ng-remove-dialog',
-    templateUrl: './dv-ng-remove-dialog.template.html',
+    templateUrl: './dv-ng-remove-dialog.template.html'
 })
 export class DvNgRemoveDialogComponent {
 
@@ -30,7 +30,7 @@ export class DvNgRemoveDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgRemoveDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
 
         if (data) {

@@ -35,9 +35,7 @@ export class InternePendenzenRS {
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
-        })).pipe(map(pendenzFromServer => {
-            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
-        }));
+        })).pipe(map(pendenzFromServer => this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)));
     }
 
     public updateInternePendenz(internePendenz: TSInternePendenz): Observable<TSInternePendenz> {
@@ -46,14 +44,12 @@ export class InternePendenzenRS {
             this.ebeguRestUtil.internePendenzToRestObject({}, internePendenz)
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
-        })).pipe(map(pendenzFromServer => {
-            return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
-        }));
+        })).pipe(map(pendenzFromServer => this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer)));
     }
 
     public deleteInternePendenz(internePendenz: TSInternePendenz): Observable<void> {
         return this.$http.delete<void>(
-            `${this.serviceURL}/${internePendenz.id}`,
+            `${this.serviceURL}/${internePendenz.id}`
         ).pipe(tap(() => {
             this.setPendenzCountUpdated$(internePendenz.gesuch);
         }));
@@ -62,11 +58,7 @@ export class InternePendenzenRS {
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
         return this.$http.get<any[]>(
             `${this.serviceURL}/all/${gesuch.id}`
-        ).pipe(map(pendenzenFromServer => {
-            return pendenzenFromServer.map(pendenzFromServer => {
-                return this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer);
-            });
-        }));
+        ).pipe(map(pendenzenFromServer => pendenzenFromServer.map(pendenzFromServer => this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer))));
     }
 
     public countInternePendenzenForGesuch(gesuch: TSGesuch): Observable<number> {

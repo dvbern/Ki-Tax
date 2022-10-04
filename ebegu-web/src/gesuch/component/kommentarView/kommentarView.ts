@@ -71,7 +71,7 @@ export class KommentarViewController implements IController {
         '$state',
         '$mdSidenav',
         '$q',
-        'ApplicationPropertyRS',
+        'ApplicationPropertyRS'
     ];
 
     public form: IFormController;
@@ -93,7 +93,7 @@ export class KommentarViewController implements IController {
         private readonly $state: StateService,
         private readonly $mdSidenav: ISidenavService,
         private readonly $q: IQService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
         if (!this.isGesuchUnsaved()) {
@@ -202,7 +202,7 @@ export class KommentarViewController implements IController {
 
     private getNewest(dokumente: Array<TSDokument>): TSDokument {
         let newest = dokumente[0];
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < dokumente.length; i++) {
             if (dokumente[i].timestampErstellt.isAfter(newest.timestampErstellt)) {
                 newest = dokumente[i];
@@ -219,11 +219,11 @@ export class KommentarViewController implements IController {
                 return;
             }
             const gesuchID = this.getGesuch().id;
-            console.log('Uploading files on gesuch ' + gesuchID);
+            console.log(`Uploading files on gesuch ${  gesuchID}`);
 
             const filesTooBig: any[] = [];
             const filesOk: any[] = [];
-            this.$log.debug('Uploading files on gesuch ' + gesuchID);
+            this.$log.debug(`Uploading files on gesuch ${  gesuchID}`);
             for (const file of files) {
                 this.$log.debug(`File: ${file.name} size: ${file.size}`);
                 if (file.size > MAX_FILE_SIZE) {
@@ -235,7 +235,7 @@ export class KommentarViewController implements IController {
 
             if (filesTooBig.length > 0) {
                 // DialogBox anzeigen für Files, welche zu gross sind!
-                let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
+                let returnString = `${this.$translate.instant('FILE_ZU_GROSS')  }<br/><br/>`;
                 returnString += '<ul>';
                 for (const file of filesTooBig) {
                     returnString += '<li>';
@@ -245,7 +245,7 @@ export class KommentarViewController implements IController {
                 returnString += '</ul>';
 
                 this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                    title: returnString,
+                    title: returnString
                 });
             }
 
@@ -281,13 +281,11 @@ export class KommentarViewController implements IController {
             title: 'ZURUECK_AN_GEMEINDE_TITLE',
             deleteText: 'ZURUECK_AN_GEMEINDE_GEBEN',
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            return this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
+            elementID: undefined
+        }).then(() => this.gesuchRS.gesuchBySTVFreigeben(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
                 this.$state.go('pendenzenSteueramt.list-view');
-            });
-        });
+            }));
     }
 
     public showBemerkungenPruefungSTV(): boolean {
@@ -309,10 +307,8 @@ export class KommentarViewController implements IController {
     }
 
     public getRolesForInternePendenzen(): TSRole[] {
-        return TSRoleUtil.getGemeindeRoles().filter(role => {
-            return role !== TSRole.REVISOR
+        return TSRoleUtil.getGemeindeRoles().filter(role => role !== TSRole.REVISOR
             && role !== TSRole.JURIST
-            && role !== TSRole.STEUERAMT;
-        });
+            && role !== TSRole.STEUERAMT);
     }
 }

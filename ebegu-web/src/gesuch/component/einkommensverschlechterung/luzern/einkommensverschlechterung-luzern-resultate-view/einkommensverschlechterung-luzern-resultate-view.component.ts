@@ -28,7 +28,7 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
     templateUrl: './einkommensverschlechterung-luzern-resultate-view.component.html',
     styleUrls: ['./einkommensverschlechterung-luzern-resultate-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
 
@@ -38,7 +38,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         protected finSitLuService: FinanzielleSituationLuzernService,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
-        protected readonly $transition$: Transition,
+        protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
             wizardStepManager,

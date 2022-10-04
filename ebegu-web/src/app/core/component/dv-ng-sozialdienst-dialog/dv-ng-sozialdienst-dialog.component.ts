@@ -27,7 +27,7 @@ import {TSSozialdienst} from '../../../../models/sozialdienst/TSSozialdienst';
  */
 @Component({
     selector: 'dv-ng-sozialdienst-dialog',
-    templateUrl: './dv-ng-sozialdienst-dialog.template.html',
+    templateUrl: './dv-ng-sozialdienst-dialog.template.html'
 })
 export class DvNgSozialdienstDialogComponent {
 
@@ -36,7 +36,7 @@ export class DvNgSozialdienstDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSozialdienstDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
 
         this.sozialdienstList = data.sozialdienstList;

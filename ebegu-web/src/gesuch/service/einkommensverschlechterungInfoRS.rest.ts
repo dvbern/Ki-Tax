@@ -30,14 +30,14 @@ export class EinkommensverschlechterungInfoRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}einkommensverschlechterungInfo`;
     }
 
     public saveEinkommensverschlechterungInfo(
         einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSEinkommensverschlechterungInfoContainer> {
 
         let returnedEinkommensverschlechterungInfo = {};
@@ -47,14 +47,12 @@ export class EinkommensverschlechterungInfoRS {
                 einkommensverschlechterungInfoContainer);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}`;
 
-        return this.$http.put(url, returnedEinkommensverschlechterungInfo).then((httpresponse: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+        return this.$http.put(url, returnedEinkommensverschlechterungInfo).then((httpresponse: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING EinkommensverschlechterungInfo REST object ', httpresponse.data);
                 const container = new TSEinkommensverschlechterungInfoContainer();
 
                 return this.ebeguRestUtil.parseEinkommensverschlechterungInfoContainer(container, httpresponse.data);
-            });
-        });
+            }));
     }
 
 }

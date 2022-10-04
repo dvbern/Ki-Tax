@@ -28,7 +28,7 @@ import {LogFactory} from '../logging/LogFactory';
 const LOG = LogFactory.createLog('SozialdienstRS');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class SozialdienstRS {
 
@@ -36,7 +36,7 @@ export class SozialdienstRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public readonly $http: HttpClient,
+        public readonly $http: HttpClient
     ) {
     }
 
@@ -51,14 +51,14 @@ export class SozialdienstRS {
         return this.$http.post(this.serviceURL, restSozialdienst,
             {
                 params: {
-                    adminMail: email,
-                },
+                    adminMail: email
+                }
             })
             .pipe(
                 map(response => {
                     LOG.debug('PARSING sozialdienst REST object ', response);
                     return this.ebeguRestUtil.parseSozialdienst(new TSSozialdienst(), response);
-                }),
+                })
             );
     }
 
@@ -70,7 +70,7 @@ export class SozialdienstRS {
     }
 
     public getSozialdienstForPrincipal(): Observable<TSSozialdienst[]> {
-        return this.$http.get<any[]>(this.serviceURL + '/').pipe(
+        return this.$http.get<any[]>(`${this.serviceURL  }/`).pipe(
             map(response => {
                 LOG.debug('PARSING Sozialdienst REST array object', response);
                 return this.ebeguRestUtil.parseSozialdienstList(response);

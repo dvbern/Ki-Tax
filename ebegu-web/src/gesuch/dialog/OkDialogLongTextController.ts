@@ -30,7 +30,7 @@ export class OkDialogLongTextController {
         $translate: ITranslateService,
         title: string,
         body: string,
-        _okText: string,
+        _okText: string
     ) {
 
         if (EbeguUtil.isNotNullOrUndefined(title)) {

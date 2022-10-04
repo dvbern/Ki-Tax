@@ -30,7 +30,7 @@ export class BetreuungRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}betreuungen`;
     }
@@ -49,15 +49,13 @@ export class BetreuungRS {
 
     public findAllBetreuungenWithVerfuegungForDossier(dossierId: string): IPromise<TSBetreuung[]> {
         return this.http.get(`${this.serviceURL}/alleBetreuungen/${encodeURIComponent(dossierId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseBetreuungList(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseBetreuungList(response.data));
     }
 
     public saveBetreuung(
         betreuung: TSBetreuung,
         gesuchId: string,
-        abwesenheit: boolean,
+        abwesenheit: boolean
     ): IPromise<TSBetreuung> {
 
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
@@ -85,14 +83,12 @@ export class BetreuungRS {
     }
 
     private parseBetreuung(response: any, gesuchId: string): IPromise<TSBetreuung> {
-        return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-            return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-        });
+        return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 
     public anmeldungSchulamtFalscheInstitution(
         betreuung: TSBetreuung,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSBetreuung> {
 
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
@@ -103,7 +99,7 @@ export class BetreuungRS {
 
     public anmeldungSchulamtStorniert(
         betreuung: TSBetreuung,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSBetreuung> {
 
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
@@ -114,11 +110,7 @@ export class BetreuungRS {
 
     public removeBetreuung(betreuungId: string, gesuchId: string): IPromise<any> {
         return this.http.delete(`${this.serviceURL}/${encodeURIComponent(betreuungId)}`)
-            .then(responseDeletion => {
-                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                    return responseDeletion;
-                });
-            });
+            .then(responseDeletion => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => responseDeletion));
     }
 
     /**
@@ -129,7 +121,7 @@ export class BetreuungRS {
     public saveBetreuungen(
         betreuungenToUpdate: Array<TSBetreuung>,
         gesuchId: string,
-        saveForAbwesenheit: boolean,
+        saveForAbwesenheit: boolean
     ): IPromise<Array<TSBetreuung>> {
 
         const restBetreuungen: Array<any> = [];
@@ -137,8 +129,7 @@ export class BetreuungRS {
             restBetreuungen.push(this.ebeguRestUtil.betreuungToRestObject({}, betreuungToUpdate));
         });
         return this.http.put(`${this.serviceURL}/all/${saveForAbwesenheit}`, restBetreuungen)
-            .then((response: any) => {
-                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     this.log.debug('PARSING Betreuung REST object ', response.data);
                     const convertedBetreuungen: Array<TSBetreuung> = [];
                     response.data.forEach((returnedBetreuung: any) => {
@@ -146,12 +137,11 @@ export class BetreuungRS {
                             returnedBetreuung));
                     });
                     return convertedBetreuungen;
-                });
-            });
+                }));
     }
 
     public saveAbweichungen(
-        betreuung: TSBetreuung,
+        betreuung: TSBetreuung
     ): IPromise<Array<TSBetreuungspensumAbweichung>> {
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);
         const url = `${this.serviceURL}/betreuung/abweichungen/${encodeURIComponent(betreuung.id)}/`;
@@ -160,7 +150,7 @@ export class BetreuungRS {
     }
 
     public loadAbweichungen(
-        betreuungId: string,
+        betreuungId: string
     ): IPromise<Array<TSBetreuungspensumAbweichung>> {
         const url = `${this.serviceURL}/betreuung/abweichungen/${encodeURIComponent(betreuungId)}/`;
         return this.http.get(url)
@@ -175,7 +165,7 @@ export class BetreuungRS {
 
     public anmeldungSchulamtModuleAkzeptiert(
         betreuung: TSBetreuung,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSBetreuung> {
 
         const restBetreuung = this.ebeguRestUtil.betreuungToRestObject({}, betreuung);

@@ -7,7 +7,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
     selector: 'dv-veranlagung-solothurn',
     templateUrl: './veranlagung-solothurn.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class VeranlagungSolothurnComponent implements OnInit {
 

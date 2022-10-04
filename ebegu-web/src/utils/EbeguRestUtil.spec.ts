@@ -56,7 +56,7 @@ import {EbeguRestUtil} from './EbeguRestUtil';
 import {TestDataUtil} from './TestDataUtil.spec';
 import IProvideService = angular.auto.IProvideService;
 
-// tslint:disable:no-big-function
+/* eslint-disable */
 describe('EbeguRestUtil', () => {
 
     let ebeguRestUtil: EbeguRestUtil;

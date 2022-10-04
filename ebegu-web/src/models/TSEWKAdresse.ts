@@ -37,7 +37,7 @@ export class TSEWKAdresse extends TSAbstractMutableEntity {
         strasse?: string,
         postleitzahl?: string,
         ort?: string,
-        gebiet?: string,
+        gebiet?: string
     ) {
         super();
         this._adresszusatz1 = adresszusatz1;

@@ -17,16 +17,17 @@ import {IComponentOptions, IPromise} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -46,6 +47,8 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 
 export class FamiliensituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -68,7 +71,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         '$scope',
         'FamiliensituationRS',
         'EinstellungRS',
-        '$timeout',
+        '$timeout'
     ];
     private familienstatusValues: Array<TSFamilienstatus>;
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -89,7 +92,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         $scope: IScope,
         private readonly familiensituationRS: FamiliensituationRS,
         private readonly einstellungRS: EinstellungRS,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
 
         super(gesuchModelManager,
@@ -109,8 +112,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public $onInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
                     this.situationFKJV = value.getValueAsBoolean();
@@ -121,7 +124,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                 .forEach(value => {
                     this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                 });
-        });
+        }, error => LOG.error(error));
     }
 
     private initViewModel(): void {
@@ -145,14 +148,14 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.getGesuch().gesuchsteller2
-                        ? this.getGesuch().gesuchsteller2.extractFullName() : '',
+                        ? this.getGesuch().gesuchsteller2.extractFullName() : ''
                 });
                 return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'FAMILIENSITUATION_WARNING',
-                    deleteText: descriptionText,
-                }).then(() => {   // User confirmed changes
-                    return this.save();
-                });
+                    deleteText: descriptionText
+                }).then(() =>    // User confirmed changes
+                     this.save()
+                );
             }
 
             return this.save();
@@ -165,14 +168,12 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.errorService.clearAll();
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
-            this.getGesuch().id,
+            this.getGesuch().id
         ).then((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.getGesuch().familiensituationContainer = familienContainerResponse;
             // Gesuchsteller may changed...
-            return this.gesuchModelManager.reloadGesuch().then(() => {
-                return this.model;
-            });
+            return this.gesuchModelManager.reloadGesuch().then(() => this.model);
         });
     }
 
@@ -199,7 +200,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (!this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             this.getFamiliensituation().gesuchstellerKardinalitaet = undefined;
             this.getFamiliensituation().unterhaltsvereinbarung = undefined;

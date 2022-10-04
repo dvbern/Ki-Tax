@@ -19,8 +19,8 @@ import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dial
 
 @Component({
     selector: 'dv-helpmenu',
-    templateUrl: './dv-helpmenu.html',
-    styleUrls: ['./dv-helpmenu.less'],
+    templateUrl: './dv-helpmenu.component.html',
+    styleUrls: ['./dv-helpmenu.component.less']
 })
 export class DvHelpmenuComponent {
 

@@ -30,9 +30,7 @@ export class DVMaxLength implements IDirective {
                 return;
             }
 
-            ctrl.$validators.dvMaxLength = (_modelValue: any, viewValue: any) => {
-                return ctrl.$isEmpty(viewValue) || (viewValue.length <= this.length);
-            };
+            ctrl.$validators.dvMaxLength = (_modelValue: any, viewValue: any) => ctrl.$isEmpty(viewValue) || (viewValue.length <= this.length);
         };
     }
 

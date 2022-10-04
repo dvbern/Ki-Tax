@@ -46,7 +46,7 @@ describe('InternePendenzenComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: InternePendenzenRS, useValue: internePendenzenRSSpy},
+                {provide: InternePendenzenRS, useValue: internePendenzenRSSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

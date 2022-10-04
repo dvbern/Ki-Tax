@@ -195,7 +195,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 CONSTANTS.END_OF_TIME_STRING;
             return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
                 von: vonText,
-                bis: bisText,
+                bis: bisText
             });
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
@@ -206,8 +206,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             TSEinstellungKey.UNBEZAHLTER_URLAUB_AKTIV,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(unbezahlterUrlaubAktivEinsellung => {
+            .subscribe(unbezahlterUrlaubAktivEinsellung => {
                 this.isUnbezahlterUrlaubAktiv = unbezahlterUrlaubAktivEinsellung.value === 'true';
-            });
+            }, error => LOG.error(error));
     }
 }

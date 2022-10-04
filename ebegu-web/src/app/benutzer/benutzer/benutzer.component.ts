@@ -46,7 +46,7 @@ const LOG = LogFactory.createLog('BenutzerComponent');
     selector: 'dv-benutzer',
     templateUrl: './benutzer.component.html',
     styleUrls: ['./benutzer.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerComponent implements OnInit {
 
@@ -76,7 +76,7 @@ export class BenutzerComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -139,7 +139,7 @@ export class BenutzerComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TITLE',
-            text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT',
+            text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT'
         };
 
         const isAdminRole = this.isAdminRole();
@@ -156,17 +156,17 @@ export class BenutzerComponent implements OnInit {
                     const adminDialogConfig = new MatDialogConfig();
                     adminDialogConfig.data = {
                         title: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE',
-                        text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT',
+                        text: 'BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TEXT'
                     };
 
                     return this.dialog.open(DvNgRemoveDialogComponent, adminDialogConfig)
                         .afterClosed()
                         .pipe(filter(userAccepted => !!userAccepted));
-                }),
+                })
             )
             .subscribe(
                 () => this.doSaveBenutzer(),
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -290,7 +290,7 @@ export class BenutzerComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'BENUTZER_DELETE_CONFIRMATION_TITLE',
-            text: 'BENUTZER_DELETE_CONFIRMATION_TEXT',
+            text: 'BENUTZER_DELETE_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
@@ -310,7 +310,7 @@ export class BenutzerComponent implements OnInit {
                 },
                 () => {
                     this.log.error('error in observable. deleteBenutzer');
-                },
+                }
             );
     }
 
@@ -318,7 +318,7 @@ export class BenutzerComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'BENUTZER_RESET_CONFIRMATION_TITLE',
-            text: 'BENUTZER_RESET_CONFIRMATION_TEXT',
+            text: 'BENUTZER_RESET_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
@@ -332,7 +332,7 @@ export class BenutzerComponent implements OnInit {
                 },
                 () => {
                     this.log.error('error in observable. deleteExternalUuidForBenutzer');
-                },
+                }
             );
     }
 
@@ -343,7 +343,7 @@ export class BenutzerComponent implements OnInit {
             }
             this.errorService.addMesageAsInfo(this.translate.instant(
                 infoMessageKey,
-                {fullName: this.selectedUser.getFullName()},
+                {fullName: this.selectedUser.getFullName()}
             ));
         });
     }
