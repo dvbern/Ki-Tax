@@ -268,7 +268,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<dv-navigation-x *dvNgShowElement="true; roles: getAllRolesButTraegerschaftInstitutionSteueramt()"
-										 [dvPrevious]="true" [dvNext]="true" (dvSave)="confirmAndSave()">
+										 [dvPrevious]="true" [dvNext]="true" (dvSave)="confirmAndSave($event.onResult)">
 						</dv-navigation-x>
 						<dv-navigation-x *dvNgShowElement="true; roles: getTraegerschaftInstitutionSteueramtOnlyRoles()"
 										 [dvNext]="true">

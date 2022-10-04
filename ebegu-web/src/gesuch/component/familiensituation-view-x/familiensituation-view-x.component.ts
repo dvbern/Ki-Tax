@@ -113,7 +113,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
-    public confirmAndSave(): Promise<TSFamiliensituationContainer> {
+    public confirmAndSave(onResult: Function): Promise<TSFamiliensituationContainer> {
         this.savedClicked = true;
         if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
             if (!this.form.dirty) {
@@ -121,6 +121,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                 // promise immediately
                 // Update wizardStepStatus also if the form is empty and not dirty
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                onResult(this.getGesuch().familiensituationContainer);
                 return Promise.resolve(this.getGesuch().familiensituationContainer);
             }
 
@@ -135,11 +136,11 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                         deleteText: descriptionText,
                     },
                 }).afterClosed().toPromise().then(() =>    // User confirmed changes
-                    this.save(),
+                    this.save().then(result => onResult(result))
                 );
             }
 
-            return this.save();
+            this.save().then(result => onResult(result));
 
         }
         return undefined;
