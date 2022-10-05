@@ -19,7 +19,7 @@ SET @mandant_id_ar = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', 
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
 
 INSERT IGNORE INTO mandant
-VALUES (@mandant_id_ar, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'Kanton Appenzell Ausserrhoden', false, false, 'APPENZELL_AUSSERRHODEN', false, 1, 1);
+VALUES (@mandant_id_ar, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'Appenzell Ausserrhoden', false, false, 'APPENZELL_AUSSERRHODEN', false, 1, 1);
 
 # APPLICATION PROPERTIES
 INSERT IGNORE INTO application_property (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
@@ -67,6 +67,7 @@ VALUES (UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', '')), NOW(), 
 		NULL, NULL, NULL, @mandant_id_ar, NULL,
 		NULL);
 
+# Einstellungen für Gesuchsperiode kopieren
 INSERT IGNORE INTO einstellung
 SELECT UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(), 'system', 'system', 0, einstellung_key, value, NULL,
 	(SELECT gesuchsperiode.id
@@ -77,6 +78,17 @@ FROM einstellung
 		 INNER JOIN gesuchsperiode g ON einstellung.gesuchsperiode_id = g.id
 		 INNER JOIN mandant m2 ON g.mandant_id = m2.id
 WHERE m2.mandant_identifier = 'SOLOTHURN' AND gueltig_ab = '2022-08-01' AND gemeinde_id IS NULL AND einstellung.mandant_id is NULL;
+
+# Gemeinde Einstellungen für Gesuchsperiode kopieren
+INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+								einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, 0,
+	einstellung_key, value, NULL, UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', '')), @mandant_id_ar
+FROM einstellung
+WHERE mandant_id = @mandant_id_solothurn AND gesuchsperiode_id = UNHEX(REPLACE('6dc45fb0-5378-11ec-98e8-f4390979fa3e', '-', '')) AND NOT EXISTS(
+		SELECT einstellung_key FROM einstellung e1 WHERE e1.gesuchsperiode_id =  UNHEX(REPLACE('6dc45fb0-5378-11ec-98e8-f4390979fa3e', '-', ''))
+				and e1.mandant_id = @mandant_id_ar AND e1.einstellung_key = einstellung.einstellung_key
+	) AND gemeinde_id IS NULL;
 
 INSERT IGNORE INTO sequence(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, sequence_type, current_value, mandant_id)
 VALUES (

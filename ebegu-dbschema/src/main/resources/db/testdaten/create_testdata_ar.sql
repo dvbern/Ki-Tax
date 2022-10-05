@@ -36,7 +36,7 @@ UPDATE mandant SET activated = TRUE WHERE id = @mandant_id_ar;
 # noinspection SqlWithoutWhere
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_23_id;
 
-# Gemeinden Bern und Ostermundigen erstellen, inkl. Adressen und Gemeindestammdaten. Sequenz anpassen
+# Gemeinde Testgemeinde Appenzell Ausserrhoden erstellen, inkl. Adressen und Gemeindestammdaten. Sequenz anpassen
 INSERT IGNORE INTO gemeinde (
 	id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, gemeinde_nummer, mandant_id, status, bfs_nummer,
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
@@ -80,7 +80,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) AS id,
 		  @mandant_id_ar AS mandant_id
 	  FROM einstellung
 	  WHERE gemeinde_id = @testgemeinde_solothurn_id
-	  GROUP BY einstellung_key) AS inserttable
+	  GROUP BY einstellung_key) AS inserttable;
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
