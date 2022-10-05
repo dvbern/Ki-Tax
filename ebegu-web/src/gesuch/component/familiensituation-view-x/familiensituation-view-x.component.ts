@@ -20,6 +20,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -74,6 +75,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         private readonly $translate: TranslateService,
         private readonly familiensituationRS: FamiliensituationRS,
         private readonly einstellungRS: EinstellungRS,
+        private readonly authService: AuthServiceRS
     ) {
 
         super(gesuchModelManager,
@@ -385,5 +387,9 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         return this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
+    }
+
+    public isOneOfRoles(allowedRoles: ReadonlyArray<TSRole>) {
+        return this.authService.isOneOfRoles(allowedRoles);
     }
 }

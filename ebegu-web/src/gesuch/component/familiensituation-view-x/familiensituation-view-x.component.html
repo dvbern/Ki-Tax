@@ -47,7 +47,7 @@
 											   for="aenderungPer_ID">AENDERUNG_PER</label>
 										<dv-date-picker-x [inputId]="'aenderungPer_ID'"
 														  class="input-element"
-														  [date]="getFamiliensituation()?.aenderungPer"
+														  [(date)]="getFamiliensituation().aenderungPer"
 														  (dateChange)="aenderungPerChanged()"
 														  [disabled]="isGesuchReadonly()">
 										</dv-date-picker-x>
@@ -79,9 +79,7 @@
 													 [required]="true"
 													 #familienstatus="ngModel"
 													 (change)="familienstatusChanged()"
-													 dvNgEnableElement
-													 [dvEnableAllowedRoles]="allowedRoles"
-													 [dvEnabled]="isFamiliensituationEnabled()"
+													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_1' |translate}}"
 													 aria-described-by="familienstatus-error">
 										<mat-radio-button *ngFor="let famSit of getFamiliensituationValues()"
@@ -144,9 +142,7 @@
                                                      #geteilteObhut="ngModel"
 													 name="geteilteObhut"
 													 class="input-element sp"
-													 dvNgEnableElement
-													 [dvEnableAllowedRoles]="allowedRoles"
-													 [dvEnabled]="isFamiliensituationEnabled()"
+													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT' |translate}}"
 													 aria-described-by="geteilteObhut-error">
 										<mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
@@ -180,9 +176,7 @@
                                                      #unterhaltsvereinbarung="ngModel"
                                                      name="unterhaltsvereinbarung"
                                                      class="input-element sp"
-													 dvNgEnableElement
-													 [dvEnableAllowedRoles]="allowedRoles"
-													 [dvEnabled]="isFamiliensituationEnabled()"
+													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG' |translate}}"
 													 aria-described-by="unterhaltsvereinbarung-error">
 										<mat-radio-button *ngFor="let unerhaltsverinharungValue of getUnterhaltvereinbarungValues()"
@@ -245,10 +239,7 @@
 													 [required]="true"
 													 #gesuchstellerKardinalitaet="ngModel"
 													 class="input-element sp" items="gesuchstellerKardinalitaetValues"
-													 dvNgEnableElement
-													 name="gesuchstellerKardinalitaet"
-													 [dvEnableAllowedRoles]="allowedRoles"
-													 [dvEnabled]="isFamiliensituationEnabled()"
+													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
 													 aria-described-by="gesuchstellerKardinalitaet-error">
 										<mat-radio-button *ngFor="let kardinalitaet of gesuchstellerKardinalitaetValues"

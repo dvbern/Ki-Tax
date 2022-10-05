@@ -21,7 +21,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 /**
- * Attribute Directive um Elementen zu enable/disable.
+ * Attribute Directive um native HTML Elemente zu enablen/disablen. Funktioniert nicht bei Material Komponenten
  * Die Direktive muss folgendermasse benutzt werden:
  *     dvNgEnableElement - diese Attribute muss in jedem Element gesetzt werden, das die Direktive braucht
  *     [dvEnable]="condition" - Condition für die das Element nicht disabled ist
