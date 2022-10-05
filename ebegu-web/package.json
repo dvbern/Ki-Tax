@@ -10,7 +10,7 @@
   "scripts": {
     "rimraf": "rimraf",
     "typedoc": "typedoc",
-    "clean": "npx rimraf -- doc coverage dist .cache_loader",
+    "clean": "rimraf -- doc coverage dist .cache_loader",
     "prebuild": "check-engine && npm run clean && npm run set-version",
     "build": "npm run build:prod",
     "prebuild:ci": "npm run prebuild",
