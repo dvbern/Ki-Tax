@@ -16,28 +16,41 @@
  */
 
 CREATE TABLE alle_faelle_view (
-	antrag_id BINARY(16)   NOT NULL,
-	dossier_id BINARY(16)   NOT NULL,
-	antrag_status VARCHAR(255) NOT NULL,
-	interne_pendenz BOOLEAN NOT NULL DEFAULT false,
-	dokumente_hochgeladen BOOLEAN NOT NULL DEFAULT false,
+	antrag_id BINARY(16) NOT NULL,
+	dossier_id BINARY(16) NOT NULL,
+	fall_id BINARY(16) NOT NULL,
 	fallnummer  VARCHAR(255) NOT NULL,
+	besitzer_id VARCHAR(255),
+	besitzer_username VARCHAR(255),
 	gemeinde_id BINARY(16)   NOT NULL,
 	gemeinde_name VARCHAR(255) NOT NULL,
+	antrag_status VARCHAR(255) NOT NULL,
+	antrag_typ VARCHAR(255),
+	eingangsart VARCHAR(255) NOT NULL,
+	laufNummer INTEGER NOT NULL,
+	familien_name VARCHAR(510),
+	kinder VARCHAR(1024),
+	angebot_typen VARCHAR(255),
+	aenderungsdatum DATETIME,
+	sozialdienst BOOLEAN NOT NULL DEFAULT false,
+	sozialdienst BOOLEAN NOT NULL DEFAULT false,
+	interne_pendenz BOOLEAN NOT NULL DEFAULT false,
+	dokumente_hochgeladen BOOLEAN NOT NULL DEFAULT false,
 	gesuchsperiode_id BINARY(16) NOT NULL,
 	gesuchsperiode_string VARCHAR(255) NOT NULL,
+	verantwortlicher_bg_id BINARY(16),
     verantwortlicher_bg VARCHAR(255),
-    verantwortlicher_bg_id BINARY(16),
+	verantwortlicher_ts_id BINARY(16),
     verantwortlicher_ts VARCHAR(255),
-    verantwortlicher_ts_id BINARY(16),
-    antrag_typen VARCHAR(255),
+	verantwortlicher_gemeinde_id BINARY(16),
     verantwortlicher_gemeinde VARCHAR(255),
-    verantwortlicher_gemiende_id BINARY(16),
-    familien_name VARCHAR(510),
-    kinder VARCHAR(510),
-	aenderungsdatum DATETIME,
-	angebote VARCHAR(255),
-	sozialdienst BOOLEAN NOT NULL DEFAULT false,
-	has_besitzer BOOLEAN NOT NULL DEFAULT false,
+	PRIMARY KEY (antrag_id)
 );
 
+CREATE INDEX IX_alle_faelle_view_gemeinde_id ON alle_faelle_view(gemeinde_id);
+CREATE INDEX IX_alle_faelle_view_gesuchsperiode_id ON alle_faelle_view(gesuchsperiode_id);
+CREATE INDEX IX_alle_faelle_view_verantwortlicher_bg_id ON alle_faelle_view(verantwortlicher_bg_id);
+CREATE INDEX IX_alle_faelle_view_verantwortlicher_ts_id ON alle_faelle_view(verantwortlicher_ts_id);
+CREATE INDEX IX_alle_faelle_view_verantwortlicher_gemeinde_id ON alle_faelle_view(verantwortlicher_gemeinde_id);
+CREATE INDEX IX_alle_faelle_view_fall_id ON alle_faelle_view(fall_id);
+CREATE INDEX IX_alle_faelle_view_besitzer_id ON alle_faelle_view(besitzer_id);
