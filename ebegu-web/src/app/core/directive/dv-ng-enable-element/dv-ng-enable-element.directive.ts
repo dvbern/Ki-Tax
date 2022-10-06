@@ -24,30 +24,30 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
  * Attribute Directive um native HTML Elemente zu enablen/disablen. Funktioniert nicht bei Material Komponenten
  * Die Direktive muss folgendermasse benutzt werden:
  *     dvNgEnableElement - diese Attribute muss in jedem Element gesetzt werden, das die Direktive braucht
- *     [dvEnable]="condition" - Condition für die das Element nicht disabled ist
- *     [dvEnableAllowedRoles]="[TSRole.X, TSRole.Y, ...]" - Array mit allen Rollen, für die das Element nicht disabled sein soll
+ *     [dvEnable]="condition" - Condition fï¿½r die das Element nicht disabled ist
+ *     [dvEnableAllowedRoles]="[TSRole.X, TSRole.Y, ...]" - Array mit allen Rollen, fï¿½r die das Element nicht disabled sein soll
  * werden muss.
  *
  * ACHTUNG! Diese Direktive darf nicht mit disable zusammen benutzt werden
  */
 @Directive({
-    selector: '[dvNgEnableElement]',
+    selector: '[dvNgEnableElement]'
 })
 export class DvNgEnableElementDirective implements AfterViewInit, OnChanges {
 
     @Input()
-    private dvEnableAllowedRoles: ReadonlyArray<TSRole>;
+    private readonly dvEnableAllowedRoles: ReadonlyArray<TSRole>;
 
     @Input()
-    private dvEnabled: boolean;
+    private readonly dvEnabled: boolean;
 
-    constructor(
+    public constructor(
         private readonly elementRef: ElementRef,
-        private authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
         this.handleElement();
     }
 

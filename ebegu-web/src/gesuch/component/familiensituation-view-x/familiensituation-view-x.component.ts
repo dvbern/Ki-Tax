@@ -48,9 +48,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
-
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
-
 
 @Component({
     selector: 'dv-familiensituation-view-x',
@@ -136,13 +134,13 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                 const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
                     data: {
                         title: 'FAMILIENSITUATION_WARNING',
-                        deleteText: descriptionText,
-                    },
+                        deleteText: descriptionText
+                    }
                 }).afterClosed().toPromise();
 
                 if (dialogResult) {
-                    const result = await this.save();
-                    onResult(result);
+                    const savedContaier = await this.save();
+                    onResult(savedContaier);
                 }
                 return;
 
