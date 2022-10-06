@@ -29,6 +29,7 @@ import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -153,10 +154,19 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            !this.showZugriffAufSteuerdatenForGemeinde()) {
             return false;
         }
 
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS);
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+            || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
+            || this.showZugriffAufSteuerdatenForGemeinde();
+    }
+
+    private showZugriffAufSteuerdatenForGemeinde(): boolean {
+        return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
+            && this.gesuchModelManager.getGesuch().isMutation()
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
     }
 }
