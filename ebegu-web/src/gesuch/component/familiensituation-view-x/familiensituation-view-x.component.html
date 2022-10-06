@@ -107,7 +107,7 @@
 													  [(date)]="getFamiliensituation().startKonkubinat"
 													  class="input-element"
 													  [required]="true"
-													  [noFuture]="true"
+													  [maxDate]="getToday()"
 													  (dateChange)="onDatumBlur()"
 													  [disabled]="isStartKonkubinatDisabled()">
 									</dv-date-picker-x>

@@ -16,6 +16,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -392,5 +393,9 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public isOneOfRoles(allowedRoles: ReadonlyArray<TSRole>) {
         return this.authService.isOneOfRoles(allowedRoles);
+    }
+
+    public getToday(): moment.Moment {
+        return moment();
     }
 }
