@@ -30,7 +30,7 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _unregelmaessigeArbeitszeiten: boolean;
 
-    private _erwerbspensumInstitution: string
+    private _erwerbspensumInstitution: string;
 
     public constructor() {
         super();
