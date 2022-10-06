@@ -71,7 +71,7 @@ export class EinstellungRS {
             return of(this._einstellungenCacheMap.get(gesuchsperiodeId));
         }
 
-        return this.getAllEinstellungenBySystem(gesuchsperiodeId)
+        return this.getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId)
             .pipe(map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
