@@ -161,6 +161,10 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         return this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
     }
 
+    public isMutation(): boolean {
+        return this.gesuchModelManager.getGesuch().isMutation();
+    }
+
     public openDialogGSZPVVerknuepfen(): void {
         const dialogOptions: MatDialogConfig = {
             data: {
