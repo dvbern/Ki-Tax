@@ -191,8 +191,9 @@ public class EinstellungResource {
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 		return gesuchsperiode
-			.map(value -> einstellungService.getAllEinstellungenByMandant(value)
+			.map(gp -> einstellungService.getAllEinstellungenByMandant(gp)
 				.stream()
+				.filter(einstellung -> einstellung.getKey().isEinstellungActivForMandant(gp.getMandant().getMandantIdentifier()))
 				.map(einstellung -> converter.einstellungToJAX(einstellung))
 				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}
