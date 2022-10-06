@@ -205,6 +205,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         if (this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
+        this.onDatumBlur();
     }
 
     public getFamiliensituationErstgesuch(): TSFamiliensituation {
