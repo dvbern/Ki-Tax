@@ -133,6 +133,10 @@ export class BetreuungInput implements IController {
     }
 
     private parseToPensumUnit(): void {
+        if (EbeguUtil.isNullOrUndefined(this.pensumContainer.betreuungspensumJA.pensum)) {
+            return;
+        }
+
         this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
 
         if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
