@@ -27,7 +27,7 @@ import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
-import {FamiliensituationRS} from '../gesuch/service/familiensituationRS.rest';
+import {FamiliensituationRS} from '../gesuch/service/familiensituationRS.service';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {SearchRS} from '../gesuch/service/searchRS.rest';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
