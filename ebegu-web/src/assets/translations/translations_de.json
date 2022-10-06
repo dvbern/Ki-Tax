@@ -2994,5 +2994,8 @@
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind werden automatisch bearbeitet und falls möglich direkt verfügt.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
+    "ARBEITGEBER": "Arbeitgeber",
+    "BESCHAEFTIGUNGSINSTITUTION": "Beschäftigungsinstitution",
+    "AUSBILDUNGSINSTITUTION": "Ausbildungsinstitution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
