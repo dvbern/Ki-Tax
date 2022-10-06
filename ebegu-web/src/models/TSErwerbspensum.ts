@@ -30,6 +30,8 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _unregelmaessigeArbeitszeiten: boolean;
 
+    private _erwerbspensumInstitution: string
+
     public constructor() {
         super();
     }
@@ -64,5 +66,13 @@ export class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set unregelmaessigeArbeitszeiten(value: boolean) {
         this._unregelmaessigeArbeitszeiten = value;
+    }
+
+    public get erwerbspensumInstitution(): string {
+        return this._erwerbspensumInstitution;
+    }
+
+    public set erwerbspensumInstitution(value: string) {
+        this._erwerbspensumInstitution = value;
     }
 }

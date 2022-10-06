@@ -3021,6 +3021,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractPensumFieldsToEntity(jaxErwerbspensum, erwerbspensum);
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
+		erwerbspensum.setErwerbspensumInstitution(jaxErwerbspensum.getErwerbspensumInstitution());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 		erwerbspensum.setUnregelmaessigeArbeitszeiten(jaxErwerbspensum.isUnregelmaessigeArbeitszeiten());
 
@@ -3049,6 +3050,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
+		jaxErwerbspensum.setErwerbspensumInstitution(pensum.getErwerbspensumInstitution());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
