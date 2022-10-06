@@ -26,6 +26,7 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {BehaviorSubject, Subscription} from 'rxjs';
+import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
@@ -58,6 +59,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
 
     public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+    public readonly demoFeature = TSDemoFeature.STEURABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,

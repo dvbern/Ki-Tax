@@ -97,7 +97,7 @@
     <p class="ebegu-h3"
        [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
 
-    <div *ngIf="isMutation()">
+    <div *ngIf="isMutation()" [dvDemoFeature]="demoFeature">
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
     </div>
 </div>
