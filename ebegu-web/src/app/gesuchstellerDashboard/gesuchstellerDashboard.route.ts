@@ -43,29 +43,29 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'gesuchsteller',
         data: {
-            roles: [TSRole.GESUCHSTELLER],
-        },
+            roles: [TSRole.GESUCHSTELLER]
+        }
     },
     {
         name: 'gesuchsteller.dashboard',
         template: '<gesuchsteller-dashboard-view class="layout-column flex-100" dossier="$resolve.dossier">',
         url: '/gesuchstellerDashboard',
         params: {
-            infoMessage: '',
+            infoMessage: ''
         },
         resolve: {
             // always when navigating to the Dashboard the gesuchModelManager must be reset
-            gesuch: resetGesuchModelManager,
-        },
+            gesuch: resetGesuchModelManager
+        }
     },
     {
         name: 'gesuchsteller.createAngebot',
         template: '<create-angebot-view class="layout-column flex-100">',
         url: '/createAngebotView/:type/:gesuchId',
         resolve: {
-            gesuch: getGesuchModelManager,
-        },
-    },
+            gesuch: getGesuchModelManager
+        }
+    }
 ];
 
 getGesuchModelManager.$inject = ['GesuchModelManager', '$stateParams', '$q', '$log'];
@@ -74,7 +74,7 @@ export function getGesuchModelManager(
     gesuchModelManager: GesuchModelManager,
     $stateParams: IAngebotStateParams,
     $q: IQService,
-    $log: ILogService,
+    $log: ILogService
 ): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;

@@ -51,13 +51,13 @@ describe('FerienbetreuungComponent', () => {
                 { provide: AuthServiceRS, useValue: authServiceRSSpy },
                 { provide: WizardStepXRS, useValue: wizardStepXRSSpy },
                 { provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy },
-                { provide: DownloadRS, useValue: downloadRSSpy },
+                { provide: DownloadRS, useValue: downloadRSSpy }
             ],
             imports: [
                 HttpClientModule,
                 SharedModule
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

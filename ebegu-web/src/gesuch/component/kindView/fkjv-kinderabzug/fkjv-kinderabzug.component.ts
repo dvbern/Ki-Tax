@@ -23,7 +23,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
@@ -58,7 +58,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
+        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService
     ) {
     }
 

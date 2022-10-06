@@ -13,31 +13,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import * as moment from 'moment';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {TSGemeindeAntragTyp} from '../../models/enums/TSGemeindeAntragTyp';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
 import {DateUtil} from '../../utils/DateUtil';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
-import IPromise = angular.IPromise;
 
+@Injectable({
+    providedIn: 'root'
+})
 export class TestFaelleRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
-
     public serviceURL: string;
+    public readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: IHttpService,
-        REST_API: string,
-        public readonly ebeguRestUtil: EbeguRestUtil,
+        public http: HttpClient
     ) {
-        this.serviceURL = `${REST_API}testfaelle`;
-    }
-
-    public getServiceName(): string {
-        return 'TestFaelleRS';
+        this.serviceURL = `${CONSTANTS.REST_API}testfaelle`;
     }
 
     public createTestFallGS(
@@ -46,18 +45,18 @@ export class TestFaelleRS {
         gemeindeId: string,
         bestaetigt: boolean,
         verfuegen: boolean,
-        username: string,
-    ): IHttpPromise<string> {
+        username: string
+    ): Observable<string> {
         // TODO that is a strange API path. Configuration does not belong in a hierarchy. Use POST and move the
         // parameter to the method body
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfallgs/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}/${encodeURIComponent(
             username)}`;
-        return this.http.get(url);
+        return this.http.get(url, {responseType: 'text'});
     }
 
-    public removeFaelleOfGS(username: string): IHttpPromise<string> {
-        return this.http.delete(`${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`);
+    public removeFaelleOfGS(username: string): Observable<string> {
+        return this.http.delete<string>(`${this.serviceURL}/testfallgs/${encodeURIComponent(username)}`);
     }
 
     public createTestFall(
@@ -65,71 +64,71 @@ export class TestFaelleRS {
         gesuchsperiodeId: string,
         gemeindeId: string,
         bestaetigt: boolean,
-        verfuegen: boolean,
-    ): IHttpPromise<string> {
-        // tslint:disable-next-line:max-line-length
+        verfuegen: boolean
+    ): Observable<string> {
+        // eslint-disable-next-line max-len
         const url = `${this.serviceURL}/testfall/${encodeURIComponent(testFall)}/${gesuchsperiodeId}/${gemeindeId}/${bestaetigt}/${verfuegen}`;
 
-        return this.http.get(url);
+        return this.http.get(url, {responseType: 'text'});
     }
 
     public mutiereFallHeirat(
         dossierid: string,
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
-        aenderungper: moment.Moment,
-    ): IHttpPromise<string> {
-        return this.http.get(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
+        aenderungper: moment.Moment
+    ): Observable<string> {
+        return this.http.get<string>(`${this.serviceURL}/mutationHeirat/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`, {
             params: {
                 mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                aenderungper: DateUtil.momentToLocalDate(aenderungper),
-            },
+                aenderungper: DateUtil.momentToLocalDate(aenderungper)
+            }
         });
     }
 
-    public testAllMails(mailadresse: string): IHttpPromise<void> {
-        return this.http.get(`${this.serviceURL}/mailtest/${mailadresse}`);
+    public testAllMails(mailadresse: string): Observable<void> {
+        return this.http.get<void>(`${this.serviceURL}/mailtest/${mailadresse}`);
     }
 
     public mutiereFallScheidung(
         dossierid: string,
         gesuchsperiodeid: string,
         mutationsdatum: moment.Moment,
-        aenderungper: moment.Moment,
-    ): IHttpPromise<string> {
+        aenderungper: moment.Moment
+    ): Observable<string> {
         const url = `${this.serviceURL}/mutationScheidung/${dossierid}/${encodeURIComponent(gesuchsperiodeid)}`;
         return this.http.get(url,
             {
                 params: {
                     mutationsdatum: DateUtil.momentToLocalDate(mutationsdatum),
-                    aenderungper: DateUtil.momentToLocalDate(aenderungper),
+                    aenderungper: DateUtil.momentToLocalDate(aenderungper)
                 },
+                responseType: 'text'
             });
     }
 
-    public resetSchulungsdaten(): IHttpPromise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/reset`);
+    public resetSchulungsdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/reset`, {responseType: 'text'});
     }
 
-    public createSchulungsdaten(): IHttpPromise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/create`);
+    public createSchulungsdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/create`, {responseType: 'text'});
     }
 
-    public deleteSchulungsdaten(): IHttpPromise<string> {
-        return this.http.delete(`${this.serviceURL}/schulung/delete`);
+    public deleteSchulungsdaten(): Observable<string> {
+        return this.http.delete(`${this.serviceURL}/schulung/delete`, {responseType: 'text'});
     }
 
-    public createTutorialdaten(): IHttpPromise<string> {
-        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`);
+    public createTutorialdaten(): Observable<string> {
+        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`, {responseType: 'text'});
     }
 
-    public getSchulungBenutzer(): IPromise<string[]> {
-        return this.http.get(`${this.serviceURL}/schulung/public/user`).then((response: any) => {
-            return response.data;
-        });
+    public getSchulungBenutzer(): Observable<string[]> {
+        return this.http.get(`${this.serviceURL}/schulung/public/user`)
+            .pipe(map((response: any) => response));
     }
 
-    public processScript(scriptNr: string): IHttpPromise<any> {
+    public processScript(scriptNr: string): Observable<any> {
         return this.http.get(`${this.serviceURL}/processscript/${scriptNr}`);
     }
 
@@ -137,14 +136,14 @@ export class TestFaelleRS {
         antragTyp: TSGemeindeAntragTyp,
         gesuchsperiode: TSGesuchsperiode,
         gemeinde: TSGemeinde,
-        status: string,
-    ): IPromise<string> {
-        return this.http.post<string>(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
+        status: string
+    ): Observable<string> {
+        return this.http.post(`${this.serviceURL}/gemeinde-antraege/${antragTyp}`,
             {
                 gesuchsperiode: this.ebeguRestUtil.gesuchsperiodeToRestObject({}, gesuchsperiode),
                 gemeinde: this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde),
-                status,
-            })
-            .then(response => response.data);
+                status
+            },
+            {responseType: 'text'});
     }
 }

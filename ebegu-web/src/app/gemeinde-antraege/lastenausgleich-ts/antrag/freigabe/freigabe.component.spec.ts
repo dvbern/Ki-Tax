@@ -49,7 +49,7 @@ describe('FreigabeComponent', () => {
     let fixture: ComponentFixture<FreigabeComponent>;
 
     lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-        of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
+        of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
     );
 
     beforeEach(waitForAsync(() => {
@@ -63,7 +63,7 @@ describe('FreigabeComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: WizardStepXRS, useValue: wizardStepXRSSpy}
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

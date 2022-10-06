@@ -39,7 +39,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected readonly finSitSoService: FinanzielleSituationSolothurnService,
-        protected gesuchstellerNumber: number,
+        protected gesuchstellerNumber: number
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -208,7 +208,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
                 finanzielleSituationJA.nettolohn,
                 finanzielleSituationJA.unterhaltsBeitraege,
                 finanzielleSituationJA.abzuegeKinderAusbildung,
-                finanzielleSituationJA.steuerbaresVermoegen,
+                finanzielleSituationJA.steuerbaresVermoegen
             ) :
             EbeguUtil.isNotNullOrUndefined(finanzielleSituationJA.bruttoLohn);
         return isStartOk;
@@ -261,7 +261,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public onValueChangeFunction = (): void => {
         this.calculateMassgebendesEinkommen();
-    }
+    };
 
     protected calculateMassgebendesEinkommen(): void {
         this.finSitSoService.calculateMassgebendesEinkommen(this.model);

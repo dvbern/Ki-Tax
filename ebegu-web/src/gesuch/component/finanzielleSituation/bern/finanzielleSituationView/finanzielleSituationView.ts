@@ -64,7 +64,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         'EinstellungRS',
         'DvDialog',
         'AuthServiceRS',
-        'ApplicationPropertyRS',
+        'ApplicationPropertyRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -86,7 +86,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         einstellungRS: EinstellungRS,
         dvDialog: DvDialog,
         protected readonly authServiceRS: AuthServiceRS,
-        applicationPropertyRS: ApplicationPropertyRS,
+        applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -321,7 +321,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
-            },
+            }
         );
     }
 
@@ -329,7 +329,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
-            },
+            }
         );
     }
 

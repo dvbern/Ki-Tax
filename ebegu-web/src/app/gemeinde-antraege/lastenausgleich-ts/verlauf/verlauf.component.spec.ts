@@ -29,7 +29,7 @@ describe('VerlaufComponent', () => {
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
-                {provide: StateService, useValue: stateServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

@@ -27,7 +27,7 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     }
 
     public getNextSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
             if (FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)) {
@@ -39,7 +39,7 @@ export class FinanzielleSituationSubStepManagerLuzern extends FinanzielleSituati
     }
 
     public getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.LUZERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

@@ -15,7 +15,7 @@
 
 import {TranslateService} from '@ngx-translate/core';
 import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
-import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -57,8 +57,6 @@ describe('freigabeView', () => {
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));  // to inject applicationPropertyRS
-
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.module(translationsMock));
@@ -91,7 +89,7 @@ describe('freigabeView', () => {
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(new TSGesuchsperiode());
         spyOn(einstellungRS, 'findEinstellung')
             .and
-            .returnValue(Promise.resolve(new TSEinstellung()));
+            .returnValue(of(new TSEinstellung(null, null, 'true')));
 
         controller = new FreigabeViewController(gesuchModelManager,
             $injector.get('BerechnungsManager'),
@@ -120,7 +118,7 @@ describe('freigabeView', () => {
             spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(false);
 
             expect(controller.canBeFreigegeben()).toBe(false);
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepManager.hasStepGivenStatus)
                 .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
         });
@@ -156,7 +154,7 @@ describe('freigabeView', () => {
 
             const returned = controller.gesuchEinreichen();
             $scope.$apply();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -213,7 +211,7 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, false);
         });
     });

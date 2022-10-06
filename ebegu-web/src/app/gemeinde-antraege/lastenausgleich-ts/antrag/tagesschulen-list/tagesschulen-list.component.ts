@@ -35,7 +35,7 @@ const LOG = LogFactory.createLog('TagesschulenListComponent');
     selector: 'dv-tagesschulen-list',
     templateUrl: './tagesschulen-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class TagesschulenListComponent implements OnInit {
 
@@ -51,7 +51,7 @@ export class TagesschulenListComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly $state: StateService,
-        private readonly authService: AuthServiceRS,
+        private readonly authService: AuthServiceRS
     ) {
     }
 
@@ -70,14 +70,12 @@ export class TagesschulenListComponent implements OnInit {
     private getAllVisibleTagesschulenAngabenForTSLastenausgleich(): void {
         this.gemeindeAntragService.getAllVisibleTagesschulenAngabenForTSLastenausgleich(this.lastenausgleichId)
             .subscribe(data => {
-                this.data = data.map(latsInstitutionContainer => {
-                        return {
+                this.data = data.map(latsInstitutionContainer => ({
                             id: latsInstitutionContainer.id,
                             institutionName: latsInstitutionContainer.institution.name,
                             status: `LATS_STATUS_${latsInstitutionContainer.status}`,
-                            kontrollfragenOk: TagesschulenListComponent.areKontrollfragenOk(latsInstitutionContainer),
-                        };
-                    },
+                            kontrollfragenOk: TagesschulenListComponent.areKontrollfragenOk(latsInstitutionContainer)
+                        })
                 );
                 this.cd.markForCheck();
             }, () => {
@@ -123,13 +121,13 @@ export class TagesschulenListComponent implements OnInit {
                             return isOk ?
                                 '<i class="fa fa-check padding-left-60 green"></i>' :
                                 '<i class="fa fa-close padding-left-60 red"></i>';
-                        },
-                    },
+                        }
+                    }
                 ];
                 return;
             }
             this.tableColumns = [
-                {displayedName: 'Tagesschule', attributeName: 'institutionName'},
+                {displayedName: 'TAGESSCHULE', attributeName: 'institutionName'},
                 {displayedName: 'STATUS', attributeName: 'status'}
             ];
         }, error => console.error(error));

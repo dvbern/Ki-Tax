@@ -35,7 +35,7 @@ export class TSEWKBeziehung extends TSAbstractMutableEntity {
         nachname?: string,
         vorname?: string,
         geburtsdatum?: moment.Moment,
-        adresse?: TSEWKAdresse,
+        adresse?: TSEWKAdresse
     ) {
         super();
         this._beziehungstyp = beziehungstyp;

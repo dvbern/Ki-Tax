@@ -87,7 +87,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	protected static final String ELTERN_MAXTARIF = "PdfGeneration_elternMaxtarif";
 	protected static final String HAELFTE_AUSGEBILDET = "PdfGeneration_haelfteAusgebildet";
 	protected static final String AUSBILDUNGEN_ZERTIFIZIERT = "PdfGeneration_ausbildungenZertifiziert";
-	protected static final String BEMERKUNGEN = "Reports_bemerkungTitle";
+	protected static final String BEMERKUNGEN = "PdfGeneration_bemerkungen";
 
 	@Nonnull
 	private final LastenausgleichTagesschuleAngabenGemeindeContainer
@@ -369,12 +369,9 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	@Nonnull
 	private LastenausgleichTagesschuleAngabenGemeinde getAngabenGemeinde() {
-		boolean neuOrInBearbeitungGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.isInStatusNeu()
-			|| lastenausgleichTagesschuleAngabenGemeindeContainer.isInBearbeitungGemeinde();
-		LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde =
-			neuOrInBearbeitungGemeinde ?
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration() :
-				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur();
+		var angabenGemeinde = lastenausgleichTagesschuleAngabenGemeindeContainer.getStatus().atLeastGeprueft() ?
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenKorrektur() :
+				lastenausgleichTagesschuleAngabenGemeindeContainer.getAngabenDeklaration();
 		Objects.requireNonNull(angabenGemeinde);
 		return angabenGemeinde;
 	}

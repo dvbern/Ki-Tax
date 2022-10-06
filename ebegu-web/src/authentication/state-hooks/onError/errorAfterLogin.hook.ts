@@ -32,7 +32,7 @@ const loginStates = [
     'authentication.login',
     'authentication.locallogin',
     'authentication.tutorialInstitutionLogin',
-    'authentication.tutorialGemeindeLogin',
+    'authentication.tutorialGemeindeLogin'
 ];
 
 export function errorAfterLoginHookRunBlock($transitions: TransitionService): void {
@@ -56,7 +56,7 @@ function recover(transition: Transition): HookResult {
             take(1),
             map(principal => principal ? principal.getCurrentRole() : TSRole.ANONYMOUS),
             mergeMap(role => navigateToStartPageForRole(role, transition.router.stateService)),
-            map(() => true),
+            map(() => true)
         )
         .toPromise();
 }

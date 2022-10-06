@@ -109,7 +109,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
                 response.data));
         } else {
             this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-            this.$log.error('ResponseData:' + JSON.stringify(response.data));
+            this.$log.error(`ResponseData:${  JSON.stringify(response.data)}`);
             // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -156,6 +156,7 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
     /**
      *
      * checks if response data json-object has the keys required to be a violationReport (from jaxRS)
+     *
      * @param data object whose keys are checked
      * @returns true if fields of violationReport are present
      */

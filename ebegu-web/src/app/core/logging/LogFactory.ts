@@ -67,14 +67,14 @@ class LogFunctions {
         public readonly error: LogFunction,
         public readonly warn: LogFunction,
         public readonly info: LogFunction,
-        public readonly debug: LogFunction,
+        public readonly debug: LogFunction
     ) {
     }
 }
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
-        // tslint:disable-next-line:no-unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         super(console.error, console.warn, console.info, console.debug);
     }
 }
@@ -114,7 +114,7 @@ function findLogFunc(logFunctions: LogFunctions, level: LogLevel): LogFunction {
  * {@link https://developers.google.com/web/tools/chrome-devtools/console/console-write#styling_console_output_with_css}
  */
 function formatColored(args: any[], formattedModuleName: string, colorSupport: ColorSupport,
-                       backgroundColor: string,
+                       backgroundColor: string
 ): any[] {
     if (colorSupport === ColorSupport.NONE) {
         return [formattedModuleName, ...args];
@@ -125,14 +125,14 @@ function formatColored(args: any[], formattedModuleName: string, colorSupport: C
             `%c${formattedModuleName} %c${args[0]}`,
             `background-color: ${backgroundColor}; color: white; border: 1px solid ${backgroundColor};`,
             `border: 1px solid ${backgroundColor};`,
-            ...args.slice(1),
+            ...args.slice(1)
         ];
     }
 
     return [
         `%c${formattedModuleName}`,
         `background-color: ${backgroundColor}; color: white; border: 1px solid ${backgroundColor};`,
-        ...args,
+        ...args
     ];
 }
 
@@ -140,14 +140,14 @@ function formatColored(args: any[], formattedModuleName: string, colorSupport: C
  * Try very hard to get errors displayed... but do not crash the application (i.e.: treat IE/Edge well)
  */
 function logFuncFallback(loggingError: any, params: any[]): void {
-    // tslint:disable:no-console
+    /* eslint-disable no-console */
     try {
         console.log('Fallback log', loggingError, ...params);
     } catch (ignoredError) {
         // well... duh
         alert(ignoredError);
     }
-    // tslint:enable:no-console
+    /* eslint-enable no-console */
 }
 
 /**
@@ -163,7 +163,7 @@ export class Log {
     public constructor(
         private readonly logHandler: LogHandler,
         public readonly name: string,
-        public readonly backgroundColor: string = randomColor({seed: name, format: 'rgb'}),
+        public readonly backgroundColor: string = randomColor({seed: name, format: 'rgb'})
     ) {
         // nop
     }
@@ -197,7 +197,7 @@ export class LogFactory {
 
     public static logFunctions: LogFunctions = new DefaultLogFunctions();
     public static formattingOptions: FormattingOptions = {
-        moduleNameMinWidth: 30,
+        moduleNameMinWidth: 30
     };
 
     public static createLog(name: string): Log {

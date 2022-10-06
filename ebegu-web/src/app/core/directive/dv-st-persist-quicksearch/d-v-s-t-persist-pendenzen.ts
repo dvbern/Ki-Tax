@@ -16,9 +16,12 @@
 import {IAugmentedJQuery, IDirective, IDirectiveFactory, IDirectiveLinkFn, IScope} from 'angular';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {DVQuicksearchListController} from '../../../quicksearch/component/dv-quicksearch-list/dv-quicksearch-list';
+import {LogFactory} from '../../logging/LogFactory';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+
+const LOG = LogFactory.createLog('DVSTPersistPendenzen');
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -35,7 +38,7 @@ export class DVSTPersistPendenzen implements IDirective {
         private readonly benutzerRS: BenutzerRSX,
         private readonly institutionRS: InstitutionRS,
         private readonly dVsTPersistService: DVsTPersistService,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
         this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             const nameSpace: string = attrs.dvStPersistQuicksearch;
@@ -86,7 +89,7 @@ export class DVSTPersistPendenzen implements IDirective {
             benutzerRS: any,
             institutionRS: any,
             dVsTPersistService: any,
-            gemeindeRS: any,
+            gemeindeRS: any
         ) => new DVSTPersistPendenzen(benutzerRS,
             institutionRS,
             dVsTPersistService,
@@ -102,7 +105,7 @@ export class DVSTPersistPendenzen implements IDirective {
      */
     private setVerantwortlicherBGFromName(
         quicksearchListController: DVQuicksearchListController,
-        verantwortlicherBGFullname: string,
+        verantwortlicherBGFullname: string
     ): void {
         if (!(verantwortlicherBGFullname && quicksearchListController)) {
             return;
@@ -122,7 +125,7 @@ export class DVSTPersistPendenzen implements IDirective {
      */
     private setVerantwortlicherTSFromName(
         quicksearchListController: DVQuicksearchListController,
-        verantwortlicherTSFullname: string,
+        verantwortlicherTSFullname: string
     ): void {
         if (!(verantwortlicherTSFullname && quicksearchListController)) {
             return;
@@ -144,9 +147,9 @@ export class DVSTPersistPendenzen implements IDirective {
             return;
         }
 
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(institutionList => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(institutionList => {
             quicksearchListController.selectedInstitution = institutionList.find(i => i.name === institution);
-        });
+        }, error => LOG.error(error));
     }
 
     private setGemeindeFromName(quicksearchListController: DVQuicksearchListController, gemeinde: string): void {

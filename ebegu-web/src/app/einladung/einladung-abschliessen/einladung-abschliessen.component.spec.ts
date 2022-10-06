@@ -53,17 +53,17 @@ describe('EinladungAbschliessenComponent', () => {
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         sozialdienstRSSpy.getSozialdienstList.and.returnValue(of([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
+                SharedModule
             ],
             declarations: [
-                EinladungAbschliessenComponent,
+                EinladungAbschliessenComponent
             ],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
@@ -72,7 +72,7 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

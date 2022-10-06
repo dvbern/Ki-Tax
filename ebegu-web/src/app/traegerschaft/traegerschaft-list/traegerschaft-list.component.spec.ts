@@ -45,7 +45,7 @@ describe('TraegerschaftListComponent', () => {
       TestBed.configureTestingModule({
           imports: [
               SharedModule,
-              NoopAnimationsModule,
+              NoopAnimationsModule
           ],
           providers: [
               {provide: TraegerschaftRS, useValue: traegerschaftServiceSpy},
@@ -53,9 +53,9 @@ describe('TraegerschaftListComponent', () => {
               {provide: AuthServiceRS, useValue: authServiceSpy},
               {provide: MatDialog, useValue: dvDialogSpy},
               {provide: StateService, useValue: stateServiceSpy},
-              {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+              {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
           ],
-          declarations: [TraegerschaftListComponent],
+          declarations: [TraegerschaftListComponent]
       })
           .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
           .compileComponents();

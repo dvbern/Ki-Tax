@@ -39,7 +39,7 @@ import {NewAntragListComponent} from './new-antrag-list.component';
 
 // We mock the user select directive to make the setup easier since these are unit tests
 @Directive({
-    selector: '[dvNewUserSelect]',
+    selector: '[dvNewUserSelect]'
 })
 class MockNewUserSelectDirective {
     @Input()
@@ -106,12 +106,12 @@ describe('NewAntragListComponent', () => {
                 {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
-                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-            ],
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals}
+            ]
         })
             .compileComponents();
 
-        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getInstitutionenReadableForCurrentBenutzer.and.returnValue(of([]));
         gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         authRSSpy.getPrincipalRole.and.returnValue(undefined);
@@ -119,7 +119,7 @@ describe('NewAntragListComponent', () => {
         const dummySearchResult: TSAntragSearchresultDTO = {
             get antragDTOs(): TSAntragDTO[] {
                 return [];
-            },
+            }
         } as any;
         searchRSSpy.searchAntraege.and.returnValue(of(dummySearchResult));
         searchRSSpy.countAntraege.and.returnValue(of(0));

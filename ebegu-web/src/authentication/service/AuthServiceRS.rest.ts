@@ -43,7 +43,7 @@ export class AuthServiceRS {
     public static $inject = [
         '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil',
         'AuthLifeCycleService',
-        'BenutzerRS',
+        'BenutzerRS'
     ];
 
     private principal?: TSBenutzer;
@@ -63,7 +63,7 @@ export class AuthServiceRS {
         private readonly $cookies: ICookiesService,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly benutzerRS: BenutzerRSX,
+        private readonly benutzerRS: BenutzerRSX
     ) {
     }
 
@@ -94,7 +94,7 @@ export class AuthServiceRS {
         }
 
         return this.$http.post(
-            CONSTANTS.REST_API + 'auth/login',
+            `${CONSTANTS.REST_API  }auth/login`,
             this.ebeguRestUtil.userToRestObject({}, userCredentials)
         ).then(() => {
             // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
@@ -114,7 +114,7 @@ export class AuthServiceRS {
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
 
-        // tslint:disable-next-line:no-try-promise
+        // eslint-disable-next-line
         try {
             // we take the complete user from Server and store it in principal
             return this.reloadUser();
@@ -130,7 +130,7 @@ export class AuthServiceRS {
             return this.$q.when(this.portalAccCreationLink);
         }
 
-        return this.$http.get(CONSTANTS.REST_API + 'auth/portalAccountPage').then((res: any) => {
+        return this.$http.get(`${CONSTANTS.REST_API  }auth/portalAccountPage`).then((res: any) => {
             this.portalAccCreationLink = res.data;
             return res.data;
         });
@@ -140,7 +140,7 @@ export class AuthServiceRS {
         return this.getPortalAccountCreationPageLink().then((linktext: string) => {
 
             if (linktext && this.isBeLoginLink(linktext)) {
-                LOG.debug('Burn BE-Login timeout page at ' + linktext);
+                LOG.debug(`Burn BE-Login timeout page at ${  linktext}`);
                 // the no-cors options will prevent the browser to log an error because be-login has not
                 // set Access-Control-Allow-Origin: * that would allow us to fetch the page from javascript
                 // instead it will prevent js code from even trying to use the response but we don't need that anyway
@@ -151,7 +151,7 @@ export class AuthServiceRS {
                         mode: 'no-cors', // no-cors, *cors, same-origin
                         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                         credentials: 'include', // include, *same-origin, omit
-                        redirect: 'follow', // manual, *follow, error
+                        redirect: 'follow' // manual, *follow, error
                     });
                 } else {
                     fetchPromise = this.$http.get(linktext, {withCredentials: true});
@@ -168,6 +168,7 @@ export class AuthServiceRS {
 
     /**
      * helper that checks if a link redirects to be-login by checking if it ends with .be.ch (to include testsystems)
+     *
      * @param link to check
      */
     private isBeLoginLink(link: string): boolean {
@@ -200,7 +201,7 @@ export class AuthServiceRS {
     }
 
     private loadPrincipal(): IPromise<TSBenutzer> {
-        return this.$http.get(CONSTANTS.REST_API + 'auth/authenticated-user')
+        return this.$http.get(`${CONSTANTS.REST_API  }auth/authenticated-user`)
             .then(response => response.data)
             .then(restBenutzer => this.ebeguRestUtil.parseUser(new TSBenutzer(), restBenutzer));
     }
@@ -217,12 +218,12 @@ export class AuthServiceRS {
                 : null,
             institution: this.principal.currentBerechtigung.institution
                 ? this.principal.currentBerechtigung.institution.name
-                : null,
+                : null
         });
     }
 
     public logoutRequest(): any {
-        return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
+        return this.$http.post(`${CONSTANTS.REST_API  }auth/logout`, null).then((res: any) => {
             this.clearPrincipal();
             Raven.setUserContext({});
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
@@ -236,21 +237,19 @@ export class AuthServiceRS {
     }
 
     public initSSOLogin(relayPath: string): IPromise<string> {
-        return this.initSSO(CONSTANTS.REST_API + 'auth/singleSignOn', relayPath);
+        return this.initSSO(`${CONSTANTS.REST_API  }auth/singleSignOn`, relayPath);
     }
 
     public initConnectGSZPV(relayPath: string): IPromise<string> {
-        return this.initSSO(CONSTANTS.REST_API + 'auth/init-connect-gs-zpv', relayPath);
+        return this.initSSO(`${CONSTANTS.REST_API  }auth/init-connect-gs-zpv`, relayPath);
     }
 
     public initSingleLogout(relayPath: string): IPromise<string> {
-        return this.initSSO(CONSTANTS.REST_API + 'auth/singleLogout', relayPath);
+        return this.initSSO(`${CONSTANTS.REST_API  }auth/singleLogout`, relayPath);
     }
 
     private initSSO(path: string, relayPath: string): IPromise<string> {
-        return this.$http.get(path, {params: {relayPath}}).then((res: any) => {
-            return res.data;
-        });
+        return this.$http.get(path, {params: {relayPath}}).then((res: any) => res.data);
     }
 
     /**
@@ -332,6 +331,6 @@ export class AuthServiceRS {
     }
 
     public setMandant(mandant: KiBonMandantFull): IPromise<any> {
-        return this.$http.post(CONSTANTS.REST_API + 'auth/set-mandant', {name: mandant});
+        return this.$http.post(`${CONSTANTS.REST_API  }auth/set-mandant`, {name: mandant});
     }
 }

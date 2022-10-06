@@ -29,41 +29,41 @@ export const STATES: NgHybridStateDeclaration[] = [
         name: 'traegerschaft',
         abstract: true,
         url: '/traegerschaft',
-        component: UiViewComponent,
+        component: UiViewComponent
     },
     {
         name: 'traegerschaft.list',
         url: '/list',
         component: TraegerschaftListComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
+            roles: TSRoleUtil.getMandantRoles()
+        }
     },
     {
         name: 'traegerschaft.edit',
         url: '/edit/:traegerschaftId',
         component: TraegerschaftEditComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForTraegerschaften(),
-        },
+            roles: TSRoleUtil.getAllRolesForTraegerschaften()
+        }
     },
     {
         name: 'traegerschaft.add',
         url: '/add',
         component: TraegerschaftAddComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
+            roles: TSRoleUtil.getMandantRoles()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: STATES}),
+        UIRouterUpgradeModule.forChild({states: STATES})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class TraegerschaftRoutingModule {
 }

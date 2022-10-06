@@ -7,7 +7,7 @@ import {WindowRef} from '../../core/service/windowRef.service';
     selector: 'dv-init-zpv-nr',
     templateUrl: './init-zpv-nr.component.html',
     styleUrls: ['./init-zpv-nr.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InitZpvNrComponent implements OnInit {
     private redirectionHref: string;

@@ -130,9 +130,9 @@ export class PendenzenBetreuungenListViewController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.institutionenList = response;
-        });
+        }, error => LOG.error(error));
     }
 
     public updateBetreuungsangebotTypList(): void {
@@ -147,7 +147,7 @@ export class PendenzenBetreuungenListViewController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -179,7 +179,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         const navObj: any = {
             betreuungNumber,
             kindNumber,
-            gesuchId: pendenz.gesuchId,
+            gesuchId: pendenz.gesuchId
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.betreuung', navObj);
@@ -194,9 +194,9 @@ export class PendenzenBetreuungenListViewController implements IController {
             return;
         }
         this.institutionRS.hasInstitutionenInStatusAngemeldet()
-            .then(result => {
+            .subscribe(result => {
                 this.hasInstitutionenInStatusAngemeldet = result;
-            });
+            }, error => LOG.error(error));
     }
 
     private initIsStammdatenCheckRequired(): void {
@@ -204,8 +204,8 @@ export class PendenzenBetreuungenListViewController implements IController {
             return;
         }
         this.institutionRS.isStammdatenCheckRequired()
-            .then(result => {
+            .subscribe(result => {
                 this.isStammdatenCheckRequired = result;
-            });
+            }, error => LOG.error(error));
     }
 }

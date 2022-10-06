@@ -25,17 +25,17 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'alleVerfuegungen',
         data: {
-            roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles(),
-        },
+            roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtOtherAmtRoles()
+        }
     },
     {
         name: 'alleVerfuegungen.view',
         template: '<alle-verfuegungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/alleVerfuegungen/:dossierId',
         data: {
-            roles: TSRoleUtil.getAllRolesForMenuAlleVerfuegungen(),
-        },
-    },
+            roles: TSRoleUtil.getAllRolesForMenuAlleVerfuegungen()
+        }
+    }
 ];
 
 // PARAMS

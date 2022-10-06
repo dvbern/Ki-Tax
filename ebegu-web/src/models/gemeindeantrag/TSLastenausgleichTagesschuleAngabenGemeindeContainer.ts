@@ -51,7 +51,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZURUECK_AN_GEMEINDE
         ].includes(this.status);
     }
 
@@ -59,7 +59,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU,
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG
         ].includes(this.status);
     }
 
@@ -97,23 +97,21 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public allAngabenInstitutionContainersGeprueft(): boolean {
         return this.angabenInstitutionContainers.reduce((
             prev: boolean,
-            cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
-        ) => {
-            return prev && cur.isGeprueftGemeinde();
-        }, true);
+            cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+        ) => prev && cur.isGeprueftGemeinde(), true);
     }
 
     public isAtLeastGeprueft(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.GEPRUEFT,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ABGESCHLOSSEN
         ].includes(this.status);
     }
 
     public isinPruefungKanton(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_PRUEFUNG_KANTON,
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG,
+            TSLastenausgleichTagesschuleAngabenGemeindeStatus.ZWEITPRUEFUNG
         ].includes(this.status);
     }
 

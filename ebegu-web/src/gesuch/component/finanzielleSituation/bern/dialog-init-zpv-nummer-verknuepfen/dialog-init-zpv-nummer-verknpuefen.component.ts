@@ -38,7 +38,7 @@ export class DialogInitZPVNummerVerknuepfen implements OnInit {
         private readonly gesuchstellerRS: GesuchstellerRS,
         private readonly languageService: TranslateService,
         private readonly $state: StateService,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.gs = data.gs;
         this.korrespondenzSprache = data.korrespondenzSprache;

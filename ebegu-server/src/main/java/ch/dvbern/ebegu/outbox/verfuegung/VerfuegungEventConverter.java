@@ -38,13 +38,18 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
+import ch.dvbern.kibon.exchange.commons.types.EinschulungTyp;
+import ch.dvbern.kibon.exchange.commons.types.Mandant;
 import ch.dvbern.kibon.exchange.commons.types.Regelwerk;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
@@ -55,6 +60,7 @@ import ch.dvbern.kibon.exchange.commons.verfuegung.ZeitabschnittDTO;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 @ApplicationScoped
 public class VerfuegungEventConverter {
@@ -75,7 +81,10 @@ public class VerfuegungEventConverter {
 		byte[] payload = AvroConverter.toAvroBinary(dto);
 
 		Objects.requireNonNull(verfuegung.getBetreuung());
-		return Optional.of(new VerfuegungVerfuegtEvent(verfuegung.getBetreuung().getBGNummer(), payload, dto.getSchema()));
+		return Optional.of(new VerfuegungVerfuegtEvent(
+			verfuegung.getBetreuung().getBGNummer(),
+			payload,
+			dto.getSchema()));
 	}
 
 	@Nullable
@@ -87,14 +96,14 @@ public class VerfuegungEventConverter {
 		Gesuch gesuch = betreuung.extractGesuch();
 		Gemeinde gemeinde = gesuch.extractGemeinde();
 		Gesuchsteller gesuchsteller = requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA();
-		Kind kind = betreuung.getKind().getKindJA();
+		KindContainer kindContainer = betreuung.getKind();
 
 		DateRange periode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		LocalDateTime timestampErstellt = verfuegung.getTimestampErstellt();
 		Instant verfuegtAm = requireNonNull(timestampErstellt).atZone(ZoneId.systemDefault()).toInstant();
 
 		VerfuegungEventDTO.Builder builder = VerfuegungEventDTO.newBuilder()
-			.setKind(toKindDTO(kind))
+			.setKind(toKindDTO(kindContainer))
 			.setGesuchsteller(toGesuchstellerDTO(gesuchsteller))
 			.setBetreuungsArt(BetreuungsangebotTyp.valueOf(requireNonNull(betreuung.getBetreuungsangebotTyp()).name()))
 			.setRefnr(betreuung.getBGNummer())
@@ -105,7 +114,8 @@ public class VerfuegungEventConverter {
 			.setVerfuegtAm(verfuegtAm)
 			.setGemeindeBfsNr(gemeinde.getBfsNummer())
 			.setGemeindeName(gemeinde.getName())
-			.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern());
+			.setAuszahlungAnEltern(betreuung.isAuszahlungAnEltern())
+			.setMandant(Mandant.valueOf(gemeinde.getMandant().getMandantIdentifier().name()));
 
 		setZeitabschnitte(verfuegung, builder);
 
@@ -113,12 +123,43 @@ public class VerfuegungEventConverter {
 	}
 
 	@Nonnull
-	private KindDTO toKindDTO(@Nonnull Kind kind) {
+	private KindDTO toKindDTO(@Nonnull KindContainer kindContainer) {
+		Kind kind = kindContainer.getKindJA();
+
 		return KindDTO.newBuilder()
 			.setVorname(kind.getVorname())
 			.setNachname(kind.getNachname())
 			.setGeburtsdatum(kind.getGeburtsdatum())
+			.setEinschulungTyp(EinschulungTyp.valueOf(requireNonNull(kind.getEinschulungTyp()).name()))
+			.setSozialeIndikation(hatSozialeIndikation(kind))
+			.setSprachlicheIndikation(hatSprachlicheIndikation(kind))
+			.setSprichtMuttersprache(requireNonNull(kind.getSprichtAmtssprache()))
+			.setAusserordentlicherAnspruch(kind.getPensumAusserordentlicherAnspruch() != null)
+			.setKindAusAsylwesenAngabeElternGemeinde(isAusAsylwesen(kind))
+			.setKeinSelbstbehaltDurchGemeinde(isKeinSelbstbehaltDurchGemeinde(kindContainer))
 			.build();
+	}
+
+	private static boolean isKeinSelbstbehaltDurchGemeinde(@Nonnull KindContainer kindContainer) {
+		return requireNonNullElse(kindContainer.getKeinSelbstbehaltDurchGemeinde(), false);
+	}
+
+	private static boolean isAusAsylwesen(@Nonnull Kind kind) {
+		return requireNonNullElse(kind.getAusAsylwesen(), false);
+	}
+
+	private static boolean hatSozialeIndikation(@Nonnull Kind kind) {
+		PensumFachstelle pf = kind.getPensumFachstelle();
+
+		return pf != null
+			&& pf.getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION;
+	}
+
+	private static boolean hatSprachlicheIndikation(@Nonnull Kind kind) {
+		PensumFachstelle pf = kind.getPensumFachstelle();
+
+		return pf != null
+			&& pf.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION;
 	}
 
 	@Nonnull
@@ -134,7 +175,7 @@ public class VerfuegungEventConverter {
 	private void setZeitabschnitte(@Nonnull Verfuegung verfuegung, @Nonnull VerfuegungEventDTO.Builder builder) {
 
 		Map<Boolean, List<VerfuegungZeitabschnitt>> abschnitteByIgnored = verfuegung.getZeitabschnitte().stream()
-			.collect(Collectors.partitioningBy(abschnitt -> abschnitt.getZahlungsstatusInstitution().isIgnoriertIgnorierend()));
+			.collect(Collectors.partitioningBy(z -> z.getZahlungsstatusInstitution().isIgnoriertIgnorierend()));
 
 		List<VerfuegungZeitabschnitt> ignoredAbschnitte = abschnitteByIgnored.getOrDefault(true, emptyList());
 		List<VerfuegungZeitabschnitt> verrechnetAbschnitte = abschnitteByIgnored.getOrDefault(false, emptyList());
@@ -199,6 +240,11 @@ public class VerfuegungEventConverter {
 			.setZeiteinheit(Zeiteinheit.valueOf(zeitabschnitt.getZeiteinheit().name()))
 			.setRegelwerk(Regelwerk.valueOf(zeitabschnitt.getRegelwerk().name()))
 			.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern())
+			.setBesondereBeduerfnisse(zeitabschnitt.isBesondereBeduerfnisseBestaetigt())
+			.setMassgebendesEinkommen(zeitabschnitt.getMassgebendesEinkommen())
+			.setBetreuungsgutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
+				.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
+			.setBabyTarif(zeitabschnitt.getBgCalculationResultAsiv().isBabyTarif())
 			.build();
 	}
 }

@@ -32,7 +32,7 @@ const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
 @Component({
     selector: 'dv-finanzielle-situation-require-x',
     templateUrl: './dv-finanzielle-situation-require-x.component.html',
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvFinanzielleSituationRequireX implements OnInit {
 
@@ -81,9 +81,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
         this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(response => {
+            .subscribe(response => {
                 this.maxMassgebendesEinkommen = parseInt(response.value, 10);
-            });
+            }, error => LOG.error(error));
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
 
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),

@@ -29,7 +29,7 @@ export class GesuchstellerRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}gesuchsteller`;
 
@@ -39,7 +39,7 @@ export class GesuchstellerRS {
         gesuchsteller: TSGesuchstellerContainer,
         gesuchId: string,
         gsNumber: number,
-        umzug: boolean,
+        umzug: boolean
     ): IPromise<TSGesuchstellerContainer> {
         const gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}/gsNumber/${gsNumber}/${umzug}`;

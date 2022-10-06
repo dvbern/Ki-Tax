@@ -13,7 +13,7 @@ import {WindowRef} from '../../core/service/windowRef.service';
 const LOG = LogFactory.createLog('MandantService');
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class MandantService {
 
@@ -30,11 +30,11 @@ export class MandantService {
     public constructor(
         private readonly windowRef: WindowRef,
         private readonly http: HttpClient,
-        private readonly cookieService: CookieService,
+        private readonly cookieService: CookieService
     ) {
         // Workaround, we somehow get a cyclic dependency when we try to inject this directly
         // TODO: reenable once ApplicationPropertyRS is migrated
-        // tslint:disable-next-line:no-commented-code
+        // eslint-disable-next-line
         // this.applicationPropertyService.getPublicPropertiesCached().then(properties => {
         //     this._multimandantActive$.next(properties.mulitmandantAktiv);
         // });
@@ -48,6 +48,8 @@ export class MandantService {
                 return KiBonMandant.LU;
             case KiBonMandant.SO:
                 return KiBonMandant.SO;
+            case KiBonMandant.AR:
+                return KiBonMandant.AR;
             default:
                 return KiBonMandant.NONE;
         }
@@ -61,6 +63,8 @@ export class MandantService {
                 return KiBonMandantFull.LU;
             case KiBonMandant.SO:
                 return KiBonMandantFull.SO;
+            case KiBonMandant.AR:
+                return KiBonMandantFull.AR;
             default:
                 return KiBonMandantFull.NONE;
         }
@@ -74,6 +78,8 @@ export class MandantService {
                 return KiBonMandant.SO;
             case KiBonMandantFull.LU:
                 return KiBonMandant.LU;
+            case KiBonMandantFull.AR:
+                return KiBonMandant.AR;
             default:
                 return KiBonMandant.NONE;
         }
@@ -141,7 +147,7 @@ export class MandantService {
     }
 
     public parseHostnameForMandant(): KiBonMandant {
-        const regex = /(be|so|stadtluzern)(?=.(dvbern|kibon))/g;
+        const regex = /(be|so|ar|stadtluzern)(?=.(dvbern|kibon))/g;
         const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
         if (matches === null) {
             return KiBonMandant.NONE;
@@ -159,13 +165,13 @@ export class MandantService {
 
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
-        return this.http.post(CONSTANTS.REST_API + 'auth/set-mandant',
+        return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant`,
             {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
     }
 
     public setMandantRedirectCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
-        return this.http.post(CONSTANTS.REST_API + 'auth/set-mandant-redirect',
+        return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant-redirect`,
             {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
     }
 
@@ -188,7 +194,7 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /(local|dev|uat|iat|demo|replica)?(?=(-.*)?\.(kibon))/;
+        const environmentRegex = /(local|dev|uat|iat|demo|schulung|replica)?(?=(-.*)?\.(kibon))/;
         const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
         if (matches === null) {
             return '';
@@ -205,6 +211,7 @@ export class MandantService {
             case KiBonMandant.BE:
             case KiBonMandant.NONE:
             case KiBonMandant.SO:
+            case KiBonMandant.AR:
             case KiBonMandant.LU:
                 return 'authentication.login';
             default:
@@ -216,6 +223,8 @@ export class MandantService {
         switch (mandant.mandantIdentifier) {
             case 'SOLOTHURN':
                 return KiBonMandant.SO;
+            case 'APPENZELL_AUSSERRHODEN':
+                return KiBonMandant.AR;
             case 'LUZERN':
                 return KiBonMandant.LU;
             case 'BERN':
@@ -227,7 +236,7 @@ export class MandantService {
     public getAll(): Observable<TSMandant[]> {
         return this.http.get<any[]>(`${CONSTANTS.REST_API}mandanten/all`)
             .pipe(
-                map(results => results.map(restMandant => this.restUtil.parseMandant(new TSMandant(), restMandant))),
+                map(results => results.map(restMandant => this.restUtil.parseMandant(new TSMandant(), restMandant)))
             );
     }
 
@@ -239,6 +248,8 @@ export class MandantService {
                 return 'logo-kibon-luzern.svg';
             case KiBonMandant.SO:
                 return 'logo-kibon-solothurn.svg';
+            case KiBonMandant.AR:
+                return 'logo-kibon-ar.png';
             default:
                 return 'logo-kibon-bern.svg';
         }

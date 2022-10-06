@@ -24,8 +24,8 @@ describe('posteingangService', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
-                PosteingangService,
-            ],
+                PosteingangService
+            ]
         });
 
         posteingangService = TestBed.inject<PosteingangService>(PosteingangService);
@@ -41,7 +41,7 @@ describe('posteingangService', () => {
                         expect(value).toBe(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED);
                         done();
                     },
-                    done.fail,
+                    done.fail
                 );
         });
     });

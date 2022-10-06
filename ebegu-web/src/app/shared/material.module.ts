@@ -47,13 +47,13 @@ const MATERIAL_MODULES = [
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
+    MatTooltipModule
     // MatBottomSheetModule
 ];
 
 @NgModule({
     imports: [MatMomentDateModule, ...MATERIAL_MODULES],
-    exports: [MatMomentDateModule, ...MATERIAL_MODULES],
+    exports: [MatMomentDateModule, ...MATERIAL_MODULES]
 })
 export class MaterialModule {
 }

@@ -23,7 +23,7 @@ import {TSInternePendenz} from '../../../../models/TSInternePendenz';
 @Component({
     selector: 'interne-pendenz-dialog',
     templateUrl: './interne-pendenz-dialog.template.html',
-    styleUrls: ['./interne-pendenz-dialog.component.less'],
+    styleUrls: ['./interne-pendenz-dialog.component.less']
 })
 export class InternePendenzDialogComponent {
 
@@ -34,7 +34,7 @@ export class InternePendenzDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InternePendenzDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.internePendenz = data.internePendenz;
         this.readonlyMode = !this.isNew();

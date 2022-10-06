@@ -20,14 +20,14 @@ import {
     ChangeDetectorRef,
     Component,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatSort} from '@angular/material/sort';
 import {StateService} from '@uirouter/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
@@ -38,13 +38,13 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 @Component({
     selector: 'dv-gemeinde-list',
     templateUrl: './gemeinde-list.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GemeindeListComponent extends AbstractAdminViewController implements OnInit {
+export class GemeindeListComponent extends AbstractAdminViewX implements OnInit {
     public hiddenDVTableColumns = [
         'institutionCount',
         'type',
-        'remove',
+        'remove'
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;
@@ -56,7 +56,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         private readonly gemeindeRS: GemeindeRS,
         private readonly $state: StateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        authServiceRS: AuthServiceRS,
+        authServiceRS: AuthServiceRS
     ) {
         super(authServiceRS);
     }
@@ -76,10 +76,10 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
                             id: gemeinde.id,
                             name: gemeinde.name,
                             status: gemeinde.status.toString(),
-                            canEdit: this.hatBerechtigungEditieren(gemeinde),
+                            canEdit: this.hatBerechtigungEditieren(gemeinde)
                         };
                         entitaetListItems.push(dvListItem);
-                    },
+                    }
                 );
                 return entitaetListItems;
             }));

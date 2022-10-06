@@ -42,7 +42,7 @@ export class WizardStepManager {
         'WizardStepRS',
         '$q',
         'AuthLifeCycleService',
-        'EinstellungRS',
+        'EinstellungRS'
     ];
 
     private allowedSteps: Array<TSWizardStepName> = [];
@@ -61,13 +61,13 @@ export class WizardStepManager {
         private readonly wizardStepRS: WizardStepRS,
         private readonly $q: IQService,
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         this.setAllowedStepsForRole(authServiceRS.getPrincipalRole());
         this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
             .subscribe(
                 () => this.setAllowedStepsForRole(this.authServiceRS.getPrincipalRole()),
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -88,7 +88,7 @@ export class WizardStepManager {
         stepName: TSWizardStepName,
         status: TSWizardStepStatus,
         bemerkungen: string,
-        verfuegbar: boolean,
+        verfuegbar: boolean
     ): TSWizardStep {
 
         const tsWizardStep = new TSWizardStep();
@@ -112,7 +112,7 @@ export class WizardStepManager {
                     TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
                     TSWizardStepStatus.IN_BEARBEITUNG,
                     undefined,
-                    true),
+                    true)
             ];
             this.currentStepName = TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN;
         } else {
@@ -121,7 +121,7 @@ export class WizardStepManager {
                     TSWizardStepName.GESUCH_ERSTELLEN,
                     TSWizardStepStatus.IN_BEARBEITUNG,
                     undefined,
-                    true),
+                    true)
             ];
             this.currentStepName = TSWizardStepName.GESUCH_ERSTELLEN;
         }
@@ -130,7 +130,7 @@ export class WizardStepManager {
                 TSWizardStepName.FAMILIENSITUATION,
                 TSWizardStepStatus.UNBESUCHT,
                 'initFinSit dummy',
-                false),
+                false)
         );
     }
 
@@ -144,7 +144,7 @@ export class WizardStepManager {
 
     public getVisibleSteps(): Array<TSWizardStepName> {
         return this.allowedSteps.filter(element =>
-            !this.isStepHidden(element),
+            !this.isStepHidden(element)
         );
     }
 
@@ -225,9 +225,7 @@ export class WizardStepManager {
 
     public getStepByName(stepName: TSWizardStepName): TSWizardStep {
 
-        return this.wizardSteps.filter((step: TSWizardStep) => {
-            return step.wizardStepName === stepName;
-        })[0];
+        return this.wizardSteps.filter((step: TSWizardStep) => step.wizardStepName === stepName)[0];
     }
 
     /**
@@ -241,18 +239,14 @@ export class WizardStepManager {
             if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) {
                 // nur wenn der Status sich geaendert hat updaten und steps laden
                 step.wizardStepStatus = newStepStatus;
-                return this.wizardStepRS.updateWizardStep(step).then((response: TSWizardStep) => {
-                    return this.findStepsFromGesuch(response.gesuchId);
-                });
+                return this.wizardStepRS.updateWizardStep(step).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
             }
         }
         return this.$q.when();
     }
 
     public updateCurrentWizardStepStatusMutiert(): IPromise<void> {
-        return this.wizardStepRS.setWizardStepMutiert(this.getCurrentStep().id).then((response: TSWizardStep) => {
-            return this.findStepsFromGesuch(response.gesuchId);
-        });
+        return this.wizardStepRS.setWizardStepMutiert(this.getCurrentStep().id).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
     }
 
     private needNewStatusSave(oldStepStatus: TSWizardStepStatus, newStepStatus: TSWizardStepStatus): boolean {
@@ -274,7 +268,7 @@ export class WizardStepManager {
      */
     public updateCurrentWizardStepStatusSafe(
         stepName: TSWizardStepName,
-        stepStatus: TSWizardStepStatus,
+        stepStatus: TSWizardStepStatus
     ): IPromise<void> {
         if (this.getCurrentStepName() === stepName) {
             return this.updateCurrentWizardStepStatus(stepStatus);
@@ -294,9 +288,7 @@ export class WizardStepManager {
      * Just updates the current step as is
      */
     public updateCurrentWizardStep(): IPromise<void> {
-        return this.wizardStepRS.updateWizardStep(this.getCurrentStep()).then((response: TSWizardStep) => {
-            return this.findStepsFromGesuch(response.gesuchId);
-        });
+        return this.wizardStepRS.updateWizardStep(this.getCurrentStep()).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
     }
 
     /**
@@ -424,7 +416,7 @@ export class WizardStepManager {
         if (EbeguUtil.isNullOrUndefined(gesuch)) {
             return false;
         }
-        // tslint:disable-next-line:prefer-for-of
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.wizardSteps.length; i++) {
             if (this.wizardSteps[i].wizardStepName === TSWizardStepName.BETREUUNG) {
                 if (!this.isStatusOk(this.wizardSteps[i].wizardStepStatus)
@@ -530,13 +522,13 @@ export class WizardStepManager {
             this.einstellungRS.findEinstellung(TSEinstellungKey.ABWESENHEIT_AKTIV,
                 gesuch.dossier.gemeinde.id,
                 gesuch.gesuchsperiode.id)
-                .then(abwesenheitAktiv => {
+                .subscribe(abwesenheitAktiv => {
                     if (abwesenheitAktiv.value === 'false') {
                         this.hideStep(TSWizardStepName.ABWESENHEIT);
                         return;
                     }
                     this.unhideStep(TSWizardStepName.ABWESENHEIT);
-                });
+                }, error => LOG.error(error));
         } else {
             this.hideStep(TSWizardStepName.ABWESENHEIT);
         }

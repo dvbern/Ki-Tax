@@ -23,6 +23,6 @@ export function getTSZahlungsstatusValues(): Array<TSZahlungsstatus> {
     return [
         TSZahlungsstatus.ENTWURF,
         TSZahlungsstatus.AUSGELOEST,
-        TSZahlungsstatus.BESTAETIGT,
+        TSZahlungsstatus.BESTAETIGT
     ];
 }

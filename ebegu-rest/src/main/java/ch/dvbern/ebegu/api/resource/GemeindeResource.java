@@ -385,6 +385,7 @@ public class GemeindeResource {
 		}
 		if (stammdaten.isNew()) {
 			stammdaten.setAdresse(new Adresse());
+			stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
 		}
 		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 

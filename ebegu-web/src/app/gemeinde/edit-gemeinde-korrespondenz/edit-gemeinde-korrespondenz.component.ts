@@ -27,7 +27,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
     selector: 'dv-edit-gemeinde-korrespondenz',
     templateUrl: './edit-gemeinde-korrespondenz.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class EditGemeindeComponentKorrespondenz  {
 

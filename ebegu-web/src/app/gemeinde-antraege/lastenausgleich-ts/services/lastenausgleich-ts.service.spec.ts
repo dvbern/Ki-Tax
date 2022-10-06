@@ -31,8 +31,8 @@ describe('LastenausgleichTSService', () => {
             imports: [HttpClientModule],
             providers: [
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: TranslateService, useValue: translateSpy},
-            ],
+                {provide: TranslateService, useValue: translateSpy}
+            ]
         });
         service = TestBed.inject(LastenausgleichTSService);
     });

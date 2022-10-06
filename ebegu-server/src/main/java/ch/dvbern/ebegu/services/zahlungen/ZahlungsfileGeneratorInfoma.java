@@ -78,7 +78,7 @@ public class ZahlungsfileGeneratorInfoma implements IZahlungsfileGenerator {
 			}
 		}
 		sb.append(InfomaFooter.with(zahlungenSorted.size(), zahlungsauftrag.getBetragTotalAuftrag()));
-		return sb.toString().getBytes(StandardCharsets.US_ASCII);
+		return sb.toString().getBytes(StandardCharsets.ISO_8859_1);
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
@@ -223,4 +224,16 @@ public interface MitteilungService {
 	void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(@Nonnull Institution institution, @Nonnull DateRange gueltigkeit);
 
 	boolean isBetreuungGueltigForMutation(Betreuung betreuung);
+
+	/**
+	 * Applies all passed Betreuungspensen from the Betreuungsmitteilung to the existing Betreuung with the same
+	 * number.
+	 * If the newest Antrag is verfuegt, it will create a new Mutation out of it and apply the changes in this new
+	 * Antrag.
+	 * Returns null if the mitteilung cannot be applied, otherwise the mitteilung
+	 * Used for bulk work
+	 */
+	@Nullable
+	Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
+
 }

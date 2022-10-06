@@ -15,7 +15,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, IPromise} from 'angular';
-import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../../admin/service/ferieninselStammdatenRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -26,6 +25,7 @@ import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {getWeekdaysValues} from '../../../models/enums/TSDayOfWeek';
 import {getTSFeriennameValues, TSFerienname} from '../../../models/enums/TSFerienname';
 import {TSBelegungFerieninsel} from '../../../models/TSBelegungFerieninsel';
 import {TSBelegungFerieninselTag} from '../../../models/TSBelegungFerieninselTag';
@@ -58,7 +58,7 @@ export class BetreuungFerieninselViewComponentConfig implements IComponentOption
         anmeldungSchulamtAblehnen: '&',
         anmeldungSchulamtFalscheInstitution: '&',
         cancel: '&',
-        form: '=',
+        form: '='
     };
     public template = require('./betreuungFerieninselView.html');
     public controller = BetreuungFerieninselViewController;
@@ -120,7 +120,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         applicationPropertyRS: ApplicationPropertyRS,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
         mandantService: MandantService,
-        ebeguRestUtil: EbeguRestUtil,
+        ebeguRestUtil: EbeguRestUtil
     ) {
         super($state,
             gesuchModelManager,
@@ -188,7 +188,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             const terminValue = DateUtil.momentToLocalDateFormat(
                 this.gesuchModelManager.gemeindeKonfiguration.konfigFerieninselAktivierungsdatum, 'DD.MM.YYYY');
             return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_AB_INFO', {
-                termin: terminValue,
+                termin: terminValue
             });
         }
         return this.$translate.instant('FREISCHALTUNG_FERIENINSEL_INFO');
@@ -279,7 +279,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
                     title: 'CONFIRM_SAVE_FERIENINSEL',
                     deleteText: 'BESCHREIBUNG_SAVE_FERIENINSEL',
                     parentController: undefined,
-                    elementID: undefined,
+                    elementID: undefined
                 }).then(() => {
                     this.onSave();
                 });
@@ -320,16 +320,13 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getMomentWeekdays(): string[] {
-        const weekdays = moment.weekdays();
-        weekdays.splice(0, 1);
-        weekdays.splice(5, 1);
-        return weekdays;
+        return getWeekdaysValues();
     }
 
     public displayBreak(
         tag: TSBelegungFerieninselTag,
         index: number,
-        dayArray: Array<TSBelegungFerieninselTag>,
+        dayArray: Array<TSBelegungFerieninselTag>
     ): boolean {
         return dayArray[index + 1] ? tag.tag.week() !== dayArray[index + 1].tag.week() : false;
     }
@@ -337,7 +334,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     public displayWeekRow(
         tag: TSBelegungFerieninselTag,
         index: number,
-        dayArray: Array<TSBelegungFerieninselTag>,
+        dayArray: Array<TSBelegungFerieninselTag>
     ): boolean {
         return dayArray[index + 1] ? dayArray[index + 1].tag.diff(tag.tag, 'days') > 7 : false;
     }

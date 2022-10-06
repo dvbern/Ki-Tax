@@ -45,7 +45,7 @@ describe('FinanzielleSituationAufteilungComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
-                {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: NgForm, useValue: new NgForm([], [])}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

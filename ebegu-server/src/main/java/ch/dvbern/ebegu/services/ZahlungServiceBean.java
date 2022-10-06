@@ -509,7 +509,14 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 				isInfomaZahlung);
 			zahlungsposition.setZahlung(zahlung);
 			zahlung.getZahlungspositionen().add(zahlungsposition);
-			helper.setZahlungsstatus(zeitabschnitt, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+			helper.setZahlungsstatus(zeitabschnitt, getZahluntsstatusVerrechnet(zeitabschnitt));
+	}
+
+	private VerfuegungsZeitabschnittZahlungsstatus getZahluntsstatusVerrechnet(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+			return zeitabschnitt.hasBetreuungspensum() ?
+				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET :
+				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
 	}
 
 	/**
