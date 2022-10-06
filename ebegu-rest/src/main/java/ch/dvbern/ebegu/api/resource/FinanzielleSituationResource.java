@@ -573,15 +573,9 @@ public class FinanzielleSituationResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
-
-		Objects.requireNonNull(jaxContainerId.getId());
 		//Antrag suchen
 		FinanzielleSituationContainer finSitContainer =
-			finanzielleSituationService.findFinanzielleSituation(jaxContainerId.getId()).orElseThrow(()
-				-> new EbeguEntityNotFoundException(
-				"resetFinSitSteuerdaten",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"FinSit ID invalid: " + jaxContainerId.getId()));
+			findFinanzielleSituationWithResponse(jaxContainerId);
 
 		LocalDate datumSteuerdatenAnfrage = requireNonNull(finSitContainer.getFinanzielleSituationJA()
 			.getSteuerdatenResponse()).getGeburtsdatumAntragsteller();
@@ -598,6 +592,36 @@ public class FinanzielleSituationResource {
 		}
 
 		return isMatching;
+	}
+
+	@Nonnull
+	private FinanzielleSituationContainer findFinanzielleSituationWithResponse(JaxId jaxContainerId) {
+		Objects.requireNonNull(jaxContainerId.getId());
+
+		FinanzielleSituationContainer finSitContainer =
+			finanzielleSituationService.findFinanzielleSituation(jaxContainerId.getId()).orElseThrow(()
+				-> new EbeguEntityNotFoundException(
+				"findFinanzielleSituationWithResponse",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"FinSit ID invalid: " + jaxContainerId.getId()));
+
+		while (finSitContainer.getFinanzielleSituationJA().getSteuerdatenResponse() == null) {
+			finSitContainer = findFinanzielleSituationVorgaenger(finSitContainer).orElseThrow(() ->
+				new EbeguEntityNotFoundException(
+					"Keine FinSit mit SteuerdatenResponse gefunden",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND
+				));
+		}
+
+		return finSitContainer;
+	}
+
+	private Optional<FinanzielleSituationContainer> findFinanzielleSituationVorgaenger(FinanzielleSituationContainer finSitContainer) {
+		if (finSitContainer.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
+
+		return finanzielleSituationService.findFinanzielleSituation(finSitContainer.getVorgaengerId());
 	}
 
 	@ApiOperation(value = "",
