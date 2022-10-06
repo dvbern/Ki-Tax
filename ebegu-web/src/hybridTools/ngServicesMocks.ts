@@ -27,6 +27,7 @@ import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
+import {FamiliensituationRS} from '../gesuch/service/familiensituationRS.rest';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {SearchRS} from '../gesuch/service/searchRS.rest';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
@@ -140,6 +141,9 @@ class InstitutionRSMock extends InstitutionRS {
 class SearchRSMock extends SearchRS {
 }
 
+class FamiliensituationRSMock extends FamiliensituationRS {
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -154,6 +158,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('cookieService', CookieServiceMock);
     $provide.service('ErrorServiceX', ErrorServiceXMock);
     $provide.service('SearchRS', SearchRSMock);
+    $provide.service('FamiliensituationRS', FamiliensituationRSMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

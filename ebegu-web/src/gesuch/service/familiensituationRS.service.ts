@@ -13,30 +13,36 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {mergeMap} from 'rxjs/operators';
+import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {WizardStepManager} from './wizardStepManager';
 
+const LOG = LogFactory.createLog('FamiliensituationRS');
+
+@Injectable({
+    providedIn: 'root'
+})
 export class FamiliensituationRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    public serviceURL: string;
+    private readonly serviceURL = `${CONSTANTS.REST_API}familiensituation`;
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public $http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
+        public $http: HttpClient,
         private readonly wizardStepManager: WizardStepManager
     ) {
-        this.serviceURL = `${REST_API}familiensituation`;
     }
 
     public saveFamiliensituation(
         familiensituation: TSFamiliensituationContainer,
         gesuchId: string
-    ): IPromise<TSFamiliensituationContainer> {
+    ): Observable<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation =
             this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
@@ -44,11 +50,13 @@ export class FamiliensituationRS {
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.$log.debug('PARSING Familiensituation REST object ', response.data);
+        }).pipe(mergeMap((response: any) =>
+            this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                LOG.debug('PARSING Familiensituation REST object ', response);
                 return this.ebeguRestUtil.parseFamiliensituationContainer(new TSFamiliensituationContainer(),
-                    response.data);
-            }));
+                    response);
+            }))
+        );
     }
 
 }

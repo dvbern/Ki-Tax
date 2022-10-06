@@ -21,7 +21,6 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
-import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.rest';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
@@ -344,17 +343,6 @@ export const globalCacheServiceProvider = {
     deps: ['$injector'],
 };
 
-// Global Cache Service
-export function familiensituationRSFactory(i: IInjectorService): FamiliensituationRS {
-    return i.get('FamiliensituationRS');
-}
-
-export const familiensituationRSProvider = {
-    provide: FamiliensituationRS,
-    useFactory: familiensituationRSFactory,
-    deps: ['$injector'],
-};
-
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -381,6 +369,5 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     berechnungsManagerProvider,
     listResourceRSProvider,
     gesuchstellerRSProvider,
-    globalCacheServiceProvider,
-    familiensituationRSProvider
+    globalCacheServiceProvider
 ];

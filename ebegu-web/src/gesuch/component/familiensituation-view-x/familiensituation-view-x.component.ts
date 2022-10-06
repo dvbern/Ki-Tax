@@ -17,6 +17,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
+import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -43,7 +44,7 @@ import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationC
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {BerechnungsManager} from '../../service/berechnungsManager';
-import {FamiliensituationRS} from '../../service/familiensituationRS.rest';
+import {FamiliensituationRS} from '../../service/familiensituationRS.service';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
@@ -156,12 +157,12 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
             this.getGesuch().id
-        ).then((familienContainerResponse: any) => {
+        ).pipe(mergeMap((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.getGesuch().familiensituationContainer = familienContainerResponse;
             // Gesuchsteller may changed...
             return this.gesuchModelManager.reloadGesuch().then(() => this.model);
-        }) as Promise<TSFamiliensituationContainer>;
+        })).toPromise();
     }
 
     public getFamiliensituation(): TSFamiliensituation {
