@@ -31,7 +31,7 @@ const LOG = LogFactory.createLog('SelbstdeklarationComponent');
     selector: 'dv-selbstdeklaration',
     templateUrl: './selbstdeklaration.component.html',
     styleUrls: ['./selbstdeklaration.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelbstdeklarationComponent implements OnInit {
 
@@ -70,7 +70,7 @@ export class SelbstdeklarationComponent implements OnInit {
     public constructor(
         private readonly finSitLuService: FinanzielleSituationLuzernService,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly ref: ChangeDetectorRef,
+        private readonly ref: ChangeDetectorRef
     ) {
     }
 
@@ -83,7 +83,7 @@ export class SelbstdeklarationComponent implements OnInit {
         this.finSitLuService.massgebendesEinkommenStore.subscribe(resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error),
+            }, error => LOG.error(error)
         );
     }
 
@@ -93,7 +93,7 @@ export class SelbstdeklarationComponent implements OnInit {
         } else {
             this.finSitLuService.calculateMassgebendesEinkommen(this.finanzModel);
         }
-    }
+    };
 
     public getCurrentAntragstellerName(): string {
         if (this.antragstellerNummer === 2) {

@@ -20,7 +20,7 @@ import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -34,7 +34,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
   templateUrl: './traegerschaft-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit {
+export class TraegerschaftListComponent extends AbstractAdminViewX implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('TraegerschaftListComponent');
 
@@ -51,7 +51,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
         private readonly dialog: MatDialog,
         authServiceRS: AuthServiceRS,
         private readonly $state: StateService,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
 
         super(authServiceRS);
@@ -74,10 +74,10 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
                             name: traegerschaft.name,
                             institutionCount: traegerschaft.institutionCount,
                             canEdit: readDeleteAllowed,
-                            canRemove: readDeleteAllowed,
+                            canRemove: readDeleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    },
+                    }
                 );
                 this.cd.markForCheck();
                 return entitaetListItems;
@@ -101,7 +101,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     public removeTraegerschaft(id: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'LOESCHEN_DIALOG_TITLE',
+            title: 'LOESCHEN_DIALOG_TITLE'
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
@@ -126,7 +126,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     private setDisplayedColumns(): void {
         this.hiddenDVTableColumns = this.isReadDeleteAllowed()
-            ? ['status', 'type', ]
+            ? ['status', 'type' ]
             : ['status', 'type', 'remove'];
     }
 }

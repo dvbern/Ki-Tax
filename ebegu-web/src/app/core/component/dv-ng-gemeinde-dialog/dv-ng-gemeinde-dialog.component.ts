@@ -31,7 +31,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
  */
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
-    templateUrl: './dv-ng-gemeinde-dialog.template.html',
+    templateUrl: './dv-ng-gemeinde-dialog.template.html'
 })
 export class DvNgGemeindeDialogComponent {
 
@@ -49,7 +49,7 @@ export class DvNgGemeindeDialogComponent {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.isUserSozialdienst = authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
         this.allGemeinden = data.gemeindeList;
@@ -72,7 +72,7 @@ export class DvNgGemeindeDialogComponent {
         }
         this.dialogRef.close({
             gemeindeId: this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-            gesuchsperiodeId: this.selectedGesuchsperiode ? this.selectedGesuchsperiode.id : undefined,
+            gesuchsperiodeId: this.selectedGesuchsperiode ? this.selectedGesuchsperiode.id : undefined
         });
     }
 

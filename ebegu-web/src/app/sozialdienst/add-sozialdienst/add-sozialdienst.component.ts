@@ -31,7 +31,7 @@ import {SozialdienstRS} from '../../core/service/SozialdienstRS.rest';
     selector: 'dv-add-sozialdienst',
     templateUrl: './add-sozialdienst.component.html',
     styleUrls: ['./add-sozialdienst.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddSozialdienstComponent implements OnInit {
     private readonly log: Log = LogFactory.createLog('AddSozialdienstComponent');
@@ -46,7 +46,7 @@ export class AddSozialdienstComponent implements OnInit {
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly errorService: ErrorService,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -61,20 +61,20 @@ export class AddSozialdienstComponent implements OnInit {
         }
         this.sozialdienstRS.createSozialdienst(
             this.sozialdienst,
-            this.adminEmail,
+            this.adminEmail
         )
             .subscribe(neueSozialdienst => {
                 this.sozialdienst = neueSozialdienst;
                 this.navigateBack();
             }, exception  => {
-                // tslint:disable-next-line:prefer-switch
+                // eslint-disable-next-line
             if (exception.error.errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
                     emailAdresse: this.adminEmail,
                     administratorRolle: TSRole.ADMIN_SOZIALDIENST,
-                    gesuchstellerName: exception.error.argumentList[1],
+                    gesuchstellerName: exception.error.argumentList[1]
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
@@ -86,7 +86,7 @@ export class AddSozialdienstComponent implements OnInit {
                             this.benutzerRS.removeBenutzer(exception.error.argumentList[0]).then(
                                 () => {
                                     this.persistSozialdienst();
-                                },
+                                }
                             );
                         },
                         () => {
@@ -96,7 +96,7 @@ export class AddSozialdienstComponent implements OnInit {
                     () => {
                         this.errorService.clearAll();
                         this.persistSozialdienst();
-                    },
+                    }
                 );
             } else {
                 this.errorService.addMesageAsError(exception.error.translatedMessage);
@@ -115,7 +115,7 @@ export class AddSozialdienstComponent implements OnInit {
     private persistSozialdienst(): void {
         this.sozialdienstRS.createSozialdienst(
             this.sozialdienst,
-            this.adminEmail,
+            this.adminEmail
         )
             .subscribe(neueSozialdienst => {
                 this.sozialdienst = neueSozialdienst;

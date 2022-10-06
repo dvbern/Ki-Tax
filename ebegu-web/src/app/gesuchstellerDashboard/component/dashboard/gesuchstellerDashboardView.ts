@@ -23,7 +23,7 @@ import {
     IN_BEARBEITUNG_BASE_NAME,
     isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen,
     isAnyStatusOfVerfuegt,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -48,7 +48,7 @@ export class GesuchstellerDashboardListViewConfig implements IComponentOptions {
     public controller = GesuchstellerDashboardViewController;
     public controllerAs = 'vm';
     public bindings = {
-        dossier: '<',
+        dossier: '<'
     };
 }
 
@@ -65,7 +65,7 @@ export class GesuchstellerDashboardViewController implements IController {
         'MitteilungRS',
         'GesuchRS',
         'ErrorService',
-        'GemeindeRS',
+        'GemeindeRS'
     ];
 
     private antragList: Array<TSAntragDTO> = [];
@@ -89,7 +89,7 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly mitteilungRS: MitteilungRS,
         private readonly gesuchRS: GesuchRS,
         private readonly errorService: ErrorService,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 
@@ -153,7 +153,7 @@ export class GesuchstellerDashboardViewController implements IController {
     public goToMitteilungenOeffen(): void {
         this.$state.go('mitteilungen.view', {
             dossierId: this.dossier.id,
-            fallId: this.dossier.fall.id,
+            fallId: this.dossier.fall.id
         });
     }
 
@@ -193,7 +193,7 @@ export class GesuchstellerDashboardViewController implements IController {
                     eingangsart: TSEingangsart.ONLINE,
                     gesuchsperiodeId: periode.id,
                     gesuchId: antrag.antragId,
-                    dossierId: this.dossier.id,
+                    dossierId: this.dossier.id
                 });
             }
         } else if (this.antragList && this.antragList.length > 0) {
@@ -204,7 +204,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 gesuchsperiodeId: periode.id,
                 eingangsart: TSEingangsart.ONLINE,
                 gesuchId: this.antragList[0].antragId,
-                dossierId: this.dossier.id,
+                dossierId: this.dossier.id
             });
         } else {
             // Dies ist das erste Gesuch
@@ -213,7 +213,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 eingangsart: TSEingangsart.ONLINE,
                 gesuchsperiodeId: periode.id,
                 gemeindeId: this.dossier.gemeinde.id,
-                dossierId: this.dossier.id,
+                dossierId: this.dossier.id
             });
         }
     }
@@ -232,14 +232,14 @@ export class GesuchstellerDashboardViewController implements IController {
         if (antrag) {
             this.$state.go('gesuchsteller.createAngebot', {type, gesuchId: antrag.antragId});
         } else {
-            console.error('Fehler: kein Gesuch gefunden für Gesuchsperiode und Typ ' + type);
+            console.error(`Fehler: kein Gesuch gefunden für Gesuchsperiode und Typ ${  type}`);
         }
     }
 
     private loadGemeindeKonfiguration(gp: TSGesuchsperiode): TSGemeindeKonfiguration {
         if (this.gemeindeStammdaten) {
             for (const konfigurationsListeElement of this.gemeindeStammdaten.konfigurationsListe) {
-                // tslint:disable-next-line:early-exit
+                // eslint-disable-next-line
                 if (konfigurationsListeElement.gesuchsperiode.id === gp.id) {
                     konfigurationsListeElement.initProperties();
                     return konfigurationsListeElement;

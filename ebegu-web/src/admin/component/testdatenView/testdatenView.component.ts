@@ -15,7 +15,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {IPromise} from 'angular';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
 import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -24,6 +23,7 @@ import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-di
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../../app/core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -39,10 +39,12 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 
+const LOG = LogFactory.createLog('TestdatenView');
+
 @Component({
     selector: 'dv-testdaten-view',
-    templateUrl: './testdatenView.html',
-    styleUrls: ['./testdatenView.less'],
+    templateUrl: './testdatenView.component.html',
+    styleUrls: ['./testdatenView.component.less']
 })
 export class TestdatenViewComponent implements OnInit {
 
@@ -86,7 +88,7 @@ export class TestdatenViewComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly dialog: MatDialog,
         private readonly gemeindeAntragRS: GemeindeAntragService,
-        private readonly gesuchRS: GesuchRS,
+        private readonly gesuchRS: GesuchRS
     ) {
     }
 
@@ -101,7 +103,7 @@ export class TestdatenViewComponent implements OnInit {
             this.devMode = response;
         });
         this.gemeindeRS.getAktiveGemeinden().then(response => {
-            this.gemeindeList = angular.copy(response);
+            this.gemeindeList = response;
             this.gemeindeList.sort((a, b) => a.name.localeCompare(b.name));
         });
         this.applicationPropertyRS.isEbeguKibonAnfrageTestGuiEnabled().then(response => {
@@ -155,12 +157,12 @@ export class TestdatenViewComponent implements OnInit {
         gesuchsperiodeId: string,
         gemeindeId: string,
         bestaetigt: boolean,
-        verfuegen: boolean,
+        verfuegen: boolean
     ): void {
-        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).then(
+        this.testFaelleRS.createTestFall(testFall, gesuchsperiodeId, gemeindeId, bestaetigt, verfuegen).subscribe(
             response => {
                 this.createLinkDialog(response);
-            });
+            }, err => LOG.error(err));
     }
 
     private createTestFallGS(
@@ -169,22 +171,22 @@ export class TestdatenViewComponent implements OnInit {
         gemeindeId: string,
         bestaetigt: boolean,
         verfuegen: boolean,
-        username: string,
+        username: string
     ): void {
         this.testFaelleRS.createTestFallGS(testFall,
             gesuchsperiodeId,
             gemeindeId,
             bestaetigt,
             verfuegen,
-            username).then(response => {
+            username).subscribe(response => {
             this.createLinkDialog(response);
-        });
+        }, err => LOG.error(err));
     }
 
     public removeGesucheGS(): void {
-        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).then(() => {
+        this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).subscribe(() => {
             this.errorService.addMesageAsInfo(`Gesuche entfernt fuer ${this.selectedBesitzer.username}`);
-        });
+        }, err => LOG.error(err));
     }
 
     public removeGesuchsperiode(): void {
@@ -195,46 +197,46 @@ export class TestdatenViewComponent implements OnInit {
             });
     }
 
-    public mutiereFallHeirat(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallHeirat(this.dossierid,
+    public mutiereFallHeirat(): void {
+        this.testFaelleRS.mutiereFallHeirat(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
-                this.createAndOpenOkDialog(response.data);
-            });
+            .subscribe(response => {
+                this.createAndOpenOkDialog(response);
+            }, error => LOG.error(error));
     }
 
-    public testAllMails(): IPromise<any> {
+    public testAllMails(): Observable<any> {
         return this.testFaelleRS.testAllMails(this.mailadresse);
     }
 
-    public mutiereFallScheidung(): IPromise<any> {
-        return this.testFaelleRS.mutiereFallScheidung(this.dossierid,
+    public mutiereFallScheidung(): void {
+        this.testFaelleRS.mutiereFallScheidung(this.dossierid,
             this.selectedGesuchsperiode.id,
             this.eingangsdatum,
             this.ereignisdatum)
-            .then(response => {
-                this.createAndOpenOkDialog(response.data);
-            });
+            .subscribe(response => {
+                this.createAndOpenOkDialog(response);
+            }, error => LOG.error(error));
     }
 
-    public resetSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.resetSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public resetSchulungsdaten(): void {
+        this.testFaelleRS.resetSchulungsdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
-    public deleteSchulungsdaten(): IPromise<any> {
-        return this.testFaelleRS.deleteSchulungsdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public deleteSchulungsdaten(): void {
+        this.testFaelleRS.deleteSchulungsdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
-    public createTutorialdaten(): IPromise<any> {
-        return this.testFaelleRS.createTutorialdaten().then(response => {
-            this.createAndOpenOkDialog(response.data);
-        });
+    public createTutorialdaten(): void {
+        this.testFaelleRS.createTutorialdaten().subscribe(response => {
+            this.createAndOpenOkDialog(response);
+        }, error => LOG.error(error));
     }
 
     private createAndOpenOkDialog(title: string): void {
@@ -254,16 +256,16 @@ export class TestdatenViewComponent implements OnInit {
     private createLinkDialog(response: any): void {
         // einfach die letzten 36 zeichen der response als uuid betrachten, hacky ist aber nur fuer uns intern
         const uuidLength = -36;
-        const uuidPartOfString = response.data ? response.data.slice(uuidLength) : '';
+        const uuidPartOfString = response ? response.slice(uuidLength) : '';
         // nicht alle Parameter werden benoetigt, deswegen sind sie leer
-        this.createAndOpenLinkDialog$(response.data, `#/gesuch/fall////${uuidPartOfString}//`);
+        this.createAndOpenLinkDialog$(response, `#/gesuch/fall////${uuidPartOfString}//`);
     }
 
     private createAndOpenLinkDialog$(title: string, link: string): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title,
-            link,
+            link
         };
         return this.dialog.open(DvNgLinkDialogComponent, dialogConfig).afterClosed();
     }
@@ -275,7 +277,7 @@ export class TestdatenViewComponent implements OnInit {
             return;
         }
 
-        // tslint:disable-next-line:no-collapsible-if
+        // eslint-disable-next-line
         if (this.latsSelected() && !this.gemeindeForGemeindeAntrag) {
             if (!await this.confirmDialog(
                 'Ohne ausgewählte Gemeinde werden die LATS Formular für ALLE Gemeinden erstellt/überschrieben. Fortfahren?')) {
@@ -296,7 +298,7 @@ export class TestdatenViewComponent implements OnInit {
         this.testFaelleRS.createGemeindeAntragTestDaten(this.gemeindeAntragTyp,
             this.gesuchsperiodeGemeindeAntrag,
             this.gemeindeForGemeindeAntrag,
-            this.gemeindeAntragStatus).then(response => {
+            this.gemeindeAntragStatus).subscribe(response => {
             this.errorService.clearAll();
             if (this.ferienbetreuungSelected()) {
                 this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
@@ -319,7 +321,7 @@ export class TestdatenViewComponent implements OnInit {
                 console.log(result);
                 this.dialog.open(DvNgDisplayObjectDialogComponent,
                     {data: {object: result}});
-            },
+            }
         );
     }
 
@@ -327,13 +329,13 @@ export class TestdatenViewComponent implements OnInit {
         const antraege = await this.gemeindeAntragRS.getGemeindeAntraege({
                 antragTyp: this.gemeindeAntragTyp,
                 gesuchsperiodeString: this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString,
-                gemeinde: this.gemeindeForGemeindeAntrag.name,
+                gemeinde: this.gemeindeForGemeindeAntrag.name
             },
             {},
-            new TSPagination(),
+            new TSPagination()
         ).toPromise();
         return antraege.resultList.length === 0 || this.confirmDialog(
-            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?',
+            'Es existiert bereits ein Antrag für die gewählte Gemeinde und Periode. Fortfahren?'
         );
     }
 
@@ -364,8 +366,8 @@ export class TestdatenViewComponent implements OnInit {
     private async confirmDialog(text: string): Promise<boolean> {
         return this.dialog.open(DvNgConfirmDialogComponent, {
             data: {
-                frage: text,
-            },
+                frage: text
+            }
         }).afterClosed()
             .toPromise();
     }

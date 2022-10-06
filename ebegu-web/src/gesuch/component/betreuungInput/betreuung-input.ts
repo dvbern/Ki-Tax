@@ -24,8 +24,8 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import ITranslateService = angular.translate.ITranslateService;
 
-export class BetreuungInputComponentConfig implements IComponentOptions {
-    public template = require('./betreuung-input.component.html');
+export class BetreuungInputConfig implements IComponentOptions {
+    public template = require('./betreuung-input.html');
     public bindings = {
         pensumContainer: '<',
         isDisabled: '<',
@@ -33,17 +33,17 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
-        showBetreuungInputSwitch: '<',
+        showBetreuungInputSwitch: '<'
     };
-    public controller = BetreuungInputComponent;
+    public controller = BetreuungInput;
     public controllerAs = 'vm';
 }
 
-export class BetreuungInputComponent implements IController {
+export class BetreuungInput implements IController {
 
     public static $inject = ['$translate', 'GesuchModelManager'];
 
-    private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
+    private readonly LOG: Log = LogFactory.createLog(BetreuungInput.name);
     private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
 
     public pensumContainer: TSBetreuungspensumContainer;
@@ -133,14 +133,19 @@ export class BetreuungInputComponent implements IController {
     }
 
     private parseToPensumUnit(): void {
-        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
-            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+        if (EbeguUtil.isNullOrUndefined(this.pensumContainer.betreuungspensumJA.pensum)) {
             return;
         }
-        this.pensumValue =
-            (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE)
-                ? this.pensumContainer.betreuungspensumJA.pensum
-                : Number((this.pensumContainer.betreuungspensumJA.pensum * this.multiplier).toFixed(2));
+
+        this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+
+        if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
+        && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)
+        && this.showBetreuungInputSwitch) {
+            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
+        }
+
+        this.pensumValue = Number(this.pensumValue.toFixed(2));
     }
 
     private parseToPercentage(): void {

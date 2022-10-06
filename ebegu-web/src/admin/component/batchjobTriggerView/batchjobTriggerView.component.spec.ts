@@ -21,7 +21,7 @@ import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
-import {BatchjobTriggerViewComponent} from './batchjobTriggerView';
+import {BatchjobTriggerViewComponent} from './batchjobTriggerView.component';
 
 describe('batchjobTriggerView', () => {
 
@@ -38,15 +38,15 @@ describe('batchjobTriggerView', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ],
             providers: [
                 {provide: MatDialog, useValue: dvDialogSpy},
                 {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
-            declarations: [BatchjobTriggerViewComponent],
+            declarations: [BatchjobTriggerViewComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

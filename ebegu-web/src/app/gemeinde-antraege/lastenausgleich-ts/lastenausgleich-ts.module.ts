@@ -58,8 +58,8 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         MatButtonModule,
         SharedModule,
         ReactiveFormsModule,
-        WizardstepXModule,
-    ],
+        WizardstepXModule
+    ]
 })
 export class LastenausgleichTSModule {
 }

@@ -29,7 +29,7 @@ const LOG = LogFactory.createLog('debugHookRunBlock');
 export function debugHookRunBlock($transitions: TransitionService): void {
     $transitions.onBefore({
         // the hook is only active when the app loads initially, e.g. when we are not yet on any state
-        from: state => !state.name,
+        from: state => !state.name
     }, activateDebugMode, {priority: OnBeforePriorities.DEBUG});
 }
 

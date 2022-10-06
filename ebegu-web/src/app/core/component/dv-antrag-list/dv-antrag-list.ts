@@ -22,12 +22,12 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {
     getTSAntragStatusPendenzValues,
     getTSAntragStatusValuesByRole,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragEntity} from '../../../../models/TSAbstractAntragEntity';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
@@ -57,7 +57,7 @@ export class DVAntragListConfig implements IComponentOptions {
         tableTitle: '@',
         addButtonVisible: '@',
         addButtonText: '@',
-        pendenz: '=',
+        pendenz: '='
     };
     public template = require('./dv-antrag-list.html');
     public controller = DVAntragListController;
@@ -75,7 +75,7 @@ export class DVAntragListController implements IController {
         'GemeindeRS',
         'EinstellungRS',
         '$translate',
-        '$scope',
+        '$scope'
     ];
 
     public totalResultCount: number;
@@ -126,7 +126,7 @@ export class DVAntragListController implements IController {
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly $translate: ITranslateService,
-        private readonly $scope: IScope,
+        private readonly $scope: IScope
     ) {
     }
 
@@ -145,9 +145,7 @@ export class DVAntragListController implements IController {
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = 'false';
         }
-        this.$scope.$watch(() => {
-            return this.totalResultCount;
-        }, (newValue, oldValue) => {
+        this.$scope.$watch(() => this.totalResultCount, (newValue, oldValue) => {
             if (newValue === oldValue) {
                 return;
             }
@@ -168,9 +166,9 @@ export class DVAntragListController implements IController {
     }
 
     public updateInstitutionenList(): void {
-        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().then(response => {
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer().subscribe(response => {
             this.institutionenList = response;
-        });
+        }, error => LOG.error(error));
     }
 
     public updateGesuchsperiodenList(): void {
@@ -187,7 +185,7 @@ export class DVAntragListController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -254,7 +252,7 @@ export class DVAntragListController implements IController {
         if (Array.isArray(betreuungsangebotTypList)) {
             let prefix = '';
             if (betreuungsangebotTypList && Array.isArray(betreuungsangebotTypList)) {
-                // tslint:disable-next-line:prefer-for-of
+                // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
                     const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
@@ -285,9 +283,7 @@ export class DVAntragListController implements IController {
 
     public querySearch(query: string): Array<TSInstitution> {
         const searchString = query.toLocaleLowerCase();
-        return this.institutionenList.filter(item => {
-            return (item.name.toLocaleLowerCase().indexOf(searchString) > -1);
-        });
+        return this.institutionenList.filter(item => (item.name.toLocaleLowerCase().indexOf(searchString) > -1));
     }
 
     public setSelectedInstitutionName(): void {

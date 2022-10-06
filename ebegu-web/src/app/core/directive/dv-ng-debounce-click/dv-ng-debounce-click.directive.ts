@@ -29,7 +29,7 @@ import {debounceTime, throttleTime} from 'rxjs/operators';
  * //https://coryrylan.com/blog/creating-a-custom-debounce-click-directive-in-angular
  */
 @Directive({
-    selector: '[dvNgDebounceClick]',
+    selector: '[dvNgDebounceClick]'
 })
 export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
 
@@ -53,7 +53,7 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
         this.subscription =
             merge(
                 this.clicks$.pipe(throttleTime(this.delay)),
-                this.clicks$.pipe(debounceTime(this.delay)),
+                this.clicks$.pipe(debounceTime(this.delay))
             )
                 .subscribe(e => {
                         if (this.isDomElementEnabled()) {
@@ -62,7 +62,7 @@ export class DvNgDebounceClickDirective implements OnInit, OnDestroy {
                         this.handleDomElement();
                     }, err => {
                         console.log('Error. dv-debounce-button-click', err);
-                    },
+                    }
                 );
 
         // todo It should wait for an HTTPResponse to come and then enable the button again

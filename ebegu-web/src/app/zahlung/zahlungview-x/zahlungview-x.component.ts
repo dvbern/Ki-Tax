@@ -27,7 +27,7 @@ const LOG = LogFactory.createLog('ZahlungviewXComponent');
     selector: 'dv-zahlungview-x',
     templateUrl: './zahlungview-x.component.html',
     styleUrls: ['./zahlungview-x.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
@@ -54,7 +54,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
             private readonly cd: ChangeDetectorRef,
             private readonly errorService: ErrorService,
             private readonly transition: TransitionService,
-            private readonly stateStore: StateStoreService,
+            private readonly stateStore: StateStoreService
     ) {
     }
 
@@ -77,7 +77,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
                             return of(null);
                         }),
-                        map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : []),
+                        map(zahlungsauftrag => zahlungsauftrag ? zahlungsauftrag.zahlungen : [])
                 )
                 .subscribe(
                         zahlungen => {
@@ -86,7 +86,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
                             this.datasource.sort = this.sort;
                             this.cd.markForCheck();
                         },
-                        err => LOG.error(err),
+                        err => LOG.error(err)
                 );
         this.setupTableColumns();
 
@@ -100,7 +100,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.stateStore.has(this.SORT_STORE_KEY)) {
             const stored = this.stateStore.get(this.SORT_STORE_KEY) as MatSort;
             this.sort.active = stored.active;
@@ -111,7 +111,7 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
 
     public gotToUebersicht(): void {
         this.$state.go('zahlungsauftrag.view', {
-            isMahlzeitenzahlungen: this.isMahlzeitenzahlungen,
+            isMahlzeitenzahlungen: this.isMahlzeitenzahlungen
         });
     }
 
@@ -150,18 +150,18 @@ export class ZahlungviewXComponent implements OnInit, AfterViewInit {
         this.tableColumns = [
             {
                 displayedName: this.translate.instant('ZAHLUNG_INSTITUTION'),
-                attributeName: 'empfaengerName',
+                attributeName: 'empfaengerName'
             },
             {
                 displayedName: this.translate.instant('ZAHLUNG_BETREUUNGSANGEBOTTYP'),
                 attributeName: 'betreuungsangebotTyp',
-                displayFunction: (angebotTyp: TSBetreuungsangebotTyp) => this.translate.instant(angebotTyp),
+                displayFunction: (angebotTyp: TSBetreuungsangebotTyp) => this.translate.instant(angebotTyp)
             },
             {
                 displayedName: this.translate.instant('ZAHLUNG_TOTAL'),
                 attributeName: 'betragTotalZahlung',
-                displayFunction: (betrag: number) => this.currency.transform(betrag, '', ''),
-            },
+                displayFunction: (betrag: number) => this.currency.transform(betrag, '', '')
+            }
         ];
     }
 

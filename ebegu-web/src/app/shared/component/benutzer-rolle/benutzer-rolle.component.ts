@@ -25,7 +25,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
     selector: 'dv-benutzer-rolle',
     templateUrl: './benutzer-rolle.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class BenutzerRolleComponent implements OnInit {
 
@@ -43,17 +43,15 @@ export class BenutzerRolleComponent implements OnInit {
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        public readonly form: NgForm,
+        public readonly form: NgForm
     ) {
     }
 
     public ngOnInit(): void {
         this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
             .filter(rolle => !this.excludedRoles.includes(rolle))
-            .reduce((rollenMap, rolle) => {
-                    return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
-                },
-                new Map<TSRole, string>(),
+            .reduce((rollenMap, rolle) => rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true)),
+                new Map<TSRole, string>()
             );
     }
 
@@ -69,7 +67,7 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public trackByRole(_index: number, item: { key: TSRole, value: string }): string {
+    public trackByRole(_index: number, item: { key: TSRole; value: string }): string {
         return item.key;
     }
 }

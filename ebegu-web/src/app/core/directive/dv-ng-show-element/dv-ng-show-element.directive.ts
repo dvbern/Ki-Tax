@@ -51,7 +51,7 @@ export class DvNgShowElementDirective implements OnInit {
     public constructor(
         private readonly templateRef: TemplateRef<any>,
         private readonly viewContainer: ViewContainerRef,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 

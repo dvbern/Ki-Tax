@@ -24,8 +24,8 @@ import {PosteingangRoutingModule} from './posteingang.route';
     ],
     imports: [
         SharedModule,
-        PosteingangRoutingModule,
-    ],
+        PosteingangRoutingModule
+    ]
 })
 export class PosteingangModule {
 }

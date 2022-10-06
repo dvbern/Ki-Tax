@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSInstitution} from '../../models/TSInstitution';
@@ -24,11 +25,13 @@ import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 
-export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
+export const SCHULUNG_CONFIG: IComponentOptions = {
     transclude: false,
-    template: require('./schulung.component.html'),
-    controllerAs: 'vm',
+    template: require('./schulungView.html'),
+    controllerAs: 'vm'
 };
+
+const LOG = LogFactory.createLog('SchulungViewController');
 
 export class SchulungViewController implements IController {
 
@@ -45,17 +48,17 @@ export class SchulungViewController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly testFaelleRS: TestFaelleRS,
+        private readonly testFaelleRS: TestFaelleRS
     ) {
 
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
         this.institutionForelle = this.getInstitutionForelle();
-        this.testFaelleRS.getSchulungBenutzer().then((response: any) => {
+        this.testFaelleRS.getSchulungBenutzer().subscribe((response: any) => {
             this.gesuchstellerList = response;
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
-                const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
+                const username = `sch${  ((i + 1) < 10) ? `0${  (i + 1).toString()}` : (i + 1).toString()}`;
                 const benutzer = new TSBenutzer('Sandra',
                     name,
                     username,
@@ -68,7 +71,7 @@ export class SchulungViewController implements IController {
 
             this.setInstitutionUsers();
             this.setAmtUsers();
-        });
+        }, err => LOG.error(err));
     }
 
     private setInstitutionUsers(): void {
@@ -130,4 +133,4 @@ export class SchulungViewController implements IController {
     }
 }
 
-SCHULUNG_COMPONENT_CONFIG.controller = SchulungViewController;
+SCHULUNG_CONFIG.controller = SchulungViewController;

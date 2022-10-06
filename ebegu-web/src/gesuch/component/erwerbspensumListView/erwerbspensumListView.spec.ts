@@ -15,9 +15,13 @@
 
 import * as angular from 'angular';
 import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
+import {of} from 'rxjs';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSDossier} from '../../../models/TSDossier';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
@@ -47,6 +51,7 @@ describe('erwerbspensumListView', () => {
     let $q: angular.IQService;
     let dossier: TSDossier;
     let gesuchsperiode: TSGesuchsperiode;
+    let einstellungRS: EinstellungRS;
     let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
@@ -55,6 +60,7 @@ describe('erwerbspensumListView', () => {
 
         gesuchModelManager = $injector.get('GesuchModelManager');
         $componentController = $injector.get('$componentController');
+        einstellungRS = $injector.get('EinstellungRS');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         $httpBackend = $injector.get('$httpBackend');
@@ -62,6 +68,9 @@ describe('erwerbspensumListView', () => {
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(
+            of([new TSEinstellung(null, TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM)])
+        );
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);

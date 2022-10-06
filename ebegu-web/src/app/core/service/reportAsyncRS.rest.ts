@@ -25,14 +25,14 @@ import {CONSTANTS} from '../constants/CONSTANTS';
  * spricht die reportAsync ressource an welche die reports async generiert
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class ReportAsyncRS {
 
     private readonly serviceURL = `${CONSTANTS.REST_API}reporting/async`;
 
     public constructor(
-        public http: HttpClient,
+        public http: HttpClient
     ) {
     }
 
@@ -51,7 +51,7 @@ export class ReportAsyncRS {
         Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             dateTimeStichtag,
-            gesuchPeriodeID,
+            gesuchPeriodeID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchStichtag`,
             {params: reportParams}
@@ -62,12 +62,12 @@ export class ReportAsyncRS {
     public getGesuchZeitraumReportExcel(
         dateTimeFrom: string,
         dateTimeTo: string,
-        gesuchPeriodeID: string,
+        gesuchPeriodeID: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             dateTimeFrom,
             dateTimeTo,
-            gesuchPeriodeID,
+            gesuchPeriodeID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchZeitraum`,
             {params: reportParams});
@@ -76,12 +76,12 @@ export class ReportAsyncRS {
     public getKantonReportExcel(
         auswertungVon: string,
         auswertungBis: string,
-        kantonSelbstbehalt: number,
+        kantonSelbstbehalt: number
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
             auswertungBis,
-            kantonSelbstbehalt,
+            kantonSelbstbehalt
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/kanton`, {params: reportParams});
     }
@@ -89,28 +89,28 @@ export class ReportAsyncRS {
     public getMitarbeiterinnenReportExcel(auswertungVon: string, auswertungBis: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
-            auswertungBis,
+            auswertungBis
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/mitarbeiterinnen`, {params: reportParams});
     }
 
     public getZahlungsauftragReportExcel(zahlungsauftragID: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            zahlungsauftragID,
+            zahlungsauftragID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlungsauftrag`, {params: reportParams});
     }
 
     public getZahlungReportExcel(zahlungID: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            zahlungID,
+            zahlungID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlung`, {params: reportParams});
     }
 
     public getZahlungPeriodeReportExcel(gesuchsperiode: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            gesuchsperiodeID: gesuchsperiode,
+            gesuchsperiodeID: gesuchsperiode
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/zahlungperiode`, {params: reportParams});
     }
@@ -118,12 +118,12 @@ export class ReportAsyncRS {
     public getGesuchstellerKinderBetreuungReportExcel(
         auswertungVon: string,
         auswertungBis: string,
-        gesuchPeriodeID: string,
+        gesuchPeriodeID: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
             auswertungBis,
-            gesuchPeriodeID,
+            gesuchPeriodeID
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/gesuchstellerkinderbetreuung`,
@@ -138,26 +138,26 @@ export class ReportAsyncRS {
     public getKinderReportExcel(
         auswertungVon: string,
         auswertungBis: string,
-        gesuchPeriodeID: string,
+        gesuchPeriodeID: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
             auswertungBis,
-            gesuchPeriodeID,
+            gesuchPeriodeID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/kinder`, {params: reportParams});
     }
 
     public getGesuchstellerReportExcel(stichtag: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            stichtag,
+            stichtag
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchsteller`, {params: reportParams});
     }
 
     public getMassenversandReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string,
                                        inklBgGesuche: boolean, inklMischGesuche: boolean, inklTsGesuche: boolean,
-                                       ohneErneuerungsgesuch: boolean, text: string,
+                                       ohneErneuerungsgesuch: boolean, text: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
@@ -167,7 +167,7 @@ export class ReportAsyncRS {
             inklMischGesuche,
             inklTsGesuche,
             ohneErneuerungsgesuch,
-            text,
+            text
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/massenversand`, {params: reportParams});
     }
@@ -179,14 +179,14 @@ export class ReportAsyncRS {
     public getVerrechnungKibonReportExcel(doSave: boolean, betragProKind: number): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             doSave,
-            betragProKind,
+            betragProKind
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/verrechnungkibon`, {params: reportParams});
     }
 
     public getLastenausgleichKibonReportExcel(year: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            year,
+            year
         });
         return this.http
             .get<{workjobId: string}>(`${this.serviceURL}/excel/lastenausgleich`, {params: reportParams});
@@ -196,7 +196,7 @@ export class ReportAsyncRS {
         Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             stammdatenId,
-            gesuchsperiodeId,
+            gesuchsperiodeId
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/tagesschuleAnmeldungen`,
@@ -210,7 +210,7 @@ export class ReportAsyncRS {
 
     public getNotrechtReportExcel(zahlungenAusloesen: boolean): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            zahlungenAusloesen,
+            zahlungenAusloesen
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/notrecht`, {params: reportParams});
     }
@@ -218,12 +218,12 @@ export class ReportAsyncRS {
     public getMahlzeitenverguenstigungReportExcel(
         auswertungVon: string,
         auswertungBis: string,
-        gemeinde: TSGemeinde,
+        gemeinde: TSGemeinde
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             auswertungVon,
             auswertungBis,
-            gemeindeId: gemeinde.id,
+            gemeindeId: gemeinde.id
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/mahlzeitenverguenstigung`,
@@ -242,7 +242,7 @@ export class ReportAsyncRS {
 
     public getLastenausgleichTagesschulenReportExcel(gesuchsperiodeId: string): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            gesuchsperiodeId,
+            gesuchsperiodeId
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/lastenausgleichTagesschulen`,

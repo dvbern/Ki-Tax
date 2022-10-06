@@ -26,7 +26,7 @@ import {SupportRS} from '../service/supportRS.rest';
  */
 @Component({
     selector: 'dv-ng-support-dialog',
-    templateUrl: './dv-ng-support-dialog.template.html',
+    templateUrl: './dv-ng-support-dialog.template.html'
 })
 export class DvNgSupportDialogComponent {
 

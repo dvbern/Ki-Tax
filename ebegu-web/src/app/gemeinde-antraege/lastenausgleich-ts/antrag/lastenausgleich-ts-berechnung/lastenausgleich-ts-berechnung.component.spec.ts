@@ -47,8 +47,8 @@ describe('LastenausgleichTsBerechnungComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy},
-            ],
+                {provide: LastenausgleichTSService, useValue: lastenausgleichTSServiceSpy}
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 

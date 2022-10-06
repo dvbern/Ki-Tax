@@ -25,7 +25,7 @@ const LOG = LogFactory.createLog('OnboardingMainComponent');
 @Component({
     selector: 'dv-onboarding-main',
     templateUrl: './onboarding-main.component.html',
-    styleUrls: ['./onboarding-main.component.less', '../onboarding.less'],
+    styleUrls: ['./onboarding-main.component.less', '../onboarding.less']
 })
 export class OnboardingMainComponent {
     public description1: string = 'ONBOARDING_MAIN_DESC1';

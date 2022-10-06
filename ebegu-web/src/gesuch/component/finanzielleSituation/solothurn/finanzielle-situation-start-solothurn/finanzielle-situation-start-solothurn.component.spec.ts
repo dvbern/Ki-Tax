@@ -22,11 +22,11 @@ describe('FinanzielleSituationStartSolothurnComponent', () => {
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 ...SolothurnFinSitTestHelpers.getMockProvidersExceptGesuchModelManager(),
                 {provide: FinanzielleSituationSolothurnService, useValue: finSitSolothurnServiceMock},
-                ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock(),
+                ...SolothurnFinSitTestHelpers.getMockProvidersExceptFinSitSolothurnServiceMock()
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

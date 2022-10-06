@@ -59,7 +59,7 @@ describe('FerienbetreuungUploadComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [FerienbetreuungUploadComponent],
             imports: [
-                SharedModule,
+                SharedModule
             ],
             providers: [
                 {provide: FerienbetreuungService, useValue: ferienbetreuungServiceSpy},
@@ -68,7 +68,7 @@ describe('FerienbetreuungUploadComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {provide: AuthServiceRS, useValue: authServiceRSSpy},
+                {provide: AuthServiceRS, useValue: authServiceRSSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

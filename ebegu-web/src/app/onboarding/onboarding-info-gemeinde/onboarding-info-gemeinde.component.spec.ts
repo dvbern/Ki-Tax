@@ -44,14 +44,14 @@ describe('OnboardingInfoGemComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true}),
+                UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingInfoGemeindeComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-            ],
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

@@ -23,6 +23,6 @@ export enum TSBelegungTagesschuleModulIntervall {
 export function getTSBelegungTagesschuleModulIntervallValues(): Array<TSBelegungTagesschuleModulIntervall> {
     return [
         TSBelegungTagesschuleModulIntervall.WOECHENTLICH,
-        TSBelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN,
+        TSBelegungTagesschuleModulIntervall.ALLE_ZWEI_WOCHEN
     ];
 }

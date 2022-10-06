@@ -42,7 +42,7 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
 @Component({
     selector: 'dv-add-institution',
     templateUrl: './add-institution.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddInstitutionComponent implements OnInit {
 
@@ -70,7 +70,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -116,11 +116,11 @@ export class AddInstitutionComponent implements OnInit {
             this.startDate,
             this.betreuungsangebot,
             this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-        ).then(neueinstitution => {
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
+        ).subscribe(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-        }).catch((exception: TSExceptionReport[]) => {
+        }, ((exception: TSExceptionReport[]) => {
             if (exception[0].errorCodeEnum === 'ERROR_GESUCHSTELLER_EXIST_WITH_GESUCH') {
                 this.errorService.clearAll();
                 const adminRolle = 'TSRole_ADMIN_INSTITUTION';
@@ -128,7 +128,7 @@ export class AddInstitutionComponent implements OnInit {
                 dialogConfig.data = {
                     emailAdresse: this.adminMail,
                     administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1],
+                    gesuchstellerName: exception[0].argumentList[1]
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
@@ -140,7 +140,7 @@ export class AddInstitutionComponent implements OnInit {
                             this.benutzerRS.removeBenutzer(exception[0].argumentList[0]).then(
                                 () => {
                                     this.persistInstitution();
-                                },
+                                }
                             );
                         },
                         () => {
@@ -150,10 +150,10 @@ export class AddInstitutionComponent implements OnInit {
                     () => {
                         this.errorService.clearAll();
                         this.persistInstitution();
-                    },
+                    }
                 );
             }
-        });
+        }));
     }
 
     private persistInstitution(): void {
@@ -162,11 +162,11 @@ export class AddInstitutionComponent implements OnInit {
             this.startDate,
             this.betreuungsangebot,
             this.adminMail,
-            this.selectedGemeinde ? this.selectedGemeinde.id : undefined,
-        ).then(neueinstitution => {
+            this.selectedGemeinde ? this.selectedGemeinde.id : undefined
+        ).subscribe(neueinstitution => {
             this.institution = neueinstitution;
             this.goToNextView();
-        });
+        }, error => LOG.error(error));
     }
 
     private initInstitution(): void {
@@ -196,7 +196,7 @@ export class AddInstitutionComponent implements OnInit {
     private navigateToEdit(): void {
         this.$state.go('institution.edit', {
             institutionId: this.institution.id,
-            editMode: true,
+            editMode: true
         });
     }
 
@@ -215,7 +215,7 @@ export class AddInstitutionComponent implements OnInit {
                     this.gemeinden = this.isLatsInstitution ? gemeinden : gemeinden.filter(gemeinde => !gemeinde.nurLats);
                     this.gemeinden.sort((a, b) => a.name.localeCompare(b.name));
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
 
     }

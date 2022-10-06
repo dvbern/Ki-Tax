@@ -7,7 +7,7 @@ import {
     OnInit,
     Output,
     SimpleChanges,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import {Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -19,7 +19,7 @@ import {DvSimpleTableConfig} from './dv-simple-table-config';
     templateUrl: './dv-simple-table.component.html',
     styleUrls: ['./dv-simple-table.component.less'],
     encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvSimpleTableComponent implements OnInit, OnChanges {
 
@@ -27,8 +27,8 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     @Input() public columns: DvSimpleTableColumnDefinition[];
     @Input() public config: DvSimpleTableConfig;
 
-    @Output() public readonly rowClicked: EventEmitter<{element: any, event: Event}>
-        = new EventEmitter<{element: any, event: Event}>();
+    @Output() public readonly rowClicked: EventEmitter<{element: any; event: Event}>
+        = new EventEmitter<{element: any; event: Event}>();
 
     public datasource: MatTableDataSource<any>;
     private sortedData: any[];
@@ -48,7 +48,7 @@ export class DvSimpleTableComponent implements OnInit, OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (changes.data) {
             if (!this.columns) {
                 console.error('data can not be used without specifying the columns. Use the columns input');

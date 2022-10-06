@@ -44,7 +44,7 @@ describe('EditSozialdienstComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             providers: [
                 WindowRef,
@@ -53,7 +53,7 @@ describe('EditSozialdienstComponent', () => {
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

@@ -16,7 +16,7 @@
 import {IAttributes, IAugmentedJQuery, IDirective, IDirectiveFactory, IScope} from 'angular';
 import {DVRoleElementController} from '../../controller/DVRoleElementController';
 
-// tslint:disable:max-line-length
+/* eslint-disable max-len */
 /**
  * Attribute Directive um Elementen aus- und einblenden. Erweitert ng-show
  * Die Direktive muss folgendermasse benutzt werden:
@@ -29,7 +29,7 @@ import {DVRoleElementController} from '../../controller/DVRoleElementController'
  *
  * ACHTUNG! Diese Direktive darf nicht mit ng-show zusammen benutzt werden
  */
-// tslint:enable:max-line-length
+/* eslint-enable max-len */
 export class DVDisplayElement implements IDirective {
 
     public static $inject: ReadonlyArray<string> = ['ngShowDirective'];
@@ -57,7 +57,7 @@ export class DVDisplayElement implements IDirective {
         element: IAugmentedJQuery,
         attributes: IAttributes,
         controller: DVRoleElementController,
-        $transclude: any,
+        $transclude: any
     ) => {
         // Copy arguments to new array to avoid: The 'arguments' object cannot be referenced in an arrow function in
         // ES3 and ES5. Consider using a standard function expression.
@@ -81,9 +81,7 @@ export class DVDisplayElement implements IDirective {
      * VORSICHT. Sollte diese Methode X-Mal aufgerufen werden, wird das Element dann X-Mall angezeigt
      */
     private callNgShowThrough(attributes: any, controller: DVRoleElementController, arguments2: Array<any>): void {
-        attributes.ngShow = () => {
-            return (controller.checkValidity());
-        };
+        attributes.ngShow = () => (controller.checkValidity());
         this.ngShow.link.apply(this.ngShow, arguments2);
     }
 }

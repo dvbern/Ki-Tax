@@ -28,7 +28,7 @@ export class DvDemoFeatureDirective implements OnInit {
 
     public constructor(
         private readonly elementRef: ElementRef,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -43,7 +43,7 @@ export class DvDemoFeatureDirective implements OnInit {
                 if (allowedElement.includes(this.dvDemoFeature.valueOf())) {
                     this.elementRef.nativeElement.style.display = 'block';
                 }
-            },
+            }
         );
     }
 }

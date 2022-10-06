@@ -32,7 +32,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
         areThereAnyBgBetreuungen: '=',
-        form: '=',
+        form: '='
     };
     public template = require('./dv-finanzielle-situation-require.html');
     public controller = DVFinanzielleSituationRequireController;
@@ -69,9 +69,9 @@ export class DVFinanzielleSituationRequireController implements IController {
         this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(response => {
+            .subscribe(response => {
                 this.maxMassgebendesEinkommen = parseInt(response.value, 10);
-            });
+            }, error => LOG.error(error));
 
         this.finanzielleSituationRS.getFinanzielleSituationTyp(this.gesuchModelManager.getGesuchsperiode(),
             this.gesuchModelManager.getGemeinde())

@@ -22,7 +22,7 @@ import {Transition} from '@uirouter/core';
     selector: 'dv-onboarding-be-login',
     templateUrl: './onboarding-be-login.component.html',
     styleUrls: ['./onboarding-be-login.component.less', '../onboarding.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OnboardingBeLoginComponent {
 

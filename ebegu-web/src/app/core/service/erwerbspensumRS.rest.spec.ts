@@ -87,7 +87,7 @@ describe('ErwerbspensumRS', () => {
                     createdEWPContainer = result;
                 });
             $httpBackend.flush();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             checkFieldValues(createdEWPContainer);
         });
@@ -110,7 +110,7 @@ describe('ErwerbspensumRS', () => {
                     updatedErwerbspensumContainerContainer = result;
                 });
             $httpBackend.flush();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             checkFieldValues(updatedErwerbspensumContainerContainer);
         });
@@ -129,7 +129,7 @@ describe('ErwerbspensumRS', () => {
                     deleteResult = result;
                 });
             $httpBackend.flush();
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
             expect(deleteResult).toBeDefined();
             expect(deleteResult.status).toEqual(httpOk);

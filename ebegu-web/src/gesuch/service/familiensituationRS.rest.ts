@@ -28,29 +28,27 @@ export class FamiliensituationRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}familiensituation`;
     }
 
     public saveFamiliensituation(
         familiensituation: TSFamiliensituationContainer,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSFamiliensituationContainer> {
         let returnedFamiliensituation = {};
         returnedFamiliensituation =
             this.ebeguRestUtil.familiensituationContainerToRestObject(returnedFamiliensituation, familiensituation);
         return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, returnedFamiliensituation, {
             headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                'Content-Type': 'application/json'
+            }
+        }).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING Familiensituation REST object ', response.data);
                 return this.ebeguRestUtil.parseFamiliensituationContainer(new TSFamiliensituationContainer(),
                     response.data);
-            });
-        });
+            }));
     }
 
 }

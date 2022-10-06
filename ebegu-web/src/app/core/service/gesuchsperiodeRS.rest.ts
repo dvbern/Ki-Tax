@@ -75,48 +75,38 @@ export class GesuchsperiodeRS {
 
     public getAllActiveGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
         if (!this.activeGesuchsperiodenList || this.activeGesuchsperiodenList.length <= 0) { // if the list is empty, reload it
-            return this.updateActiveGesuchsperiodenList().then(() => {
-                return this.activeGesuchsperiodenList;
-            });
+            return this.updateActiveGesuchsperiodenList().then(() => this.activeGesuchsperiodenList);
         }
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
     }
 
     public getActiveGesuchsperiodenForDossier(dossierId: string): IPromise<TSGesuchsperiode[]> {
         return this.dossierRS.findDossier(dossierId)
-            .then(dossier => {
-                return this.getAllPeriodenForGemeinde(dossier.gemeinde.id);
-            });
+            .then(dossier => this.getAllPeriodenForGemeinde(dossier.gemeinde.id));
     }
 
     public getAktivePeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
         return this.http
             .get(`${this.serviceURL}/aktive/gemeinde/${gemeindeId}`, {
                 params: {
-                    dossierId,
-                },
+                    dossierId
+                }
             })
-            .then(response => {
-                return this.ebeguRestUtil.parseGesuchsperioden(response.data);
-            });
+            .then(response => this.ebeguRestUtil.parseGesuchsperioden(response.data));
     }
 
     public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
         return this.http
             .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
                 params: {
-                    dossierId,
-                },
+                    dossierId
+                }
             })
-            .then(response => {
-                return this.ebeguRestUtil.parseGesuchsperioden(response.data);
-            });
+            .then(response => this.ebeguRestUtil.parseGesuchsperioden(response.data));
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/`).then((response: any) => {
-            return this.ebeguRestUtil.parseGesuchsperioden(response.data);
-        });
+        return this.http.get(`${this.serviceURL}/`).then((response: any) => this.ebeguRestUtil.parseGesuchsperioden(response.data));
     }
 
     public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
@@ -129,9 +119,7 @@ export class GesuchsperiodeRS {
 
     public getAllAktivUndInaktivGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
         if (!this.nichtAbgeschlosseneGesuchsperiodenList || this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0) { // if the list is empty, reload it
-            return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(() => {
-                return this.nichtAbgeschlosseneGesuchsperiodenList;
-            });
+            return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(() => this.nichtAbgeschlosseneGesuchsperiodenList);
         }
         return this.$q.when(this.nichtAbgeschlosseneGesuchsperiodenList); // we need to return a promise
     }
@@ -146,25 +134,21 @@ export class GesuchsperiodeRS {
 
     public removeGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
                                         dokumentTyp: TSDokumentTyp): IHttpPromise<TSGesuchsperiode> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.http.delete(`${this.serviceURL}/gesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`);
     }
 
     public existDokument(gesuchsperiodeId: string, sprache: TSSprache, dokumentTyp: TSDokumentTyp): IPromise<boolean> {
         return this.http.get(
             `${this.serviceURL}/existDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`)
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 
     public downloadGesuchsperiodeDokument(gesuchsperiodeId: string, sprache: TSSprache,
                                           dokumentTyp: TSDokumentTyp): IPromise<BlobPart> {
-        // tslint:disable-next-line:max-line-length
+        // eslint-disable-next-line max-len
         return this.http.get(`${this.serviceURL}/downloadGesuchsperiodeDokument/${encodeURIComponent(gesuchsperiodeId)}/${sprache}/${dokumentTyp}`,
             {responseType: 'blob'})
-            .then((response: any) => {
-                return response.data;
-            });
+            .then((response: any) => response.data);
     }
 }

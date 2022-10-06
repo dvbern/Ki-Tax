@@ -60,9 +60,9 @@ describe('ZahlungviewXComponent', () => {
                 {provide: CurrencyPipe, useValue: currencySpy},
                 {provide: TransitionService, useValue: transitionSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: StateStoreService, useValue: stateStoreSpy},
+                {provide: StateStoreService, useValue: stateStoreSpy}
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

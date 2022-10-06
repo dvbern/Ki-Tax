@@ -26,7 +26,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     getTSEinschulungTypValues,
     getTSEinschulungTypValuesLuzern,
-    TSEinschulungTyp,
+    TSEinschulungTyp
 } from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
@@ -180,7 +180,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
                 amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
             });
     }
 
@@ -198,11 +198,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungenFachstelle(
         minValueEinstellungKey: TSEinstellungKey,
-        maxValueEinstellungKey: TSEinstellungKey,
+        maxValueEinstellungKey: TSEinstellungKey
     ): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-        ).then((response: TSEinstellung[]) => {
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === minValueEinstellungKey)
                 .forEach(value => {
                     this.minValueAllowed = Number(value.value);
@@ -215,7 +215,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             if (this.isOnlyOneValueAllowed()) {
                 this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
             }
-        });
+        }, error => LOG.error(error));
     }
 
     private isOnlyOneValueAllowed(): boolean {
@@ -232,16 +232,16 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION
             );
             this.resetGruendeZusatzleistung();
         } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION) {
             this.getEinstellungenFachstelle(
                 TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION
             );
             this.resetGruendeZusatzleistung();
-            // tslint:disable-next-line:max-line-length
+            // eslint-disable-next-line max-len
         } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
             this.model.extractPensumFachstelle().pensum = 100;
         }
@@ -452,7 +452,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 integration: integrationTyp,
                 pensum: fachstelle.pensum,
                 von: vonText,
-                bis: bisText,
+                bis: bisText
             });
         }
 
@@ -537,14 +537,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellungen => {
+            .subscribe(einstellungen => {
                 this.loadEinstellungZemisDisabled(einstellungen);
                 this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
                 this.loadEinstellungKinderabzugTyp(einstellungen);
                 this.loadEinstellungAnspruchUnabhaengig(einstellungen);
                 this.loadEinstellungSpracheAmtsprache(einstellungen);
                 this.loadEinstellungFachstellenTyp(einstellungen);
-            });
+            }, error => LOG.error(error));
     }
 
     private loadEinstellungSpracheAmtsprache(einstellungen: TSEinstellung[]): void {

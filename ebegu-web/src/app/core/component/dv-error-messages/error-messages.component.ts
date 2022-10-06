@@ -22,7 +22,7 @@ import {
     Input,
     OnChanges,
     OnDestroy,
-    SimpleChanges,
+    SimpleChanges
 } from '@angular/core';
 import {ControlContainer, NgForm, ValidationErrors} from '@angular/forms';
 import {Subject} from 'rxjs';
@@ -36,7 +36,7 @@ const LOG = LogFactory.createLog('ErrorMessagesComponent');
     templateUrl: './error-messages.component.html',
     styleUrls: ['./dv-error-messages.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class ErrorMessagesComponent implements OnChanges, OnDestroy {
 
@@ -49,13 +49,13 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
 
     public constructor(
         public readonly form: NgForm,
-        public readonly changeDetectorRef: ChangeDetectorRef,
+        public readonly changeDetectorRef: ChangeDetectorRef
     ) {
         this.form.ngSubmit
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.changeDetectorRef.markForCheck(),
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 

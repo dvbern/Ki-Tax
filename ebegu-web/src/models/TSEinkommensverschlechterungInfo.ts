@@ -15,7 +15,7 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-// tslint:disable:naming-convention variable-name
+/* eslint-disable @typescript-eslint/naming-convention, no-underscore-dangle, id-blacklist, id-match */
 export class TSEinkommensverschlechterungInfo extends TSAbstractMutableEntity {
 
     private _einkommensverschlechterung: boolean = false;

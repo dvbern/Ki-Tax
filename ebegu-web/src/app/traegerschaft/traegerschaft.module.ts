@@ -27,7 +27,7 @@ import { TraegerschaftAddComponent } from './traegerschaft-add/traegerschaft-add
     imports: [
         SharedModule,
         TraegerschaftRoutingModule,
-        MaterialModule,
+        MaterialModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -36,9 +36,9 @@ import { TraegerschaftAddComponent } from './traegerschaft-add/traegerschaft-add
     declarations: [
         TraegerschaftEditComponent,
         TraegerschaftListComponent,
-        TraegerschaftAddComponent,
+        TraegerschaftAddComponent
     ],
-    providers: [],
+    providers: []
 })
 export class TraegerschaftModule {
 }

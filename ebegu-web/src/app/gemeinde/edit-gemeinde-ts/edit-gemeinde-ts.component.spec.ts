@@ -50,8 +50,8 @@ describe('EditGemeindeComponentTS', () => {
                     {provide: InstitutionRS, useValue: insitutionSpy},
                     {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                     {provide: StateService, useValue: stateServiceSpy}
-                ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+                ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
     }));
 

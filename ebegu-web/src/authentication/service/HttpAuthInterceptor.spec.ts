@@ -28,7 +28,7 @@ describe('HttpAuthInterceptor', () => {
     const authErrorResponse: any = {
         status: 401,
         data: '',
-        statusText: 'Unauthorized',
+        statusText: 'Unauthorized'
     };
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
@@ -55,7 +55,7 @@ describe('HttpAuthInterceptor', () => {
             httpAuthInterceptor.responseError(authErrorResponse);
         });
         it('should capture and broadcast "AUTH_EVENTS.notAuthenticated" on 401', () => {
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(authLifeCycleService.changeAuthStatus)
                 .toHaveBeenCalledWith(TSAuthEvent.NOT_AUTHENTICATED, authErrorResponse);
         });

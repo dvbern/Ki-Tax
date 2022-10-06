@@ -4,6 +4,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -22,11 +23,13 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
+const LOG = LogFactory.createLog('FallCreationViewXComponent');
+
 @Component({
     selector: 'dv-fall-creation-view-x',
     templateUrl: './fall-creation-view-x.component.html',
-    styleUrls: [],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    styleUrls: ['./fall-creation-view-x.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
@@ -90,13 +93,13 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         this.einstellungService.findEinstellung(TSEinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellung => {
+            .subscribe(einstellung => {
                 this.isBegruendungMutationActiv = einstellung.value === 'true';
                 this.cd.markForCheck();
-            });
+            }, error => LOG.error(error));
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public save(navigateFunction: Function): void {
         if (!this.isGesuchValid()) {
             this.form.form.markAllAsTouched();
@@ -106,8 +109,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         if (!this.isSavingNecessary()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            // eslint-disable-next-line
             Promise.resolve(this.gesuchModelManager.getGesuch()).then(gesuch => navigateFunction(gesuch));
+            return;
         }
         this.errorService.clearAll();
         this.gesuchModelManager.saveGesuchAndFall().then(
@@ -118,8 +122,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
                 }
                 this.cd.markForCheck();
                 return gesuch;
-            },
-            // tslint:disable-next-line:no-unnecessary-callback-wrapper
+            }
+            // eslint-disable-next-line
         ).catch(err => console.error(err)).then(gesuch => navigateFunction(gesuch));
     }
 
@@ -169,7 +173,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
                 'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
                 'KITAX_ERSTGESUCH_PERIODE';
             return this.$translate.instant(k, {
-                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString,
+                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
             });
         }
         const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?

@@ -48,7 +48,7 @@ export class EbeguUtil {
     public constructor(
         private readonly $filter: IFilterService,
         private readonly $translate: ITranslateService,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
     }
 
@@ -261,6 +261,7 @@ export class EbeguUtil {
     }
 
     public static roundToFiveRappen(betrag: number): number {
+        // eslint-disable-next-line no-magic-numbers
         return Number((Math.ceil(betrag * 20 - 0.5) / 20).toFixed(2));
     }
 
@@ -278,7 +279,7 @@ export class EbeguUtil {
         fall: TSFall,
         gemeinde: TSGemeinde,
         kindNr: number,
-        betreuungNumber: number,
+        betreuungNumber: number
     ): string {
         const year = EbeguUtil.getYear(gueltigkeit);
         const fallNr = EbeguUtil.addZerosToFallNummer(fall.fallNummer);
@@ -312,14 +313,14 @@ export class EbeguUtil {
      */
     public static isFinanzielleSituationRequired(
         sozialhilfeBezueger: boolean,
-        verguenstigungGewuenscht: boolean,
+        verguenstigungGewuenscht: boolean
     ): boolean {
-        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true; // tslint:disable-line:no-boolean-literal-compare
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true; // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
     }
 
     public static getAmtsspracheAsString(
         gemeindeStammdaten: TSAbstractGemeindeStammdaten,
-        translate: ITranslateService,
+        translate: ITranslateService
     ): string {
 
         if (!gemeindeStammdaten || !translate) {
@@ -354,7 +355,7 @@ export class EbeguUtil {
 
     public static formatHrefUrl(url: string): string {
         if (EbeguUtil.isNotNullOrUndefined(url) && url.startsWith('www.')) {
-            return 'http://' + url;
+            return `http://${  url}`;
         }
         return url;
     }
@@ -424,13 +425,13 @@ export class EbeguUtil {
     public getAntragTextDateAsString(
         tsAntragTyp: TSAntragTyp,
         eingangsdatum: moment.Moment,
-        laufnummer: number,
+        laufnummer: number
     ): string {
         if (tsAntragTyp) {
             if (tsAntragTyp === TSAntragTyp.MUTATION && eingangsdatum) {
                 return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}`, {
                     nummer: laufnummer,
-                    date: eingangsdatum.format(defaultDateFormat),
+                    date: eingangsdatum.format(defaultDateFormat)
                 });
             }
             return this.$translate.instant(`TOOLBAR_${TSAntragTyp[tsAntragTyp]}_NO_DATE`);
@@ -449,6 +450,7 @@ export class EbeguUtil {
 
     /**
      * Translates the given list using the angular translate filter
+     *
      * @param translationList list of words that will be translated
      * @returns A List of Objects with key and value, where value is the translated word.
      */
@@ -472,7 +474,7 @@ export class EbeguUtil {
         fall: TSFall,
         gemeinde: TSGemeinde,
         kindContainerNumber: number,
-        betreuungNumber: number,
+        betreuungNumber: number
     ): string {
         return gesuchsperiode && fall ?
             EbeguUtil.toBetreuungsId(gesuchsperiode.gueltigkeit, fall, gemeinde, kindContainerNumber, betreuungNumber) :
@@ -493,6 +495,7 @@ export class EbeguUtil {
     /**
      * hilfsmethode um die betreuungsnummer in ihre einzelteile zu zerlegen. gibt ein objekt zurueck welches die werte
      * einzeln enthaelt
+     *
      * @param betreuungsnummer im format JJ.Fallnr.GemeindeNr.kindnr.betrnr
      */
     public splitBetreuungsnummer(betreuungsnummer: string): TSBetreuungsnummerParts {
