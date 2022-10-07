@@ -189,11 +189,10 @@ public enum ApplicationPropertyKey {
 	SCHNITTSTELLE_EVENTS_AKTIVIERT,
 
 	/**
-	 * Anzahl Monate in die Zukunft, welche im Zahlungslauf ausbezahlt werden sollen.
-	 * Beispiel: 0 => Generiert am 15.08. => Ausbezahlt bis 31.08.
-	 * 			 1 => Generiert am 15.08. => Ausbezahlt bis 30.09.
+	 * Falls true wird eine Checkbox bei den Zahlungen angezeigt, mit der die Auszahlungen in der Zukunft
+	 * ausbezahlt werden können
 	 */
-	ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
+	CHECKBOX_AUSZAHLEN_IN_ZUKUNFT,
 
 	/**
 	 * Einige Features sollen in der Produktion noch ausgeblendet werden. Auf den Testungebungen können diese Features

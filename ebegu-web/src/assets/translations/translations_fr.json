@@ -1820,6 +1820,7 @@
     "STADT_BERN_ASIV_START_DATUM": "Date à partir de laquelle les bons seront calculés selon OPIS",
     "UPLOAD_FILETYPES_WHITELIST": "Types de fichier-liste blanche",
     "ACTIVATED_DEMO_FEATURES": "Aktivierte Demo Features",
+    "CHECKBOX_AUSZAHLEN_IN_ZUKUNFT": "Checkbox Auszahlen in Zukunft einblenden",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Délais de soumission publique par défault selon l'ordonnance cantonale de nécessité",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Délais de soumission privé par défault selon l'ordonnance cantonale de nécessité",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",

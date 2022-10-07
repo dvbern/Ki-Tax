@@ -84,7 +84,8 @@ describe('testdatenView', () => {
             ebeguKibonAnfrageTestGuiEnabled: false,
             steuerschnittstelleAktivAb: moment('2020-01-01'),
             zusatzinformationenInstitution: true,
-            activatedDemoFeatures: ''
+            activatedDemoFeatures: '',
+            checkboxAuszahlungInZukunft: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

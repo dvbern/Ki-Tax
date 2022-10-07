@@ -4435,6 +4435,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
+        publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         return publicAppConfigTS;
 
     }

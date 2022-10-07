@@ -132,4 +132,10 @@ export class ApplicationPropertyRS {
     public getZusatzinformationenInstitutionEnabled(): IPromise<boolean> {
         return this.getPublicPropertiesCached().then(response => response.zusatzinformationenInstitution);
     }
+
+    public getCheckboxAuszahlungInZukunft(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.checkboxAuszahlungInZukunft;
+        });
+    }
 }
