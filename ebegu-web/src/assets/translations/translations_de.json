@@ -1890,6 +1890,7 @@
     "STADT_BERN_ASIV_START_DATUM": "Datum, ab welchem die Stadt Bern die Gutscheine gemäss ASIV berechnet",
     "UPLOAD_FILETYPES_WHITELIST": "Dateitypen-Whitelist",
     "ACTIVATED_DEMO_FEATURES": "Aktivierte Demo Features",
+    "CHECKBOX_AUSZAHLEN_IN_ZUKUNFT": "Checkbox Auszahlen in Zukunft einblenden",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
