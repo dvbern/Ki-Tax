@@ -85,7 +85,7 @@
                                    ng-disabled="{{vm.isDisabled($index)}}"
                                    ng-required="vm.isRowRequired($index)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   step="0.25"
+                                   step="{{vm.getStepSize()}}"
                                    ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
                         </td>
                         <td>
