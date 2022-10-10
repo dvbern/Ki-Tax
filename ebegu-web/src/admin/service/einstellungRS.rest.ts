@@ -71,10 +71,17 @@ export class EinstellungRS {
             return of(this._einstellungenCacheMap.get(gesuchsperiodeId));
         }
 
-        return this.getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId)
+        return this.getAllEinstellungenBySystem(gesuchsperiodeId)
             .pipe(map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
+            }));
+    }
+
+    private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseEinstellungList(response);
             }));
     }
 
