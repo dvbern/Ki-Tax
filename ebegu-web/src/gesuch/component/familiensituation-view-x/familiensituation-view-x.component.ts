@@ -82,7 +82,6 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             wizardStepManager,
             TSWizardStepName.FAMILIENSITUATION);
         this.gesuchModelManager.initFamiliensituation();
-        //TODO: ????
         this.model = this.getGesuch().familiensituationContainer;
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
