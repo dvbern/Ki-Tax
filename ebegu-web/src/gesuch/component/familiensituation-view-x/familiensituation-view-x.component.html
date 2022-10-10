@@ -49,6 +49,7 @@
 														  class="input-element"
 														  [(date)]="getFamiliensituation().aenderungPer"
 														  (dateChange)="aenderungPerChanged()"
+														  [datePickerEnabled]="false"
 														  [disabled]="isGesuchReadonly()">
 										</dv-date-picker-x>
 										<dv-bisher-x [showBisher]="showBisher()"
@@ -109,6 +110,7 @@
 													  [required]="true"
 													  [maxDate]="getToday()"
 													  (dateChange)="onDatumBlur()"
+													  [datePickerEnabled]="false"
 													  [disabled]="isStartKonkubinatDisabled()">
 									</dv-date-picker-x>
 									<dv-bisher-x [showBisher]="showBisher()"
