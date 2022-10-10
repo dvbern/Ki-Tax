@@ -561,6 +561,7 @@ export class EbeguRestUtil {
         if (erwerbspensumFromServer) {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
+            erwerbspensum.erwerbspensumInstitution = erwerbspensumFromServer.erwerbspensumInstitution;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
@@ -574,6 +575,7 @@ export class EbeguRestUtil {
         if (erwerbspensum) {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
+            restErwerbspensum.erwerbspensumInstitution = erwerbspensum.erwerbspensumInstitution;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
