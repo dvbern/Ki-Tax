@@ -28,10 +28,13 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.reporting.FleischOption;
 import ch.dvbern.ebegu.util.Constants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
@@ -61,6 +64,21 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@Nullable
 	@Column
 	private String planKlasse;
+
+	@Enumerated(EnumType.STRING)
+	@Nonnull
+	@Column
+	private FleischOption fleischOption;
+
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Nonnull
+	@Column
+	private String allergienUndUnvertraeglichkeiten;
+
+	@Nonnull
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_notfallnummer}")
+	private String notfallnummer;
 
 	@Enumerated(EnumType.STRING)
 	@Nullable
@@ -119,6 +137,15 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		this.planKlasse = planKlasse;
 	}
 
+	@Nonnull
+	public String getAllergienUndUnvertraeglichkeiten() {
+		return allergienUndUnvertraeglichkeiten;
+	}
+
+	public void setAllergienUndUnvertraeglichkeiten(@Nonnull final String allergienUndUnvertraeglichkeiten) {
+		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
+	}
+
 	@Nullable
 	public AbholungTagesschule getAbholungTagesschule() {
 		return abholungTagesschule;
@@ -165,6 +192,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		case MUTATION:
 			target.setEintrittsdatum(LocalDate.from(eintrittsdatum));
 			target.setPlanKlasse(this.getPlanKlasse());
+			target.setAllergienUndUnvertraeglichkeiten(this.getAllergienUndUnvertraeglichkeiten());
 			target.setAbholungTagesschule(this.abholungTagesschule);
 			target.setBemerkung(this.getBemerkung());
 			target.setAbweichungZweitesSemester(this.abweichungZweitesSemester);
@@ -186,5 +214,23 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 			belegungTagesschuleModulCopy.setBelegungTagesschule(target);
 			target.addBelegungTagesschuleModul(belegungTagesschuleModulCopy);
 		}
+	}
+
+	@Nonnull
+	public FleischOption getFleischOption() {
+		return fleischOption;
+	}
+
+	public void setFleischOption(@Nonnull final FleischOption fleischOption) {
+		this.fleischOption = fleischOption;
+	}
+
+	@Nonnull
+	public String getNotfallnummer() {
+		return notfallnummer;
+	}
+
+	public void setNotfallnummer(@Nonnull final String notfallnummer) {
+		this.notfallnummer = notfallnummer;
 	}
 }

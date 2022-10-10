@@ -72,6 +72,7 @@
                                                       [(ngModel)]="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung"
                                                       (change)="changeKonfigTagesschuleZusaetzlicheAngaben(konfigurationsListe[i])">
                                             {{'TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG'|translate}}</mat-checkbox>
+                                        <dv-tooltip input-id="planKlasse" [text]="'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG' | translate"></dv-tooltip>
                                     </div>
 
                                     <label class="required" translate for="tsAktivierungsdatum_{{i}}">TAGESSCHULE_AKTIVIERUNGSDATUM</label>

@@ -3321,6 +3321,9 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
+		belegungTagesschule.setFleischOption(belegungTagesschuleJAXP.getFleischOption());
+		belegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungTagesschuleJAXP.getAllergienUndUnvertraeglichkeiten());
+		belegungTagesschule.setNotfallnummer(belegungTagesschuleJAXP.getNotfallnummer());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
 		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
@@ -3775,6 +3778,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setEintrittsdatum(belegungFromServer.getEintrittsdatum());
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
+		jaxBelegungTagesschule.setFleischOption(belegungFromServer.getFleischOption());
+		jaxBelegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungFromServer.getAllergienUndUnvertraeglichkeiten());
+		jaxBelegungTagesschule.setNotfallnummer(belegungFromServer.getNotfallnummer());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
 		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());

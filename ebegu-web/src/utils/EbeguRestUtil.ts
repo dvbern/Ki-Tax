@@ -4144,6 +4144,9 @@ export class EbeguRestUtil {
                 this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
             belegungTS.abholungTagesschule = belegungFromServer.abholungTagesschule;
+            belegungTS.fleischOption = belegungFromServer.fleischOption;
+            belegungTS.notfallnummer = belegungFromServer.notfallnummer;
+            belegungTS.allergienUndUnvertraeglichkeiten = belegungFromServer.allergienUndUnvertraeglichkeiten;
             belegungTS.planKlasse = belegungFromServer.planKlasse;
             belegungTS.abweichungZweitesSemester = belegungFromServer.abweichungZweitesSemester;
             belegungTS.keineKesbPlatzierung = belegungFromServer.keineKesbPlatzierung;
@@ -4160,6 +4163,9 @@ export class EbeguRestUtil {
                 this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
             restBelegung.abholungTagesschule = belegungTS.abholungTagesschule;
+            restBelegung.fleischOption = belegungTS.fleischOption;
+            restBelegung.notfallnummer = belegungTS.notfallnummer;
+            restBelegung.allergienUndUnvertraeglichkeiten = belegungTS.allergienUndUnvertraeglichkeiten;
             restBelegung.planKlasse = belegungTS.planKlasse;
             restBelegung.abweichungZweitesSemester = belegungTS.abweichungZweitesSemester;
             restBelegung.keineKesbPlatzierung = belegungTS.keineKesbPlatzierung;

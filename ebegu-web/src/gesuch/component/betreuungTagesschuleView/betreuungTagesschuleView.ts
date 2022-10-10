@@ -26,6 +26,10 @@ import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSAbholungTagesschuleValues, TSAbholungTagesschule} from '../../../models/enums/TSAbholungTagesschule';
+import {
+     getTSFleischOptionValues,
+    TSFleischOption
+} from '../../../models/enums/TSFleischOption';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {
     getTSBelegungTagesschuleModulIntervallValues,
@@ -63,6 +67,7 @@ import IPromise = angular.IPromise;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import { CONSTANTS } from '../../../app/core/constants/CONSTANTS';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okDialogLongTextTemplate.html');
@@ -112,6 +117,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'EbeguRestUtil'
     ];
 
+    public readonly CONSTANTS: any = CONSTANTS;
     public onSave: () => void;
     public form: IFormController;
     public betreuung: TSBetreuung;
@@ -374,6 +380,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
 
     public getAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
         return getTSAbholungTagesschuleValues();
+    }
+
+    public getFleischOptionValues(): Array<TSFleischOption> {
+        return getTSFleischOptionValues();
     }
 
     public isModuleEditable(modul: TSBelegungTagesschuleModul): boolean {
