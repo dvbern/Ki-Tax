@@ -134,13 +134,15 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                 const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
                     data: {
                         title: 'FAMILIENSITUATION_WARNING',
-                        deleteText: descriptionText
+                        text: descriptionText
                     }
                 }).afterClosed().toPromise();
 
                 if (dialogResult) {
                     const savedContaier = await this.save();
                     onResult(savedContaier);
+                } else {
+                    onResult(false);
                 }
                 return;
 
