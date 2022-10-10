@@ -234,7 +234,7 @@ public enum EinstellungKey {
 
 	// Kitaplus Zuschlag aktiviert (Luzern)
 	// Siehe KIBON-2131
-	KITAPLUS_ZUSCHLAG_AKTIVIERT(MandantIdentifier.getAll()),
+	KITAPLUS_ZUSCHLAG_AKTIVIERT(MandantIdentifier.LUZERN),
 
 	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
 	// siehe KIBON-2133
