@@ -62,7 +62,7 @@ export class EinstellungRS {
     }
 
     public getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/mandant/gesuchsperiode/${gesuchsperiodeId}`)
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}/mandant-active`)
             .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
     }
 

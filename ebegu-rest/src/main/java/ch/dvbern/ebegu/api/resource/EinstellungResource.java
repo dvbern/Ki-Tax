@@ -180,11 +180,11 @@ public class EinstellungResource {
 		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
 	@Nonnull
 	@GET
-	@Path("/mandant/gesuchsperiode/{id}")
+	@Path("gesuchsperiode/{id}/mandant-active")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public List<JaxEinstellung> getAllEinstellungenByMandant(
+	public List<JaxEinstellung> getAllEinstellungenActiveByMandant(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
 		Objects.requireNonNull(id.getId());
