@@ -29,17 +29,17 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'mitteilungen',
         data: {
-            roles: TSRoleUtil.getAllRolesButSteueramt(),
-        },
+            roles: TSRoleUtil.getAllRolesButSteueramt()
+        }
     },
     {
         name: 'mitteilungen.view',
         template: '<mitteilungen-view flex="auto" class="overflow-hidden" layout="column">',
         url: '/mitteilungen/:fallId/:dossierId/:betreuungId',
         params: {
-            betreuungId: '',
-        },
-    },
+            betreuungId: ''
+        }
+    }
 ];
 
 // TODO hefa nicht alle Params wurden bei der StateDefinition deklariert!

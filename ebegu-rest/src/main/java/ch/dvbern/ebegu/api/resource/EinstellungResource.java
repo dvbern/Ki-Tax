@@ -180,19 +180,20 @@ public class EinstellungResource {
 		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
 	@Nonnull
 	@GET
-	@Path("/mandant/gesuchsperiode/{id}")
+	@Path("gesuchsperiode/{id}/mandant-active")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public List<JaxEinstellung> getAllEinstellungenByMandant(
+	public List<JaxEinstellung> getAllEinstellungenActiveByMandant(
 		@Nonnull @NotNull @PathParam("id") JaxId id) {
 
 		Objects.requireNonNull(id.getId());
 		String gesuchsperiodeId = converter.toEntityId(id);
 		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
 		return gesuchsperiode
-			.map(value -> einstellungService.getAllEinstellungenByMandant(value)
+			.map(gp -> einstellungService.getAllEinstellungenBySystem(gp)
 				.stream()
+				.filter(einstellung -> einstellung.getKey().isEinstellungActivForMandant(gp.getMandant().getMandantIdentifier()))
 				.map(einstellung -> converter.einstellungToJAX(einstellung))
 				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}

@@ -34,12 +34,12 @@ export class MultiMandantHttpLoader implements TranslateLoader {
 
     private readonly RESOURCE: Resource = {
         prefix: './assets/translations/translations_',
-        suffix: `.json?t=${Date.now()}`,
+        suffix: `.json?t=${Date.now()}`
     };
 
     public constructor(
         private readonly http: HttpClient,
-        private readonly mandantService: MandantService,
+        private readonly mandantService: MandantService
     ) {
     }
 
@@ -48,8 +48,8 @@ export class MultiMandantHttpLoader implements TranslateLoader {
             mergeMap(mandant => iif(() =>
                 mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
                 this.createMultimandantRequests(lang, mandant),
-                this.createBaseTranslationRequest(lang)),
-            ),
+                this.createBaseTranslationRequest(lang))
+            )
         );
     }
 
@@ -60,14 +60,10 @@ export class MultiMandantHttpLoader implements TranslateLoader {
                     .pipe(catchError(err => {
                         LOG.error(err);
                         return of({});
-                    })),
-            ],
+                    }))
+            ]
         ).pipe(
-            map(loadedResources => {
-                return loadedResources.reduce((defaultResource, resource) => {
-                    return {...defaultResource, ...resource};
-                });
-            }),
+            map(loadedResources => loadedResources.reduce((defaultResource, resource) => ({...defaultResource, ...resource})))
         );
     }
 

@@ -42,4 +42,9 @@ public class KindDokumenteVisitor implements MandantVisitor<AbstractDokumente<Ki
 	public AbstractDokumente<Kind, Object> visitSolothurn() {
 		return new BernKindDokumente();
 	}
+
+	@Override
+	public AbstractDokumente<Kind, Object> visitAppenzellAusserrhoden() {
+		return new BernKindDokumente();
+	}
 }

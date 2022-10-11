@@ -219,6 +219,14 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.fleischOptionTitle, ServerMessageUtil.getMessage("Reports_fleischOptionTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.allergienUndUnvertraeglichkeitenTitle, ServerMessageUtil.getMessage("Reports_allergienUndUnvertraeglichkeitenTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.notfallnummerTitle, ServerMessageUtil.getMessage("Reports_notfallnummerTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlBestaetigteAnmeldungen, ServerMessageUtil.getMessage(
+			"Reports_anzahlBestaetigteAnmeldungen", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlAbgelehnteAnmeldungen, ServerMessageUtil.getMessage(
+			"Reports_anzahlAbgelehnteAnmeldungen", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlOffeneAnmeldungen, ServerMessageUtil.getMessage(
+			"Reports_anzahlOffeneAnmeldungen", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlNichtFreigegebeneAnmeldungen, ServerMessageUtil.getMessage(
+			"Reports_anzahlNichtFreigegebeneAnmeldungen", locale, mandant));
 
 		fillModulHeaders(repeatColGroups, excelMerger, locale);
 	}

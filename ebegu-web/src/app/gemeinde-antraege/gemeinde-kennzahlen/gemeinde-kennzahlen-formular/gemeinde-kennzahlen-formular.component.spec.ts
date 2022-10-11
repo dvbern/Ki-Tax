@@ -48,17 +48,17 @@ describe('GemeindeKennzahlenFormularComponent', () => {
             providers: [
                 {
                     provide: GemeindeKennzahlenService,
-                    useValue: gemeindeKennzahlenServiceSpy,
+                    useValue: gemeindeKennzahlenServiceSpy
                 },
                 {
                     provide: AuthServiceRS,
-                    useValue: authServiceSpy,
+                    useValue: authServiceSpy
                 },
                 {
                     provide: ErrorServiceX,
-                    useValue: errorServiceSpy,
-                },
-            ],
+                    useValue: errorServiceSpy
+                }
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

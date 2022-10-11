@@ -47,17 +47,17 @@ describe('EditGemeindeComponentStammdaten', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [],
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
     }));

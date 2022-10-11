@@ -44,17 +44,17 @@ describe('EditGemeindeComponentKorrespondenz', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: DownloadRS, useValue: downloadRSSpy},
-                {provide: TranslateService, useValue: translateRSSpy},
+                {provide: TranslateService, useValue: translateRSSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
     }));
 

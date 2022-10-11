@@ -5,7 +5,7 @@ import {Injectable} from '@angular/core';
  * object.
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class StateStoreService {
 

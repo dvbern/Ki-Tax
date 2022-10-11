@@ -20,7 +20,7 @@ import {MultipleFileUploadComponent} from '../app/shared/component/multpile-file
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
-import {BetreuungInputComponentConfig} from './component/betreuungInput/betreuung-input.component';
+import {BetreuungInputConfig} from './component/betreuungInput/betreuung-input';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
 import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
@@ -29,7 +29,7 @@ import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungV
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
 import {
     DossierToolbarComponentConfig,
-    DossierToolbarGesuchstellerComponentConfig,
+    DossierToolbarGesuchstellerComponentConfig
 } from './component/dossierToolbar/dossierToolbar';
 import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
@@ -128,7 +128,7 @@ export const GESUCH_JS_MODULE =
         .component('sozialhilfeZeitraumListView', new SozialhilfeZeitraumListViewComponentConfig())
         .component('sozialhilfeZeitraumView', new SozialhilfeZeitraumViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
-        .component('dvBetreuungInput', new BetreuungInputComponentConfig())
+        .component('dvBetreuungInput', new BetreuungInputConfig())
         .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
@@ -136,7 +136,7 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({
                 component: MultipleFileUploadComponent,
                 inputs: ['title', 'files', 'readOnly', 'readOnlyDelete', 'tooltipText'],
-                outputs: ['download', 'delete', 'uploadFile'],
+                outputs: ['download', 'delete', 'uploadFile']
             }))
         .component('sozialdienstFallCreationView', new SozialdienstFallCreationViewComponentConfig())
         .directive('internePendenzenView', downgradeComponent({component: InternePendenzenComponent}))

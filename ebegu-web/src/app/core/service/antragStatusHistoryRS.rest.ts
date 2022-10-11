@@ -40,7 +40,7 @@ export class AntragStatusHistoryRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public log: ILogService,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
         this.serviceURL = `${REST_API}antragStatusHistory`;
     }
@@ -65,9 +65,8 @@ export class AntragStatusHistoryRS {
 
     public loadAllAntragStatusHistoryByGesuchsperiode(
         dossier: TSDossier,
-        gesuchsperiode: TSGesuchsperiode,
-    )
-        : IPromise<Array<TSAntragStatusHistory>> {
+        gesuchsperiode: TSGesuchsperiode
+    ): IPromise<Array<TSAntragStatusHistory>> {
 
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
             const baseUrl = `${this.serviceURL}/verlauf/`;

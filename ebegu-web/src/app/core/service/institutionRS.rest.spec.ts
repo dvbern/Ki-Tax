@@ -13,38 +13,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpBackendService} from 'angular';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {translationsMock} from '../../../hybridTools/translationsMock';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
-import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
-import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
 
 describe('institutionRS', () => {
 
     let institutionRS: InstitutionRS;
-    let $httpBackend: IHttpBackendService;
-    let ebeguRestUtil: EbeguRestUtil;
+    const ebeguRestUtil = new EbeguRestUtil();
     let mockInstitution: TSInstitution;
     let mockInstitutionRest: any;
     let mandant: TSMandant;
     let traegerschaft: TSTraegerschaft;
 
-    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
+    const mockHttpClient = jasmine.createSpyObj<HttpClient>(HttpClient.name, ['get']);
 
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.module(translationsMock));
-
-    beforeEach(angular.mock.inject($injector => {
-        institutionRS = $injector.get('InstitutionRS');
-        $httpBackend = $injector.get('$httpBackend');
-        ebeguRestUtil = $injector.get('EbeguRestUtil');
-    }));
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+            providers: [{provide: HttpClient, useValue: mockHttpClient}]
+        });
+        institutionRS = TestBed.inject(InstitutionRS);
+    });
 
     beforeEach(() => {
         traegerschaft = new TSTraegerschaft();
@@ -53,8 +48,6 @@ describe('institutionRS', () => {
         mockInstitution = new TSInstitution('InstitutionTest', traegerschaft, mandant);
         mockInstitution.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionRest = ebeguRestUtil.institutionToRestObject({}, mockInstitution);
-
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {
@@ -66,15 +59,13 @@ describe('institutionRS', () => {
     describe('API Usage', () => {
         describe('findInstitution', () => {
             it('should return the Institution by id', () => {
-                const url = `${institutionRS.serviceURL}/${mockInstitution.id}`;
-                $httpBackend.expectGET(url).respond(mockInstitutionRest);
+                mockHttpClient.get.and.returnValue(of(mockInstitutionRest));
 
                 let foundInstitution: TSInstitution;
-                institutionRS.findInstitution(mockInstitution.id).then(result => {
+                institutionRS.findInstitution(mockInstitution.id).subscribe(result => {
                     foundInstitution = result;
-                });
-                $httpBackend.flush();
-                checkFieldValues(foundInstitution, mockInstitution);
+                    checkFieldValues(foundInstitution, mockInstitution);
+                }, error => console.error(error));
             });
 
         });
@@ -82,17 +73,17 @@ describe('institutionRS', () => {
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
                 const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];
-                $httpBackend.expectGET(institutionRS.serviceURL).respond(institutionenRestArray);
+                mockHttpClient.get.and.returnValue(of(institutionenRestArray));
 
                 let returnedInstitution: Array<TSInstitution>;
-                institutionRS.getAllInstitutionen().then(result => {
+                institutionRS.getAllInstitutionen().subscribe(result => {
                     returnedInstitution = result;
-                });
-                $httpBackend.flush();
-                expect(returnedInstitution).toBeDefined();
-                expect(returnedInstitution.length).toEqual(2);
-                checkFieldValues(returnedInstitution[0], institutionenRestArray[0]);
-                checkFieldValues(returnedInstitution[1], institutionenRestArray[1]);
+
+                    expect(returnedInstitution).toBeDefined();
+                    expect(returnedInstitution.length).toEqual(2);
+                    checkFieldValues(returnedInstitution[0], institutionenRestArray[0]);
+                    checkFieldValues(returnedInstitution[1], institutionenRestArray[1]);
+                }, error => console.error(error));
             });
         });
 

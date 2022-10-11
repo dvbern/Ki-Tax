@@ -46,6 +46,8 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 	@Nullable
 	private UserRole role = null;
 	@Nullable
+	private String roleGueltigAb = null;
+	@Nullable
 	private String roleGueltigBis = null;
 	@Nullable
 	private String gemeinde = null;
@@ -67,6 +69,7 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 			.append("email", email)
 			.append("role", role)
 			.append("roleGueltigBis", roleGueltigBis)
+			.append("roleGueltigAb", roleGueltigAb)
 			.append("gemeinde", gemeinde)
 			.append("institution", institution)
 			.append("traegerschaft", traegerschaft)
@@ -118,6 +121,15 @@ public class BenutzerPredicateObjectDTO implements Serializable {
 
 	public void setRole(@Nullable UserRole role) {
 		this.role = role;
+	}
+
+	@Nullable
+	public String getRoleGueltigAb() {
+		return roleGueltigAb;
+	}
+
+	public void setRoleGueltigAb(@Nullable String roleGueltigAb) {
+		this.roleGueltigAb = roleGueltigAb;
 	}
 
 	@Nullable

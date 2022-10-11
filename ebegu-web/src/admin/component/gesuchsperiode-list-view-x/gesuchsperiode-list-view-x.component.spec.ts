@@ -41,7 +41,7 @@ describe('GesuchsperiodeListViewXComponent', () => {
             providers: [
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: StateService, useValue: stateServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ]
         })
             .compileComponents();

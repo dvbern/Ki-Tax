@@ -566,9 +566,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	public Collection<Benutzer> getAllBenutzerMandant(@Nonnull Mandant mandant) {
+	public Collection<Benutzer> getAllActiveBenutzerMandant(@Nonnull Mandant mandant) {
 		return getBenutzersOfRoles(getMandantRoles())
-			.stream().filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.stream()
+			.filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.filter(benutzer -> !benutzer.isGesperrt())
 			.collect(Collectors.toList());
 	}
 
@@ -1189,6 +1191,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 					return new ImmutablePair<>(0L, Collections.emptyList());
 				}
 			}
+			// roleGueltigAb
+			if (predicateObjectDto.getRoleGueltigAb() != null) {
+				try {
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getRoleGueltigAb(), Constants.DATE_FORMATTER);
+					predicates.add(cb.equal(currentBerechtigungJoin.get(AbstractDateRangedEntity_.gueltigkeit)
+						.get(DateRange_.gueltigAb), searchDate));
+				} catch (DateTimeParseException e) {
+					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
+					return new ImmutablePair<>(0L, Collections.emptyList());
+				}
+			}
 			// gemeinde
 			if (predicateObjectDto.getGemeinde() != null) {
 				predicates.add(cb.equal(gemeindeSetJoin.get(Gemeinde_.name), predicateObjectDto.getGemeinde()));
@@ -1327,6 +1341,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				break;
 			case "role":
 				expression = currentBerechtigung.get(Berechtigung_.role);
+				break;
+			case "roleGueltigAb":
+				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb);
 				break;
 			case "roleGueltigBis":
 				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis);

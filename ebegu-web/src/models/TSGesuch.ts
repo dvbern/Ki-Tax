@@ -22,7 +22,7 @@ import {
     getSchulamtBetreuungsangebotTypValues,
     isJugendamt,
     isOfAnyBetreuungsangebotTyp,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from './enums/TSBetreuungsstatus';
 import {TSEingangsart} from './enums/TSEingangsart';
@@ -441,9 +441,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
      */
     public allKindHaveAusserordentlicherAnspruch(): boolean {
         if (this.kindContainers) {
-            return this.kindContainers.every(kind => {
-                return !!kind.kindJA.pensumAusserordentlicherAnspruch;
-            });
+            return this.kindContainers.every(kind => !!kind.kindJA.pensumAusserordentlicherAnspruch);
         }
         return false;
     }
@@ -454,7 +452,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     public hasAnyJugendamtAngebot(): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
-            // tslint:disable-next-line:early-exit
+            // eslint-disable-next-line
             if (kind.betreuungen && kind.betreuungen.length > 0) {
                 for (const platz of kind.betreuungen) {
                     if (isJugendamt(platz.getAngebotTyp())) {

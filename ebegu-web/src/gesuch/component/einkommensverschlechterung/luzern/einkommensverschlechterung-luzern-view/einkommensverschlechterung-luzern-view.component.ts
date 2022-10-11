@@ -34,7 +34,7 @@ import {EKVViewUtil} from '../../EKVViewUtil';
     selector: 'dv-einkommensverschlechterung-luzern-view',
     templateUrl: './einkommensverschlechterung-luzern-view.component.html',
     styleUrls: ['./einkommensverschlechterung-luzern-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -46,7 +46,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         public gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
-        private readonly $transition$: Transition,
+        private readonly $transition$: Transition
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);

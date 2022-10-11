@@ -93,7 +93,7 @@ export class InternePendenzenTableComponent implements OnInit {
     public confirmDelete(): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'PENDENZ_WIRKLICH_LOESCHEN',
+            title: 'PENDENZ_WIRKLICH_LOESCHEN'
         };
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed().toPromise();

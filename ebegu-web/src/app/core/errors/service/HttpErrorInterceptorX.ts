@@ -30,7 +30,7 @@ const LOG = LogFactory.createLog('HttpErrorInterceptorX');
 export class HttpErrorInterceptorX implements HttpInterceptor {
 
     public constructor(
-        private readonly errorService: ErrorServiceX,
+        private readonly errorService: ErrorServiceX
     ) {
     }
 
@@ -64,7 +64,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
 
                 throw err;
 
-            }),
+            })
         );
     }
 
@@ -77,7 +77,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
      */
     private async handleErrorResponse(
         request: HttpRequest<any>,
-        response: HttpErrorResponse,
+        response: HttpErrorResponse
     ): Promise<Array<TSExceptionReport>> {
         const url = request.url || '';
         if (response.status === HTTP_CODES.NOT_FOUND && (
@@ -114,7 +114,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
                     response.message));
             } else {
                 LOG.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-                LOG.error('ResponseData:' + JSON.stringify(response.message));
+                LOG.error(`ResponseData:${  JSON.stringify(response.message)}`);
                 // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
                 errors = [];
                 errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
@@ -169,6 +169,7 @@ export class HttpErrorInterceptorX implements HttpInterceptor {
     /**
      *
      * checks if response data json-object has the keys required to be a violationReport (from jaxRS)
+     *
      * @param data object whose keys are checked
      * @returns true if fields of violationReport are present
      */

@@ -28,6 +28,7 @@ export class SearchIndexRS {
 
     /**
      * performs a global search that will only return a certain ammount of results
+     *
      * @param query searchstring
      */
     public quickSearch(query: string): IPromise<TSQuickSearchResult> {
@@ -36,6 +37,7 @@ export class SearchIndexRS {
 
     /**
      * performs a global search that will return the full number of matched results
+     *
      * @param query searchstring
      */
     public globalSearch(query: string): IPromise<TSQuickSearchResult> {
@@ -43,8 +45,6 @@ export class SearchIndexRS {
     }
 
     private search(url: string): IPromise<TSQuickSearchResult> {
-        return this.http.get(url).then((response: IHttpResponse<TSQuickSearchResult>) => {
-            return this.ebeguRestUtil.parseQuickSearchResult(response.data);
-        });
+        return this.http.get(url).then((response: IHttpResponse<TSQuickSearchResult>) => this.ebeguRestUtil.parseQuickSearchResult(response.data));
     }
 }

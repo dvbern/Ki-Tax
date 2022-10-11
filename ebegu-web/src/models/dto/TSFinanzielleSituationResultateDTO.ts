@@ -39,7 +39,7 @@ export class TSFinanzielleSituationResultateDTO {
         nettovermoegenFuenfProzent?: number,
         anrechenbaresEinkommen?: number,
         abzuegeBeiderGesuchsteller?: number,
-        massgebendesEinkVorAbzFamGr?: number,
+        massgebendesEinkVorAbzFamGr?: number
     ) {
         this._geschaeftsgewinnDurchschnittGesuchsteller1 = geschaeftsgewinnDurchschnittGesuchsteller1;
         this._geschaeftsgewinnDurchschnittGesuchsteller2 = geschaeftsgewinnDurchschnittGesuchsteller2;

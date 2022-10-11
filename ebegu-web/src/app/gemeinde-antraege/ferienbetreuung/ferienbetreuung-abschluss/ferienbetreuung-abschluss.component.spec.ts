@@ -37,7 +37,7 @@ describe('FerienbetreuungAbschlussComponent', () => {
 
     const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
         FerienbetreuungService.name,
-        ['getFerienbetreuungContainer'],
+        ['getFerienbetreuungContainer']
     );
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError', 'addMesageAsInfo']);
@@ -67,9 +67,9 @@ describe('FerienbetreuungAbschlussComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
-                {provide: DownloadRS, useValue: downloadRSSpy},
+                {provide: DownloadRS, useValue: downloadRSSpy}
             ],
-            declarations: [FerienbetreuungAbschlussComponent],
+            declarations: [FerienbetreuungAbschlussComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

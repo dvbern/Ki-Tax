@@ -27,7 +27,7 @@ const LOG = LogFactory.createLog('GemeindeKennzahlenUiComponent');
     selector: 'dv-gemeinde-kennzahlen-ui',
     templateUrl: './gemeinde-kennzahlen-ui.component.html',
     styleUrls: ['./gemeinde-kennzahlen-ui.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeKennzahlenUiComponent implements OnInit {
 
@@ -39,7 +39,7 @@ export class GemeindeKennzahlenUiComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
-        private readonly wizardService: WizardStepXRS,
+        private readonly wizardService: WizardStepXRS
     ) {
     }
 

@@ -32,7 +32,7 @@ const LOG = LogFactory.createLog('ResultatComponent');
     selector: ' dv-massgebendes-einkommen',
     templateUrl: './massgebendes-einkommen.component.html',
     styleUrls: ['./massgebendes-einkommen.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MassgebendesEinkommenComponent implements OnInit {
 
@@ -52,7 +52,7 @@ export class MassgebendesEinkommenComponent implements OnInit {
 
     public constructor(
         protected ref: ChangeDetectorRef,
-        private readonly finSitSoService: FinanzielleSituationSolothurnService,
+        private readonly finSitSoService: FinanzielleSituationSolothurnService
     ) {
     }
 
@@ -64,7 +64,7 @@ export class MassgebendesEinkommenComponent implements OnInit {
         this.finSitSoService.massgebendesEinkommenStore().subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
-            }, error => LOG.error(error),
+            }, error => LOG.error(error)
         );
     }
 }

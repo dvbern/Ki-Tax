@@ -35,7 +35,7 @@ export class TSBerechtigung extends TSAbstractDateRangedEntity {
         role?: TSRole,
         traegerschaft?: TSTraegerschaft,
         institution?: TSInstitution,
-        sozialdienst?: TSSozialdienst,
+        sozialdienst?: TSSozialdienst
     ) {
         super(gueltigkeit);
         this._role = role;

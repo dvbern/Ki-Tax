@@ -53,7 +53,7 @@ export class AufteilungComponent implements OnInit {
     private readonly _dueTime = 500;
 
     public constructor(
-        private readonly gesuchModelManger: GesuchModelManager,
+        private readonly gesuchModelManger: GesuchModelManager
     ) {
     }
 

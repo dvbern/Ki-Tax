@@ -31,8 +31,8 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'pendenzen',
         data: {
-            roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle(),
-        },
+            roles: TSRoleUtil.getAdministratorOrAmtOrSozialdienstRolle()
+        }
     },
     {
         name: 'pendenzen.list-view',
@@ -44,5 +44,5 @@ const ng1States: Ng1StateDeclaration[] = [
                 squash: true
             }
         }
-    },
+    }
 ];

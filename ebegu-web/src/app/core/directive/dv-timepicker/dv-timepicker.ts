@@ -35,7 +35,7 @@ export class DVTimepicker implements IDirective {
         noFuture: '<?',
         dvOnBlur: '&?',
         dvMinDateTime: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
-        dvMaxDateTime: '<?',  // Kann als String im Format allowedFormats oder als Moment angegeben werden
+        dvMaxDateTime: '<?'  // Kann als String im Format allowedFormats oder als Moment angegeben werden
     };
     public template = require('./dv-timepicker.html');
 
@@ -86,7 +86,7 @@ export class TimepickerController implements IController {
 
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public $onInit(): void {
 
         if (!this.ngModelCtrl) {

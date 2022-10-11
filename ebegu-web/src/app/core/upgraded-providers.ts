@@ -16,10 +16,7 @@
  */
 
 import {Provider} from '@angular/core';
-import {DailyBatchRS} from '../../admin/service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
-import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
-import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -30,7 +27,6 @@ import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../gesuch/service/gesuchModelManager';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
 import {GlobalCacheService} from '../../gesuch/service/globalCacheService';
-import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {SupportRS} from '../../gesuch/service/supportRS.rest';
 import {WizardStepManager} from '../../gesuch/service/wizardStepManager';
 import {EbeguUtil} from '../../utils/EbeguUtil';
@@ -40,7 +36,6 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {GesuchsperiodeRS} from './service/gesuchsperiodeRS.rest';
 import {GesuchstellerRS} from './service/gesuchstellerRS.rest';
-import {InstitutionRS} from './service/institutionRS.rest';
 import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import {ListResourceRS} from './service/listResourceRS.rest';
 import {MitteilungRS} from './service/mitteilungRS.rest';
@@ -50,7 +45,7 @@ import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import {UploadRS} from './service/uploadRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
 
-// tslint:disable:naming-convention
+/* eslint-disable */
 
 // AuthServiceRS
 export function authServiceRSServiceFactory(i: IInjectorService): AuthServiceRS {
@@ -96,17 +91,6 @@ export const errorServiceProvider = {
     deps: ['$injector'],
 };
 
-// TestFaelleRS
-export function testFaelleRSProviderServiceFactory(i: IInjectorService): TestFaelleRS {
-    return i.get('TestFaelleRS');
-}
-
-export const testFaelleRSProvider = {
-    provide: TestFaelleRS,
-    useFactory: testFaelleRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
 // GesuchsperiodeRS
 export function gesuchsperiodeRSProviderServiceFactory(i: IInjectorService): GesuchsperiodeRS {
     return i.get('GesuchsperiodeRS');
@@ -137,17 +121,6 @@ export function gesuchRSProviderServiceFactory(i: IInjectorService): GesuchRS {
 export const gesuchRSProvider = {
     provide: GesuchRS,
     useFactory: gesuchRSProviderServiceFactory,
-    deps: ['$injector'],
-};
-
-// DailyBatchRS
-export function dailyBatchRSProviderServiceFactory(i: IInjectorService): DailyBatchRS {
-    return i.get('DailyBatchRS');
-}
-
-export const dailyBatchRSProvider = {
-    provide: DailyBatchRS,
-    useFactory: dailyBatchRSProviderServiceFactory,
     deps: ['$injector'],
 };
 
@@ -239,17 +212,6 @@ export const fallRSProvider = {
     deps: ['$injector'],
 };
 
-// InstitutionRS
-export function institutionRSFactory(i: IInjectorService): InstitutionRS {
-    return i.get('InstitutionRS');
-}
-
-export const institutionRSProvider = {
-    provide: InstitutionRS,
-    useFactory: institutionRSFactory,
-    deps: ['$injector'],
-};
-
 // InstitutionStammdatenRS
 export function institutionStammdatenRSFactory(i: IInjectorService): InstitutionStammdatenRS {
     return i.get('InstitutionStammdatenRS');
@@ -258,17 +220,6 @@ export function institutionStammdatenRSFactory(i: IInjectorService): Institution
 export const institutionStammdatenRSProvider = {
     provide: InstitutionStammdatenRS,
     useFactory: institutionStammdatenRSFactory,
-    deps: ['$injector'],
-};
-
-// EinstellungRS
-export function einstellungRSServiceFactory(i: IInjectorService): EinstellungRS {
-    return i.get('EinstellungRS');
-}
-
-export const einstellungRSProvider = {
-    provide: EinstellungRS,
-    useFactory: einstellungRSServiceFactory,
     deps: ['$injector'],
 };
 
@@ -304,18 +255,6 @@ export const uploadRSProvider = {
     useFactory: uploadRSServiceFactory,
     deps: ['$injector'],
 };
-
-// SearchRS
-export function searchRSServiceFactory(i: IInjectorService): SearchRS {
-    return i.get('SearchRS');
-}
-
-export const searchRSProvider = {
-    provide: SearchRS,
-    useFactory: searchRSServiceFactory,
-    deps: ['$injector'],
-};
-
 // GesuchModelManager
 export function gesuchModelManagerFactory(i: IInjectorService): GesuchModelManager {
     return i.get('GesuchModelManager');
@@ -409,11 +348,9 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     applicationPropertyRSProvider,
     traegerschaftRSProvider,
     errorServiceProvider,
-    testFaelleRSProvider,
     gesuchsperiodeRSProvider,
     databaseMigrationRSProvider,
     gesuchRSProvider,
-    dailyBatchRSProvider,
     gemeindeRSProvider,
     mitteilungRSProvider,
     downloadRSProvider,
@@ -421,13 +358,10 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     antragStatusHistoryRSProvider,
     wizardStepManagerProvider,
     fallRSProvider,
-    institutionRSProvider,
     institutionStammdatenRSProvider,
-    einstellungRSProvider,
     supportRSProvider,
     uploadRSProvider,
     notrechtRSProvider,
-    searchRSProvider,
     gesuchModelManagerProvider,
     reportRSProvider,
     ebeguUtilProvider,

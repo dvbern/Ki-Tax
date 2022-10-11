@@ -41,13 +41,13 @@ describe('OnboardingMainComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true}),
+                UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingMainComponent],
             providers: [
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationRSSpy},
-            ],
+                {provide: ApplicationPropertyRS, useValue: applicationRSSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

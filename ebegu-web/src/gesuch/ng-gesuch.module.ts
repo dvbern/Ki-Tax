@@ -95,8 +95,8 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         FallCreationViewXComponent
     ],
     exports: [
-        DvSwitchComponent,
-    ],
+        DvSwitchComponent
+    ]
 })
 
 export class NgGesuchModule {

@@ -18,6 +18,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
@@ -54,11 +55,13 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
 
+const LOG = LogFactory.createLog('VerfuegenListViewComponent');
+
 export class VerfuegenListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
         // Bereits vorhandene Mahnungen
-        mahnungList: '<',
+        mahnungList: '<'
     };
     public template = require('./verfuegenListView.html');
     public controller = VerfuegenListViewController;
@@ -81,7 +84,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         '$timeout',
         '$translate',
         'EinstellungRS',
-        'EbeguUtil',
+        'EbeguUtil'
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
@@ -107,7 +110,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS,
-        ebeguUtil: EbeguUtil,
+        ebeguUtil: EbeguUtil
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -157,23 +160,23 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
 
         // Die Einstellung bezueglich Kontingentierung und Eingeschriebener Verfuegung lesen
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
                 this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).subscribe(response => {
                     this.kontingentierungEnabled = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
 
             this.einstellungRS.findEinstellung(
                 TSEinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT,
                 this.gesuchModelManager.getDossier().gemeinde.id,
-                this.gesuchModelManager.getGesuchsperiode().id,
-            ).then(response => {
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).subscribe(response => {
                     this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
-                });
+                }, error => LOG.error(error));
         }
     }
 
@@ -223,7 +226,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.$state.go('gesuch.verfuegenView', {
             betreuungNumber: betreuung.betreuungNummer,
             kindNumber: kind.kindNummer,
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
@@ -258,7 +261,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.BESTAETIGT,
             TSBetreuungsstatus.VERFUEGT,
             TSBetreuungsstatus.NICHT_EINGETRETEN,
-            TSBetreuungsstatus.STORNIERT,
+            TSBetreuungsstatus.STORNIERT
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -268,7 +271,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
             TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST,
-            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
+            TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT
         ];
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
@@ -351,7 +354,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'CONFIRM_GESUCH_STATUS_GEPRUEFT',
             deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {
             const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
             this.refreshKinderListe();
@@ -364,17 +367,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT',
             deleteText: 'BESCHREIBUNG_GESUCH_KEIN_ANGEBOT',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
 
-        }).then(() => {
-            return this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
+        }).then(() => this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
                 this.gesuchModelManager.setGesuch(response);
                 this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
-                return this.refreshKinderListe().then(() => {
-                    return this.gesuchModelManager.getGesuch();
-                });
-            });
-        });
+                return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch());
+            }));
     }
 
     public setGesuchStatusVerfuegen(): IPromise<TSGesuch> {
@@ -383,10 +382,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'CONFIRM_GESUCH_STATUS_VERFUEGEN',
             deleteText: deleteTextValue,
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-
-            return this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
+            elementID: undefined
+        }).then(() => this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
                 .then(
                     response => {
                         if (response.status === TSAntragStatus.NUR_SCHULAMT) {
@@ -405,11 +402,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                         this.gesuchModelManager.setGesuch(response);
                         this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
                                                   // clean setzen
-                        return this.refreshKinderListe().then(() => {
-                            return this.gesuchModelManager.getGesuch();
-                        });
-                    });
-        });
+                        return this.refreshKinderListe().then(() => this.gesuchModelManager.getGesuch());
+                    }));
     }
 
     private hasOffeneMahnungen(): boolean {
@@ -424,7 +418,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public sendToSteuerverwaltung(): void {
         this.dvDialog.showDialog(bemerkungDialogTempl, BemerkungenDialogController, {
             title: 'SEND_TO_STV_CONFIRMATION',
-            bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV,
+            bemerkungen: this.gesuchModelManager.getGesuch().bemerkungenSTV
         }).then((bemerkung: string) => {
             this.gesuchRS.sendGesuchToSTV(this.getGesuch().id, bemerkung).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -467,7 +461,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: `${title}`,
             deleteText: '',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {
             this.gesuchRS.stvPruefungAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
@@ -716,12 +710,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'GESUCH_ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                return this.reloadView(gesuch);
-            });
-        });
+            elementID: undefined
+        }).then(() => this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => this.reloadView(gesuch)));
     }
 
     public setGesuchStatusBeschwerdeHaengig(): IPromise<TSGesuch> {
@@ -729,13 +719,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'BESCHWERDE_HAENGIG',
             deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_HAENGIG',
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            return this.gesuchRS.setBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
+            elementID: undefined
+        }).then(() => this.gesuchRS.setBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
                 return this.gesuchModelManager.getGesuch();
-            });
-        });
+            }));
     }
 
     public setGesuchStatusBeschwerdeAbschliessen(): IPromise<TSGesuch> {
@@ -743,13 +731,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'BESCHWERDE_ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_BESCHWERDE_ABSCHLIESSEN',
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            return this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
+            elementID: undefined
+        }).then(() => this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
                 return this.gesuchModelManager.getGesuch();
-            });
-        });
+            }));
     }
 
     public setGesuchStatusKeinKontingent(): IPromise<TSGesuch> {
@@ -757,12 +743,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             title: 'CONFIRM_KEIN_KONTINGENT_TITLE',
             deleteText: 'CONFIRM_KEIN_KONTINGENT_TEXT',
             parentController: undefined,
-            elementID: undefined,
-        }).then(() => {
-            return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
-                return this.reloadView(gesuch);
-            });
-        });
+            elementID: undefined
+        }).then(() => this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => this.reloadView(gesuch)));
     }
 
     private reloadView(gesuchFromServer: TSGesuch): TSGesuch {
@@ -807,7 +789,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public $postLink(): void {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         this.doPostLinkActions(500);
     }
 

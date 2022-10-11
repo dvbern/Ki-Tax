@@ -29,5 +29,5 @@ export const HTTP_INTERCEPTOR_PROVIDERS = [
     { provide: HTTP_INTERCEPTORS, useClass: HttpI18nInterceptorX, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpResponseInterceptorX, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptorX, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorX, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorX, multi: true }
 ];

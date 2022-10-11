@@ -27,20 +27,20 @@ export class FachstelleRS {
         public http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
+        public log: ILogService
     ) {
         this.serviceURL = `${REST_API}fachstellen`;
     }
 
     public getAnspruchFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
         return this.http.get(`${this.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiode.id}`).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data)
         );
     }
 
     public getErweiterteBetreuungFachstellen(gesuchsperiode: TSGesuchsperiode): IPromise<TSFachstelle[]> {
         return this.http.get(`${this.serviceURL}/erweiterteBetreuung?gesuchsperiodeId=${gesuchsperiode.id}`).then(
-            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data)
         );
     }
 

@@ -24,12 +24,8 @@ public final class InfomaUtil {
 		if (text == null) {
 			return "";
 		}
-		// Konvertierung nach ASCII. Muss VOR dem eventuellen Kuerzen auf die MaxLaenge passieren.
-		// TODO Wie genau??? Warte auf Antwort.
-		text = AsciiHelper.transformToAsciiString(text);
 		// Der Separator (|) darf im Text nicht vorkommen. Es gibt kein Escaping
 		text = text.replaceAll("\\|", "");
-		// Kuerzen auf die maximal zugelassene Laenge
 		return text;
 	}
 }

@@ -33,7 +33,7 @@ export class BerechnungsManager {
         'FinanzielleSituationRS',
         'EinkommensverschlechterungContainerRS',
         'DokumenteRS',
-        'AuthLifeCycleService',
+        'AuthLifeCycleService'
     ];
 
     public finanzielleSituationResultate: TSFinanzielleSituationResultateDTO;
@@ -45,7 +45,7 @@ export class BerechnungsManager {
         private readonly finanzielleSituationRS: FinanzielleSituationRS,
         private readonly einkommensverschlechterungContainerRS: EinkommensverschlechterungContainerRS,
         private readonly dokumenteRS: DokumenteRS,
-        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly authLifeCycleService: AuthLifeCycleService
     ) {
 
         this.initValues();
@@ -71,8 +71,7 @@ export class BerechnungsManager {
             });
     }
 
-    public calculateFinanzielleSituationTemp(tsFinSitModel: TSFinanzModel)
-        : IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateFinanzielleSituationTemp(tsFinSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
 
         return this.finanzielleSituationRS.calculateFinanzielleSituationTemp(
             tsFinSitModel)
@@ -84,15 +83,14 @@ export class BerechnungsManager {
 
     public calculateEinkommensverschlechterung(
         gesuch: TSGesuch,
-        basisJahrPlus: number,
+        basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         return this.einkommensverschlechterungContainerRS
             .calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
             .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
     }
 
-    private setEinkommensverschlechterung(basisJahrPlus: number, finSitContRespo: TSFinanzielleSituationResultateDTO)
-        : TSFinanzielleSituationResultateDTO {
+    private setEinkommensverschlechterung(basisJahrPlus: number, finSitContRespo: TSFinanzielleSituationResultateDTO): TSFinanzielleSituationResultateDTO {
 
         if (basisJahrPlus === 2) {
             this.einkommensverschlechterungResultateBjP2 = finSitContRespo;
@@ -105,9 +103,8 @@ export class BerechnungsManager {
 
     public calculateEinkommensverschlechterungTemp(
         finanzModel: TSFinanzModel,
-        basisJahrPlus: number,
-    )
-        : IPromise<TSFinanzielleSituationResultateDTO> {
+        basisJahrPlus: number
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
 
         return this.einkommensverschlechterungContainerRS
             .calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)

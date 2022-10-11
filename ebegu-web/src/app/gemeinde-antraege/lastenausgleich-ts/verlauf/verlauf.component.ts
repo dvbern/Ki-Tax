@@ -22,14 +22,12 @@ export class VerlaufComponent implements OnInit {
 
     @Input() public lastenausgleichId: string;
 
-    public history: {timestampVon: number, status: string, benutzer: string}[];
+    public history: {timestampVon: number; status: string; benutzer: string}[];
     public columns: DvSimpleTableColumnDefinition[] = [
         {
             displayedName: 'DATUM',
             attributeName: 'timestampVon',
-            displayFunction: (d: number) => {
-                return moment(d).format(CONSTANTS.DATE_TIME_FORMAT);
-            }
+            displayFunction: (d: number) => moment(d).format(CONSTANTS.DATE_TIME_FORMAT)
         },
         {
             displayedName: 'AKTION',
@@ -38,7 +36,7 @@ export class VerlaufComponent implements OnInit {
         {
             displayedName: 'BENUTZER',
             attributeName: 'benutzer'
-        },
+        }
     ];
     public tableConfig = new DvSimpleTableConfig('timestampVon', 'desc', false);
 
@@ -63,13 +61,11 @@ export class VerlaufComponent implements OnInit {
     }
 
     private mapHistoryForSimpleTable(data: TSLastenausgleichTagesschulenStatusHistory[]): void {
-        this.history = data.map(d => {
-            return {
+        this.history = data.map(d => ({
                 timestampVon: d.timestampVon.toDate().getTime(),
                 status: d.status,
                 benutzer: d.benutzer.getFullName()
-            };
-        });
+            }));
     }
 
     public navigateBack(): void {

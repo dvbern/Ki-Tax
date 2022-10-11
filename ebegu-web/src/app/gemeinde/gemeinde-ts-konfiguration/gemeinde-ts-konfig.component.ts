@@ -42,7 +42,7 @@ import {UploadRS} from '../../core/service/uploadRS.rest';
     selector: 'dv-gemeinde-ts-konfiguration',
     templateUrl: './gemeinde-ts-konfig.component.html',
     styleUrls: ['./gemeinde-ts-konfig.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeTsKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
@@ -69,7 +69,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -250,7 +250,7 @@ export class GemeindeTsKonfigComponent implements OnInit {
     }
 
     private reloadButton(gesuchsperiodeId: string): void {
-        const element2 = document.getElementById('accordion-tab-' + gesuchsperiodeId);
+        const element2 = document.getElementById(`accordion-tab-${  gesuchsperiodeId}`);
         element2.click();
     }
 

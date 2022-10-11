@@ -22,7 +22,7 @@ import {Transition} from '@uirouter/core';
     selector: 'dv-login-info',
     templateUrl: './login-info.component.html',
     styleUrls: ['./login-info.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginInfoComponent {
 

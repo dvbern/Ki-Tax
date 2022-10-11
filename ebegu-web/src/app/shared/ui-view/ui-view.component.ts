@@ -20,7 +20,7 @@ import {Component} from '@angular/core';
 @Component({
     selector: 'dv-ui-view',
     template: '<ui-view></ui-view>',
-    styles: [':host {display: flex; flex: 1;}'],
+    styles: [':host {display: flex; flex: 1;}']
 })
 export class UiViewComponent {
 }

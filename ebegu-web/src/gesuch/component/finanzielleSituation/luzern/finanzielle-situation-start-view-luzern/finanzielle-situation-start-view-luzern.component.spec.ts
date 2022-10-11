@@ -54,7 +54,7 @@ berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.
 
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
 
-// tslint:disable-next-line:no-big-function
+// eslint-disable-next-line
 describe('FinanzielleSituationStartViewLuzernComponent', () => {
     let component: FinanzielleSituationStartViewLuzernComponent;
     let fixture: ComponentFixture<FinanzielleSituationStartViewLuzernComponent>;
@@ -65,7 +65,7 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [
-                FinanzielleSituationStartViewLuzernComponent,
+                FinanzielleSituationStartViewLuzernComponent
             ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
@@ -77,8 +77,8 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy}
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

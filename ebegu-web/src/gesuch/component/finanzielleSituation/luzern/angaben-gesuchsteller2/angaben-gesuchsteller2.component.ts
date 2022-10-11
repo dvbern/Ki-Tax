@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -30,7 +31,7 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     selector: 'dv-angaben-gesuchsteller2',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
 
@@ -40,9 +41,10 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
-        protected authServiceRS: AuthServiceRS
+        protected authServiceRS: AuthServiceRS,
+        protected readonly translate: TranslateService
     ) {
-        super(gesuchModelManager, wizardStepManager, 2, finSitLuService, authServiceRS);
+        super(gesuchModelManager, wizardStepManager, 2, finSitLuService, authServiceRS, translate);
     }
 
     public isGemeinsam(): boolean {

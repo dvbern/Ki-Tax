@@ -24,8 +24,8 @@ describe('authLifeCycleService', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
-                AuthLifeCycleService,
-            ],
+                AuthLifeCycleService
+            ]
         });
 
         authLifeCycleService = TestBed.inject<AuthLifeCycleService>(AuthLifeCycleService);

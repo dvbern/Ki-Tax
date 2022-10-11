@@ -11,7 +11,7 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
 @Component({
     selector: 'dv-angaben-gs2',
     templateUrl: '../angaben-gs.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     @ViewChild(NgForm) private readonly form: NgForm;
@@ -58,7 +58,7 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
         if (EbeguUtil.isNotNullAndTrue(steuerveranlagungErhalten)) {
             this.resetBruttoLohn();
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
         }

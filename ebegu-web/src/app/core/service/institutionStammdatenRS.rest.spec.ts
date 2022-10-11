@@ -123,7 +123,7 @@ describe('institutionStammdatenRS', () => {
 
     function checkFieldValues(
         institutionStammdaten1: TSInstitutionStammdaten,
-        institutionStammdaten2: TSInstitutionStammdaten,
+        institutionStammdaten2: TSInstitutionStammdaten
     ): void {
         expect(institutionStammdaten1).toBeDefined();
         expect(institutionStammdaten1.institutionStammdatenBetreuungsgutscheine.iban)

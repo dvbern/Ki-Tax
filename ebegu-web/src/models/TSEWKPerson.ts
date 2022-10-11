@@ -55,7 +55,7 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
         kind: boolean = false,
         gesuchsteller: boolean = false,
         nichtGefunden: boolean = false,
-        haushalt: boolean = false,
+        haushalt: boolean = false
     ) {
         super();
         this._personID = personID;
@@ -197,8 +197,8 @@ export class TSEWKPerson extends TSAbstractMutableEntity {
 
     public getShortDescription(): string {
         let description: string;
-        description = this.vorname + ' ';
-        description += this.nachname + ', ';
+        description = `${this.vorname  } `;
+        description += `${this.nachname  }, `;
         description += `${this.geburtsdatum.format('DD.MM.YYYY')}, `;
         if (this.adresse) {
             description += this.adresse.ort;

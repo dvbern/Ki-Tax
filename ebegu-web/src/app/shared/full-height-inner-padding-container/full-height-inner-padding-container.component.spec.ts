@@ -25,7 +25,7 @@ describe('FullHeightContainerComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [FullHeightInnerPaddingContainerComponent],
+            declarations: [FullHeightInnerPaddingContainerComponent]
         })
             .compileComponents();
     }));

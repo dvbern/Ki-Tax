@@ -23,7 +23,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
     selector: 'dv-ng-confirm-dialog',
-    templateUrl: './dv-ng-confirm-dialog.template.html',
+    templateUrl: './dv-ng-confirm-dialog.template.html'
 })
 export class DvNgConfirmDialogComponent {
 
@@ -31,7 +31,7 @@ export class DvNgConfirmDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgConfirmDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         if (data) {
             this.frage = data.frage;

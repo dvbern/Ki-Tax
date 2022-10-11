@@ -21,11 +21,11 @@ import IDialogService = angular.material.IDialogService;
 export class RedirectWarningDialogController {
 
     public static $inject = [
-        '$mdDialog',
+        '$mdDialog'
     ];
 
     public constructor(
-        private readonly $mdDialog: IDialogService,
+        private readonly $mdDialog: IDialogService
     ) {
     }
 

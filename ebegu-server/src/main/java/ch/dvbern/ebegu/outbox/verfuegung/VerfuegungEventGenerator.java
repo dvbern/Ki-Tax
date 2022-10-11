@@ -68,11 +68,9 @@ public class VerfuegungEventGenerator extends AbstractBaseService {
 		ParameterExpression<Betreuungsstatus> statusParam = cb.parameter(Betreuungsstatus.class);
 		Predicate isVerfuegt = cb.equal(betreuungPath.get(AbstractPlatz_.betreuungsstatus), statusParam);
 
-		Predicate isGueltig = cb.isTrue(betreuungPath.get(AbstractPlatz_.gueltig));
-
 		Predicate isNotPublished = cb.isFalse(root.get(Verfuegung_.eventPublished));
 
-		query.where(isGueltig, isNotPublished, isVerfuegt);
+		query.where(isNotPublished, isVerfuegt);
 		query.select(root.get(AbstractEntity_.ID));
 
 		List<String> verfuegungen = persistence.getEntityManager().createQuery(query)

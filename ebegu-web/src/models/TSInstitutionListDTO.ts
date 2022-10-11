@@ -30,7 +30,7 @@ export class TSInstitutionListDTO extends TSInstitution {
         tragerschaft?: TSTraegerschaft,
         mandant?: TSMandant,
         status?: TSInstitutionStatus,
-        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp
     ) {
         super(name, tragerschaft, mandant, status);
         this.betreuungsangebotTyp = betreuungsangebotTyp;

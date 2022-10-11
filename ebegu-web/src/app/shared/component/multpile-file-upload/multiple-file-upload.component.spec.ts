@@ -42,14 +42,14 @@ describe('FileUploadComponent', () => {
                 imports: [
                     SharedModule,
                     NoopAnimationsModule,
-                    MaterialModule,
+                    MaterialModule
                 ],
                 schemas: [CUSTOM_ELEMENTS_SCHEMA],
                 providers: [
                     WindowRef,
                     {provide: NgForm, useValue: new NgForm([], [])},
-                    {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                ],
+                    {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+                ]
             }
         )
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

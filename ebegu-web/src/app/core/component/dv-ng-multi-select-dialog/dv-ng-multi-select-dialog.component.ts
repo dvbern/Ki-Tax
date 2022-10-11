@@ -30,7 +30,7 @@ export interface DvMultiSelectDialogItem {
 @Component({
     selector: 'dv-ng-multi-select-dialog',
     templateUrl: './dv-ng-multi-select-dialog.template.html',
-    styleUrls: ['./dv-ng-multi-select-dialog.component.less'],
+    styleUrls: ['./dv-ng-multi-select-dialog.component.less']
 })
 export class DvNgMultiSelectDialog {
 
@@ -42,7 +42,7 @@ export class DvNgMultiSelectDialog {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMultiSelectDialog>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         if (data) {
             this.title = data.title;
@@ -76,7 +76,7 @@ export class DvNgMultiSelectDialog {
             EbeguUtil.isNotNullOrUndefined(
                 this.selectOptions.find(option => EbeguUtil.isNotNullAndTrue(option.selected))) &&
             EbeguUtil.isNotNullOrUndefined(
-                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected)),
+                this.selectOptions.find(option => EbeguUtil.isNotNullAndFalse(option.selected))
             );
     }
 }
