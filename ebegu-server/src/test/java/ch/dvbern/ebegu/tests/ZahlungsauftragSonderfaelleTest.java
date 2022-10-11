@@ -99,6 +99,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 				LocalDate.now().plusDays(3),
 				"Zahlung Normal August",
 				false,
+				datumGeneriertErsterZahlungsauftrag,
 				mandant);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
@@ -185,6 +186,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			LocalDate.now().plusDays(3),
 			"Zahlung Repetition August",
 			false,
+			lastZahlungsauftrag.getDatumGeneriert().plusDays(1),
 			mandant);
 
 		Assert.assertNotNull(mutation);
@@ -214,6 +216,7 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			LocalDate.now().plusDays(3),
 			"Zahlung Normal September",
 			false,
+			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1),
 			mandant);
 
 		Assert.assertNotNull(mutation);
