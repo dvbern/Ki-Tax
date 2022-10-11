@@ -129,6 +129,11 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         if (!this.model.gemeinsameSteuererklaerung) {
             return false;
         }
+
+        if (super.showZugriffAufSteuerdatenForGemeinde()) {
+            return false;
+        }
+
         // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()) {
             return true;

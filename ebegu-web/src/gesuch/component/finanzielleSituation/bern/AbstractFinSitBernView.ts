@@ -164,7 +164,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             || this.showZugriffAufSteuerdatenForGemeinde();
     }
 
-    private showZugriffAufSteuerdatenForGemeinde(): boolean {
+    protected showZugriffAufSteuerdatenForGemeinde(): boolean {
         return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
             && this.gesuchModelManager.getGesuch().isMutation()
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
