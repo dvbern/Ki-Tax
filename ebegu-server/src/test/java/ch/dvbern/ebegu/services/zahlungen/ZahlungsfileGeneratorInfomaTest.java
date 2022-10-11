@@ -61,7 +61,7 @@ class ZahlungsfileGeneratorInfomaTest {
 		Assertions.assertEquals(expectedZahlung, actualZahlung);
 
 		final String actualFinanzbuchhaltung = InfomaStammdatenFinanzbuchhaltung.with(zahlung, 200001, Locale.GERMAN);
-		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3637.010||||Kita Brünnen, Betreuungsgutscheine August 2022|1|215|||2158303||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||Betreuungsgutscheine August 2022|||\n";
+		final String expectedFinanzbuchhaltung = "1|2|BGR200001|" + externeId + "|31.08.2022||0|3637.010||||Kita Brünnen, Betreuungsgutscheine August 2022|1|215|||2158302||||||||||||||423.25|||||||||||||||||||||||||||||||||RB IBAN|||||Betreuungsgutscheine August 2022|||\n";
 		Assertions.assertEquals(expectedFinanzbuchhaltung, actualFinanzbuchhaltung);
 	}
 }
