@@ -47,6 +47,23 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;
 
+-- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
+		  '2022-09-09 12:12:12' AS timestamp_erstellt,
+		  '2022-09-09 12:12:12' AS timestamp_mutiert,
+		  'flyway' AS user_erstellt,
+		  'flyway' AS user_mutiert,
+		  0 AS version,
+		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE' AS einstellung_key,
+		  '0' AS VALUE,
+		NULL    AS gemeinde_id,
+		gp.id   AS gesuchsperiode_id
+	  FROM gesuchsperiode AS gp) AS tmp;
+
+
 -- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
@@ -63,6 +80,22 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;
 
+-- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
+SELECT *
+FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
+		  '2022-09-09 12:12:12' AS timestamp_erstellt,
+		  '2022-09-09 12:12:12' AS timestamp_mutiert,
+		  'flyway' AS user_erstellt,
+		  'flyway' AS user_mutiert,
+		  0 AS version,
+		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE' AS einstellung_key,
+		  '0' AS VALUE,
+		NULL    AS gemeinde_id,
+		gp.id   AS gesuchsperiode_id
+	  FROM gesuchsperiode AS gp) AS tmp;
+
 -- GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN
 INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						 einstellung_key, value, gemeinde_id, gesuchsperiode_id)
@@ -74,7 +107,7 @@ FROM (SELECT UNHEX(REPLACE(UUID() COLLATE utf8_unicode_ci, '-', '')) AS id,
 		  'flyway' AS user_mutiert,
 		  0 AS version,
 		  'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN' AS einstellung_key,
-		  'false' AS VALUE,
+		  '0' AS VALUE,
 		NULL    AS gemeinde_id,
 		gp.id   AS gesuchsperiode_id
 	  FROM gesuchsperiode AS gp) AS tmp;

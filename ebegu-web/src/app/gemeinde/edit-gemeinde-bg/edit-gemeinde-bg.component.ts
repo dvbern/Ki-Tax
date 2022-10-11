@@ -23,7 +23,7 @@ import {
     Input,
     OnInit,
     Output,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
@@ -499,6 +499,8 @@ export class EditGemeindeComponentBG implements OnInit {
     private resetKonfigHoheEinkommensklassen(gk: TSGemeindeKonfiguration): void {
         gk.konfigHoheEinkommensklassenBetragKita = 0;
         gk.konfigHoheEinkommensklassenBetragTfo = 0;
+        gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = 0;
+        gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = 0;
         gk.konfigHoheEinkommensklassenMassgebendenEinkommen = 0;
 
         this.changeKonfig(
@@ -508,6 +510,14 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO,
             gk.konfigHoheEinkommensklassenBetragTfo, gk,
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule, gk,
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule, gk,
         );
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
@@ -523,10 +533,26 @@ export class EditGemeindeComponentBG implements OnInit {
         );
     }
 
+    public changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule,
+            gk,
+        );
+    }
+
     public changeKonfigHoheEinkommensklassenBetragTfo(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO,
             gk.konfigHoheEinkommensklassenBetragTfo,
+            gk,
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetragTfoAbPrimarschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule,
             gk,
         );
     }

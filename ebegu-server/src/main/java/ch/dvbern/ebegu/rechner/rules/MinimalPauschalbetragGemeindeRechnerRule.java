@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 
-
 public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 
 	private final Locale locale;
@@ -49,7 +48,8 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 		if (!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			return false;
 		}
-		if (inputGemeinde.getMassgebendesEinkommen().compareTo(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragMassgebendenEinkommen()) <= 0) {
+		if (inputGemeinde.getMassgebendesEinkommen()
+			.compareTo(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragMassgebendenEinkommen()) <= 0) {
 			return true;
 		}
 		return false;
@@ -61,13 +61,20 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull RechnerRuleParameterDTO rechnerParameter) {
 		if (inputGemeinde.getBetreuungsangebotTyp().isKita()) {
-			rechnerParameter.setMinimalPauschalBetrag(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragKita());
-			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_KITA, locale,
+			rechnerParameter.setMinimalPauschalBetrag(inputGemeinde.getEinschulungTyp() != null
+				&& inputGemeinde.getEinschulungTyp().getOrdinalitaet() >= 3 ?
+				parameterDTO.getGemeindeParameter().getGemeindePauschalbetragKitaPrimarschule() :
 				parameterDTO.getGemeindeParameter().getGemeindePauschalbetragKita());
+			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_KITA, locale,
+				rechnerParameter.getMinimalPauschalBetrag());
 		} else if (inputGemeinde.getBetreuungsangebotTyp().isTagesfamilien()) {
-			rechnerParameter.setMinimalPauschalBetrag(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragTfo());
-			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_TFO, locale,
+			rechnerParameter.setMinimalPauschalBetrag(inputGemeinde.getEinschulungTyp() != null
+				&& inputGemeinde.getEinschulungTyp().getOrdinalitaet() >= 3 ?
+				parameterDTO.getGemeindeParameter()
+					.getGemeindePauschalbetragTfoPrimarschule() :
 				parameterDTO.getGemeindeParameter().getGemeindePauschalbetragTfo());
+			inputGemeinde.addBemerkung(MsgKey.MINIMAL_PAUSCHALBETRAG_GESICHERT_TFO, locale,
+				rechnerParameter.getMinimalPauschalBetrag());
 		} else {
 			throw new IllegalArgumentException("Ungültiges Angebot für Zusatzgutschein");
 		}
