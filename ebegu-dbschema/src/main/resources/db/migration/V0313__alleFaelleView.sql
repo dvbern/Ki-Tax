@@ -17,6 +17,7 @@
 
 CREATE TABLE alle_faelle_view (
 	antrag_id BINARY(16) NOT NULL,
+	mandant_id BINARY(16) NOT NULL,
 	dossier_id BINARY(16) NOT NULL,
 	fall_id BINARY(16) NOT NULL,
 	fallnummer  VARCHAR(255) NOT NULL,
@@ -31,9 +32,11 @@ CREATE TABLE alle_faelle_view (
 	familien_name VARCHAR(510),
 	kinder VARCHAR(1024),
 	angebot_typen VARCHAR(255),
-	aenderungsdatum DATETIME,
+	aenderungsdatum DATETIME NOT NULL,
+	eingangsdatum DATETIME,
+	eingangsdatum_stv DATETIME,
 	sozialdienst BOOLEAN NOT NULL DEFAULT false,
-	sozialdienst BOOLEAN NOT NULL DEFAULT false,
+	sozialdienst_id BINARY(16) NULL,
 	interne_pendenz BOOLEAN NOT NULL DEFAULT false,
 	dokumente_hochgeladen BOOLEAN NOT NULL DEFAULT false,
 	gesuchsperiode_id BINARY(16) NOT NULL,
@@ -54,3 +57,4 @@ CREATE INDEX IX_alle_faelle_view_verantwortlicher_ts_id ON alle_faelle_view(vera
 CREATE INDEX IX_alle_faelle_view_verantwortlicher_gemeinde_id ON alle_faelle_view(verantwortlicher_gemeinde_id);
 CREATE INDEX IX_alle_faelle_view_fall_id ON alle_faelle_view(fall_id);
 CREATE INDEX IX_alle_faelle_view_besitzer_id ON alle_faelle_view(besitzer_id);
+CREATE INDEX IX_alle_faelle_view_sozialdienst_id ON alle_faelle_view(sozialdienst_id);

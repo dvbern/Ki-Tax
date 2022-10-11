@@ -58,7 +58,8 @@ import org.hibernate.annotations.Type;
 	@Index(columnList = "verantwortlicherTSId", name = "IX_alle_faelle_view_verantwortlicher_ts_id"),
 	@Index(columnList = "verantwortlicherGemeindeId", name = "IX_alle_faelle_view_verantwortlicher_gemeinde_id"),
 	@Index(columnList = "fallId", name = "IX_alle_faelle_view_fall_id"),
-	@Index(columnList = "besitzerId", name = "IX_alle_faelle_view_besitzer_id")
+	@Index(columnList = "besitzerId", name = "IX_alle_faelle_view_besitzer_id"),
+	@Index(columnList = "sozialdienstId", name = "IX_alle_faelle_view_sozialdienst_id")
 }
 )
 public class AlleFaelleView {
@@ -68,6 +69,12 @@ public class AlleFaelleView {
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
 	@Type(type = "string-uuid-binary")
 	private String antragId;
+
+	@NotNull
+	@Column()
+	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type(type = "string-uuid-binary")
+	private String mandantId;
 
 	@NotNull
 	@Column(nullable = false)
@@ -85,8 +92,8 @@ public class AlleFaelleView {
 	@Column(nullable = false)
 	private String fallNummer;
 
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
 	@Type(type = "string-uuid-binary")
 	private String besitzerId;
@@ -125,12 +132,12 @@ public class AlleFaelleView {
 	@Column(nullable = false)
 	private int laufnummer = 0;
 
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private String familienName;
 
-	@NotNull
-	@Column(nullable = false)
+	@Nullable
+	@Column(nullable = true)
 	private String kinder;
 
 	@ElementCollection(targetClass = BetreuungsangebotTyp.class, fetch = FetchType.EAGER)
@@ -140,16 +147,28 @@ public class AlleFaelleView {
 	)
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
-	@Nonnull
+	@NotNull
 	private Set<BetreuungsangebotTyp> angebotTypen = EnumSet.noneOf(BetreuungsangebotTyp.class);
 
-	@Nonnull
+	@NotNull
 	@Column(nullable = false)
 	private LocalDateTime aenderungsdatum;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDateTime eingangsdatum;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDateTime eingangsdatumSTV;
 
 	@NotNull
 	@Column(nullable = false)
 	private Boolean sozialdienst = false;
+
+	@Nullable
+	@Column()
+	private String sozialdienstId;
 
 	@NotNull
 	@Column(nullable = false)
@@ -237,11 +256,14 @@ public class AlleFaelleView {
 			&& getAntragStatus() == that.getAntragStatus()
 			&& getAntragTyp() == that.getAntragTyp()
 			&& getEingangsart() == that.getEingangsart()
+			&& Objects.equals(getEingangsdatum(), that.getEingangsdatum())
+			&& Objects.equals(getEingangsdatumSTV(), that.getEingangsdatumSTV())
 			&& Objects.equals(getFamilienName(), that.getFamilienName())
 			&& Objects.equals(getKinder(), that.getKinder())
 			&& Objects.equals(getAngebotTypen(), that.getAngebotTypen())
 			&& getAenderungsdatum().equals(that.getAenderungsdatum())
 			&& getSozialdienst().equals(that.getSozialdienst())
+			&& Objects.equals(getSozialdienstId(), that.getSozialdienstId())
 			&& getInternePendenz().equals(that.getInternePendenz())
 			&& getDokumenteHochgeladen().equals(that.getDokumenteHochgeladen())
 			&& getGesuchsperiodeId().equals(that.getGesuchsperiodeId())
@@ -296,6 +318,14 @@ public class AlleFaelleView {
 		this.antragId = antragId;
 	}
 
+	public String getMandantId() {
+		return mandantId;
+	}
+
+	public void setMandantId(String mandantId) {
+		this.mandantId = mandantId;
+	}
+
 	public String getDossierId() {
 		return dossierId;
 	}
@@ -320,6 +350,7 @@ public class AlleFaelleView {
 		this.fallNummer = fallNummer;
 	}
 
+	@Nullable
 	public String getBesitzerId() {
 		return besitzerId;
 	}
@@ -385,19 +416,21 @@ public class AlleFaelleView {
 		this.laufnummer = laufnummer;
 	}
 
+	@Nullable
 	public String getFamilienName() {
 		return familienName;
 	}
 
-	public void setFamilienName(String familienName) {
+	public void setFamilienName(@Nullable String familienName) {
 		this.familienName = familienName;
 	}
 
+	@Nullable
 	public String getKinder() {
 		return kinder;
 	}
 
-	public void setKinder(String kinder) {
+	public void setKinder(@Nullable String kinder) {
 		this.kinder = kinder;
 	}
 
@@ -520,5 +553,32 @@ public class AlleFaelleView {
 
 	public void setInstitutionen(@Nullable Set<Institution> institutionen) {
 		this.institutionen = institutionen;
+	}
+
+	@Nullable
+	public LocalDateTime getEingangsdatum() {
+		return eingangsdatum;
+	}
+
+	public void setEingangsdatum(@Nullable LocalDateTime eingangsdatum) {
+		this.eingangsdatum = eingangsdatum;
+	}
+
+	@Nullable
+	public LocalDateTime getEingangsdatumSTV() {
+		return eingangsdatumSTV;
+	}
+
+	public void setEingangsdatumSTV(@Nullable LocalDateTime eingangsdatumSTV) {
+		this.eingangsdatumSTV = eingangsdatumSTV;
+	}
+
+	@Nullable
+	public String getSozialdienstId() {
+		return sozialdienstId;
+	}
+
+	public void setSozialdienstId(@Nullable String sozialdienstId) {
+		this.sozialdienstId = sozialdienstId;
 	}
 }
