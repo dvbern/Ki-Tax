@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
+import ch.dvbern.ebegu.enums.reporting.FleischOption;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -46,6 +47,15 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 
 	@NotNull @Nonnull
 	private String planKlasse;
+
+	@NotNull @Nonnull
+	private FleischOption fleischOption;
+
+	@NotNull @Nonnull
+	private String allergienUndUnvertraeglichkeiten;
+
+	@NotNull @Nonnull
+	private String notfallnummer;
 
 	@NotNull @Nonnull
 	private AbholungTagesschule abholungTagesschule;
@@ -81,6 +91,14 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 		this.planKlasse = planKlasse;
 	}
 
+	public String getAllergienUndUnvertraeglichkeiten(){
+		return allergienUndUnvertraeglichkeiten;
+	}
+
+	public void setAllergienUndUnvertraeglichkeiten(String allergienUndUnvertraeglichkeiten) {
+		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
+	}
+
 	public AbholungTagesschule getAbholungTagesschule() {
 		return abholungTagesschule;
 	}
@@ -112,5 +130,23 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 
 	public void setKeineKesbPlatzierung(boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
+	}
+
+	@Nonnull
+	public FleischOption getFleischOption() {
+		return fleischOption;
+	}
+
+	public void setFleischOption(@Nonnull final FleischOption fleischOption) {
+		this.fleischOption = fleischOption;
+	}
+
+	@Nonnull
+	public String getNotfallnummer() {
+		return notfallnummer;
+	}
+
+	public void setNotfallnummer(@Nonnull final String notfallnummer) {
+		this.notfallnummer = notfallnummer;
 	}
 }
