@@ -77,7 +77,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 
 	@Nonnull
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_notfallnummer}")
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_notfallnummer}")
 	private String notfallnummer;
 
 	@Enumerated(EnumType.STRING)
