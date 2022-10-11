@@ -595,9 +595,6 @@ export class GesuchModelManager {
     }
 
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            return undefined;
-        }
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
             this.getStammdatenToWorkWith(),

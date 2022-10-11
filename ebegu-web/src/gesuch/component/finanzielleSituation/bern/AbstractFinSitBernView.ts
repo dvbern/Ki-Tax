@@ -169,4 +169,15 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             && this.gesuchModelManager.getGesuch().isMutation()
             && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
     }
+
+    protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+
+        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        && !this.showZugriffAufSteuerdatenForGemeinde()) {
+            return undefined;
+        }
+
+        return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(isGemeinsam);
+    }
 }
