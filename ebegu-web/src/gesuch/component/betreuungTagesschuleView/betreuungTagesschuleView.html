@@ -110,68 +110,73 @@
                 </div>
 
                 <!-- Essen -->
-                <div class="row margin-top-20">
-                    <div class="col-sm-12 dv-input-container-medium">
-                        <div class="form-group">
-                            <label class="md-no-float required" ng-class="{'required': vm.isGesuchstellerRole()}"
-                                   for="fleischOptionen_ID">
-                                <span data-translate="FLEISCH_AUSWAHL"></span>
-                            </label>
-                            <div class="dv-select-style">
-                                <select aria-describedby="fleischOption_ID-error" name="fleischOption"
-                                        id="fleischOptionen_ID"
-                                        ng-model="vm.betreuung.belegungTagesschule.fleischOption"
-                                        class="form-control"
-                                        ng-options="(fleischOption| translate) for fleischOption in vm.getFleischOptionValues()"
-                                        ng-required="vm.isGesuchstellerRole()">
-                                </select>
-                                <dv-error-messages input-id="abholungTagesschule"
-                                                   for="vm.form.abholungTagesschule.$error"></dv-error-messages>
+                <div ng-if="vm.gemeindeTSZusaetzlicheAngabenZurAnmeldungEnabled === true">
+                    <div class="row margin-top-20">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label class="md-no-float required" ng-class="{'required': vm.isGesuchstellerRole()}"
+                                       for="fleischOptionen_ID">
+                                    <span data-translate="FLEISCH_AUSWAHL"></span>
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="fleischOption_ID-error" name="fleischOption"
+                                            id="fleischOptionen_ID"
+                                            ng-model="vm.betreuung.belegungTagesschule.fleischOption"
+                                            class="form-control"
+                                            ng-options="(fleischOption| translate) for fleischOption in vm.getFleischOptionValues()"
+                                            ng-required="true">
+                                    </select>
+                                    <dv-error-messages input-id="fleischOption"
+                                                       for="vm.form.fleischOption.$error"></dv-error-messages>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Allergien und Unverträglichkeiten -->
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-small">
-                        <dv-input-container class="form-group">
-                            <label class="md-no-float required" for="allegergienUndUnvertraeglichkeit_ID">
-                                <span data-translate="ALLERGIEN"> </span>
-                            </label>
-                            <input aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
-                                   id="allegergienUndUnvertraeglichkeit_ID"
-                                   type="text"
-                                   name="allergienUndUnvertraeglichkeiten"
-                                   ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
-                                   dv-max-length
-                                   class="form-control"
-                                   ng-required="vm.isGesuchstellerRole()">
-                            <dv-error-messages input-id="planKlasse"
-                                               for="vm.form.planKlasse.$error"></dv-error-messages>
-                        </dv-input-container>
+                    <!-- Allergien und Unverträglichkeiten -->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required" for="allegergienUndUnvertraeglichkeit_ID">
+                                    <span data-translate="ALLERGIEN"> </span>
+                                </label>
+                                <input aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
+                                       id="allegergienUndUnvertraeglichkeit_ID"
+                                       type="text"
+                                       name="allergienUndUnvertraeglichkeiten"
+                                       ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
+                                       dv-max-length
+                                       class="form-control"
+                                       ng-required="true">
+                                <dv-error-messages input-id="planKlasse"
+                                                   for="vm.form.allergienUndUnvertraeglichkeiten.$error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
                     </div>
-                </div>
 
-                <!-- notfallnummer -->
-                <div class="row">
-                    <div class="col-sm-12 dv-input-container-small">
-                        <dv-input-container class="form-group">
-                            <label class="md-no-float required" data-translate="NOTFALL_NUMMER" for="notfallnummer_ID">
-                            </label>
-                            <input aria-describedby="notfallnummer_ID-error"
-                                   id="notfallnummer_ID"
-                                   type="text"
-                                   name="notfallnummer"
-                                   ng-model="vm.getBetreuungModel().belegungTagesschule.notfallnummer"
-                                   dv-max-length
-                                   class="form-control"
-                                   placeholder="e.g: +41 79 123 44 55"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_MOBILE"
-                                   autocomplete="mobile">
-                            <dv-error-messages input-id="mobile_ID" for="vm.form.mobile.$error"
-                                               class="error"></dv-error-messages>
-                        </dv-input-container>
+                    <!-- notfallnummer -->
+                    <div class="row">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required"
+                                       data-translate="NOTFALL_NUMMER"
+                                       for="notfallnummer_ID">
+                                </label>
+                                <input aria-describedby="notfallnummer_ID-error"
+                                       id="notfallnummer_ID"
+                                       type="text"
+                                       name="notfallnummer"
+                                       ng-model="vm.getBetreuungModel().belegungTagesschule.notfallnummer"
+                                       dv-max-length
+                                       class="form-control"
+                                       placeholder="e.g: +41 79 123 44 55"
+                                       ng-required="true"
+                                       ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
+                                       autocomplete="mobile">
+                                <dv-error-messages input-id="mobile_ID" for="vm.form.notfallnummer.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
                     </div>
                 </div>
 
