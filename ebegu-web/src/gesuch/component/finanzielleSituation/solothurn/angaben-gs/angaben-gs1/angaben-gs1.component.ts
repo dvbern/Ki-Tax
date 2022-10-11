@@ -15,8 +15,6 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
 })
 export class AngabenGs1Component extends AbstractFinSitsolothurnView {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public constructor(
         public gesuchModelManager: GesuchModelManager,
         public readonly finSitSoService: FinanzielleSituationSolothurnService,
@@ -44,7 +42,7 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

@@ -34,7 +34,7 @@ const LOG = LogFactory.createLog('FallCreationViewXComponent');
 export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
     public gesuchsperiodeId: string;
-    @ViewChild(NgForm) private readonly form: NgForm;
+    // @ViewChild(NgForm) protected readonly form: NgForm;
 
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 

@@ -38,8 +38,6 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 })
 export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public readOnly: boolean = false;
 
     public constructor(
@@ -103,19 +101,6 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
             () => this.ref.markForCheck()
         );
     };
-
-    private isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
-                    this.form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
-    }
 
     private getResultate(): TSFinanzielleSituationResultateDTO {
         return this.model.getBasisJahrPlus() === 2 ?
