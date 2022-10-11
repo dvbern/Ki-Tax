@@ -39,7 +39,7 @@ export class OnboardingInfoInstitutionComponent implements OnInit {
     public institutionName: string;
 
     public constructor(private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
-                       private readonly translate: TranslateService,
+                       private readonly translate: TranslateService
     ) {
     }
 

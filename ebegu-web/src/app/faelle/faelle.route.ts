@@ -31,12 +31,12 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'faelle',
         data: {
-            roles: TSRoleUtil.getAllRolesForMenuAlleFaelle(),
-        },
+            roles: TSRoleUtil.getAllRolesForMenuAlleFaelle()
+        }
     },
     {
         name: 'faelle.list',
         template: '<faelle-list-view flex="auto" class="overflow-scroll">',
-        url: '/faelle',
-    },
+        url: '/faelle'
+    }
 ];

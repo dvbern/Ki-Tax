@@ -52,7 +52,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
         private readonly $state: StateService,
-        private readonly benutzerRS: BenutzerRSX,
+        private readonly benutzerRS: BenutzerRSX
     ) {
     }
 
@@ -84,7 +84,7 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
 
     private initForm(): void {
         this.kommentarControl = new FormControl(
-            this.lATSAngabenGemeindeContainer?.internerKommentar,
+            this.lATSAngabenGemeindeContainer?.internerKommentar
         );
         this.form = new FormGroup({
             kommentar: this.kommentarControl

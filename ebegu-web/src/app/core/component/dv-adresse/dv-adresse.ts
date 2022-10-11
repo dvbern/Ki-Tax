@@ -33,7 +33,7 @@ export class AdresseComponentConfig implements IComponentOptions {
         prefix: '@',
         organisation: '<',
         showNichtInGemeinde: '<',
-        showIfBisherNone: '<',
+        showIfBisherNone: '<'
     };
     public template = require('./dv-adresse.html');
     public controller = DvAdresseController;
@@ -59,7 +59,7 @@ export class DvAdresseController {
         listResourceRS: ListResourceRS,
         public readonly gesuchModelManager: GesuchModelManager,
         public readonly $translate: ITranslateService,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
         this.TSRoleUtil = TSRoleUtil;
         this.bisherLand = this.getBisherLand();
@@ -96,7 +96,7 @@ export class DvAdresseController {
 
     private getBisherLand(): string {
         if (this.getModel() && this.getModel().adresseGS && this.getModel().adresseGS.land) {
-            return this.$translate.instant('Land_' + this.getModel().adresseGS.land);
+            return this.$translate.instant(`Land_${  this.getModel().adresseGS.land}`);
         }
         return '';
     }

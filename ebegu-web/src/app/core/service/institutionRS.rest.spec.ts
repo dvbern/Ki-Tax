@@ -36,7 +36,7 @@ describe('institutionRS', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
-            providers: [{provide: HttpClient, useValue: mockHttpClient}],
+            providers: [{provide: HttpClient, useValue: mockHttpClient}]
         });
         institutionRS = TestBed.inject(InstitutionRS);
     });

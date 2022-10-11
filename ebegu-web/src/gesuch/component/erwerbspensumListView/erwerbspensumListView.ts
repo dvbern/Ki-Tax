@@ -90,7 +90,7 @@ export class ErwerbspensumListViewController
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungenRS: EinstellungRS,
+        private readonly einstellungenRS: EinstellungRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -171,7 +171,7 @@ export class ErwerbspensumListViewController
         pensum: TSErwerbspensumContainer,
         gesuchstellerNumber: number,
         elementId: string,
-        index: any,
+        index: any
     ): void {
         // Spezielle Meldung, wenn es ein GS ist, der in einer Mutation loescht
         const principalRole = this.authServiceRS.getPrincipalRole();
@@ -182,7 +182,7 @@ export class ErwerbspensumListViewController
             deleteText: (gsInMutation && pensumLaufendOderVergangen) ? 'ERWERBSPENSUM_LOESCHEN_GS_MUTATION' : '',
             title: 'ERWERBSPENSUM_LOESCHEN',
             parentController: this,
-            elementID: elementId + String(index),
+            elementID: elementId + String(index)
         })
             .then(() => {   // User confirmed removal
                 this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
@@ -202,7 +202,7 @@ export class ErwerbspensumListViewController
         this.$state.go('gesuch.erwerbsPensum', {
             gesuchstellerNumber,
             erwerbspensumNum,
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
@@ -211,7 +211,7 @@ export class ErwerbspensumListViewController
      * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        if (this.erwerbspensumRequired === false) { // tslint:disable-line:no-boolean-literal-compare
+        if (this.erwerbspensumRequired === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
             return false;
         }
 
@@ -235,7 +235,7 @@ export class ErwerbspensumListViewController
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element('#' + elementID).first().focus();
+        angular.element(`#${  elementID}`).first().focus();
     }
 
     public getErwerbspensumNotRequired(): string {
@@ -246,7 +246,7 @@ export class ErwerbspensumListViewController
             undFerieninselnTxt = this.$translate.instant('UND_FERIENINSELN');
         }
         return this.$translate.instant('ERWERBSPENSEN_NOT_REQUIRED', {
-            undFerieninseln: undFerieninselnTxt,
+            undFerieninseln: undFerieninselnTxt
         });
     }
 

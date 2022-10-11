@@ -26,7 +26,7 @@ import {TSEinstellung} from '../../models/TSEinstellung';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class EinstellungRS {
 
@@ -36,7 +36,7 @@ export class EinstellungRS {
     private readonly _einstellungenCacheMap = new Map<string, TSEinstellung[]>();
 
     public constructor(
-        public readonly http: HttpClient,
+        public readonly http: HttpClient
     ) {
         this.serviceURL = `${CONSTANTS.REST_API}einstellung`;
     }
@@ -45,31 +45,25 @@ export class EinstellungRS {
         let restEinstellung = {};
         restEinstellung = this.ebeguRestUtil.einstellungToRestObject(restEinstellung, tsEinstellung);
         return this.http.put(this.serviceURL, restEinstellung)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), response)));
     }
 
     public findEinstellung(
         key: TSEinstellungKey,
         gemeindeId: string,
-        gesuchsperiodeId: string,
+        gesuchsperiodeId: string
     ): Observable<TSEinstellung> {
         return this.http.get<TSEinstellung>(`${this.serviceURL}/key/${key}/gemeinde/${gemeindeId}/gp/${gesuchsperiodeId}`);
     }
 
     public findEinstellungByKey(key: TSEinstellungKey): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/key/${key}`)
-            .pipe(map((param: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(param);
-            }));
+            .pipe(map((param: any) => this.ebeguRestUtil.parseEinstellungList(param)));
     }
 
-    public getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(response);
-            }));
+    public getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}/mandant-active`)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
     }
 
     public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
@@ -81,6 +75,13 @@ export class EinstellungRS {
             .pipe(map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
+            }));
+    }
+
+    private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseEinstellungList(response);
             }));
     }
 
@@ -99,11 +100,9 @@ export class EinstellungRS {
         return forkJoin([
             findPauschale$,
             findPauschaleSonderschueler$
-        ]).pipe(map(([e1, e2]) => {
-            return [
+        ]).pipe(map(([e1, e2]) => [
                 parseFloat(e1.value),
                 parseFloat(e2.value)
-            ];
-        }));
+            ]));
     }
 }

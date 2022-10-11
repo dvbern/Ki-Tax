@@ -38,7 +38,7 @@ describe('InstitutionListComponent', () => {
         const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
             [
                 'getInstitutionenEditableForCurrentBenutzer',
-                'getInstitutionenListDTOEditableForCurrentBenutzer',
+                'getInstitutionenListDTOEditableForCurrentBenutzer'
             ]);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
@@ -53,7 +53,7 @@ describe('InstitutionListComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                NoopAnimationsModule
             ],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
@@ -61,9 +61,9 @@ describe('InstitutionListComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
-            declarations: [InstitutionListComponent],
+            declarations: [InstitutionListComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

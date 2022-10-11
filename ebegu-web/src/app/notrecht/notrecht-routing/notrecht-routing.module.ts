@@ -28,41 +28,41 @@ const states: NgHybridStateDeclaration[] = [
         name: 'notrecht',
         abstract: true,
         url: '/corona-finanzierung',
-        component: UiViewComponent,
+        component: UiViewComponent
     },
     {
         name: 'notrecht.list',
         url: '/list',
         component: NotrechtComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForNotrecht(),
-        },
+            roles: TSRoleUtil.getAllRolesForNotrecht()
+        }
     },
     {
         name: 'notrecht.form',
         component: RueckforderungFormularComponent,
         url: '/list/rueckforderung/:rueckforderungId',
         data: {
-            roles: TSRoleUtil.getAllRolesForNotrecht(),
-        },
+            roles: TSRoleUtil.getAllRolesForNotrecht()
+        }
     },
     {
         name: 'notrecht.formWithAnchor',
         component: RueckforderungFormularComponent,
         url: '/list/rueckforderung/:rueckforderungId/:anchor',
         data: {
-            roles: TSRoleUtil.getAllRolesForNotrecht(),
-        },
-    },
+            roles: TSRoleUtil.getAllRolesForNotrecht()
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class NotrechtRoutingModule {
 }

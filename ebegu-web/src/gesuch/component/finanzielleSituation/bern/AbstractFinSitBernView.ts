@@ -54,7 +54,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         protected readonly authServiceRS: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
         protected readonly dvDialog: DvDialog,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -118,7 +118,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected showResetDialog(): IPromise<void> {
         return this.dvDialog.showRemoveDialog(removeDialogTemplate, null, RemoveDialogController, {
             title: 'WOLLEN_SIE_FORTFAHREN',
-            deleteText: 'RESET_KIBON_ABFRAGE_WARNING',
+            deleteText: 'RESET_KIBON_ABFRAGE_WARNING'
         });
     }
 

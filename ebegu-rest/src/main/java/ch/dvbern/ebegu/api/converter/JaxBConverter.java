@@ -3021,6 +3021,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractPensumFieldsToEntity(jaxErwerbspensum, erwerbspensum);
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
+		erwerbspensum.setErwerbspensumInstitution(jaxErwerbspensum.getErwerbspensumInstitution());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 		erwerbspensum.setUnregelmaessigeArbeitszeiten(jaxErwerbspensum.isUnregelmaessigeArbeitszeiten());
 
@@ -3049,6 +3050,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
+		jaxErwerbspensum.setErwerbspensumInstitution(pensum.getErwerbspensumInstitution());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
@@ -3320,6 +3322,9 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
+		belegungTagesschule.setFleischOption(belegungTagesschuleJAXP.getFleischOption());
+		belegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungTagesschuleJAXP.getAllergienUndUnvertraeglichkeiten());
+		belegungTagesschule.setNotfallnummer(belegungTagesschuleJAXP.getNotfallnummer());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
 		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
@@ -3774,6 +3779,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setEintrittsdatum(belegungFromServer.getEintrittsdatum());
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
+		jaxBelegungTagesschule.setFleischOption(belegungFromServer.getFleischOption());
+		jaxBelegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungFromServer.getAllergienUndUnvertraeglichkeiten());
+		jaxBelegungTagesschule.setNotfallnummer(belegungFromServer.getNotfallnummer());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
 		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());
@@ -5552,7 +5560,7 @@ public class JaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
 		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
-			.getGemeindeEinstellungenOnlyAsMap(gemeinde, gesuchsperiode);
+			.getGemeindeEinstellungenActiveForMandantOnlyAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(gemeindeKonfigurationMap.entrySet().stream()
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));

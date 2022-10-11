@@ -25,7 +25,7 @@ export class WizardStepRS {
     public constructor(
         public $http: IHttpService,
         REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public ebeguRestUtil: EbeguRestUtil
     ) {
         this.serviceURL = `${REST_API}wizard-steps`;
     }
@@ -33,16 +33,12 @@ export class WizardStepRS {
     public updateWizardStep(wizardStep: TSWizardStep): IPromise<TSWizardStep> {
         const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
 
-        return this.$http.post(this.serviceURL, wizardStepObject).then((response: any) => {
-            return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
-        });
+        return this.$http.post(this.serviceURL, wizardStepObject).then((response: any) => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
     }
 
     public findWizardStepsFromGesuch(gesuchID: string): IPromise<TSWizardStep[]> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchID)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseWizardStepList(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseWizardStepList(response.data));
     }
 
     public getServiceName(): string {
@@ -51,8 +47,6 @@ export class WizardStepRS {
 
     public setWizardStepMutiert(wizardStepId: string): IPromise<TSWizardStep> {
         return this.$http.post(`${this.serviceURL}/setWizardStepMutiert/${encodeURIComponent(wizardStepId)}`, null)
-            .then(response => {
-                return this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data);
-            });
+            .then(response => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
     }
 }

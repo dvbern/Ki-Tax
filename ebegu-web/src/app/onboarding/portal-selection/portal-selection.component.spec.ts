@@ -41,8 +41,8 @@ describe('PortalSelectionComponent', () => {
             declarations: [PortalSelectionComponent],
             providers: [
                 {provide: MandantService, useValue: mandantService},
-                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-            ],
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals}
+            ]
         })
             .compileComponents();
     });

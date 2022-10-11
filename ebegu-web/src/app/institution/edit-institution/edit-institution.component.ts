@@ -22,7 +22,7 @@ import {
     OnInit,
     QueryList,
     ViewChild,
-    ViewChildren,
+    ViewChildren
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatCheckboxChange} from '@angular/material/checkbox';
@@ -36,7 +36,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     getBgInstitutionenAndTsBetreuungsangebote,
     isJugendamt,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -71,7 +71,7 @@ const LOG = LogFactory.createLog('EditInstitutionComponent');
     selector: 'dv-edit-institution',
     templateUrl: './edit-institution.component.html',
     styleUrls: ['./edit-institution.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class EditInstitutionComponent implements OnInit {
@@ -112,7 +112,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
         private readonly traegerschaftRS: TraegerschaftRS,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -183,7 +183,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private getOrCreateStammdaten(
         institutionId: string,
-        optionalStammdaten?: TSInstitutionStammdaten | null,
+        optionalStammdaten?: TSInstitutionStammdaten | null
     ): Observable<TSInstitutionStammdaten> {
 
         if (optionalStammdaten) {
@@ -191,9 +191,7 @@ export class EditInstitutionComponent implements OnInit {
             return of(optionalStammdaten);
         }
 
-        return this.institutionRS.findInstitution(institutionId).pipe(map(institution => {
-            return EditInstitutionComponent.createInstitutionStammdaten(institution);
-        }));
+        return this.institutionRS.findInstitution(institutionId).pipe(map(institution => EditInstitutionComponent.createInstitutionStammdaten(institution)));
     }
 
     private initModel(stammdaten: TSInstitutionStammdaten): void {
@@ -236,7 +234,7 @@ export class EditInstitutionComponent implements OnInit {
     public getHeaderPreTitle(): string {
         let result = '';
         if (this.stammdaten.institution.traegerschaft) {
-            result += this.stammdaten.institution.traegerschaft.name + ' - ';
+            result += `${this.stammdaten.institution.traegerschaft.name  } - `;
         }
         result += this.translate.instant(this.stammdaten.betreuungsangebotTyp);
         return result;
@@ -309,7 +307,7 @@ export class EditInstitutionComponent implements OnInit {
         this.updateInstitution(updateModel);
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     private async updateInstitution(updateModel: TSInstitutionUpdate): Promise<void> {
         if (this.stammdaten.institutionStammdatenBetreuungsgutscheine) {
             this.stammdaten.institutionStammdatenBetreuungsgutscheine.iban =
@@ -329,19 +327,19 @@ export class EditInstitutionComponent implements OnInit {
             this.initiallyAssignedClients, false) && this.externalClients.assignedClients.length > 0) {
             let drittanwendungen = '';
             this.externalClients.assignedClients.filter(assignedClient =>
-                this.initiallyAssignedClients.indexOf(assignedClient) < 0,
+                this.initiallyAssignedClients.indexOf(assignedClient) < 0
             ).forEach(assignedClient =>
                 drittanwendungen.length > 0 ?
-                    drittanwendungen += ', ' + assignedClient.externalClient.clientName
-                    : drittanwendungen = assignedClient.externalClient.clientName,
+                    drittanwendungen += `, ${  assignedClient.externalClient.clientName}`
+                    : drittanwendungen = assignedClient.externalClient.clientName
             );
             // show warning popup only when added client
             if (drittanwendungen.length > 0) {
                 const dialogConfig = new MatDialogConfig();
                 dialogConfig.data = {
                     frage: this.translate.instant('INSTITUTION_DRITTANWENDUNG_WARNUNG', {
-                        NAME_DRITTANWENDUNGEN: drittanwendungen,
-                    }),
+                        NAME_DRITTANWENDUNGEN: drittanwendungen
+                    })
                 };
                 this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {
@@ -382,7 +380,7 @@ export class EditInstitutionComponent implements OnInit {
     private isSameInstitutionClient(
         a: TSInstitutionExternalClient[],
         b: TSInstitutionExternalClient[],
-        checkGueltigkeit: boolean,
+        checkGueltigkeit: boolean
     ): boolean {
         if (a.length !== b.length) {
             return false;
@@ -572,7 +570,7 @@ export class EditInstitutionComponent implements OnInit {
     public getSortedAssignedClients(): TSInstitutionExternalClient[] {
         return this.externalClients.assignedClients.sort((
             a: TSInstitutionExternalClient,
-            b: TSInstitutionExternalClient,
+            b: TSInstitutionExternalClient
         ) => {
             if (a.externalClient.clientName < b.externalClient.clientName) {
                 return -1;

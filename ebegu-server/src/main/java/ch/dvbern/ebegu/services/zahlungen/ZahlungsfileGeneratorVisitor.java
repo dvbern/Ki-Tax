@@ -50,6 +50,11 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfil
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.SOLOTHURN);
 	}
 
+	@Override
+	public IZahlungsfileGenerator visitAppenzellAusserrhoden() {
+		return getZahlungsfileGeneratorForMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN);
+	}
+
 	@Nonnull
 	private IZahlungsfileGenerator getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
 		if (isInfomaZahlungenActivatedForMandant(mandantIdentifier)) {

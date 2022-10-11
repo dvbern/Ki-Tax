@@ -68,6 +68,10 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	@Nullable
 	private Boolean unregelmaessigeArbeitszeiten;
 
+	@Column()
+	@Nullable
+	private String erwerbspensumInstitution;
+
 
 	public Erwerbspensum() {
 	}
@@ -108,6 +112,15 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
 	}
 
+	@Nullable
+	public String getErwerbspensumInstitution() {
+		return erwerbspensumInstitution;
+	}
+
+	public void setErwerbspensumInstitution(@Nullable String erwerbspensumInstitution) {
+		this.erwerbspensumInstitution = erwerbspensumInstitution;
+	}
+
 	@Override
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "PMD.CompareObjectsWithEquals" })
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -125,9 +138,10 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		final Erwerbspensum otherErwerbspensum = (Erwerbspensum) other;
 		boolean pensumIsSame = super.isSame(otherErwerbspensum);
 		boolean taetigkeitSame = taetigkeit == otherErwerbspensum.getTaetigkeit();
+		boolean erwerbspensumInstitutionSame = Objects.equals(erwerbspensumInstitution, otherErwerbspensum.erwerbspensumInstitution);
 		boolean bezeichnungSame = EbeguUtil.isSameOrNullStrings(bezeichnung, otherErwerbspensum.getBezeichnung());
 		boolean urlaubSame = Objects.equals(unbezahlterUrlaub, otherErwerbspensum.getUnbezahlterUrlaub());
-		return pensumIsSame && taetigkeitSame && bezeichnungSame && urlaubSame;
+		return pensumIsSame && taetigkeitSame && erwerbspensumInstitutionSame && bezeichnungSame && urlaubSame;
 	}
 
 	public String getName(
@@ -148,6 +162,7 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		case MUTATION_NEUES_DOSSIER:
 			target.setTaetigkeit(this.getTaetigkeit());
 			target.setBezeichnung(this.getBezeichnung());
+			target.setErwerbspensumInstitution(this.getErwerbspensumInstitution());
 			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:
@@ -168,6 +183,7 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		return new ToStringBuilder(this)
 			.append("bezeichnung", bezeichnung)
 			.append("taetigkeit", taetigkeit)
+			.append("erwerbspensumInstitution", erwerbspensumInstitution)
 			.append("unbezahlterUrlaub", unbezahlterUrlaub)
 			.toString();
 	}

@@ -77,9 +77,9 @@ describe('fachstelleRS', () => {
 
                 fachstelleRS.getAnspruchFachstellen(gesuchsperiode);
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($http.get).toHaveBeenCalledWith(`${fachstelleRS.serviceURL}/anspruch?gesuchsperiodeId=${gesuchsperiodeId}`);
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(ebeguRestUtil.parseFachstellen).toHaveBeenCalledWith(fachstellenRestArray);
             });
         });

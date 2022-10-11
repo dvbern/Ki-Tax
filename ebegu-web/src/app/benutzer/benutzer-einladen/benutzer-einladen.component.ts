@@ -30,7 +30,7 @@ import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 @Component({
     selector: 'dv-benutzer-einladen',
     templateUrl: './benutzer-einladen.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerEinladenComponent {
 
@@ -43,7 +43,7 @@ export class BenutzerEinladenComponent {
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService,
+        private readonly translate: TranslateService
     ) {
     }
 

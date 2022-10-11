@@ -48,25 +48,25 @@ const states: NgHybridStateDeclaration[] = [
         component: UiViewComponent,
         params: {
             typ: {
-                type: 'string',
+                type: 'string'
             },
             userid: {
-                type: 'string',
+                type: 'string'
             },
             entityid: {
                 type: 'string',
                 // this parameter is optional: specify a default value
-                value: '',
-            },
-        },
+                value: ''
+            }
+        }
     },
     {
         name: 'einladung.logininfo',
         url: '/login',
         component: LoginInfoComponent,
         data: {
-            roles: [TSRole.ANONYMOUS],
-        },
+            roles: [TSRole.ANONYMOUS]
+        }
     },
     {
         name: 'einladung.abschliessen',
@@ -74,24 +74,24 @@ const states: NgHybridStateDeclaration[] = [
         component: EinladungAbschliessenComponent,
         data: {
             // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
-            roles: TSRoleUtil.getAllRolesButAnonymous(), // anonyme benutzer werden vom authentication.hook umgeleitet
+            roles: TSRoleUtil.getAllRolesButAnonymous() // anonyme benutzer werden vom authentication.hook umgeleitet
                                                          // zur loginpage
         },
         resolve:
             {
-                principal: authentication,
-            },
-    },
+                principal: authentication
+            }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
+        UIRouterUpgradeModule
     ],
-    declarations: [],
+    declarations: []
 })
 export class EinladungRoutingModule {
 }

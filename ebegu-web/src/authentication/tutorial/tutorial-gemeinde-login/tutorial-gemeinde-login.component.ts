@@ -28,7 +28,7 @@ import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 @Component({
     selector: 'dv-tutorial-gemeinde-login',
     templateUrl: './tutorial-gemeinde-login.component.html',
-    styleUrls: ['../tutorial-login.component.less'],
+    styleUrls: ['../tutorial-login.component.less']
 })
 export class TutorialGemeindeLoginComponent {
 
@@ -45,7 +45,7 @@ export class TutorialGemeindeLoginComponent {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
 
         this.mandant = TutorialGemeindeLoginComponent.getMandant();

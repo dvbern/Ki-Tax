@@ -26,8 +26,8 @@ const states: NgHybridStateDeclaration[] = [
         name: 'statistik',
         abstract: true,
         data: {
-            roles: TSRoleUtil.getAllRolesForStatistik(),
-        },
+            roles: TSRoleUtil.getAllRolesForStatistik()
+        }
     },
     {
         name: 'statistik.view',
@@ -38,11 +38,11 @@ const states: NgHybridStateDeclaration[] = [
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class StatistikRoutingModule {
 }

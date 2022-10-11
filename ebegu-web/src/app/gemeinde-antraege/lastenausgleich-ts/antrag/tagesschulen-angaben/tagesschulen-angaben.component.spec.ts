@@ -59,7 +59,7 @@ describe('TagesschulenAngabenComponent', () => {
                 SharedModule,
                 HttpClientModule,
                 MaterialModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             declarations: [TagesschulenAngabenComponent],
             providers: [
@@ -73,7 +73,7 @@ describe('TagesschulenAngabenComponent', () => {
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
@@ -81,7 +81,7 @@ describe('TagesschulenAngabenComponent', () => {
 
     beforeEach(() => {
         lastenausgleichTSServiceSpy.getLATSAngabenGemeindeContainer.and.returnValue(
-            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer()),
+            of(new TSLastenausgleichTagesschuleAngabenGemeindeContainer())
         );
         authServiceSpy.principal$ = of(new TSBenutzer());
         einstellungRSSpy.findEinstellung.and.returnValue(of(null));

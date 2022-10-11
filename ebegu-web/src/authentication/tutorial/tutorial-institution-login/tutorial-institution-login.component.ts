@@ -27,7 +27,7 @@ import {AuthServiceRS} from '../../service/AuthServiceRS.rest';
 @Component({
     selector: 'dv-tutorial-institution-login',
     templateUrl: './tutorial-institution-login.component.html',
-    styleUrls: ['../tutorial-login.component.less'],
+    styleUrls: ['../tutorial-login.component.less']
 })
 export class TutorialInstitutionLoginComponent {
 
@@ -43,7 +43,7 @@ export class TutorialInstitutionLoginComponent {
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        private readonly stateService: StateService,
+        private readonly stateService: StateService
     ) {
 
         this.mandant = TutorialInstitutionLoginComponent.getMandant();

@@ -48,4 +48,5 @@ export class TSPublicAppConfig {
     public steuerschnittstelleAktivAb: moment.Moment;
     public zusatzinformationenInstitution: boolean;
     public activatedDemoFeatures: string;
+    public checkboxAuszahlungInZukunft: boolean;
 }

@@ -29,7 +29,7 @@ const LOG = LogFactory.createLog('PortalSelectionComponent');
     selector: 'dv-portal-selection',
     templateUrl: './portal-selection.component.html',
     styleUrls: ['./portal-selection.component.less', './../onboarding.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PortalSelectionComponent implements OnInit {
     public mandantFilter: string;

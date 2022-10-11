@@ -149,6 +149,9 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
             this.hasUnbezahlterUrlaub = false;
         }
+        if (!this.isErwerbspensumInstitutionRequired()) {
+            this.model.erwerbspensumJA.erwerbspensumInstitution = null;
+        }
     }
 
     public erwerbspensumDisabled(): boolean {
@@ -195,7 +198,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 CONSTANTS.END_OF_TIME_STRING;
             return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
                 von: vonText,
-                bis: bisText,
+                bis: bisText
             });
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
@@ -210,4 +213,21 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 this.isUnbezahlterUrlaubAktiv = unbezahlterUrlaubAktivEinsellung.value === 'true';
             }, error => LOG.error(error));
     }
+
+    public isErwerbspensumInstitutionRequired(): boolean {
+        return this.isLuzern && (this.isAngestellt() || this.isInAusildungWeiterbildung() || this.isInIntegrationBeschaeftigung());
+    }
+
+    private isAngestellt(): boolean {
+        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT;
+    }
+
+    private isInAusildungWeiterbildung(): boolean {
+        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.AUSBILDUNG;
+    }
+
+    private isInIntegrationBeschaeftigung(): boolean {
+        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
+    }
+
 }

@@ -108,7 +108,7 @@ export class BenutzerListXComponent implements OnInit {
         private readonly sozialdienstRS: SozialdienstRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly benutzerRS: BenutzerRSX,
+        private readonly benutzerRS: BenutzerRSX
     ) {
     }
 
@@ -177,7 +177,7 @@ export class BenutzerListXComponent implements OnInit {
                     this.gemeindenStr = this.gemeindenToString(gemeinden);
                     this.cd.markForCheck();
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 

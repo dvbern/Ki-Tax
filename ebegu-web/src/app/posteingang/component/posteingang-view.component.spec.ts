@@ -66,9 +66,9 @@ describe('PosteingangViewComponent', () => {
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: BenutzerRSX, useValue: benutzerSpy},
+                {provide: BenutzerRSX, useValue: benutzerSpy}
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         benutzerSpy.getAllBenutzerBgTsOrGemeinde.and.returnValue(Promise.resolve([]));
@@ -87,7 +87,7 @@ describe('PosteingangViewComponent', () => {
 
     function mockGetMitteilung(): void {
         const mockFall = new TSFall();
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         mockFall.fallNummer = 123;
         const mockDossier = new TSDossier();
         mockDossier.fall = mockFall;

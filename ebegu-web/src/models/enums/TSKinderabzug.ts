@@ -23,6 +23,6 @@ export function getTSKinderabzugValues(): Array<TSKinderabzug> {
     return [
         TSKinderabzug.KEIN_ABZUG,
         TSKinderabzug.HALBER_ABZUG,
-        TSKinderabzug.GANZER_ABZUG,
+        TSKinderabzug.GANZER_ABZUG
     ];
 }

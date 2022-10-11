@@ -30,7 +30,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 @Component({
     selector: 'dv-ng-mitteilung-result-dialog',
     templateUrl: './dv-ng-mitteilung-result-dialog.template.html',
-    styleUrls: ['./dv-ng-mitteilung-result-dialog.template.less'],
+    styleUrls: ['./dv-ng-mitteilung-result-dialog.template.less']
 })
 export class DvNgMitteilungResultDialogComponent {
 
@@ -41,7 +41,7 @@ export class DvNgMitteilungResultDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgMitteilungResultDialogComponent>,
         private readonly $state: StateService,
         private readonly ebeguUtil: EbeguUtil,
-        @Inject(MAT_DIALOG_DATA) data: TSBetreuungsmitteilung[],
+        @Inject(MAT_DIALOG_DATA) data: TSBetreuungsmitteilung[]
     ) {
         if (data) {
             this.betreuungsmitteilungsOk = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied);
@@ -65,7 +65,7 @@ export class DvNgMitteilungResultDialogComponent {
         const url = this.$state.href('gesuch.betreuung', {
             betreuungNumber: mitteilung.betreuung.betreuungNummer,
             kindNumber: mitteilung.betreuung.kindNummer,
-            gesuchId: mitteilung.betreuung.gesuchId,
+            gesuchId: mitteilung.betreuung.gesuchId
         });
         return url;
     }

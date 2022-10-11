@@ -22,12 +22,12 @@ import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {
     getTSAntragStatusValuesByRole,
     isAnyStatusOfVerfuegt,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp,
+    TSBetreuungsangebotTyp
 } from '../../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAbstractAntragDTO} from '../../../../models/TSAbstractAntragDTO';
 import {TSAntragDTO} from '../../../../models/TSAntragDTO';
@@ -55,7 +55,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         totalResultCount: '<',
         onUserChanged: '&',
         tableId: '@',
-        tableTitle: '<',
+        tableTitle: '<'
     };
 
     public template = require('./dv-quicksearch-list.html');
@@ -67,7 +67,7 @@ export class DVQuicksearchListController implements IController {
 
     public static $inject: string[] = [
         '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$state', 'AuthServiceRS', 'GemeindeRS'
     ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -105,7 +105,7 @@ export class DVQuicksearchListController implements IController {
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 
@@ -157,7 +157,7 @@ export class DVQuicksearchListController implements IController {
             .subscribe(gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -178,7 +178,7 @@ export class DVQuicksearchListController implements IController {
         if (betreuungsangebotTypList) {
             let prefix = '';
             if (Array.isArray(betreuungsangebotTypList)) {
-                // tslint:disable-next-line:prefer-for-of
+                // eslint-disable-next-line @typescript-eslint/prefer-for-of
                 for (let i = 0; i < betreuungsangebotTypList.length; i++) {
                     const tsBetreuungsangebotTyp = TSBetreuungsangebotTyp[betreuungsangebotTypList[i]];
                     result = result + prefix + this.$filter('translate')(tsBetreuungsangebotTyp).toString();
@@ -209,7 +209,7 @@ export class DVQuicksearchListController implements IController {
         } else {
             this.$state.go('mitteilungen.view', {
                 dossierId: fallAntrag.dossierId,
-                fallId: fallAntrag.fallId,
+                fallId: fallAntrag.fallId
             });
         }
     }
@@ -220,18 +220,18 @@ export class DVQuicksearchListController implements IController {
         }
         const navObj: any = {
             gesuchId: antragDTO.antragId,
-            dossierId: antragDTO.dossierId,
+            dossierId: antragDTO.dossierId
         };
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             if (isAnyStatusOfVerfuegt(antragDTO.status)) {
                 this.goTo('gesuch.verfuegen',
                     {gesuchId: antragDTO.antragId},
-                    isCtrlKeyPressed,
+                    isCtrlKeyPressed
                 );
             } else {
                 this.goTo('gesuch.betreuungen',
                     {gesuchId: antragDTO.antragId},
-                    isCtrlKeyPressed,
+                    isCtrlKeyPressed
                 );
             }
             return;

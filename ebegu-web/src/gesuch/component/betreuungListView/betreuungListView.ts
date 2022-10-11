@@ -65,7 +65,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         'AuthServiceRS',
         '$scope',
         '$log',
-        '$timeout',
+        '$timeout'
     ];
 
     public readonly TSRoleUtil = TSRoleUtil;
@@ -82,7 +82,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         private readonly authServiceRS: AuthServiceRS,
         $scope: IScope,
         private readonly $log: ILogService,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
@@ -169,13 +169,13 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         const typ = TSBetreuungsangebotTyp[betreuung.institutionStammdaten.betreuungsangebotTyp];
         const remTitleText: any = this.$translate.instant('BETREUUNG_LOESCHEN', {
             kindname: this.gesuchModelManager.getKindToWorkWith().kindJA.getFullName(),
-            betreuungsangebottyp: this.ebeguUtil.translateString(typ),
+            betreuungsangebottyp: this.ebeguUtil.translateString(typ)
         });
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: remTitleText,
             deleteText: 'BETREUUNG_LOESCHEN_BESCHREIBUNG',
             parentController: this,
-            elementID: `removeBetreuungButton${kind.kindNummer}_${index}`,
+            elementID: `removeBetreuungButton${kind.kindNummer}_${index}`
         }).then(() => {   // User confirmed removal
             this.errorService.clearAll();
             const betreuungIndex = this.gesuchModelManager.findBetreuung(betreuung);
@@ -192,7 +192,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         this.$state.go('gesuch.betreuung', {
             betreuungNumber,
             kindNumber,
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
@@ -201,7 +201,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             betreuungNumber: undefined,
             kindNumber,
             gesuchId: this.getGesuchId(),
-            betreuungsangebotTyp: betreuungsangebotTyp.toString(),
+            betreuungsangebotTyp: betreuungsangebotTyp.toString()
         });
     }
 
@@ -238,7 +238,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
             dossierId: this.gesuchModelManager.getDossier().id,
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungId: betreuung.id,
-            mitteilungId: undefined,
+            mitteilungId: undefined
         });
     }
 

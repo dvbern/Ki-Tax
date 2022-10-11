@@ -35,11 +35,9 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
     selector: 'dv-einkommensverschlechterung-resultate-view',
     templateUrl: './einkommensverschlechterung-resultate-view.component.html',
     styleUrls: ['./einkommensverschlechterung-resultate-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
-
-    @ViewChild(NgForm) private readonly form: NgForm;
 
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
@@ -51,7 +49,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         protected readonly $transition$: Transition,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorService
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -74,7 +72,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         const infoContainer = this.model.einkommensverschlechterungInfoContainer;
         const ekvFuerBasisJahrPlus = infoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1;
 
-        return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus === true;
+        return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus;
     }
 
     public save(onResult: Function): IPromise<any> {
@@ -88,7 +86,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             // promise immediately
             // Update wizardStepStatus also if the form is empty and not dirty
             return this.updateStatus(false).then(
-                onResult(true),
+                onResult(true)
             );
         }
 
@@ -104,37 +102,35 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
             return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
                 this.gesuchModelManager.setGesuchstellerNumber(2);
-                return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
-                    return this.updateStatus(true).then(
-                        onResult(true),
-                    );
-                });
+                return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => this.updateStatus(true).then(
+                        onResult(true)
+                    ));
             });
         }
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(() => {
             return this.updateStatus(true).then(
-                onResult(true),
+                onResult(true)
             );
         });
     }
 
     public onValueChangeFunction = (): void => {
         this.calculate();
-    }
+    };
 
     public getEinkommensverschlechterungContainerGS1(): TSEinkommensverschlechterungContainer {
         return this.model.einkommensverschlechterungContainerGS1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS1().ekvGSBasisJahrPlus1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public getEinkommensverschlechterungGS1_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS1().ekvJABasisJahrPlus2 :
@@ -145,31 +141,18 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.einkommensverschlechterungContainerGS2;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_GS(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS2().ekvGSBasisJahrPlus1;
     }
 
-    // tslint:disable-next-line:naming-convention
+    // eslint-disable-next-line
     public getEinkommensverschlechterungGS2_JA(): TSEinkommensverschlechterung {
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
-    }
-
-    private isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
-                    this.form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
     }
 
     /**

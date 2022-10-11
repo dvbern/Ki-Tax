@@ -64,10 +64,10 @@ describe('StatistikComponent', () => {
                 {provide: BatchJobRS, useValue: batchJobRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
-                {provide: GemeindeRS, useValue: gemeindeRSSpy},
+                {provide: GemeindeRS, useValue: gemeindeRSSpy}
             ],
             declarations: [StatistikComponent
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

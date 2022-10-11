@@ -37,11 +37,10 @@ import {ResultatComponent} from '../resultat/resultat.component';
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
     @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
 
     public constructor(
@@ -82,7 +81,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

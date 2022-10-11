@@ -26,7 +26,7 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
     }
 
     public getNextSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.BERN_START === currentSubStep) {
             // (1) Sozialhilfe, sonst keine Details
@@ -63,7 +63,7 @@ export class FinanzielleSituationSubStepManagerBernAsiv extends FinanzielleSitua
     }
 
     public getPreviousSubStepFinanzielleSituation(
-        currentSubStep: TSFinanzielleSituationSubStepName,
+        currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (TSFinanzielleSituationSubStepName.BERN_START === currentSubStep) {
             return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

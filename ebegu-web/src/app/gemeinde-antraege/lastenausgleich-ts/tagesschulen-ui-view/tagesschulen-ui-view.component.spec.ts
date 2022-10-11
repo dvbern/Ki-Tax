@@ -35,8 +35,8 @@ describe('TagesschulenUiViewComponent', () => {
             declarations: [TagesschulenUiViewComponent],
             providers: [
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: TransitionService, useValue: transitionServiceSpy},
-            ],
+                {provide: TransitionService, useValue: transitionServiceSpy}
+            ]
         })
             .compileComponents();
     });

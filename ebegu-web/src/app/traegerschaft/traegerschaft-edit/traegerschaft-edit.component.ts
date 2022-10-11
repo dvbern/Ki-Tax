@@ -41,7 +41,7 @@ export class TraegerschaftEditComponent implements OnInit {
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
-        private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly traegerschaftRS: TraegerschaftRS
 
     ) { }
 
@@ -52,9 +52,7 @@ export class TraegerschaftEditComponent implements OnInit {
             return;
         }
         this.traegerschaft$ = from(
-            this.traegerschaftRS.findTraegerschaft(this.traegerschaftId).then(result => {
-                return result;
-            }));
+            this.traegerschaftRS.findTraegerschaft(this.traegerschaftId).then(result => result));
     }
 
     public save(stammdaten: TSTraegerschaft): void {

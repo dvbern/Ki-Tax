@@ -35,7 +35,7 @@ import {VerlaufComponent} from './verlauf.component';
         VerlaufRoutingModule,
         FallToolbarModule,
         SharedModule
-    ],
+    ]
 })
 export class VerlaufModule {
 }

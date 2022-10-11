@@ -20,7 +20,7 @@ import {TSPostEingangEvent} from '../../../models/enums/TSPostEingangEvent';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class PosteingangService {
 

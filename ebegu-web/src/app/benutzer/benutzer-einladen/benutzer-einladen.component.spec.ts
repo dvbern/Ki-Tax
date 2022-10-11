@@ -60,7 +60,7 @@ describe('BenutzerEinladenComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot(),
+                UIRouterModule.forRoot()
             ],
             declarations: [BenutzerEinladenComponent],
             providers: [
@@ -72,8 +72,8 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-            ],
+                {provide: ErrorService, useValue: errorServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

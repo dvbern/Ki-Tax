@@ -36,7 +36,7 @@ const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
     selector: 'dv-onboarding-gs-abschliessen',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-gs-abschliessen.component.html',
-    styleUrls: ['./onboarding-gs-abschliessen.component.less', '../onboarding.less'],
+    styleUrls: ['./onboarding-gs-abschliessen.component.less', '../onboarding.less']
 })
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
@@ -52,7 +52,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
         private readonly dossierRS: DossierRS,
-        private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
+        private readonly onboardingPlaceholderService: OnboardingPlaceholderService
     ) {
         this.gemeindenTSIds = this.transition.params().gemeindenId;
         this.gemeindeBGId = this.transition.params().gemeindeBGId;
@@ -107,7 +107,7 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
                 gemeindenAdded.push(gemeindeIdForDossier);
             });
             this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id,
+                dossierId: dossier.id
             });
         });
     }

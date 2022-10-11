@@ -26,7 +26,7 @@ export class TraegerschaftRS {
         public http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
+        public log: ILogService
     ) {
         this.serviceURL = `${REST_API}traegerschaften`;
     }
@@ -49,12 +49,10 @@ export class TraegerschaftRS {
         return this.http.post(this.serviceURL, restTraegerschaft,
             {
                 params: {
-                    adminMail: email,
-                },
+                    adminMail: email
+                }
             })
-            .then(response => {
-                return this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data);
-            });
+            .then(response => this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data));
     }
 
     public saveTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {

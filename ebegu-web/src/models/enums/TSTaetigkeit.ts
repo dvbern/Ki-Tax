@@ -30,7 +30,7 @@ export function getTSTaetigkeit(): Array<TSTaetigkeit> {
         TSTaetigkeit.AUSBILDUNG,
         TSTaetigkeit.RAV,
         TSTaetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN,
-        TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM,
+        TSTaetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM
     ];
 }
 

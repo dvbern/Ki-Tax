@@ -39,7 +39,7 @@ import {FerienbetreuungAngebotComponent} from './ferienbetreuung-angebot.compone
 const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllBfsGemeinden']);
 const ferienbetreuungServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(
     FerienbetreuungService.name,
-    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer'],
+    ['getFerienbetreuungContainer', 'getFerienbetreuungVorgaengerContainer']
 );
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError', 'addMesageAsInfo']);
@@ -73,7 +73,7 @@ describe('FerienbetreuungAngebotComponent', () => {
                 ReactiveFormsModule,
                 SharedModule,
                 HttpClientModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             providers: [
                 WindowRef,
@@ -82,8 +82,8 @@ describe('FerienbetreuungAngebotComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
-            ],
+                {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy}
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

@@ -21,7 +21,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
     selector: 'dv-ng-back-dialog',
-    templateUrl: './dv-ng-back-dialog.template.html',
+    templateUrl: './dv-ng-back-dialog.template.html'
 })
 export class DvNgBackDialogComponent {
 
@@ -30,7 +30,7 @@ export class DvNgBackDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgBackDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
 
         if (data) {

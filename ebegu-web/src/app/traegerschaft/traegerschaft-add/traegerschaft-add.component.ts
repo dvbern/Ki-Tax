@@ -29,7 +29,7 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 @Component({
     selector: 'dv-traegerschaft-add',
     templateUrl: './traegerschaft-add.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftAddComponent implements OnInit {
 
@@ -47,7 +47,7 @@ export class TraegerschaftAddComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -83,7 +83,7 @@ export class TraegerschaftAddComponent implements OnInit {
                 dialogConfig.data = {
                     emailAdresse: this.traegerschaft.email,
                     administratorRolle: adminRolle,
-                    gesuchstellerName: exception[0].argumentList[1],
+                    gesuchstellerName: exception[0].argumentList[1]
                 };
                 this.dialog.open(DvNgGesuchstellerDialogComponent, dialogConfig).afterClosed()
                     .subscribe(answer => {

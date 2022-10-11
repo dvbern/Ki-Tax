@@ -45,7 +45,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
 
-// tslint:disable:no-big-function no-commented-code max-line-length
+/* eslint-disable max-len */
 describe('betreuungView', () => {
     const betreuungenState = 'gesuch.betreuungen';
 
@@ -105,11 +105,11 @@ describe('betreuungView', () => {
         spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
         spyOn(gesuchModelManager, 'isNeuestesGesuch').and.returnValue(true);
         // model = betreuung;
-        spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() => {
+        spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() =>
             // wenn betreuung view ihr model schon kopiert hat geben wir das zurueck, sonst sind wir noch im
             // constructor der view und geben betreuung zurueck
-            return betreuungView ? betreuungView.model : betreuung;
-        });
+             betreuungView ? betreuungView.model : betreuung
+        );
         const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
         gesuchsperiode.id = '0621fb5d-a187-5a91-abaf-8a813c4d263a';
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
@@ -145,7 +145,7 @@ describe('betreuungView', () => {
             undefined,
             $injector.get('ApplicationPropertyRS'),
             mandantService,
-            ebeguRestUtil,
+            ebeguRestUtil
         );
         betreuungView.$onInit();
         $rootScope.$apply();
@@ -187,9 +187,9 @@ describe('betreuungView', () => {
                 spyOn($state, 'go');
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).not.toHaveBeenCalled();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
@@ -200,9 +200,9 @@ describe('betreuungView', () => {
                 betreuungView.model.timestampErstellt = undefined;
                 spyOn(gesuchModelManager, 'removeBetreuungFromKind');
                 betreuungView.cancel();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.removeBetreuungFromKind).toHaveBeenCalled();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
             });
         });
@@ -277,7 +277,7 @@ describe('betreuungView', () => {
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(betreuungToWorkWith.grundAblehnung).toEqual('mein Grund');
                 expect(betreuungToWorkWith.datumAblehnung).toEqual(DateUtil.today());
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -293,7 +293,7 @@ describe('betreuungView', () => {
                 // Status wird serverseitig gesetzt
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
         });
@@ -444,13 +444,13 @@ describe('betreuungView', () => {
         });
         betreuungView.platzAnfordern();
         $rootScope.$apply();
-        // tslint:disable-next-line:no-unbound-method
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
         if (moveToNextStep) {
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($state.go).toHaveBeenCalledWith(betreuungenState, {gesuchId: ''});
         } else {
-            // tslint:disable-next-line:no-unbound-method
+            // eslint-disable-next-line @typescript-eslint/unbound-method
             expect($state.go).not.toHaveBeenCalled();
         }
     }

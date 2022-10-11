@@ -31,11 +31,9 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
     selector: 'dv-angaben-gesuchsteller2',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
-
-    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -68,7 +66,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
     }
 
     public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }
