@@ -215,10 +215,10 @@ public class InstitutionResource {
 
 	private void checkCreatInstitutionAllowed(@Nonnull BetreuungsangebotTyp betreuungsangebot) {
 		if (betreuungsangebot.isKita() || betreuungsangebot.isTagesfamilien()) {
-			boolean institutionenDurchGemeindenEinladen = this.applicationPropertyService.findApplicationPropertyAsBoolean(
+			boolean institutionenDurchGemeindenEinladen = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
 				ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
 				principalBean.getMandant()
-			);
+			));
 			// falls Einstellung deaktiviert, dass Institutionen durch Gemeinden eingeladen werden können, dürfen nur
 			// SUPERADMIN und MANDANTROLLEN Institutionen einladen
 			if (!institutionenDurchGemeindenEinladen && !principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
