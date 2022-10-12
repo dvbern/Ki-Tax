@@ -223,7 +223,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             TSEinstellungKey.VERFUEGUNG_EXPORT_ENABLED,
             this.gesuchModelManager.getDossier().gemeinde.id,
             this.gesuchModelManager.getGesuchsperiode().id,
-        ).then(response => {
+        ).subscribe(response => {
             this.isVerfuegungExportEnabled = JSON.parse(response.value);
         });
     }
