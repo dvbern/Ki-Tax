@@ -63,8 +63,8 @@ describe('GemeindeAntragService', () => {
             [
                 TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN,
                 TSGemeindeAntragTyp.FERIENBETREUUNG,
-                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN,
-            ],
+                TSGemeindeAntragTyp.GEMEINDE_KENNZAHLEN
+            ]
         );
     });
 });

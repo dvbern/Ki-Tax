@@ -113,7 +113,7 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     private loadUserList(): void {
-        this.benutzerRS.getAllBenutzerMandant()
+        this.benutzerRS.getAllActiveBenutzerMandant()
             .then(response => {
                 this.userList = response;
             });

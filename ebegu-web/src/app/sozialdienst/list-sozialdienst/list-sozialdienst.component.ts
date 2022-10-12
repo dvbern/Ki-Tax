@@ -28,7 +28,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     selector: 'dv-list-sozialdienst',
     templateUrl: './list-sozialdienst.component.html',
     styleUrls: ['./list-sozialdienst.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListSozialdienstComponent implements OnInit {
 
@@ -36,7 +36,7 @@ export class ListSozialdienstComponent implements OnInit {
         'institutionCount',
         'type',
         'remove',
-        'gemeinde',
+        'gemeinde'
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;
@@ -77,10 +77,10 @@ export class ListSozialdienstComponent implements OnInit {
                         name: sozialdienst.name,
                         status: sozialdienst.status.toString(),
                         canEdit: editPossible,
-                        canRemove: false,
+                        canRemove: false
                     };
                     entitaetListItems.push(dvListItem);
-                },
+                }
             );
             return entitaetListItems;
         }));

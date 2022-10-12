@@ -15,8 +15,8 @@
 
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
-// tslint:disable-next-line:ordered-imports no-import-side-effect
-import 'zone.js/dist/zone-testing';
+// eslint-disable-next-line import/order, import/no-unassigned-import
+import 'zone.js/testing';
 // AngularJs nach jQuery
 // formatiert
 require('jquery');
@@ -28,7 +28,7 @@ require('angular-mocks');
 
 import {getTestBed} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
-// tslint:disable:no-import-side-effect
+/* eslint-disable import/no-unassigned-import */
 require('@uirouter/angular-hybrid');
 require('angular-animate');
 require('angular-aria');
@@ -45,12 +45,12 @@ require('angular-translate-loader-static-files');
 require('angular-ui-bootstrap');
 require('angular-unsavedchanges');
 require('ng-file-upload');
-// tslint:enable:no-import-side-effect
+/* eslint-enable import/no-unassigned-import */
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
     BrowserDynamicTestingModule,
-    platformBrowserDynamicTesting(),
+    platformBrowserDynamicTesting()
 );
 
 // Then we find all the tests.

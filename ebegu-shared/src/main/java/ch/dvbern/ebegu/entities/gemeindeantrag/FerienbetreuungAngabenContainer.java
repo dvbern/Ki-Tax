@@ -208,7 +208,7 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		return status == FerienbetreuungAngabenStatus.IN_PRUEFUNG_KANTON;
 	}
 
-	public boolean isGeprueft() {
+	public boolean isAtLeastGeprueft() {
 		return status == FerienbetreuungAngabenStatus.GEPRUEFT ||
 			status == FerienbetreuungAngabenStatus.ABGESCHLOSSEN ||
 			status == FerienbetreuungAngabenStatus.ABGELEHNT;

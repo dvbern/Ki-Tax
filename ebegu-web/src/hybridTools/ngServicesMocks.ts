@@ -16,25 +16,31 @@
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
+import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../app/core/constants/MANDANTS';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
+import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
+import {FamiliensituationRS} from '../gesuch/service/familiensituationRS.service';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {SearchRS} from '../gesuch/service/searchRS.rest';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
 import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
+import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import {TSDossier} from '../models/TSDossier';
+import {TSEinstellung} from '../models/TSEinstellung';
 import {TSExceptionReport} from '../models/TSExceptionReport';
 import {TSFall} from '../models/TSFall';
 import {TSGesuch} from '../models/TSGesuch';
+import {TSInstitution} from '../models/TSInstitution';
 
 ngServicesMock.$inject = ['$provide'];
 
@@ -49,7 +55,7 @@ class GesuchGeneratorMock extends GesuchGenerator {
         _creationAction: TSCreationAction,
         _gesuchsperiodeId: string,
         _currentFall: TSFall,
-        _currentDossier: TSDossier,
+        _currentDossier: TSDossier
     ): angular.IPromise<TSGesuch> {
 
         const gesuch = new TSGesuch();
@@ -109,7 +115,33 @@ class MandantServiceMock extends MandantService {
     }
 }
 
+class EinstellungRSMock extends EinstellungRS {
+    // tslint:disable-next-line:no-unused
+    public findEinstellung(key: TSEinstellungKey, gemeindeId: string, gesuchsperiodeId: string):
+        Observable<TSEinstellung> {
+        return of(new TSEinstellung());
+    }
+
+    // tslint:disable-next-line:no-unused
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return of([]);
+    }
+}
+
+class InstitutionRSMock extends InstitutionRS {
+    public getInstitutionenEditableForCurrentBenutzer(): Observable<TSInstitution[]> {
+        return of([]);
+    }
+
+    public getInstitutionenReadableForCurrentBenutzer(): Observable<TSInstitution[]> {
+        return of([]);
+    }
+}
+
 class SearchRSMock extends SearchRS {
+}
+
+class FamiliensituationRSMock extends FamiliensituationRS {
 }
 
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
@@ -120,10 +152,13 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('BenutzerRS', BenutzerRSX);
     $provide.service('VersionService', VersionService);
     $provide.service('MandantService', MandantServiceMock);
+    $provide.service('EinstellungRS', EinstellungRSMock);
+    $provide.service('InstitutionRS', InstitutionRSMock);
     $provide.service('windowRef', WindowRef);
     $provide.service('cookieService', CookieServiceMock);
     $provide.service('ErrorServiceX', ErrorServiceXMock);
     $provide.service('SearchRS', SearchRSMock);
+    $provide.service('FamiliensituationRS', FamiliensituationRSMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }

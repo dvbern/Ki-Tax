@@ -29,7 +29,7 @@ export class SozialhilfeZeitraumRS {
         public readonly http: IHttpService,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
-        public readonly log: ILogService,
+        public readonly log: ILogService
     ) {
         this.serviceURL = `${REST_API}sozialhilfeZeitraeume`;
     }
@@ -38,7 +38,7 @@ export class SozialhilfeZeitraumRS {
         return 'SozialhilfeZeitraumRS';
     }
 
-    public saveSozialhilfeZeitraum(sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer, famSitID: string,
+    public saveSozialhilfeZeitraum(sozialhilfeZeitraumContainer: TSSozialhilfeZeitraumContainer, famSitID: string
     ): IPromise<TSSozialhilfeZeitraumContainer> {
         let restSozialhilfeZaitraum = {};
         restSozialhilfeZaitraum =
@@ -53,8 +53,6 @@ export class SozialhilfeZeitraumRS {
     public removeSozialhilfeZeitraum(sozialhilfeZeitraumContainerID: string): IPromise<any> {
         const url = `${this.serviceURL}/sozialhilfeZeitraumId/${encodeURIComponent(sozialhilfeZeitraumContainerID)}`;
         return this.http.delete(url)
-            .then(response => {
-                return response;
-            });
+            .then(response => response);
     }
 }

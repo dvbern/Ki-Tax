@@ -206,7 +206,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -302,6 +301,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.InstitutionExternalClientId;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
@@ -309,7 +309,6 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -3042,6 +3041,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractPensumFieldsToEntity(jaxErwerbspensum, erwerbspensum);
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
+		erwerbspensum.setErwerbspensumInstitution(jaxErwerbspensum.getErwerbspensumInstitution());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 		erwerbspensum.setUnregelmaessigeArbeitszeiten(jaxErwerbspensum.isUnregelmaessigeArbeitszeiten());
 
@@ -3070,6 +3070,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
+		jaxErwerbspensum.setErwerbspensumInstitution(pensum.getErwerbspensumInstitution());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		jaxErwerbspensum.setUnregelmaessigeArbeitszeiten(pensum.getUnregelmaessigeArbeitszeiten());
@@ -3341,6 +3342,9 @@ public class JaxBConverter extends AbstractConverter {
 		belegungTagesschule.setEintrittsdatum(belegungTagesschuleJAXP.getEintrittsdatum());
 		belegungTagesschule.setAbholungTagesschule(belegungTagesschuleJAXP.getAbholungTagesschule());
 		belegungTagesschule.setPlanKlasse(belegungTagesschuleJAXP.getPlanKlasse());
+		belegungTagesschule.setFleischOption(belegungTagesschuleJAXP.getFleischOption());
+		belegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungTagesschuleJAXP.getAllergienUndUnvertraeglichkeiten());
+		belegungTagesschule.setNotfallnummer(belegungTagesschuleJAXP.getNotfallnummer());
 		belegungTagesschule.setAbweichungZweitesSemester(belegungTagesschuleJAXP.isAbweichungZweitesSemester());
 		belegungTagesschule.setKeineKesbPlatzierung(belegungTagesschuleJAXP.isKeineKesbPlatzierung());
 		belegungTagesschule.setBemerkung(belegungTagesschuleJAXP.getBemerkung());
@@ -3795,6 +3799,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBelegungTagesschule.setEintrittsdatum(belegungFromServer.getEintrittsdatum());
 		jaxBelegungTagesschule.setAbholungTagesschule(belegungFromServer.getAbholungTagesschule());
 		jaxBelegungTagesschule.setPlanKlasse(belegungFromServer.getPlanKlasse());
+		jaxBelegungTagesschule.setFleischOption(belegungFromServer.getFleischOption());
+		jaxBelegungTagesschule.setAllergienUndUnvertraeglichkeiten(belegungFromServer.getAllergienUndUnvertraeglichkeiten());
+		jaxBelegungTagesschule.setNotfallnummer(belegungFromServer.getNotfallnummer());
 		jaxBelegungTagesschule.setAbweichungZweitesSemester(belegungFromServer.isAbweichungZweitesSemester());
 		jaxBelegungTagesschule.setKeineKesbPlatzierung(belegungFromServer.isKeineKesbPlatzierung());
 		jaxBelegungTagesschule.setBemerkung(belegungFromServer.getBemerkung());
@@ -4982,6 +4989,7 @@ public class JaxBConverter extends AbstractConverter {
 		mitteilungToJAX(persistedMitteilung, jaxBetreuungsmitteilung);
 
 		jaxBetreuungsmitteilung.setApplied(persistedMitteilung.isApplied());
+		jaxBetreuungsmitteilung.setErrorMessage(persistedMitteilung.getErrorMessage());
 		jaxBetreuungsmitteilung.setBetreuungStornieren(persistedMitteilung.isBetreuungStornieren());
 		if (persistedMitteilung.getBetreuungspensen() != null) {
 			List<JaxBetreuungsmitteilungPensum> pensen = persistedMitteilung.getBetreuungspensen().stream()
@@ -5341,10 +5349,6 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
-		stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
-		convertAbstractFieldsToJAX(
-			stammdaten.getGemeindeStammdatenKorrespondenz(),
-			jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
 
 		return stammdaten;
@@ -5576,7 +5580,7 @@ public class JaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
 		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
-			.getGemeindeEinstellungenOnlyAsMap(gemeinde, gesuchsperiode);
+			.getGemeindeEinstellungenActiveForMandantOnlyAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(gemeindeKonfigurationMap.entrySet().stream()
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
@@ -6533,11 +6537,9 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	private OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+	public static OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
 		try {
-			return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
+			return EbeguUtil.convertOeffnungszeiten(oeffnungszeiten);
 		} catch(JsonProcessingException e) {
 			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
 			return new OeffnungszeitenTagesschuleDTO[]{};

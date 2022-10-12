@@ -44,7 +44,7 @@ export class DVLoadingButton implements IComponentOptions {
         buttonDisabled: '<',
         ariaLabel: '@',
         buttonClick: '&',
-        inputId: '@',
+        inputId: '@'
     };
 }
 
@@ -53,6 +53,7 @@ export class DVLoadingButton implements IComponentOptions {
  * the form is valid first. If not it will not disable itself.
  * By default the button will be disabled till the next REST servicecall returns (not neceserally the one that was
  * triggered by this button) or till 400 ms have expired
+ *
  * @example: <dv-loading-button type="submit" button-click="vm.mySaveFunction()" button-class="btn btn-sm btn-success"
  *         button-disabled="!vm.isButtonDisabled()"> <i class="glyphicon glyphicon-plus"></i> <span
  *         data-translate="SAVE"></span> </dv-loading-button>
@@ -146,7 +147,7 @@ export class DVLoadingButtonController implements IDVLoadingButtonController, IC
             }
         }
 
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         return 4000;   // default delay = 4000 MS
     }
 

@@ -27,14 +27,14 @@ import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-bas
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
-import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry';
+import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
 import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
-import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
+import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu.component';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
-import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -43,18 +43,21 @@ import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dial
 import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
 import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
-import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
+import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang.component';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
+import {DvNgEnableElementDirective} from '../core/directive/dv-ng-enable-element/dv-ng-enable-element.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
 import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
@@ -110,11 +113,11 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),
-                deps: [HttpClient, MandantService],
-            },
+                deps: [HttpClient, MandantService]
+            }
         }),
         GuidedTourModule.forRoot(),
-        MatMenuModule,
+        MatMenuModule
     ],
     declarations: [
         AccordionDirective,
@@ -126,6 +129,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvBenutzerEntry,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
@@ -164,7 +168,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
-        DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
@@ -182,7 +186,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent
+        WarningComponent,
+        DvNgEnableElementDirective
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -205,6 +210,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvHelpmenuComponent,
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
+        DvNgMitteilungResultDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvBenutzerEntry,
@@ -236,6 +242,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         NewAntragListComponent,
         NewUserSelectDirective,
         DvLoadingButtonXDirective,
+        DvDemoFeatureDirective,
         EbeguDatePipe,
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
@@ -258,16 +265,17 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvRadioInputXComponent,
         DvCheckboxXComponent,
         WarningComponent,
+        DvNgEnableElementDirective
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
-    ],
+    ]
 })
 export class SharedModule {
 
     public constructor(
         translate: TranslateService,
-        i18nServiceRS: I18nServiceRSRest,
+        i18nServiceRS: I18nServiceRSRest
     ) {
         SharedModule.initTranslateService(translate, i18nServiceRS);
     }

@@ -29,7 +29,7 @@ export class MahnungRS implements IEntityRS {
         public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
         this.serviceURL = `${REST_API}mahnung`;
     }
@@ -47,9 +47,7 @@ export class MahnungRS implements IEntityRS {
 
     public findMahnungen(gesuchId: string): IPromise<TSMahnung[]> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseMahnungen(response.data);
-            });
+            .then((response: any) => this.ebeguRestUtil.parseMahnungen(response.data));
     }
 
     public mahnlaufBeenden(gesuch: TSGesuch): IPromise<TSGesuch> {
@@ -63,8 +61,8 @@ export class MahnungRS implements IEntityRS {
     public getInitialeBemerkungen(gesuch: TSGesuch): IHttpPromise<string> {
         return this.$http.get(`${this.serviceURL}/bemerkungen/${encodeURIComponent(gesuch.id)}`, {
             headers: {
-                'Content-Type': 'text/plain',
-            },
+                'Content-Type': 'text/plain'
+            }
         });
     }
 }

@@ -39,7 +39,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
     templateUrl: './edit-institution-betreuungsgutscheine.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrls: ['./edit-institution-betreuungsgutscheine.component.less'],
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 
 export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnChanges {
@@ -124,9 +124,7 @@ export class EditInstitutionBetreuungsgutscheineComponent implements OnInit, OnC
     public getOeffnungsTageAbkuerzungListe(): string {
         return this.stammdaten.institutionStammdatenBetreuungsgutscheine.oeffnungstage
             .getActiveDaysAsList()
-            .map(day => {
-                return this.translate.instant(`${day}_SHORT`);
-            })
+            .map(day => this.translate.instant(`${day}_SHORT`))
             .join(', ');
     }
 

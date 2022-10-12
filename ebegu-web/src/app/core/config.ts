@@ -34,7 +34,7 @@ configure.$inject = [
     'hotkeysProvider',
     '$logProvider',
     '$locationProvider',
-    '$qProvider',
+    '$qProvider'
 ];
 
 export function configure(
@@ -45,7 +45,7 @@ export function configure(
     hotkeysProvider: any,
     $logProvider: ILogProvider,
     $locationProvider: ILocationProvider,
-    $qProvider: IQProvider,
+    $qProvider: IQProvider
 ): void {
 
     // In case you have issues with double-escaped parameters, check out this issue:

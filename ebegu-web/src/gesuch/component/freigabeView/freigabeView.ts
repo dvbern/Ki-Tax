@@ -17,6 +17,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {IComponentOptions, IPromise} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -38,6 +39,8 @@ import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
+
+const LOG = LogFactory.createLog('FreigabeViewComponent');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -88,9 +91,9 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         this.einstellungService.findEinstellung(TSEinstellungKey.FREIGABE_QUITTUNG_EINLESEN_REQUIRED,
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id)
-            .then(einstellung => {
+            .subscribe(einstellung => {
                 this.isFreigabequittungEinlesenRequired = einstellung.value === 'true';
-            });
+            }, error => LOG.error(error));
         this.initViewModel();
     }
 
@@ -106,14 +109,14 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.isGesuchValid()) {
             this.form.$setPristine();
             return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
-                parentController: this,
+                parentController: this
             });
         }
         return undefined;
     }
 
     public confirmationCallback(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.gesuchModelManager.isGesuch()) {
             const freigabeQuittung = this.openFreigabequittungPDF(true);
             if (EbeguUtil.isNotNullAndFalse(this.isFreigabequittungEinlesenRequired)) {
@@ -238,7 +241,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public $postLink(): void {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         this.doPostLinkActions(500);
     }
 

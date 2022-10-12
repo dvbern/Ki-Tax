@@ -219,7 +219,7 @@ public interface BenutzerService {
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
-	Collection<Benutzer> getAllBenutzerMandant(@Nonnull Mandant mandant);
+	Collection<Benutzer> getAllActiveBenutzerMandant(@Nonnull Mandant mandant);
 
 	/**
 	 * @return Liste saemtlicher Gesuchsteller aus der DB

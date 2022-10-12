@@ -52,6 +52,7 @@ export class DVRoleElementController {
     /**
      * Diese Methode gibt einfach den Wert von expression zurueck. Hier koennte man aber auch etwas berechnen wenn
      * noetig
+     *
      * @returns wenn die expression is null oder undefined gibt es true zurueck. Sonst gibt es den Wert von expression
      *         zurueck
      */

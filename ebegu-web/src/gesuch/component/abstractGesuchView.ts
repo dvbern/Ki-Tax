@@ -54,7 +54,7 @@ export class AbstractGesuchViewController<T> implements IController {
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         stepName: TSWizardStepName,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
         this.gesuchModelManager = $gesuchModelManager;
         this.berechnungsManager = $berechnungsManager;

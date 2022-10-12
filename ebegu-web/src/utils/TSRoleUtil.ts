@@ -67,7 +67,7 @@ export class TSRoleUtil {
             TSRole.REVISOR,
             TSRole.JURIST,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -86,7 +86,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -103,7 +103,7 @@ export class TSRoleUtil {
             .filter(role => ![
                 TSRole.ANONYMOUS,
                 TSRole.SACHBEARBEITER_FERIENBETREUUNG,
-                TSRole.ADMIN_FERIENBETREUUNG,
+                TSRole.ADMIN_FERIENBETREUUNG
             ].includes(role));
     }
 
@@ -118,7 +118,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_MANDANT,
-            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
@@ -143,7 +143,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -157,7 +157,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -173,7 +173,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_MANDANT,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.SACHBEARBEITER_BG,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -183,7 +183,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
         ];
     }
 
@@ -198,7 +198,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
         ];
     }
 
@@ -219,7 +219,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            TSRole.STEUERAMT,
+            TSRole.STEUERAMT
         ];
     }
 
@@ -230,7 +230,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_BG,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
         ];
     }
 
@@ -245,9 +245,22 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
+
+    public static getGesuchstellerJugendamtSchulamtRoles(): ReadonlyArray<TSRole> {
+            return [
+                TSRole.SUPER_ADMIN,
+                TSRole.GESUCHSTELLER,
+                TSRole.SACHBEARBEITER_BG,
+                TSRole.ADMIN_BG,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_GEMEINDE,
+                TSRole.SACHBEARBEITER_TS,
+                TSRole.ADMIN_TS
+            ];
+        }
 
     public static getSchulamtInstitutionRoles(): ReadonlyArray<TSRole> {
         return [
@@ -259,7 +272,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
         ];
     }
 
@@ -269,7 +282,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
         ];
     }
 
@@ -278,7 +291,7 @@ export class TSRoleUtil {
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_BG,
             TSRole.ADMIN_TS,
-            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_GEMEINDE
         ];
     }
 
@@ -289,7 +302,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -304,7 +317,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -319,7 +332,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.REVISOR,
-            TSRole.ADMIN_MANDANT,
+            TSRole.ADMIN_MANDANT
         ];
     }
 
@@ -331,7 +344,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -346,7 +359,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.ADMIN_FERIENBETREUUNG,
+            TSRole.ADMIN_FERIENBETREUUNG
         ];
     }
 
@@ -360,7 +373,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
             TSRole.ADMIN_FERIENBETREUUNG,
-            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
@@ -379,7 +392,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
             TSRole.SACHBEARBEITER_SOZIALDIENST,
-            TSRole.ADMIN_SOZIALDIENST,
+            TSRole.ADMIN_SOZIALDIENST
         ];
     }
 
@@ -395,7 +408,7 @@ export class TSRoleUtil {
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,
-            TSRole.GESUCHSTELLER,
+            TSRole.GESUCHSTELLER
         ];
     }
 
@@ -433,7 +446,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -447,7 +460,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS,
-            TSRole.STEUERAMT,
+            TSRole.STEUERAMT
         ];
     }
 
@@ -462,7 +475,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.GESUCHSTELLER,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
 
@@ -473,7 +486,7 @@ export class TSRoleUtil {
                 element !== TSRole.ADMIN_BG &&
                 element !== TSRole.SACHBEARBEITER_GEMEINDE &&
                 element !== TSRole.ADMIN_GEMEINDE &&
-                element !== TSRole.SUPER_ADMIN,
+                element !== TSRole.SUPER_ADMIN
             );
     }
 
@@ -487,7 +500,7 @@ export class TSRoleUtil {
                 element !== TSRole.ADMIN_GEMEINDE &&
                 element !== TSRole.SACHBEARBEITER_TS &&
                 element !== TSRole.ADMIN_TS &&
-                element !== TSRole.SUPER_ADMIN,
+                element !== TSRole.SUPER_ADMIN
             );
     }
 
@@ -497,7 +510,7 @@ export class TSRoleUtil {
                 element !== TSRole.ADMIN_INSTITUTION
                 && element !== TSRole.SACHBEARBEITER_INSTITUTION
                 && element !== TSRole.ADMIN_TRAEGERSCHAFT
-                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+                && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
             );
     }
 
@@ -508,7 +521,7 @@ export class TSRoleUtil {
                 && element !== TSRole.SACHBEARBEITER_INSTITUTION
                 && element !== TSRole.ADMIN_TRAEGERSCHAFT
                 && element !== TSRole.SACHBEARBEITER_TRAEGERSCHAFT
-                && element !== TSRole.STEUERAMT,
+                && element !== TSRole.STEUERAMT
             );
     }
 
@@ -522,7 +535,7 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS,
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
         ];
     }
 
@@ -533,7 +546,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -542,7 +555,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_BG,
-            TSRole.SACHBEARBEITER_BG,
+            TSRole.SACHBEARBEITER_BG
         ];
     }
 
@@ -551,14 +564,14 @@ export class TSRoleUtil {
             TSRole.ADMIN_GEMEINDE,
             TSRole.SACHBEARBEITER_GEMEINDE,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
     public static getGemeindeOnlyRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_GEMEINDE,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
         ];
     }
 
@@ -599,7 +612,7 @@ export class TSRoleUtil {
             TSRole.JURIST,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -617,7 +630,7 @@ export class TSRoleUtil {
             TSRole.JURIST,
             TSRole.REVISOR,
             TSRole.ADMIN_MANDANT,
-            TSRole.SACHBEARBEITER_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ];
     }
 
@@ -663,7 +676,7 @@ export class TSRoleUtil {
     }
 
     public static translationKeyForRole(role: TSRole, gesuchstellerNone: boolean = false): string {
-        return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? rolePrefix() + 'NONE' : rolePrefix() + role;
+        return role === TSRole.GESUCHSTELLER && gesuchstellerNone ? `${rolePrefix()  }NONE` : rolePrefix() + role;
     }
 
     public static getAllRolesForNotrecht(): ReadonlyArray<TSRole> {
@@ -674,7 +687,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT
         ];
     }
 
@@ -684,14 +697,14 @@ export class TSRoleUtil {
             TSRole.ADMIN_MANDANT,
             TSRole.SACHBEARBEITER_MANDANT,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
 
     public static getSozialdienstRolle(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
 
@@ -699,7 +712,7 @@ export class TSRoleUtil {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_SOZIALDIENST,
-            TSRole.SACHBEARBEITER_SOZIALDIENST,
+            TSRole.SACHBEARBEITER_SOZIALDIENST
         ];
     }
 
@@ -746,7 +759,7 @@ export class TSRoleUtil {
             TSRole.ADMIN_BG,
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
-            TSRole.SACHBEARBEITER_TS,
+            TSRole.SACHBEARBEITER_TS
         ];
     }
 
@@ -759,7 +772,7 @@ export class TSRoleUtil {
     public static getFerienbetreuungGemeindeRolesOnly(): ReadonlyArray<TSRole> {
         return [
             TSRole.ADMIN_FERIENBETREUUNG,
-            TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+            TSRole.SACHBEARBEITER_FERIENBETREUUNG
         ];
     }
 

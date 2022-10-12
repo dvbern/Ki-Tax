@@ -19,18 +19,18 @@ describe('DvSimpleTableComponent', () => {
         {a: 'a3', b: 'b3'},
         {a: 'a4', b: 'b4'},
         {a: 'a5', b: 'b5'},
-        {a: 'a6', b: 'b6'},
+        {a: 'a6', b: 'b6'}
     ];
     const columnDefinition: DvSimpleTableColumnDefinition[] = [
         {displayedName: 'A', attributeName: 'a'},
-        {displayedName: 'B', attributeName: 'b'},
+        {displayedName: 'B', attributeName: 'b'}
     ];
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             declarations: [DvSimpleTableComponent]
         })

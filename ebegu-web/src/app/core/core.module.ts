@@ -16,7 +16,7 @@
  */
 
 import {registerLocaleData} from '@angular/common';
-// tslint:disable-next-line:match-default-export-name
+// eslint-disable-next-line
 import deCH from '@angular/common/locales/de-CH';
 import {
     APP_INITIALIZER,
@@ -25,13 +25,14 @@ import {
     ModuleWithProviders,
     NgModule,
     Optional,
-    SkipSelf,
+    SkipSelf
 } from '@angular/core';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatPaginatorIntl} from '@angular/material/paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {FjkvKinderabzugExchangeService} from '../../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
 import {SearchRS} from '../../gesuch/service/searchRS.rest';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
@@ -42,6 +43,7 @@ import {HTTP_INTERCEPTOR_PROVIDERS} from './http-interceptors/interceptors';
 import {UPGRADED_HTTP_INTERCEPTOR_PROVIDERS} from './httpInterceptorProviders';
 import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {BroadcastService} from './service/broadcast.service';
+import {InstitutionRS} from './service/institutionRS.rest';
 import {VersionService} from './service/version/version.service';
 import {WindowRef} from './service/windowRef.service';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -63,7 +65,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         // only those modules required by the providers/components of the core module
         // (other global modules go to shared module)
         TranslateModule,
-        UIRouterUpgradeModule,
+        UIRouterUpgradeModule
     ],
     providers: [
         // Insert global singleton services here that have no configuration (ExceptionService, LoggerService etc.)
@@ -71,7 +73,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
             provide: APP_INITIALIZER,
             useFactory: initMandantCookie,
             deps: [MandantService],
-            multi: true,
+            multi: true
         },
         ...UPGRADED_PROVIDERS,
         ...UPGRADED_HTTP_INTERCEPTOR_PROVIDERS,
@@ -84,12 +86,14 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
         CookieService,
         ColorService,
         SearchRS,
-        FjkvKinderabzugExchangeService
+        FjkvKinderabzugExchangeService,
+        InstitutionRS,
+        EinstellungRS
     ],
     declarations: [
         // Insert app wide single use components (NavComponent, SpinnerComponent). Try not to declare anything here.
         // This module should be used only to provide services
-    ],
+    ]
 })
 export class CoreModule {
 
@@ -114,9 +118,9 @@ export class CoreModule {
                 {
                     provide: MatPaginatorIntl,
                     deps: [TranslateService],
-                    useFactory: paginatorI18nFactory,
-                },
-            ],
+                    useFactory: paginatorI18nFactory
+                }
+            ]
         };
     }
 }

@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -36,20 +37,20 @@ import {ResultatComponent} from '../resultat/resultat.component';
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
     styleUrls: ['../finanzielle-situation-luzern.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
     @ViewChild(ResultatComponent) private readonly resultatComponent: ResultatComponent;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
-        protected authServiceRS: AuthServiceRS
+        protected authServiceRS: AuthServiceRS,
+        protected readonly translate: TranslateService
     ) {
-        super(gesuchModelManager, wizardStepManager, 1, finSitLuService, authServiceRS);
+        super(gesuchModelManager, wizardStepManager, 1, finSitLuService, authServiceRS, translate);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION_LUZERN,
             TSWizardStepStatus.IN_BEARBEITUNG);
@@ -80,7 +81,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

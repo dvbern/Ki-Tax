@@ -24,7 +24,7 @@ export class HttpI18nInterceptor implements IHttpInterceptor {
     public static $inject = ['I18nServiceRSRest'];
 
     public constructor(
-        private readonly i18nService: I18nServiceRSRest,
+        private readonly i18nService: I18nServiceRSRest
     ) {
     }
 
@@ -34,5 +34,5 @@ export class HttpI18nInterceptor implements IHttpInterceptor {
             : this.i18nService.currentLanguage();
 
         return config;
-    }
+    };
 }

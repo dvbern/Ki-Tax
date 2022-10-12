@@ -86,7 +86,7 @@ describe('FerienbetreuungKostenEinnahmenComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: UnsavedChangesService, useValue: unsavedChangesServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungRSSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy}
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

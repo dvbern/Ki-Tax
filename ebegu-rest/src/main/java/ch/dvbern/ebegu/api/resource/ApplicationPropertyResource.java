@@ -366,6 +366,12 @@ public class ApplicationPropertyResource {
 		ApplicationProperty zusatzinformationenInstitution =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ZUSATZINFORMATIONEN_INSTITUTION, mandant)
 						.orElseThrow(() -> notFound);
+		ApplicationProperty activatedDemoFeatures =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant)
+				.orElseThrow(() -> notFound);
+		ApplicationProperty checkboxAuszahlungInZukunft =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT, mandant)
+						.orElseThrow(() -> notFound);
 		ApplicationProperty institutionenDurchGemeindenEinladen =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN, mandant)
 						.orElseThrow(() -> notFound);
@@ -420,6 +426,8 @@ public class ApplicationPropertyResource {
 			isEbeguKibonAnfrageTestGuiEnabled,
 			steuerschnittstelleAktivAb.getValue(),
 			stringToBool(zusatzinformationenInstitution.getValue()),
+			activatedDemoFeatures.getValue(),
+			stringToBool(checkboxAuszahlungInZukunft.getValue())
 			stringToBool(institutionenDurchGemeindenEinladen.getValue())
 			);
 		return Response.ok(pubAppConf).build();

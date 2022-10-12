@@ -37,9 +37,7 @@ function overlappingValidator(fiStammdatenList: TSFerieninselStammdaten[]): {[ke
     let zeitraeume = extractZeitraeume(fiStammdatenList);
     // nur valide zeiträume betrachten. Ansonsten ist die Konfiguration sowieso invalid
     zeitraeume = zeitraeume.filter(z => z.gueltigkeit && z.gueltigkeit.gueltigAb && z.gueltigkeit.gueltigBis);
-    zeitraeume.sort((a, b) => {
-        return a.gueltigkeit.gueltigAb.valueOf() - b.gueltigkeit.gueltigAb.valueOf();
-    });
+    zeitraeume.sort((a, b) => a.gueltigkeit.gueltigAb.valueOf() - b.gueltigkeit.gueltigAb.valueOf());
     let previous;
     for (const zeitraum of zeitraeume) {
         if (!previous) {

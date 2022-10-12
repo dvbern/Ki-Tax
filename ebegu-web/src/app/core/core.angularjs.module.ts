@@ -16,7 +16,7 @@
 import {LOCALE_ID} from '@angular/core';
 import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
-// tslint:disable:no-import-side-effect
+/* eslint-disable import/no-unassigned-import */
 import 'angular-animate';
 import 'angular-aria';
 import 'angular-cookies';
@@ -53,7 +53,7 @@ import {EinkommensverschlechterungContainerRS} from '../../gesuch/service/einkom
 import {EinkommensverschlechterungInfoRS} from '../../gesuch/service/einkommensverschlechterungInfoRS.rest';
 import {ExportRS} from '../../gesuch/service/exportRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
-import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.rest';
+import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.service';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchGenerator} from '../../gesuch/service/gesuchGenerator';
@@ -68,7 +68,7 @@ import {WizardStepRS} from '../../gesuch/service/WizardStepRS.rest';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
-import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector.component';
+import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector';
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
@@ -78,19 +78,18 @@ import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion'
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
-import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry';
-import {DVBenutzerListConfig} from './component/dv-benutzer-list/dv-benutzer-list';
+import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
 import {DvErrorMessagesComponentConfig} from './component/dv-error-messages/dv-error-messages';
 import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-erwerbspensum-list';
 import {DvFooterComponentConfig} from './component/dv-footer/dv-footer';
-import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
+import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu.component';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
 import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
-import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation';
+import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
 import {DvMobileNavigationToggleComponentConfig} from './component/dv-mobile-navigation-toggle/dv-mobile-navigation-toggle';
 import {DvPulldownUserMenuComponentConfig} from './component/dv-pulldown-user-menu/dv-pulldown-user-menu';
@@ -100,7 +99,6 @@ import {DvSearchResultIconComponentConfig} from './component/dv-search/dv-search
 import {DvSkiplinksComponentConfig} from './component/dv-skiplinks/dv-skiplinks';
 import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
-import {DVVorlageListConfig} from './component/dv-vorlage-list/dv-vorlage-list';
 import {NavbarComponent} from './component/navbar/navbar.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
@@ -184,7 +182,7 @@ const dependencies = [
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
-    'utf8-base64',
+    'utf8-base64'
 ];
 
 const dynamicDependencies = (): string[] => {
@@ -213,14 +211,12 @@ export const CORE_JS_MODULE = angular
     .service('AdresseRS', AdresseRS)
     .service('ListResourceRS', ListResourceRS)
     .service('FallRS', FallRS)
-    .service('FamiliensituationRS', FamiliensituationRS)
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
     .service('EinkommensverschlechterungContainerRS', EinkommensverschlechterungContainerRS)
     .service('EinkommensverschlechterungInfoRS', EinkommensverschlechterungInfoRS)
     .service('TraegerschaftRS', TraegerschaftRS)
-    .service('InstitutionRS', InstitutionRS)
     .service('InstitutionStammdatenRS', InstitutionStammdatenRS)
     .service('ErwerbspensumRS', ErwerbspensumRS)
     .service('KindRS', KindRS)
@@ -239,9 +235,11 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('NotrechtRS', NotrechtRS)
-    .service('EinstellungRS', EinstellungRS)
+    .factory('FamiliensituationRS', downgradeInjectable(FamiliensituationRS) as any)
+    .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
+    .factory('InstitutionRS', downgradeInjectable(InstitutionRS) as any)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
@@ -301,14 +299,12 @@ export const CORE_JS_MODULE = angular
     .component('dvBisher', new DvBisherComponentConfig())
     .component('dvDokumenteList', new DVDokumenteListConfig())
     .component('dvAntragList', new DVAntragListConfig())
-    .component('dvVorlageList', new DVVorlageListConfig())
     .component('dvQuicksearchbox', new DvQuicksearchboxComponentConfig())
     .component('dvSearchResultIcon', new DvSearchResultIconComponentConfig())
     .component('dvMitteilungList', new DVMitteilungListConfig())
     .component('dvAccordion', new DvAccordionComponentConfig())
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
-    .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
     .component('dvFooter', new DvFooterComponentConfig())
     .component('dvInputContainer', new DvInputContainerComponentConfig())

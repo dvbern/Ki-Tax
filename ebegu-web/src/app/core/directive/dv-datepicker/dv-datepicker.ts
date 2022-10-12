@@ -38,7 +38,7 @@ export class DVDatepicker implements IDirective {
         dvMinDate: '<?', // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvMaxDate: '<?',  // Kann als String im Format allowedFormats oder als Moment angegeben werden
         dvGesuchsperiodeMinDate: '<?',
-        dvGesuchsperiodeMaxDate: '<?',
+        dvGesuchsperiodeMaxDate: '<?'
     };
     public template = require('./dv-datepicker.html');
 
@@ -70,7 +70,7 @@ export class DatepickerController implements IController {
     public constructor(
         private readonly $log: ILogService,
         private readonly $attrs: IAttributes,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: ITranslateService
     ) {
     }
 
@@ -96,7 +96,7 @@ export class DatepickerController implements IController {
 
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public $onInit(): void {
 
         if (!this.ngModelCtrl) {

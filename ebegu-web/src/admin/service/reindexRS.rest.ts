@@ -19,18 +19,18 @@ import {Observable} from 'rxjs';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class ReindexRS {
 
     public readonly serviceURL: string = `${CONSTANTS.REST_API}admin/reindex`;
 
     public constructor(
-        public readonly $http: HttpClient,
+        public readonly $http: HttpClient
     ) {}
 
     public reindex(): Observable<any> {
-        return this.$http.get(this.serviceURL + '/');
+        return this.$http.get(`${this.serviceURL  }/`);
     }
 
 }

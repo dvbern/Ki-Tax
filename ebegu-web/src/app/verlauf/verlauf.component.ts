@@ -42,11 +42,10 @@ export class VerlaufComponent implements OnInit {
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
     public verlauf: Array<TSAntragStatusHistory>;
+    public gs1Name: string;
     public readonly tableColumns: DvSimpleTableColumnDefinition[] = [
         {
-            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => {
-                return moment(d).format(CONSTANTS.DATE_FORMAT);
-            }
+            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
         },
         {displayedName: 'VERSION', attributeName: 'version'},
         {displayedName: 'AKTION', attributeName: 'status'},
@@ -79,6 +78,7 @@ export class VerlaufComponent implements OnInit {
 
         const gesuchResponse = await this.gesuchRS.findGesuch(this.uiRouterGlobals.params.gesuchId);
         this.dossier = gesuchResponse.dossier;
+        this.gs1Name = gesuchResponse.gesuchsteller1?.extractNachname();
         const gesuchsperiode = gesuchResponse.gesuchsperiode;
         if (this.dossier === undefined) {
             this.cancel();
@@ -89,7 +89,7 @@ export class VerlaufComponent implements OnInit {
             this.gesuche[item.antragId] = this.ebeguUtil.getAntragTextDateAsString(
                 item.antragTyp,
                 item.eingangsdatum,
-                item.laufnummer,
+                item.laufnummer
             );
         });
 
@@ -123,9 +123,7 @@ export class VerlaufComponent implements OnInit {
     }
 
     public getGesuch(gesuchid: string): TSGesuch {
-        this.gesuchRS.findGesuch(gesuchid).then(response => {
-            return response;
-        });
+        this.gesuchRS.findGesuch(gesuchid).then(response => response);
         return undefined;
     }
 

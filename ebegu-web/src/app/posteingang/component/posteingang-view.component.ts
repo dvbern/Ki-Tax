@@ -20,8 +20,9 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -41,6 +42,9 @@ import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
@@ -54,7 +58,7 @@ const LOG = LogFactory.createLog('PosteingangViewComponent');
     selector: 'posteingang-view',
     templateUrl: './posteingang-view.component.html',
     styleUrls: ['./posteingang-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild(MatSort) private readonly matSort: MatSort;
@@ -75,7 +79,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'sentDatum',
         'empfaenger',
         'empfaengerVerantwortung',
-        'mitteilungStatus',
+        'mitteilungStatus'
     ];
 
     public filterColumns: string[] = [
@@ -87,16 +91,16 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'sentDatum-filter',
         'empfaenger-filter',
         'empfaengerVerantwortung-filter',
-        'mitteilungStatus-filter',
+        'mitteilungStatus-filter'
     ];
 
     private readonly hiddenColumnsUDInstituion: string[] = [
         'empfaenger',
-        'empfaengerVerantwortung',
+        'empfaengerVerantwortung'
     ];
 
     private readonly hiddenColumnsUD: string[] = [
-        'familienName',
+        'familienName'
     ];
 
     // Liste die im Gui angezeigt wird
@@ -125,9 +129,11 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private sortId: string;
     private filterId: string;
     private readonly sort: {
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     } = {};
+
+    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
@@ -140,6 +146,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly benutzerRS: BenutzerRSX,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly posteingangService: PosteingangService,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -171,9 +178,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                             EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
                         this.changeDetectorRef.markForCheck();
                     }),
-                    map(() => this.filterPredicate),
+                    map(() => this.filterPredicate)
                 );
-            }),
+            })
         );
     }
 
@@ -189,7 +196,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public gotoMitteilung(mitteilung: TSMitteilung): void {
         this.$state.go('mitteilungen.view', {
             dossierId: mitteilung.dossier.id,
-            fallId: mitteilung.dossier.fall.id,
+            fallId: mitteilung.dossier.fall.id
         });
     }
 
@@ -200,7 +207,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                 gemeinden => {
                     this.gemeindenList = gemeinden;
                 },
-                err => this.log.error(err),
+                err => this.log.error(err)
             );
     }
 
@@ -220,22 +227,20 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         const body = {
             pagination: {
                 number: this.pageSize,
-                start: this.page * this.pageSize,
+                start: this.page * this.pageSize
             },
             search: {
-                predicateObject: this.filterPredicate,
+                predicateObject: this.filterPredicate
             },
-            sort: this.sort,
+            sort: this.sort
         };
         const dataToLoad$ = from(this.mitteilungRS.searchMitteilungen(body,
-            this.includeClosed)).pipe(map((result: TSMtteilungSearchresultDTO) => {
-            return result;
-        }));
+            this.includeClosed)).pipe(map((result: TSMtteilungSearchresultDTO) => result));
 
         dataToLoad$.subscribe((result: TSMtteilungSearchresultDTO) => {
                 this.setResult(result);
             },
-            err => this.log.error(err),
+            err => this.log.error(err)
         );
     }
 
@@ -260,6 +265,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public isSozialdienstOrInstitution(): boolean {
         return this.isSozialdienst() || this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
+    }
+
+    public isSuperAdminOrGemeinde(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     private applyFilter(): void {
@@ -359,9 +368,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     private initSort(): void {
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (this.stateStore.has(this.sortId)) {
-            const stored = this.stateStore.get(this.sortId) as { predicate?: string, reverse?: boolean };
+            const stored = this.stateStore.get(this.sortId) as { predicate?: string; reverse?: boolean };
             this.sort.predicate = stored.predicate;
             this.sort.reverse = stored.reverse;
         }
@@ -396,15 +405,55 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             () => {
                 this.passFilterToServer();
                 this.getMitteilungenCount();
-                },
+            }
         );
     }
 
     public isStatusGelesen(mitteilung: TSMitteilung): boolean {
         return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
-        }
+    }
 
     private getMitteilungenCount(): void {
         this.posteingangService.posteingangChanged();
+    }
+
+    public alleMutationsmeldungVerfuegen(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            frage: 'ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE'
+        };
+        this.dialog.open(DvNgConfirmDialogComponent, dialogConfig).afterClosed()
+            .subscribe(answer => {
+                    if (answer !== true) {
+                        return;
+                    }
+                    const body = {
+                        pagination: {
+                            number: this.pageSize,
+                            start: this.page * this.pageSize
+                        },
+                        search: {
+                            predicateObject: this.filterPredicate
+                        },
+                        sort: this.sort
+                    };
+                    this.mitteilungRS.applyAlleBetreuungsmitteilungen(body).then(
+                        resultList => {
+                            dialogConfig.data = resultList;
+                            dialogConfig.disableClose = true;
+                            this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
+                                .subscribe(() => {
+                                        this.passFilterToServer();
+                                        this.getMitteilungenCount();
+                                    },
+                                    () => {
+                                    }
+                                )
+                            ;
+                        }
+                    );
+                },
+                () => {
+                });
     }
 }

@@ -48,7 +48,7 @@ describe('TraegerschaftAddComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -57,9 +57,9 @@ describe('TraegerschaftAddComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: BenutzerRSX, useValue: benutzerServiceSpy},
+                {provide: BenutzerRSX, useValue: benutzerServiceSpy}
             ],
-            declarations: [TraegerschaftAddComponent],
+            declarations: [TraegerschaftAddComponent]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 

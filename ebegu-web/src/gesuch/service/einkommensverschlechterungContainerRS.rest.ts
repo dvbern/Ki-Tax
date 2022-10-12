@@ -33,7 +33,7 @@ export class EinkommensverschlechterungContainerRS {
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         public $log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}einkommensverschlechterung`;
     }
@@ -41,7 +41,7 @@ export class EinkommensverschlechterungContainerRS {
     public saveEinkommensverschlechterungContainer(
         einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
         gesuchstellerId: string,
-        gesuchId: string,
+        gesuchId: string
     ): IPromise<TSEinkommensverschlechterungContainer> {
         let returnedEinkommensverschlechterungContainer = {};
         returnedEinkommensverschlechterungContainer =
@@ -50,15 +50,13 @@ export class EinkommensverschlechterungContainerRS {
                 einkommensverschlechterungContainer);
         const url = `${this.serviceURL}/${gesuchstellerId}/${encodeURIComponent(gesuchId)}`;
 
-        return this.$http.put(url, returnedEinkommensverschlechterungContainer).then(r => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId)
-                .then(() => this.toEinkommensverschlechterung(r));
-        });
+        return this.$http.put(url, returnedEinkommensverschlechterungContainer).then(r => this.wizardStepManager.findStepsFromGesuch(gesuchId)
+                .then(() => this.toEinkommensverschlechterung(r)));
     }
 
     public calculateEinkommensverschlechterung(
         gesuch: TSGesuch,
-        basisJahrPlus: number,
+        basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
@@ -68,7 +66,7 @@ export class EinkommensverschlechterungContainerRS {
 
     public calculateEinkommensverschlechterungTemp(
         finanzModel: TSFinanzModel,
-        basisJahrPlus: number,
+        basisJahrPlus: number
     ): IPromise<TSFinanzielleSituationResultateDTO> {
         let finanzenToSend = {};
         finanzenToSend = this.ebeguRestUtil.finanzModelToRestObject(finanzenToSend, finanzModel);
@@ -76,7 +74,7 @@ export class EinkommensverschlechterungContainerRS {
             .then(response => this.toFinanzielleSituationResult(response));
     }
 
-    public findEinkommensverschlechterungContainer(einkommensverschlechterungID: string,
+    public findEinkommensverschlechterungContainer(einkommensverschlechterungID: string
     ): IPromise<TSEinkommensverschlechterungContainer> {
         return this.$http.get(`${this.serviceURL}/${encodeURIComponent(einkommensverschlechterungID)}`)
             .then(r => this.toEinkommensverschlechterung(r));

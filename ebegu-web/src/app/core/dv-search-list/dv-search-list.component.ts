@@ -25,7 +25,7 @@ import {
     OnInit,
     Output,
     SimpleChanges,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -38,7 +38,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     selector: 'dv-search-list',
     templateUrl: './dv-search-list.component.html',
     styleUrls: ['./dv-search-list.component.less'],
-    changeDetection: ChangeDetectionStrategy.Default,
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
 
@@ -76,7 +76,7 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
         if (changes.hiddenColumns) {
             this.displayedColumns = this.allColumns.filter(column => !this.hiddenColumns.includes(column));
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (changes.data$ && !changes.data$.firstChange) {
             this.loadData();
         }
@@ -124,8 +124,8 @@ export class DvSearchListComponent implements OnInit, OnChanges, AfterViewInit {
         this.sort.sort({
                 id: 'name',
                 start: 'asc',
-                disableClear: false,
-            },
+                disableClear: false
+            }
         );
     }
 }

@@ -46,7 +46,7 @@ const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
     selector: 'zahlungsauftrag-view',
     templateUrl: './zahlungsauftrag-view-x.component.html',
     styleUrls: ['./zahlungsauftrag-view-x.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -66,6 +66,8 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public datumGeneriert: moment.Moment;
     public itemsByPage: number = 12;
     public testMode: boolean = false;
+    public checkboxAuszahlungInZukunft: boolean = false;
+    public auszahlungInZukunft: boolean = false;
     public minDateForTestlauf: moment.Moment;
     public gemeinde: TSGemeinde;
     // Anzuzeigende Gemeinden fuer den gewaehlten Zahlungslauftyp
@@ -111,7 +113,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         private readonly dialog: MatDialog,
         private readonly transition: TransitionService,
         private readonly stateStore: StateStoreService,
-        private readonly errorService: ErrorService,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -124,6 +126,10 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.updateHasAuszahlungAnElternZahlungslaeufe();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
+        });
+        this.applicationPropertyRS.getCheckboxAuszahlungInZukunft().then((response: any) => {
+            this.checkboxAuszahlungInZukunft = response;
+            this.auszahlungInZukunft = this.checkboxAuszahlungInZukunft;
         });
         this.setupTableColumns();
         this.authServiceRS.principal$.subscribe(user => this.principal = user, error => LOG.error(error));
@@ -181,7 +187,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     }
 
                     return of(new TSPaginationResultDTO<TSZahlungsauftrag>([], 0));
-                }),
+                })
             )
             .subscribe(
                 result => {
@@ -189,14 +195,14 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     this.datasource.data = result.resultList;
                     this.updatePagination(result.totalResultSize);
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
     public gotoZahlung(zahlungsauftrag: TSZahlungsauftrag): void {
         this.$state.go('zahlung.view', {
             zahlungsauftragId: zahlungsauftrag.id,
-            isMahlzeitenzahlungen: this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER,
+            isMahlzeitenzahlungen: this.zahlungslaufTyp === TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER
         });
     }
 
@@ -208,7 +214,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('ZAHLUNG_ERSTELLEN_CONFIRM'),
-            text: this.translate.instant('ZAHLUNG_ERSTELLEN_INFO'),
+            text: this.translate.instant('ZAHLUNG_ERSTELLEN_INFO')
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
@@ -222,6 +228,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     this.beschrieb,
                     this.faelligkeitsdatum,
                     this.datumGeneriert,
+                    this.auszahlungInZukunft
                 ).subscribe((response: TSZahlungsauftrag) => {
                         this.errorService.clearAll();
                         this.errorService.addMesageAsInfo(this.translate.instant('ZAHLUNG_ERSTELLT'));
@@ -255,7 +262,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
             .catch(error => {
                 this.errorService.addMesageAsError(error?.error?.translatedMessage || this.translate.instant(
                     'ERROR_UNEXPECTED'));
@@ -263,12 +270,12 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             });
     }
 
-    // tslint:disable-next-line:no-unused
+    // eslint-disable-next-line
     public ausloesen(zahlungsauftragId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('ZAHLUNG_AUSLOESEN_CONFIRM'),
-            text: this.translate.instant('ZAHLUNG_AUSLOESEN_INFO'),
+            text: this.translate.instant('ZAHLUNG_AUSLOESEN_INFO')
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
@@ -301,7 +308,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.zahlungRS.updateZahlungsauftrag(
             this.zahlungsauftragToEdit.beschrieb,
             this.zahlungsauftragToEdit.datumFaellig,
-            this.zahlungsauftragToEdit.id,
+            this.zahlungsauftragToEdit.id
         ).subscribe((response: TSZahlungsauftrag) => {
                 const index = EbeguUtil.getIndexOfElementwithID(response, this.zahlungsAuftraege);
                 if (index > -1) {
@@ -378,7 +385,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                     this.initFilterFromStore();
                     this.cd.markForCheck();
                 },
-                err => LOG.error(err),
+                err => LOG.error(err)
             );
     }
 
@@ -483,22 +490,22 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             {
                 displayedName: this.translate.instant('ZAHLUNG_GENERIERT'),
                 attributeName: 'datumGeneriert',
-                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY'),
+                displayFunction: (date: moment.Moment) => date.format('DD.MM.YYYY')
             },
             {
                 displayedName: this.translate.instant('GEMEINDE'),
                 attributeName: 'gemeinde',
-                displayFunction: (gemeinde: TSGemeinde) => gemeinde.name,
+                displayFunction: (gemeinde: TSGemeinde) => gemeinde.name
             },
             {
                 displayedName: this.translate.instant('ZAHLUNG_STATUS'),
                 attributeName: 'status',
                 displayFunction: (
-                    // tslint:disable-next-line:no-unused
+                    // eslint-disable-next-line
                     status: TSZahlungsauftragsstatus,
-                    element: TSZahlungsauftrag,
-                ) => this.getCalculatedStatus(element),
-            },
+                    element: TSZahlungsauftrag
+                ) => this.getCalculatedStatus(element)
+            }
         ];
     }
 

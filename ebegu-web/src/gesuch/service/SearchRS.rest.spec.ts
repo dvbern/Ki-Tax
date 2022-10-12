@@ -21,7 +21,7 @@ import {TSAntragSearchresultDTO} from '../../models/TSAntragSearchresultDTO';
 import {TestDataUtil} from '../../utils/TestDataUtil.spec';
 import {SearchRS} from './searchRS.rest';
 
-// tslint:disable:no-magic-numbers
+/* eslint-disable no-magic-numbers */
 describe('searchRS', () => {
 
     let service: SearchRS;
@@ -33,9 +33,9 @@ describe('searchRS', () => {
             providers: [
                 {
                     provide: HttpClient,
-                    useValue: mockHttpClient,
-                },
-            ],
+                    useValue: mockHttpClient
+                }
+            ]
         });
         service = TestBed.inject(SearchRS);
     });
@@ -51,7 +51,7 @@ describe('searchRS', () => {
                 tsAntragDTO.fallNummer = fallNummer;
                 const searchResult: any = {
                     antragDTOs: [tsAntragDTO],
-                    paginationDTO: {totalItemCount: 1},
+                    paginationDTO: {totalItemCount: 1}
                 };
 
                 const filter: any = {};

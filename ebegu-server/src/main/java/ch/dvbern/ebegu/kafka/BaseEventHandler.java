@@ -20,6 +20,8 @@ package ch.dvbern.ebegu.kafka;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,18 +30,18 @@ public abstract class BaseEventHandler<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BaseEventHandler.class);
 
-
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void onEvent(
 		@Nonnull String key,
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull String eventType,
 		@Nonnull T dto,
-		@Nonnull String clientName
+		@Nonnull String clientName,
+		@Nonnull String eventId
 	) {
 
-		LOG.info("Received '{}' event -- key: '{}', event type: '{}'",
-			dto.getClass().getSimpleName(), key, eventType);
-
+		LOG.info("Received '{}' event -- key: '{}', event type: '{}', event id: '{}'",
+			dto.getClass().getSimpleName(), key, eventType, eventId);
 		EventType.of(eventType).ifPresentOrElse(
 			type -> processEvent(eventTime, type, key, dto, clientName),
 			() -> LOG.warn("Unknown event type '{}'", eventType)

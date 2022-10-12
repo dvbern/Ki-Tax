@@ -17,7 +17,7 @@
 
 import {
     ChangeDetectionStrategy,
-    Component, Input, OnChanges, SimpleChanges,
+    Component, Input, OnChanges, SimpleChanges
 } from '@angular/core';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import * as moment from 'moment';
@@ -30,7 +30,7 @@ import * as moment from 'moment';
     selector: 'betreuung-override-waring',
     templateUrl: './betreuung-override-warning.component.html',
     styleUrls: ['./betreuung-override-warning.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BetreuungOverrideWarningComponent implements OnChanges {
 

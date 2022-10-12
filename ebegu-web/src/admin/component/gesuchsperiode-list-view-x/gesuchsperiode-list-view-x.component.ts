@@ -41,18 +41,14 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
         {
             displayedName: 'GESUCHSPERIODE_GUELTIG_AB',
             attributeName: 'gueltigAb',
-            displayFunction: (d: any) => {
-                return moment(d).format(CONSTANTS.DATE_FORMAT);
-            }
+            displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
         },
         {
             displayedName: 'GESUCHSPERIODE_GUELTIG_BIS',
             attributeName: 'gueltigBis',
-            displayFunction: (d: any) => {
-                return moment(d).format(CONSTANTS.DATE_FORMAT);
-            }
+            displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
         },
-        {displayedName: 'GESUCHSPERIODE_STATUS', attributeName: 'status'},
+        {displayedName: 'GESUCHSPERIODE_STATUS', attributeName: 'status'}
     ];
     public simpleTableData: GpSimpleTableEntry[];
     public simpleTableConfig: DvSimpleTableConfig = new DvSimpleTableConfig('gueltigAb', 'desc', true);
@@ -61,7 +57,7 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
-        private readonly cd: ChangeDetectorRef,
+        private readonly cd: ChangeDetectorRef
     ) {
         super(authServiceRS);
     }
@@ -88,13 +84,13 @@ export class GesuchsperiodeListViewXComponent extends AbstractAdminViewX impleme
 
     public gesuchsperiodeClicked(gesuchsperiodeId: any): void {
         this.$state.go('admin.gesuchsperiode', {
-            gesuchsperiodeId,
+            gesuchsperiodeId
         });
     }
 
     public createGesuchsperiode(): void {
         this.$state.go('admin.gesuchsperiode', {
-            gesuchsperiodeId: undefined,
+            gesuchsperiodeId: undefined
         });
     }
 

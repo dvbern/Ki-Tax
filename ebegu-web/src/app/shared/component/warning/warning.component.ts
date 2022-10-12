@@ -4,7 +4,7 @@ import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
     selector: 'dv-warning',
     templateUrl: './warning.component.html',
     styleUrls: ['./warning.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WarningComponent implements OnInit {
 

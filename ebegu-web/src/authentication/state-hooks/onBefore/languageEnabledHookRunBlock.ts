@@ -28,7 +28,7 @@ export function languageEnabledHookRunBlock(
     $transitions: TransitionService,
     applicationPropertyService: ApplicationPropertyRS,
     i18nService: I18nServiceRSRest,
-    translateService: ITranslateService,
+    translateService: ITranslateService
 ): void {
     $transitions.onBefore({}, async () => changeLanguageIfNotEnabled(applicationPropertyService, i18nService, translateService));
 }
@@ -36,7 +36,7 @@ export function languageEnabledHookRunBlock(
 async function changeLanguageIfNotEnabled(
     applicationPropertyService: ApplicationPropertyRS,
     i18nService: I18nServiceRSRest,
-    translateService: ITranslateService,
+    translateService: ITranslateService
 ): Promise<HookResult> {
     await applicationPropertyService.getFrenchEnabled().then(frenchEnabled => {
         if (!frenchEnabled && i18nService.currentLanguage() === TSBrowserLanguage.FR) {

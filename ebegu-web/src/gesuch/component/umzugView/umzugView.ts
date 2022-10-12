@@ -54,7 +54,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         'DvDialog',
         '$q',
         '$scope',
-        '$timeout',
+        '$timeout'
     ];
 
     public dirty = false;
@@ -68,7 +68,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         private readonly dvDialog: DvDialog,
         private readonly $q: IQService,
         $scope: IScope,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.UMZUG, $timeout);
@@ -101,9 +101,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         this.errorService.clearAll();
         this.saveAdresseInGS();
         this.gesuchModelManager.setGesuchstellerNumber(1);
-        return this.gesuchModelManager.updateGesuchsteller(true).then(() => {
-            return this.gesuchModelManager.getStammdatenToWorkWith();
-        });
+        return this.gesuchModelManager.updateGesuchsteller(true).then(() => this.gesuchModelManager.getStammdatenToWorkWith());
     }
 
     private extractAdressenListFromBothGS(): void {
@@ -128,7 +126,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
             title: remTitleText,
             deleteText: '',
             parentController: undefined,
-            elementID: undefined,
+            elementID: undefined
         }).then(() => {   // User confirmed removal
             this.dirty = true;
             const indexOf = this.model.lastIndexOf(adresse);

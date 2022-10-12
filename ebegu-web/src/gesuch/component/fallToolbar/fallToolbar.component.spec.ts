@@ -34,7 +34,7 @@ import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchRS} from '../../service/gesuchRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
 
-// tslint:disable:no-big-function
+/* eslint-disable */
 describe('fallToolbar', () => {
 
     const dossierId1 = 'ea02b313-e7c3-4b26-1122-e413f4041111';

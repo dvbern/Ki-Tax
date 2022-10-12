@@ -42,14 +42,14 @@ describe('ListSozialdienstComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             providers: [
                 WindowRef,
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: SozialdienstRS, useValue: sozialdienstRSSpy},
-            ],
+                {provide: SozialdienstRS, useValue: sozialdienstRSSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

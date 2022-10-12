@@ -55,7 +55,7 @@ export class MultipleFileUploadComponent<T extends TSFile> implements OnChanges,
     public allowedMimetypes: string = '';
 
     public constructor(
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {}
 
     public ngOnInit(): void {

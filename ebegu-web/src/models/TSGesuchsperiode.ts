@@ -24,7 +24,7 @@ export class TSGesuchsperiode extends TSAbstractDateRangedEntity {
 
     public constructor(
         status?: TSGesuchsperiodeStatus,
-        gueltigkeit?: TSDateRange,
+        gueltigkeit?: TSDateRange
     ) {
         super(gueltigkeit);
         this._status = status;

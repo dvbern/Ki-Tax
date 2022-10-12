@@ -71,7 +71,7 @@ describe('MitteilungRS', () => {
             bm.betreuung = betreuung;
             spyOn(ebeguRestUtil, 'betreuungsmitteilungToRestObject').and.returnValue(restMitteilung);
             spyOn(ebeguRestUtil, 'parseBetreuungsmitteilung').and.returnValue(bm);
-            $httpBackend.expectPUT(mitteilungRS.serviceURL + '/sendbetreuungsmitteilung',
+            $httpBackend.expectPUT(`${mitteilungRS.serviceURL  }/sendbetreuungsmitteilung`,
                 restMitteilung).respond($q.when(restMitteilung));
 
             const result = mitteilungRS.sendbetreuungsmitteilung(dossier, betreuung);

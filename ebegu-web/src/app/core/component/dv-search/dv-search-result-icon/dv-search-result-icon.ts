@@ -20,7 +20,7 @@ export class DvSearchResultIconComponentConfig implements IComponentOptions {
 
     public transclude = false;
     public bindings = {
-        entry: '<',
+        entry: '<'
     };
     public template = require('./dv-search-result-icon.html');
     public controller = DvSearchResultController;

@@ -112,6 +112,11 @@ public interface EinstellungService {
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode);
 
+	@Nonnull
+	Map<EinstellungKey, Einstellung> getGemeindeEinstellungenActiveForMandantOnlyAsMap(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode);
+
 
 	/**
 	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode. Es werden sowohl Gemeinde-, Mandant-, wie auch

@@ -413,6 +413,7 @@ public class Betreuung extends AbstractPlatz {
 			target.setGueltig(false);
 			target.setAuszahlungAnEltern(this.isAuszahlungAnEltern());
 			target.setBegruendungAuszahlungAnInstitution(this.getBegruendungAuszahlungAnInstitution());
+			target.setEingewoehnung(this.isEingewoehnung());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

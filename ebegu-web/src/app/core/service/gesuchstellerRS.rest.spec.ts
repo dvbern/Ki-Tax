@@ -80,7 +80,7 @@ describe('GesuchstellerRS', () => {
                     updatedGesuchsteller = result;
                 });
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
                 expect(updatedGesuchsteller).toBeDefined();
                 expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
@@ -103,7 +103,7 @@ describe('GesuchstellerRS', () => {
                     expect(foundGesuchsteller).toBeDefined();
                     expect(foundGesuchsteller.gesuchstellerJA.nachname)
                         .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
-                },
+                }
             );
         });
     });

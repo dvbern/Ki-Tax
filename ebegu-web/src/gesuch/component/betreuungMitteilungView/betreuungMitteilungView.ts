@@ -40,7 +40,7 @@ export class BetreuungMitteilungViewController extends AbstractGesuchViewControl
         '$scope',
         'BerechnungsManager',
         'WizardStepManager',
-        '$timeout',
+        '$timeout'
     ];
 
     public form: IFormController;
@@ -51,7 +51,7 @@ export class BetreuungMitteilungViewController extends AbstractGesuchViewControl
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
         wizardStepManager: WizardStepManager,
-        $timeout: ITimeoutService,
+        $timeout: ITimeoutService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
     }

@@ -45,7 +45,7 @@ export class DVVersionController implements IController {
         'ApplicationPropertyRS',
         '$translate',
         'AuthServiceRS',
-        'VersionService',
+        'VersionService'
     ];
 
     public backendVersion: string;
@@ -67,7 +67,7 @@ export class DVVersionController implements IController {
             private readonly applicationPropertyRS: ApplicationPropertyRS,
             private readonly $translate: ITranslateService,
             private readonly authServiceRS: AuthServiceRS,
-            private readonly versionService: VersionService,
+            private readonly versionService: VersionService
     ) {
 
     }
@@ -109,7 +109,7 @@ export class DVVersionController implements IController {
                 'VERSION_ERROR_TEXT',
                 {
                     frontendVersion: this.frontendVersion,
-                    backendVersion: this.backendVersion,
+                    backendVersion: this.backendVersion
                 });
         this.$window.alert(msg);
         this.alreadyHandledVersionMismatchByAnyAngular = true;

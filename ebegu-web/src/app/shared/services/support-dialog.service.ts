@@ -3,14 +3,14 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DvNgSupportDialogComponent} from '../../../gesuch/dialog/dv-ng-support-dialog.component';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class SupportDialogService {
 
     private supportDialogRef: MatDialogRef<DvNgSupportDialogComponent>;
 
     public constructor(
-        private readonly supportDialog: MatDialog,
+        private readonly supportDialog: MatDialog
     ) {
     }
 

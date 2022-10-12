@@ -25,7 +25,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
  * liest information ueber batch jobs aus
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class BatchJobRS {
 
@@ -33,7 +33,7 @@ export class BatchJobRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public http: HttpClient,
+        public http: HttpClient
     ) {
     }
 
@@ -47,8 +47,6 @@ export class BatchJobRS {
 
     private getInfo(url: string): Observable<Array<TSWorkJob> | never> {
         return this.http.get(url)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseWorkJobList(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseWorkJobList(response)));
     }
 }

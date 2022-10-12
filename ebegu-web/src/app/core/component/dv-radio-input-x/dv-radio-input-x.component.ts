@@ -65,7 +65,7 @@ export class DvRadioInputXComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        // tslint:disable-next-line:no-magic-numbers
+        // eslint-disable-next-line no-magic-numbers
         this.uniqueName = `radio_${Math.round(Math.random() * 10000)}`;
     }
 

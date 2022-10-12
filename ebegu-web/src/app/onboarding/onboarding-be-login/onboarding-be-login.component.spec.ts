@@ -44,15 +44,15 @@ describe('OnboardingBeLoginComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true}),
+                UIRouterModule.forRoot({useHash: true})
             ],
             declarations: [OnboardingBeLoginComponent],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
 
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
