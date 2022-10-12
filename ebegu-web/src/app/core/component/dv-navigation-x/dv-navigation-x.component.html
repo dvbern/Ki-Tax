@@ -25,7 +25,10 @@
                        [buttonDisabled]="isNextButtonDisabled()"
                        title="{{getTooltip()}}"
                        [ariaLabel]="getNextButtonName()">
-        <span *ngIf="!doesdvTranslateNextExist()" [textContent]="getNextButtonName()" hide-xs></span>
+        <div *ngIf="doesdvTranslateNextExist">
+            <span [textContent]="getNextButtonName()" *dvIfViewportSize="'screen'"></span>
+            <span class="fa fa-angle-right" style="font-size: 2rem; height:unset; line-height: 4rem;" *dvIfViewportSize="'mobile'"></span>
+        </div>
         <span *ngIf="doesdvTranslateNextExist()" [textContent]="getNextButtonName()"></span>
     </dv-loading-button>
     <dv-loading-button input-id="buttonPrevious"
@@ -35,7 +38,8 @@
                        [buttonClass]="'previous uppercase'"
                        type="submit"
                        [ariaLabel]="getPreviousButtonName()">
-        <span [textContent]="getPreviousButtonName()" hide-xs></span>
+        <span [textContent]="getPreviousButtonName()" *dvIfViewportSize="'screen'"></span>
+        <span class="fa fa-angle-left" style="font-size: 2rem; height:unset; line-height: 4rem;" *dvIfViewportSize="'mobile'"></span>
     </dv-loading-button>
     <dv-loading-button input-id="buttonCancel"
                        class="dv-navigation-item"
