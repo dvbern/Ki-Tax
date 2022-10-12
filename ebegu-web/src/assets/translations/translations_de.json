@@ -3009,5 +3009,6 @@
     "QUELLSTEUERPFLICHTIG_WARNING": "Wir empfehlen Ihnen, den Antrag auf ein ordentliches Steuerverfahren einzureichen. Die Einreiche Frist für das aktuelle Steuerjahr ist am 31.03. des nächsten Jahres. Für weitere Informationen melden Sie sich bitte beim Quellsteueramt Luzern: <a href=\"tel:+41412285733\">041 228 57 33</a>, E-Mail: <a href=\"mailto:dst.qs@lu.ch\">dst.qs@lu.ch</a>",
     "SELBSTDEKLARATION_WARNING": " Liegt die Steuerveranlagung für das angegebene Jahr vor, wird diese mit der Selbstdeklaration verglichen. Bei Abweichungen wird die Gutscheinhöhe für das entsprechende Jahr rückwirkend angepasst.",
     "SOZIALHILFEBEZUEGER_WARNING": "Bitte informieren Sie uns im Fall einer Ablösung von der Sozialhilfe",
+    "VERFUEGUNG_EXPORT_ENABLED": "Verfügung Export aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
