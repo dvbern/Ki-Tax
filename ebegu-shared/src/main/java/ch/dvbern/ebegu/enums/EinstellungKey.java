@@ -304,10 +304,10 @@ public enum EinstellungKey {
 	ABWESENHEIT_AKTIV(MandantIdentifier.getAll()),
 
 	// Aktiviert das Input Feld zur Eingabe einer Begründung einer Mutation (KIBON-2538)
-	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll());
+	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll()),
 
 	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
-	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());;
+	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());
 
 
 	private EinstellungTyp typ;
