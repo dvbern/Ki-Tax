@@ -80,6 +80,7 @@ import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdate
 import {WarningComponent} from './component/warning/warning.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
+import {DvIfViewportSizeDirective} from './directive/dv-if-viewport-size/dv-if-viewport-size.directive';
 import {EnableElementDirective} from './directive/enable-element.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
@@ -178,6 +179,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSozialdienstDialogComponent,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
+        DvIfViewportSizeDirective,
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
@@ -265,7 +267,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvRadioInputXComponent,
         DvCheckboxXComponent,
         WarningComponent,
-        DvNgEnableElementDirective
+        DvNgEnableElementDirective,
+        DvIfViewportSizeDirective
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
