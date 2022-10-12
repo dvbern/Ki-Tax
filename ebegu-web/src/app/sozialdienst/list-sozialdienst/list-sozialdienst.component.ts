@@ -42,7 +42,7 @@ export class ListSozialdienstComponent implements OnInit {
     public antragList$: Observable<DVEntitaetListItem[]>;
 
     public constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
-                       private readonly sozialdienstRS: SozialdienstRS,
+                       private readonly sozialdienstRS: SozialdienstRS
     ) {
     }
 

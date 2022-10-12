@@ -74,7 +74,7 @@ describe('InstitutionListComponent', () => {
 
         insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(of([]));
-        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(of(false));
+        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(Promise.resolve(false));
 
     }));
 

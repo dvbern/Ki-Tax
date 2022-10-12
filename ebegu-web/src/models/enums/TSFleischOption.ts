@@ -25,6 +25,6 @@ export function getTSFleischOptionValues(): Array<TSFleischOption> {
     return [
         TSFleischOption.FLEISCH,
         TSFleischOption.KEIN_SCHWEINEFLEISCH,
-        TSFleischOption.VEGETARISCH,
+        TSFleischOption.VEGETARISCH
     ];
 }
