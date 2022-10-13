@@ -37,6 +37,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -65,6 +66,13 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity implements Comparable<InstitutionStammdatenBetreuungsgutscheine> {
 
 	private static final long serialVersionUID = -5937387773922925929L;
+
+	// Es gibt Institutionen, die durch den Kanton erstellt wurden. Diese sind für den gesamten Kanton gültig und die Gemeinde
+	// ist hier null. Bei Institutionen, die durch die Gemeinde selbst erstellt wurden, wird diese gesetzt
+	@Nullable
+	@ManyToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_bg_gemeinde_id"))
+	private Gemeinde gemeinde;
 
 	@Nullable
 	@Valid
@@ -178,6 +186,15 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 
 	public InstitutionStammdatenBetreuungsgutscheine() {
+	}
+
+	@Nullable
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	@Nullable

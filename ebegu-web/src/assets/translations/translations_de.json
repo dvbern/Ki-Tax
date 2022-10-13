@@ -1895,6 +1895,10 @@
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
     "INFOMA_ZAHLUNGEN": "Infoma Zahlungen (Zahlungssystem Luzern)",
+    "ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT": "Anzahl Monate in Zukunft auszahlen",
+    "INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN": "Institutionen durch Gemeinden einladen",
+    "GERES_ENABLED_FOR_MANDANT": "Geres für Mandant aktiviert",
+    "SCHNITTSTELLE_EVENTS_AKTIVIERT": "Schnittstelle Events aktiviert",
     "SEARCH_FOR_NAME": "Suche nach Name oder Wert",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",
     "CHANGE_FRANZOESISCH": "Passer en français",
@@ -3009,5 +3013,6 @@
     "QUELLSTEUERPFLICHTIG_WARNING": "Wir empfehlen Ihnen, den Antrag auf ein ordentliches Steuerverfahren einzureichen. Die Einreiche Frist für das aktuelle Steuerjahr ist am 31.03. des nächsten Jahres. Für weitere Informationen melden Sie sich bitte beim Quellsteueramt Luzern: <a href=\"tel:+41412285733\">041 228 57 33</a>, E-Mail: <a href=\"mailto:dst.qs@lu.ch\">dst.qs@lu.ch</a>",
     "SELBSTDEKLARATION_WARNING": " Liegt die Steuerveranlagung für das angegebene Jahr vor, wird diese mit der Selbstdeklaration verglichen. Bei Abweichungen wird die Gutscheinhöhe für das entsprechende Jahr rückwirkend angepasst.",
     "SOZIALHILFEBEZUEGER_WARNING": "Bitte informieren Sie uns im Fall einer Ablösung von der Sozialhilfe",
+    "VERFUEGUNG_EXPORT_ENABLED": "Verfügung Export aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

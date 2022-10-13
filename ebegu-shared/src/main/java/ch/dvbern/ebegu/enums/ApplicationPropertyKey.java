@@ -198,5 +198,11 @@ public enum ApplicationPropertyKey {
 	 * Einige Features sollen in der Produktion noch ausgeblendet werden. Auf den Testungebungen können diese Features
 	 * mit dieser Einstellung aktiviert werden. Eine Liste aller möglichen Features sind in TSDemoFeature.ts zu finden.
 	 */
-	ACTIVATED_DEMO_FEATURES;
+	ACTIVATED_DEMO_FEATURES,
+	/**
+	 * Falls aktiv, können Gemeinden durch die Institutionen eingeladen werden. Diese werden direkt mit der Gemeinde
+	 * verknüpft
+	 */
+	INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN;
+
 }

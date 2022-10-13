@@ -1512,6 +1512,7 @@ export class EbeguRestUtil {
 
             if (institutionTS instanceof TSInstitutionListDTO) {
                 institutionTS.betreuungsangebotTyp = institutionFromServer.betreuungsangebotTyp;
+                institutionTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionFromServer.gemeinde);
             }
 
             return institutionTS;
@@ -1721,6 +1722,7 @@ export class EbeguRestUtil {
     ): TSInstitutionStammdatenBetreuungsgutscheine {
         if (institutionStammdatenFromServer) {
             this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenFromServer.gemeinde);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
@@ -4442,6 +4444,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
+        publicAppConfigTS.institutionenDurchGemeindenEinladen = data.institutionenDurchGemeindenEinladen;
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         return publicAppConfigTS;

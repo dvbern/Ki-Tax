@@ -48,6 +48,7 @@ public class JaxPublicAppConfig {
 	private boolean zusatzinformationenInstitution;
 	private String activatedDemoFeatures;
 	private final boolean checkboxAuszahlungInZukunft;
+	private boolean institutionenDurchGemeindenEinladen;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -84,7 +85,8 @@ public class JaxPublicAppConfig {
 			String steuerschnittstelleAktivAb,
 			boolean zusatzinformationenInstitution,
 			String activatedDemoFeatures,
-			boolean checkboxAuszahlungInZukunft
+			boolean checkboxAuszahlungInZukunft,
+			boolean institutionenDurchGemeindenEinladen
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -121,6 +123,7 @@ public class JaxPublicAppConfig {
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
 		this.activatedDemoFeatures = activatedDemoFeatures;
 		this.checkboxAuszahlungInZukunft = checkboxAuszahlungInZukunft;
+		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
 	}
 
 	public String getCurrentNode() {
@@ -389,5 +392,13 @@ public class JaxPublicAppConfig {
 
 	public boolean isCheckboxAuszahlungInZukunft() {
 		return checkboxAuszahlungInZukunft;
+	}
+
+	public boolean isInstitutionenDurchGemeindenEinladen() {
+		return institutionenDurchGemeindenEinladen;
+	}
+
+	public void setInstitutionenDurchGemeindenEinladen(boolean institutionenDurchGemeindenEinladen) {
+		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
 	}
 }

@@ -37,11 +37,11 @@ public class TagesschuleAnmeldungenDataRow {
 	private String vornameKind;
 	@Nullable
 	private LocalDate geburtsdatum;
-	@Nonnull
+	@Nullable
 	private FleischOption fleischOption;
-	@Nonnull
+	@Nullable
 	private String allergienUndUnvertraeglichkeiten;
-	@Nonnull
+	@Nullable
 	private String notfallnummer;
 	@Nullable
 	private String nachnameAntragsteller1;
@@ -98,33 +98,6 @@ public class TagesschuleAnmeldungenDataRow {
 	@Nullable
 	public LocalDate getGeburtsdatum() {
 		return geburtsdatum;
-	}
-
-	@Nonnull
-	public FleischOption getFleischOption() {
-		return fleischOption;
-	}
-
-	public void setFleischOption(@Nonnull final FleischOption fleischOption) {
-		this.fleischOption = fleischOption;
-	}
-
-	@Nonnull
-	public String getAllergienUndUnvertraeglichkeiten() {
-		return allergienUndUnvertraeglichkeiten;
-	}
-
-	public void setAllergienUndUnvertraeglichkeiten(@Nonnull final String allergienUndUnvertraeglichkeiten) {
-		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
-	}
-
-	@Nonnull
-	public String getNotfallnummer() {
-		return notfallnummer;
-	}
-
-	public void setNotfallnummer(@Nonnull final String notfallnummer) {
-		this.notfallnummer = notfallnummer;
 	}
 
 	@Nullable
@@ -282,4 +255,31 @@ public class TagesschuleAnmeldungenDataRow {
 
 	@Nonnull
 	public void setAbweichung(@Nonnull boolean isAbweichung) { this.isAbweichung = isAbweichung; }
+
+	@Nullable
+	public FleischOption getFleischOption() {
+		return fleischOption;
+	}
+
+	public void setFleischOption(@Nullable FleischOption fleischOption) {
+		this.fleischOption = fleischOption;
+	}
+
+	@Nullable
+	public String getAllergienUndUnvertraeglichkeiten() {
+		return allergienUndUnvertraeglichkeiten;
+	}
+
+	public void setAllergienUndUnvertraeglichkeiten(@Nullable String allergienUndUnvertraeglichkeiten) {
+		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
+	}
+
+	@Nullable
+	public String getNotfallnummer() {
+		return notfallnummer;
+	}
+
+	public void setNotfallnummer(@Nullable String notfallnummer) {
+		this.notfallnummer = notfallnummer;
+	}
 }

@@ -28,7 +28,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -66,16 +65,16 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	private String planKlasse;
 
 	@Enumerated(EnumType.STRING)
-	@Nonnull
+	@Nullable
 	@Column
 	private FleischOption fleischOption;
 
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	@Nonnull
+	@Nullable
 	@Column
 	private String allergienUndUnvertraeglichkeiten;
 
-	@Nonnull
+	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_notfallnummer}")
 	private String notfallnummer;
@@ -137,12 +136,12 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		this.planKlasse = planKlasse;
 	}
 
-	@Nonnull
+	@Nullable
 	public String getAllergienUndUnvertraeglichkeiten() {
 		return allergienUndUnvertraeglichkeiten;
 	}
 
-	public void setAllergienUndUnvertraeglichkeiten(@Nonnull final String allergienUndUnvertraeglichkeiten) {
+	public void setAllergienUndUnvertraeglichkeiten(@Nullable final String allergienUndUnvertraeglichkeiten) {
 		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
 	}
 
@@ -216,21 +215,21 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 		}
 	}
 
-	@Nonnull
+	@Nullable
 	public FleischOption getFleischOption() {
 		return fleischOption;
 	}
 
-	public void setFleischOption(@Nonnull final FleischOption fleischOption) {
+	public void setFleischOption(@Nullable final FleischOption fleischOption) {
 		this.fleischOption = fleischOption;
 	}
 
-	@Nonnull
+	@Nullable
 	public String getNotfallnummer() {
 		return notfallnummer;
 	}
 
-	public void setNotfallnummer(@Nonnull final String notfallnummer) {
+	public void setNotfallnummer(@Nullable final String notfallnummer) {
 		this.notfallnummer = notfallnummer;
 	}
 }

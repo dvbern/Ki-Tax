@@ -372,6 +372,9 @@ public class ApplicationPropertyResource {
 		ApplicationProperty checkboxAuszahlungInZukunft =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT, mandant)
 						.orElseThrow(() -> notFound);
+		ApplicationProperty institutionenDurchGemeindenEinladen =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN, mandant)
+						.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -424,7 +427,8 @@ public class ApplicationPropertyResource {
 			steuerschnittstelleAktivAb.getValue(),
 			stringToBool(zusatzinformationenInstitution.getValue()),
 			activatedDemoFeatures.getValue(),
-			stringToBool(checkboxAuszahlungInZukunft.getValue())
+			stringToBool(checkboxAuszahlungInZukunft.getValue()),
+			stringToBool(institutionenDurchGemeindenEinladen.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

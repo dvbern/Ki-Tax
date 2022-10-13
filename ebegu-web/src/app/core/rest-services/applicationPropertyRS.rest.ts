@@ -138,4 +138,10 @@ export class ApplicationPropertyRS {
             return response.checkboxAuszahlungInZukunft;
         });
     }
+
+    public getInstitutionenDurchGemeindenEinladen(): IPromise<boolean> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.institutionenDurchGemeindenEinladen;
+        });
+    }
 }
