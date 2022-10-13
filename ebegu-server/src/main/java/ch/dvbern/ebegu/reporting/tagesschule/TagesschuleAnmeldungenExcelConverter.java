@@ -302,7 +302,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 	}
 
 	public void hideExtraFieldsColumnsIfNecessary(@Nonnull Sheet sheet, Boolean extraFieldAktiviert) {
-		if (extraFieldAktiviert) {
+		if (!extraFieldAktiviert) {
 			sheet.setColumnHidden(3, true); // column Fleisch Option
 			sheet.setColumnHidden(4, true); // column Allergien
 			sheet.setColumnHidden(5, true); // column Notfallnummer
