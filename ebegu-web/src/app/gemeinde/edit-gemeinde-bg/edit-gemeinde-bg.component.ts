@@ -23,7 +23,7 @@ import {
     Input,
     OnInit,
     Output,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {ControlContainer, NgForm, NgModelGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
