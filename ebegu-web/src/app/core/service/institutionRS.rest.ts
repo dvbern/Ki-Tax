@@ -66,11 +66,11 @@ export class InstitutionRS {
         adminMail: string,
         gemeindeId: string
     ): Observable<TSInstitution> {
-        let params: any = {
+        const params: any = {
             date: DateUtil.momentToLocalDate(startDate),
             betreuung: betreuungsangebot,
             adminMail
-        }
+        };
 
         if (EbeguUtil.isNotNullOrUndefined(gemeindeId)) {
             params.gemeindeId = gemeindeId;
