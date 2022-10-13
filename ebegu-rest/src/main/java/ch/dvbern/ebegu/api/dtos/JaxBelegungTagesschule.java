@@ -48,13 +48,13 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 	@NotNull @Nonnull
 	private String planKlasse;
 
-	@NotNull @Nonnull
+	@Nullable
 	private FleischOption fleischOption;
 
-	@NotNull @Nonnull
+	@Nullable
 	private String allergienUndUnvertraeglichkeiten;
 
-	@NotNull @Nonnull
+	@Nullable
 	private String notfallnummer;
 
 	@NotNull @Nonnull
@@ -91,14 +91,6 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 		this.planKlasse = planKlasse;
 	}
 
-	public String getAllergienUndUnvertraeglichkeiten(){
-		return allergienUndUnvertraeglichkeiten;
-	}
-
-	public void setAllergienUndUnvertraeglichkeiten(String allergienUndUnvertraeglichkeiten) {
-		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
-	}
-
 	public AbholungTagesschule getAbholungTagesschule() {
 		return abholungTagesschule;
 	}
@@ -132,21 +124,30 @@ public class JaxBelegungTagesschule extends JaxAbstractDTO {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
-	@Nonnull
+	@Nullable
 	public FleischOption getFleischOption() {
 		return fleischOption;
 	}
 
-	public void setFleischOption(@Nonnull final FleischOption fleischOption) {
+	public void setFleischOption(@Nullable FleischOption fleischOption) {
 		this.fleischOption = fleischOption;
 	}
 
-	@Nonnull
+	@Nullable
+	public String getAllergienUndUnvertraeglichkeiten() {
+		return allergienUndUnvertraeglichkeiten;
+	}
+
+	public void setAllergienUndUnvertraeglichkeiten(@Nullable String allergienUndUnvertraeglichkeiten) {
+		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
+	}
+
+	@Nullable
 	public String getNotfallnummer() {
 		return notfallnummer;
 	}
 
-	public void setNotfallnummer(@Nonnull final String notfallnummer) {
+	public void setNotfallnummer(@Nullable String notfallnummer) {
 		this.notfallnummer = notfallnummer;
 	}
 }
