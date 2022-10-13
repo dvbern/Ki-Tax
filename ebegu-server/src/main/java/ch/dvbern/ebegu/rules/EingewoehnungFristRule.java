@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -134,8 +133,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 				// wenn die erste Betreuung Abschnitt ist schon vorbei, eingewoehnung macht weniger Sinn
 				if (!found
 					&& vorherigerZeitabschnitt.getRelevantBgCalculationInput()
-					.getBetreuungspensumProzent()
-					.compareTo(BigDecimal.ZERO) > 0) {
+					.getAnspruchspensumProzent() > 0) {
 					found = true;
 				}
 				if (vorherigerZeitabschnitt != null) {
