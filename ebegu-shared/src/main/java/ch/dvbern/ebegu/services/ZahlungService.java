@@ -46,6 +46,7 @@ public interface ZahlungService {
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
+		@Nonnull Boolean auszahlungInZukunft,
 		@Nonnull Mandant mandant);
 
 	/**
@@ -59,6 +60,7 @@ public interface ZahlungService {
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
+		@Nonnull Boolean auszahlungInZukunft,
 		@Nonnull LocalDateTime datumGeneriert,
 		@Nonnull Mandant mandant);
 
@@ -125,5 +127,5 @@ public interface ZahlungService {
 	 * Kontrolliert die Zahlungen Stand heute: Es werden die Zahlen aus der letzt gueltigen Verfuegung jedes Falls
 	 * verglichen mit den tatsaechlich erfolgten Zahlungen.
 	 */
-	void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId);
+	void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId, @Nonnull Boolean auszahlungInZukunft);
 }

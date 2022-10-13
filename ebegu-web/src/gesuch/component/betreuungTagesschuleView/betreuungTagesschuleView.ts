@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -35,6 +36,8 @@ import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {getTSFleischOptionValues, TSFleischOption} from '../../../models/enums/TSFleischOption';
 import {TSModulTagesschuleIntervall} from '../../../models/enums/TSModulTagesschuleIntervall';
 import {TSModulTagesschuleTyp} from '../../../models/enums/TSModulTagesschuleTyp';
 import {TSBelegungTagesschuleModul} from '../../../models/TSBelegungTagesschuleModul';
@@ -112,6 +115,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'EbeguRestUtil'
     ];
 
+    public gemeindeTSZusaetzlicheAngabenZurAnmeldungEnabled: boolean;
+    public readonly CONSTANTS: any = CONSTANTS;
     public onSave: () => void;
     public form: IFormController;
     public betreuung: TSBetreuung;
@@ -124,10 +129,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public erlaeuterung: string = null;
     public agbVorhanden: boolean;
     private _showWarningModuleZugewiesen: boolean = false;
+
     public isScolaris: boolean = false;
 
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
-
     public lastModifiedModul?: TSBelegungTagesschuleModul;
 
     public constructor(
@@ -267,6 +272,11 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         }
         this.erlaeuterung = tsEinstellungenTagesschule.erlaeuterung;
         this.isScolaris = (tsEinstellungenTagesschule.modulTagesschuleTyp === TSModulTagesschuleTyp.SCOLARIS);
+        this.einstellungRS.findEinstellung(TSEinstellungKey.GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG,
+            stammdatenTagesschule.gemeinde.id,
+            this.getBetreuungModel().gesuchsperiode.id).subscribe(einstellung => {
+            this.gemeindeTSZusaetzlicheAngabenZurAnmeldungEnabled = einstellung.value === 'true';
+        });
     }
 
     public getWeekDays(): TSDayOfWeek[] {
@@ -374,6 +384,10 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         return getTSAbholungTagesschuleValues();
     }
 
+    public getFleischOptionValues(): Array<TSFleischOption> {
+        return getTSFleischOptionValues();
+    }
+
     public isModuleEditable(modul: TSBelegungTagesschuleModul): boolean {
         return modul.modulTagesschule.angeboten && this.isAnmeldungTSEditable();
     }
@@ -412,6 +426,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public saveAnmeldungSchulamtUebernehmen(): void {
         this.isThereAnyAnmeldung() ? this.showErrorMessageNoModule = false : this.showErrorMessageNoModule = true;
         if (!this.form.$valid) {
+            this.form.$setDirty();
             return undefined;
         }
         this.preSave();

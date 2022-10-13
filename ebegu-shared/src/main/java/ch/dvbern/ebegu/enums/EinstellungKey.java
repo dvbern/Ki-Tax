@@ -44,6 +44,8 @@ public enum EinstellungKey {
 	// Ob die Tageschulen koennen Tagis sein
 	GEMEINDE_TAGESSCHULE_TAGIS_ENABLED(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
+	GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+
 	// Die Gemeinde gewährt einen zusätzlichen Beitrag zum Gutschein
 	GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
@@ -249,7 +251,7 @@ public enum EinstellungKey {
 
 	// Kitaplus Zuschlag aktiviert (Luzern)
 	// Siehe KIBON-2131
-	KITAPLUS_ZUSCHLAG_AKTIVIERT(MandantIdentifier.getAll()),
+	KITAPLUS_ZUSCHLAG_AKTIVIERT(MandantIdentifier.LUZERN),
 
 	// Können BG Konfigurationen in den Gemeinde Einstellungen überschrieben werden (Solothurn)
 	// siehe KIBON-2133
@@ -317,7 +319,10 @@ public enum EinstellungKey {
 	ABWESENHEIT_AKTIV(MandantIdentifier.getAll()),
 
 	// Aktiviert das Input Feld zur Eingabe einer Begründung einer Mutation (KIBON-2538)
-	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll());
+	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll()),
+
+	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
+	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());
 
 
 	private EinstellungTyp typ;

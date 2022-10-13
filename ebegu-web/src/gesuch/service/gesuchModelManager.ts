@@ -86,7 +86,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
-import {FamiliensituationRS} from './familiensituationRS.rest';
+import {FamiliensituationRS} from './familiensituationRS.service';
 import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
 import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
@@ -365,7 +365,7 @@ export class GesuchModelManager {
 
         this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
         this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
-            .then((response: TSFamiliensituationContainer) => {
+            .subscribe((response: TSFamiliensituationContainer) => {
                 this.gesuch.familiensituationContainer = response;
             });
     }

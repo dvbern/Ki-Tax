@@ -57,6 +57,7 @@ import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
+import {DvNgEnableElementDirective} from '../core/directive/dv-ng-enable-element/dv-ng-enable-element.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {DvSearchListComponent} from '../core/dv-search-list/dv-search-list.component';
 import {NewAntragListComponent} from '../core/new-antrag-list/new-antrag-list.component';
@@ -79,6 +80,7 @@ import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdate
 import {WarningComponent} from './component/warning/warning.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
+import {DvIfViewportSizeDirective} from './directive/dv-if-viewport-size/dv-if-viewport-size.directive';
 import {EnableElementDirective} from './directive/enable-element.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
@@ -177,6 +179,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgSozialdienstDialogComponent,
         EbeguDateTimePipe,
         DvDatePickerXComponent,
+        DvIfViewportSizeDirective,
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
@@ -185,7 +188,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent
+        WarningComponent,
+        DvNgEnableElementDirective
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -262,7 +266,9 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
-        WarningComponent
+        WarningComponent,
+        DvNgEnableElementDirective,
+        DvIfViewportSizeDirective
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -117,6 +117,12 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.vornameKind, dataRow.getVornameKind());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.geburtsdatumKind, dataRow.getGeburtsdatum());
 
+		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.fleischOption, ServerMessageUtil.translateEnumValue(
+			dataRow.getFleischOption(), locale, gesuchsperiode.getMandant())
+		);
+		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.allergienUndUnvertraeglichkeiten, dataRow.getAllergienUndUnvertraeglichkeiten());
+		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.notfallnummer, dataRow.getNotfallnummer());
+
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.vornameAntragsteller1, dataRow.getVornameAntragsteller1());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.nachnameAntragsteller1, dataRow.getNachnameAntragsteller1());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.emailAntragsteller1, dataRow.getEmailAntragsteller1());
@@ -175,6 +181,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.generiertAm, LocalDate.now());
 
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.kindTitle, ServerMessageUtil.getMessage("Reports_kindTitle",	locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.essensOptionTitle, ServerMessageUtil.getMessage("Reports_essensOptionTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.antragsteller1Title, ServerMessageUtil.getMessage("Reports_gesuchsteller1Title",	locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.antragsteller2Title, ServerMessageUtil.getMessage("Reports_gesuchsteller2Title",	locale, mandant));
 
@@ -208,6 +215,10 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			"Reports_legendeZweiwoechentlich", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.legendeOhneVerpflegung, ServerMessageUtil.getMessage(
 			"Reports_legendeOhneVerpflegung", locale, mandant));
+
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.fleischOptionTitle, ServerMessageUtil.getMessage("Reports_fleischOptionTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.allergienUndUnvertraeglichkeitenTitle, ServerMessageUtil.getMessage("Reports_allergienUndUnvertraeglichkeitenTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.notfallnummerTitle, ServerMessageUtil.getMessage("Reports_notfallnummerTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlBestaetigteAnmeldungen, ServerMessageUtil.getMessage(
 			"Reports_anzahlBestaetigteAnmeldungen", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.anzahlAbgelehnteAnmeldungen, ServerMessageUtil.getMessage(
@@ -288,5 +299,13 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 			}
 		}
 		return null;
+	}
+
+	public void hideExtraFieldsColumnsIfNecessary(@Nonnull Sheet sheet, Boolean extraFieldAktiviert) {
+		if (!extraFieldAktiviert) {
+			sheet.setColumnHidden(3, true); // column Fleisch Option
+			sheet.setColumnHidden(4, true); // column Allergien
+			sheet.setColumnHidden(5, true); // column Notfallnummer
+		}
 	}
 }

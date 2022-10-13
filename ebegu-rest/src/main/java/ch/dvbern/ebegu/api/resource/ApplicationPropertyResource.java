@@ -369,6 +369,12 @@ public class ApplicationPropertyResource {
 		ApplicationProperty activatedDemoFeatures =
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty checkboxAuszahlungInZukunft =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.CHECKBOX_AUSZAHLEN_IN_ZUKUNFT, mandant)
+						.orElseThrow(() -> notFound);
+		ApplicationProperty institutionenDurchGemeindenEinladen =
+				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN, mandant)
+						.orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -420,7 +426,9 @@ public class ApplicationPropertyResource {
 			isEbeguKibonAnfrageTestGuiEnabled,
 			steuerschnittstelleAktivAb.getValue(),
 			stringToBool(zusatzinformationenInstitution.getValue()),
-			activatedDemoFeatures.getValue()
+			activatedDemoFeatures.getValue(),
+			stringToBool(checkboxAuszahlungInZukunft.getValue()),
+			stringToBool(institutionenDurchGemeindenEinladen.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}
