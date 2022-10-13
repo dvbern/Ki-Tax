@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -51,6 +52,7 @@ public class Betreuungsmitteilung extends Mitteilung {
 
 	private boolean applied;
 
+	@Nullable
 	@Transient
 	private String errorMessage;
 
@@ -72,11 +74,12 @@ public class Betreuungsmitteilung extends Mitteilung {
 		this.applied = applied;
 	}
 
+	@Nullable
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(@Nullable String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
