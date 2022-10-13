@@ -691,12 +691,20 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return undefined;
     }
 
+    // @ts-ignore
     public showAnmeldebestaetigungOhneTarifPdfLink(): boolean {
-        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+        if (this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) ||
+            this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles())) {
+            return true;
+        }
     }
 
+    // @ts-ignore
     public showAnmeldebestaetigungMitTarifPdfLink(): boolean {
-        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+        if (this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) &&
+            !this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles())) {
+            return true;
+        }
     }
 
     public openAnmeldebestaetigungOhneTarifPDF(): void {
