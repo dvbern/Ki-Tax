@@ -196,4 +196,15 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 
 		return BigDecimal.ZERO;
 	}
+
+	protected BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(
+		@Nonnull BigDecimal gutschein
+	) {
+		// Zusaetzlicher Gutschein Gemeinde
+		gutschein = EXACT.addNullSafe(gutschein, MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag(), this.verfuegteZeiteinheit));
+		// Zusaetzlicher Baby-Gutschein
+		gutschein = EXACT.addNullSafe(gutschein, MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherBabyGutscheinBetrag(), verfuegteZeiteinheit));
+
+		return gutschein;
+	}
 }

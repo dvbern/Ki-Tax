@@ -173,17 +173,6 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return gutschein;
 	}
 
-	protected BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(
-		 @Nonnull BigDecimal gutschein
-	) {
-		// Zusaetzlicher Gutschein Gemeinde
-		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag(), this.verfuegteZeiteinheit)));
-		// Zusaetzlicher Baby-Gutschein
-		gutschein = EXACT.addNullSafe(gutschein, input.getBetreuungsangebotTyp().isTagesfamilien() ? rechnerParameter.getZusaetzlicherBabyGutscheinBetrag() : (MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherBabyGutscheinBetrag(), verfuegteZeiteinheit)));
-
-		return gutschein;
-	}
-
 	protected BigDecimal gemeindeRulesUnabhengigVonVerfuegteZeiteinheit ( @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp)
 	{
 		// Minimal Pauschalbetrag wenn nicht erreicht
@@ -316,6 +305,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return this.selbstBehaltElternProzent;
 	}
 
+	protected abstract BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(@Nonnull BigDecimal gutschein);
 	protected abstract BigDecimal calculateVollkostenProZeitabschnitt(BigDecimal vollkostenGekuerzt);
 	protected abstract BigDecimal calculateZuschlag();
 	protected abstract BigDecimal calculateVollkosten();

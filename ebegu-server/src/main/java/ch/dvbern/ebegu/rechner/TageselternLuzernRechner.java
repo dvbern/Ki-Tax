@@ -131,4 +131,16 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 	protected BigDecimal getMinBetreuungsgutschein() {
 		return  isBaby ? MIN_BETREUUNGSGUTSCHEIN_BABY : MIN_BETREUUNGSGUTSCHEIN_KIND;
 	}
+
+	@Override
+	protected BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(
+		@Nonnull BigDecimal gutschein
+	) {
+		// Zusaetzlicher Gutschein Gemeinde
+		gutschein = EXACT.addNullSafe(gutschein, rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
+		// Zusaetzlicher Baby-Gutschein
+		gutschein = EXACT.addNullSafe(gutschein, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
+
+		return gutschein;
+	}
 }
