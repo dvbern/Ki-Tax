@@ -14,5 +14,5 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-ALTER TABLE lastenausgleich_grundlagen CHANGE COLUMN selbstbehalt_pro100prozent_platz DECIMAL(19, 2) NULL;
-ALTER TABLE lastenausgleich_grundlagen CHANGE COLUMN kosten_pro100prozent_platz DECIMAL(19, 2) NULL;
+ALTER TABLE lastenausgleich_grundlagen CHANGE COLUMN selbstbehalt_pro100prozent_platz selbstbehalt_pro100prozent_platz DECIMAL(19, 2) NULL;
+ALTER TABLE lastenausgleich_grundlagen CHANGE COLUMN kosten_pro100prozent_platz kosten_pro100prozent_platz DECIMAL(19, 2) NULL;
