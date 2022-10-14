@@ -27,23 +27,23 @@ const states: NgHybridStateDeclaration[] = [
         abstract: true,
         component: LastenausgleichViewXComponent,
         data: {
-            roles: TSRoleUtil.getAllRolesForLastenausgleich(),
-        },
+            roles: TSRoleUtil.getAllRolesForLastenausgleich()
+        }
     },
     {
         name: 'lastenausgleich.view',
         url: '/lastenausgleich',
-        component: LastenausgleichViewXComponent,
-    },
+        component: LastenausgleichViewXComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class LastenausgleichRoutingModule {
 }

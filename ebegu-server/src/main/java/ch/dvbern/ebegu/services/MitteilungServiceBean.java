@@ -106,9 +106,8 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -751,15 +750,23 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	@Override
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
+		try {
+			return doApplyBetreuungsmitteilung(mitteilung);
+		} catch (EbeguException e) {
+			throw new EbeguRuntimeException("applyBetreuungsmitteilung", "error while applying betreuungsmitteilungen", e);
+		}
+	}
+
+	@Nonnull
+	private Gesuch doApplyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) throws EbeguException {
 		Objects.requireNonNull(mitteilung);
 		Objects.requireNonNull(mitteilung.getBetreuung());
 
 		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
-			throw new EbeguExistingAntragException(
+			throw new EbeguException(
 				"applyBetreuungsmitteilung",
 				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
 				null,
@@ -770,12 +777,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
-			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
+			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch, false);
 		} catch (EJBTransactionRolledbackException exception) {
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
-				throw new EbeguExistingAntragException(
+				throw new EbeguException(
 					"applyBetreuungsmitteilung",
 					ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
 					exception,
@@ -789,15 +796,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Sobald irgendein Antrag dieser Periode geperrt ist, darf keine Mutationsmeldungs-Mutation erstellt
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
-				throw new EbeguRuntimeException(
-					KibonLogLevel.INFO,
+				throw new EbeguException(
 					"applyBetreuungsmitteilung",
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
 					neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
-				throw new EbeguRuntimeException(
-					KibonLogLevel.INFO,
+				throw new EbeguException(
 					"applyBetreuungsmitteilung",
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 					neustesGesuch.getId());
@@ -819,9 +824,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
-
-			throw new EbeguRuntimeException(
-				KibonLogLevel.INFO,
+			throw new EbeguException(
 				"applyBetreuungsmitteilung",
 				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
 				neustesGesuch.getId());
@@ -1599,6 +1602,25 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return false;
 		}
 		return true;
+	}
+
+	@Nullable
+	@Override
+	public Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(
+		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+		try {
+			doApplyBetreuungsmitteilung(betreuungsmitteilung);
+		} catch (EbeguException e) {
+			betreuungsmitteilung.setApplied(false);
+			final Locale locale = LocaleThreadLocal.get();
+			String translatedError = ServerMessageUtil.translateEnumValue(
+				e.getErrorCodeEnum(),
+				locale,
+				principalBean.getMandant()
+			);
+			betreuungsmitteilung.setErrorMessage(translatedError);
+		}
+		return betreuungsmitteilung;
 	}
 }
 

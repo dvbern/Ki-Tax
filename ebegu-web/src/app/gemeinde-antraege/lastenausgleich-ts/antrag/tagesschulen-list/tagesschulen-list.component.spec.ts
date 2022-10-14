@@ -33,7 +33,7 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
 
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, [
     'getErrors',
-    'addMesageAsError',
+    'addMesageAsError'
 ]);
 const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, [
     'getAllVisibleTagesschulenAngabenForTSLastenausgleich'
@@ -58,11 +58,11 @@ describe('TagesschulenListComponent', () => {
                 WindowRef,
                 {
                     provide: ErrorService,
-                    useValue: errorServiceSpy,
+                    useValue: errorServiceSpy
                 },
                 {
                     provide: StateService,
-                    useValue: stateServiceSpy,
+                    useValue: stateServiceSpy
                 },
                 {
                     provide: GemeindeAntragService,
@@ -73,7 +73,7 @@ describe('TagesschulenListComponent', () => {
                     useValue: authServiceSpy
                 }
             ],
-            declarations: [TagesschulenListComponent],
+            declarations: [TagesschulenListComponent]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

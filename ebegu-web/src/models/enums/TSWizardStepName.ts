@@ -58,6 +58,6 @@ export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
         TSWizardStepName.DOKUMENTE,
         TSWizardStepName.FREIGABE,
-        TSWizardStepName.VERFUEGEN,
+        TSWizardStepName.VERFUEGEN
     ];
 }

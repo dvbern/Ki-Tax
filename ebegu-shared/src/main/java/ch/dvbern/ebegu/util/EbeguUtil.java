@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -59,6 +60,9 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.BooleanUtils;
@@ -620,5 +624,12 @@ public final class EbeguUtil {
 			return benutzerId;
 		}
 		return principalBean.getBenutzer().getUsername() + ":" + principalBean.getBenutzer().getMandant().getName();
+	}
+
+	@Nonnull
+	public static OeffnungszeitenTagesschuleDTO[] convertOeffnungszeiten(@Nonnull String oeffnungszeiten) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
 	}
 }

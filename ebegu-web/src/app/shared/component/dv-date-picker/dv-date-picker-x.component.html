@@ -21,7 +21,7 @@
            [name]="(inputId? inputId : 'date-' + randId) + '-name'" [id]="(inputId? inputId : 'date-') + randId"
            #dateRef='ngModel'
            [(ngModel)]="date"
-           (ngModelChange)="emit()"
+           (dateChange)="emit()"
            [min]="minDate"
            [max]="maxDate"
            [matDatepicker]="datePicker"

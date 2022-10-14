@@ -68,12 +68,17 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 			eingeschult,
 			besonderebeduerfnisse,
 			massgebendesEinkommen,
-			input.isBezahltVollkosten());
+			input.isBezahltKompletteVollkosten());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 
 		BigDecimal verfuegteZeiteinheiten =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, bgPensum);
+
+		// Falls die Eltern ein Teil des Monats die Vollkosten komplett tragen, wird ausgerechnet an wie vielen Tagen
+		// die Zeiteinheiten effektiv ausbezahlt werden
+		BigDecimal effektivAusbezahlteZeiteinheiten =
+			EXACT.multiply(verfuegteZeiteinheiten,input.getMonatAnteilVollkostenNichtBezahlt());
 
 		BigDecimal anspruchPensum = EXACT.from(input.getAnspruchspensumProzent());
 		BigDecimal anspruchsberechtigteZeiteinheiten =
@@ -82,9 +87,9 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal betreuungspensumZeiteinheit =
 			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, anteilMonat, betreuungspensum);
 
-		BigDecimal minBetrag = EXACT.multiply(verfuegteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
+		BigDecimal minBetrag = EXACT.multiply(effektivAusbezahlteZeiteinheiten, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
-			EXACT.multiplyNullSafe(verfuegteZeiteinheiten, verguenstigungProZeiteinheit);
+			EXACT.multiplyNullSafe(effektivAusbezahlteZeiteinheiten, verguenstigungProZeiteinheit);
 
 		BigDecimal vollkostenMinusMinimaltarif = EXACT.subtract(vollkosten, minBetrag);
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
@@ -117,7 +122,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungspensumZeiteinheit);
 		result.setBabyTarif(unter12Monate);
-		handleAnteileMahlzeitenverguenstigung(result, anteilMonat);
+		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		return result;
 	}
@@ -209,5 +214,5 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	protected abstract PensumUnits getZeiteinheit();
 
 	@Nonnull
-	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat);
+	protected abstract void handleAnteileMahlzeitenverguenstigung(@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilMonatEffektivAusbezahlt);
 }

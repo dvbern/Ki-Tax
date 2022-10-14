@@ -24,9 +24,9 @@ export class DatabaseMigrationRS {
     public constructor(
         public http: IHttpService,
         REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
+        public ebeguRestUtil: EbeguRestUtil
     ) {
-        this.serviceURL = REST_API + 'dbmigration';
+        this.serviceURL = `${REST_API  }dbmigration`;
     }
 
     public getServiceName(): string {

@@ -20,6 +20,7 @@ export class TSBetreuungsmitteilung extends TSMitteilung {
 
     private _betreuungspensen: Array<TSBetreuungsmitteilungPensum>;
     private _applied: boolean;
+    private _errorMessage: string;
 
     public constructor() {
         super();
@@ -39,5 +40,13 @@ export class TSBetreuungsmitteilung extends TSMitteilung {
 
     public set applied(value: boolean) {
         this._applied = value;
+    }
+
+    public get errorMessage(): string {
+        return this._errorMessage;
+    }
+
+    public set errorMessage(value: string) {
+        this._errorMessage = value;
     }
 }

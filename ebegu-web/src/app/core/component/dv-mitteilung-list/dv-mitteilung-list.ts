@@ -33,6 +33,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../logging/LogFactory';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import {MitteilungRS} from '../../service/mitteilungRS.rest';
@@ -44,6 +45,7 @@ import ITimeoutService = angular.ITimeoutService;
 import IWindowService = angular.IWindowService;
 
 const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
+const LOG = LogFactory.createLog('DVMitteilungListConfig');
 
 export class DVMitteilungListConfig implements IComponentOptions {
     public transclude = false;
@@ -51,7 +53,7 @@ export class DVMitteilungListConfig implements IComponentOptions {
     public bindings = {
         dossier: '<',
         betreuung: '<',
-        form: '<',
+        form: '<'
     };
 
     public template = require('./dv-mitteilung-list.html');
@@ -163,7 +165,7 @@ export class DVMitteilungListController implements IOnInit {
 
             const isGesuchsteller = this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
             const isJugendamtOrSchulamtAndFallHasBesitzer = this.authServiceRS.isOneOfRoles(
-                TSRoleUtil.getAdministratorJugendamtSchulamtRoles(),
+                TSRoleUtil.getAdministratorJugendamtSchulamtRoles()
             );
             const isInstitutionsUser = this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles());
             const isSozialdienst = this.authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
@@ -200,19 +202,19 @@ export class DVMitteilungListController implements IOnInit {
                 key: null,
                 value: this.dossier.fall.sozialdienstFall ?
                     this.dossier.fall.sozialdienstFall.sozialdienst.name :
-                    this.ebeguUtil.translateString('GESUCHSTELLER'),
+                    this.ebeguUtil.translateString('GESUCHSTELLER')
             });
         }
-        this.institutionRS.findAllInstitutionen(this.dossier.id).then(
+        this.institutionRS.findAllInstitutionen(this.dossier.id).subscribe(
             institutionen => {
                 institutionen.forEach(
                     institution =>
                         this.empfaengerValues.push({
                             key: institution,
-                            value: institution.name,
-                        }),
+                            value: institution.name
+                        })
                 );
-            },
+            }, error => LOG.error(error)
         );
     }
 
@@ -334,7 +336,7 @@ export class DVMitteilungListController implements IOnInit {
                     title: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TITLE',
                     deleteText: 'ERLDEDIGT_NICHT_ALS_EMPFAENGER_TEXT',
                     parentController: undefined,
-                    elementID: undefined,
+                    elementID: undefined
                 }).then(() => {
                     mitteilung.mitteilungStatus = TSMitteilungStatus.ERLEDIGT;
                     this.mitteilungRS.setMitteilungErledigt(mitteilung.id);
@@ -378,7 +380,7 @@ export class DVMitteilungListController implements IOnInit {
         this.$state.go('gesuch.betreuung', {
             betreuungNumber: mitteilung.betreuung.betreuungNummer,
             kindNumber: mitteilung.betreuung.kindNummer,
-            gesuchId: mitteilung.betreuung.gesuchId,
+            gesuchId: mitteilung.betreuung.gesuchId
         });
     }
 
@@ -414,7 +416,7 @@ export class DVMitteilungListController implements IOnInit {
             title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
             deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'Intro',
+            elementID: 'Intro'
         }).then(() => {   // User confirmed message
             const betreuungsmitteilung = mitteilung as TSBetreuungsmitteilung;
             // JaxID kommt als response

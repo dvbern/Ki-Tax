@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
@@ -225,7 +224,7 @@ public class RueckforderungPublicVerfuegungPdfGenerator extends MandantPdfGenera
 
 	private void createSignatur(Document document) {
 
-		if (sprache.equals(Locale.GERMAN)) {
+		if (locale.equals(Locale.GERMAN)) {
 			Paragraph empty = PdfUtil.createParagraph("", 2);
 			Paragraph begruessungEnde = PdfUtil.createParagraph(translate(BEGRUESSUNG_ENDE, mandant));
 			Paragraph begruessungAmt = PdfUtil.createParagraph(translate(BEGRUESSUNG_AMT, mandant), 4);

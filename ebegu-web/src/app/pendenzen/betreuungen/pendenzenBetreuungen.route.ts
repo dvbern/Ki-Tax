@@ -34,9 +34,9 @@ const ng1States: Ng1StateDeclaration[] = [
                 TSRole.ADMIN_TS, TSRole.SACHBEARBEITER_TS,
                 TSRole.ADMIN_GEMEINDE, TSRole.SACHBEARBEITER_GEMEINDE,
                 TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION,
-                TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            ],
-        },
+                TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT
+            ]
+        }
     },
     {
         name: 'pendenzenBetreuungen.list-view',
@@ -48,5 +48,5 @@ const ng1States: Ng1StateDeclaration[] = [
                 squash: true
             }
         }
-    },
+    }
 ];

@@ -32,7 +32,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
     templateUrl: './infoma-fields.component.html',
     styleUrls: ['./infoma-fields.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class InfomaFieldsComponent implements OnInit {
 

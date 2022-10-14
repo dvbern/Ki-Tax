@@ -43,7 +43,7 @@ export class MitteilungenViewController implements IController {
         private readonly $state: StateService,
         private readonly $stateParams: IMitteilungenStateParams,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly $timeout: ITimeoutService,
+        private readonly $timeout: ITimeoutService
     ) {
     }
 

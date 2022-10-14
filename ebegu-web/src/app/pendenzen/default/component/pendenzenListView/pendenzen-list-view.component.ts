@@ -36,7 +36,7 @@ const LOG = LogFactory.createLog('PendenzenListViewComponent');
 @Component({
     selector: 'pendenzen-list-view',
     templateUrl: './pendenzen-list-view.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PendenzenListViewComponent {
 
@@ -44,21 +44,21 @@ export class PendenzenListViewComponent {
 
     public data$: BehaviorSubject<DVAntragListItem[]> = new BehaviorSubject<DVAntragListItem[]>([]);
     public pagination: {
-        number: number,
-        totalItemCount: number,
-        start: number
+        number: number;
+        totalItemCount: number;
+        start: number;
     } = {
         number: 20,
         totalItemCount: 0,
-        start: 0,
+        start: 0
     };
     private readonly search: { predicateObject: DVAntragListFilter } = {
-        predicateObject: {},
+        predicateObject: {}
     };
 
     private sort: {
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     } = {};
 
     public initialFilter: DVAntragListFilter = {};
@@ -70,7 +70,7 @@ export class PendenzenListViewComponent {
         private readonly $state: StateService,
         private readonly searchRS: SearchRS,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
     }
 
@@ -95,17 +95,16 @@ export class PendenzenListViewComponent {
     }
 
     private countData(): void {
-        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).then(
-            response => this.pagination.totalItemCount = response ? response : 0,
+        this.searchRS.countPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort}).subscribe(
+            response => this.pagination.totalItemCount = response ? response : 0, error => LOG.error(error)
         );
     }
 
     private loadData(): void {
         this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
-            .then(response => {
+            .subscribe(response => {
                 // we lose the "this" if we don't map here
-                this.data$.next(response.antragDTOs.map(antragDto => {
-                    return {
+                this.data$.next(response.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,
@@ -125,17 +124,17 @@ export class PendenzenListViewComponent {
                         verantwortlicheTS: antragDto.verantwortlicherTS,
                         verantwortlicheBG: antragDto.verantwortlicherBG,
                         hasBesitzer: () => antragDto.hasBesitzer(),
-                        isSozialdienst: antragDto.isSozialdienst,
-                    };
-                }));
-            });
+                        isSozialdienst: antragDto.isSozialdienst
+                    })));
+            }, error => LOG.error(error));
     }
 
     public onFilterChange(listFilter: DVAntragListFilter): void {
         this.search.predicateObject = {
-            ...listFilter,
+            ...listFilter
         };
         this.loadData();
+        this.countData();
     }
 
     public editpendenzJA(pendenz: TSAntragDTO, event: any): void {
@@ -149,7 +148,7 @@ export class PendenzenListViewComponent {
         this.gesuchModelManager.clearGesuch();
         if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
             const navObj: any = {
-                gesuchId: pendenz.antragId,
+                gesuchId: pendenz.antragId
             };
             this.navigate('gesuch.familiensituation', navObj, isCtrlKeyPressed);
         } else if (pendenz.status === TSAntragStatus.IN_BEARBEITUNG_SOZIALDIENST) {
@@ -157,13 +156,13 @@ export class PendenzenListViewComponent {
                 gesuchId: pendenz.antragId,
                 dossierId: pendenz.dossierId,
                 fallId: pendenz.fallId,
-                gemeindeId: pendenz.gemeindeId,
+                gemeindeId: pendenz.gemeindeId
             };
             this.navigate('gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
         } else {
             const navObj: any = {
                 gesuchId: pendenz.antragId,
-                dossierId: pendenz.dossierId,
+                dossierId: pendenz.dossierId
             };
             this.navigate('gesuch.fallcreation', navObj, isCtrlKeyPressed);
         }

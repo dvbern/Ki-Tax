@@ -35,6 +35,7 @@ public final class Constants {
 
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
+	public static final int DB_TEXTAREA_XL_LENGTH = 8000;
 	public static final int DB_RUECKFORDERUNGSMITTEILUNG_LENGTH = 10000;
 	public static final int DB_DEFAULT_SHORT_LENGTH = 100;
 	public static final int ONE_MB = 1048576;

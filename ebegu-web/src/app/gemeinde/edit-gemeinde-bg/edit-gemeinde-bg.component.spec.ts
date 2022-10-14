@@ -45,7 +45,7 @@ describe('EditGemeindeComponentBG', () => {
         getPrincipalRole: TSRole.SUPER_ADMIN,
         getPrincipal: user,
         isRole: false,
-        isOneOfRoles: false,
+        isOneOfRoles: false
     });
     authServiceSpy.principal$ = of(user) as any;
 
@@ -59,7 +59,7 @@ describe('EditGemeindeComponentBG', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule,
+                GemeindeModule
             ],
             schemas: [],
             providers: [
@@ -69,8 +69,8 @@ describe('EditGemeindeComponentBG', () => {
                 {provide: EinstellungRS, useValue: einstellungRSSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
     }));

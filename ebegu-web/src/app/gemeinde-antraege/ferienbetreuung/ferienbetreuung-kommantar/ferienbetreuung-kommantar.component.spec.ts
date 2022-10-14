@@ -39,7 +39,7 @@ const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
     ['getPauschalbetraegeFerienbetreuung']);
 
 const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
-    ['getAllBenutzerMandant']);
+    ['getAllActiveBenutzerMandant']);
 
 describe('FerienbetreuungKommantarComponent', () => {
     let component: FerienbetreuungKommantarComponent;

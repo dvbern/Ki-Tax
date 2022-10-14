@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -62,6 +63,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -71,6 +73,7 @@ import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleAnmeldungenDataRow;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleAnmeldungenExcelConverter;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungDataRow;
 import ch.dvbern.ebegu.reporting.tagesschule.TagesschuleRechnungsstellungExcelConverter;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -111,6 +114,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -161,6 +167,13 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 			tagesschuleAnmeldungenExcelConverter.applyAutoSize(sheet);
 
+			if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+				Einstellung einstellungExtraTagesschuleFelder =
+					einstellungService.findEinstellung(EinstellungKey.GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG,
+						institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde(), gesuchsperiode);
+
+				tagesschuleAnmeldungenExcelConverter.hideExtraFieldsColumnsIfNecessary(sheet, einstellungExtraTagesschuleFelder.getValueAsBoolean());
+			}
 			byte[] bytes = createWorkbook(workbook);
 
 			return fileSaverService.save(
@@ -223,12 +236,12 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		String stammdatenID) {
 
 		return kindContainer.getAnmeldungenTagesschule()
-					.stream()
-					.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
-							.getId()
-							.equals(stammdatenID) &&
-							anmeldungTagesschule.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT)
-				.map(anmeldungTagesschule -> anmeldungToTagesschuleDataRow(anmeldungTagesschule, kindContainer))
+			.stream()
+			.filter(anmeldungTagesschule -> anmeldungTagesschule.getInstitutionStammdaten()
+				.getId()
+				.equals(stammdatenID) &&
+				anmeldungTagesschule.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT)
+			.map(anmeldungTagesschule -> anmeldungToTagesschuleDataRow(anmeldungTagesschule, kindContainer))
 			.collect(Collectors.toList());
 	}
 
@@ -272,6 +285,9 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			tdr.setAbweichung(anmeldungTagesschule.getBelegungTagesschule().isAbweichungZweitesSemester());
 			tdr.setEintrittsdatum(anmeldungTagesschule.getBelegungTagesschule().getEintrittsdatum());
 			tdr.setBemerkung(anmeldungTagesschule.getBelegungTagesschule().getBemerkung());
+			tdr.setFleischOption(belegung.getFleischOption());
+			tdr.setAllergienUndUnvertraeglichkeiten(belegung.getAllergienUndUnvertraeglichkeiten());
+			tdr.setNotfallnummer(belegung.getNotfallnummer());
 		}
 
 		return tdr;
@@ -312,7 +328,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(@Nonnull Locale locale
+	public UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(
+		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException {
 		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG;
 		try (
@@ -327,7 +344,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 			ExcelMergerDTO excelMergerDTO =
 				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
-						requireNonNull(principalBean.getMandant()));
+					requireNonNull(principalBean.getMandant()));
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 			tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);
@@ -394,7 +411,12 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		final Predicate predicateGueltig =
 			cb.equal(joinAnmeldungTagesschule.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
 
-		query.where(predicateBerechtigt, predicateAnmeldungStatus, predicateAktuelleGesuchsperiode, predicateNurVergangene, predicateGueltig);
+		query.where(
+			predicateBerechtigt,
+			predicateAnmeldungStatus,
+			predicateAktuelleGesuchsperiode,
+			predicateNurVergangene,
+			predicateGueltig);
 
 		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(datumVonParam, gesuchsperiode.getGueltigkeit().getGueltigAb());

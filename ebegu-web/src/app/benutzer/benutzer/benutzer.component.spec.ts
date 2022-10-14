@@ -18,6 +18,7 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
+import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -39,7 +40,7 @@ describe('BenutzerComponent', () => {
         const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
             [
                 'getBerechtigungHistoriesForBenutzer', 'saveBenutzerBerechtigungen', 'findBenutzer',
-                'inactivateBenutzer', 'reactivateBenutzer',
+                'inactivateBenutzer', 'reactivateBenutzer'
             ]);
 
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
@@ -54,27 +55,27 @@ describe('BenutzerComponent', () => {
             providers: [
                 {
                     provide: InstitutionRS,
-                    useValue: insitutionSpy,
+                    useValue: insitutionSpy
                 },
                 {
                     provide: TraegerschaftRS,
-                    useValue: traegerschaftSpy,
+                    useValue: traegerschaftSpy
                 },
                 {
                     provide: BenutzerRSX,
-                    useValue: benutzerSpy,
+                    useValue: benutzerSpy
                 },
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-            ],
+                {provide: ErrorService, useValue: errorServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        insitutionSpy.getAllInstitutionen.and.returnValue(Promise.resolve([]));
+        insitutionSpy.getAllInstitutionen.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({benutzerId: undefined});
     }));

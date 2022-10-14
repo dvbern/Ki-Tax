@@ -35,7 +35,7 @@ export class DVValueinput implements IDirective {
         float: '<',
         fixedDecimals: '@',
         dvOnBlur: '&?',
-        inputName: '@?',
+        inputName: '@?'
     };
     public template = require('./dv-valueinput.html');
 

@@ -15,8 +15,8 @@
 
 interface WebpackModule {
     hot: {
-        data?: any,
-        idle: any,
+        data?: any;
+        idle: any;
         accept(dependencies?: string | string[], callback?: (updatedDependencies?: any) => void): void;
         decline(dependencies?: string | string[]): void;
         dispose(callback?: (data?: any) => void): void;

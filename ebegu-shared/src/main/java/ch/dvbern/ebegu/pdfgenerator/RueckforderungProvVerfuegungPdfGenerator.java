@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
@@ -177,7 +176,7 @@ public class RueckforderungProvVerfuegungPdfGenerator extends MandantPdfGenerato
 
 	private void createEndBegruessung(Document document, PdfContentByte directContent) {
 		final Font defaultFont = getPageConfiguration().getFonts().getFont();
-		if (sprache.equals(Locale.GERMAN)) {
+		if (locale.equals(Locale.GERMAN)) {
 			createContentWhereIWant(directContent, translate(BEGRUESSUNG_ENDE, mandant), 520, 122,
 				defaultFont,10f);
 		} else {

@@ -48,7 +48,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponent');
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./edit-gemeinde.component.less'],
+    styleUrls: ['./edit-gemeinde.component.less']
 })
 export class EditGemeindeComponent implements OnInit {
     @ViewChildren(NgForm) public forms: QueryList<NgForm>;
@@ -89,7 +89,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly gemeindeWarningService: GemeindeWarningService,
+        private readonly gemeindeWarningService: GemeindeWarningService
     ) {
     }
 
@@ -170,10 +170,8 @@ export class EditGemeindeComponent implements OnInit {
 
     private loadGemeindenList(): void {
         this.gemeindeList$ = from(
-            this.gemeindeRS.getAktiveGueltigeGemeinden().then(response => {
-                return response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
-                    .sort((a, b) => a.name.localeCompare(b.name));
-            }));
+            this.gemeindeRS.getAktiveGueltigeGemeinden().then(response => response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
+                    .sort((a, b) => a.name.localeCompare(b.name))));
 
     }
 
@@ -412,7 +410,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showSaveWarningDialog(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING'),
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig)
@@ -428,7 +426,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showDangerousSaveDialog(): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING'),
+            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING')
         };
         return this.dialog
             .open(DvNgConfirmDialogComponent, dialogConfig)

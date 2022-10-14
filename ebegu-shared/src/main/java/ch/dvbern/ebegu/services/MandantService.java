@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.Cookie;
 
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
@@ -52,5 +53,5 @@ public interface MandantService {
 	@Nonnull
 	Collection<Mandant> getAll();
 
-	void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, long nextNumber);
+	void updateNextInfomaBelegnummer(@Nonnull Mandant mandant, @Nonnull ZahlungslaufTyp zahlungslaufTyp, long nextNumber);
 }

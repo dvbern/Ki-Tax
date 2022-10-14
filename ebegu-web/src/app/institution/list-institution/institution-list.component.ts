@@ -19,9 +19,9 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
-import {combineLatest, from, Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {AbstractAdminViewController} from '../../../admin/abstractAdminView';
+import {AbstractAdminViewX} from '../../../admin/abstractAdminViewX';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -33,15 +33,16 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
 
 @Component({
     selector: 'dv-institution-list',
     templateUrl: './institution-list.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InstitutionListComponent extends AbstractAdminViewController implements OnInit {
+export class InstitutionListComponent extends AbstractAdminViewX implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
 
@@ -52,6 +53,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     @ViewChild(NgForm) public form: NgForm;
     private userHasGemeindeWithTSEnabled: boolean;
     private userHasGemeindeWithoutTSEnabled: boolean;
+    private institutionenDurchGemeindenEinladen: boolean = false;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -61,6 +63,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         authServiceRS: AuthServiceRS,
         private readonly cd: ChangeDetectorRef,
         private readonly gemeindeRS: GemeindeRS,
+        public readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(authServiceRS);
     }
@@ -69,12 +72,15 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.setHiddenColumns();
         this.loadData();
         this.setupGemeindeAndRoleSpecificProperties();
+        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
+            this.institutionenDurchGemeindenEinladen = result;
+        });
     }
 
     private setupGemeindeAndRoleSpecificProperties(): void {
         combineLatest([
             this.gemeindeRS.getGemeindenForPrincipal$(),
-            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin())),
+            this.authServiceRS.principal$.pipe(map(principal => principal.currentBerechtigung.isSuperadmin()))
         ]).subscribe(([gemeinden, isSuperadmin]) => {
             this.userHasGemeindeWithTSEnabled = isSuperadmin ||
                 EbeguUtil.isNotNullOrUndefined(gemeinden.find(gemeinde => (gemeinde.angebotTS && !gemeinde.nurLats)));
@@ -85,8 +91,8 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public loadData(): void {
         const deleteAllowed = this.isDeleteAllowed();
-        this.antragList$ = from(this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
-            .then(institutionList => {
+        this.antragList$ = this.institutionRS.getInstitutionenListDTOEditableForCurrentBenutzer()
+            .pipe(map((institutionList => {
                 const entitaetListItems: DVEntitaetListItem[] = [];
                 institutionList.forEach(
                     institution => {
@@ -96,22 +102,23 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                             status: institution.stammdatenCheckRequired
                                 ? 'CHECK_REQUIRED'
                                 : institution.status.toString(),
+                            gemeinde: institution.gemeinde?.name,
                             type: institution.betreuungsangebotTyp,
                             canEdit: this.hatBerechtigungEditieren(institution),
-                            canRemove: deleteAllowed,
+                            canRemove: deleteAllowed
                         };
                         entitaetListItems.push(dvListItem);
-                    },
+                    }
                 );
                 this.cd.markForCheck();
                 return entitaetListItems;
-            }));
+            })));
     }
 
     public removeInstitution(institutionEventId: string): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: 'LOESCHEN_DIALOG_TITLE',
+            title: 'LOESCHEN_DIALOG_TITLE'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(
@@ -119,13 +126,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                     if (!userAccepted) {
                         return;
                     }
-                    this.institutionRS.removeInstitution(institutionEventId).then(() => {
+                    this.institutionRS.removeInstitution(institutionEventId).subscribe(() => {
                         this.loadData();
-                    });
+                    }, error => this.log.error(error));
                 },
                 () => {
                     this.log.error('error in observable. removeInstitution');
-                },
+                }
             );
     }
 
@@ -136,7 +143,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public createInstitutionTS(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
-            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
+            betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE]
         });
     }
 
@@ -144,14 +151,14 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.TAGESSCHULE,
             betreuungsangebote: [TSBetreuungsangebotTyp.TAGESSCHULE],
-            latsOnly: true,
+            latsOnly: true
         });
     }
 
     public createInstitutionFI(): void {
         this.goToAddInstitution({
             betreuungsangebot: TSBetreuungsangebotTyp.FERIENINSEL,
-            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL],
+            betreuungsangebote: [TSBetreuungsangebotTyp.FERIENINSEL]
         });
     }
 
@@ -165,7 +172,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      */
     public openInstitution(institutionEventId: string): void {
         this.$state.go('institution.edit', {
-            institutionId: institutionEventId,
+            institutionId: institutionEventId
         });
     }
 
@@ -186,7 +193,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     private isCurrentUserTraegerschaftAdminOfSelectedInstitution(
         institution: TSInstitution,
-        currentBerechtigung: TSBerechtigung,
+        currentBerechtigung: TSBerechtigung
     ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
             && (currentBerechtigung.traegerschaft && institution.traegerschaft
@@ -195,7 +202,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     private isCurrentUserInstitutionAdminOfSelectedInstitution(
         institution: TSInstitution,
-        currentBerechtigung: TSBerechtigung,
+        currentBerechtigung: TSBerechtigung
     ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
             && (currentBerechtigung.institution
@@ -203,7 +210,12 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isCreateBGAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+        let allowedRoles: TSRole[] = [];
+        allowedRoles = allowedRoles.concat(TSRoleUtil.getMandantRoles());
+        if (this.institutionenDurchGemeindenEinladen) {
+            allowedRoles = allowedRoles.concat([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE]);
+        }
+        return this.authServiceRS.isOneOfRoles(allowedRoles);
     }
 
     public isCreateTSAllowed(): boolean {

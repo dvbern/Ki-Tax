@@ -26,9 +26,9 @@ export class PendenzBetreuungenRS {
         public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        public $log: ILogService,
+        public $log: ILogService
     ) {
-        this.serviceURL = REST_API + 'search/pendenzenBetreuungen';
+        this.serviceURL = `${REST_API  }search/pendenzenBetreuungen`;
     }
 
     public getPendenzenBetreuungenList(): IPromise<Array<TSPendenzBetreuung>> {

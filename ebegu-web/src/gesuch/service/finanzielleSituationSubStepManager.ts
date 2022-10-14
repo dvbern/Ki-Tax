@@ -21,7 +21,7 @@ import {GesuchModelManager} from './gesuchModelManager';
 export abstract class FinanzielleSituationSubStepManager {
 
     public constructor(
-        protected readonly gesuchModelManager: GesuchModelManager,
+        protected readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 

@@ -41,13 +41,14 @@ export class FaelleListViewController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
         private readonly $log: ILogService,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
      * mit beschraenkten Daten Fuer anderen Benutzer wird das Gesuch mit allen Daten geoeffnet
+     *
      * @param antrag der antrag
      * @param event optinally this function can check if ctrl was clicked when opeing
      */
@@ -75,7 +76,7 @@ export class FaelleListViewController {
                 gesuchId: antrag.antragId,
                 dossierId: antrag.dossierId,
                 fallId: antrag.fallId,
-                gemeindeId: antrag.gemeindeId,
+                gemeindeId: antrag.gemeindeId
             };
             this.openGesuch(antrag, 'gesuch.sozialdienstfallcreation', navObj, isCtrlKeyPressed);
         } else {

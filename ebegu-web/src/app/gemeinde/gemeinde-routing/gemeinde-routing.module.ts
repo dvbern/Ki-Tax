@@ -29,48 +29,48 @@ const states: NgHybridStateDeclaration[] = [
         name: 'gemeinde',
         abstract: true,
         url: '/gemeinde',
-        component: UiViewComponent,
+        component: UiViewComponent
     },
     {
         name: 'gemeinde.list',
         url: '/list',
         component: GemeindeListComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-        },
+            roles: TSRoleUtil.getAdministratorMandantRevisorRole()
+        }
     },
     {
         name: 'gemeinde.add',
         url: '/add',
         component: AddGemeindeComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
+            roles: TSRoleUtil.getMandantRoles()
+        }
     },
     {
         name: 'gemeinde.edit',
         url: '/edit/:gemeindeId/:isRegistering',
         component: EditGemeindeComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole().concat(TSRoleUtil.getMandantRoles()),
+            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole().concat(TSRoleUtil.getMandantRoles())
         },
         params: {
             isRegistering: {
                 type: 'bool',
                 // this parameter is optional: specify a default value
-                value: false,
-            },
-        },
-    },
+                value: false
+            }
+        }
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class GemeindeRoutingModule {
 }

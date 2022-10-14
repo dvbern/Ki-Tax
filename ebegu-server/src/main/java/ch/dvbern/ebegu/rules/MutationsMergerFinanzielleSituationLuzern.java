@@ -23,12 +23,11 @@ public class MutationsMergerFinanzielleSituationLuzern extends AbstractMutations
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
-		LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
+		LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungStartDatum();
 
 		if(!isFinSitGueltigInZeitabschnitt(finSitGueltigAb, inputAktuel.getParent())) {
 			//Wenn FinSit Daten noch nicht gültig sind in Zeitabschnitt, sollen die Daten aus dem Vorgänger genommen werden
 			setFinSitDataFromResultToInput(inputAktuel, resultVorgaenger);
-			inputAktuel.setAnspruchspensumProzent(resultVorgaenger.getAnspruchspensumProzent());
 		}
 	}
 

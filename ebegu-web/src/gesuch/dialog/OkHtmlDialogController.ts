@@ -27,7 +27,7 @@ export class OkHtmlDialogController {
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
         title: string,
-        _okText: string,
+        _okText: string
     ) {
 
         this.title = title !== undefined && title !== null ?

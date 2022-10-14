@@ -43,7 +43,7 @@ export class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         betragTotalAuftrag?: number,
         hasNegativeZahlungen?: boolean | false,
         gemeinde?: TSGemeinde,
-        zahlungen?: Array<TSZahlung>,
+        zahlungen?: Array<TSZahlung>
     ) {
         super(gueltigkeit);
         this.zahlungslaufTyp = zahlungslaufTyp;

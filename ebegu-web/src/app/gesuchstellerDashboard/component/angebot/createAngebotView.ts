@@ -47,7 +47,7 @@ export class CreateAngebotListViewController implements IController {
         'GesuchModelManager',
         '$stateParams',
         'BetreuungRS',
-        '$translate',
+        '$translate'
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -64,7 +64,7 @@ export class CreateAngebotListViewController implements IController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $stateParams: IAngebotStateParams,
         private readonly betreuungRS: BetreuungRS,
-        private readonly $translate: ITranslateService,
+        private readonly $translate: ITranslateService
     ) {
     }
 
@@ -129,7 +129,7 @@ export class CreateAngebotListViewController implements IController {
         return this.fi && !!this.institution;
     }
 
-    // tslint:disable-next-line:cognitive-complexity
+    // eslint-disable-next-line
     public selectedInstitutionStammdatenChanged(): void {
         if (!this.anmeldungDTO.betreuung) {
             this.anmeldungDTO.betreuung = new TSBetreuung();
@@ -204,7 +204,7 @@ export class CreateAngebotListViewController implements IController {
     public backToHome(infoMessage?: string): void {
         this.form.$setPristine();
         this.$state.go('gesuchsteller.dashboard', {
-            gesuchstellerDashboardStateParams: {infoMessage},
+            gesuchstellerDashboardStateParams: {infoMessage}
         });
     }
 

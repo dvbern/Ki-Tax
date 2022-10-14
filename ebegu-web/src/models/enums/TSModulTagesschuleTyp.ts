@@ -23,6 +23,6 @@ export enum TSModulTagesschuleTyp {
 export function getTSModulTagesschuleTypen(): Array<TSModulTagesschuleTyp> {
     return [
         TSModulTagesschuleTyp.DYNAMISCH,
-        TSModulTagesschuleTyp.SCOLARIS,
+        TSModulTagesschuleTyp.SCOLARIS
     ];
 }

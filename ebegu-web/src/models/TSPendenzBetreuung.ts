@@ -49,7 +49,7 @@ export class TSPendenzBetreuung {
         eingangsdatumSTV?: moment.Moment,
         betreuungsangebotTyp?: TSBetreuungsangebotTyp,
         institution?: TSInstitution,
-        gemeinde?: string,
+        gemeinde?: string
     ) {
         this._betreuungsNummer = betreuungsNummer;
         this._betreuungsId = betreuungsId;

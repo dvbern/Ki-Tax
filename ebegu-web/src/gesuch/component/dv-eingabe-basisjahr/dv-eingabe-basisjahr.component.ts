@@ -18,7 +18,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    Input,
+    Input
 } from '@angular/core';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 
@@ -29,7 +29,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     selector: 'dv-eingaben-basisjahr',
     templateUrl: './dv-eingabe-basisjahr.component.html',
     styleUrls: ['./dv-eingabe-basisjahr.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvEingabeBasisjahrComponent {
     @Input() public neuerWert: number;

@@ -50,7 +50,7 @@ describe('gesuch', () => {
             $injector.get('$mdSidenav'),
             undefined,
             undefined,
-            $injector.get('EinstellungRS'),
+            $injector.get('EinstellungRS')
         );
         gesuch = new TSGesuch();
         gesuch.typ = TSAntragTyp.ERSTGESUCH;

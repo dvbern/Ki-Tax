@@ -29,7 +29,7 @@ export class ErwerbspensumRS {
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
         public readonly log: ILogService,
-        private readonly wizardStepManager: WizardStepManager,
+        private readonly wizardStepManager: WizardStepManager
     ) {
         this.serviceURL = `${REST_API}erwerbspensen`;
     }
@@ -47,18 +47,16 @@ export class ErwerbspensumRS {
     }
 
     public saveErwerbspensum(erwerbspensenContainer: TSErwerbspensumContainer, gesuchstellerID: string,
-                             gesuchId: string,
+                             gesuchId: string
     ): IPromise<TSErwerbspensumContainer> {
         let restErwerbspensum = {};
         restErwerbspensum =
             this.ebeguRestUtil.erwerbspensumContainerToRestObject(restErwerbspensum, erwerbspensenContainer);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchstellerID)}/${gesuchId}`;
-        return this.http.put(url, restErwerbspensum).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+        return this.http.put(url, restErwerbspensum).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.log.debug('PARSING ErwerbspensumContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseErwerbspensumContainer(new TSErwerbspensumContainer(), response.data);
-            });
-        });
+            }));
     }
 
     public removeErwerbspensum(erwerbspensumContID: string, gesuchId: string): IPromise<any> {
@@ -73,8 +71,6 @@ export class ErwerbspensumRS {
 
     public isErwerbspensumRequired(gesuchId: string): IPromise<boolean> {
         return this.http.get(`${this.serviceURL}/required/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return JSON.parse(response.data);
-            });
+            .then((response: any) => JSON.parse(response.data));
     }
 }

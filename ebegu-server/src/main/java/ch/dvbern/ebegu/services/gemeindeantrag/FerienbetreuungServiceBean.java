@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
@@ -284,7 +285,7 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 			Optional<FerienbetreuungAngabenContainer> antragOfpreviousYear =
 					findFerienbetreuungAngabenVorgaengerContainer(container)
-							.filter(FerienbetreuungAngabenContainer::isGeprueft);
+							.filter(FerienbetreuungAngabenContainer::isAtLeastGeprueft);
 
 			antragOfpreviousYear.ifPresent(ferienbetreuungAngabenContainer ->
 					ferienbetreuungAngabenContainer.copyForErneuerung(container));
@@ -739,11 +740,17 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Override
 	public byte[] generateFerienbetreuungReportDokument(
-			@Nonnull FerienbetreuungAngabenContainer container) throws MergeDocException {
-		GemeindeStammdaten gemeindeStammdaten =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId())
-						.orElse(new GemeindeStammdaten());
-		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, Constants.DEFAULT_LOCALE);
+		@Nonnull FerienbetreuungAngabenContainer container, @Nonnull Sprache sprache) throws MergeDocException {
+		Optional<GemeindeStammdaten> gemeindeStammdatenOpt =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(container.getGemeinde().getId());
+		GemeindeStammdaten gemeindeStammdaten;
+		if (gemeindeStammdatenOpt.isEmpty()) {
+			gemeindeStammdaten = new GemeindeStammdaten();
+			gemeindeStammdaten.setGemeinde(container.getGemeinde());
+		} else {
+			gemeindeStammdaten = gemeindeStammdatenOpt.get();
+		}
+		return pdfService.generateFerienbetreuungReport(container, gemeindeStammdaten, sprache);
 	}
 }
 

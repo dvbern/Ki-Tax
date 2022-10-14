@@ -21,6 +21,6 @@ export enum TSMahnungTyp {
 export function getTSMahnungTypValues(): Array<TSMahnungTyp> {
     return [
         TSMahnungTyp.ERSTE_MAHNUNG,
-        TSMahnungTyp.ZWEITE_MAHNUNG,
+        TSMahnungTyp.ZWEITE_MAHNUNG
     ];
 }

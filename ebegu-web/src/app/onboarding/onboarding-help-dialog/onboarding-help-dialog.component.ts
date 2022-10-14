@@ -25,7 +25,7 @@ import {MatDialogRef} from '@angular/material/dialog';
 export class OnboardingHelpDialogComponent implements OnInit {
 
     public constructor(
-        private readonly dialogRef: MatDialogRef<OnboardingHelpDialogComponent>,
+        private readonly dialogRef: MatDialogRef<OnboardingHelpDialogComponent>
     ) {
     }
 

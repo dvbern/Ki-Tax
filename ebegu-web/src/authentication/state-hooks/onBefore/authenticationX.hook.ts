@@ -36,7 +36,7 @@ const LOG = LogFactory.createLog('authenticationHookRunBlockX');
 export function authenticationHookRunBlockX($transitions: TransitionService, authService: AuthServiceRS): void {
     // Matches all states except those that have TSRole.ANONYMOUS in data.roles.
     const requiresAuthCriteria: HookMatchCriteria = {
-        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS),
+        to: state => state.data && Array.isArray(state.data.roles) && !state.data.roles.includes(TSRole.ANONYMOUS)
     };
 
     // Register the "requires authentication" hook with the TransitionsService
@@ -62,7 +62,7 @@ function redirectToLogin(transition: Transition, authService: AuthServiceRS): Ho
 
                 // continue the original transition
                 return true;
-            }),
+            })
         )
         .toPromise();
 }

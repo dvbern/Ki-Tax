@@ -70,7 +70,7 @@ export class UserselectController implements IController {
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
-        private readonly authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
 
     }
@@ -84,7 +84,7 @@ export class UserselectController implements IController {
                     principal => {
                         this.selectedUser = principal;
                     },
-                    err => LOG.error(err),
+                    err => LOG.error(err)
                 );
         }
         // initial nach aktuell eingeloggtem filtern

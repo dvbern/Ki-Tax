@@ -1,4 +1,4 @@
-// tslint:disable-next-line:no-commented-code
+// eslint-disable-next-line
 // import { ComponentFixture, TestBed } from '@angular/core/testing';
 // import {StateService, UIRouterGlobals} from '@uirouter/core';
 // import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';

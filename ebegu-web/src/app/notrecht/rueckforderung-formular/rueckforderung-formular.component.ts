@@ -21,7 +21,7 @@ import {
     ChangeDetectorRef,
     Component,
     OnInit,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -39,7 +39,7 @@ import {
     isBereitZumVerfuegenOderVerfuegt,
     isNeuOrEingeladenStatus,
     isStatusRelevantForFrist,
-    TSRueckforderungStatus,
+    TSRueckforderungStatus
 } from '../../../models/enums/TSRueckforderungStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSRueckforderungDokument} from '../../../models/TSRueckforderungDokument';
@@ -62,7 +62,7 @@ import {RueckforderungVerlaengerungDialogComponent} from './rueckforderung-verla
     selector: 'dv-rueckforderung-formular',
     templateUrl: './rueckforderung-formular.component.html',
     styleUrls: ['./rueckforderung-formular.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RueckforderungFormularComponent implements OnInit, AfterViewChecked {
 
@@ -125,7 +125,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         private readonly i18nServiceRS: I18nServiceRSRest,
         private readonly uploadRS: UploadRS,
         private readonly cdr: ChangeDetectorRef,
-        private readonly applicationPropertyService: ApplicationPropertyRS,
+        private readonly applicationPropertyService: ApplicationPropertyRS
     ) {
     }
 
@@ -208,7 +208,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
-            text: '',
+            text: ''
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -246,7 +246,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGFORMULAR_CONFIRMATION_TITLE',
-            text: '',
+            text: ''
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -461,7 +461,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     public uploadRuckforderungDokumente(event: any, rueckforderungFormularId: string,
-                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp,
+                                        tsRueckforderungDokumentTyp: TSRueckforderungDokumentTyp
     ): void {
         const files = event.target.files;
         const filesTooBig: any[] = [];
@@ -543,7 +543,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('FILE_ZU_GROSS'),
-            text: `${text}`,
+            text: `${text}`
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig);
@@ -590,7 +590,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: this.translate.instant('LOESCHEN_DIALOG_TITLE'),
-            text: '',
+            text: ''
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
@@ -643,13 +643,13 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
                     });
                 },
                 () => {
-                },
+                }
             );
     }
 
     private removeFromList(
         dokument: TSRueckforderungDokument,
-        rueckforderungDokumente: TSRueckforderungDokument[],
+        rueckforderungDokumente: TSRueckforderungDokument[]
     ): void {
         const idx = EbeguUtil.getIndexOfElementwithID(dokument, rueckforderungDokumente);
         if (idx > -1) {
@@ -734,18 +734,18 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
             // Wir wissen noch nicht, ob privat oder oeffentlich
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_BEIDE', {
                 oeffentlich: oeffentlichText,
-                private: privatRelevantText,
+                private: privatRelevantText
             });
         }
         const isPrivat = rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT;
         const relevantText = isPrivat ? privatRelevantText : oeffentlichText;
         if (fristVerlaengert) {
             return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_VERLAENGERT', {
-                frist: relevantText,
+                frist: relevantText
             });
         }
         return this.translate.instant('RUECKFORDERUNGSFORMULARE_INFO_FRIST_STANDARD', {
-            frist: relevantText,
+            frist: relevantText
         });
     }
 
@@ -784,7 +784,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     // ist nicht identisch => return von anderem string
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     public getDokumenteEinsatzplaeneTitle(rueckforderungFormular: TSRueckforderungFormular): string {
         if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
             return 'RUECKOFORDERUNG_DOKUMENTE_EINSATZPLAENE_PRIVAT';
@@ -793,7 +793,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
     }
 
     // ist nicht identisch => return von anderem string
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     public getDokumenteAngabenTitle(rueckforderungFormular: TSRueckforderungFormular): string {
         if (rueckforderungFormular.institutionTyp === TSRueckforderungInstitutionTyp.PRIVAT) {
             return 'RUECKOFORDERUNG_DOKUMENTE_ANGABEN_PRIVAT';
@@ -880,7 +880,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT',
+            text: 'RUECKFORDERUNGSFORMULAR_RESET_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -903,7 +903,7 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT',
+            text: 'RUECKFORDERUNGSFORMULAR_ZURUECKHOLEN_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -1020,13 +1020,13 @@ export class RueckforderungFormularComponent implements OnInit, AfterViewChecked
 
     public setCurrentUserAsVerantwortlicher(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
-            this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username),
+            this.notrechtRS.setVerantwortlicher(rueckforderungFormular.id, this.authServiceRS.getPrincipal().username)
         );
     }
 
     public setDokumenteGeprueft(rueckforderungFormular: TSRueckforderungFormular): void {
         this.rueckforderungFormular$ = from(
-            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id),
+            this.notrechtRS.setDokumenteGeprueft(rueckforderungFormular.id)
         );
     }
 

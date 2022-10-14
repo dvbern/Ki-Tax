@@ -25,7 +25,7 @@ import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMittei
 @Component({
     selector: 'modul-tagesschule-dialog',
     templateUrl: './send-notrecht-mitteilung.template.html',
-    styleUrls: ['./send-notrecht-mitteilung.component.less'],
+    styleUrls: ['./send-notrecht-mitteilung.component.less']
 })
 export class SendNotrechtMitteilungComponent {
 
@@ -54,7 +54,7 @@ export class SendNotrechtMitteilungComponent {
         if (this.isValid()) {
             this.dialogRef.close({
                 mitteilung: this.mitteilung,
-                statusToSendMitteilung: this.statusToSendMitteilung,
+                statusToSendMitteilung: this.statusToSendMitteilung
             });
             return;
         }

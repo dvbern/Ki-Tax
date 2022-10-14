@@ -34,11 +34,9 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
     selector: 'dv-einkommensverschlechterung-solothurn-view',
     templateUrl: './einkommensverschlechterung-solothurn-view.component.html',
     styleUrls: ['./einkommensverschlechterung-solothurn-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
-
-    @ViewChild(NgForm) private readonly form: NgForm;
 
     public readOnly: boolean = false;
 
@@ -47,7 +45,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         private readonly $transition$: Transition,
-        protected ref: ChangeDetectorRef,
+        protected ref: ChangeDetectorRef
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -93,7 +91,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
             () => this.ref.markForCheck()
         );
-    }
+    };
 
     public onValueChangeFunction = (): void => {
         if (!this.model.getEkvToWorkWith().nettoVermoegen) {
@@ -102,20 +100,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(this.model, this.model.getBasisJahrPlus()).then(
             () => this.ref.markForCheck()
         );
-    }
-
-    private isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
-                    this.form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
-    }
+    };
 
     private getResultate(): TSFinanzielleSituationResultateDTO {
         return this.model.getBasisJahrPlus() === 2 ?

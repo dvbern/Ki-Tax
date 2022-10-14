@@ -72,7 +72,7 @@ authServiceSpy.principal$ = new BehaviorSubject(user);
 
 // We mock the dv loading buttondirective to make the setup easier since these are unit tests
 @Directive({
-    selector: '[dvLoadingButtonX]',
+    selector: '[dvLoadingButtonX]'
 })
 export class MockDvLoadingButtonXDirective {
 
@@ -102,7 +102,7 @@ describe('GemeindeAntraegeComponent', () => {
                 MaterialModule,
                 TranslateModule.forRoot(),
                 UpgradeModule,
-                BrowserAnimationsModule,
+                BrowserAnimationsModule
             ],
             declarations: [GemeindeAntraegeComponent, MockDvLoadingButtonXDirective],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -115,8 +115,8 @@ describe('GemeindeAntraegeComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: GemeindeAntragService, useValue: gemeindeAntragServiceSpy},
-                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-            ],
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
+            ]
         })
             .overrideComponent(GemeindeAntraegeComponent, {
                 set: {  changeDetection: ChangeDetectionStrategy.Default  }

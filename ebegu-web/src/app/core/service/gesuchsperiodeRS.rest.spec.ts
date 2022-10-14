@@ -86,7 +86,7 @@ describe('gesuchsperiodeRS', () => {
 
                 gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($http.get).toHaveBeenCalled();
             });
         });
@@ -140,7 +140,7 @@ describe('gesuchsperiodeRS', () => {
 
     function checkFieldValues(
         createdGesuchsperiode: TSGesuchsperiode,
-        mockPeriode: TSGesuchsperiode,
+        mockPeriode: TSGesuchsperiode
     ): void {
         expect(createdGesuchsperiode).toBeDefined();
         expect(createdGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);

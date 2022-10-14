@@ -58,7 +58,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditBetreuungsstandortComponent,
         InfoSchnittstelleDialogComponent
     ],
-    providers: [],
+    providers: []
 })
 export class InstitutionModule {
 }

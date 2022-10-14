@@ -48,7 +48,7 @@ describe('TraegerschaftEditComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                TraegerschaftModule,
+                TraegerschaftModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -56,11 +56,11 @@ describe('TraegerschaftEditComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
             declarations: [
-            ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
 
         transitionSpy.params.and.returnValue({});

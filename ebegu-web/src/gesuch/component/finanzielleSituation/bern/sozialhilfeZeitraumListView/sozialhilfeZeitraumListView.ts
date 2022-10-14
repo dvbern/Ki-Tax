@@ -52,7 +52,7 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         'DvDialog',
         '$scope',
         '$timeout',
-        'SozialhilfeZeitraumRS',
+        'SozialhilfeZeitraumRS'
     ];
 
     public gesuchModelManager: GesuchModelManager;
@@ -67,7 +67,7 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
         private readonly dvDialog: DvDialog,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS,
+        private readonly sozialhilfeZeitraumRS: SozialhilfeZeitraumRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -111,14 +111,14 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     public removeSozialhilfeZeitraum(
         sozialhilfeZeitraum: TSSozialhilfeZeitraumContainer,
         elementId: string,
-        index: any,
+        index: any
     ): void {
         this.errorService.clearAll();
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: '',
             title: 'SOZIALHILFEZEITRAUM_LOESCHEN',
             parentController: this,
-            elementID: elementId + String(index),
+            elementID: elementId + String(index)
         })
             .then(() => {   // User confirmed removal
                 this.sozialhilfeZeitraumRS.removeSozialhilfeZeitraum(sozialhilfeZeitraum.id).then(() => {
@@ -142,12 +142,12 @@ export class SozialhilfeZeitraumListViewController extends AbstractGesuchViewCon
     private openSozialhilfeZeitraumView(sozialhilfeZeitraumNum: number): void {
         this.$state.go('gesuch.SozialhilfeZeitraum', {
             sozialhilfeZeitraumNum,
-            gesuchId: this.getGesuchId(),
+            gesuchId: this.getGesuchId()
         });
     }
 
     public setFocusBack(elementID: string): void {
-        angular.element('#' + elementID).first().focus();
+        angular.element(`#${  elementID}`).first().focus();
     }
 
     public isSaveDisabled(): boolean {

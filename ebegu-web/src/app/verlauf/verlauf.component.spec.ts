@@ -54,7 +54,7 @@ describe('VerlaufComponent', () => {
                 {provide: AntragStatusHistoryRS, useValue: antragStatusHistoryRSSpy},
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
-                {provide: EbeguUtil, useValue: ebeguUtilSpy},
+                {provide: EbeguUtil, useValue: ebeguUtilSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

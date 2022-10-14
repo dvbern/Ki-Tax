@@ -43,7 +43,8 @@ export const CONSTANTS = {
     MANDANT_LOCAL_STORAGE_KEY: 'mandant',
     NUR_LATS_STARTDATUM: '2021-08-01',
     QR_IBAN_PATTERN: /(LI|CH)\d{2}3[01]\d{3}\w{12}/,
-
+    // used for debounce input elements
+    KEYUP_TIMEOUT: 700
 };
 
 export const DEFAULT_LOCALE = 'de-CH';
@@ -57,46 +58,43 @@ export function getUnknowKitaIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000003';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000006';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000006';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000000';
-            break;
     }
 }
 
-// tslint:disable-next-line:no-identical-functions
+// eslint-disable-next-line
 export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000004';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000007';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000007';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000001';
-            break;
     }
 }
 
-// tslint:disable-next-line:no-identical-functions
+// eslint-disable-next-line
 export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string {
     switch (mandant) {
         case KiBonMandant.LU:
             return '00000000-0000-0000-0000-000000000005';
-            break;
         case KiBonMandant.SO:
             return '00000000-0000-0000-0000-000000000008';
-            break;
+        case KiBonMandant.AR:
+            return '00000000-0000-0000-0000-000000000008';
         case KiBonMandant.BE:
         default:
             return '00000000-0000-0000-0000-000000000002';
-            break;
     }
 }
 
@@ -106,5 +104,5 @@ export const HTTP_CODES = {
     UNAUTHORIZED: 401,
     NOT_FOUND: 404,
     FORBIDDEN: 403,
-    CONFLICT: 409,
+    CONFLICT: 409
 };

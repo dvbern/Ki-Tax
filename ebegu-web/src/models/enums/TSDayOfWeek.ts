@@ -29,7 +29,7 @@ export function getWeekdaysValues(): Array<TSDayOfWeek> {
         TSDayOfWeek.TUESDAY,
         TSDayOfWeek.WEDNESDAY,
         TSDayOfWeek.THURSDAY,
-        TSDayOfWeek.FRIDAY,
+        TSDayOfWeek.FRIDAY
     ];
 }
 

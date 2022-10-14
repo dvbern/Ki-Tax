@@ -35,13 +35,13 @@ describe('DebuggingComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot(),
+                UIRouterModule.forRoot()
             ],
             declarations: [DebuggingComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-            ],
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

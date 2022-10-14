@@ -23,6 +23,6 @@ export function getTSZahlungsauftragsstatusValues(): Array<TSZahlungsauftragssta
     return [
         TSZahlungsauftragsstatus.ENTWURF,
         TSZahlungsauftragsstatus.AUSGELOEST,
-        TSZahlungsauftragsstatus.BESTAETIGT,
+        TSZahlungsauftragsstatus.BESTAETIGT
     ];
 }

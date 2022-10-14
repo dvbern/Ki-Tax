@@ -20,7 +20,7 @@
                                     <div class="col-md-8">
                                         <input type="text"
                                                name="gueltigAb" id="gueltigAb_ID"
-                                               [value]="gesuchsperiode.gueltigkeit.gueltigAb | date:'dd.MM.yyyy'"
+                                               [value]="gesuchsperiode.gueltigkeit.gueltigAb?.toDate() | date:'dd.MM.yyyy'"
                                                disabled
                                                required>
                                     </div>
@@ -35,7 +35,7 @@
                                     <div class="col-md-8">
                                         <input type="text"
                                                name="gueltigBis" id="gueltigBis_ID"
-                                               [value]="gesuchsperiode.gueltigkeit.gueltigBis | date:'dd.MM.yyyy'"
+                                               [value]="gesuchsperiode.gueltigkeit.gueltigBis?.toDate() | date:'dd.MM.yyyy'"
                                                disabled
                                                required>
                                     </div>
@@ -250,9 +250,9 @@
                                 <div class="col-md-12">
                                     <h1>
                                         <span translate="PARAMETER_PRO_GESUCHSPERIODE"></span>
-                                        <span> {{gesuchsperiode.gueltigkeit.gueltigAb | date:'dd.MM.yyyy'}}</span>
+                                        <span> {{gesuchsperiode.gueltigkeit.gueltigAb?.toDate() | date:'dd.MM.yyyy'}}</span>
                                         <span> bis </span>
-                                        <span>{{gesuchsperiode.gueltigkeit.gueltigBis | date:'dd.MM.yyyy'}}</span>
+                                        <span>{{gesuchsperiode.gueltigkeit.gueltigBis.toDate() | date:'dd.MM.yyyy'}}</span>
                                     </h1>
                                     <hr class="header"/>
                                 </div>

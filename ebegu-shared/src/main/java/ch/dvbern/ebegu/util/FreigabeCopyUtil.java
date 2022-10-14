@@ -415,6 +415,7 @@ public final class FreigabeCopyUtil {
 		gs.getSelbstdeklaration().setEinkunftUeberige(ja.getSelbstdeklaration().getEinkunftUeberige());
 		gs.getSelbstdeklaration().setEinkunftLiegenschaften(ja.getSelbstdeklaration().getEinkunftLiegenschaften());
 		gs.getSelbstdeklaration().setAbzugBerufsauslagen(ja.getSelbstdeklaration().getAbzugBerufsauslagen());
+		gs.getSelbstdeklaration().setAbzugSchuldzinsen(ja.getSelbstdeklaration().getAbzugSchuldzinsen());
 		gs.getSelbstdeklaration().setAbzugUnterhaltsbeitragKinder(ja.getSelbstdeklaration().getAbzugUnterhaltsbeitragKinder());
 		gs.getSelbstdeklaration().setAbzugSaeule3A(ja.getSelbstdeklaration().getAbzugSaeule3A());
 		gs.getSelbstdeklaration().setAbzugVersicherungspraemien(ja.getSelbstdeklaration().getAbzugVersicherungspraemien());
@@ -544,6 +545,7 @@ public final class FreigabeCopyUtil {
 		erwerbspensumGS.setPensum(erwerbspensumJA.getPensum());
 		erwerbspensumGS.setTaetigkeit(erwerbspensumJA.getTaetigkeit());
 		erwerbspensumGS.setBezeichnung(erwerbspensumJA.getBezeichnung());
+		erwerbspensumGS.setErwerbspensumInstitution(erwerbspensumJA.getErwerbspensumInstitution());
 
 		if (erwerbspensumJA.getUnbezahlterUrlaub() == null) {
 			//noinspection ConstantConditions

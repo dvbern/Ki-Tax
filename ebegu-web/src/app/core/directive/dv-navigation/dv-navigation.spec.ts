@@ -39,7 +39,7 @@ import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {NavigatorController} from './dv-navigation';
 
-// tslint:disable:no-duplicate-string no-big-function max-line-length no-identical-functions
+/* eslint-disable max-len */
 describe('dvNavigation', () => {
 
     let navController: NavigatorController;
@@ -73,14 +73,10 @@ describe('dvNavigation', () => {
 
         navController = new NavigatorController(wizardStepManager, finanzielleSituationRS, $state, gesuchModelManager,
             $injector.get('$translate'), $injector.get('ErrorService'), $q, $timeout);
-        navController.dvSave = () => {
-            return $q.when({});
-        };
+        navController.dvSave = () => $q.when({});
         navController.setSubstepManager(new FinanzielleSituationSubStepManagerBernAsiv(gesuchModelManager));
         isStatusVerfuegen = true;
-        spyOn(gesuchModelManager, 'isGesuchReadonly').and.callFake(() => {
-            return isStatusVerfuegen;
-        });
+        spyOn(gesuchModelManager, 'isGesuchReadonly').and.callFake(() => isStatusVerfuegen);
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
@@ -234,14 +230,14 @@ describe('dvNavigation', () => {
         it('moves to gesuch.finanzielleSituation when coming from ERWERBSPENSUM substep 1 and 2GS not required', () => {
             moveComingFromErwerbspensum(false);
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStart', {
-                gesuchId: '123',
+                gesuchId: '123'
             });
         });
         it('moves to gesuch.finanzielleSituationStart when coming from ERWERBSPENSUM substep 1 and 2GS and FinSit not required',
             () => {
                 moveComingFromErwerbspensum(true);
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStart', {
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.erwerbsPensen when coming from ERWERBSPENSUM substep 2', () => {
@@ -262,7 +258,7 @@ describe('dvNavigation', () => {
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                     gesuchstellerNumber: '2',
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.finanzielleSituationResultate when coming from FINANZIELLE_SITUATION substep 1 with GS1 and 2GS NOT required',
@@ -286,7 +282,7 @@ describe('dvNavigation', () => {
             callNextStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '123',
+                gesuchId: '123'
             });
         });
         it('moves to gesuch.einkommensverschlechterungInfo when coming from FINANZIELLE_SITUATION substep 3', () => {
@@ -310,7 +306,7 @@ describe('dvNavigation', () => {
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStartLuzern', {
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.finanzielleSituationGS2Luzern when coming from FINANZIELLE_SITUATION_LUZERN Substep 1 and FinSit needs two Antragsteller',
@@ -324,7 +320,7 @@ describe('dvNavigation', () => {
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationGS2Luzern', {
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.einkommensverschlechterung when coming from FINANZIELLE_SITUATION_LUZERN Substep 1 and FinSit doesnt need two Antragsteller',
@@ -339,7 +335,7 @@ describe('dvNavigation', () => {
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.einkommensverschlechterung when coming from FINANZIELLE_SITUATION_LUZERN Substep 2',
@@ -353,7 +349,7 @@ describe('dvNavigation', () => {
                 gesuchModelManager.setGesuch(mockGesuch());
                 callNextStep();
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterungInfo', {
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS required',
@@ -370,7 +366,7 @@ describe('dvNavigation', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterung', {
                     gesuchstellerNumber: '1',
                     basisjahrPlus: '2',
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.einkommensverschlechterung when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 with EV and 2GS NOT required',
@@ -389,7 +385,7 @@ describe('dvNavigation', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.einkommensverschlechterung', {
                     gesuchstellerNumber: '1',
                     basisjahrPlus: '2',
-                    gesuchId: '123',
+                    gesuchId: '123'
                 });
             });
         it('moves to gesuch.dokumente when coming from EINKOMMENSVERSCHLECHTERUNG substep 1 without EV', () => {
@@ -427,7 +423,7 @@ describe('dvNavigation', () => {
                     gesuchId: '123',
                     gesuchsperiodeId: '123',
                     dossierId: dossier.id,
-                    gemeindeId: dossier.gemeinde.id,
+                    gemeindeId: dossier.gemeinde.id
                 });
         });
         it('moves to gesuch.stammdaten when coming from GESUCHSTELLER from 2GS', () => {
@@ -535,7 +531,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '',
+                gesuchId: ''
             });
         });
         it('moves to gesuch.finanzielleSituationStart when coming from FINANZIELLE_SITUATION substep 1', () => {
@@ -575,7 +571,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '1',
-                gesuchId: '',
+                gesuchId: ''
             });
         });
         it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 3', () => {
@@ -586,7 +582,7 @@ describe('dvNavigation', () => {
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituation', {
                 gesuchstellerNumber: '2',
-                gesuchId: '',
+                gesuchId: ''
             });
         });
         it('moves to gesuch.finanzielleSituation when coming from EINKOMMENSVERSCHLECHTERUNG substep 1', () => {
@@ -596,7 +592,7 @@ describe('dvNavigation', () => {
             mockGesuch();
             callPreviousStep();
             expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationStart', {
-                gesuchId: '123',
+                gesuchId: '123'
             });
         });
         it('moves to gesuch.einkommensverschlechterungInfo when coming from EINKOMMENSVERSCHLECHTERUNG substep 3',

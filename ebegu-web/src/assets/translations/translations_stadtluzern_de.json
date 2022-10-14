@@ -3,7 +3,7 @@
     "FINANZIELLE_SITUATION_RESULTATE_LUZERN": "Finanzielle Situation Resultate",
     "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
-    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% im Vergleich zum {{basisjahr}} ab?",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als 25% vom angegebenen massgebenden Einkommen ab?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HINT": "Sie müssen nur das eigene Einkommen für die Einkommensänderung angeben",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn sich Ihr massgebendes Einkommen ab {{jahr1periode}} bleibend verändert füllen Sie bitte beide Jahre aus.",
 	"SPRACHLICHE_INTEGRATION": "Das Kind hat nach der «Elternumfrage zu den Deutschkenntnissen von Vorschulkindern» eine Empfehlung (Brief) der Stadt Luzern für die Sprachförderung in einer Kita erhalten",
@@ -69,6 +69,7 @@
     "UNREGELMAESSIGE_ARBEITSZEITEN": "Unregelmässige Arbeitszeiten",
     "UNREGELMAESSIGE_ARBEITSZEITEN_HINT": "Bitte bestätigen Sie dies, indem Sie auf der Seite 'Dokumente' das Formular 'Bestätigung Arbeitgeber unregelmässige Arbeitszeiten' hochladen. Das Formular finden Sie auf unserer Homepage <a href='https://www.stadtluzern.ch/dienstleistungeninformation/401' target='_blank'> stadtluzern.ch </a>",
     "ERWERBSPENSUM_NACHWEIS_ERWERBSPENSUM_UNREGELMAESSIG": "Formular Arbeitgeber unregelmässige Arbeitszeiten",
+    "ERWERBSPENSUM_NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM":"Nachweis Integrations- oder Beschäftigungsprogramm",
     "TOOLBAR_KONTAKT": "Brauchen Sie Hilfe?",
     "PER_TELEFON_MAIL_KONTAKTIEREN": "Kontaktieren Sie uns per Telefon oder E-Mail",
     "ONBOARDING_KIBON_BGTS_BEANTRAGEN": "Beantragen Sie jetzt Ihren Betreuungs\u00ADgutschein",
@@ -174,7 +175,9 @@
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "JA_KORREKTUR_FACHSTELLE": "{{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
     "FINANZIELLE_SITUATION_GUELTIG_AB": "Änderung der finanziellen Situation ab",
+    "FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO": "Wenn kein Datum gesetzt wird, ist die finanzielle Situation ab dem {{datum}} gültig",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
+    "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

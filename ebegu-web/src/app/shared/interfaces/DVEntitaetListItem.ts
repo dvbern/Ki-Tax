@@ -21,6 +21,7 @@ export interface DVEntitaetListItem {
     id?: string;
     name?: string;
     status?: string;
+    gemeinde?: string;
     angebote?: TSBetreuungsangebotTyp[];
     canEdit?: boolean;
     canRemove?: boolean;

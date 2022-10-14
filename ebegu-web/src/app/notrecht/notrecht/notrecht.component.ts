@@ -56,7 +56,7 @@ export class NotrechtComponent implements OnInit {
 
     public rueckforderungFormulare: TSRueckforderungFormular[];
     public rueckforderungFormulareSource: MatTableDataSource<TSRueckforderungFormular>;
-    // tslint:disable-next-line:no-duplicate-string
+    // eslint-disable-next-line
     public displayedColumns = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
         'status', 'zahlungStufe1', 'zahlungStufe2', 'is-clickable'];
     public displayedColumnsMandant = ['institutionStammdaten.institution.name', 'institutionStammdaten.betreuungsangebotTyp',
@@ -76,7 +76,7 @@ export class NotrechtComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly $state: StateService,
         private readonly dialog: MatDialog,
-        private readonly downloadRS: DownloadRS,
+        private readonly downloadRS: DownloadRS
     ) {
     }
 
@@ -130,27 +130,25 @@ export class NotrechtComponent implements OnInit {
         this.sort.sort({
                 id: 'institutionStammdaten.institution.name',
                 start: 'asc',
-                disableClear: false,
-            },
+                disableClear: false
+            }
         );
     }
 
     private initFilter(): void {
-        this.rueckforderungFormulareSource.filterPredicate = (data, filter) => {
-            return EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
+        this.rueckforderungFormulareSource.filterPredicate = (data, filter) => EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe2VerfuegungAusbezahltAm), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.verantwortlicherName, filter);
-        };
     }
 
     public initializeRueckforderungFormulare(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT',
+            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -173,7 +171,7 @@ export class NotrechtComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TITLE',
-            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT',
+            text: 'RUECKFORDERUNGSFORMULAR_INIT_CONFIRMATION_TEXT'
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
             .subscribe(answer => {
@@ -195,7 +193,7 @@ export class NotrechtComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TITLE',
-            text: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT',
+            text: 'VERFUEGUNGEN_AUSDRUCKEN_CONFIRMATION_TEXT'
         };
         const token = DateUtil.now().format('YYYY-MM-DD-HH-mm-ss');
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
@@ -243,7 +241,7 @@ export class NotrechtComponent implements OnInit {
                 });
                 return;
             }
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
             this.notrechtRS.sendMitteilung(result.mitteilung, result.statusToSendMitteilung).then(() => {
                 this.errorService.addMesageAsInfo(this.translate.instant(
                     'RUECKFORDERUNG_MITTEILUNG_VERSENDET'
@@ -283,7 +281,7 @@ export class NotrechtComponent implements OnInit {
             window.open(url, '_blank');
         } else {
             this.$state.go('notrecht.form', {
-                rueckforderungId: formular.id,
+                rueckforderungId: formular.id
             });
         }
 

@@ -8,7 +8,10 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 export class EbeguDatePipe implements PipeTransform {
 
   public transform(date: moment.Moment): string {
-    return date.format(CONSTANTS.DATE_FORMAT);
+      if (date?.isValid()) {
+          return date.format(CONSTANTS.DATE_FORMAT);
+      }
+      return '';
   }
 
 }

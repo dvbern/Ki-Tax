@@ -58,8 +58,8 @@ describe('ZahlungsauftragViewXComponent', () => {
                 {provide: StateStoreService, useValue: stateStoreSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobalsSpy},
                 {provide: TransitionService, useValue: transitionSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-            ],
+                {provide: ErrorService, useValue: errorServiceSpy}
+            ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     });

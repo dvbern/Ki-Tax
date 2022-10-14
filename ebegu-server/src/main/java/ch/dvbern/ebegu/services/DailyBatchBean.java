@@ -240,6 +240,18 @@ public class DailyBatchBean implements DailyBatch {
 	}
 
 	@Override
+	public void deleteInstitutionKennzahlenFields() {
+		try {
+			LOGGER.info("Starting Job DeleteInstitutionKennzahlenFields...");
+			institutionStammdatenService.deleteInstitutionKennzahlenFields();
+			LOGGER.info("... Job DeleteInstitutionKennzahlenFields finished");
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job DeleteInstitutionKennzahlenFields konnte nicht durchgefuehrt werden!", e);
+		}
+	}
+
+
+	@Override
 	public void runBatchInstitutionCheckRequired() {
 		try {
 			LOGGER.info("Starting Job InstitutionCheckRequired...");

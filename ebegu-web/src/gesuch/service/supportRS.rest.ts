@@ -28,19 +28,19 @@ export class SupportRS {
         public $http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
-        private readonly $log: ILogService,
+        private readonly $log: ILogService
     ) {
-        this.serviceURL = REST_API + 'support';
+        this.serviceURL = `${REST_API  }support`;
     }
 
     public sendSupportAnfrage(supportAnfrage: TSSupportAnfrage): IPromise<any> {
         let anfrageRestObject = {};
         anfrageRestObject = this.ebeguRestUtil.supportAnfrageToRestObject(anfrageRestObject, supportAnfrage);
-        this.$log.warn('Supportanfrage erstellt mit ID ' + supportAnfrage.id); // Damit wir Sentryangaben zu diesem Fall mappen koennen
+        this.$log.warn(`Supportanfrage erstellt mit ID ${  supportAnfrage.id}`); // Damit wir Sentryangaben zu diesem Fall mappen koennen
         return this.$http.put(this.serviceURL, anfrageRestObject, {
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
         });
     }
 

@@ -25,6 +25,6 @@ export function getTSGesuchsperiodeStatusValues(): Array<TSGesuchsperiodeStatus>
         TSGesuchsperiodeStatus.ENTWURF,
         TSGesuchsperiodeStatus.AKTIV,
         TSGesuchsperiodeStatus.INAKTIV,
-        TSGesuchsperiodeStatus.GESCHLOSSEN,
+        TSGesuchsperiodeStatus.GESCHLOSSEN
     ];
 }

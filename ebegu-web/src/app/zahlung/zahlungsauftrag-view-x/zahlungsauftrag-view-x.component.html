@@ -101,6 +101,12 @@
                             <span class="uppercase">{{getLabelZahlungslaufErstellen()}}</span>
                         </dv-loading-button>
                     </div>
+                    <div class="col-md-3" *ngIf="checkboxAuszahlungInZukunft">
+                        <dv-checkbox-x
+                            [label]="'CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT'"
+                            [(model)]="auszahlungInZukunft"
+                        ></dv-checkbox-x>
+                    </div>
                 </div>
             </div>
         </div>

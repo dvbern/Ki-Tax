@@ -23,6 +23,6 @@ export enum TSAbholungTagesschule {
 export function getTSAbholungTagesschuleValues(): Array<TSAbholungTagesschule> {
     return [
         TSAbholungTagesschule.ABHOLUNG,
-        TSAbholungTagesschule.ALLEINE_NACH_HAUSE,
+        TSAbholungTagesschule.ALLEINE_NACH_HAUSE
     ];
 }

@@ -42,7 +42,7 @@ import { RueckforderungVerlaengerungDialogComponent } from './rueckforderung-for
     ],
     providers: [],
     // used for dv-accordion
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NotrechtModule {
 }
