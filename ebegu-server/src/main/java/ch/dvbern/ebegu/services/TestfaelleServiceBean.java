@@ -93,7 +93,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngaben
 import ch.dvbern.ebegu.services.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistoryService;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
-import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.MandantSozialdienstVisitor;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;

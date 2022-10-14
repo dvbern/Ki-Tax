@@ -17,6 +17,7 @@
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {map} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -29,6 +30,7 @@ import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
@@ -85,7 +87,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'I18nServiceRSRest',
         '$q',
         '$translate',
-        'MandantService'
+        'MandantService',
+        'EinstellungRS'
     ];
 
     // this is the model...
@@ -101,6 +104,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showPercent: boolean;
     public showHours: boolean;
     public showDays: boolean;
+    private isVerfuegungExportEnabled: boolean;
 
     public showVerfuegung: boolean;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
@@ -133,6 +137,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
+        private readonly einstellungRS: EinstellungRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -212,6 +217,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             this.isAuszahlungAnAntragstellerEnabled = response.infomaZahlungen;
 
             this.setFragenObIgnorieren();
+        });
+
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.VERFUEGUNG_EXPORT_ENABLED,
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe(response => {
+            this.isVerfuegungExportEnabled = JSON.parse(response.value);
         });
     }
 
@@ -602,7 +615,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     // noinspection JSUnusedGlobalSymbols
     public showExportLink(): boolean {
-        return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
+        return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT) && this.isVerfuegungExportEnabled;
     }
 
     public exportJsonSchema(): void {

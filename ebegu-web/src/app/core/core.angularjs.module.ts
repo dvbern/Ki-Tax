@@ -53,7 +53,7 @@ import {EinkommensverschlechterungContainerRS} from '../../gesuch/service/einkom
 import {EinkommensverschlechterungInfoRS} from '../../gesuch/service/einkommensverschlechterungInfoRS.rest';
 import {ExportRS} from '../../gesuch/service/exportRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
-import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.rest';
+import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.service';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchGenerator} from '../../gesuch/service/gesuchGenerator';
@@ -211,7 +211,6 @@ export const CORE_JS_MODULE = angular
     .service('AdresseRS', AdresseRS)
     .service('ListResourceRS', ListResourceRS)
     .service('FallRS', FallRS)
-    .service('FamiliensituationRS', FamiliensituationRS)
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
@@ -236,6 +235,7 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('NotrechtRS', NotrechtRS)
+    .factory('FamiliensituationRS', downgradeInjectable(FamiliensituationRS) as any)
     .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)

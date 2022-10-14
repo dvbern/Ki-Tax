@@ -38,8 +38,6 @@ import {EKVViewUtil} from '../../EKVViewUtil';
 })
 export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public ekvViewUtil = EKVViewUtil;
 
     public constructor(
@@ -90,18 +88,5 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
         // or only for the single antragsteller
         return !FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager)
             && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
-    }
-
-    private isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
-                    this.form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
     }
 }

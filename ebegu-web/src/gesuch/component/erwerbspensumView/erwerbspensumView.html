@@ -91,6 +91,43 @@
                         </div>
                     </div>
 
+                    <!--Arbeitgeber. Ausbildungsintitution oder Beschäftigungsinstitution -->
+                    <div class="row" ng-if="vm.isErwerbspensumInstitutionRequired()">
+                        <div class="col-sm-12 dv-input-container-medium">
+                            <div class="form-group">
+                                <label class="md-no-float required" ng-if="vm.isAngestellt()" for="taetigkeit">
+                                    <span data-translate="ARBEITGEBER"></span>
+                                </label>
+                                <label class="md-no-float required"
+                                       ng-if="vm.isInAusildungWeiterbildung()"
+                                       for="taetigkeit">
+                                    <span data-translate="AUSBILDUNGSINSTITUTION"></span>
+                                </label>
+                                <label class="md-no-float required"
+                                       ng-if="vm.isInIntegrationBeschaeftigung()"
+                                       for="taetigkeit">
+                                    <span data-translate="BESCHAEFTIGUNGSINSTITUTION"></span>
+                                </label>
+                                <input id="erwerbspensumInstitution"
+                                       type="text"
+                                       required
+                                       name="erwerbspensumInstitution"
+                                       ng-model="vm.model.erwerbspensumJA.erwerbspensumInstitution"
+                                       dv-max-length class="form-control"
+                                       ng-disabled="vm.erwerbspensumDisabled()"
+                                       aria-describedby="erwerbspensumInstitution-error"
+                                >
+
+                                <dv-bisher gs="vm.model.erwerbspensumGS.erwerbspensumInstitution"
+                                           ja="vm.model.erwerbspensumJA.erwerbspensumInstitution"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                <dv-error-messages input-id="erwerbspensumInstitution"
+                                                   for="vm.form.erwerbspensumInstitution.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Pensum-->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">

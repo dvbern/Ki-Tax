@@ -21,4 +21,5 @@ public interface MandantVisitor<T> {
 	T visitBern();
 	T visitLuzern();
 	T visitSolothurn();
+	T visitAppenzellAusserrhoden();
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
@@ -24,6 +24,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -47,6 +48,8 @@ describe('InstitutionListComponent', () => {
             ['isRole', 'isOneOfRoles', 'principal$']);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+            ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
 
         authServiceSpy.principal$ = of(new TSBenutzer());
 
@@ -61,7 +64,8 @@ describe('InstitutionListComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ],
             declarations: [InstitutionListComponent]
         })
@@ -70,6 +74,7 @@ describe('InstitutionListComponent', () => {
 
         insitutionServiceSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         insitutionServiceSpy.getInstitutionenListDTOEditableForCurrentBenutzer.and.returnValue(of([]));
+        applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(Promise.resolve(false));
 
     }));
 

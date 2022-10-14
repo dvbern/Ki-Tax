@@ -111,7 +111,7 @@ export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
     }
 
     private readEinstellungenByGesuchsperiode(): void {
-        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id)
+        this.einstellungenRS.getAllEinstellungenActiveForMandantBySystem(this.gesuchsperiode.id)
             .subscribe((response: TSEinstellung[]) => {
                 response.sort((a, b) =>  this.$translate.instant(a.key.toString())
                         .localeCompare(this.$translate.instant(b.key.toString())));

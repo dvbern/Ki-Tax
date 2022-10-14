@@ -176,7 +176,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         private readonly mitteilungRS: MitteilungRS,
         dvDialog: DvDialog,
         private readonly $log: ILogService,
-        private readonly einstellungRS: EinstellungRS,
+        protected readonly einstellungRS: EinstellungRS,
         private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,

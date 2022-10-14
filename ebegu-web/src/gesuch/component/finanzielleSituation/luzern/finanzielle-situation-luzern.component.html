@@ -74,6 +74,8 @@
                                                     (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
                 </dv-finanzielle-situation-require-x>
 
+                <dv-warning *ngIf="isSozialhilfeBezueger()">SOZIALHILFEBEZUEGER_WARNING</dv-warning>
+
                 <div *ngIf="model.sozialhilfeBezueger">
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
@@ -143,6 +145,8 @@
                             </dv-error-messages>
                         </dv-radio-container-x>
                     </div>
+
+                    <dv-warning *ngIf="getModel().finanzielleSituationJA.quellenbesteuert" [text]="'QUELLSTEUERPFLICHTIG_WARNING' | translate"></dv-warning>
 
                     <div class="form-group" *ngIf="gemeinsameStekVisible()">
                         <dv-radio-container-x>

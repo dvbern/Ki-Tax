@@ -143,13 +143,15 @@ export class ZahlungRS {
         gemeinde: TSGemeinde,
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
-        datumGeneriert: moment.Moment | undefined
+        datumGeneriert: moment.Moment | undefined,
+        auszahlungInZukunft: boolean
     ): Observable<TSZahlungsauftrag> {
         const params: any = {
             zahlungslaufTyp: zahlungslaufTyp.toString(),
             gemeindeId: gemeinde.id,
             faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
-            beschrieb
+            beschrieb,
+            auszahlungInZukunft
         };
         if (datumGeneriert) {
             params.datumGeneriert = DateUtil.momentToLocalDate(datumGeneriert);

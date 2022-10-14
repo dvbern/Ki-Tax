@@ -133,14 +133,19 @@ export class BetreuungInput implements IController {
     }
 
     private parseToPensumUnit(): void {
-        if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
-            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+        if (EbeguUtil.isNullOrUndefined(this.pensumContainer.betreuungspensumJA.pensum)) {
             return;
         }
-        this.pensumValue =
-            (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE)
-                ? this.pensumContainer.betreuungspensumJA.pensum
-                : Number((this.pensumContainer.betreuungspensumJA.pensum * this.multiplier).toFixed(2));
+
+        this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
+
+        if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
+        && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)
+        && this.showBetreuungInputSwitch) {
+            this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
+        }
+
+        this.pensumValue = Number(this.pensumValue.toFixed(2));
     }
 
     private parseToPercentage(): void {

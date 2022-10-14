@@ -39,8 +39,6 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
 })
 export class EinkommensverschlechterungResultateViewComponent extends AbstractEinkommensverschlechterungResultat {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
     public readOnly: boolean = false;
@@ -155,19 +153,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
-    }
-
-    private isGesuchValid(): boolean {
-        if (!this.form.valid) {
-            for (const control in this.form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
-                    this.form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return this.form.valid;
     }
 
     /**

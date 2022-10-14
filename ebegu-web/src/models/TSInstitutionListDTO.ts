@@ -17,6 +17,7 @@
 
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
+import {TSGemeinde} from './TSGemeinde';
 import {TSInstitution} from './TSInstitution';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
@@ -24,15 +25,18 @@ import {TSTraegerschaft} from './TSTraegerschaft';
 export class TSInstitutionListDTO extends TSInstitution {
 
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
+    public gemeinde: TSGemeinde;
 
     public constructor(
         name?: string,
         tragerschaft?: TSTraegerschaft,
         mandant?: TSMandant,
         status?: TSInstitutionStatus,
-        betreuungsangebotTyp?: TSBetreuungsangebotTyp
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        gemeinde?: TSGemeinde
     ) {
         super(name, tragerschaft, mandant, status);
         this.betreuungsangebotTyp = betreuungsangebotTyp;
+        this.gemeinde = gemeinde;
     }
 }

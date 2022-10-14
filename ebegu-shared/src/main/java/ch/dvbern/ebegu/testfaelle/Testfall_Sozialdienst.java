@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
+import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**

@@ -47,6 +47,8 @@ public class JaxPublicAppConfig {
 	private final String steuerschnittstelleAktivAb;
 	private boolean zusatzinformationenInstitution;
 	private String activatedDemoFeatures;
+	private final boolean checkboxAuszahlungInZukunft;
+	private boolean institutionenDurchGemeindenEinladen;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -82,7 +84,9 @@ public class JaxPublicAppConfig {
 			boolean ebeguKibonAnfrageTestGuiEnabled,
 			String steuerschnittstelleAktivAb,
 			boolean zusatzinformationenInstitution,
-			String activatedDemoFeatures
+			String activatedDemoFeatures,
+			boolean checkboxAuszahlungInZukunft,
+			boolean institutionenDurchGemeindenEinladen
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -118,6 +122,8 @@ public class JaxPublicAppConfig {
 		this.steuerschnittstelleAktivAb = steuerschnittstelleAktivAb;
 		this.zusatzinformationenInstitution = zusatzinformationenInstitution;
 		this.activatedDemoFeatures = activatedDemoFeatures;
+		this.checkboxAuszahlungInZukunft = checkboxAuszahlungInZukunft;
+		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
 	}
 
 	public String getCurrentNode() {
@@ -382,5 +388,17 @@ public class JaxPublicAppConfig {
 
 	public void setActivatedDemoFeatures(String activatedDemoFeatures) {
 		this.activatedDemoFeatures = activatedDemoFeatures;
+	}
+
+	public boolean isCheckboxAuszahlungInZukunft() {
+		return checkboxAuszahlungInZukunft;
+	}
+
+	public boolean isInstitutionenDurchGemeindenEinladen() {
+		return institutionenDurchGemeindenEinladen;
+	}
+
+	public void setInstitutionenDurchGemeindenEinladen(boolean institutionenDurchGemeindenEinladen) {
+		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.testfaelle;
-
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-
-public class InstitutionStammdatenBuilderBe extends InstitutionStammdatenBuilder {
-
-	public InstitutionStammdatenBuilderBe(InstitutionStammdatenService institutionStammdatenService) {
-		super(institutionStammdatenService, "945e3eef-8f43-43d2-a684-4aa61089684b", "9a0eb656-b6b7-4613-8f55-4e0e4720455e",
-				"6b7beb6e-6cf3-49d6-84c0-5818d9215ecd", "199ac4a1-448f-4d4c-b3a6-5aee21f89613", "9d8ff34f-8856-4dd3-ade2-2469aadac0ed");
-	}
-}
+-- 10049	Schulgemeindeverband Matzwil
+INSERT IGNORE INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab) VALUES
+	('0b1e3ddc-3fe2-11ed-a1c0-00090ffe0001', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-','')), 'BE', 10049, 'Schulgemeindeverband Matzwil', '2010-01-01');
