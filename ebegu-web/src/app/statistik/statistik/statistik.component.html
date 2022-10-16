@@ -971,6 +971,51 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
+
+                <div *ngIf="showLastenausgleichBGStatistik()">
+                    <div>
+                        <dv-accordion-tab [tabid]="'lastenausgleichBG'">
+                            <tab-title>
+                                <span class="uppercase" translate>STATISTIK_LASTENAUSGLEICH_BG</span>
+                                <dv-tooltip (click)="$event.stopPropagation()"
+                                            [text]="'STATISTIK_LASTENAUSGLEICH_BG_HINT' | translate"></dv-tooltip>
+                            </tab-title>
+                            <tab-body>
+                                <form name="lastenausgleichBG"
+                                      #lastenausgleichBGRef='ngForm'
+                                      [ngClass]="{'ng-submitted': lastenausgleichBGRef.submitted}"
+                                      (ngSubmit)="generateStatistik(lastenausgleichBGRef, TSStatistikParameterType.LASTENAUSGLEICH_BG)">
+                                    <div class="row">
+                                        <div class="col-xs-3" *ngIf="gemeinden">
+                                            <div class="form-group">
+                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                       translate>GEMEINDE</label>
+                                                <div class="dv-select-style">
+                                                    <select name="gemeinden"
+                                                            id="gemeinden"
+                                                            [(ngModel)]="statistikParameter.gemeinde"
+                                                            #gemeindeRef='ngModel'
+                                                            class="form-control"
+                                                            required>
+                                                        <option *ngFor="let gemeinde of gemeinden" [ngValue]="gemeinde">{{gemeinde.name}}</option>
+                                                    </select>
+                                                    <dv-error-messages [errorObject]="gemeindeRef.errors" class="error"></dv-error-messages>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-3 statistik-button">
+                                            <dv-loading-button type="submit"
+                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
+                                                <span class="uppercase" translate>GENERIEREN</span>
+                                            </dv-loading-button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </tab-body>
+                        </dv-accordion-tab>
+                    </div>
+                </div>
+
             </dv-accordion>
         </div>
     </div>

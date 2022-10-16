@@ -249,4 +249,14 @@ export class ReportAsyncRS {
             {params: reportParams}
         );
     }
+
+    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde) {
+        const reportParams = ReportAsyncRS.createParamsFromObject({
+            gemeindeId: gemeinde.id
+        });
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/lastenausgleichBG`,
+            {params: reportParams}
+        );
+    }
 }

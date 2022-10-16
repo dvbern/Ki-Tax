@@ -73,6 +73,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public allJobs: Array<TSBatchJobInformation>;
     public years: string[];
     public tagesschulenStammdatenList: TSInstitutionStammdaten[];
+    public gemeinden: TSGemeinde[];
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     public flagShowErrorNoGesuchSelected: boolean = false;
     public showKantonStatistik: boolean = false;
@@ -125,6 +126,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
                 this.cd.markForCheck();
             });
+
+        this.gemeindeRS.getAktiveGemeinden().then(gemeinden => {
+            this.gemeinden = gemeinden;
+            this.cd.markForCheck();
+        })
+
         this.updateShowMahlzeitenStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
@@ -328,6 +335,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
                 this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel(this.statistikParameter.gesuchsperiode)
+                    .subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
+                return;
+            case TSStatistikParameterType.LASTENAUSGLEICH_BG:
+                this.reportAsyncRS.getLastenausgleichBGReportExcel(this.statistikParameter.gemeinde)
                     .subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
@@ -678,5 +691,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     public showLastenausgleichTagesschulenStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
+    }
+
+    public showLastenausgleichBGStatistik() {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()))
+        && this.lastenausgleichActive;
     }
 }

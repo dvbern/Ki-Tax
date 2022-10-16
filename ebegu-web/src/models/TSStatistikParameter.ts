@@ -34,6 +34,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _tagesschuleAnmeldungen: TSInstitutionStammdaten;
     private _gemeindeMahlzeitenverguenstigungen: TSGemeinde;
     private _kantonSelbstbehalt: number;
+    private _gemeinde: TSGemeinde;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment
@@ -163,5 +164,13 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set kantonSelbstbehalt(value: number) {
         this._kantonSelbstbehalt = value;
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 }
