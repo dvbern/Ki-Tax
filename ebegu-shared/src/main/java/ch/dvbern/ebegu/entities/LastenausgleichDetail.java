@@ -18,15 +18,22 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.MathUtil;
@@ -94,6 +101,10 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private boolean korrektur = false;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "lastenausgleich_detail_zeitabschnitt", joinColumns = @JoinColumn(name = "lastenausgleich_detail_id"), inverseJoinColumns = @JoinColumn(name = "zeitabschnitt_id"))
+	@Nonnull
+	private @Valid Collection<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
 
 	public LastenausgleichDetail() {
 	}
@@ -218,6 +229,15 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Nonnull
 	public BigDecimal getTotalEingabeLastenausgleich() {
 		return MathUtil.DEFAULT.addNullSafe(betragLastenausgleich, totalBetragGutscheineOhneSelbstbehalt);
+	}
+
+	@Nonnull
+	public Collection<VerfuegungZeitabschnitt> getZeitabschnitte() {
+		return zeitabschnitte;
+	}
+
+	public void setZeitabschnitte(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
+		this.zeitabschnitte = zeitabschnitte;
 	}
 
 	@Override

@@ -80,6 +80,7 @@ public class LastenausgleichRechnerOld extends AbstractLastenausgleichRechner {
 		detail.setTotalBelegungenOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalBelegungOhneSelbstbeahltInProzent));
 		detail.setTotalBetragGutscheineOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalGutscheineOhneSelbstbeahlt));
 		detail.setKostenFuerSelbstbehalt(MathUtil.toTwoKommastelle(kostenOhneSelbstbehaltGemeinde));
+		detail.setZeitabschnitte(abschnitteProGemeindeUndJahr);
 
 		return detail;
 	}
