@@ -798,7 +798,8 @@ public class BGCalculationInput {
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
-		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
+		this.betreuungsangebotTyp =
+			this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
 		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
@@ -858,26 +859,21 @@ public class BGCalculationInput {
 	/**
 	 * Abwesenheit Special Case: Teil-Monate-Abwesenheit ohne weitere Betreuung
 	 * Die abwesenheit eben in Percent gilt fuer die ganze betreute Periode
-	 *
-	 * @param other
 	 */
-	private void handleAbwesenheitKeinMehrBG(BGCalculationInput other){
+	private void handleAbwesenheitKeinMehrBG(BGCalculationInput other) {
 		// dort sollte man keinen BG auszahlen, als
-		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0 && this.percentage != null) {
-			if (other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0
-				|| this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0) {
-				// wenn wir vollkosten bezahlen muessen aber eine zeitabschnitt hat keine BG Pensum
-				// wir verlaengern dann die vollkostenMonatAnteil
-				this.bezahltVollkostenMonatAnteil = add(this.percentage, other.percentage);
-			}
+		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0 && this.percentage != null
+			&& (other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0
+			|| this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0)) {
+			// wenn wir vollkosten bezahlen muessen aber eine zeitabschnitt hat keine BG Pensum
+			// wir verlaengern dann die vollkostenMonatAnteil
+			this.bezahltVollkostenMonatAnteil = add(this.percentage, other.percentage);
 		}
 	}
 
 	/**
 	 * Abwesenheit Special Case: Teil Abwesenheit mit unterschiedliche Pensum im Monat
 	 * Kosten und Pensum adaptieren wenn höhe roder kleiner in der Abwesende Abschnitt
-	 *
-	 * @param other
 	 */
 	private void handleAbwesenheitPensumAenderung(BGCalculationInput other) {
 		if ((this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
