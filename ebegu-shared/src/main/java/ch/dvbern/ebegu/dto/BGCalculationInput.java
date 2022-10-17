@@ -774,7 +774,6 @@ public class BGCalculationInput {
 		this.bezahltVollkostenMonatAnteil = add(this.bezahltVollkostenMonatAnteil, other.bezahltVollkostenMonatAnteil);
 		this.handleAbwesenheitKeinMehrBG(other);
 
-
 		//Vollkostenanteil ist ein Prozentsatz und darf nach dem add nicht mehr als 1 (100 %) entsprechen
 		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ONE) > 0) {
 			this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
@@ -879,39 +878,38 @@ public class BGCalculationInput {
 		if ((this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
 			|| other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0) && this.percentage != null &&
 			other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0
-			&& this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
-			if (this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0 ||
-				this.getKostenAnteilMonat().compareTo(other.getKostenAnteilMonat()) != 0) {
+			&& this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0 &&
+			(this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0 ||
+				this.getKostenAnteilMonat().compareTo(other.getKostenAnteilMonat()) != 0)) {
 
-				if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
-					&& other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-					this.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-						other.getKostenAnteilMonat(),
-						other.percentage.doubleValue()), this.percentage.doubleValue()));
-					this.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
-						other.getBetreuungspensumProzent(),
-						other.percentage.doubleValue()), this.percentage.doubleValue()));
-					this.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
-						other.getMonatlicheBetreuungskosten(),
-						other.percentage.doubleValue()), this.percentage.doubleValue()));
-					this.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
-						other.anspruchspensumProzent, other.percentage.doubleValue()), this.percentage.doubleValue());
-				}
-				if (other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
-					&& this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-					other.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-						this.getKostenAnteilMonat(),
-						this.percentage.doubleValue()), other.percentage.doubleValue()));
-					other.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
-						this.getBetreuungspensumProzent(),
-						this.percentage.doubleValue()), other.percentage.doubleValue()));
-					other.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
-						this.getMonatlicheBetreuungskosten(),
-						this.percentage.doubleValue()), other.percentage.doubleValue()));
-					other.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
-						this.anspruchspensumProzent, this.percentage.doubleValue()), other.percentage.doubleValue());
+			if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
+				&& other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
+				this.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
+					other.getKostenAnteilMonat(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
+					other.getBetreuungspensumProzent(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
+					other.getMonatlicheBetreuungskosten(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
+					other.anspruchspensumProzent, other.percentage.doubleValue()), this.percentage.doubleValue());
+			}
+			if (other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
+				&& this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
+				other.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
+					this.getKostenAnteilMonat(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
+					this.getBetreuungspensumProzent(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
+					this.getMonatlicheBetreuungskosten(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
+					this.anspruchspensumProzent, this.percentage.doubleValue()), other.percentage.doubleValue());
 
-				}
 			}
 		}
 	}
