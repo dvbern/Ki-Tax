@@ -137,7 +137,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
-        private readonly einstellungRS: EinstellungRS
+        private readonly einstellungRS: EinstellungRS,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -184,9 +184,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return;
         }
         if (this.isTagesschuleVerfuegung()) {
-            this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(), this.gesuchModelManager.getGesuchsperiode(), true);
-            this.tagesschuleZeitabschnitteMitBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteMitBetreuung());
-            this.tagesschuleZeitabschnitteOhneBetreuung = this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteOhneBetreuung());
+            this.modulGroups = TagesschuleUtil.initModuleTagesschule(this.getBetreuung(),
+                this.gesuchModelManager.getGesuchsperiode(),
+                true);
+            this.tagesschuleZeitabschnitteMitBetreuung =
+                this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteMitBetreuung());
+            this.tagesschuleZeitabschnitteOhneBetreuung =
+                this.onlyZeitabschnitteSinceEntryTagesschule(this.getTagesschuleZeitabschnitteOhneBetreuung());
         }
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
@@ -235,7 +239,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private setSameVerfuegteVerfuegungsrelevanteDaten(): void {
         this.sameVerfuegteVerfuegungsrelevanteDaten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.sameVerfuegteVerfuegungsrelevanteDaten = this.getVerfuegenToWorkWith().areSameVerfuegteVerfuegungsrelevanteDaten();
+            this.sameVerfuegteVerfuegungsrelevanteDaten =
+                this.getVerfuegenToWorkWith().areSameVerfuegteVerfuegungsrelevanteDaten();
         }
     }
 
@@ -251,7 +256,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.fragenObIgnorieren = false; // by default
         this.fragenObIgnorierenMahlzeiten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren(!this.isAuszahlungAnAntragstellerEnabled);
+            this.fragenObIgnorieren =
+                this.getVerfuegenToWorkWith().fragenObIgnorieren(!this.isAuszahlungAnAntragstellerEnabled);
             this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
         }
     }
@@ -295,19 +301,20 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             this.isAlreadyIgnored(),
             'CONFIRM_ALREADY_IGNORED',
             'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED')
-        .then(() => {
-            // Mahlzeiten
-            this.warnIfAlreadyIgnored(
-                this.isAlreadyIgnoredMahlzeiten(),
-                'CONFIRM_ALREADY_IGNORED_MAHLZEITEN',
-                'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
-             .then(() => {
-                // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
-                this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung, direktVerfuegenMahlzeiten).then(() => {
-                    this.goToVerfuegen();
-                });
+            .then(() => {
+                // Mahlzeiten
+                this.warnIfAlreadyIgnored(
+                    this.isAlreadyIgnoredMahlzeiten(),
+                    'CONFIRM_ALREADY_IGNORED_MAHLZEITEN',
+                    'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
+                    .then(() => {
+                        // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
+                        this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
+                            direktVerfuegenMahlzeiten).then(() => {
+                            this.goToVerfuegen();
+                        });
+                    });
             });
-        });
     }
 
     private warnIfAlreadyIgnored(alreadyIgnored: boolean, warningTitle: string, warningText: string): IPromise<void> {
@@ -331,22 +338,27 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return defer.promise;
     }
 
-    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean, direktVerfuegenMahlzeiten: boolean): IPromise<TSVerfuegung> {
-        // Falls sowohl die Verfuegung wie die Mahlzeiten "direkt" verfuegt werden duerfen, kann direkt weitergefahren werden
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(
+        direktVerfuegen: boolean,
+        direktVerfuegenMahlzeiten: boolean,
+    ): IPromise<TSVerfuegung> {
+        // Falls sowohl die Verfuegung wie die Mahlzeiten "direkt" verfuegt werden duerfen, kann direkt weitergefahren
+        // werden
         if (direktVerfuegen && direktVerfuegenMahlzeiten) {
             return this.saveVerfuegung();
         }
         return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_INSTITUTION, direktVerfuegen)
             .then(ignoreVerguenstigung => {
-            return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER, direktVerfuegenMahlzeiten)
-                .then(ignoreMahlzeiten => {
-                return this.saveMutierteVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten);
+                return this.askForIgnoringIfNecessary(TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER,
+                    direktVerfuegenMahlzeiten)
+                    .then(ignoreMahlzeiten => {
+                        return this.saveMutierteVerfuegung(ignoreVerguenstigung, ignoreMahlzeiten);
+                    });
             });
-        });
     }
 
     private askForIgnoringIfNecessary(
-        zahlungslaufTyp: TSZahlungslaufTyp, isDirektVerfuegen: boolean
+        zahlungslaufTyp: TSZahlungslaufTyp, isDirektVerfuegen: boolean,
     ): IPromise<boolean> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
@@ -499,7 +511,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
-            zahlungslaufTyp: myZahlungslaufTyp
+            zahlungslaufTyp: myZahlungslaufTyp,
         }).then(response => {
             this.isVerfuegenClicked = false;
             return response === 2;
@@ -603,7 +615,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (!this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
             return false;
         }
-        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern && EbeguUtil.isEmptyArrayNullOrUndefined(this.getVerfuegungZeitabschnitte());
+        return this.gesuchModelManager.getBetreuungToWorkWith().auszahlungAnEltern
+            && EbeguUtil.isEmptyArrayNullOrUndefined(this.getVerfuegungZeitabschnitte());
     }
 
     public showVerfuegungPdfLink(): boolean {
@@ -708,8 +721,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAnmeldebestaetigungOhneTarifPdfLink(): boolean {
-       return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) ||
-            this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles());
+        return this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT) ||
+            (this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN) &&
+                this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles()));
     }
 
     public showAnmeldebestaetigungMitTarifPdfLink(): boolean {
@@ -759,7 +773,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private isInstitutionenTraegerschaftRoleAndTSModuleAkzeptiert(): boolean {
         return this.authServiceRs.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
-          && this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+            && this.isBetreuungInStatus(TSBetreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
     }
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
@@ -788,7 +802,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         // Auszahlung an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnInstitutionen)) {
             this.showAuszahlungAnInstitutionen =
-                 this.getVerfuegungZeitabschnitte().some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
+                this.getVerfuegungZeitabschnitte()
+                    .some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(
+                        zeitabschnitt));
         }
 
         return this.showAuszahlungAnInstitutionen;
@@ -806,7 +822,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt an die Eltern ausbezahlt wird soll die Auszahlung
         // an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnEltern)) {
-            this.showAuszahlungAnEltern = this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
+            this.showAuszahlungAnEltern =
+                this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
         }
 
         return this.showAuszahlungAnEltern;
@@ -841,9 +858,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private mapPartialZeitabschnitteSinceEntryTagesschule(tagesschuleZeitabschnitt: TSVerfuegungZeitabschnitt): TSVerfuegungZeitabschnitt {
-           if (tagesschuleZeitabschnitt.gueltigkeit.gueltigAb.isBefore(this.getBetreuung().belegungTagesschule.eintrittsdatum)) {
-               tagesschuleZeitabschnitt.gueltigkeit.gueltigAb = this.getBetreuung().belegungTagesschule.eintrittsdatum;
-           }
-           return tagesschuleZeitabschnitt;
+        if (tagesschuleZeitabschnitt.gueltigkeit.gueltigAb.isBefore(this.getBetreuung().belegungTagesschule.eintrittsdatum)) {
+            tagesschuleZeitabschnitt.gueltigkeit.gueltigAb = this.getBetreuung().belegungTagesschule.eintrittsdatum;
+        }
+        return tagesschuleZeitabschnitt;
     }
 }
