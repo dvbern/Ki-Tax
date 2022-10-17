@@ -39,6 +39,9 @@
                                     <p *ngIf="!konfigurationsListe[i].konfigTagesschuleTagisEnabled && isSuperAdmin()"
                                        class="line-through">{{getKonfigTagesschuleTagisEnabledString()}}</p>
                                     <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled">{{getKonfigTagesschuleTagisEnabledString()}}</p>
+                                    <p *ngIf="!konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung && isSuperAdmin()"
+                                        class="line-through">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}</p>
+                                    <p *ngIf="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}</p>
                                     <!-- Datum Aktivierung Tagesschulen -->
                                     <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;
                                         <strong>{{getTagesschuleAktivierungsdatumAsString(konfigurationsListe[i])}}</strong>
@@ -61,6 +64,17 @@
                                                       [(ngModel)]="konfigurationsListe[i].konfigTagesschuleTagisEnabled"
                                                       (change)="changeKonfigTagesschuleTagisEnabled(konfigurationsListe[i])">
                                             {{'TAGESSCHULE_TAGIS_ENABLED'|translate}}</mat-checkbox>
+                                    </div>
+
+                                    <div class="form-group" *ngIf="isSuperAdmin()">
+                                        <mat-checkbox id="tagesschule_zusaetzliche_angaben_{{i}}"
+                                                      name="tagesschule_zusaetzliche_angaben_{{i}}"
+                                                      [(ngModel)]="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung"
+                                                      (change)="changeKonfigTagesschuleZusaetzlicheAngaben(konfigurationsListe[i])">
+                                            {{'TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG'|translate}}
+                                            <dv-tooltip input-id="planKlasse"
+                                                        [text]="'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG' | translate"></dv-tooltip>
+                                        </mat-checkbox>
                                     </div>
 
                                     <label class="required" translate for="tsAktivierungsdatum_{{i}}">TAGESSCHULE_AKTIVIERUNGSDATUM</label>

@@ -26,7 +26,7 @@ import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdat
 @Component({
     selector: 'dv-ng-gemeinde-dialog',
     templateUrl: './dialog-import-from-other-institution.template.html',
-    styleUrls: ['./dialog-import-from-other-institution.component.less'],
+    styleUrls: ['./dialog-import-from-other-institution.component.less']
 })
 export class DialogImportFromOtherInstitution implements OnInit {
 
@@ -38,7 +38,7 @@ export class DialogImportFromOtherInstitution implements OnInit {
     public constructor(
         private readonly dialogRef: MatDialogRef<DialogImportFromOtherInstitution>,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
         this.institutionStammdatenList = data.institutionList;
     }
@@ -70,10 +70,8 @@ export class DialogImportFromOtherInstitution implements OnInit {
      */
     public filterEinstellungenTagesschule(einstellungenTagesschule: Array<TSEinstellungenTagesschule>):
         TSEinstellungenTagesschule[] {
-        return einstellungenTagesschule.filter(einstellung => {
-            return einstellung.modulTagesschuleTyp === TSModulTagesschuleTyp.DYNAMISCH
-                && einstellung.modulTagesschuleGroups.length > 0;
-        });
+        return einstellungenTagesschule.filter(einstellung => einstellung.modulTagesschuleTyp === TSModulTagesschuleTyp.DYNAMISCH
+                && einstellung.modulTagesschuleGroups.length > 0);
     }
 
     public save(): void {

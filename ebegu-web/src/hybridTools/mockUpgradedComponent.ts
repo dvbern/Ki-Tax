@@ -18,17 +18,19 @@
 import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {NewUserSelectDirective} from '../app/core/new-antrag-list/new-user-select.directive';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
 import {TooltipDirective} from '../app/shared/directive/TooltipDirective';
 import {MandantService} from '../app/shared/services/mandant.service';
+import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 
 /**
  * This mock should be used when testing an angular component that uses LoadingButtonDirective
  * to avoid conflicts with dependencies
  */
 @Directive({
-    selector: 'dv-loading-button',
+    selector: 'dv-loading-button'
 })
 export class MockDvLoadingButton {
 
@@ -44,13 +46,42 @@ export class MockDvLoadingButton {
 }
 
 @Directive({
-    selector: 'dv-tooltip',
+    selector: 'dv-tooltip'
 })
 export class MockTooltipDirective {
 
     @Input() public inputId: string;
     @Input() public text: string;
 
+}
+
+@Directive({
+    selector: 'dv-tooltip'
+})
+export class MockNewUserSelectDirective {
+    @Input()
+    public showSelectionAll: boolean;
+    @Input()
+    public angular2: boolean;
+    @Input()
+    public inputId: string;
+    @Input()
+    public dvUsersearch: string;
+    @Input()
+    public initialAll: boolean;
+    @Input()
+    public selectedUser: TSBenutzerNoDetails;
+    @Input()
+    public sachbearbeiterGemeinde: boolean;
+    @Input()
+    public schulamt: boolean;
+    @Input()
+    public userList: TSBenutzerNoDetails[];
+    @Input()
+    public useDefaultUserLists: boolean = true;
+    // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+    @Output()
+    public readonly onUserChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
 }
 
 @Injectable()
@@ -67,19 +98,19 @@ class MockMandantService {
 
 export const SHARED_MODULE_OVERRIDES = {
     remove: {
-        declarations: [LoadingButtonDirective, TooltipDirective],
-        exports: [LoadingButtonDirective, TooltipDirective],
-        providers: [MandantService],
+        declarations: [LoadingButtonDirective, TooltipDirective, NewUserSelectDirective],
+        exports: [LoadingButtonDirective, TooltipDirective, NewUserSelectDirective],
+        providers: [MandantService]
     },
     add: {
-        declarations: [MockDvLoadingButton, MockTooltipDirective],
-        exports: [MockDvLoadingButton, MockTooltipDirective],
+        declarations: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
+        exports: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
         providers: [
             WindowRef,
             {
                 provide: MandantService,
-                useClass: MockMandantService,
-            },
-        ],
-    },
+                useClass: MockMandantService
+            }
+        ]
+    }
 };

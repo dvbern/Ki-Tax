@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -28,7 +28,7 @@ import {DVEntitaetListItem} from '../../shared/interfaces/DVEntitaetListItem';
     selector: 'dv-list-sozialdienst',
     templateUrl: './list-sozialdienst.component.html',
     styleUrls: ['./list-sozialdienst.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListSozialdienstComponent implements OnInit {
 
@@ -36,12 +36,13 @@ export class ListSozialdienstComponent implements OnInit {
         'institutionCount',
         'type',
         'remove',
+        'gemeinde'
     ];
 
     public antragList$: Observable<DVEntitaetListItem[]>;
 
     public constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
-                       private readonly sozialdienstRS: SozialdienstRS,
+                       private readonly sozialdienstRS: SozialdienstRS
     ) {
     }
 
@@ -76,10 +77,10 @@ export class ListSozialdienstComponent implements OnInit {
                         name: sozialdienst.name,
                         status: sozialdienst.status.toString(),
                         canEdit: editPossible,
-                        canRemove: false,
+                        canRemove: false
                     };
                     entitaetListItems.push(dvListItem);
-                },
+                }
             );
             return entitaetListItems;
         }));

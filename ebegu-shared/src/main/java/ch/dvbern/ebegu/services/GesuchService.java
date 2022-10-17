@@ -176,7 +176,7 @@ public interface GesuchService {
 	 * Es wird nach Erstellungsdatum geschaut
 	 */
 	@Nonnull
-	Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch);
+	Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull boolean checkNeusteGesuchAuthorization);
 
 	/**
 	 * Alle GesucheIDs des Gesuchstellers zurueckgeben fuer admin

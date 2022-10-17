@@ -49,8 +49,8 @@ export function handleLoggedInUser(transition: Transition): Promise<RedirectToRe
 
                     // we are logged: redirect to the new entity
                     return getEntityTargetState(transition);
-                },
-            ),
+                }
+            )
         )
         .toPromise();
 }

@@ -24,15 +24,15 @@ import {BenutzerComponent} from './benutzer/benutzer.component';
 @NgModule({
     imports: [
         SharedModule,
-        BenutzerRoutingModule,
+        BenutzerRoutingModule
     ],
     declarations: [
         BenutzerComponent,
-        BenutzerEinladenComponent,
+        BenutzerEinladenComponent
     ],
     exports: [
-        BenutzerComponent,
-    ],
+        BenutzerComponent
+    ]
 })
 export class BenutzerModule {
 }

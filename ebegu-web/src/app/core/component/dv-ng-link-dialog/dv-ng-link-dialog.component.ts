@@ -21,7 +21,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
  */
 @Component({
     selector: 'dv-ng-link-dialog',
-    templateUrl: './dv-ng-link-dialog.template.html',
+    templateUrl: './dv-ng-link-dialog.template.html'
 })
 export class DvNgLinkDialogComponent {
 
@@ -30,7 +30,7 @@ export class DvNgLinkDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) data: any
     ) {
 
         if (data) {

@@ -25,12 +25,12 @@ export class ListResourceRS {
     public serviceURL: string;
 
     public constructor(public http: IHttpService, REST_API: string, public ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'lists';
+        this.serviceURL = `${REST_API  }lists`;
         ListResourceRS.laenderList = [];
     }
 
     public getLaenderList(): IPromise<TSLand[]> {
-        return this.http.get(this.serviceURL + '/laender', {cache: true}).then((response: any) => {
+        return this.http.get(`${this.serviceURL  }/laender`, {cache: true}).then((response: any) => {
             if (ListResourceRS.laenderList.length <= 0 && Array.isArray(response.data)) {
                 response.data
                     .map((d: string) => this.ebeguRestUtil.landCodeToTSLand(d))

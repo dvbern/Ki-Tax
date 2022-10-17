@@ -24,7 +24,7 @@ import {CORE_JS_MODULE} from '../core/core.angularjs.module';
 import IPromise = angular.IPromise;
 
 export const DOSSIER_JS_MODULE = angular.module('ebeguWebDossier', [
-        CORE_JS_MODULE.name,
+        CORE_JS_MODULE.name
     ])
         .config(conf)
 ;
@@ -39,10 +39,10 @@ function conf($stateProvider: StateProvider): void {
             abstract: true,
             url: '/dossier/:dossierId',
             resolve: {
-                dossier,
+                dossier
             },
             data: {
-                roles: TSRoleUtil.getAllRolesButAnonymous(),
+                roles: TSRoleUtil.getAllRolesButAnonymous()
             },
             params: {
                 dossierId: {
@@ -52,10 +52,10 @@ function conf($stateProvider: StateProvider): void {
                     // In der URL wird die ID des Dossiers nur angezeigt, wenn man die dossierId explizit spezifiziert.
                     // Mit etwas Zusatzaufwand könnte man die ID in die URL schreiben (dynamic parameter).
                     value: '',
-                    squash: true,
-                },
-            },
-        },
+                    squash: true
+                }
+            }
+        }
     );
 }
 

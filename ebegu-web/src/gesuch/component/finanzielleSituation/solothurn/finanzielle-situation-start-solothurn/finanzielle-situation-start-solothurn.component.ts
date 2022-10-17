@@ -14,11 +14,9 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 @Component({
     selector: 'dv-finanzielle-situation-start-solothurn',
     templateUrl: './finanzielle-situation-solothurn.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
-
-    @ViewChild(NgForm) private readonly form: NgForm;
 
     public sozialhilfeBezueger: boolean;
     public finanzielleSituationRequired: boolean = false;
@@ -62,7 +60,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }
@@ -104,7 +102,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
                 this.resetBruttoLohnGS2();
             }
         }
-        // tslint:disable-next-line:early-exit
+        // eslint-disable-next-line
         if (EbeguUtil.isNotNullAndFalse(steuerveranlagungErhalten)) {
             this.resetVeranlagungSolothurn();
             if (this.isGemeinsam()) {

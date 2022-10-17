@@ -29,7 +29,7 @@ export class TSLastenausgleichTagesschuleAngabenInstitutionContainer extends TSA
     public isAtLeastInBearbeitungGemeinde(): boolean {
         return [
             TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE,
-            TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT,
+            TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT
         ].includes(this.status);
     }
 

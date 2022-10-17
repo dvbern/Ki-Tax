@@ -76,6 +76,8 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine_;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
@@ -566,9 +568,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	@Override
-	public Collection<Benutzer> getAllBenutzerMandant(@Nonnull Mandant mandant) {
+	public Collection<Benutzer> getAllActiveBenutzerMandant(@Nonnull Mandant mandant) {
 		return getBenutzersOfRoles(getMandantRoles())
-			.stream().filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.stream()
+			.filter(benutzer -> benutzer.getMandant().getMandantIdentifier() == mandant.getMandantIdentifier())
+			.filter(benutzer -> !benutzer.isGesperrt())
 			.collect(Collectors.toList());
 	}
 
@@ -1064,17 +1068,24 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Root<InstitutionStammdaten> sqFrom = subquery.from(InstitutionStammdaten.class);
 			Subquery<String> subqueryFI = queryTS.subquery(String.class);
 			Root<InstitutionStammdaten> sqFromFI = subqueryFI.from(InstitutionStammdaten.class);
+			Subquery<String> subqueryBG = queryTS.subquery(String.class);
+			Root<InstitutionStammdaten> sqFromBG = subqueryBG.from(InstitutionStammdaten.class);
 
 			Predicate stammdatenTSPredicate =
 				cb.isNotNull(sqFrom.get(InstitutionStammdaten_.institutionStammdatenTagesschule));
 			Predicate stammdatenFIPredicate =
 				cb.isNotNull(sqFromFI.get(InstitutionStammdaten_.institutionStammdatenFerieninsel));
+			Predicate stammdatenBGPredicate =
+				cb.isNotNull(sqFromBG.get(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine));
 
 			Join<InstitutionStammdaten, InstitutionStammdatenTagesschule> instStammdatenTSJoin =
 				sqFrom.join(InstitutionStammdaten_.institutionStammdatenTagesschule, JoinType.INNER);
 
 			Join<InstitutionStammdaten, InstitutionStammdatenFerieninsel> instStammdatenFIJoin =
 				sqFromFI.join(InstitutionStammdaten_.institutionStammdatenFerieninsel, JoinType.INNER);
+
+			Join<InstitutionStammdaten, InstitutionStammdatenBetreuungsgutscheine> instStammdatenBGJoin =
+				sqFromBG.join(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine, JoinType.INNER);
 
 			Predicate predicateFI = cb.and(
 				stammdatenFIPredicate,
@@ -1084,12 +1095,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				stammdatenTSPredicate,
 				instStammdatenTSJoin.get(InstitutionStammdatenTagesschule_.gemeinde).in(userGemeinden));
 
+			Predicate predicateBG = cb.and(
+				stammdatenBGPredicate,
+				instStammdatenBGJoin.get(InstitutionStammdatenBetreuungsgutscheine_.gemeinde).in(userGemeinden));
+
 			subquery.where(predicateTS);
 
 			subqueryFI.where(predicateFI);
 
+			subqueryBG.where(predicateBG);
+
 			subquery.select(sqFrom.get(InstitutionStammdaten_.institution).get(Institution_.id));
 			subqueryFI.select(sqFromFI.get(InstitutionStammdaten_.institution).get(Institution_.id));
+			subqueryBG.select(sqFromBG.get(InstitutionStammdaten_.institution).get(Institution_.id));
 			// END SUBQUERY
 
 			Join<Berechtigung, Institution> instiutionenJoin =
@@ -1097,7 +1115,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 			Predicate inSubquery = cb.in(instiutionenJoin.get(Institution_.id)).value(subquery);
 			Predicate inSubqueryFI = cb.in(instiutionenJoin.get(Institution_.id)).value(subqueryFI);
-			predicatesTS.add(cb.or(inSubquery, inSubqueryFI));
+			Predicate inSubqueryBG = cb.in(instiutionenJoin.get(Institution_.id)).value(subqueryBG);
+			predicatesTS.add(cb.or(inSubquery, inSubqueryFI, inSubqueryBG));
 		}
 
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
@@ -1184,6 +1203,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 						LocalDate.parse(predicateObjectDto.getRoleGueltigBis(), Constants.DATE_FORMATTER);
 					predicates.add(cb.equal(currentBerechtigungJoin.get(AbstractDateRangedEntity_.gueltigkeit)
 						.get(DateRange_.gueltigBis), searchDate));
+				} catch (DateTimeParseException e) {
+					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
+					return new ImmutablePair<>(0L, Collections.emptyList());
+				}
+			}
+			// roleGueltigAb
+			if (predicateObjectDto.getRoleGueltigAb() != null) {
+				try {
+					LocalDate searchDate =
+						LocalDate.parse(predicateObjectDto.getRoleGueltigAb(), Constants.DATE_FORMATTER);
+					predicates.add(cb.equal(currentBerechtigungJoin.get(AbstractDateRangedEntity_.gueltigkeit)
+						.get(DateRange_.gueltigAb), searchDate));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
 					return new ImmutablePair<>(0L, Collections.emptyList());
@@ -1327,6 +1358,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				break;
 			case "role":
 				expression = currentBerechtigung.get(Berechtigung_.role);
+				break;
+			case "roleGueltigAb":
+				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb);
 				break;
 			case "roleGueltigBis":
 				expression = currentBerechtigung.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis);

@@ -45,7 +45,7 @@ export class DVEnableElement implements IDirective {
         scope: IScope,
         _element: IAugmentedJQuery,
         attributes: IAttributes,
-        controller: DVRoleElementController,
+        controller: DVRoleElementController
     ) => {
         // attributes.$observe funktioniert nicht. Siehe dv-show-element.ts
         scope.$watch(attributes.dvEnableAllowedRoles, (newValue: any, _oldValue: any, _scope: any) => {

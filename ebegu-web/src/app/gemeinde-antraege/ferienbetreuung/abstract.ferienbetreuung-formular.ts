@@ -53,7 +53,7 @@ export abstract class AbstractFerienbetreuungFormular {
         protected readonly dialog: MatDialog,
         protected readonly cd: ChangeDetectorRef,
         protected readonly wizardRS: WizardStepXRS,
-        protected readonly uiRouterGlobals: UIRouterGlobals,
+        protected readonly uiRouterGlobals: UIRouterGlobals
     ) {
     }
 
@@ -98,22 +98,22 @@ export abstract class AbstractFerienbetreuungFormular {
     protected showValidierungFehlgeschlagenErrorMessage(): void {
         this.errorService.clearAll();
         this.errorService.addMesageAsError(
-            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN'),
+            this.translate.instant('LATS_GEMEINDE_VALIDIERUNG_FEHLGESCHLAGEN')
         );
     }
 
-    // tslint:disable-next-line:no-identical-functions
+    // eslint-disable-next-line
     protected showUnerwarteteErrorMessage(): void {
         this.errorService.clearAll();
         this.errorService.addMesageAsError(
-            this.translate.instant('ERROR_UNEXPECTED'),
+            this.translate.instant('ERROR_UNEXPECTED')
         );
     }
 
     protected confirmDialog(frageKey: string): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant(frageKey),
+            frage: this.translate.instant(frageKey)
         };
         return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()
@@ -123,7 +123,7 @@ export abstract class AbstractFerienbetreuungFormular {
     protected setupRoleBasedPropertiesForPrincipal(
         container: TSFerienbetreuungAngabenContainer,
         angaben: TSFerienbetreuungAbstractAngaben,
-        principal: TSBenutzer,
+        principal: TSBenutzer
     ): void {
         if (container.isInPruefungKanton()) {
             if (principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && angaben.isInBearbeitung()) {
@@ -137,7 +137,7 @@ export abstract class AbstractFerienbetreuungFormular {
             } else {
                 this.setCanSeeNoActions();
             }
-            // tslint:disable-next-line:no-collapsible-if
+            // eslint-disable-next-line
         } else if (container.isInBearbeitungGemeinde() && !principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             if (angaben.isAbgeschlossen()) {
                 this.canSeeAbschliessen.next(false);
@@ -162,7 +162,7 @@ export abstract class AbstractFerienbetreuungFormular {
     protected disableFormBasedOnStateAndPrincipal(
         principal: TSBenutzer,
         container: TSFerienbetreuungAngabenContainer,
-        angaben: TSFerienbetreuungAbstractAngaben,
+        angaben: TSFerienbetreuungAbstractAngaben
     ): void {
         if (angaben.isAbgeschlossen() ||
             container?.isGeprueft() ||
@@ -179,7 +179,7 @@ export abstract class AbstractFerienbetreuungFormular {
     protected setupFormAndPermissions(
         container: TSFerienbetreuungAngabenContainer,
         angaben: TSFerienbetreuungAbstractAngaben,
-        principal: TSBenutzer,
+        principal: TSBenutzer
     ): void {
         this.setupForm(angaben);
         this.cd.detectChanges();

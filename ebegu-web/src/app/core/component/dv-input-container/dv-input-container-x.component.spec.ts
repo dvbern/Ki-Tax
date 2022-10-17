@@ -22,7 +22,7 @@ describe('DvInputContainerX', () => {
     let component: DVInputContainerXComponent;
     let fixture: ComponentFixture<DVInputContainerXComponent>;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ DVInputContainerXComponent ]
         })

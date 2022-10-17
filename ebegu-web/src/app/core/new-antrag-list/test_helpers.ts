@@ -17,7 +17,7 @@
 import {NgZone, PlatformRef, Type} from '@angular/core';
 import {UpgradeModule} from '@angular/upgrade/static';
 
-// tslint:disable-next-line:no-shadowed-variable
+// eslint-disable-next-line @typescript-eslint/no-shadow
 export function html(html: string): Element {
     // Don't return `body` itself, because using it as a `$rootElement` for ng1
     // will attach `$injector` to it and that will affect subsequent tests.
@@ -32,7 +32,7 @@ export function html(html: string): Element {
     return div;
 }
 
-// tslint:disable-next-line:typedef
+// eslint-disable-next-line
 export function bootstrap(
     platform: PlatformRef, ng2Module: Type<{}>, element: Element, ng1Module: angular.IModule) {
     // We bootstrap the Angular module first; then when it is ready (async) we bootstrap the AngularJS
@@ -41,7 +41,9 @@ export function bootstrap(
         const ngZone = ref.injector.get<NgZone>(NgZone);
         const upgrade = ref.injector.get(UpgradeModule);
         const failHardModule: any = ($provide: any) => {
-            $provide.value('$exceptionHandler', (err: any) => { throw err; });
+            $provide.value('$exceptionHandler', (err: any) => {
+ throw err;
+});
         };
 
         // The `bootstrap()` helper is used for convenience in tests, so that we don't have to inject

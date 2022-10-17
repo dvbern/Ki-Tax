@@ -42,7 +42,7 @@ export class PendenzenSteueramtListViewController implements IController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
         private readonly $log: ILogService,
-        private readonly searchRS: SearchRS,
+        private readonly searchRS: SearchRS
     ) {
     }
 
@@ -55,18 +55,16 @@ export class PendenzenSteueramtListViewController implements IController {
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
         this.$log.debug('Triggering ServerFiltering with Filter Object', tableFilterState);
-        this.searchRS.countAntraege(tableFilterState).then((response: any) => {
+        this.searchRS.countAntraege(tableFilterState).toPromise().then((response: any) => {
             this.totalResultCount = response ? response.toString() : '0';
         });
-        return this.searchRS.searchAntraege(tableFilterState).then((response: TSAntragSearchresultDTO) => {
-            return response;
-        });
-    }
+        return this.searchRS.searchAntraege(tableFilterState).toPromise().then((response: TSAntragSearchresultDTO) => response);
+    };
 
     private openPendenz(pendenz: TSAntragDTO, isCtrlKeyPressed: boolean): void {
         this.gesuchModelManager.clearGesuch();
         const navObj: any = {
-            gesuchId: pendenz.antragId,
+            gesuchId: pendenz.antragId
         };
         if (isCtrlKeyPressed) {
             const url = this.$state.href('gesuch.familiensituation', navObj);

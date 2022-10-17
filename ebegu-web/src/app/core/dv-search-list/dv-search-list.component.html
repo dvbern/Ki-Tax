@@ -72,6 +72,17 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Column Status -->
+        <ng-container matColumnDef="gemeinde">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>
+                {{'GEMEINDE' | translate}}
+            </mat-header-cell>
+            <mat-cell class="mat-cell-clickable" *matCellDef="let item"
+                      (click)="open(item.id)">
+                {{item.gemeinde}}
+            </mat-cell>
+        </ng-container>
+
         <!-- Column detail -->
         <ng-container matColumnDef="detail">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>

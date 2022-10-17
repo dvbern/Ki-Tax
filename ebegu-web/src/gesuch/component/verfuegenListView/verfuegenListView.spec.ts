@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope} from 'angular';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -87,7 +88,7 @@ describe('verfuegenListViewTest', () => {
         spyOn(berechnungsManager, 'calculateEinkommensverschlechterung')
           .and.returnValue($q.resolve(new TSFinanzielleSituationResultateDTO()));
         spyOn(einstellungRS, 'findEinstellung')
-            .and.returnValue($q.resolve(new TSEinstellung()));
+            .and.returnValue(of(new TSEinstellung(null, null, 'true')));
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
         verfuegenListView = new VerfuegenListViewController($state,
@@ -124,7 +125,7 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.findKind).not.toHaveBeenCalled();
             });
             it('does not find the Kind, so it stops loading and does not move to the next page', () => {
@@ -136,13 +137,13 @@ describe('verfuegenListViewTest', () => {
 
                 verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.convertKindNumberToKindIndex)
                     .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect(gesuchModelManager.setKindIndex).not.toHaveBeenCalled();
 
-                // tslint:disable-next-line:no-unbound-method
+                // eslint-disable-next-line @typescript-eslint/unbound-method
                 expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
             });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -157,14 +158,14 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setBetreuungIndex).not.toHaveBeenCalled();
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect($state.go).not.toHaveBeenCalledWith(verfuegenView, {gesuchId: ''});
                 });
             it('does find the Kind but does not find the Betreuung, so it stops loading and does not move to the next page',
@@ -180,16 +181,16 @@ describe('verfuegenListViewTest', () => {
 
                     verfuegenListView.openVerfuegung(tsKindContainer, betreuung);
 
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.convertKindNumberToKindIndex)
                         .toHaveBeenCalledWith(tsKindContainer.kindNummer);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect(gesuchModelManager.setKindIndex).toHaveBeenCalledWith(0);
-                    // tslint:disable-next-line:no-unbound-method
+                    // eslint-disable-next-line @typescript-eslint/unbound-method
                     expect($state.go).toHaveBeenCalledWith(verfuegenView, {
                         betreuungNumber: 2,
                         kindNumber: 1,
-                        gesuchId: undefined,
+                        gesuchId: undefined
                     });
                 });
         });

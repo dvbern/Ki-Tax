@@ -45,14 +45,14 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         FerienbetreuungUploadComponent,
         FerienbetreuungFreigabeComponent,
         FerienbetreuungAbschlussComponent,
-        FerienbetreuungBerechnungComponent,
+        FerienbetreuungBerechnungComponent
     ],
     imports: [
         CommonModule,
         FerienbetreuungRoutingModule,
         WizardstepXModule,
         SharedModule,
-        ReactiveFormsModule,
+        ReactiveFormsModule
     ],
     providers: [
         FerienbetreuungService,

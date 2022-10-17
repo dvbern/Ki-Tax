@@ -29,12 +29,12 @@ const ng1States: Ng1StateDeclaration[] = [
         abstract: true,
         name: 'pendenzenSteueramt',
         data: {
-            roles: TSRoleUtil.getSteueramtRoles(),
-        },
+            roles: TSRoleUtil.getSteueramtRoles()
+        }
     },
     {
         name: 'pendenzenSteueramt.list-view',
         template: '<pendenzen-steueramt-list-view flex="auto" class="overflow-scroll">',
-        url: '/pendenzenSteueramt',
-    },
+        url: '/pendenzenSteueramt'
+    }
 ];

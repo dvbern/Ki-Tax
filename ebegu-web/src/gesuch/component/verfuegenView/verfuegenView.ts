@@ -1,4 +1,4 @@
-/* tslint:disable:early-exit */
+/* eslint-disable */
 /*
  * Ki-Tax: System for the management of external childcare subsidies
  * Copyright (C) 2017 City of Bern Switzerland
@@ -17,6 +17,7 @@
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {map} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -29,6 +30,7 @@ import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
@@ -37,6 +39,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -84,7 +87,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'I18nServiceRSRest',
         '$q',
         '$translate',
-        'MandantService'
+        'MandantService',
+        'EinstellungRS'
     ];
 
     // this is the model...
@@ -100,6 +104,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showPercent: boolean;
     public showHours: boolean;
     public showDays: boolean;
+    private isVerfuegungExportEnabled: boolean;
 
     public showVerfuegung: boolean;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
@@ -107,6 +112,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
     public isLuzern: boolean;
+    private isAuszahlungAnAntragstellerEnabled: boolean = false;
 
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
@@ -131,6 +137,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
+        private readonly einstellungRS: EinstellungRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -195,20 +202,29 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.showHours = this.showPensumInHours();
         this.showDays = this.showPensumInDays();
         this.showVerfuegung = this.showVerfuegen();
-
-        this.initDevModeParameter();
     }
 
     private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegteVerfuegungsrelevanteDaten();
-        this.setFragenObIgnorieren();
         this.setMahlzeitenChanges();
+        this.initProperties();
     }
 
-    private initDevModeParameter(): void {
-        this.applicationPropertyRS.isDevMode().then((response: boolean) => {
+    private initProperties(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then((response: TSPublicAppConfig) => {
             // Schemas are only visible in devmode
-            this.showSchemas = response;
+            this.showSchemas = response.devmode;
+            this.isAuszahlungAnAntragstellerEnabled = response.infomaZahlungen;
+
+            this.setFragenObIgnorieren();
+        });
+
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.VERFUEGUNG_EXPORT_ENABLED,
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe(response => {
+            this.isVerfuegungExportEnabled = JSON.parse(response.value);
         });
     }
 
@@ -235,7 +251,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.fragenObIgnorieren = false; // by default
         this.fragenObIgnorierenMahlzeiten = false; // by default
         if (this.getVerfuegenToWorkWith()) {
-            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren();
+            this.fragenObIgnorieren = this.getVerfuegenToWorkWith().fragenObIgnorieren(!this.isAuszahlungAnAntragstellerEnabled);
             this.fragenObIgnorierenMahlzeiten = this.getVerfuegenToWorkWith().fragenObIgnorierenMahlzeiten();
         }
     }
@@ -599,7 +615,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     // noinspection JSUnusedGlobalSymbols
     public showExportLink(): boolean {
-        return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
+        return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT) && this.isVerfuegungExportEnabled;
     }
 
     public exportJsonSchema(): void {
@@ -770,11 +786,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnInstitutionenRow(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
+            return false;
+        }
+
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt nicht an die Eltern ausbezahlt wird soll die
         // Auszahlung an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnInstitutionen)) {
-            this.showAuszahlungAnInstitutionen = EbeguUtil.isNotNullOrUndefined(this.getVerfuegungZeitabschnitte())
-                && this.getVerfuegungZeitabschnitte().some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
+            this.showAuszahlungAnInstitutionen =
+                 this.getVerfuegungZeitabschnitte().some(zeitabschnitt => !zeitabschnitt.auszahlungAnEltern && this.hasBetreuungInZeitabschnitt(zeitabschnitt));
         }
 
         return this.showAuszahlungAnInstitutionen;
@@ -785,11 +805,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnElternRow(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
+            return false;
+        }
+
         // Wenn Vergünstigung in mindestens einem Zeitabschnitt an die Eltern ausbezahlt wird soll die Auszahlung
         // an Insitutionen Row angezeigt werden
         if (EbeguUtil.isNullOrUndefined(this.showAuszahlungAnEltern)) {
-            this.showAuszahlungAnEltern =  EbeguUtil.isNotNullOrUndefined(this.getVerfuegungZeitabschnitte()) &&
-                this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
+            this.showAuszahlungAnEltern = this.getVerfuegungZeitabschnitte().some(zeitabschnitt => zeitabschnitt.auszahlungAnEltern);
         }
 
         return this.showAuszahlungAnEltern;

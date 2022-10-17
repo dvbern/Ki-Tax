@@ -18,13 +18,13 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 })
 export class GemeindeWarningService {
 
-    private readonly dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode, json: string}[] = [];
+    private readonly dangerousKonfigurationenStr: {gesuchsperiode: TSGesuchsperiode; json: string}[] = [];
     private readonly ebeguRestUtil: EbeguRestUtil = new EbeguRestUtil();
     private readonly harmlessConfigs: TSEinstellungKey[] = [
         TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
         TSEinstellungKey.GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB,
         TSEinstellungKey.GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG,
-        TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB,
+        TSEinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB
     ];
 
     public constructor() {
@@ -63,12 +63,10 @@ export class GemeindeWarningService {
         this.deleteHarmlessConfigs(konfigurationRestObj);
         // json Representation wird verwendet, damit die Objekte deep verglichen werden können
         return JSON.stringify(
-            konfigurationRestObj.konfigurationen.map(k => {
-                return {
+            konfigurationRestObj.konfigurationen.map(k => ({
                     key: k.key,
                     value: k.value
-                };
-            })
+                }))
         );
     }
 
@@ -76,8 +74,6 @@ export class GemeindeWarningService {
     // Z.B. Erster Schultag bei der Tagesschule
     private deleteHarmlessConfigs(konfigurationRestObj: any): any {
         konfigurationRestObj.konfigurationen = konfigurationRestObj.konfigurationen
-            .filter((k: TSEinstellung) => {
-                return this.harmlessConfigs.indexOf(k.key) === -1;
-            });
+            .filter((k: TSEinstellung) => this.harmlessConfigs.indexOf(k.key) === -1);
     }
 }

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Aggregat Klasse zum deserialisieren/serialisieren des gesamten SmartTable-Filterobjekts
@@ -31,17 +32,19 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class MitteilungTableFilterDTO implements Serializable {
 
 	private static final long serialVersionUID = 404959569485575365L;
+	@Nullable
 	private PaginationDTO pagination;
 
 	private MitteilungSearchDTO search;
 
 	private SortDTO sort;
 
+	@Nullable
 	public PaginationDTO getPagination() {
 		return pagination;
 	}
 
-	public void setPagination(PaginationDTO pagination) {
+	public void setPagination(@Nullable PaginationDTO pagination) {
 		this.pagination = pagination;
 	}
 

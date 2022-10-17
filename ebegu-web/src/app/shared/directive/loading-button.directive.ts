@@ -2,7 +2,7 @@ import {Directive, ElementRef, EventEmitter, Injector, Input, Output} from '@ang
 import {UpgradeComponent} from '@angular/upgrade/static';
 
 @Directive({
-    selector: 'dv-loading-button',
+    selector: 'dv-loading-button'
 })
 export class LoadingButtonDirective extends UpgradeComponent {
 

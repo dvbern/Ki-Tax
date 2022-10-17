@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
+import static ch.dvbern.ebegu.outbox.institution.InstitutionEventUtil.isExportable;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -139,7 +140,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	public void fireStammdatenChangedEvent(@Nonnull InstitutionStammdaten updatedStammdaten) {
-		if (!updatedStammdaten.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
+		if (isExportable(updatedStammdaten)) {
 			event.fire(institutionEventConverter.of(updatedStammdaten));
 		}
 	}
@@ -290,6 +291,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+		predicates.add(PredicateHelper.createBGInstitutionStammdatenOnlyFromGemeindeOrMandantPredicate(cb, root, gemeindeParam));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);

@@ -26,7 +26,7 @@ import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class BetreuungMonitoringRS {
 
@@ -34,7 +34,7 @@ export class BetreuungMonitoringRS {
     private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
-        public readonly $http: HttpClient,
+        public readonly $http: HttpClient
     ) {
     }
 
@@ -44,7 +44,7 @@ export class BetreuungMonitoringRS {
 
     public getBetreuungMonitoring(
         refNummer: string,
-        benutzer: string,
+        benutzer: string
     ): Observable<TSBetreuungMonitoring[]> {
         let params = new HttpParams();
         params = params.append('refNummer', EbeguUtil.isNotNullOrUndefined(refNummer) ? refNummer : '');
@@ -52,15 +52,11 @@ export class BetreuungMonitoringRS {
 
         return this.$http.get<any[]>(`${this.serviceURL}`,
             {
-                params,
-            }).pipe(map(response => {
-            return this.ebeguRestUtil.parseTSBetreuungMonitoringList(response);
-        }));
+                params
+            }).pipe(map(response => this.ebeguRestUtil.parseTSBetreuungMonitoringList(response)));
     }
 
     public getAllExternalClient(): Observable<TSExternalClient[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`).pipe(map(response => {
-            return this.ebeguRestUtil.parseExternalClientList(response);
-        }));
+        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`).pipe(map(response => this.ebeguRestUtil.parseExternalClientList(response)));
     }
 }

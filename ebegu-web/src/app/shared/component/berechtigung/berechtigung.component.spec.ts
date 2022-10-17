@@ -54,14 +54,14 @@ describe('BerechtigungComponent', () => {
         const superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.resolveTo([]);
+        insitutionSpy.getInstitutionenEditableForCurrentBenutzer.and.returnValue(of([]));
         traegerschaftSpy.getAllTraegerschaften.and.resolveTo([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         sozialdienstSpy.getSozialdienstList.and.returnValue(of([]));
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
+                SharedModule
             ],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
@@ -70,8 +70,8 @@ describe('BerechtigungComponent', () => {
                 {provide: SozialdienstRS, useValue: sozialdienstSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-            ],
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

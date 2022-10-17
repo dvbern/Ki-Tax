@@ -52,7 +52,7 @@ public class MigrateSchema {
 
 		final DataSource dataSource = resolveDB();
 		final Flyway flyway =
-			Flyway.configure().encoding("UTF-8").table("schema_version").dataSource(dataSource).load();
+			Flyway.configure().outOfOrder(true).encoding("UTF-8").table("schema_version").dataSource(dataSource).load();
 
 		flyway.migrate();
 	}

@@ -24,7 +24,7 @@ export class TSKindDublette {
         gesuchId?: string,
         fallNummer?: number,
         kindNummerOriginal?: number,
-        kindNummerDublette?: number,
+        kindNummerDublette?: number
     ) {
         this._gesuchId = gesuchId;
         this._fallNummer = fallNummer;

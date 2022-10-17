@@ -53,12 +53,12 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'setGesuchstellerNumber',
         'setBasisJahrPlusNumber',
         'getBasisjahrToWorkWith',
-        'getStammdatenToWorkWith',
+        'getStammdatenToWorkWith'
     ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, [
         'getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
-        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe',
+        'getCurrentStepName', 'updateCurrentWizardStepStatusSafe'
     ]);
 const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
     ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
@@ -86,11 +86,11 @@ describe('EinkommensverschlechterungResultateViewComponent', () => {
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy}
             ],
             imports: [
-                SharedModule,
-            ],
+                SharedModule
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

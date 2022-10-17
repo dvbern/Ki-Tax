@@ -420,10 +420,12 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 			total,
 			abzugSteuerfreierBetragErwachsene
 		);
-		return MathUtil.EXACT.subtractNullSafe(
+		total =  MathUtil.EXACT.subtractNullSafe(
 			total,
 			abzugSteuerfreierBetragKinder
 		);
+
+		return MathUtil.isNegative(total) ? BigDecimal.ZERO : total;
 	}
 
 	public boolean isVollstaendig() {

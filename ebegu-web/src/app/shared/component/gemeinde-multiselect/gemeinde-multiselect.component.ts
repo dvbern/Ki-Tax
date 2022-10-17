@@ -36,7 +36,7 @@ let nextId = 0;
     templateUrl: './gemeinde-multiselect.component.html',
     styleUrls: ['./gemeinde-multiselect.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class GemeindeMultiselectComponent implements OnInit {
 
@@ -51,7 +51,7 @@ export class GemeindeMultiselectComponent implements OnInit {
 
     public constructor(
         private readonly gemeindeRS: GemeindeRS,
-        public readonly form: NgForm,
+        public readonly form: NgForm
     ) {
     }
 
@@ -62,12 +62,10 @@ export class GemeindeMultiselectComponent implements OnInit {
     }
 
     private createMap$(gemeindenList$: Observable<TSGemeinde[]>): Observable<Map<TSGemeinde, boolean>> {
-        return gemeindenList$.pipe(map(gemeinden => {
-                return gemeinden.reduce((currentMap, currentValue) => {
+        return gemeindenList$.pipe(map(gemeinden => gemeinden.reduce((currentMap, currentValue) => {
                     const found = this.selected.find(g => g.id === currentValue.id);
                     return currentMap.set(found || currentValue, !!found);
-                }, new Map<TSGemeinde, boolean>());
-            }),
+                }, new Map<TSGemeinde, boolean>()))
         );
     }
 

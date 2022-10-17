@@ -54,16 +54,16 @@ describe('gesuchGenerator', () => {
         initValues();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            getAllGemeinden: Promise.resolve([gemeinde]),
+            getAllGemeinden: Promise.resolve([gemeinde])
         });
 
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            isOneOfRoles: true,
+            isOneOfRoles: true
         });
         authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            findDossier: Promise.resolve(dossier),
+            findDossier: Promise.resolve(dossier)
         });
 
         const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
@@ -71,12 +71,12 @@ describe('gesuchGenerator', () => {
         antragStatusHistoryServiceSpy.loadLastStatusChange.and.resolveTo();
 
         const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
-            findGesuchsperiode: Promise.resolve(gesuchsperiode),
+            findGesuchsperiode: Promise.resolve(gesuchsperiode)
         });
 
         const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name, [
             'setHiddenSteps',
-            'initWizardSteps',
+            'initWizardSteps'
         ]);
 
         const fallServiceSpy = jasmine.createSpyObj<FallRS>(FallRS.name, ['createFall']);
@@ -98,8 +98,8 @@ describe('gesuchGenerator', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: FallRS, useValue: fallServiceSpy},
                 {provide: SozialdienstRS, useValue: sozialdienstSpy},
-                GesuchGenerator,
-            ],
+                GesuchGenerator
+            ]
         });
 
         gesuchGenerator = TestBed.inject<GesuchGenerator>(GesuchGenerator);

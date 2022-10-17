@@ -23,6 +23,6 @@ export enum TSModulTagesschuleIntervall {
 export function getTSModulTagesschuleIntervallValues(): Array<TSModulTagesschuleIntervall> {
     return [
         TSModulTagesschuleIntervall.WOECHENTLICH,
-        TSModulTagesschuleIntervall.WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN,
+        TSModulTagesschuleIntervall.WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN
     ];
 }

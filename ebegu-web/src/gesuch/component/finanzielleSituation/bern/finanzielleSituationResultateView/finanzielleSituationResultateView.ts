@@ -52,7 +52,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         'WizardStepManager',
         '$scope',
         '$timeout',
-        'DvDialog',
+        'DvDialog'
     ];
 
     public constructor(
@@ -62,7 +62,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private readonly dvDialog: DvDialog,
+        private readonly dvDialog: DvDialog
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -117,9 +117,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     }
 
     private saveFinanzielleSituation(): IPromise<void> {
-        return this.gesuchModelManager.saveFinanzielleSituation().then(() => {
-            return this.updateWizardStepStatus();
-        });
+        return this.gesuchModelManager.saveFinanzielleSituation().then(() => this.updateWizardStepStatus());
     }
 
     /**

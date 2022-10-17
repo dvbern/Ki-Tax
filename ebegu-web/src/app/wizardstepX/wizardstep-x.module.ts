@@ -24,17 +24,17 @@ import {WizardSideNavComponent} from './wizard-side-nav/wizard-side-nav.componen
 
 @NgModule({
     declarations: [
-        WizardSideNavComponent,
+        WizardSideNavComponent
     ],
     exports: [
-        WizardSideNavComponent,
+        WizardSideNavComponent
     ],
     imports: [
         CommonModule,
         TranslateModule,
         RouterModule,
-        UIRouterModule,
-    ],
+        UIRouterModule
+    ]
 })
 export class WizardstepXModule {
 }

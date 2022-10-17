@@ -41,7 +41,7 @@ describe('DvBisherXComponent', () => {
             imports: [
                 MaterialModule,
                 BrowserAnimationsModule,
-                SharedModule,
+                SharedModule
             ],
             providers: [
                 WindowRef,

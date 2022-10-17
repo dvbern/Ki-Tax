@@ -44,13 +44,13 @@ describe('VeranlagungComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                MaterialModule,
+                MaterialModule
             ],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
-            ],
+            ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

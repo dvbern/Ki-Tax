@@ -28,7 +28,7 @@ import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkomme
     selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
     templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
     styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungSolothurnResultateViewComponent
     extends AbstractEinkommensverschlechterungResultat {
@@ -41,7 +41,7 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
-        protected readonly $transition$: Transition,
+        protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
             wizardStepManager,

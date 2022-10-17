@@ -23,12 +23,12 @@ import {WelcomeRoutingModule} from './welcome-routing/welcome-routing.module';
 @NgModule({
     imports: [
         SharedModule,
-        WelcomeRoutingModule,
+        WelcomeRoutingModule
     ],
     declarations: [
-        WelcomeMainComponent,
+        WelcomeMainComponent
     ],
-    providers: [],
+    providers: []
 })
 export class WelcomeModule {
 }

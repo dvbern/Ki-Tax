@@ -33,8 +33,8 @@ const states: NgHybridStateDeclaration[] = [
                 token: 'gemeindeKennzahlenId',
                 deps: [Transition],
                 resolveFn: (trans: Transition) =>
-                    (trans.params().id),
-            },
+                    (trans.params().id)
+            }
         ],
         data: {
             roles: TSRoleUtil.getGemeindeKennzahlenRoles()
@@ -49,11 +49,11 @@ const states: NgHybridStateDeclaration[] = [
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
-    ],
+        UIRouterUpgradeModule
+    ]
 })
 export class GemeindeKennzahlenRoutingModule {
 }

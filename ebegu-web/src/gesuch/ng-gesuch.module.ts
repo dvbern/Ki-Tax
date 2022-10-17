@@ -27,6 +27,7 @@ import {EinkommensverschlechterungSolothurnResultateViewComponent} from './compo
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
+import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
 import {DialogInitZPVNummerVerknuepfen} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
@@ -92,11 +93,12 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         AufteilungComponent,
         SteuerabfrageResponseHintsComponent,
         DialogInitZPVNummerVerknuepfen,
-        FallCreationViewXComponent
+        FallCreationViewXComponent,
+        FamiliensituationViewXComponent
     ],
     exports: [
-        DvSwitchComponent,
-    ],
+        DvSwitchComponent
+    ]
 })
 
 export class NgGesuchModule {

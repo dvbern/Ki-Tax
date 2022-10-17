@@ -42,7 +42,7 @@ export class InternePendenzenComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -80,9 +80,7 @@ export class InternePendenzenComponent implements OnInit {
         }
         this.internePendenzenRS.updateInternePendenz(editedPendenz)
             .subscribe(savedPendenz => {
-                this.internePendenzen = this.internePendenzen.filter(p => {
-                    return p.id !== editedPendenz.id;
-                });
+                this.internePendenzen = this.internePendenzen.filter(p => p.id !== editedPendenz.id);
                 this.internePendenzen.push(savedPendenz);
                 this.cd.markForCheck();
             }, error => this.handleError(error));
@@ -91,9 +89,7 @@ export class InternePendenzenComponent implements OnInit {
     public deletePendenz(deletedPendenz: TSInternePendenz): void {
         this.internePendenzenRS.deleteInternePendenz(deletedPendenz)
             .subscribe(() => {
-                this.internePendenzen = this.internePendenzen.filter(p => {
-                    return p.id !== deletedPendenz.id;
-                });
+                this.internePendenzen = this.internePendenzen.filter(p => p.id !== deletedPendenz.id);
                 this.cd.markForCheck();
             }, error => this.handleError(error));
     }

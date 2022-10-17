@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('GemeindeKennzahlenFormularComponent');
     selector: 'dv-gemeinde-kennzahlen-formular',
     templateUrl: './gemeinde-kennzahlen-formular.component.html',
     styleUrls: ['./gemeinde-kennzahlen-formular.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
 
@@ -60,7 +60,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
         private readonly fb: FormBuilder,
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -79,16 +79,16 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
             [
                 this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag()
                     .pipe(
-                        map(antrag => antrag.isInBearbeitungGemeinde()),
+                        map(antrag => antrag.isInBearbeitungGemeinde())
                     ),
                 this.authService.principal$.pipe(
                     map(principal => principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles()
-                        .concat(TSRole.SUPER_ADMIN))),
-                ),
-            ],
+                        .concat(TSRole.SUPER_ADMIN)))
+                )
+            ]
         ).pipe(
             map(([isInBearbeitungGemeinde, isGemeindeBgSuperAdminRole]) => isInBearbeitungGemeinde && isGemeindeBgSuperAdminRole),
-            takeUntil(this.unsubscribe$),
+            takeUntil(this.unsubscribe$)
         ).subscribe(this.canSeeSaveAndAbschliessen$);
     }
 
@@ -97,22 +97,22 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
             [
                 this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag()
                     .pipe(
-                        map(antrag => antrag.isAbgeschlossen()),
+                        map(antrag => antrag.isAbgeschlossen())
                     ),
                 this.authService.principal$.pipe(
-                    map(principal => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())),
-                ),
-            ],
+                    map(principal => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()))
+                )
+            ]
         ).pipe(
             map(([isAbgeschlossen, isMandantSuperAdmin]) => isAbgeschlossen && isMandantSuperAdmin),
-            takeUntil(this.unsubscribe$),
+            takeUntil(this.unsubscribe$)
         ).subscribe(this.canSeeZurueckAnGemeinde$);
     }
 
     private setupForm(): void {
         this.antragAndPrincipal$ = combineLatest([
             this.gemeindeKennzahlenService.getGemeindeKennzahlenAntrag(),
-            this.authService.principal$,
+            this.authService.principal$
         ]);
     }
 
@@ -169,7 +169,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     private confirmDialog(frageKey: string): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant(frageKey),
+            frage: this.translate.instant(frageKey)
         };
         return this.dialog.open(DvNgConfirmDialogComponent, dialogConfig)
             .afterClosed()

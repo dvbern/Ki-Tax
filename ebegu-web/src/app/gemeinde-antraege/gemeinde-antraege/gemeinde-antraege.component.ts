@@ -20,7 +20,7 @@ import {
     Component,
     OnInit,
     ViewChild,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -46,7 +46,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {
     DvMultiSelectDialogItem,
-    DvNgMultiSelectDialog,
+    DvNgMultiSelectDialog
 } from '../../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
@@ -66,7 +66,7 @@ const LOG = LogFactory.createLog('GemeindeAntraegeComponent');
     templateUrl: './gemeinde-antraege.component.html',
     styleUrls: ['./gemeinde-antraege.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class GemeindeAntraegeComponent implements OnInit {
 
@@ -81,7 +81,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         'institutionen',
         'verantwortlicheTS',
         'verantwortlicheBG',
-        'internePendenz',
+        'internePendenz'
     ];
 
     public antragList$: Observable<DVAntragListItem[]>;
@@ -98,11 +98,11 @@ export class GemeindeAntraegeComponent implements OnInit {
         new BehaviorSubject<DVAntragListFilter>({});
 
     private readonly sortDebounceSubject: BehaviorSubject<{
-        predicate?: string,
-        reverse?: boolean
+        predicate?: string;
+        reverse?: boolean;
     }> = new BehaviorSubject<{ predicate?: string; reverse?: boolean }>({
         predicate: 'aenderungsdatum',
-        reverse: true,
+        reverse: true
     });
     public triedSending: boolean = false;
     public types: TSGemeindeAntragTyp[];
@@ -122,7 +122,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly authService: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
@@ -130,7 +130,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.formGroup = this.fb.group({
             periode: ['', Validators.required],
             antragTyp: ['', Validators.required],
-            gemeinde: [''],
+            gemeinde: ['']
         });
         this.loadAntragList();
         this.loadGemeindeList();
@@ -150,20 +150,18 @@ export class GemeindeAntraegeComponent implements OnInit {
         this.antragList$ = combineLatest([
             this.filterDebounceSubject,
             this.sortDebounceSubject,
-            this.paginationChangedSubj.asObservable(),
+            this.paginationChangedSubj.asObservable()
         ]).pipe(
             mergeMap(filterSortAndPag => this.gemeindeAntragService.getGemeindeAntraege(
                 filterSortAndPag[0],
                 filterSortAndPag[1],
-                filterSortAndPag[2].toPaginationDTO(),
+                filterSortAndPag[2].toPaginationDTO()
             ).pipe(catchError(() => this.translate.get('DATA_RETRIEVAL_ERROR').pipe(
                 tap(msg => this.errorService.addMesageAsError(msg)),
-                mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>())),
+                mergeMap(() => of(new TSPaginationResultDTO<TSGemeindeAntrag>()))
             )))),
             tap(dto => this.totalItems = dto.totalResultSize),
-            map(dto => {
-                return dto.resultList.map(antrag => {
-                    return {
+            map(dto => dto.resultList.map(antrag => ({
                         antragId: antrag.id,
                         gemeinde: antrag.gemeinde.name,
                         status: antrag.statusString,
@@ -173,9 +171,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                         aenderungsdatum: antrag.timestampMutiert,
                         antragAbgeschlossen: antrag.antragAbgeschlossen,
                         verantwortlicherGemeindeantraege: antrag.verantworlicher
-                    };
-                });
-            }),
+                    })))
         );
     }
 
@@ -194,7 +190,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.errorService.clearAll();
                     this.errorService.addMesageAsError(msg);
                     LOG.error(err);
-                },
+                }
             );
     }
 
@@ -218,11 +214,11 @@ export class GemeindeAntraegeComponent implements OnInit {
                         selected: this.hasGemeindeAlreadyAntrag(gemeinde),
                         labelSelectFunction(): string {
                             return this.item.name;
-                        },
+                        }
                     };
                     return selectOption;
-                }),
-            },
+                })
+            }
         };
         let gemeindeSelection: TSGemeinde[];
 
@@ -269,13 +265,13 @@ export class GemeindeAntraegeComponent implements OnInit {
                 }
                 return this.gemeindeAntragService.deleteAllAntrage(
                     this.formGroup.value.periode,
-                    this.formGroup.value.antragTyp,
+                    this.formGroup.value.antragTyp
                 );
-            }),
+            })
         ).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
         }, err => {
             const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
             this.errorService.clearAll();
@@ -294,13 +290,13 @@ export class GemeindeAntraegeComponent implements OnInit {
                 return this.gemeindeAntragService.deleteGemeindeAntrag(antrag.periode,
                     gemeinde.id,
                     antrag.antragTyp);
-            }),
+            })
         ).subscribe(() => {
             this.errorService.addMesageAsInfo(this.translate.instant('GEMEINDE_ANTRAG_GELOESCHT',
                 {typ: antrag.antragTyp, periode: antrag.periodenString, gemeinde: antrag.gemeinde}));
             this.loadAntragList();
             this.cd.markForCheck();
-            // tslint:disable-next-line:no-identical-functions
+            // eslint-disable-next-line
         }, err => {
             const msg = this.translate.instant('DELETE_ANTRAEGE_ERROR');
             this.errorService.clearAll();
@@ -313,7 +309,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'WIRKLICH_LOESCHEN',
-            text: '',
+            text: ''
         };
         return this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed();
     }
@@ -321,14 +317,12 @@ export class GemeindeAntraegeComponent implements OnInit {
     private checkDeleteAllPossible$(): void {
         const promise = this.applicationPropertyRS.isDevMode();
         this.latsDeletePossible$ = from(promise)
-            .pipe(map(isDevmode => {
-                return this.authService.isRole(TSRole.SUPER_ADMIN) && isDevmode;
-            }));
+            .pipe(map(isDevmode => this.authService.isRole(TSRole.SUPER_ADMIN) && isDevmode));
     }
 
     private initAntragTypes(): void {
         const principal$ = this.authService.principal$.pipe(
-            filter(principal => !!principal),
+            filter(principal => !!principal)
         );
         const properties$ = from(this.applicationPropertyRS.getPublicPropertiesCached());
 
@@ -409,7 +403,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        // tslint:disable-next-line:no-identical-functions
+        // eslint-disable-next-line
         this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
@@ -425,7 +419,7 @@ export class GemeindeAntraegeComponent implements OnInit {
             .subscribe(step => {
                 const pathName = `${step.wizardTyp}.${step.stepName}`;
                 const navObj = {
-                    id: antrag.antragId,
+                    id: antrag.antragId
                 };
                 if (event.ctrlKey) {
                     const url = this.$state.href(pathName, navObj);
@@ -458,7 +452,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public isMandant(): Observable<boolean> {
         return this.authService.principal$
             .pipe(
-                map(principal => principal && principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())),
+                map(principal => principal && principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()))
             );
     }
 
@@ -477,7 +471,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public canCreateAntrag(): Observable<boolean> {
         return this.authService.principal$.pipe(
             filter(principal => !!principal),
-            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles())),
+            map(() => this.authService.isOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()))
         );
     }
 

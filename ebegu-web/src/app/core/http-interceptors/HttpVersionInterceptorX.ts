@@ -29,7 +29,7 @@ import {CONSTANTS} from '../constants/CONSTANTS';
 export class HttpVersionInterceptorX implements HttpInterceptor {
 
     public constructor(
-            private readonly versionService: VersionService,
+            private readonly versionService: VersionService
     ) {
     }
 

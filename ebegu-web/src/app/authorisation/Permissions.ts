@@ -32,11 +32,11 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
     ],
     [Permission.ROLE_TRAEGERSCHAFT]: [
         TSRole.ADMIN_TRAEGERSCHAFT,
-        TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+        TSRole.SACHBEARBEITER_TRAEGERSCHAFT
     ],
     [Permission.ROLE_INSTITUTION]: [
         TSRole.ADMIN_INSTITUTION,
-        TSRole.SACHBEARBEITER_INSTITUTION,
+        TSRole.SACHBEARBEITER_INSTITUTION
     ],
     [Permission.ROLE_GEMEINDE]: [
         TSRole.ADMIN_GEMEINDE,
@@ -49,7 +49,7 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.SACHBEARBEITER_FERIENBETREUUNG,
         TSRole.JURIST,
         TSRole.REVISOR,
-        TSRole.STEUERAMT,
+        TSRole.STEUERAMT
     ],
     [Permission.BENUTZER_EINLADEN_AS_GEMEINDE]: [
         TSRole.ADMIN_GEMEINDE,
@@ -64,7 +64,7 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.ADMIN_INSTITUTION,
         TSRole.SACHBEARBEITER_INSTITUTION,
         TSRole.ADMIN_FERIENBETREUUNG,
-        TSRole.SACHBEARBEITER_FERIENBETREUUNG,
+        TSRole.SACHBEARBEITER_FERIENBETREUUNG
     ],
     [Permission.ROLE_BG]: [
         // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be
@@ -73,7 +73,7 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.SACHBEARBEITER_BG,
         TSRole.JURIST,
         TSRole.REVISOR,
-        TSRole.STEUERAMT,
+        TSRole.STEUERAMT
     ],
     [Permission.ROLE_TS]: [
         // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be
@@ -82,15 +82,15 @@ export const PERMISSIONS: { [k in Permission]: ReadonlyArray<TSRole> } = {
         TSRole.SACHBEARBEITER_TS,
         TSRole.JURIST,
         TSRole.REVISOR,
-        TSRole.STEUERAMT,
+        TSRole.STEUERAMT
     ],
     [Permission.ROLE_MANDANT]: [
         TSRole.ADMIN_MANDANT,
-        TSRole.SACHBEARBEITER_MANDANT,
+        TSRole.SACHBEARBEITER_MANDANT
     ],
     [Permission.ROLE_SOZIALDIENST]: [
         TSRole.ADMIN_SOZIALDIENST,
-        TSRole.SACHBEARBEITER_SOZIALDIENST,
+        TSRole.SACHBEARBEITER_SOZIALDIENST
     ],
     [Permission.BENUTZER_FERIENBETREUUNG_EINLADEN]: [
         TSRole.ADMIN_FERIENBETREUUNG,

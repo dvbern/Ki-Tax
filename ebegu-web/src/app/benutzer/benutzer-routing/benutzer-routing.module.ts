@@ -29,24 +29,24 @@ const states: NgHybridStateDeclaration[] = [
         url: '/benutzer',
         component: UiViewComponent,
         data: {
-            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
-        },
+            roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
     },
     {
         name: 'benutzer.einladen',
         url: '/einladen',
-        component: BenutzerEinladenComponent,
-    },
+        component: BenutzerEinladenComponent
+    }
 ];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states}),
+        UIRouterUpgradeModule.forChild({states})
     ],
     exports: [
-        UIRouterUpgradeModule,
+        UIRouterUpgradeModule
     ],
-    declarations: [],
+    declarations: []
 })
 export class BenutzerRoutingModule {
 }

@@ -61,10 +61,10 @@ describe('RueckforderungMitteilungenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: StateService, useValue: stateServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy}
             ],
-            declarations: [],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
+            declarations: []
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();
         notrechtRSSpy.getRueckforderungFormulareForCurrentBenutzer.and.resolveTo([]);
     }));
