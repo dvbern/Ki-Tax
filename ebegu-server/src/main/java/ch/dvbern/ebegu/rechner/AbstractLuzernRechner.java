@@ -134,12 +134,16 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	private BigDecimal calculateGeschwisternBonus2Kind() {
 		//SelbstbehaltElternProzent * 50% * VollkostenTarif
-		return EXACT.multiplyNullSafe(this.selbstBehaltElternProzent, BigDecimal.valueOf(0.5), getVollkostenTarif());
+		BigDecimal geschwisternBonus = EXACT.multiplyNullSafe(this.selbstBehaltElternProzent, BigDecimal.valueOf(0.5), getVollkostenTarif());
+		//Geschwisternbonus darf nicht negativ sein.
+		return MathUtil.minimum(geschwisternBonus, BigDecimal.ZERO);
 	}
 
 	private BigDecimal calculateGeschwisternBonus3Kind() {
 		//SelbstbehaltElternProzent * 70% * VollkostenTarif
-		return EXACT.multiplyNullSafe(this.selbstBehaltElternProzent, BigDecimal.valueOf(0.7), getVollkostenTarif());
+		BigDecimal geschwisternBonus = EXACT.multiplyNullSafe(this.selbstBehaltElternProzent, BigDecimal.valueOf(0.7), getVollkostenTarif());
+		//Geschwisternbonus darf nicht negativ sein.
+		return MathUtil.minimum(geschwisternBonus, BigDecimal.ZERO);
 	}
 
 	private BigDecimal calculateAnzahlZeiteiteinheitenGemaessPensumUndAnteilMonat(BigDecimal pensum) {
