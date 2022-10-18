@@ -18,19 +18,25 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	protected static final MathUtil EXACT = MathUtil.EXACT;
+
+	private final List<RechnerRule> rechnerRulesForGemeinde;
+	protected RechnerRuleParameterDTO rechnerParameter = new RechnerRuleParameterDTO();
 
 	private BGRechnerParameterDTO inputParameter;
 	protected BGCalculationInput input;
@@ -52,7 +58,12 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 
 	protected BigDecimal anteilMonat;
 
+	protected AbstractLuzernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		this.rechnerRulesForGemeinde = rechnerRulesForGemeinde;
+	}
+
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public void calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
@@ -68,6 +79,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		if(input.getBesondereBeduerfnisseZuschlag() != null) {
 			this.inputZuschlagErhoeterBeterungsbedarf = input.getBesondereBeduerfnisseZuschlag();
 		}
+
+		prepareRechnerParameterForGemeinde(input, parameterDTO);
 
 		this.z = calculateZ();
 
@@ -97,10 +110,13 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal guscheinGekuerztInklZuschlag = EXACT.add(gutscheinGekuerzt, zuschlag);
 		BigDecimal gutscheinVorAbzugSelbstbehalt = EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, zuschlag);
 
-		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehalt, selbstbehaltDerEltern);
+		// Gemeinde Rules berücksichtigen
+		BigDecimal gutscheinVorAbzugSelbstbehaltMitGemeindeRules = gemeindeRules(gutscheinVorAbzugSelbstbehalt);
+
+		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehaltMitGemeindeRules, selbstbehaltDerEltern);
 		// Gutschein darf nie null oder negativ sein
 		gutschein = MathUtil.assertNotNullAndNotNegative(gutschein);
-		BigDecimal gutscheinProMonat = calculateGutscheinProZeitanschnitt(gutschein);
+		BigDecimal gutscheinProMonat = calculateGutscheinProZeitabschnitt(gutschein);
 		BigDecimal vollkostenProMonat = calculateVollkostenProZeitabschnitt(vollkostenGekuerzt);
 
 		BGCalculationResult result = new BGCalculationResult();
@@ -130,6 +146,29 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		}
 
 		return gutscheinVorZuschlagUndSelbstbehalt;
+	}
+
+	private void prepareRechnerParameterForGemeinde(
+		@Nonnull BGCalculationInput inputGemeinde,
+		@Nonnull BGRechnerParameterDTO parameterDTO
+	) {
+		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
+			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
+				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
+					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
+				} else {
+					//Hier muss man nur der Parameter die nicht relevant ist zuruecksetzen nicht alle parametern
+					//sonst man verliert die andere Gemeinde Relevanten Rules
+					rechnerRule.resetParameter(rechnerParameter);
+				}
+			}
+		}
+	}
+
+	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein){
+		gutschein = gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(gutschein);
+		return gutschein;
 	}
 
 	private BigDecimal calculateGeschwisternBonus2Kind() {
@@ -260,10 +299,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		return this.selbstBehaltElternProzent;
 	}
 
+	protected abstract BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(@Nonnull BigDecimal gutschein);
 	protected abstract BigDecimal calculateVollkostenProZeitabschnitt(BigDecimal vollkostenGekuerzt);
 	protected abstract BigDecimal calculateZuschlag();
 	protected abstract BigDecimal calculateVollkosten();
-	protected abstract BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein);
+	protected abstract BigDecimal calculateGutscheinProZeitabschnitt(BigDecimal gutschein);
 	protected abstract BigDecimal calculateGutscheinVorZuschlagUndSelbstbehalt();
 	protected abstract BigDecimal calculateMinimalerSelbstbehalt();
 	protected abstract BigDecimal getMinimalTarif();

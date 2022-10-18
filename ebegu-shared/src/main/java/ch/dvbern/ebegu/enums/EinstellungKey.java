@@ -92,6 +92,21 @@ public enum EinstellungKey {
 	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
 	GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
+	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen KITA
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen TFO
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
+	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
+
 	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten

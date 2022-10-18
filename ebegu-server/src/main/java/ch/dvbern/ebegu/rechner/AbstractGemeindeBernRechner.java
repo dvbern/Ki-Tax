@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -78,7 +79,8 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		@Nonnull BGRechnerParameterDTO parameterDTO
 	) {
 		for (RechnerRule rechnerRule : rechnerRulesForGemeinde) {
-			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer Gemeinde
+			// Diese Pruefung erfolgt eigentlich schon aussen... die Rules die reinkommen sind schon konfiguriert fuer
+			// Gemeinde
 			if (rechnerRule.isConfigueredForGemeinde(parameterDTO)) {
 				if (rechnerRule.isRelevantForVerfuegung(inputGemeinde, parameterDTO)) {
 					rechnerRule.prepareParameter(inputGemeinde, parameterDTO, rechnerParameter);
@@ -102,24 +104,48 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		boolean bezahltVollkosten
 	) {
 		// "Normale" Verguentigung pro Zeiteinheit
-		BigDecimal verguenstigungProZeiteinheit = super.getVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult, besonderebeduerfnisse,
-			massgebendesEinkommen,
-			bezahltVollkosten);
+		BigDecimal verguenstigungProZeiteinheit =
+			super.getVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult, besonderebeduerfnisse,
+				massgebendesEinkommen,
+				bezahltVollkosten);
 		// Zusaetzlicher Gutschein Gemeinde
-		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
+		verguenstigungProZeiteinheit =
+			EXACT.addNullSafe(
+				verguenstigungProZeiteinheit,
+				rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag());
 		// Zusaetzlicher Baby-Gutschein
-		verguenstigungProZeiteinheit = EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
+		verguenstigungProZeiteinheit =
+			EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
+
 		return verguenstigungProZeiteinheit;
 	}
 
+	@Override
+	protected BigDecimal unhabaengigeAnspruchRegelnDurchfuehren(
+		BigDecimal verguenstigung,
+		BigDecimal betreuungspensumZeiteinheit,
+		BetreuungsangebotTyp betreuungsangebotTyp) {
+		// Minimal Pauschalbetrag wenn nicht erreicht
+		verguenstigung = verguenstigung.compareTo(MathUtil.EXACT.multiply(
+			rechnerParameter.getMinimalPauschalBetrag(),
+			betreuungspensumZeiteinheit)) < 0 ?
+			MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungspensumZeiteinheit) :
+			verguenstigung;
+
+		return verguenstigung;
+	}
+
 	/**
-	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der *monatlichen*
+	 * Die Mahlzeitenverguenstigungen mit dem Anteil Monat verrechnen. Die Verguenstigung wurde aufgrund der
+	 * *monatlichen*
 	 * Mahlzeiten berechnet und ist darum bei untermonatlichen Pensen zu hoch.
 	 * Beispiel: Betreuung ueber einen halben Monat:
 	 * berechneteVerguenstigung = eingegebeneVerguenstigung * 0.5
 	 */
 	protected void handleAnteileMahlzeitenverguenstigung(
-		@Nonnull BGCalculationResult result, @Nonnull BigDecimal anteilMonat, @Nonnull BigDecimal anteilMonatEffektivAusbezahlt
+		@Nonnull BGCalculationResult result,
+		@Nonnull BigDecimal anteilMonat,
+		@Nonnull BigDecimal anteilMonatEffektivAusbezahlt
 	) {
 		// Falls der Zeitabschnitt untermonatlich ist, muessen sowohl die Anzahl Mahlzeiten wie auch die Kosten
 		// derselben mit dem Anteil des Monats korrigiert werden
