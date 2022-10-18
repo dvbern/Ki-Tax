@@ -18,8 +18,6 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
 })
 export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public sozialhilfeBezueger: boolean;
     public finanzielleSituationRequired: boolean = false;
 
@@ -62,7 +60,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

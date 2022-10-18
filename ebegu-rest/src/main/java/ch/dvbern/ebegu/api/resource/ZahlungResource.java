@@ -330,6 +330,7 @@ public class ZahlungResource {
 		@QueryParam("gemeindeId") String gemeindeId,
 		@QueryParam("faelligkeitsdatum") String stringFaelligkeitsdatum,
 		@QueryParam("beschrieb") String beschrieb,
+		@QueryParam("auszahlungInZukunft") Boolean auszahlungInZukunft,
 		@Nullable @QueryParam("datumGeneriert") String stringDatumGeneriert) throws EbeguRuntimeException {
 
 		ZahlungslaufTyp zahlungslaufTyp = ZahlungslaufTyp.valueOf(sZahlungslaufTyp);
@@ -347,10 +348,11 @@ public class ZahlungResource {
 						gemeindeId,
 						faelligkeitsdatum,
 						beschrieb,
+						auszahlungInZukunft,
 						datumGeneriert,
 						requireNonNull(principalBean.getMandant()));
 
-		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId);
+		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId, auszahlungInZukunft);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}

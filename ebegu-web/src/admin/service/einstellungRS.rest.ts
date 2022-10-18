@@ -61,8 +61,8 @@ export class EinstellungRS {
             .pipe(map((param: any) => this.ebeguRestUtil.parseEinstellungList(param)));
     }
 
-    public getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+    public getAllEinstellungenActiveForMandantBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}/mandant-active`)
             .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
     }
 
@@ -75,6 +75,13 @@ export class EinstellungRS {
             .pipe(map(result => {
                 this._einstellungenCacheMap.set(gesuchsperiodeId, result);
                 return this._einstellungenCacheMap.get(gesuchsperiodeId);
+            }));
+    }
+
+    private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
+            .pipe(map((response: any) => {
+                return this.ebeguRestUtil.parseEinstellungList(response);
             }));
     }
 

@@ -14,7 +14,6 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGs2Component extends AbstractFinSitsolothurnView {
-    @ViewChild(NgForm) private readonly form: NgForm;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -43,7 +42,7 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     }
 
     public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

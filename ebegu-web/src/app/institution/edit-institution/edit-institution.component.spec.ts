@@ -42,7 +42,8 @@ describe('EditInstitutionComponent', () => {
             imports: [
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeModule
+                GemeindeModule,
+                SharedModule
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -56,7 +57,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
             ],
             declarations: [EditInstitutionComponent]
-        })
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
         traegerschaftServiceSpy.getAllActiveTraegerschaften.and.resolveTo([]);

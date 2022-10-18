@@ -42,4 +42,9 @@ public class BetreuungDokumenteVisitor  implements MandantVisitor<AbstractDokume
 	public AbstractDokumente<Betreuung, Object> visitSolothurn() {
 		return new BernBetreuungDokumente();
 	}
+
+	@Override
+	public AbstractDokumente<Betreuung, Object> visitAppenzellAusserrhoden() {
+		return new BernBetreuungDokumente();
+	}
 }

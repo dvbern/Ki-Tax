@@ -20,13 +20,11 @@ package ch.dvbern.ebegu.test.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.testfaelle.InstitutionStammdatenBuilderBe;
+import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilderBe;
 
 public class TestDataInstitutionStammdatenBuilder extends InstitutionStammdatenBuilderBe {
 	private final Gesuchsperiode gesuchsperiode;

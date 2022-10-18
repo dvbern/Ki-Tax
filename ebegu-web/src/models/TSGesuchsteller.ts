@@ -24,6 +24,7 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
     private _telefonAusland: string;
     private _diplomatenstatus: boolean;
     private _korrespondenzSprache: TSSprache;
+    private _notfallnummer: string;
 
     public constructor() {
         super();
@@ -75,6 +76,14 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
 
     public set korrespondenzSprache(value: TSSprache) {
         this._korrespondenzSprache = value;
+    }
+
+    public get notfallnummer(): string {
+        return this._notfallnummer;
+    }
+
+    public set notfallnummer(value: string) {
+        this._notfallnummer = value;
     }
 
     public getPhone(): string {

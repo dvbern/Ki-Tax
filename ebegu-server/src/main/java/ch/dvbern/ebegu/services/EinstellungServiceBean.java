@@ -268,6 +268,22 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		return result;
 	}
 
+	@Nonnull
+	@Override
+	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenActiveForMandantOnlyAsMap(
+		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
+		Arrays.stream(EinstellungKey.values())
+			.filter(EinstellungKey::isGemeindeEinstellung)
+			.filter(einstellungKey -> einstellungKey.isEinstellungActivForMandant(gemeinde.getMandant().getMandantIdentifier()))
+			.forEach(einstellungKey -> {
+				Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
+				result.put(einstellungKey, einstellung);
+			});
+		return result;
+	}
+
 	@Override
 	public void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode) {
 		Collection<Einstellung> einstellungenOfLastGP = criteriaQueryHelper.getEntitiesByAttribute(Einstellung.class, lastGesuchsperiode,

@@ -561,6 +561,7 @@ export class EbeguRestUtil {
         if (erwerbspensumFromServer) {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
+            erwerbspensum.erwerbspensumInstitution = erwerbspensumFromServer.erwerbspensumInstitution;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
             erwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensumFromServer.unregelmaessigeArbeitszeiten;
             erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
@@ -574,6 +575,7 @@ export class EbeguRestUtil {
         if (erwerbspensum) {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
+            restErwerbspensum.erwerbspensumInstitution = erwerbspensum.erwerbspensumInstitution;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
             restErwerbspensum.unregelmaessigeArbeitszeiten = erwerbspensum.unregelmaessigeArbeitszeiten;
             restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
@@ -1510,6 +1512,7 @@ export class EbeguRestUtil {
 
             if (institutionTS instanceof TSInstitutionListDTO) {
                 institutionTS.betreuungsangebotTyp = institutionFromServer.betreuungsangebotTyp;
+                institutionTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionFromServer.gemeinde);
             }
 
             return institutionTS;
@@ -1719,6 +1722,7 @@ export class EbeguRestUtil {
     ): TSInstitutionStammdatenBetreuungsgutscheine {
         if (institutionStammdatenFromServer) {
             this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenFromServer.gemeinde);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
@@ -4143,6 +4147,9 @@ export class EbeguRestUtil {
                 this.parseBelegungTagesschuleModulList(belegungFromServer.belegungTagesschuleModule);
             belegungTS.eintrittsdatum = DateUtil.localDateToMoment(belegungFromServer.eintrittsdatum);
             belegungTS.abholungTagesschule = belegungFromServer.abholungTagesschule;
+            belegungTS.fleischOption = belegungFromServer.fleischOption;
+            belegungTS.notfallnummer = belegungFromServer.notfallnummer;
+            belegungTS.allergienUndUnvertraeglichkeiten = belegungFromServer.allergienUndUnvertraeglichkeiten;
             belegungTS.planKlasse = belegungFromServer.planKlasse;
             belegungTS.abweichungZweitesSemester = belegungFromServer.abweichungZweitesSemester;
             belegungTS.keineKesbPlatzierung = belegungFromServer.keineKesbPlatzierung;
@@ -4159,6 +4166,9 @@ export class EbeguRestUtil {
                 this.belegungTagesschuleModulArrayToRestObject(belegungTS.belegungTagesschuleModule);
             restBelegung.eintrittsdatum = DateUtil.momentToLocalDate(belegungTS.eintrittsdatum);
             restBelegung.abholungTagesschule = belegungTS.abholungTagesschule;
+            restBelegung.fleischOption = belegungTS.fleischOption;
+            restBelegung.notfallnummer = belegungTS.notfallnummer;
+            restBelegung.allergienUndUnvertraeglichkeiten = belegungTS.allergienUndUnvertraeglichkeiten;
             restBelegung.planKlasse = belegungTS.planKlasse;
             restBelegung.abweichungZweitesSemester = belegungTS.abweichungZweitesSemester;
             restBelegung.keineKesbPlatzierung = belegungTS.keineKesbPlatzierung;
@@ -4434,7 +4444,9 @@ export class EbeguRestUtil {
         publicAppConfigTS.ebeguKibonAnfrageTestGuiEnabled = data.ebeguKibonAnfrageTestGuiEnabled;
         publicAppConfigTS.steuerschnittstelleAktivAb = moment(data.steuerschnittstelleAktivAb);
         publicAppConfigTS.zusatzinformationenInstitution = data.zusatzinformationenInstitution;
+        publicAppConfigTS.institutionenDurchGemeindenEinladen = data.institutionenDurchGemeindenEinladen;
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
+        publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         return publicAppConfigTS;
 
     }

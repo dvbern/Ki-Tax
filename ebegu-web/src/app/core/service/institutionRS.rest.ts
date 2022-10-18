@@ -25,6 +25,7 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionUpdate} from '../../../models/TSInstitutionUpdate';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import { Observable } from 'rxjs';
 
@@ -65,15 +66,20 @@ export class InstitutionRS {
         adminMail: string,
         gemeindeId: string
     ): Observable<TSInstitution> {
+        const params: any = {
+            date: DateUtil.momentToLocalDate(startDate),
+            betreuung: betreuungsangebot,
+            adminMail
+        };
+
+        if (EbeguUtil.isNotNullOrUndefined(gemeindeId)) {
+            params.gemeindeId = gemeindeId;
+        }
+
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
             {
-                params: {
-                    date: DateUtil.momentToLocalDate(startDate),
-                    betreuung: betreuungsangebot,
-                    adminMail,
-                    gemeindeId
-                }
+                params
             })
             .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
     }

@@ -183,6 +183,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
+		@Nonnull Boolean auszahlungInZukunft,
 		@Nonnull Mandant mandant
 	) {
 		return zahlungsauftragErstellen(
@@ -190,6 +191,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			gemeindeId,
 			datumFaelligkeit,
 			beschreibung,
+			auszahlungInZukunft,
 			LocalDateTime.now(),
 			mandant);
 	}
@@ -203,6 +205,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull String gemeindeId,
 		@Nonnull LocalDate datumFaelligkeit,
 		@Nonnull String beschreibung,
+		@Nonnull Boolean auszahlungInZukunft,
 		@Nonnull LocalDateTime datumGeneriert,
 		@Nonnull Mandant mandant
 	) {
@@ -251,16 +254,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// 		Auftrags!)
 		// Den letzten Zahlungsauftrag lesen
 		LocalDateTime lastZahlungErstellt = Constants.START_OF_DATETIME; // Default, falls dies der erste Auftrag ist
-		// Wieweit soll ausbezahlt werden? Normalerweise nicht in die Zukunft, d.h. 0 Monate voraus (z.b. 15.08. ausloesen
-		// ergibt eine Zahlung bis 31.08.). Bei Luzern z.B. 1 Monat in Zukunft, d.h. ausloesen am 15.8. ergibt eine
+		// Auf dem Front End gibt es z.B. bei Luzern eine Checkbox, die definiert, ob der Folgemonat auch ausbezahlt werden soll.
+		// Falls die Checkbox aktiv ist, wird der Folgemonat auch ausbezahlt. z.B. ausloesen am 15.8. ergibt eine
 		// Zahlung bis 30.09.
-		ApplicationProperty anzahlMonateInZukunftProperty  =
-			this.applicationPropertyService.readApplicationProperty(
-					ApplicationPropertyKey.ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
-					mandant)
-				.orElse(null);
-		int anzahlMonateInZukunft = anzahlMonateInZukunftProperty != null ?
-			Integer.parseInt(anzahlMonateInZukunftProperty.getValue()) : 0;
+		int anzahlMonateInZukunft = auszahlungInZukunft ? 1 : 0;
 
 		// Falls es eine Wiederholung des Auftrags ist, muessen nur noch die Korrekturen beruecksichtigt werden, welche
 		// seit dem letzten Auftrag erstellt wurden
@@ -1206,7 +1203,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void zahlungenKontrollieren(@Nonnull ZahlungslaufTyp zahlungslaufTyp, @Nonnull String gemeindeId) {
+	public void zahlungenKontrollieren(
+		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
+		@Nonnull String gemeindeId,
+		@Nonnull Boolean auszahlungInZukunft
+	) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
@@ -1216,7 +1217,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungslaufTyp,
 			zahlungsauftrag.getId(),
 			zahlungsauftrag.getDatumGeneriert(),
-			zahlungsauftrag.getBeschrieb()));
+			zahlungsauftrag.getBeschrieb(),
+			auszahlungInZukunft)
+		);
 	}
 }
 

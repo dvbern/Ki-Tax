@@ -28,13 +28,13 @@ const LOG = LogFactory.createLog('FallCreationViewXComponent');
 @Component({
     selector: 'dv-fall-creation-view-x',
     templateUrl: './fall-creation-view-x.component.html',
-    styleUrls: [],
+    styleUrls: ['./fall-creation-view-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> implements OnInit {
 
     public gesuchsperiodeId: string;
-    @ViewChild(NgForm) private readonly form: NgForm;
+    // @ViewChild(NgForm) protected readonly form: NgForm;
 
     private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 

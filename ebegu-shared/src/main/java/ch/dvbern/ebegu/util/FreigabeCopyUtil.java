@@ -545,6 +545,7 @@ public final class FreigabeCopyUtil {
 		erwerbspensumGS.setPensum(erwerbspensumJA.getPensum());
 		erwerbspensumGS.setTaetigkeit(erwerbspensumJA.getTaetigkeit());
 		erwerbspensumGS.setBezeichnung(erwerbspensumJA.getBezeichnung());
+		erwerbspensumGS.setErwerbspensumInstitution(erwerbspensumJA.getErwerbspensumInstitution());
 
 		if (erwerbspensumJA.getUnbezahlterUrlaub() == null) {
 			//noinspection ConstantConditions

@@ -80,8 +80,7 @@ pipeline {
 			recordIssues(enabledForFailure: true, tools: [
 					pmdParser(),
 					checkStyle(),
-					spotBugs(pattern: '**/target/spotbugs/spotbugsXml.xml', useRankAsPriority: true),
-					tsLint(pattern: '**/tslint-checkstyle-report.xml')
+					spotBugs(pattern: '**/target/spotbugs/spotbugsXml.xml', useRankAsPriority: true)
 			])
 			junit allowEmptyResults: true,
 					testResults: 'target/surefire-reports/*.xml build/karma-results.xml'

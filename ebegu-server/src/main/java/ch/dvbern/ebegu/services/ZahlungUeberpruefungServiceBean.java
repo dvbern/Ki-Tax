@@ -46,7 +46,6 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -59,7 +58,6 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
@@ -118,9 +116,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Nonnull
 	private ZahlungslaufHelper zahlungslaufHelper;
 
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
 	private List<String> potentielleFehlerList = new ArrayList<>();
 	private List<String> potenzielleFehlerListZusammenfassung = new ArrayList<>();
 	private int anzahlMonateInZukunft;
@@ -135,7 +130,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		@Nonnull ZahlungslaufTyp zahlungslaufTyp,
 		@Nonnull String zahlungsauftragId,
 		@Nonnull LocalDateTime datumLetzteZahlung,
-		@Nonnull String beschrieb
+		@Nonnull String beschrieb,
+		@Nonnull Boolean auszahlungInZukunft
 	) {
 		StopWatch stopWatch = logAndStartTimer(String.format(
 			"Starte Zahlungsüberprüfung für %s",
@@ -164,17 +160,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		Collection<Gesuchsperiode> containedGesuchsperioden =
 			ZahlungslaufUtil.findGesuchsperiodenContainedInZahlungsauftrag(aktiveGesuchsperioden, zahlungsauftrag);
 
-		// Wieweit soll ausbezahlt werden? Normalerweise nicht in die Zukunft, d.h. 0 Monate voraus (z.b. 15.08. ausloesen
-		// ergibt eine Zahlung bis 31.08.). Bei Luzern z.B. 1 Monat in Zukunft, d.h. ausloesen am 15.8. ergibt eine
+		// Auf dem Front End gibt es z.B. bei Luzern eine Checkbox, die definiert, ob der Folgemonat auch ausbezahlt werden soll.
+		// Falls die Checkbox aktiv ist, wird der Folgemonat auch ausbezahlt. z.B. ausloesen am 15.8. ergibt eine
 		// Zahlung bis 30.09.
-		Objects.requireNonNull(zahlungsauftrag.getMandant());
-		ApplicationProperty anzahlMonateInZukunftProperty  =
-			this.applicationPropertyService.readApplicationProperty(
-					ApplicationPropertyKey.ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT,
-					zahlungsauftrag.getMandant())
-				.orElse(null);
-		anzahlMonateInZukunft = anzahlMonateInZukunftProperty != null ?
-			Integer.parseInt(anzahlMonateInZukunftProperty.getValue()) : 0;
+		anzahlMonateInZukunft = auszahlungInZukunft ? 1 : 0;
 
 		ermittleIstAndSollAndCheckFuerGPs(gemeinde, containedGesuchsperioden, datumLetzteZahlung);
 

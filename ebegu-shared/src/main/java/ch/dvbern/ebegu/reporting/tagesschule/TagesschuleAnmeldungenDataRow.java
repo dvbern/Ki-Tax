@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.reporting.FleischOption;
 
 /**
  * DTO fuer die TagesschuleStatistik
@@ -36,6 +37,12 @@ public class TagesschuleAnmeldungenDataRow {
 	private String vornameKind;
 	@Nullable
 	private LocalDate geburtsdatum;
+	@Nullable
+	private FleischOption fleischOption;
+	@Nullable
+	private String allergienUndUnvertraeglichkeiten;
+	@Nullable
+	private String notfallnummer;
 	@Nullable
 	private String nachnameAntragsteller1;
 	@Nullable
@@ -248,4 +255,31 @@ public class TagesschuleAnmeldungenDataRow {
 
 	@Nonnull
 	public void setAbweichung(@Nonnull boolean isAbweichung) { this.isAbweichung = isAbweichung; }
+
+	@Nullable
+	public FleischOption getFleischOption() {
+		return fleischOption;
+	}
+
+	public void setFleischOption(@Nullable FleischOption fleischOption) {
+		this.fleischOption = fleischOption;
+	}
+
+	@Nullable
+	public String getAllergienUndUnvertraeglichkeiten() {
+		return allergienUndUnvertraeglichkeiten;
+	}
+
+	public void setAllergienUndUnvertraeglichkeiten(@Nullable String allergienUndUnvertraeglichkeiten) {
+		this.allergienUndUnvertraeglichkeiten = allergienUndUnvertraeglichkeiten;
+	}
+
+	@Nullable
+	public String getNotfallnummer() {
+		return notfallnummer;
+	}
+
+	public void setNotfallnummer(@Nullable String notfallnummer) {
+		this.notfallnummer = notfallnummer;
+	}
 }
