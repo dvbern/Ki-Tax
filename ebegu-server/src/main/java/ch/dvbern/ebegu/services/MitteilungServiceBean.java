@@ -37,6 +37,8 @@ import javax.ejb.EJBAccessException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -1606,21 +1608,30 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nullable
 	@Override
-	public Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
 			doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			persistence.getEntityManager().flush();
 		} catch (EbeguException e) {
-			betreuungsmitteilung.setApplied(false);
 			final Locale locale = LocaleThreadLocal.get();
 			String translatedError = ServerMessageUtil.translateEnumValue(
 				e.getErrorCodeEnum(),
 				locale,
 				principalBean.getMandant()
 			);
-			betreuungsmitteilung.setErrorMessage(translatedError);
+			return translatedError;
 		}
-		return betreuungsmitteilung;
+		return null;
+	}
+
+	@Override
+	public Optional<Betreuungsmitteilung> findAndRefreshBetreuungsmitteilung(String id) {
+		Betreuungsmitteilung mitteilung = persistence.find(Betreuungsmitteilung.class, id);
+		persistence.getEntityManager().refresh(mitteilung);
+		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		return Optional.ofNullable(mitteilung);
 	}
 }
 

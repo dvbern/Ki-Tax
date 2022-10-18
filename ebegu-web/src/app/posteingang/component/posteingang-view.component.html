@@ -268,8 +268,7 @@
                 </div>
                 <div *ngIf="!isSozialdienstOrInstitution()" [dvDemoFeature]="demoFeature"
                      class="text-right closed-mitteilungen dv-table-actionButton">
-                    <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()"
-                                       *ngIf="isSuperAdmin()">
+                    <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
                         {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>
                 </div>
             </div>
