@@ -52,6 +52,7 @@ public class MinimalPauschalbetragGemeindeRechnerRuleTest {
 		aktivRuleGemeinde.setGemeindePauschalbetragEnabled(true);
 		aktivRuleGemeinde.setGemeindePauschalbetragKita(BigDecimal.TEN);
 		aktivRuleGemeinde.setGemeindePauschalbetragMassgebendenEinkommen(new BigDecimal(200000));
+
 		aktivRule.setGemeindeParameter(aktivRuleGemeinde);
 	}
 
@@ -65,6 +66,13 @@ public class MinimalPauschalbetragGemeindeRechnerRuleTest {
 	public void isRelevantForVerfuegung() {
 		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(260000)), aktivRule));
 		Assert.assertTrue(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(100000)), aktivRule));
+	}
+
+	@Test
+	public void isRelevantForZeroBetruungspensum() {
+		BGCalculationInput input = prepareInput(KITA, new BigDecimal(100000));
+		input.setBetreuungspensumProzent(BigDecimal.ZERO);
+		Assert.assertFalse(rule.isRelevantForVerfuegung(input, aktivRule));
 	}
 
 	@Test
@@ -89,6 +97,7 @@ public class MinimalPauschalbetragGemeindeRechnerRuleTest {
 		input.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		input.setMassgebendesEinkommenVorAbzugFamgr(massgebendenEinkommen);
 		input.setBetreuungInGemeinde(true);
+		input.setBetreuungspensumProzent(BigDecimal.TEN);
 		return input;
 	}
 }
