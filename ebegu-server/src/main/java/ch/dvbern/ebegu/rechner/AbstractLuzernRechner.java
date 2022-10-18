@@ -111,7 +111,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinVorAbzugSelbstbehalt = EXACT.add(gutscheinVorZuschlagUndSelbstbehalt, zuschlag);
 
 		// Gemeinde Rules berücksichtigen
-		BigDecimal gutscheinVorAbzugSelbstbehaltMitGemeindeRules = gemeindeRules(gutscheinVorAbzugSelbstbehalt, betreuungsZeiteinheiten, input.getBetreuungsangebotTyp());
+		BigDecimal gutscheinVorAbzugSelbstbehaltMitGemeindeRules = gemeindeRules(gutscheinVorAbzugSelbstbehalt);
 
 		BigDecimal gutschein =  EXACT.subtract(gutscheinVorAbzugSelbstbehaltMitGemeindeRules, selbstbehaltDerEltern);
 		// Gutschein darf nie null oder negativ sein
@@ -166,18 +166,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		}
 	}
 
-	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein, @Nonnull BigDecimal betreuungsZeiteinheiten, @Nonnull
-		BetreuungsangebotTyp betreuungsangebotTyp){
+	protected BigDecimal gemeindeRules(@Nonnull BigDecimal gutschein){
 		gutschein = gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(gutschein);
-		gutschein = gemeindeRulesUnabhengigVonVerfuegteZeiteinheit(gutschein, betreuungsZeiteinheiten, betreuungsangebotTyp);
-		return gutschein;
-	}
-
-	protected BigDecimal gemeindeRulesUnabhengigVonVerfuegteZeiteinheit ( @Nonnull BigDecimal gutschein, BigDecimal betreuungsZeiteinheiten, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp)
-	{
-		// Minimal Pauschalbetrag wenn nicht erreicht
-		gutschein = gutschein.compareTo(MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten)) < 0 ? MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungsZeiteinheiten) : gutschein;
-
 		return gutschein;
 	}
 
