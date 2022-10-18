@@ -44,6 +44,9 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 	public boolean isRelevantForVerfuegung(
 		@Nonnull BGCalculationInput inputGemeinde,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
+		if (!inputGemeinde.isAbschnittLiegtNachBEGUStartdatum()) {
+			return false;
+		}
 		// Nur Kita und TFO
 		if (!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			return false;
