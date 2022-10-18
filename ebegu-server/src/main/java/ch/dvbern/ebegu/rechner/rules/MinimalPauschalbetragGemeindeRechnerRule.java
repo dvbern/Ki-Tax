@@ -47,10 +47,17 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 		if (!inputGemeinde.isAbschnittLiegtNachBEGUStartdatum()) {
 			return false;
 		}
+
+		// Wenn kein Betreuungspensum gibt es auch kein pauschalbetrag ausbezahlt
+		if ((inputGemeinde.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) == 0)) {
+			return false;
+		}
+
 		// Nur Kita und TFO
 		if (!inputGemeinde.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			return false;
 		}
+
 		if (inputGemeinde.getMassgebendesEinkommen()
 			.compareTo(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragMassgebendenEinkommen()) <= 0) {
 			return true;
