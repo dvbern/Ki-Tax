@@ -155,6 +155,11 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (this.model.gemeinsameSteuererklaerung) {
             return false;
         }
+
+        if (super.showZugriffAufSteuerdatenForGemeinde()) {
+            return false;
+        }
+
         // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
         if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
@@ -181,16 +186,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktivForPeriode) {
-            return false;
-        }
-
-        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
-            return false;
-        }
-
-        return this.gesuchModelManager.getGesuch().isOnlineGesuch() && !this.model.gemeinsameSteuererklaerung
-            && (this.authServiceRS.isRole(TSRole.GESUCHSTELLER) || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS));
+        return super.showZugriffAufSteuerdaten() && !this.model.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
@@ -318,8 +314,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public callKiBonAnfrageAndUpdateFinSit(): void {
-        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(false).then(() => {
+       super.callKiBonAnfrage(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
             }
         );

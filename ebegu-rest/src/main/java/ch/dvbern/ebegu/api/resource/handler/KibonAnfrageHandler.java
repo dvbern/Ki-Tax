@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.api.resource.handler;
 
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -27,6 +30,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
 
@@ -50,16 +54,14 @@ public class KibonAnfrageHandler {
 		boolean isGemeinsam,
 		boolean doRetry) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
-		Benutzer benutzer = principalBean.getBenutzer();
+
 		if (hasTwoAntragStellende && isGemeinsam) {
 			// nur erstes Mal, dann schon initialisiert
 			if (doRetry) {
 				createFinSitGS2Container(kibonAnfrageContext);
 			}
 
-			String zpvNummer = benutzer.getZpvNummer() != null ?
-				benutzer.getZpvNummer() :
-				kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getZpvNummer();
+			String zpvNummer = findZpvNummerForRequest(kibonAnfrageContext, false);
 
 			if (zpvNummer != null) {
 				try {
@@ -91,11 +93,8 @@ public class KibonAnfrageHandler {
 			}
 		} else {
 			// anfrage single GS
-			final boolean isGS2 =
-				kibonAnfrageContext.getGesuchsteller().equals(kibonAnfrageContext.getGesuch().getGesuchsteller2());
-			String zpvNummer = isGS2 || benutzer.getZpvNummer() == null ?
-				kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getZpvNummer() :
-				benutzer.getZpvNummer();
+			String zpvNummer = findZpvNummerForRequest(kibonAnfrageContext, kibonAnfrageContext.isGesuchsteller2());
+
 			if (zpvNummer != null) {
 				try {
 					SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
@@ -111,7 +110,7 @@ public class KibonAnfrageHandler {
 				}
 			} else {
 				kibonAnfrageContext.setSteuerdatenAnfrageStatus(
-					isGS2 ?
+					kibonAnfrageContext.isGesuchsteller2() ?
 						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2 :
 						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
@@ -139,4 +138,28 @@ public class KibonAnfrageHandler {
 		finSitGS2Cont.setGesuchsteller(kibonAnfrageContext.getGesuch().getGesuchsteller2());
 		kibonAnfrageContext.setFinSitContGS2(finSitGS2Cont);
 	}
+
+	@Nullable
+	private String findZpvNummerForRequest(KibonAnfrageContext context, boolean isGesuchsteller2) {
+		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(context);
+
+		return isGesuchsteller2 || zpvBesitzer == null ?
+			context.getGesuchsteller().getGesuchstellerJA().getZpvNummer() :
+			zpvBesitzer;
+	}
+
+	@Nullable
+	private String findZpvNummerFromGesuchBesitzer(KibonAnfrageContext context) {
+		if (principalBean.isCallerInAnyOfRole(UserRole.getBgAndGemeindeRoles())
+			&& context.getGesuch().isMutation()) {
+			//Online Fall hat immer ein Besitzer
+			Objects.requireNonNull(context.getGesuch().getFall().getBesitzer());
+			return context.getGesuch().getFall().getBesitzer().getZpvNummer();
+		}
+
+		//wenn user role nicht gemeinde, dann soll nur der aktuelle benutzer die steuerdaten abfragen können
+		return principalBean.getBenutzer().getZpvNummer();
+	}
+
+
 }
