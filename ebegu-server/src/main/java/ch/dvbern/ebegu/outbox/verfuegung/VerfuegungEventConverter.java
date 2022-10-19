@@ -245,6 +245,8 @@ public class VerfuegungEventConverter {
 			.setBetreuungsgutscheinKanton(zeitabschnitt.getBgCalculationResultAsiv()
 				.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag())
 			.setBabyTarif(zeitabschnitt.getBgCalculationResultAsiv().isBabyTarif())
+			.setBetreuungspensumZeiteinheit(zeitabschnitt.getBetreuungspensumZeiteinheit())
+			.setElternbeitrag(zeitabschnitt.getElternbeitrag())
 			.build();
 	}
 }
