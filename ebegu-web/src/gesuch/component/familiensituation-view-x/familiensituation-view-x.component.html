@@ -233,6 +233,7 @@
 									<mat-radio-group [(ngModel)]="getFamiliensituation().gesuchstellerKardinalitaet"
 													 [required]="true"
 													 #gesuchstellerKardinalitaet="ngModel"
+                                                     name="gesuchstellerKardinalitaet"
 													 class="input-element sp" items="gesuchstellerKardinalitaetValues"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
