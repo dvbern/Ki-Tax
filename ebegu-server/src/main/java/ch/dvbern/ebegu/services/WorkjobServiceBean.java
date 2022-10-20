@@ -161,7 +161,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			inklTsGesuche,
 			ohneErneuerungsgesuch,
 			gemeinde,
-			null,
+			jahr,
 			text,
 			false,
 			BigDecimal.ZERO,

@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichBGZeitabschnitteService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
@@ -92,6 +93,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichTagesschulenService reportLastenausgleichTagesschulenService;
+
+	@Inject
+	private ReportLastenausgleichBGZeitabschnitteService reportLastenausgleichBGZeitabschnitteService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -229,6 +233,21 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN: {
 				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen(gesuchPeriodeId);
+			}
+			case VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE: {
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
+				if (gemeindeId == null) {
+					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
+				}
+				final String lastenausgleichJahr = getParameters().getProperty(WorkJobConstants.JAHR_PARAM);
+				if (lastenausgleichJahr == null) {
+					throw new EbeguRuntimeException("generateReport", "lastenausgleichJahr not defined");
+				}
+				return this.reportLastenausgleichBGZeitabschnitteService.generateExcelReportLastenausgleichBGZeitabschnitte(
+					locale,
+					gemeindeId,
+					Integer.parseInt(lastenausgleichJahr, 10)
+				);
 			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

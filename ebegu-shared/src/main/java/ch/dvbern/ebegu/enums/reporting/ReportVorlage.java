@@ -179,6 +179,12 @@ public enum ReportVorlage {
 		ReportFileName.LASTENAUSGLEICH_TAGESSCHULEN,
 		"Gemeinden",
 		MergeFieldLastenausgleichTS.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE(
+		"/reporting/LastenausgleichBGZeitabschnitte.xlsx",
+		ReportFileName.LASTENAUSGLEICH_BG_ZEITABSCHNITTE,
+		Constants.DATA,
+		MergeFieldLastenausgleichBGZeitabschnitte.class
 	);
 
 	@Nonnull

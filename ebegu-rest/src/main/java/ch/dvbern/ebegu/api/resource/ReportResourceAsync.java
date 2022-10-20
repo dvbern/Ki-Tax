@@ -907,6 +907,49 @@ public class ReportResourceAsync {
 		return createWorkjobResponse(workJob);
 	}
 
+
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Lastenausgleich Betreuungsgutscheine'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/lastenausgleichBGZeitabschnitte")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE,
+		SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
+	public Response getLastenausgleichBGZeitabschnitteExcelReport(
+		@QueryParam("gemeindeId") String gemeindeId,
+		@QueryParam("jahr") Integer jahr,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo) {
+
+		String ip = downloadResource.getIP(request);
+
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("getLastenausgleichBGZeitabschnitteExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+		);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE,
+			null,
+			null,
+			null,
+			false,
+			false,
+			false,
+			false,
+			gemeinde,
+			jahr,
+			null,
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
+		);
+
+		return createWorkjobResponse(workJob);
+	}
+
 	/**
 	 * Überprüft, ob für eine bestimmte Gesuchsperiode die Anzahl Module über dem maximalen Wert liegt.
 	 * Dieser maximale Wert ist durch das Exceltemplate gegeben

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,31 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.reporting.lastenausgleich;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_SELBSTBEHALT,
-	LASTENAUSGLEICH_BERECHNUNG,
-	KINDER_MIT_ZEMIS_NUMMER,
-	TAGESSCHULE_ANMELDUNGEN,
-	TAGESSCHULE_RECHNUNGSSTELLUNG,
-	NOTRECHT,
-	MAHLZEITENVERGUENSTIGUNG,
-	GEMEINDEN,
-	FERIENBETREUUNG,
-	LASTENAUSGLEICH_TAGESSCHULEN,
-	LASTENAUSGLEICH_BG_ZEITABSCHNITTE;
+/**
+ * DTO für den Lastenausgleich von KiBon
+ */
+public class LastenausgleichBGZeitabschnittDataRow {
+
+	private String gemeinde;
+
+	public LastenausgleichBGZeitabschnittDataRow() {}
+
+	protected LastenausgleichBGZeitabschnittDataRow(LastenausgleichBGZeitabschnittDataRow row) {
+		this.gemeinde = row.getGemeinde();
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
+	}
 }

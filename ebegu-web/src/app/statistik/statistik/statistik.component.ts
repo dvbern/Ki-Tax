@@ -135,9 +135,10 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.cd.markForCheck();
         })
 
-        if (this.showLastenausgleichBGStatistik()) {
+        if (this.showLastenausgleichBGStatistikAllowedForRole()) {
             this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
                 this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr);
+                this.cd.markForCheck();
             }, err => {
                 LOG.error(err);
             });
@@ -704,8 +705,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
     }
 
-    public showLastenausgleichBGStatistik() {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()))
-        && this.lastenausgleichActive;
+    public showLastenausgleichBGStatistikAllowedForRole() {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()));
     }
 }

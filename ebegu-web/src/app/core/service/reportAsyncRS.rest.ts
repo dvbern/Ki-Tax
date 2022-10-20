@@ -256,7 +256,7 @@ export class ReportAsyncRS {
             jahr
         });
         return this.http.get<{workjobId: string}>(
-            `${this.serviceURL}/excel/lastenausgleichBG`,
+            `${this.serviceURL}/excel/lastenausgleichBGZeitabschnitte`,
             {params: reportParams}
         );
     }
