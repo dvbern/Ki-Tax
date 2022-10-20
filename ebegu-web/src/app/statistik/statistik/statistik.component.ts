@@ -46,6 +46,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ReportAsyncRS} from '../../core/service/reportAsyncRS.rest';
+import {LastenausgleichRS} from '../../lastenausgleich/services/lastenausgleichRS.rest';
 
 const LOG = LogFactory.createLog('StatistikComponent');
 
@@ -71,7 +72,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public userjobs: MatTableDataSource<TSWorkJob>;
     public columndefs: string[] = ['typ', 'erstellt', 'gestartet', 'beendet', 'status', 'icon'];
     public allJobs: Array<TSBatchJobInformation>;
-    public years: string[];
+    public years: number[];
     public tagesschulenStammdatenList: TSInstitutionStammdaten[];
     public gemeinden: TSGemeinde[];
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
@@ -81,6 +82,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public lastenausgleichActive: boolean = false;
     public lastenausgleichTagesschulenActive: boolean = false;
     public tagesschulenActive = false;
+    public lastenausgleichYears: number[] = [];
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -94,7 +96,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly lastenausgleichRS: LastenausgleichRS
     ) {
     }
 
@@ -131,6 +134,14 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.gemeinden = gemeinden;
             this.cd.markForCheck();
         })
+
+        if (this.showLastenausgleichBGStatistik()) {
+            this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
+                this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr);
+            }, err => {
+                LOG.error(err);
+            });
+        }
 
         this.updateShowMahlzeitenStatistik();
         this.refreshUserJobs();
@@ -340,7 +351,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_BG:
-                this.reportAsyncRS.getLastenausgleichBGReportExcel(this.statistikParameter.gemeinde)
+                this.reportAsyncRS.getLastenausgleichBGReportExcel(this.statistikParameter.gemeinde, this.statistikParameter.jahr)
                     .subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
@@ -418,11 +429,11 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.years = [];
         this.gesuchsperioden
             .forEach(periode => {
-                if (this.years.indexOf(periode.getBasisJahrPlus1().toString()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus1().toString());
+                if (this.years.indexOf(periode.getBasisJahrPlus1()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus1());
                 }
-                if (this.years.indexOf(periode.getBasisJahrPlus2().toString()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus2().toString());
+                if (this.years.indexOf(periode.getBasisJahrPlus2()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus2());
                 }
             });
 

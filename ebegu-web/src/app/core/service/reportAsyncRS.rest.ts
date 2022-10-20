@@ -184,7 +184,7 @@ export class ReportAsyncRS {
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/verrechnungkibon`, {params: reportParams});
     }
 
-    public getLastenausgleichKibonReportExcel(year: string): Observable<{workjobId: string}> {
+    public getLastenausgleichKibonReportExcel(year: number): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             year
         });
@@ -250,9 +250,10 @@ export class ReportAsyncRS {
         );
     }
 
-    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde) {
+    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number) {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            gemeindeId: gemeinde.id
+            gemeindeId: gemeinde.id,
+            jahr
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/lastenausgleichBG`,

@@ -572,7 +572,9 @@ public class ReportResourceAsync {
 			inklMischGesucheBoolean,
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
-			null, text,
+			null,
+			null,
+			text,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -802,6 +804,7 @@ public class ReportResourceAsync {
 			false,
 			gemeinde,
 			null,
+			null,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -837,6 +840,7 @@ public class ReportResourceAsync {
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			LocaleThreadLocal.get(),

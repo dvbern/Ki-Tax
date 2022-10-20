@@ -19,7 +19,7 @@ import {TSGemeinde} from './TSGemeinde';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
-    private _jahr: string;
+    private _jahr: number;
     private _gesuchsperiode: string;
     private _stichtag: moment.Moment;
     private _von: moment.Moment;
@@ -134,11 +134,11 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
         this._betragProKind = value;
     }
 
-    public get jahr(): string {
+    public get jahr(): number {
         return this._jahr;
     }
 
-    public set jahr(value: string) {
+    public set jahr(value: number) {
         this._jahr = value;
     }
 
