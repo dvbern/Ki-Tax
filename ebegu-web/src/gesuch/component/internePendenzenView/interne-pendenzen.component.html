@@ -38,7 +38,7 @@
             <span translate>PENDENZ_ERSTELLEN</span>
         </button>
     </div>
-    <div>
+    <div [dvDemoFeature]="demoFeature">
         <dv-checkbox-x
             [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
             [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
