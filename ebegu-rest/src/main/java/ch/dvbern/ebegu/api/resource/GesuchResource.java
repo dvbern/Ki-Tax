@@ -1130,4 +1130,26 @@ public class GesuchResource {
 
 		return converter.gesuchToJAX(gesuch);
 	}
+
+	@ApiOperation(value = "Mark einen Antrag fuer Kontroll", response = JaxGesuch.class)
+	@Nullable
+	@POST
+	@Path("/markiertfuerkontroll/{antragId}/{markiertFuerKontroll}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxGesuch updateMarkiertFuerKontroll(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Nonnull  @NotNull @PathParam("markiertFuerKontroll") boolean markiertFuerKontroll,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(antragJaxId.getId());
+		Gesuch gesuchFromDB = gesuchService.findGesuch(antragJaxId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("updateMarkiertFuerKontroll", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				antragJaxId.getId()));
+		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
+		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
 }

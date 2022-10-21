@@ -1440,6 +1440,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setFinSitStatus(persistedGesuch.getFinSitStatus());
 		jaxGesuch.setFinSitTyp(persistedGesuch.getFinSitTyp());
 		jaxGesuch.setFinSitAenderungGueltigAbDatum(persistedGesuch.getFinSitAenderungGueltigAbDatum());
+		jaxGesuch.setMarkiertFuerKontroll(persistedGesuch.getMarkiertFuerKontroll());
 		return jaxGesuch;
 	}
 

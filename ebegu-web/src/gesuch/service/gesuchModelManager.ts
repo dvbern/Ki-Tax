@@ -1010,7 +1010,8 @@ export class GesuchModelManager {
      * Sucht das KindToWorkWith im Server und aktualisiert es mit dem bekommenen Daten
      */
     private getKindFromServer(): IPromise<TSKindContainer> {
-        return this.kindRS.findKind(this.getKindToWorkWith().id).then(kindResponse => this.setKindToWorkWith(kindResponse));
+        return this.kindRS.findKind(this.getKindToWorkWith().id)
+            .then(kindResponse => this.setKindToWorkWith(kindResponse));
     }
 
     /**
@@ -1538,7 +1539,8 @@ export class GesuchModelManager {
      */
     public saveGesuchStatus(status: TSAntragStatus): IPromise<TSAntragStatus> | undefined {
         if (!this.isGesuchStatus(status)) {
-            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status).then(() => this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
+            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status)
+                .then(() => this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
                     this.gesuch.status = this.calculateNewStatus(status);
 
                     return this.gesuch.status;
@@ -1837,5 +1839,14 @@ export class GesuchModelManager {
     public isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
         return this.gemeindeKonfiguration
             && this.gemeindeKonfiguration.hasTagesschulenAnmeldung();
+    }
+
+    public updateGesuchMarkiertFuerKontroll(value: boolean): IPromise<TSGesuch> {
+        return this.gesuchRS.markiertFuerKontrollUpdaten(this.getGesuch().id, value).then(
+            gesuch => {
+                this.gesuch = gesuch;
+                return gesuch;
+            },
+        )
     }
 }

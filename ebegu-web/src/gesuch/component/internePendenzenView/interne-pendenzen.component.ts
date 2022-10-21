@@ -42,7 +42,7 @@ export class InternePendenzenComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly gesuchModelManager: GesuchModelManager
+        public readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -94,15 +94,19 @@ export class InternePendenzenComponent implements OnInit {
             }, error => this.handleError(error));
     }
 
+    public updateGesuchMarkiertFuerKontroll(value: boolean): void {
+        this.gesuchModelManager.updateGesuchMarkiertFuerKontroll(value);
+    }
+
+    public navigateBack(): void {
+        this.location.back();
+    }
+
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
         dialogConfig.panelClass = 'interne-pendenzen-dialog';
         return this.dialog.open(InternePendenzDialogComponent, dialogConfig).afterClosed().toPromise();
-    }
-
-    public navigateBack(): void {
-        this.location.back();
     }
 
     private handleError(error: Error): void {

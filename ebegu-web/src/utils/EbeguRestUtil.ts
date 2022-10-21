@@ -1391,6 +1391,7 @@ export class EbeguRestUtil {
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
             gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
             gesuchTS.finSitAenderungGueltigAbDatum = DateUtil.localDateToMoment(gesuchFromServer.finSitAenderungGueltigAbDatum);
+            gesuchTS.markiertFuerKontroll = gesuchFromServer.markiertFuerKontroll;
             return gesuchTS;
         }
         return undefined;
