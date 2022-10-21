@@ -1846,7 +1846,7 @@ export class GesuchModelManager {
             gesuch => {
                 this.gesuch = gesuch;
                 return gesuch;
-            },
-        )
+            }
+        );
     }
 }

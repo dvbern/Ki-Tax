@@ -21,6 +21,7 @@ import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 import {InternePendenzenComponent} from './interne-pendenzen.component';
@@ -35,6 +36,7 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 describe('InternePendenzenComponent', () => {
     let component: InternePendenzenComponent;
     let fixture: ComponentFixture<InternePendenzenComponent>;
+    gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -63,4 +65,10 @@ describe('InternePendenzenComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.markiertFuerKontroll = false;
+        return gesuch;
+    }
 });
