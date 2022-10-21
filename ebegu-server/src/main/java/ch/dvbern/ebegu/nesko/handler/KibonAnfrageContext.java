@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.resource.handler;
+package ch.dvbern.ebegu.nesko.handler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
