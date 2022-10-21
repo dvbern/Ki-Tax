@@ -240,7 +240,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			rueckforderungFormularService.getRueckforderungFormulareByInstitutionStammdaten(
 							institutionStammdatenToRemove)
 					.forEach(rueckforderungFormularService::remove);
-			if (!institutionStammdatenToRemove.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS) {
+			if (!institutionStammdatenToRemove.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
 				event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
 			}
 			persistence.remove(institutionStammdatenToRemove);
