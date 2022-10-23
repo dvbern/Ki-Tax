@@ -54,6 +54,8 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
 	keinSelbstbehaltDurchGemeindeTitle(new SimpleMergeField<>("keinSelbstbehaltDurchGemeindeTitle", STRING_CONVERTER)),
 	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
+	selbstbehaltGemeindeTitle(new SimpleMergeField<>("selbstbehaltGemeindeTitle", STRING_CONVERTER)),
+	eingabeLastenausgleichTitle(new SimpleMergeField<>("eingabeLastenausgleichTitle", STRING_CONVERTER)),
 
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),

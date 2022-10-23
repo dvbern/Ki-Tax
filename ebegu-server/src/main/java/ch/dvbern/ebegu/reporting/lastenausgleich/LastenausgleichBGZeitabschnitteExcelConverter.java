@@ -115,25 +115,35 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			MergeFieldLastenausgleichBGZeitabschnitte.institutionTitle,
 			ServerMessageUtil.getMessage("Reports_institutionTitle", locale, mandant)
 		);
-			mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle.getMergeField());
-			excelMergerDTO.addValue(
-				MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle,
-				ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale, mandant)
-			);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle,
+			ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale, mandant)
+		);
 		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.bgPensumTitle.getMergeField());
 		excelMergerDTO.addValue(
 			MergeFieldLastenausgleichBGZeitabschnitte.bgPensumTitle,
 			ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale, mandant)
 		);
-			mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle.getMergeField());
-			excelMergerDTO.addValue(
-				MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle,
-				ServerMessageUtil.getMessage("Reports_keinSelbstbehaltDurchGemeindeTitle", locale, mandant)
-			);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle,
+			ServerMessageUtil.getMessage("Reports_keinSelbstbehaltDurchGemeindeTitle", locale, mandant)
+		);
 		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.gutscheinTitle.getMergeField());
 		excelMergerDTO.addValue(
 			MergeFieldLastenausgleichBGZeitabschnitte.gutscheinTitle,
 			ServerMessageUtil.getMessage("Reports_gutscheinTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.selbstbehaltGemeindeTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.selbstbehaltGemeindeTitle,
+			ServerMessageUtil.getMessage("Reports_SelbstbehaltGemeindeTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.eingabeLastenausgleichTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.eingabeLastenausgleichTitle,
+			ServerMessageUtil.getMessage("Reports_EingabeLastenausgleichTitle", locale, mandant)
 		);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
