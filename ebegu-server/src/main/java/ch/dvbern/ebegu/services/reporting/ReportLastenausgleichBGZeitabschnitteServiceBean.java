@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -36,8 +38,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
-import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichBGZeitabschnitteService;
@@ -100,13 +100,6 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 					lastenausgleichJahr)
 				);
 
-			LastenausgleichGrundlagen grundlagen =
-				lastenausgleichService.findLastenausgleichGrundlagen(lastenausgleich.getJahr())
-					.orElseThrow(() -> new EbeguEntityNotFoundException(
-						"generateExcelReportLastenausgleichKibon",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						lastenausgleich.getJahr()));
-
 			List<LastenausgleichDetail> lastenausgleichDetails =
 				lastenausgleich.getLastenausgleichDetails()
 					.stream()
@@ -114,16 +107,17 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 					.collect(Collectors.toList());
 
 			List<LastenausgleichBGZeitabschnittDataRow> reportData =
-				getReportLastenausgleichZeitabschnitte(lastenausgleichDetails);
+				getReportLastenausgleichZeitabschnitte(lastenausgleichDetails, locale);
 
 			final XSSFSheet xsslSheet =
 				(XSSFSheet) lastenausgleichBGZeitabschnitteExcelConverter.mergeHeaders(
 					sheet,
+					lastenausgleichJahr,
 					locale,
 					requireNonNull(principalBean.getMandant())
 				);
 
-			final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData, locale);
+			final RowFiller rowFiller = fillAndMergeRows(reportVorlage, xsslSheet, reportData);
 
 			byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
 			rowFiller.getSheet().getWorkbook().dispose();
@@ -155,8 +149,7 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 	private RowFiller fillAndMergeRows(
 		ReportVorlage reportResource,
 		XSSFSheet sheet,
-		List<LastenausgleichBGZeitabschnittDataRow> reportData,
-		@Nonnull Locale locale
+		List<LastenausgleichBGZeitabschnittDataRow> reportData
 	) {
 
 		RowFiller rowFiller = RowFiller.initRowFiller(
@@ -166,9 +159,7 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 
 		lastenausgleichBGZeitabschnitteExcelConverter.mergeRows(
 			rowFiller,
-			reportData,
-			locale,
-			requireNonNull(principalBean.getMandant())
+			reportData
 		);
 		lastenausgleichBGZeitabschnitteExcelConverter.applyAutoSize(sheet);
 
@@ -176,17 +167,47 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 	}
 
 	private List<LastenausgleichBGZeitabschnittDataRow> getReportLastenausgleichZeitabschnitte(
-		@Nonnull Collection<LastenausgleichDetail> lastenausgleichDetails
-	) {
+		@Nonnull Collection<LastenausgleichDetail> lastenausgleichDetails,
+		@Nonnull Locale locale) {
 		List<LastenausgleichBGZeitabschnittDataRow> rows = new ArrayList<>();
+
+		var mandant = principalBean.getMandant();
+
+
 
 		lastenausgleichDetails.forEach(lastenausgleichDetail -> {
 			lastenausgleichDetail.getZeitabschnitte().forEach(zeitabschnitt -> {
 				var row = new LastenausgleichBGZeitabschnittDataRow();
-				row.setGemeinde(lastenausgleichDetail.getGemeinde().getName());
+
+				Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());
+				var kind = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindJA();
+				var betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+
+				row.setReferenznummer(betreuung.getBGNummer());
+				row.setNameGemeinde(lastenausgleichDetail.getGemeinde().getName());
+				row.setBfsNummer(lastenausgleichDetail.getGemeinde().getBfsNummer());
+				row.setNachname(kind.getNachname());
+				row.setVorname(kind.getVorname());
+				row.setGeburtsdatum(kind.getGeburtsdatum());
+				row.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
+				row.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
+				row.setInstitution(zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten().getInstitution().getName());
+				row.setBetreuungsangebotTyp(
+					ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp(), locale, mandant)
+				);
+				row.setBgPensum(zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent());
+				row.setKeinSelbstbehaltDurchGemeinde(betreuung.getKind().getKeinSelbstbehaltDurchGemeinde());
+				row.setGutschein(zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung());
+
 				rows.add(row);
 			});
 		});
+
+		rows.sort(
+			Comparator
+				.comparing(LastenausgleichBGZeitabschnittDataRow::getReferenznummer)
+				.thenComparing(LastenausgleichBGZeitabschnittDataRow::getVon)
+		);
 
 		return rows;
 	}

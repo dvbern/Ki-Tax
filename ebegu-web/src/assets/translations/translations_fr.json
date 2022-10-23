@@ -1594,6 +1594,7 @@
     "ReportType_gemeinden": "Communes",
     "ReportType_ferienbetreuung": "Ferienbetreuungen",
     "ReportType_lastenausgleichTagesschulen": "Lastenausgleichtagesschulen",
+    "ReportType_lastenausgleichBGZeitabschnitte": "Lastenausgleich Betreuungsgutscheine Zeitabschnitte",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",

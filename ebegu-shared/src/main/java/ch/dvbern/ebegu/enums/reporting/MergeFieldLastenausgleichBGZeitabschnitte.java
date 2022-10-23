@@ -24,15 +24,51 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvider {
 
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 
+	lastenausgleichDatenTitle(new SimpleMergeField<>("lastenausgleichDatenTitle", STRING_CONVERTER)),
+	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
+	jahrTitle(new SimpleMergeField<>("jahrTitle", STRING_CONVERTER)),
+	jahr(new SimpleMergeField<>("jahr", INTEGER_CONVERTER)),
+
+	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
+	bfsNummerTitle(new SimpleMergeField<>("bfsNummerTitle", STRING_CONVERTER)),
 	nameGemeindeTitle(new SimpleMergeField<>("nameGemeindeTitle", STRING_CONVERTER)),
+	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
+	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
+	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
+	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
+	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
+	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	betreuungsangebotTypTitle(new SimpleMergeField<>("betreuungsangebotTypTitle", STRING_CONVERTER)),
+	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
+	keinSelbstbehaltDurchGemeindeTitle(new SimpleMergeField<>("keinSelbstbehaltDurchGemeindeTitle", STRING_CONVERTER)),
+	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
+
+	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
+	bfsNummer(new SimpleMergeField<>("bfsNummer", LONG_CONVERTER)),
 	nameGemeinde(new SimpleMergeField<>("nameGemeinde", STRING_CONVERTER)),
-	;
+	nachname(new SimpleMergeField<>("nachname", STRING_CONVERTER)),
+	vorname(new SimpleMergeField<>("vorname", STRING_CONVERTER)),
+	geburtsdatum(new SimpleMergeField<>("geburtsdatum", DATE_CONVERTER)),
+	von(new SimpleMergeField<>("von", DATE_CONVERTER)),
+	bis(new SimpleMergeField<>("bis", DATE_CONVERTER)),
+	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
+	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
+	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
+	keinSelbstbehaltDurchGemeinde(new SimpleMergeField<>("keinSelbstbehaltDurchGemeinde", BOOLEAN_X_CONVERTER)),
+	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

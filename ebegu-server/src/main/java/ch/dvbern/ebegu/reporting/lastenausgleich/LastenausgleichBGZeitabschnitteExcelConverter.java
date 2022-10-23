@@ -43,17 +43,97 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 	@Nonnull
 	public Sheet mergeHeaders(
 		@Nonnull Sheet sheet,
+		@Nonnull Integer lastenausgleichJahr,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant) throws ExcelMergeException {
-
 
 		ExcelMergerDTO excelMergerDTO = new ExcelMergerDTO();
 		List<MergeField<?>> mergeFields = new ArrayList<>();
 
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.lastenausgleichDatenTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.lastenausgleichDatenTitle,
+			ServerMessageUtil.getMessage("Reports_lastenausgleichDatenTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.jahrTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.jahrTitle,
+			ServerMessageUtil.getMessage("Reports_jahrTitel", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.jahr.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.jahr,
+			lastenausgleichJahr
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.parameterTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.parameterTitle,
+			ServerMessageUtil.getMessage("Reports_parameterTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.referenznummerTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.referenznummerTitle,
+			ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.bfsNummerTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.bfsNummerTitle,
+			ServerMessageUtil.getMessage("Reports_bfsNummerTitel", locale, mandant)
+		);
 		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.nameGemeindeTitle.getMergeField());
 		excelMergerDTO.addValue(
 			MergeFieldLastenausgleichBGZeitabschnitte.nameGemeindeTitle,
 			ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.nachnameTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.nachnameTitle,
+			ServerMessageUtil.getMessage("Reports_nachnameTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.vornameTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.vornameTitle,
+			ServerMessageUtil.getMessage("Reports_vornameTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.geburtsdatumTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.geburtsdatumTitle,
+			ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.vonTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.vonTitle,
+			ServerMessageUtil.getMessage("Reports_betreuungVonTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.bisTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.bisTitle,
+			ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale, mandant)
+		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.institutionTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.institutionTitle,
+			ServerMessageUtil.getMessage("Reports_institutionTitle", locale, mandant)
+		);
+			mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle.getMergeField());
+			excelMergerDTO.addValue(
+				MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTypTitle,
+				ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale, mandant)
+			);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.bgPensumTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.bgPensumTitle,
+			ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale, mandant)
+		);
+			mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle.getMergeField());
+			excelMergerDTO.addValue(
+				MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle,
+				ServerMessageUtil.getMessage("Reports_keinSelbstbehaltDurchGemeindeTitle", locale, mandant)
+			);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.gutscheinTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.gutscheinTitle,
+			ServerMessageUtil.getMessage("Reports_gutscheinTitle", locale, mandant)
 		);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
@@ -63,13 +143,25 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 
 	public void mergeRows(
 		RowFiller rowFiller,
-		@Nonnull List<LastenausgleichBGZeitabschnittDataRow> data,
-		@Nonnull Locale locale,
-		@Nonnull Mandant mandant
+		@Nonnull List<LastenausgleichBGZeitabschnittDataRow> data
 	) {
+
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = new ExcelMergerDTO();
-			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.nameGemeinde, dataRow.getGemeinde());
+
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.referenznummer, dataRow.getReferenznummer());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bfsNummer, dataRow.getBfsNummer());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.nameGemeinde, dataRow.getNameGemeinde());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.nachname, dataRow.getNachname());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.vorname, dataRow.getVorname());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.geburtsdatum, dataRow.getGeburtsdatum());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.von, dataRow.getVon());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bis, dataRow.getBis());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.institution, dataRow.getInstitution());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTyp, dataRow.getBetreuungsangebotTyp());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bgPensum, dataRow.getBgPensum());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeinde, dataRow.getKeinSelbstbehaltDurchGemeinde());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.gutschein, dataRow.getGutschein());
 
 			rowFiller.fillRow(excelRowGroup);
 		});
