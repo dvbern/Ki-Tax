@@ -149,8 +149,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
+		String methodName = "generateReport";
+
 		Mandant mandant = mandantService.findMandant(getParameters().getProperty(WorkJobConstants.REPORT_MANDANT_ID))
-				.orElseThrow(() -> new EbeguEntityNotFoundException("generateReport"));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(methodName));
 
 		switch (workJobType) {
 
@@ -221,7 +223,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
 				if (gemeindeId == null) {
-					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
+					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
 				}
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
@@ -237,11 +239,11 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			case VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE: {
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
 				if (gemeindeId == null) {
-					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
+					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
 				}
 				final String lastenausgleichJahr = getParameters().getProperty(WorkJobConstants.JAHR_PARAM);
 				if (lastenausgleichJahr == null) {
-					throw new EbeguRuntimeException("generateReport", "lastenausgleichJahr not defined");
+					throw new EbeguRuntimeException(methodName, "lastenausgleichJahr not defined");
 				}
 				return this.reportLastenausgleichBGZeitabschnitteService.generateExcelReportLastenausgleichBGZeitabschnitte(
 					locale,
