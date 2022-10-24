@@ -3371,6 +3371,7 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieMaxEinkommen = verfuegungFromServer.kategorieMaxEinkommen;
             verfuegungTS.kategorieNichtEintreten = verfuegungFromServer.kategorieNichtEintreten;
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
+            verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
             return verfuegungTS;
         }
         return undefined;

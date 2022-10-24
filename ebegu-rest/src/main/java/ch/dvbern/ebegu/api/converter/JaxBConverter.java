@@ -3902,6 +3902,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxVerfuegung.setKategorieMaxEinkommen(verfuegung.isKategorieMaxEinkommen());
 		jaxVerfuegung.setKategorieNichtEintreten(verfuegung.isKategorieNichtEintreten());
 		jaxVerfuegung.setKategorieNormal(verfuegung.isKategorieNormal());
+		jaxVerfuegung.setVeraenderungVerguenstigungGegenueberVorgaenger(verfuegung.getVeraenderungVerguenstigungGegenueberVorgaenger());
 
 		List<JaxVerfuegungZeitabschnitt> zeitabschnitte = verfuegung.getZeitabschnitte().stream()
 			.map(this::verfuegungZeitabschnittToJax)
