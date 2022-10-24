@@ -81,7 +81,7 @@ public class BGCalculationInput {
 	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht: OHNE erweiterteBetreuung
 	// Aber auch bei langer Abwesenheit!
 	// Anteil am Monat, bei welchem die Eltern die gesamen Vollkosten bezahlen müssen (1 = 100%)
-	 @Nonnull
+	@Nonnull
 	private BigDecimal bezahltVollkostenMonatAnteil = BigDecimal.ZERO;
 
 	// MaxEinkommen, FinSitAbgelehnt, KeineVerguenstigungGewuenscht (alle egal ob erweiterteBetreuung)
@@ -123,10 +123,12 @@ public class BGCalculationInput {
 	// Zusätzliche Felder aus Result. Diese müssen nach Abschluss der Rules auf das Result kopiert werden
 	private BigDecimal anspruchspensumProzent = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	private BigDecimal betreuungspensumProzent = BigDecimal.ZERO;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	private BigDecimal massgebendesEinkommenVorAbzugFamgr = BigDecimal.ZERO;
 
 	private boolean besondereBeduerfnisseBestaetigt;
@@ -137,7 +139,8 @@ public class BGCalculationInput {
 	@Nullable
 	private BigDecimal abzugFamGroesse = null;
 
-	@NotNull @Nonnull
+	@NotNull
+	@Nonnull
 	private Integer einkommensjahr;
 
 	private boolean zuSpaetEingereicht;
@@ -189,6 +192,8 @@ public class BGCalculationInput {
 
 	//für TFO Luzern
 	private BigDecimal stuendlicheVollkosten;
+
+	private BigDecimal percentage;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -296,7 +301,7 @@ public class BGCalculationInput {
 		return erwerbspensumZuschlag;
 	}
 
-	public void setErwerbspensumZuschlag (@Nullable Integer erwerbspensumZuschlag) {
+	public void setErwerbspensumZuschlag(@Nullable Integer erwerbspensumZuschlag) {
 		this.erwerbspensumZuschlag = erwerbspensumZuschlag;
 	}
 
@@ -729,7 +734,9 @@ public class BGCalculationInput {
 
 	@SuppressWarnings("PMD.NcssMethodCount")
 	public void add(@Nonnull BGCalculationInput other) {
-		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum() || other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
+		this.handleAbwesenheitPensumAenderung(other);
+		this.setBetreuungspensumMustBeAtLeastFachstellenpensum(this.isBetreuungspensumMustBeAtLeastFachstellenpensum()
+			|| other.isBetreuungspensumMustBeAtLeastFachstellenpensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch()
 			+ other.getAusserordentlicherAnspruch());
@@ -757,15 +764,16 @@ public class BGCalculationInput {
 		this.anzahlHauptmahlzeiten =  add(this.getAnzahlHauptmahlzeiten(), other.getAnzahlHauptmahlzeiten());
 		this.anzahlNebenmahlzeiten = add(this.getAnzahlNebenmahlzeiten(), other.getAnzahlNebenmahlzeiten());
 		this.tarifHauptmahlzeit = add(this.getTarifHauptmahlzeit(), other.getTarifHauptmahlzeit());
-		this.tarifNebenmahlzeit =  add(this.getTarifNebenmahlzeit(), other.getTarifNebenmahlzeit());
+		this.tarifNebenmahlzeit = add(this.getTarifNebenmahlzeit(), other.getTarifNebenmahlzeit());
 
 		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt || other.verguenstigungMahlzeitenBeantragt);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
 
-
 		this.bezahltVollkostenMonatAnteil = add(this.bezahltVollkostenMonatAnteil, other.bezahltVollkostenMonatAnteil);
+		this.handleAbwesenheitKeinMehrBG(other);
+
 		//Vollkostenanteil ist ein Prozentsatz und darf nach dem add nicht mehr als 1 (100 %) entsprechen
 		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ONE) > 0) {
 			this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
@@ -789,7 +797,8 @@ public class BGCalculationInput {
 
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.einschulungTyp = this.einschulungTyp != null ? this.einschulungTyp : other.einschulungTyp;
-		this.betreuungsangebotTyp = this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
+		this.betreuungsangebotTyp =
+			this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
 		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
 
@@ -803,7 +812,7 @@ public class BGCalculationInput {
 		//Beim add von zwei anspruchspensen kann das anspruchspensum steigen. Es muss geprüft werden, ob das minimal
 		//erforderliche Pensum jetzt überschritten ist. Dies muss nur geprüft werden, wenn das minimalesEwpUnterschritten
 		//zuvor in einem der beiden Zeitabschnitte unterschritten wurde
-		if(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten) {
+		if (this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten) {
 			this.minimalesEwpUnterschritten = this.getAnspruchspensumProzent() < this.minimalErforderlichesPensum;
 		}
 
@@ -846,14 +855,73 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 	}
 
+	/**
+	 * Abwesenheit Special Case: Teil-Monate-Abwesenheit ohne weitere Betreuung
+	 * Die abwesenheit eben in Percent gilt fuer die ganze betreute Periode
+	 */
+	private void handleAbwesenheitKeinMehrBG(BGCalculationInput other) {
+		// dort sollte man keinen BG auszahlen, als
+		if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0 && this.percentage != null
+			&& (other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0
+			|| this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) <= 0)) {
+			// wenn wir vollkosten bezahlen muessen aber eine zeitabschnitt hat keine BG Pensum
+			// wir verlaengern dann die vollkostenMonatAnteil
+			this.bezahltVollkostenMonatAnteil = add(this.percentage, other.percentage);
+		}
+	}
+
+	/**
+	 * Abwesenheit Special Case: Teil Abwesenheit mit unterschiedliche Pensum im Monat
+	 * Kosten und Pensum adaptieren wenn höhe roder kleiner in der Abwesende Abschnitt
+	 */
+	private void handleAbwesenheitPensumAenderung(BGCalculationInput other) {
+		if ((this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
+			|| other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0) && this.percentage != null &&
+			other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0
+			&& this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0 &&
+			(this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0 ||
+				this.getKostenAnteilMonat().compareTo(other.getKostenAnteilMonat()) != 0)) {
+
+			if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
+				&& other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
+				this.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
+					other.getKostenAnteilMonat(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
+					other.getBetreuungspensumProzent(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
+					other.getMonatlicheBetreuungskosten(),
+					other.percentage.doubleValue()), this.percentage.doubleValue()));
+				this.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
+					other.anspruchspensumProzent, other.percentage.doubleValue()), this.percentage.doubleValue());
+			}
+			if (other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
+				&& this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
+				other.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
+					this.getKostenAnteilMonat(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
+					this.getBetreuungspensumProzent(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.setMonatlicheBetreuungskosten(calculatePercentage(calculatePercentageBackward(
+					this.getMonatlicheBetreuungskosten(),
+					this.percentage.doubleValue()), other.percentage.doubleValue()));
+				other.anspruchspensumProzent = calculatePercentage(calculatePercentageBackward(
+					this.anspruchspensumProzent, this.percentage.doubleValue()), other.percentage.doubleValue());
+
+			}
+		}
+	}
+
 	private BigDecimal add(@Nullable BigDecimal b1, @Nullable BigDecimal b2) {
 		BigDecimal result = BigDecimal.ZERO;
 
-		if(b1 != null) {
+		if (b1 != null) {
 			result = result.add(b1);
 		}
 
-		if(b2 != null) {
+		if (b2 != null) {
 			result = result.add(b2);
 		}
 
@@ -866,7 +934,7 @@ public class BGCalculationInput {
 				"Prozentualle Input Berechnung kann nicht durchgeführt werden mit einem Prozentuallen Wert von "
 					+ percentage);
 		}
-
+		this.percentage = calculatePercentage(BigDecimal.ONE, percentage);
 		this.erwerbspensumGS1 = calculatePercentage(this.erwerbspensumGS1, percentage);
 		this.erwerbspensumGS2 = calculatePercentage(this.erwerbspensumGS2, percentage);
 		this.betreuungspensumProzent = calculatePercentage(this.betreuungspensumProzent, percentage);
@@ -877,7 +945,8 @@ public class BGCalculationInput {
 		this.monatlicheBetreuungskosten = calculatePercentage(this.monatlicheBetreuungskosten, percentage);
 		this.tarifHauptmahlzeit = calculatePercentage(this.tarifHauptmahlzeit, percentage);
 		this.tarifNebenmahlzeit = calculatePercentage(this.tarifNebenmahlzeit, percentage);
-		this.massgebendesEinkommenVorAbzugFamgr = calculatePercentage(this.massgebendesEinkommenVorAbzugFamgr, percentage);
+		this.massgebendesEinkommenVorAbzugFamgr =
+			calculatePercentage(this.massgebendesEinkommenVorAbzugFamgr, percentage);
 		this.anzahlHauptmahlzeiten = calculatePercentage(this.anzahlHauptmahlzeiten, percentage);
 		this.anzahlNebenmahlzeiten = calculatePercentage(this.anzahlNebenmahlzeiten, percentage);
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
@@ -891,7 +960,7 @@ public class BGCalculationInput {
 
 	@Nullable
 	private Integer calculatePercentage(@Nullable Integer value, double percent) {
-		if(value == null) {
+		if (value == null) {
 			return value;
 		}
 
@@ -899,12 +968,12 @@ public class BGCalculationInput {
 	}
 
 	private int calculatePercentageInt(int value, double percent) {
-		return Math.toIntExact(Math.round(actualCalculatePercentage(value*1.0, percent)));
+		return Math.toIntExact(Math.round(actualCalculatePercentage(value * 1.0, percent)));
 	}
 
 	@Nullable
 	private BigDecimal calculatePercentage(@Nullable BigDecimal value, double percent) {
-		if(value == null) {
+		if (value == null) {
 			return null;
 		}
 
@@ -912,13 +981,29 @@ public class BGCalculationInput {
 	}
 
 	private double actualCalculatePercentage(double value, double percent) {
-		if(value == 0) {
+		if (value == 0) {
 			return 0;
 		}
 
 		return value / 100 * percent;
 	}
 
+	@Nullable
+	private BigDecimal calculatePercentageBackward(@Nullable BigDecimal value, double percent) {
+		if (value == null) {
+			return null;
+		}
+
+		return BigDecimal.valueOf(actualCalculatePercentageBackward(value.doubleValue(), percent));
+	}
+
+	private double actualCalculatePercentageBackward(double value, double percent) {
+		if (value == 0) {
+			return 0;
+		}
+
+		return value * 100 / percent;
+	}
 
 	public boolean isSame(BGCalculationInput other) {
 		return
