@@ -218,6 +218,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus initialStatus = calculateInitialStatus(gesuchToCreate);
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
 		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
+		boolean newlyCreatedMutation = gesuchToCreate.isNewlyCreatedMutation();
 		StringBuilder logInfo = new StringBuilder();
 		logInfo.append("CREATE GESUCH fuer Gemeinde: ").append(gemeindeOfGesuchToCreate.getName())
 			.append(" Gesuchsperiode: ").append(gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString())
@@ -257,6 +258,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
 		ensureUniqueErstgesuchProDossierAndGesuchsperiode(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
+
+		// restore transient field
+		persistedGesuch.setNewlyCreatedMutation(newlyCreatedMutation);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
