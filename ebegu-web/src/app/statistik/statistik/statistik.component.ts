@@ -133,7 +133,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.gemeindeRS.getAktiveGemeinden().then(gemeinden => {
             this.gemeinden = gemeinden;
             this.cd.markForCheck();
-        })
+        });
 
         if (this.showLastenausgleichBGStatistikAllowedForRole()) {
             this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
