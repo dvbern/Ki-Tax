@@ -22,7 +22,12 @@ import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoF
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfMahnung,
+    isAnyStatusOfVerfuegt,
+    isStatusVerfuegenVerfuegt,
+    TSAntragStatus,
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -200,6 +205,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMutationVeranderung(): boolean {
+        if (isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+            return false;
+        }
+
         return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
     }
 
