@@ -243,7 +243,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     private checkChanged2To1GSMutation(): boolean {
         const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
-        return (this.getFamiliensituation()?.aenderungPer.isBefore(ab)
+        return (this.getFamiliensituation()?.aenderungPer?.isBefore(ab)
             && this.getGesuch().getRegelStartDatum().isBefore(ab));
     }
 
