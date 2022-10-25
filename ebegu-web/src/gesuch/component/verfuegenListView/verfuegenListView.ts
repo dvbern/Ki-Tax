@@ -88,6 +88,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
+    public veraenderungBG: number = 0;
+    public veraenderungTS: number = 0;
     public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -183,6 +185,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private refreshKinderListe(): IPromise<any> {
         return this.gesuchModelManager.calculateVerfuegungen().then(() => {
             this.kinderWithBetreuungList = this.gesuchModelManager.getKinderWithBetreuungList();
+            this.calculateVeraenderung();
         });
     }
 
@@ -192,6 +195,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getMahnungList(): Array<TSMahnung> {
         return this.mahnungList;
+    }
+
+    public showMutationVeranderung(): boolean {
+        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
     }
 
     /**
@@ -795,5 +802,23 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isInstitutionRoles(): boolean {
         return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION]);
+    }
+
+    private calculateVeraenderung(): void {
+        this.kinderWithBetreuungList.forEach(kindContainer =>
+            kindContainer.betreuungen.forEach(betreuung => {
+                if (!betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger) {
+                    return;
+                }
+
+                if (betreuung.isAngebotTagesschule()) {
+                    this.veraenderungTS += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
+                } else {
+                    this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
+                }
+            }));
+
+        this.veraenderungBG = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        this.veraenderungTS = EbeguUtil.roundToFiveRappen(this.veraenderungTS);
     }
 }
