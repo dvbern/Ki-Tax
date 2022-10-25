@@ -18,6 +18,7 @@ import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -97,6 +98,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
+    public readonly demoFeature: TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
 
     public constructor(
         private readonly $state: StateService,
