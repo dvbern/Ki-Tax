@@ -115,8 +115,8 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	protected static final String VORFINANZIERTE_KANTONSBEITRAEGE = "PdfGeneration_vorfinanzierteKantonsbeitraege";
 	protected static final String EIGENLEISTUNGEN_GEMEINDE= "PdfGeneration_eigenleistungenGemeinde";
 
-	private final int IDENT_LEVEL_1 = 10;
-	private final int IDENT_LEVEL_2 = 20;
+	private static final int IDENT_LEVEL_1 = 10;
+	private static final int IDENT_LEVEL_2 = 20;
 
 	@Nonnull
 	private final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
