@@ -115,6 +115,9 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	protected static final String VORFINANZIERTE_KANTONSBEITRAEGE = "PdfGeneration_vorfinanzierteKantonsbeitraege";
 	protected static final String EIGENLEISTUNGEN_GEMEINDE= "PdfGeneration_eigenleistungenGemeinde";
 
+	private final int IDENT_LEVEL_1 = 10;
+	private final int IDENT_LEVEL_2 = 20;
+
 	@Nonnull
 	private final FerienbetreuungAngabenContainer ferienbetreuungAngabenContainer;
 
@@ -338,16 +341,20 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 				nutzung.getAnzahlBetreuungstageKinderBern());
 		table.addRow(
 				translate(DAVON_AUS_ANBIETENDER_GEMEINDE, mandant),
-				nutzung.getBetreuungstageKinderDieserGemeinde());
+				nutzung.getBetreuungstageKinderDieserGemeinde(),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(DAVON_BEDARF_VOLKSSCHULANGEBOT, mandant),
-				nutzung.getBetreuungstageKinderDieserGemeindeSonderschueler());
+				nutzung.getBetreuungstageKinderDieserGemeindeSonderschueler(),
+				IDENT_LEVEL_2);
 		table.addRow(
 				translate(DAVON_AUS_ANDERER_GEMEINDE, mandant),
-				nutzung.getDavonBetreuungstageKinderAndererGemeinden());
+				nutzung.getDavonBetreuungstageKinderAndererGemeinden(),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(DAVON_BEDARF_VOLKSSCHULANGEBOT, mandant),
-				nutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler());
+				nutzung.getDavonBetreuungstageKinderAndererGemeindenSonderschueler(),
+				IDENT_LEVEL_2);
 
 		table.addHeaderRow(translate(KINDER, mandant), "");
 		table.addRow(
@@ -355,16 +362,20 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 				getIntValue(nutzung.getAnzahlBetreuteKinder()));
 		table.addRow(
 				translate(DAVON_BEDARF_KINDER_VOLKSSCHULANGEBOT, mandant),
-				getIntValue(nutzung.getAnzahlBetreuteKinderSonderschueler()));
+				getIntValue(nutzung.getAnzahlBetreuteKinderSonderschueler()),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(DAVON_1_ZYKLUS, mandant),
-				getIntValue(nutzung.getAnzahlBetreuteKinder1Zyklus()));
+				getIntValue(nutzung.getAnzahlBetreuteKinder1Zyklus()),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(DAVON_2_ZYKLUS, mandant),
-				getIntValue(nutzung.getAnzahlBetreuteKinder2Zyklus()));
+				getIntValue(nutzung.getAnzahlBetreuteKinder2Zyklus()),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(DAVON_3_ZYKLUS, mandant),
-				getIntValue(nutzung.getAnzahlBetreuteKinder3Zyklus()));
+				getIntValue(nutzung.getAnzahlBetreuteKinder3Zyklus()),
+				IDENT_LEVEL_1);
 
 		PdfPTable pdfPTable = table.createTable();
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
@@ -389,7 +400,8 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 				kostenEinnahmen.getPersonalkosten());
 		table.addRow(
 				translate(DAVON_LEITUNG_ADMINISTRATION, mandant),
-				kostenEinnahmen.getPersonalkostenLeitungAdmin());
+				kostenEinnahmen.getPersonalkostenLeitungAdmin(),
+				IDENT_LEVEL_1);
 		table.addRow(
 				translate(SACHKOSTEN, mandant),
 				kostenEinnahmen.getSachkosten());
