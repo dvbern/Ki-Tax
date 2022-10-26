@@ -36,17 +36,30 @@ public class SimplePDFTableRow {
 	private String value;
 
 	private boolean isHeader = false;
-
+	private int ident;
 
 	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value) {
 		this.label = label;
 		this.value = value;
 	}
 
+	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, int ident) {
+		this.label = label;
+		this.value = value;
+		this.ident = ident;
+	}
+
 	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, boolean isHeader) {
 		this.label = label;
 		this.value = value;
 		this.isHeader = isHeader;
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, boolean isHeader, int ident) {
+		this.label = label;
+		this.value = value;
+		this.isHeader = isHeader;
+		this.ident = ident;
 	}
 
 	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value) {
@@ -60,9 +73,28 @@ public class SimplePDFTableRow {
 		this.isHeader = isHeader;
 	}
 
+	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value, int ident) {
+		this.label = label;
+		this.value = PdfUtil.printBigDecimal(value);
+		this.ident = ident;
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value, boolean isHeader, int ident) {
+		this.label = label;
+		this.value = PdfUtil.printBigDecimal(value);
+		this.isHeader = isHeader;
+		this.ident = ident;
+	}
+
 	public SimplePDFTableRow(@Nonnull String label, @Nullable Integer value) {
 		this.label = label;
 		this.value = value != null? String.valueOf(value) : "";
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nullable Integer value, int ident) {
+		this.label = label;
+		this.value = value != null? String.valueOf(value) : "";
+		this.ident = ident;
 	}
 
 	@Nonnull
@@ -98,5 +130,13 @@ public class SimplePDFTableRow {
 
 	public void setHeader(boolean header) {
 		isHeader = header;
+	}
+
+	public int getIdent() {
+		return ident;
+	}
+
+	public void setIdent(int ident) {
+		this.ident = ident;
 	}
 }
