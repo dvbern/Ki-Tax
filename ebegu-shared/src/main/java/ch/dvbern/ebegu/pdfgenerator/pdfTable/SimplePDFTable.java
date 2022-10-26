@@ -65,21 +65,20 @@ public class SimplePDFTable {
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		for (int i = 0; i < rows.size(); i++) {
 			SimplePDFTableRow row = rows.get(i);
+			SimplePDFTableRowConfiguration rowConfiguration = row.getConfiguration();
 
-			boolean isHeader = row.isHeader();
 			boolean isFooter = lastLineBold && i == rows.size() - 1;
-			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
 			Font font = isFooter ? pageConfiguration.getFonts().getFontBold() : pageConfiguration.getFonts().getFont();
-			int ident = row.getIdent();
+			rowConfiguration.setFont(font);
 
-			addRow(table, row, font, bgColor, ident);
+			addRow(table, row, rowConfiguration);
 		}
 		return table;
 	}
 
-	private void addRow(@Nonnull PdfPTable table, @Nonnull SimplePDFTableRow row, @Nonnull Font font, @Nonnull Color bgColor, int ident) {
-		addCell(table, row.getLabel(), row.getSupertext(), font, bgColor, alignement[0], ident);
-		addCell(table, row.getValue(), null, font, bgColor, alignement[1], ident);
+	private void addRow(@Nonnull PdfPTable table, @Nonnull SimplePDFTableRow row, SimplePDFTableRowConfiguration rowConfiguration) {
+		addCell(table, row.getLabel(), row.getSupertext(), rowConfiguration.getFont(), rowConfiguration.getBgColor(), alignement[0], rowConfiguration.getIdent());
+		addCell(table, row.getValue(), null, rowConfiguration.getFont(), rowConfiguration.getBgColor(), alignement[1], rowConfiguration.getIdent());
 	}
 
 	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nonnull Font font, @Nonnull Color bgColor, int alignment,
