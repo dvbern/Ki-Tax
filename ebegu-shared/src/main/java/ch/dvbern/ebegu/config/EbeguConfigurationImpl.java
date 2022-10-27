@@ -124,7 +124,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 
 	private static final String EBEGU_KIBON_STEUER_ANFRAGE_TEST_UUID = "ebegu.kibonanfrage.testuuid";
 	private static final String EBEGU_KIBON_STEUER_ANFRAGE_TEST_GUI_ENABLED = "ebegu.kibonanfrage.testgui.enabled";
-
+	private static final String KIBON_EXCHANGE_NEU_VERANLAGUNG_ENABLED = "kibon.exchange.neuveranlagung.enabled";
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -530,5 +530,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint() {
 		return getString(EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/samlrenew/services/RenewAssertionWebService");
+	}
+
+	@Override
+	public Boolean isNeueVeranlagungAPIEnabled() {
+		return getBoolean(KIBON_EXCHANGE_NEU_VERANLAGUNG_ENABLED, false);
 	}
 }

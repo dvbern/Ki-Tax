@@ -18,27 +18,175 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class NeueVeranlagungEventHandler extends BaseEventHandler<String> {
+public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagungEventDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NeueVeranlagungEventHandler.class);
 
+	@Inject
+	private GesuchService gesuchService;
+
+	@Inject
+	private FinanzielleSituationService finanzielleSituationService;
+
+	@Inject
+	private KibonAnfrageHandler kibonAnfrageHandler;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
 		@Nonnull EventType eventType,
 		@Nonnull String key,
-		@Nonnull String dto,
+		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
+
+		Gesuch gesuch = gesuchService.findGesuch(key).orElseThrow(() ->
+			new EbeguEntityNotFoundException(
+				"processEvent",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"GesuchId invalid: " + key));
+		// was interessiert uns ist nicht unbedingt dieser Antrag aber die letzte eroeffene
+		Gesuch neusteGesuch =
+			gesuchService.getNeuestesGesuchForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode())
+				.orElseThrow(
+					() -> new EbeguEntityNotFoundException("processEvent",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key)
+				);
+		// erst die Massgegebenes Einkommens fuer die betroffene Gesuch berechnen
+		FinanzielleSituationResultateDTO finSitOrigResult = finanzielleSituationService.calculateResultate(gesuch);
+
+		// --- Neue Zustand abholen ---
+
+		// entscheiden ob es geht um das GS1 oder GS2
+		KibonAnfrageContext kibonAnfrageContext = initKibonAnfrageContext(gesuch, dto.getZpvNummer());
+
+		if (kibonAnfrageContext == null) {
+			LOG.error("NeueVeranlagungEventHandler: Die neue Veranlagung Steuerdaten Abfrage fuer ZPV Nummer: "
+				+ dto.getZpvNummer()
+				+ ", mit Geburtsdatum: + "
+				+ dto.getGeburtsdatum()
+				+ ", hat kein mehr gueltige Antragstellende gefunden.");
+			return;
 		}
+
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull( gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+		kibonAnfrageHandler.handleKibonAnfrage(
+			kibonAnfrageContext,
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+
+		// Fehlermeldung behandeln
+		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
+			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			LOG.error("NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand: "
+				+ kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+			return;
+		}
+
+		assert kibonAnfrageContext != null;
+		FinanzielleSituationResultateDTO finSitNeuResult =
+			finanzielleSituationService.calculateResultate(kibonAnfrageContext.getGesuch());
+
+		// Vergleichen
+		List<Einstellung> einstellungList = einstellungService.findEinstellungen(
+			EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,
+			gesuch.getGesuchsperiode());
+		if (einstellungList.size() != 1) {
+			throw new EbeguRuntimeException(
+				"NeueVeranlagungEventHandler",
+				"Es sollte exakt eine Einstellung für den VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK und die "
+					+ "Gesuchsperiode "
+					+ gesuch.getGesuchsperiode().getGesuchsperiodeString()
+					+ " gefunden werden");
+		}
+		if (finSitOrigResult.getMassgebendesEinkVorAbzFamGr() != finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) {
+			LOG.info("NeueVeranlagungEventHandler: IT WORKS");
+		} else {
+			LOG.info("NeueVeranlagungEventHandler: IT WORKS the SAME");
+		}
+
+		// Meldung erstellen wenn nötig
+	}
+
+	private KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
+		KibonAnfrageContext kibonAnfrageContext = null;
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		if (gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.getSteuerdatenResponse() != null && gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.getSteuerdatenResponse()
+			.getZpvNrDossiertraeger() != null) {
+			if (gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getSteuerdatenResponse()
+				.getZpvNrDossiertraeger()
+				.equals(zpvNummer)) {
+				kibonAnfrageContext = new KibonAnfrageContext(
+					gesuch,
+					gesuch.getGesuchsteller1(),
+					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
+					gesuch.getId());
+			}
+		} else {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			Objects.requireNonNull(gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer());
+			if (gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getSteuerdatenResponse() != null && gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getSteuerdatenResponse()
+				.getZpvNrDossiertraeger() != null) {
+				if (gesuch.getGesuchsteller2()
+					.getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA()
+					.getSteuerdatenResponse()
+					.getZpvNrDossiertraeger()
+					.equals(zpvNummer)) {
+					kibonAnfrageContext = new KibonAnfrageContext(
+						gesuch,
+						gesuch.getGesuchsteller2(),
+						gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
+						gesuch.getId());
+				}
+			}
+		}
+		return kibonAnfrageContext;
+	}
 }

@@ -54,9 +54,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
@@ -72,6 +69,9 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
@@ -475,7 +475,8 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchsteller, convertedFinSitCont, kibonAnfrageId.getId());
+		KibonAnfrageContext
+			kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchsteller, convertedFinSitCont, kibonAnfrageId.getId());
 
 		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam);
 		FinanzielleSituationContainer persistedFinSitGS2 = null;

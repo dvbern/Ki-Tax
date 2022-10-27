@@ -322,7 +322,10 @@ public enum EinstellungKey {
 	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll()),
 
 	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
-	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());
+	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll()),
+
+	//Setz das minimal Unterschied zwischen Massgebendeseinkommen um eine FinSit Mitteilung zu erstellen
+	VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK(MandantIdentifier.getAll());
 
 
 	private EinstellungTyp typ;

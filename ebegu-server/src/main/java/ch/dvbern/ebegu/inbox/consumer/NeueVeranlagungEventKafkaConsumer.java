@@ -33,6 +33,9 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.inbox.handler.NeueVeranlagungEventHandler;
 import ch.dvbern.ebegu.kafka.MessageProcessor;
+import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -41,6 +44,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG;
@@ -64,11 +68,11 @@ public class NeueVeranlagungEventKafkaConsumer {
 	@Inject
 	private NeueVeranlagungEventHandler eventHandler;
 
-	private Consumer<String, String> consumer = null;
+	private Consumer<String, NeueVeranlagungEventDTO> consumer = null;
 
-	private void startKafkaAnmeldungAblehnenConsumer() {
+	private void startKafkaNeueVeranlagungConsumer() {
 		if (ebeguConfiguration.getKafkaURL().isEmpty()
-			|| !ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()
+			|| !ebeguConfiguration.isNeueVeranlagungAPIEnabled()
 			|| !ebeguConfiguration.isKafkaConsumerEnabled()) {
 			LOG.debug("Kafka URL not set or Betreuung Api is not enabled, not consuming events.");
 			return;
@@ -80,22 +84,23 @@ public class NeueVeranlagungEventKafkaConsumer {
 		props.setProperty(AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.setProperty(ENABLE_AUTO_COMMIT_CONFIG, "false");
 		props.setProperty(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		props.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+		props.setProperty(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
+		props.setProperty(SCHEMA_REGISTRY_URL_CONFIG, ebeguConfiguration.getSchemaRegistryURL());
+		props.setProperty(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
 		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Collections.singletonList("NeueVeranlagungEvents"));
-
 	}
 
-	@Schedule(info = "consume kafka events", second = "30", minute = "*/6", hour = "*", persistent = false)
-	public void runAnmeldungAblehnenConsumer() {
+	@Schedule(info = "consume kafka events", second = "30", minute = "*", hour = "*", persistent = false)
+	public void runNeueVeranlagungConsumer() {
 		try {
 			if (consumer == null) {
-				startKafkaAnmeldungAblehnenConsumer();
+				startKafkaNeueVeranlagungConsumer();
 				return;
 			}
 
-			ConsumerRecords<String, String> consumerRecordes = consumer.poll(Duration.ofMillis(5000));
+			ConsumerRecords<String, NeueVeranlagungEventDTO> consumerRecordes = consumer.poll(Duration.ofMillis(5000));
 			consumerRecordes.forEach(this::process);
 			consumer.commitSync();
 		} catch (Exception e) {
@@ -103,7 +108,7 @@ public class NeueVeranlagungEventKafkaConsumer {
 		}
 	}
 
-	private void process(@Nonnull ConsumerRecord<String, String> record) {
+	private void process(@Nonnull ConsumerRecord<String, NeueVeranlagungEventDTO> record) {
 		LOG.info("NeueVeranlagungEvent received for Antrag with id {}", record.key());
 		processor.process(record, eventHandler);
 	}

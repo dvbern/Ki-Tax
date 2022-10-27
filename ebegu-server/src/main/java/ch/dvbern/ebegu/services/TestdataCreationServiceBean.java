@@ -180,6 +180,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHE_AMTSPRACHE_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
+import static ch.dvbern.ebegu.enums.EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EXPORT_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
@@ -668,6 +669,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode);
 		saveEinstellung(BEGRUENDUNG_MUTATION_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode);
+		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,"0", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {
