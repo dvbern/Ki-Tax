@@ -37,7 +37,6 @@ describe('EditGemeindeComponentFI', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
                 MaterialModule,
                 GemeindeModule
             ],
