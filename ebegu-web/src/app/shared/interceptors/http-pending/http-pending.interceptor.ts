@@ -20,10 +20,10 @@ import {
     HttpRequest,
     HttpHandler,
     HttpEvent,
-    HttpInterceptor, HttpResponse, HttpErrorResponse,
+    HttpInterceptor, HttpResponse, HttpErrorResponse
 } from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {catchError, filter, tap} from 'rxjs/operators';
+import {catchError, filter, finalize} from 'rxjs/operators';
 import {HttpPendingService} from '../../services/http-pending.service';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class HttpPendingInterceptor implements HttpInterceptor {
                 throw err;
             }),
             filter(event => event instanceof HttpResponse || event instanceof HttpErrorResponse),
-            tap(() => this.httpPendingService.resolve(request))
+            finalize(() => this.httpPendingService.resolve(request))
         );
     }
 }
