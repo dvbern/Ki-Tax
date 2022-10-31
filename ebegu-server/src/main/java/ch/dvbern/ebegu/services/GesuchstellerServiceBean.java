@@ -166,7 +166,10 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 				familiensituation.getGemeinsameSteuererklaerung() : false;
 			GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 			Objects.requireNonNull(gesuchsteller1, "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt sein");
-			Objects.requireNonNull(gesuchsteller1.getFinanzielleSituationContainer(), "Finanzielle Situation GS1 muss zu diesem Zeitpunkt gesetzt sein");
+			// fin sit was resetted
+			if (gesuchsteller1.getFinanzielleSituationContainer() == null) {
+				return;
+			}
 
 			boolean stvErhaltenGs2 = false; 	// by default
 			boolean stekAusgefuelltGs2 = false; // by default
