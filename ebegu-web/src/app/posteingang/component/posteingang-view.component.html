@@ -122,6 +122,15 @@
                         <mat-cell *matCellDef="let element">
                             <span [title]="element.mitteilungStatus | translate">{{element.mitteilungStatus | translate}}</span>
                             <div class="flex-fill"></div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Actions / Buttons -->
+                    <ng-container matColumnDef="actions">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span translate></span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
                             <dv-loading-button (buttonClick)="setUngelesen(element)"
                                                *ngIf="isSuperAdmin() && isStatusGelesen(element)">
                                 <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
@@ -246,6 +255,11 @@
                                 </mat-select>
                             </mat-form-field>
                         </mat-header-cell>
+                    </ng-container>
+
+                    <!-- Actions / Buttons -->
+                    <ng-container matColumnDef="actions-filter">
+                        <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     </ng-container>
 
                     <mat-header-row *matHeaderRowDef="displayedColumns"

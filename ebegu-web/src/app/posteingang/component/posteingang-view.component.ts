@@ -79,7 +79,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'sentDatum',
         'empfaenger',
         'empfaengerVerantwortung',
-        'mitteilungStatus'
+        'mitteilungStatus',
+        'actions'
     ];
 
     public filterColumns: string[] = [
@@ -91,7 +92,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         'sentDatum-filter',
         'empfaenger-filter',
         'empfaengerVerantwortung-filter',
-        'mitteilungStatus-filter'
+        'mitteilungStatus-filter',
+        'actions-filter'
     ];
 
     private readonly hiddenColumnsUDInstituion: string[] = [
