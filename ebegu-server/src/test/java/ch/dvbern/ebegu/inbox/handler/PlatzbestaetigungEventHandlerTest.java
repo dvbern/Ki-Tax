@@ -613,11 +613,25 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			 * periode. Otherwise it is not possible to augment the data with Zeitabschnitte from another client.
 			 */
 			@Test
-			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod() {
+			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod_withSomeOtherClientInPeriode() {
 				clientGueltigkeit =
 					new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusDays(1), Constants.END_OF_TIME);
 
 				expectHumanConfirmation();
+				testProcessingSuccess();
+			}
+
+
+			/**
+			 * The automatic confirmation must be disabled, when the client is not permittet to set data for the entire
+			 * periode. Otherwise it is not possible to augment the data with Zeitabschnitte from another client.
+			 */
+			@Test
+			void automaticWhenClientGueltigkeitIsNotCoveringEntirePeriod_whenNoOtherClientInPeriode() {
+
+				clientGueltigkeit =
+					new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusDays(1), Constants.END_OF_TIME);
+
 				testProcessingSuccess();
 			}
 
