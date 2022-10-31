@@ -70,6 +70,7 @@ public class KibonAnfrageHandler {
 						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageContext.getKibonAnfrageId(),
 						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
 					assert kibonAnfrageContext.getFinSitContGS2() != null;
 					KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(kibonAnfrageContext, steuerdatenResponse);
 				} catch (KiBonAnfrageServiceException e) {
@@ -101,6 +102,7 @@ public class KibonAnfrageHandler {
 						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageContext.getKibonAnfrageId(),
 						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS1);
 					KibonAnfrageHelper.handleSteuerdatenResponse(
 						kibonAnfrageContext,
 						steuerdatenResponseGS1);

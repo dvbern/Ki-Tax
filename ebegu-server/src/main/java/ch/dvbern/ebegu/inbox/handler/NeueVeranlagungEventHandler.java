@@ -22,12 +22,15 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -36,9 +39,11 @@ import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
+import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +65,16 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	@Inject
 	private EinstellungService einstellungService;
 
+	@Resource
+	private EJBContext context;    //fuer rollback
+
+	@Inject
+	private TransactionHelper transactionHelper;
+
+	@Inject
+	private MitteilungService mitteilungService;
+
+
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
@@ -73,13 +88,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 				"processEvent",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"GesuchId invalid: " + key));
-		// was interessiert uns ist nicht unbedingt dieser Antrag aber die letzte eroeffene
-		Gesuch neusteGesuch =
-			gesuchService.getNeuestesGesuchForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode())
-				.orElseThrow(
-					() -> new EbeguEntityNotFoundException("processEvent",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key)
-				);
+
 		// erst die Massgegebenes Einkommens fuer die betroffene Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOrigResult = finanzielleSituationService.calculateResultate(gesuch);
 
@@ -99,10 +108,12 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull( gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+		boolean gemeinsam = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null
+			? gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung()
+			: false;
 		kibonAnfrageHandler.handleKibonAnfrage(
 			kibonAnfrageContext,
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+			gemeinsam);
 
 		// Fehlermeldung behandeln
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
@@ -133,10 +144,27 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		} else {
 			LOG.info("NeueVeranlagungEventHandler: IT WORKS the SAME");
 		}
-
-		// Meldung erstellen wenn nötig
+		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden TODO testen ohne
+		context.setRollbackOnly();
+		// Meldung erstellen in einen neuen Transaktion
+		transactionHelper.runInNewTransaction(() -> {
+			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
+			neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
+			Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
+			neueVeranlagungsMitteilung.setSubject("Neue Veranlagung");
+			neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
+			neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
+			mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
+		});
 	}
 
+	/**
+	 * Bestimmen ob der Veranlagung Event betrifft der GS1 oder GS2 und das Context entsprechend initialisieren
+	 *
+	 * @param gesuch
+	 * @param zpvNummer
+	 * @return KibonAnfrageContext
+	 */
 	private KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
 		KibonAnfrageContext kibonAnfrageContext = null;
 		Objects.requireNonNull(gesuch.getGesuchsteller1());

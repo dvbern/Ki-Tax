@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 
 public class KibonAnfrageContext {
@@ -44,6 +45,9 @@ public class KibonAnfrageContext {
 
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAnfrageStatus;
+
+	@Nullable
+	private SteuerdatenResponse steuerdatenResponse;
 
 	private boolean isSwitched = false;
 
@@ -115,5 +119,14 @@ public class KibonAnfrageContext {
 
 	public boolean isGesuchsteller2() {
 		return this.getGesuchsteller().equals(this.getGesuch().getGesuchsteller2());
+	}
+
+	@Nullable
+	public SteuerdatenResponse getSteuerdatenResponse() {
+		return steuerdatenResponse;
+	}
+
+	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
+		this.steuerdatenResponse = steuerdatenResponse;
 	}
 }

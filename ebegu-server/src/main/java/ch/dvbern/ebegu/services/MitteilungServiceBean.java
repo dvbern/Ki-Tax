@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -125,7 +126,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Service fuer Mitteilungen
@@ -136,6 +139,8 @@ import static java.util.Objects.requireNonNull;
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
+
+	static final String TECHNICAL_KIBON_BENUTZER_ID = "99999999-2222-2222-2222-222222222222";
 
 	@Inject
 	private Persistence persistence;
@@ -1010,6 +1015,24 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			).collect(Collectors.toList()).isEmpty();
 		}
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
+		Objects.requireNonNull(neueVeranlagungsMitteilung);
+
+		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);  // immer an Jugendamt
+		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+		neueVeranlagungsMitteilung.setSender(benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, TECHNICAL_KIBON_BENUTZER_ID)));
+		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
+
+		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
+
+		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
+		return persistence.persist(neueVeranlagungsMitteilung);
 	}
 
 	private void updateMessage(Betreuungsmitteilung mitteilung) {
