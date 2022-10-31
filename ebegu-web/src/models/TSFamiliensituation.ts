@@ -293,6 +293,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.gesuchstellerKardinalitaet = other.gesuchstellerKardinalitaet;
         this.unterhaltsvereinbarung = other.unterhaltsvereinbarung;
         this.geteilteObhut = other.geteilteObhut;
+        this.unterhaltsvereinbarungBemerkung = other.unterhaltsvereinbarungBemerkung;
     }
 
     public get fkjvFamSit(): boolean {
