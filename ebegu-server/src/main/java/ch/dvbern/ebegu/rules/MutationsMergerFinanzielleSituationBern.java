@@ -26,7 +26,6 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
-		handleAnpassungAnspruch(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
 
 	private void handleVerminderungEinkommen(
@@ -67,54 +66,5 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 			}
 		}
 	}
-
-	private void handleAnpassungAnspruch(
-		@Nonnull BGCalculationInput inputData,
-		@Nullable BGCalculationResult resultVorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
-	) {
-		DateRange gueltigkeit = inputData.getParent().getGueltigkeit();
-
-		//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-		if (!isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
-			return;
-		}
-
-		final int anspruchberechtigtesPensum = inputData.getAnspruchspensumProzent();
-		final int anspruchAufVorgaengerVerfuegung = resultVorangehenderAbschnitt == null
-			? 0
-			: resultVorangehenderAbschnitt.getAnspruchspensumProzent();
-
-		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
-			//Anspruch wird erhöht
-			//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-			inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
-			inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
-			//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
-			//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
-			if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {
-				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
-			}
-
-		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
-			//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-			inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, getLocale());
-		}
-	}
-
-	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
-		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
-	}
-
-
-	private boolean isAnspruchZeroBecauseVorgaengerZuSpaet(BGCalculationResult resultVorangehenderAbschnitt) {
-		if(resultVorangehenderAbschnitt == null) {
-			return false;
-		}
-
-		boolean anspruchsPensumZero = resultVorangehenderAbschnitt.getAnspruchspensumProzent() == 0;
-		return anspruchsPensumZero && resultVorangehenderAbschnitt.isZuSpaetEingereicht();
-	}
-
 
 }
