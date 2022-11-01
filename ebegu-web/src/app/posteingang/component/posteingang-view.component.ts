@@ -421,6 +421,15 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         );
     }
 
+    public setGelesen(mitteilung: TSMitteilung): void {
+        this.mitteilungRS.setMitteilungGelesen(mitteilung.id).then(
+            () => {
+                this.passFilterToServer();
+                this.getMitteilungenCount();
+            }
+        );
+    }
+
     public isStatusGelesen(mitteilung: TSMitteilung): boolean {
         return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
     }
@@ -471,5 +480,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public canBeIgnored(mitteilung: TSMitteilung): boolean {
         return !mitteilung.isErledigt() && !mitteilung.isIgnoriert();
+    }
+
+    public canMitteilungStatusBeReverted(mitteilung: TSMitteilung): boolean {
+        return mitteilung.isIgnoriert();
     }
 }

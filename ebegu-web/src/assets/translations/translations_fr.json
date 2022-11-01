@@ -2928,5 +2928,6 @@
     "VERFUEGUNG_EXPORT_ENABLED": "Activer l'export des décisions en format JSON ou XML",
     "IGNORIERT": "Ignoriert",
     "IGNORIEREN": "Ignorieren",
+    "RUECKGAENGIG": "Rückgängig",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

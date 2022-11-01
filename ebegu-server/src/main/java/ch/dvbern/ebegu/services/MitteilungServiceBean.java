@@ -349,7 +349,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilungsId,
 			MitteilungStatus.GELESEN,
 			MitteilungStatus.NEU,
-			MitteilungStatus.ERLEDIGT);
+			MitteilungStatus.ERLEDIGT,
+			MitteilungStatus.IGNORIERT);
 	}
 
 	@Nonnull

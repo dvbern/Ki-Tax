@@ -3025,5 +3025,6 @@
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY": "Bis zu einem massgebenden Einkommen von: {{value}} CHF",
     "IGNORIERT": "Ignoriert",
     "IGNORIEREN": "Ignorieren",
+    "RUECKGAENGIG": "Rückgängig",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

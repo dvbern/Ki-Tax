@@ -139,6 +139,10 @@
                                                *ngIf="isSuperAdminOrGemeinde() && canBeIgnored(element)">
                                 <span translate>IGNORIEREN</span>
                             </dv-loading-button>
+                            <dv-loading-button (buttonClick)="setGelesen(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                               *ngIf="isSuperAdminOrGemeinde() && canMitteilungStatusBeReverted(element)">
+                                <span translate>RUECKGAENGIG</span>
+                            </dv-loading-button>
                         </mat-cell>
                     </ng-container>
 
