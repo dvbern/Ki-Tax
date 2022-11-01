@@ -29,7 +29,7 @@ public final class InfomaConstants {
 
 	public static final String BUCHUNGSKREIS = "1";
 	public static final String INSTITUTIONELLE_GLIEDERUNG = "215";
-	public static final String DIMENSIONSWERT_3_FINANZBUCHHALTUNG = "2158303";
+	public static final String DIMENSIONSWERT_3_FINANZBUCHHALTUNG = "2158302";
 	public static final String BANKCODE = "RB IBAN";
 
 	public static final String BELEGNUMMER_PRAEFIX = "BGR";

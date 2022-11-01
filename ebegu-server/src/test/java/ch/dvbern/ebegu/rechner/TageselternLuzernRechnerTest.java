@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -55,7 +56,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(45.1);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -83,7 +84,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(22.55);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -111,7 +112,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(150);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -139,7 +140,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(63);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -168,7 +169,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(74.01);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -196,7 +197,7 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.ZERO;;
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		AbstractLuzernRechner rechner = new TageselternLuzernRechner();
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();

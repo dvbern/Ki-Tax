@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -95,7 +96,12 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
+
+		// Durchfuehren die Rules die unhabaengige von der Anspruch einen Gutschein geben
+		verguenstigung = unhabaengigeAnspruchRegelnDurchfuehren(verguenstigung, betreuungspensumZeiteinheit, input.getBetreuungsangebotTyp());
+
 		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
+		elternbeitrag = elternbeitrag.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : elternbeitrag;
 
 		BigDecimal minimalerElternbeitragGekuerzt = MathUtil.DEFAULT.from(0);
 		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT.subtract(vollkosten, verguenstigungVorMinimalbetrag);
@@ -125,6 +131,13 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		return result;
+	}
+
+	protected BigDecimal unhabaengigeAnspruchRegelnDurchfuehren(
+		BigDecimal verguenstigung,
+		BigDecimal betreuungspensumZeiteinheit,
+		BetreuungsangebotTyp betreuungsangebotTyp) {
+		return verguenstigung;
 	}
 
 	/**

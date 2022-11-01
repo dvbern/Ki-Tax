@@ -47,6 +47,7 @@ public final class TestUtils {
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
 		parameterDTO.getGemeindeParameter().setGemeindeZusaetzlicherBabyGutscheinEnabled(false);
 		parameterDTO.getMahlzeitenverguenstigungParameter().setEnabled(false);
+		parameterDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(false);
 		return parameterDTO;
 	}
 }

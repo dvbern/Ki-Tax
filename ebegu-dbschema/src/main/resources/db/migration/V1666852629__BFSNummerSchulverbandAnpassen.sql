@@ -8,14 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSDemoFeature {
-    ALLE_MUTATIONSMELDUNGEN_VERFUEGEN = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN',
-    STEURABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION = 'STEURABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION'
-}
+update bfs_gemeinde set bfs_nummer =  10047 where bfs_nummer = 10048;
+update gemeinde set bfs_nummer = 10047 where bfs_nummer = 10048;

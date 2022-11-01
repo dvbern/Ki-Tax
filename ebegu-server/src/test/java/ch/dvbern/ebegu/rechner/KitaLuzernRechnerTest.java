@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collections;
 
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -54,7 +55,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(16.4);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -81,7 +82,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		zeitabschnitt.getBgCalculationInputAsiv().setKitaPlusZuschlag(true);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -106,7 +107,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -128,7 +129,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -154,7 +155,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -180,7 +181,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
 		zeitabschnitt.getBgCalculationInputAsiv().setKitaPlusZuschlag(true);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -204,7 +205,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(16.4);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -232,7 +233,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
@@ -259,7 +260,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(8.2);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -284,7 +285,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(6.15);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
@@ -313,7 +314,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(2.98);
 
 		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
-		KitaLuzernRechner rechner = new KitaLuzernRechner();
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
 		rechner.calculate(zeitabschnitt, defaultParameterDTO);
 
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);

@@ -651,8 +651,11 @@ public class MitteilungResource {
 			final Optional<Betreuungsmitteilung> betreuungsmitteilung =
 				mitteilungService.findBetreuungsmitteilung(mitteilung.getId());
 			if (betreuungsmitteilung.isPresent()) {
-				Betreuungsmitteilung result = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung.get());
-				betreuungsmitteilungs.add(result);
+				String errorMessage = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung.get());
+				Betreuungsmitteilung betreuungsmitteilungUpdated =
+					mitteilungService.findAndRefreshBetreuungsmitteilung(mitteilung.getId()).get();
+				betreuungsmitteilungUpdated.setErrorMessage(errorMessage);
+				betreuungsmitteilungs.add(betreuungsmitteilungUpdated);
 			}
 		}
 		List<JaxBetreuungsmitteilung> jaxResult = new ArrayList<>();

@@ -3014,5 +3014,14 @@
     "SELBSTDEKLARATION_WARNING": " Liegt die Steuerveranlagung für das angegebene Jahr vor, wird diese mit der Selbstdeklaration verglichen. Bei Abweichungen wird die Gutscheinhöhe für das entsprechende Jahr rückwirkend angepasst.",
     "SOZIALHILFEBEZUEGER_WARNING": "Bitte informieren Sie uns im Fall einer Ablösung von der Sozialhilfe",
     "VERFUEGUNG_EXPORT_ENABLED": "Verfügung Export aktiviert",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN": "Pauschalbetrag von X CHF pro Tag für hohe Einkommensklassen",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA": "Betrag in CHF pro Tag",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO": "Betrag in CHF pro Stunde",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE": "Betrag in CHF pro Tag ab Primarschule",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE": "Betrag in CHF pro Stunde ab Primarschue",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN": "Bis zu einem massgebenden Einkommen in CHF von",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY": "Betrag pro Tag: {{value}} CHF",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY": "Betrag pro Stunde: {{value}} CHF",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY": "Bis zu einem massgebenden Einkommen von: {{value}} CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

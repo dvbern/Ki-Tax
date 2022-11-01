@@ -128,6 +128,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
                     }
                     this.institutionRS.removeInstitution(institutionEventId).subscribe(() => {
                         this.loadData();
+                        this.cd.markForCheck();
                     }, error => this.log.error(error));
                 },
                 () => {

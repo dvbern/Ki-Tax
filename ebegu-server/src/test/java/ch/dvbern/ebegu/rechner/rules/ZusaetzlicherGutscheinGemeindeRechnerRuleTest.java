@@ -35,8 +35,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
-import static ch.dvbern.ebegu.enums.EinschulungTyp.*;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import static ch.dvbern.ebegu.enums.EinschulungTyp.KLASSE1;
+import static ch.dvbern.ebegu.enums.EinschulungTyp.VORSCHULALTER;
 
 public class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 
@@ -67,7 +69,6 @@ public class ZusaetzlicherGutscheinGemeindeRechnerRuleTest {
 
 	@Test
 	public void isRelevantForVerfuegung() {
-		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(VORSCHULALTER, KITA), londonDTO));
 		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(KLASSE1, KITA), parisDTO));
 		Assert.assertTrue(rule.isRelevantForVerfuegung(prepareInput(VORSCHULALTER, KITA), parisDTO));
 	}

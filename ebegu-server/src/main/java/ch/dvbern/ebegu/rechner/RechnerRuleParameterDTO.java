@@ -27,6 +27,7 @@ public final class RechnerRuleParameterDTO {
 	private BigDecimal zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
 	private BigDecimal zusaetzlicherBabyGutscheinBetrag = BigDecimal.ZERO;
 	private BigDecimal verguenstigungMahlzeitenTotal = BigDecimal.ZERO;
+	private BigDecimal minimalPauschalBetrag = BigDecimal.ZERO;
 
 	public void reset() {
 		this.zusaetzlicherGutscheinGemeindeBetrag = BigDecimal.ZERO;
@@ -56,5 +57,13 @@ public final class RechnerRuleParameterDTO {
 
 	public void setVerguenstigungMahlzeitenTotal(BigDecimal verguenstigungMahlzeitenTotal) {
 		this.verguenstigungMahlzeitenTotal = verguenstigungMahlzeitenTotal;
+	}
+
+	public BigDecimal getMinimalPauschalBetrag() {
+		return minimalPauschalBetrag;
+	}
+
+	public void setMinimalPauschalBetrag(BigDecimal minimalPauschalBetrag) {
+		this.minimalPauschalBetrag = minimalPauschalBetrag;
 	}
 }

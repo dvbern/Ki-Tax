@@ -39,6 +39,7 @@ import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.r
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
+import {FerieninselStammdatenRS} from '../../admin/service/ferieninselStammdatenRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {languageEnabledHookRunBlock} from '../../authentication/state-hooks/onBefore/languageEnabledHookRunBlock';
@@ -253,6 +254,7 @@ export const CORE_JS_MODULE = angular
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
+    .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])

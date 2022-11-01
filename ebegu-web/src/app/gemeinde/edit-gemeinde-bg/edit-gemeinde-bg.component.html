@@ -242,8 +242,8 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <dv-input-container-x [verticalAlign]="true">
-                                            <label  class="required"
-                                                    translate for="zusatzText_id">ZUSAETZLICHER_TEXT_TITEL</label>
+                                            <label class="required"
+                                                   translate for="zusatzText_id">ZUSAETZLICHER_TEXT_TITEL</label>
                                             <mat-form-field floatLabel="always" class="no-margin-left">
                                             <textarea matInput
                                                       id="zusatzText_id"
@@ -252,7 +252,7 @@
                                                       [(ngModel)]="stammdaten.zusatzText"
                                                       type="text"
                                                       class="form-control" required></textarea>
-                                            <dv-error-messages [errorObject]="nameZusatzText.errors"
+                                                <dv-error-messages [errorObject]="nameZusatzText.errors"
                                                                    inputId="zusatzTextTitle_id"></dv-error-messages>
                                             </mat-form-field>
                                         </dv-input-container-x>
@@ -586,7 +586,8 @@
                                             <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])"
                                                  class="col-sm-6">
                                                 <!-- BG bis Schulstufe -->
-                                                <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigBeguBisUndMitSchulstufe)">
+                                                <div class="form-group"
+                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigBeguBisUndMitSchulstufe)">
                                                     <label class="required" translate>BEGU_KITAS_BIS_UND_MIT</label>
                                                     <mat-select
                                                         [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
@@ -600,7 +601,8 @@
                                                     </mat-select>
                                                 </div>
                                                 <!-- Kontingentierung -->
-                                                <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung)">
+                                                <div class="form-group"
+                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigKontingentierung)">
                                                     <mat-checkbox id="kontingentierung_id_{{i}}"
                                                                   name="kontingentierung_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
@@ -654,7 +656,8 @@
                                                 <div class="col-sm-6">
 
                                                     <!--                                                            Custom Minimale Erwerbspensen -->
-                                                    <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].erwerbspensumMinimumOverriden)">
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].erwerbspensumMinimumOverriden)">
                                                         <mat-checkbox id="ewp_mininum_override_id_{{i}}"
                                                                       name="ewp_mininum_override_id_{{i}}"
                                                                       [(ngModel)]="konfigurationsListe[i].erwerbspensumMinimumOverriden"
@@ -712,7 +715,8 @@
 
 
                                                     <!--                                            Zusätzliche Vergünstigung durch die Gemeinde-->
-                                                    <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled)">
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled)">
                                                         <mat-checkbox id="zusaetzliche_verguenstigung_{{i}}"
                                                                       name="zusaetzliche_verguenstigung_{{i}}"
                                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherGutscheinEnabled"
@@ -800,12 +804,15 @@
                                                     </div>
 
                                                     <!-- Zusätzliche Vergünstigung durch die Gemeinde bei Kindern bis 12 Monate-->
-                                                    <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled)">
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled)">
                                                         <mat-checkbox id="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
                                                                       name="zusaetzlicher_babybeitrag_gemeinde_{{i}}"
                                                                       [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
                                                                       (change)="changeKonfigZusaetzlicherBabybeitragEnabled(konfigurationsListe[i])">
-                                                            <span>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{monate: getDauerBabytarif(konf.gesuchsperiode)} }}
+                                                            <span>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{
+                                                                monate: getDauerBabytarif(konf.gesuchsperiode)
+                                                            } }}
                                                             </span>
                                                         </mat-checkbox>
                                                     </div>
@@ -827,7 +834,7 @@
                                                                [(ngModel)]="konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita"
                                                                (change)="changeZusaetzlicherBabybeitragKita(konfigurationsListe[i])">
 
-                                                        <dv-error-messages inputId="ewp_zuschlag_id_{{i}}"
+                                                        <dv-error-messages inputId="zusaetzlicher_babybeitrag_betrag_kita_id_{{i}}"
                                                                            [errorObject]="zusaetzlicher_babybeitrag_betrag_kita.errors">
                                                         </dv-error-messages>
                                                     </div>
@@ -856,7 +863,8 @@
                                                     </div>
 
                                                     <!--                                            Zusätzlicher Anspruch durch die Gemeinde bei Freiwilligenarbeit-->
-                                                    <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)">
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled)">
                                                         <mat-checkbox
                                                             id="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
                                                             name="zusaetzlicher_anspruch_freiwilligenarbeit_enabled_{{i}}"
@@ -891,7 +899,8 @@
                                                     </div>
 
                                                     <!-- Mahlzeitenverguenstigung -->
-                                                    <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled)">
+                                                    <div class="form-group"
+                                                         *ngIf="!isUndefined(konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled)">
                                                         <mat-checkbox id="mahlzeitenverguenstigung_enabled_{{i}}"
                                                                       name="mahlzeitenverguenstigung_enabled_{{i}}"
                                                                       [(ngModel)]="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled"
@@ -1094,7 +1103,7 @@
                                                             </table>
                                                         </div>
 
-                                                        <!--                                            Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
+                                                        <!--Mahlzeitenverguenstigung auch für Sozialhilfeempfänger-->
                                                         <div class="form-group"
                                                              *ngIf="konfigurationsListe[i].konfigMahlzeitenverguenstigungEnabled">
                                                             <mat-checkbox
@@ -1111,9 +1120,131 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row" *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode) && isKonfigurationEditable(konfigurationsListe[i])">
+                                        <div class="row"
+                                             *ngIf="!isUndefined(konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert) && isKonfigurationEditable(konfigurationsListe[i]) && (konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert || isSuperAdmin())">
                                             <div class="col-sm-6">
-                                                <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
+                                                <!-- Höhere Einkommensklassen aktivieren -->
+                                                <div class="form-group">
+                                                    <mat-checkbox id="hohe_einkommensklassen_aktiviert_{{i}}"
+                                                                  name="hohe_einkommensklassen_aktiviert_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert"
+                                                                  (change)="changeKonfigHoheEinkommensklassenAktiviert(konfigurationsListe[i])">
+                                                            <span>{{'GEMEINDE_HOHE_EINKOMMENSKLASSEN' | translate}}
+                                                            </span>
+                                                    </mat-checkbox>
+                                                </div>
+                                                <!-- Höhere Einkommensklassen Betrag pro Tag-->
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA</label>
+                                                    <input id="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_betrag_kita='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKita"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragKita(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE</label>
+                                                    <input id="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_betrag_kita_ab_primarschule='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKitaAbPrimarschule"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita_ab_primarschule.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <!-- Höhere Einkommensklassen Betrag TFO pro Stunde-->
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO</label>
+                                                    <input id="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_betrag_tfo='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragTfo"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragTfo(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_tfo_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_tfo.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_betrag_tfo_ab_primarschule_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE</label>
+                                                    <input id="hohe_einkommensklassen_betrag_tfo_ab_primarschule_id_{{i}}"
+                                                           name="hohe_einkommensklassen_betrag_tfo_ab_primarschule_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_betrag_tfo_ab_primarschule='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragTfoAbPrimarschule"
+                                                           (change)="changeKonfigHoheEinkommensklassenBetragTfoAbPrimarschule(konfigurationsListe[i])">
+
+                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_tfo_ab_primarschule_id_{{i}}"
+                                                                       [errorObject]="hohe_einkommensklassen_betrag_tfo_ab_primarschule.errors">
+                                                    </dv-error-messages>
+                                                </div>
+                                                <!-- Höhere Einkommensklassen bis Massgebendeneinkommen -->
+                                                <div class="form-group"
+                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
+                                                    <label for="hohe_einkommensklassen_massgebendeneinkommen_id_{{i}}"
+                                                           class="required"
+                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN</label>
+                                                    <input id="hohe_einkommensklassen_massgebendeneinkommen_id_{{i}}"
+                                                           name="hohe_einkommensklassen_massgebendeneinkommen_id_{{i}}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           #hohe_einkommensklassen_massgebendeneinkommen='ngModel'
+                                                           required
+                                                           customMinMax
+                                                           [minValue]="0"
+                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenMassgebendenEinkommen"
+                                                           (change)="changeKonfigHoheEinkommensklassenMassgebendenEinkommen(konfigurationsListe[i])">
+
+                                                    <dv-error-messages
+                                                        inputId="hohe_einkommensklassen_massgebendeneinkommen_id_{{i}}"
+                                                        [errorObject]="hohe_einkommensklassen_massgebendeneinkommen.errors">
+                                                    </dv-error-messages>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row"
+                                             *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode) && isKonfigurationEditable(konfigurationsListe[i])">
+                                            <div class="col-sm-6">
+                                                <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}
+                                                    :</strong>
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div class="margin-top-20">
                                                     <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen; let j = index">
@@ -1220,7 +1351,7 @@
                     <div>
                         <div>
                             <h3 *ngIf="stammdaten.hasZusatzText">
-                                    {{'ZUSAETZLICHER_TEXT_JA'| translate}}
+                                {{'ZUSAETZLICHER_TEXT_JA'| translate}}
                             </h3>
                         </div>
                     </div>
@@ -1332,7 +1463,7 @@
                                                 <p *ngIf="!isUndefined(konfigurationsListe[i].erwerbspensumZuschlag)
                                                 && konfigurationsListe[i].erwerbspensumZuschlagOverriden">
                                                     <span *ngIf="!konfigurationsListe[i].isTextForFKJV"
-                                                        translate
+                                                          translate
                                                           [translateParams]="{valueMandant:
                                                       konfigurationsListe[i].erwerbspensumZuschlagMax, value:
                                                       konfigurationsListe[i].erwerbspensumZuschlag}">
@@ -1396,7 +1527,9 @@
                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled)
                                                 && konfigurationsListe[i].konfigZusaetzlicherBabybeitragEnabled"
                                                     class="mt-2">
-                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{monate: getDauerBabytarif(konf.gesuchsperiode)} }}
+                                                    <strong>{{'ZUSAETZLICHER_BABYBEITRAG_GEMEINDE' | translate:{
+                                                        monate: getDauerBabytarif(konf.gesuchsperiode)
+                                                    } }}
                                                         :</strong>
                                                     <div *ngIf="!isUndefined(konfigurationsListe[i].konfigZusaetzlicherBabybeitragBetragKita)">
                                                         <p translate
@@ -1427,7 +1560,8 @@
                                                 <div
                                                     *ngIf="showGemeindespezifischeKonfigForBG(konfigurationsListe[i].gesuchsperiode)"
                                                     class="mt-2">
-                                                    <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}:</strong>
+                                                    <strong>{{'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE' | translate}}
+                                                        :</strong>
                                                     <ng-container *ngFor="let config of konfigurationsListe[i].gemeindespezifischeBGKonfigurationen;">
                                                         <p translate
                                                            [translateParams]="{value:  config.value}">
@@ -1491,6 +1625,27 @@
                                                translate>
                                                 MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER
                                             </p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <!-- Zusaetzlicher Gutschein der Gemeinde -->
+                                            <div *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert"
+                                                 class="mt-2">
+                                                <strong>{{'GEMEINDE_HOHE_EINKOMMENSKLASSEN' | translate}}
+                                                    :</strong>
+                                                <p translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenBetragKita}">
+                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY
+                                                </p>
+                                                <p translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenBetragTfo}">
+                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY
+                                                </p>
+                                                <p translate
+                                                   [translateParams]="{value: konfigurationsListe[i].konfigHoheEinkommensklassenMassgebendenEinkommen}">
+                                                    GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY
+                                                </p>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </tab-body>
