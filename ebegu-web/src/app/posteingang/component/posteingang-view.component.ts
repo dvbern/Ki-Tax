@@ -26,6 +26,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {from, Observable, of, Subject} from 'rxjs';
@@ -33,6 +34,7 @@ import {map, mergeMap, takeUntil, tap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
+import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
@@ -45,6 +47,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
+import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
@@ -149,7 +152,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly benutzerRS: BenutzerRSX,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly posteingangService: PosteingangService,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly translate: TranslateService,
+        private readonly errorService: ErrorServiceX
     ) {
     }
 
@@ -404,6 +409,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     public setUngelesen(mitteilung: TSMitteilung): void {
+        this.resetMitteilungRevertInfo();
         this.mitteilungRS.setMitteilungUngelesen(mitteilung.id).then(
             () => {
                 this.passFilterToServer();
@@ -413,15 +419,27 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     public setIgnoriert(mitteilung: TSMitteilung): void {
+        this.resetMitteilungRevertInfo();
         this.mitteilungRS.setMitteilungIgnoriert(mitteilung.id).then(
             () => {
                 this.passFilterToServer();
                 this.getMitteilungenCount();
             }
-        );
+        ).then(() => {
+            const errorMessageCallback = new DVErrorMessageCallback(
+                this.translate.instant('RUECKGAENGIG_MACHEN'),
+                () => this.setGelesen(mitteilung)
+            );
+            this.errorService.addMesageAsInfo(this.translate.instant('MESSAGE_IGNORED'), errorMessageCallback);
+        });
+    }
+
+    private resetMitteilungRevertInfo() {
+        this.errorService.clearAll();
     }
 
     public setGelesen(mitteilung: TSMitteilung): void {
+        this.resetMitteilungRevertInfo();
         this.mitteilungRS.setMitteilungGelesen(mitteilung.id).then(
             () => {
                 this.passFilterToServer();

@@ -2929,5 +2929,6 @@
     "IGNORIERT": "Ignoriert",
     "IGNORIEREN": "Ignorieren",
     "RUECKGAENGIG": "Rückgängig",
+    "MESSAGE_IGNORED": "Die Meldung wurde ignoriert. ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
