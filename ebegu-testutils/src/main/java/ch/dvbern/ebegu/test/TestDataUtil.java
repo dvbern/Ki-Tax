@@ -2736,4 +2736,12 @@ public final class TestDataUtil {
 		finsitGs2.setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.setGesuchsteller2(gs2);
 	}
+
+	public static Mandant createMandantAR() {
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.APPENZELL_AUSSERRHODEN);
+		mandant.setName("Appenzell Ausserrhoden");
+		mandant.setActivated(true);
+		return mandant;
+	}
 }
