@@ -73,15 +73,15 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private boolean keineMahlzeitenverguenstigungBeantragtEditable;
 
 	@Nullable
-	private String ibanMahlzeiten;
+	private String iban;
 
 	@Nullable
-	private String kontoinhaberMahlzeiten;
+	private String kontoinhaber;
 
-	private boolean abweichendeZahlungsadresseMahlzeiten;
+	private boolean abweichendeZahlungsadresse;
 
 	@Nullable
-	private JaxAdresse zahlungsadresseMahlzeiten;
+	private JaxAdresse zahlungsadresse;
 
 	@Nullable
 	private String ibanInfoma;
@@ -220,38 +220,38 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getIbanMahlzeiten() {
-		return ibanMahlzeiten;
+	public String getIban() {
+		return iban;
 	}
 
-	public void setIbanMahlzeiten(@Nullable String iban) {
-		this.ibanMahlzeiten = iban;
-	}
-
-	@Nullable
-	public String getKontoinhaberMahlzeiten() {
-		return kontoinhaberMahlzeiten;
-	}
-
-	public void setKontoinhaberMahlzeiten(@Nullable String kontoinhaber) {
-		this.kontoinhaberMahlzeiten = kontoinhaber;
-	}
-
-	public boolean isAbweichendeZahlungsadresseMahlzeiten() {
-		return abweichendeZahlungsadresseMahlzeiten;
-	}
-
-	public void setAbweichendeZahlungsadresseMahlzeiten(boolean abweichendeZahlungsadresse) {
-		this.abweichendeZahlungsadresseMahlzeiten = abweichendeZahlungsadresse;
+	public void setIban(@Nullable String iban) {
+		this.iban = iban;
 	}
 
 	@Nullable
-	public JaxAdresse getZahlungsadresseMahlzeiten() {
-		return zahlungsadresseMahlzeiten;
+	public String getKontoinhaber() {
+		return kontoinhaber;
 	}
 
-	public void setZahlungsadresseMahlzeiten(@Nullable JaxAdresse zahlungsadresse) {
-		this.zahlungsadresseMahlzeiten = zahlungsadresse;
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
+	}
+
+	public boolean isAbweichendeZahlungsadresse() {
+		return abweichendeZahlungsadresse;
+	}
+
+	public void setAbweichendeZahlungsadresse(boolean abweichendeZahlungsadresse) {
+		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
+	}
+
+	@Nullable
+	public JaxAdresse getZahlungsadresse() {
+		return zahlungsadresse;
+	}
+
+	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
+		this.zahlungsadresse = zahlungsadresse;
 	}
 
 	@Nullable

@@ -123,7 +123,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -361,8 +360,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			return;
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		familiensituation.setAuszahlungsdatenMahlzeiten(null);
-		familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+		familiensituation.setAuszahlungsdaten(null);
+		familiensituation.setAbweichendeZahlungsadresse(false);
 	}
 
 	@Nonnull

@@ -749,40 +749,40 @@ public class JaxBConverter extends AbstractConverter {
 			if (!familiensituationJAXP.isKeineMahlzeitenverguenstigungBeantragt()) {
 				// keineMahlzeitenverguenstigungBeantragt ist boolean mit default FALSE.
 				// Wir sind aber evtl. noch gar nicht bei der FinSit und muessen trotzdem speichern koennen!
-				if (familiensituationJAXP.getIbanMahlzeiten() != null
-					|| familiensituationJAXP.getKontoinhaberMahlzeiten() != null) {
+				if (familiensituationJAXP.getIban() != null
+					|| familiensituationJAXP.getKontoinhaber() != null) {
 					Objects.requireNonNull(
-						familiensituationJAXP.getIbanMahlzeiten(),
+						familiensituationJAXP.getIban(),
 						"IBAN muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
 					Objects.requireNonNull(
-						familiensituationJAXP.getKontoinhaberMahlzeiten(),
+						familiensituationJAXP.getKontoinhaber(),
 						"Kontoinhaber muss erfasst sein, wenn Mahlzeitenverguenstigung gewunescht");
-					if (familiensituation.getAuszahlungsdatenMahlzeiten() == null) {
-						familiensituation.setAuszahlungsdatenMahlzeiten(new Auszahlungsdaten());
+					if (familiensituation.getAuszahlungsdaten() == null) {
+						familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
 					}
-					familiensituation.getAuszahlungsdatenMahlzeiten()
-						.setIban(new IBAN(familiensituationJAXP.getIbanMahlzeiten()));
-					familiensituation.getAuszahlungsdatenMahlzeiten()
-						.setKontoinhaber(familiensituationJAXP.getKontoinhaberMahlzeiten());
-					familiensituation.getAuszahlungsdatenMahlzeiten()
+					familiensituation.getAuszahlungsdaten()
+						.setIban(new IBAN(familiensituationJAXP.getIban()));
+					familiensituation.getAuszahlungsdaten()
+						.setKontoinhaber(familiensituationJAXP.getKontoinhaber());
+					familiensituation.getAuszahlungsdaten()
 						.setInfomaKreditorennummer(familiensituationJAXP.getInfomaKreditorennummer());
-					familiensituation.getAuszahlungsdatenMahlzeiten()
+					familiensituation.getAuszahlungsdaten()
 						.setInfomaBankcode(familiensituationJAXP.getInfomaBankcode());
 					Adresse convertedAdresse = null;
-					if (familiensituationJAXP.getZahlungsadresseMahlzeiten() != null) {
+					if (familiensituationJAXP.getZahlungsadresse() != null) {
 						Adresse a =
-							Optional.ofNullable(familiensituation.getAuszahlungsdatenMahlzeiten()
+							Optional.ofNullable(familiensituation.getAuszahlungsdaten()
 								.getAdresseKontoinhaber())
 								.orElseGet(Adresse::new);
-						convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresseMahlzeiten(), a);
+						convertedAdresse = adresseToEntity(familiensituationJAXP.getZahlungsadresse(), a);
 					}
-					familiensituation.getAuszahlungsdatenMahlzeiten().setAdresseKontoinhaber(convertedAdresse);
+					familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 				}
 			}
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(familiensituationJAXP.isAbweichendeZahlungsadresseMahlzeiten());
+			familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
 		} else {
-			familiensituation.setAuszahlungsdatenMahlzeiten(null);
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+			familiensituation.setAuszahlungsdaten(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
 		}
 
 		if (familiensituationJAXP.getIbanInfoma() != null || familiensituationJAXP.getKontoinhaberInfoma() != null) {
@@ -847,13 +847,13 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragt(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragt());
 		jaxFamiliensituation.setKeineMahlzeitenverguenstigungBeantragtEditable(persistedFamiliensituation.isKeineMahlzeitenverguenstigungBeantragtEditable());
-		jaxFamiliensituation.setAbweichendeZahlungsadresseMahlzeiten(persistedFamiliensituation.isAbweichendeZahlungsadresseMahlzeiten());
-		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdatenMahlzeiten();
+		jaxFamiliensituation.setAbweichendeZahlungsadresse(persistedFamiliensituation.isAbweichendeZahlungsadresse());
+		final Auszahlungsdaten persistedAuszahlungsdaten = persistedFamiliensituation.getAuszahlungsdaten();
 		if (persistedAuszahlungsdaten != null) {
-			jaxFamiliensituation.setIbanMahlzeiten(persistedAuszahlungsdaten.extractIbanAsString());
-			jaxFamiliensituation.setKontoinhaberMahlzeiten(persistedAuszahlungsdaten.getKontoinhaber());
+			jaxFamiliensituation.setIban(persistedAuszahlungsdaten.extractIbanAsString());
+			jaxFamiliensituation.setKontoinhaber(persistedAuszahlungsdaten.getKontoinhaber());
 			if (persistedAuszahlungsdaten.getAdresseKontoinhaber() != null) {
-				jaxFamiliensituation.setZahlungsadresseMahlzeiten(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
+				jaxFamiliensituation.setZahlungsadresse(adresseToJAX(persistedAuszahlungsdaten.getAdresseKontoinhaber()));
 			}
 		}
 		final Auszahlungsdaten persistedAuszahlungsdatenInfoma =
@@ -5679,19 +5679,19 @@ public class JaxBConverter extends AbstractConverter {
 				// Wenn eines gesetzt ist, sind beide zwingend!
 				Objects.requireNonNull(properties.getIban());
 				Objects.requireNonNull(properties.getKontoinhaber());
-				if (famSit.getAuszahlungsdatenMahlzeiten() == null) {
-					famSit.setAuszahlungsdatenMahlzeiten(new Auszahlungsdaten());
+				if (famSit.getAuszahlungsdaten() == null) {
+					famSit.setAuszahlungsdaten(new Auszahlungsdaten());
 				}
-				famSit.getAuszahlungsdatenMahlzeiten().setIban(new IBAN(properties.getIban()));
-				famSit.getAuszahlungsdatenMahlzeiten().setKontoinhaber(properties.getKontoinhaber());
+				famSit.getAuszahlungsdaten().setIban(new IBAN(properties.getIban()));
+				famSit.getAuszahlungsdaten().setKontoinhaber(properties.getKontoinhaber());
 
-				famSit.setAbweichendeZahlungsadresseMahlzeiten(properties.isAbweichendeZahlungsadresse());
+				famSit.setAbweichendeZahlungsadresse(properties.isAbweichendeZahlungsadresse());
 				if (properties.isAbweichendeZahlungsadresse() && properties.getZahlungsadresse() != null) {
-					famSit.getAuszahlungsdatenMahlzeiten().setAdresseKontoinhaber(this.adresseToEntity(
+					famSit.getAuszahlungsdaten().setAdresseKontoinhaber(this.adresseToEntity(
 						properties.getZahlungsadresse(),
-						famSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber() == null ?
+						famSit.getAuszahlungsdaten().getAdresseKontoinhaber() == null ?
 							new Adresse() :
-							famSit.getAuszahlungsdatenMahlzeiten().getAdresseKontoinhaber()));
+							famSit.getAuszahlungsdaten().getAdresseKontoinhaber()));
 				}
 			}
 		}

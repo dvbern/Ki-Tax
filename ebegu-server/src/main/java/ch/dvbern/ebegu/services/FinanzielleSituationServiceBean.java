@@ -154,14 +154,14 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				auszahlungsdaten.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 				auszahlungsdaten.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 				auszahlungsdaten.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresse());
-				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
+				familiensituation.setAuszahlungsdaten(auszahlungsdaten);
 			}
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(finSitStartDTO.isAbweichendeZahlungsadresse());
+			familiensituation.setAbweichendeZahlungsadresse(finSitStartDTO.isAbweichendeZahlungsadresse());
 		} else {
 			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
 			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-			familiensituation.setAuszahlungsdatenMahlzeiten(null);
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+			familiensituation.setAuszahlungsdaten(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
 		}
 
 		if (finSitStartDTO.getIbanInfoma() != null && finSitStartDTO.getKontoinhaberInfoma() != null) {

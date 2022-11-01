@@ -33,10 +33,10 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _verguenstigungGewuenscht: boolean;
     private _keineMahlzeitenverguenstigungBeantragt: boolean;
     private _keineMahlzeitenverguenstigungBeantragtEditable: boolean;
-    private _ibanMahlzeiten: string;
-    private _kontoinhaberMahlzeiten: string;
-    private _abweichendeZahlungsadresseMahlzeiten: boolean;
-    private _zahlungsadresseMahlzeiten: TSAdresse;
+    private _iban: string;
+    private _kontoinhaber: string;
+    private _abweichendeZahlungsadresse: boolean;
+    private _zahlungsadresse: TSAdresse;
 
     private _ibanInfoma: string;
     private _kontoinhaberInfoma: string;
@@ -135,36 +135,36 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._keineMahlzeitenverguenstigungBeantragtEditable = value;
     }
 
-    public get ibanMahlzeiten(): string {
-        return this._ibanMahlzeiten;
+    public get iban(): string {
+        return this._iban;
     }
 
-    public set ibanMahlzeiten(value: string) {
-        this._ibanMahlzeiten = value;
+    public set iban(value: string) {
+        this._iban = value;
     }
 
-    public get kontoinhaberMahlzeiten(): string {
-        return this._kontoinhaberMahlzeiten;
+    public get kontoinhaber(): string {
+        return this._kontoinhaber;
     }
 
-    public set kontoinhaberMahlzeiten(value: string) {
-        this._kontoinhaberMahlzeiten = value;
+    public set kontoinhaber(value: string) {
+        this._kontoinhaber = value;
     }
 
-    public get abweichendeZahlungsadresseMahlzeiten(): boolean {
-        return this._abweichendeZahlungsadresseMahlzeiten;
+    public get abweichendeZahlungsadresse(): boolean {
+        return this._abweichendeZahlungsadresse;
     }
 
-    public set abweichendeZahlungsadresseMahlzeiten(value: boolean) {
-        this._abweichendeZahlungsadresseMahlzeiten = value;
+    public set abweichendeZahlungsadresse(value: boolean) {
+        this._abweichendeZahlungsadresse = value;
     }
 
-    public get zahlungsadresseMahlzeiten(): TSAdresse {
-        return this._zahlungsadresseMahlzeiten;
+    public get zahlungsadresse(): TSAdresse {
+        return this._zahlungsadresse;
     }
 
-    public set zahlungsadresseMahlzeiten(value: TSAdresse) {
-        this._zahlungsadresseMahlzeiten = value;
+    public set zahlungsadresse(value: TSAdresse) {
+        this._zahlungsadresse = value;
     }
 
     public get ibanInfoma(): string {
