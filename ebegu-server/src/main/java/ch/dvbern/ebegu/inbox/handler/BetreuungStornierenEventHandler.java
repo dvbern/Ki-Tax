@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -121,8 +119,11 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
-		return betreuungEventHelper.getExternalClient(eventMonitor.getClientName(), betreuung)
-			.map(client -> processEventForExternalClient(eventMonitor, betreuung, client.getGueltigkeit()))
+		InstitutionExternalClients clients =
+			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), betreuung);
+
+		return clients.getRelevantClient().map(client ->
+				processEventForExternalClient(eventMonitor, betreuung, client.getGueltigkeit()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), betreuung));
 	}
 

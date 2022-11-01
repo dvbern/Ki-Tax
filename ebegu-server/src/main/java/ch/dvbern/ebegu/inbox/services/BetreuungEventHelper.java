@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.inbox.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.inbox.handler.InstitutionExternalClients;
 import ch.dvbern.ebegu.inbox.handler.Processing;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
@@ -85,24 +87,29 @@ public class BetreuungEventHelper {
 	}
 
 	@Nonnull
-	public Optional<InstitutionExternalClient> getExternalClient(
-		@Nonnull String clientName,
+	public InstitutionExternalClients getExternalClients(
+		@Nonnull String relevantClientName,
 		@Nonnull AbstractPlatz platz) {
 
 		Institution institution = platz.getInstitutionStammdaten().getInstitution();
-		return getExternalClientForInstitution(clientName, institution);
+		return getExternalClientForInstitution(relevantClientName, institution);
 	}
 
 	@Nonnull
-	private Optional<InstitutionExternalClient> getExternalClientForInstitution(
-		@Nonnull String clientName,
+	private InstitutionExternalClients getExternalClientForInstitution(
+		@Nonnull String relevantClientName,
 		@Nonnull Institution institution) {
 
 		Collection<InstitutionExternalClient> institutionExternalClients =
 			externalClientService.getInstitutionExternalClientForInstitution(institution);
 
-		return institutionExternalClients.stream()
-			.filter(iec -> iec.getExternalClient().getClientName().equals(clientName))
+		Optional<InstitutionExternalClient> relevantClient = institutionExternalClients.stream()
+			.filter(iec -> iec.getExternalClient().getClientName().equals(relevantClientName))
 			.findAny();
+
+		ArrayList<InstitutionExternalClient> otherClients = new ArrayList<>(institutionExternalClients);
+		relevantClient.ifPresent(otherClients::remove);
+
+		return new InstitutionExternalClients(relevantClient.orElse(null), otherClients);
 	}
 }
