@@ -16,13 +16,15 @@
 export enum TSMitteilungStatus {
     NEU = 'NEU',
     GELESEN = 'GELESEN',
-    ERLEDIGT = 'ERLEDIGT'
+    ERLEDIGT = 'ERLEDIGT',
+    IGNORIERT = 'IGNORIERT'
 }
 
 export function getTSMitteilungsStatusForFilter(): Array<TSMitteilungStatus> {
     return [
         TSMitteilungStatus.NEU,
         TSMitteilungStatus.GELESEN,
-        TSMitteilungStatus.ERLEDIGT
+        TSMitteilungStatus.ERLEDIGT,
+        TSMitteilungStatus.IGNORIERT
     ];
 }

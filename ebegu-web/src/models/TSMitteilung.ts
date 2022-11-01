@@ -174,4 +174,8 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     public isErledigt(): boolean {
         return this.mitteilungStatus === TSMitteilungStatus.ERLEDIGT;
     }
+
+    public isIgnoriert() {
+        return this.mitteilungStatus === TSMitteilungStatus.IGNORIERT;
+    }
 }
