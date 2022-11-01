@@ -37,7 +37,6 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const applicationPropertyRSSpy = jasmine
     .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getActivatedDemoFeatures']);
 
-
 describe('InternePendenzenComponent', () => {
     let component: InternePendenzenComponent;
     let fixture: ComponentFixture<InternePendenzenComponent>;
