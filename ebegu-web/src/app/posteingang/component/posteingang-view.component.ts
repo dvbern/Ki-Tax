@@ -135,7 +135,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         reverse?: boolean;
     } = {};
 
-    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
+    public readonly mutationsMeldungDemoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
+    public readonly mitteilungIgnorierenDemoFeature = TSDemoFeature.MITTEILUNG_IGNORIEREN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
@@ -411,6 +412,15 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         );
     }
 
+    public setIgnoriert(mitteilung: TSMitteilung): void {
+        this.mitteilungRS.setMitteilungIgnoriert(mitteilung.id).then(
+            () => {
+                this.passFilterToServer();
+                this.getMitteilungenCount();
+            }
+        );
+    }
+
     public isStatusGelesen(mitteilung: TSMitteilung): boolean {
         return mitteilung.mitteilungStatus === TSMitteilungStatus.GELESEN;
     }
@@ -457,5 +467,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                 },
                 () => {
                 });
+    }
+
+    public canBeIgnored(mitteilung: TSMitteilung): boolean {
+        return !mitteilung.isErledigt() && !mitteilung.isIgnoriert();
     }
 }

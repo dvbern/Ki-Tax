@@ -135,6 +135,10 @@
                                                *ngIf="isSuperAdmin() && isStatusGelesen(element)">
                                 <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
                             </dv-loading-button>
+                            <dv-loading-button (buttonClick)="setIgnoriert(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                               *ngIf="isSuperAdminOrGemeinde() && canBeIgnored(element)">
+                                <span translate>IGNORIEREN</span>
+                            </dv-loading-button>
                         </mat-cell>
                     </ng-container>
 
@@ -279,7 +283,7 @@
                             </li>
                         </ul>
                     </nav>
-                </div> <div *ngIf="!isSozialdienstOrInstitution()" [dvDemoFeature]="demoFeature"
+                </div> <div *ngIf="!isSozialdienstOrInstitution()" [dvDemoFeature]="mutationsMeldungDemoFeature"
                      class="text-right closed-mitteilungen dv-table-actionButton">
                     <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
                         {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>
