@@ -296,7 +296,8 @@ public class MitteilungResource {
 	@Path("/setignoriert/{mitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+			SACHBEARBEITER_TS, ADMIN_TS })
 	public JaxMitteilung setMitteilungIgnoriert(
 		@Nonnull @NotNull @PathParam("mitteilungId") JaxId mitteilungId,
 		@Context UriInfo uriInfo,
