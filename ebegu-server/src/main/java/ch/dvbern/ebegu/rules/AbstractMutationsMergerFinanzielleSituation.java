@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -40,7 +41,7 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		} else {
 			// Der Spezialfall bei Änderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
 			handleEinkommen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
-			handleAnpassungAnspruch(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+			handleAnpassungAnspruch(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		}
 	}
 
@@ -53,12 +54,13 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 	private void handleAnpassungAnspruch(
 		@Nonnull BGCalculationInput inputData,
 		@Nullable BGCalculationResult resultVorangehenderAbschnitt,
+		@Nonnull AbstractPlatz platz,
 		@Nonnull LocalDate mutationsEingansdatum
 	) {
 		DateRange gueltigkeit = inputData.getParent().getGueltigkeit();
 
 		//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-		if (!isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
+		if (!isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum, platz.extractGesuch().extractMandant())) {
 			return;
 		}
 
@@ -130,8 +132,8 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		return locale;
 	}
 
-	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
-		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
+	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum, @Nonnull Mandant mandant) {
+		return new EinreichefristVisitor().getEinreichefristCalculator(mandant.getMandantIdentifier()).isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum);
 	}
 
 

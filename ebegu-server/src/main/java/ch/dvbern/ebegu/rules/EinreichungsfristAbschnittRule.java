@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
@@ -64,18 +65,22 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
 		if (isErstgesuchOrNewPlatzInMutation(platz) && startDatum != null) {
-			LocalDate firstOfMonthDesEinreichungsMonats = getStichtagForEreignis(startDatum);
-			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
+			LocalDate einreichefristStichtag = getEinreichefristStichtag(startDatum, platz.extractGesuch().extractMandant());
+			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(einreichefristStichtag)) {
 				VerfuegungZeitabschnitt abschnittVorAnspruch =
 					createZeitabschnittBevorEinreichung(
 						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
-						firstOfMonthDesEinreichungsMonats.minusDays(1));
+						einreichefristStichtag.minusDays(1));
 				if (abschnittVorAnspruch != null) {
 					einreichungsfristAbschnitte.add(abschnittVorAnspruch);
 				}
 			}
 		}
 		return einreichungsfristAbschnitte;
+	}
+
+	private LocalDate getEinreichefristStichtag(LocalDate startDatum, Mandant mandant) {
+		return new EinreichefristVisitor().getEinreichefristCalculator(mandant.getMandantIdentifier()).getStichtagEinreichefrist(startDatum);
 	}
 
 	private boolean isErstgesuchOrNewPlatzInMutation(@Nonnull AbstractPlatz platz) {

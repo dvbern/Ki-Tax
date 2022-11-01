@@ -168,7 +168,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 
 		handleFinanzielleSituation(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
-		handleEinreichfrist(inputAktuel, mutationsEingansdatum);
+		handleEinreichfrist(inputAktuel, mutationsEingansdatum, platz);
 	}
 
 	private void handleFinanzielleSituation(
@@ -192,11 +192,10 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		}
 	}
 
-	private void handleEinreichfrist(BGCalculationInput input, LocalDate mutationsEingansdatum) {
-		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag ZuSpaetEingereicht gesetzt werden
-		if(isMeldungZuSpaet(input.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			input.setZuSpaetEingereicht(true);
-		}
+	private void handleEinreichfrist(BGCalculationInput input, LocalDate mutationsEingansdatum, AbstractPlatz platz) {
+		new EinreichefristVisitor()
+				.getEinreichefristCalculator(platz.extractGesuch().extractMandant().getMandantIdentifier())
+				.handleEinreichfrist(input, mutationsEingansdatum);
 	}
 
 	private void handleAnpassungErweiterteBeduerfnisse(
@@ -214,10 +213,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
 			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
-	}
-
-	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
-		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
 	/**
