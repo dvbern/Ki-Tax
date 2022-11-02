@@ -157,6 +157,17 @@ export class TSFinanzModel {
         this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresse;
         this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt =
             gesuch.extractFamiliensituation().keineMahlzeitenverguenstigungBeantragt;
+        this.zahlungsinformationen.infomaBankcode =  gesuch.extractFamiliensituation().infomaBankcode;
+        this.zahlungsinformationen.infomaKreditorennummer =  gesuch.extractFamiliensituation().infomaKreditorennummer;
+
+        //Temporäres kopieren der Daten von Infoma dies wird nach dem merge der Adresse wieder gelöscht
+        if (EbeguUtil.isNotNullOrUndefined(gesuch.extractFamiliensituation().ibanInfoma)) {
+            this.zahlungsinformationen.kontoinhaber = gesuch.extractFamiliensituation().kontoinhaberInfoma;
+            this.zahlungsinformationen.iban = gesuch.extractFamiliensituation().ibanInfoma;
+            this.zahlungsinformationen.abweichendeZahlungsadresse =
+                gesuch.extractFamiliensituation().abweichendeZahlungsadresseInfoma;
+            this.zahlungsinformationen.zahlungsadresse = gesuch.extractFamiliensituation().zahlungsadresseInfoma;
+        }
 
         if (gesuch.extractFamiliensituationGS()) {
             this.zahlungsinformationenGS = new TSZahlungsinformationen();
@@ -167,6 +178,19 @@ export class TSFinanzModel {
             this.zahlungsinformationenGS.zahlungsadresse = gesuch.extractFamiliensituationGS().zahlungsadresse;
             this.zahlungsinformationenGS.keineMahlzeitenverguenstigungBeantragt =
                 gesuch.extractFamiliensituationGS().keineMahlzeitenverguenstigungBeantragt;
+            this.zahlungsinformationenGS.infomaBankcode = gesuch.extractFamiliensituationGS().infomaBankcode;
+            this.zahlungsinformationenGS.infomaKreditorennummer =
+                gesuch.extractFamiliensituationGS().infomaKreditorennummer;
+
+            //Temporäres kopieren der Daten von Infoma dies wird nach dem merge der Adresse wieder gelöscht
+            if (EbeguUtil.isNotNullOrUndefined(gesuch.extractFamiliensituationGS().ibanInfoma)) {
+                this.zahlungsinformationenGS.kontoinhaber = gesuch.extractFamiliensituationGS().kontoinhaberInfoma;
+                this.zahlungsinformationenGS.iban = gesuch.extractFamiliensituationGS().ibanInfoma;
+                this.zahlungsinformationenGS.abweichendeZahlungsadresse =
+                    gesuch.extractFamiliensituationGS().abweichendeZahlungsadresseInfoma;
+                this.zahlungsinformationenGS.zahlungsadresse =
+                    gesuch.extractFamiliensituationGS().zahlungsadresseInfoma;
+            }
         }
 
         this.finanzielleSituationTyp = gesuch.finSitTyp;
@@ -242,6 +266,15 @@ export class TSFinanzModel {
         familiensituation.zahlungsadresse = this.zahlungsinformationen.zahlungsadresse;
         familiensituation.keineMahlzeitenverguenstigungBeantragt =
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+        familiensituation.infomaBankcode = this.zahlungsinformationen.infomaBankcode;
+        familiensituation.infomaKreditorennummer = this.zahlungsinformationen.infomaKreditorennummer;
+
+        //Temporäres kopieren der Daten nach Infoma dies wird nach dem merge der Adresse wieder gelöscht
+        familiensituation.kontoinhaberInfoma = this.zahlungsinformationen.kontoinhaber;
+        familiensituation.ibanInfoma = this.zahlungsinformationen.iban?.toLocaleUpperCase();
+        familiensituation.abweichendeZahlungsadresseInfoma =
+            this.zahlungsinformationen.abweichendeZahlungsadresse;
+        familiensituation.zahlungsadresseInfoma = this.zahlungsinformationen.zahlungsadresse;
 
         return gesuch;
     }
