@@ -38,10 +38,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _abweichendeZahlungsadresse: boolean;
     private _zahlungsadresse: TSAdresse;
 
-    private _ibanInfoma: string;
-    private _kontoinhaberInfoma: string;
-    private _abweichendeZahlungsadresseInfoma: boolean;
-    private _zahlungsadresseInfoma: TSAdresse;
     private _infomaKreditorennummer: string;
     private _infomaBankcode: string;
     private _gesuchstellerKardinalitaet: TSGesuchstellerKardinalitaet;
@@ -165,38 +161,6 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set zahlungsadresse(value: TSAdresse) {
         this._zahlungsadresse = value;
-    }
-
-    public get ibanInfoma(): string {
-        return this._ibanInfoma;
-    }
-
-    public set ibanInfoma(value: string) {
-        this._ibanInfoma = value;
-    }
-
-    public get kontoinhaberInfoma(): string {
-        return this._kontoinhaberInfoma;
-    }
-
-    public set kontoinhaberInfoma(value: string) {
-        this._kontoinhaberInfoma = value;
-    }
-
-    public get abweichendeZahlungsadresseInfoma(): boolean {
-        return this._abweichendeZahlungsadresseInfoma;
-    }
-
-    public set abweichendeZahlungsadresseInfoma(value: boolean) {
-        this._abweichendeZahlungsadresseInfoma = value;
-    }
-
-    public get zahlungsadresseInfoma(): TSAdresse {
-        return this._zahlungsadresseInfoma;
-    }
-
-    public set zahlungsadresseInfoma(value: TSAdresse) {
-        this._zahlungsadresseInfoma = value;
     }
 
     public get infomaKreditorennummer(): string {

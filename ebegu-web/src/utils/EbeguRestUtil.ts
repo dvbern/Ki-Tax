@@ -625,11 +625,6 @@ export class EbeguRestUtil {
                 familiensituation.abweichendeZahlungsadresse;
             restFamiliensituation.zahlungsadresse =
                 this.adresseToRestObject({}, familiensituation.zahlungsadresse);
-            restFamiliensituation.ibanInfoma = familiensituation.ibanInfoma;
-            restFamiliensituation.kontoinhaberInfoma = familiensituation.kontoinhaberInfoma;
-            restFamiliensituation.abweichendeZahlungsadresseInfoma = familiensituation.abweichendeZahlungsadresseInfoma;
-            restFamiliensituation.zahlungsadresseInfoma =
-                this.adresseToRestObject({}, familiensituation.zahlungsadresseInfoma);
             restFamiliensituation.infomaKreditorennummer = familiensituation.infomaKreditorennummer;
             restFamiliensituation.infomaBankcode = familiensituation.infomaBankcode;
             restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
@@ -712,12 +707,6 @@ export class EbeguRestUtil {
                 familiensituationFromServer.abweichendeZahlungsadresse;
             familiensituation.zahlungsadresse =
                 this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresse);
-            familiensituation.ibanInfoma = familiensituationFromServer.ibanInfoma;
-            familiensituation.kontoinhaberInfoma = familiensituationFromServer.kontoinhaberInfoma;
-            familiensituation.abweichendeZahlungsadresseInfoma =
-                familiensituationFromServer.abweichendeZahlungsadresseInfoma;
-            familiensituation.zahlungsadresseInfoma =
-                this.parseAdresse(new TSAdresse(), familiensituationFromServer.zahlungsadresseInfoma);
             familiensituation.infomaKreditorennummer = familiensituationFromServer.infomaKreditorennummer;
             familiensituation.infomaBankcode = familiensituationFromServer.infomaBankcode;
             familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;

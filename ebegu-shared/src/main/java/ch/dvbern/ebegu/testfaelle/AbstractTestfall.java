@@ -242,7 +242,7 @@ public abstract class AbstractTestfall {
 		}
 		auszahlungsdatenInforma.setInfomaKreditorennummer("0010");
 		auszahlungsdatenInforma.setInfomaBankcode("00-1-00");
-		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInforma);
+		familiensituation.setAuszahlungsdaten(auszahlungsdatenInforma);
 	}
 
 	protected Gesuch createAlleinerziehend() {

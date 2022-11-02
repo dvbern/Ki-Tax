@@ -148,15 +148,6 @@ public final class FreigabeCopyUtil {
 		}
 		familiensituationGS.setAuszahlungsdaten(auszahlungsdatenGS);
 
-		Auszahlungsdaten auszahlungsdatenJAMZV = familiensituationJA.getAuszahlungsdatenInfoma();
-		Auszahlungsdaten auszahlungsdatenGSMZV = null;
-		if (auszahlungsdatenJAMZV != null) {
-			auszahlungsdatenGSMZV = new Auszahlungsdaten();
-			copyAuszahlungsdaten(auszahlungsdatenGSMZV, auszahlungsdatenJAMZV);
-		}
-		familiensituationGS.setAuszahlungsdatenInfoma(auszahlungsdatenGSMZV);
-
-		familiensituationGS.setAbweichendeZahlungsadresseInfoma(familiensituationJA.isAbweichendeZahlungsadresseInfoma());
 		familiensituationGS.setUnterhaltsvereinbarung(familiensituationJA.getUnterhaltsvereinbarung());
 		familiensituationGS.setUnterhaltsvereinbarungBemerkung(familiensituationJA.getUnterhaltsvereinbarungBemerkung());
 		familiensituationGS.setGeteilteObhut(familiensituationJA.getGeteilteObhut());

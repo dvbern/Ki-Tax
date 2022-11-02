@@ -84,17 +84,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private JaxAdresse zahlungsadresse;
 
 	@Nullable
-	private String ibanInfoma;
-
-	@Nullable
-	private String kontoinhaberInfoma;
-
-	private boolean abweichendeZahlungsadresseInfoma;
-
-	@Nullable
-	private JaxAdresse zahlungsadresseInfoma;
-
-	@Nullable
 	private String infomaKreditorennummer;
 
 	@Nullable
@@ -252,41 +241,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setZahlungsadresse(@Nullable JaxAdresse zahlungsadresse) {
 		this.zahlungsadresse = zahlungsadresse;
-	}
-
-	@Nullable
-	public String getIbanInfoma() {
-		return ibanInfoma;
-	}
-
-	public void setIbanInfoma(@Nullable String ibanInfoma) {
-		this.ibanInfoma = ibanInfoma;
-	}
-
-	@Nullable
-	public String getKontoinhaberInfoma() {
-		return kontoinhaberInfoma;
-	}
-
-	public void setKontoinhaberInfoma(@Nullable String kontoinhaberInfoma) {
-		this.kontoinhaberInfoma = kontoinhaberInfoma;
-	}
-
-	public boolean isAbweichendeZahlungsadresseInfoma() {
-		return abweichendeZahlungsadresseInfoma;
-	}
-
-	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
-		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
-	}
-
-	@Nullable
-	public JaxAdresse getZahlungsadresseInfoma() {
-		return zahlungsadresseInfoma;
-	}
-
-	public void setZahlungsadresseInfoma(@Nullable JaxAdresse zahlungsadresseInfoma) {
-		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
 	}
 
 	@Nullable

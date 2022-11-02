@@ -21,3 +21,21 @@ alter table familiensituation_aud change auszahlungsdaten_mahlzeiten_id auszahlu
 
 alter table familiensituation change abweichende_zahlungsadresse_mahlzeiten abweichende_zahlungsadresse BIT NOT NULL DEFAULT FALSE;
 alter table familiensituation_aud change abweichende_zahlungsadresse_mahlzeiten abweichende_zahlungsadresse BIT;
+
+# copy auszahlungsdaten infoma to auszahlugnsdaten
+update familiensituation set auszahlungsdaten_id=auszahlungsdaten_infoma_id
+where auszahlungsdaten_infoma_id is not null and auszahlungsdaten_id is null;
+
+update familiensituation_aud set auszahlungsdaten_id=auszahlungsdaten_infoma_id
+where auszahlungsdaten_infoma_id is not null and auszahlungsdaten_id is null;
+
+# copy flag only when true
+update familiensituation set abweichende_zahlungsadresse = abweichende_zahlungsadresse_infoma
+where abweichende_zahlungsadresse_infoma = true and abweichende_zahlungsadresse = false;
+
+update familiensituation_aud set abweichende_zahlungsadresse = abweichende_zahlungsadresse_infoma
+where abweichende_zahlungsadresse_infoma = true and abweichende_zahlungsadresse = false;
+
+# delete column auzahlungsdaten_infoma
+alter table familiensituation drop column abweichende_zahlungsadresse_infoma;
+alter table familiensituation_aud drop column abweichende_zahlungsadresse_infoma;

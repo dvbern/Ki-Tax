@@ -54,9 +54,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 @Entity
 @Table(uniqueConstraints = {
 	@UniqueConstraint(columnNames = "auszahlungsdaten_id",
-		name = "UK_familiensituation_auszahlungsdaten_id"),
-	@UniqueConstraint(columnNames = "auszahlungsdaten_infoma_id",
-		name = "UK_familiensituation_auszahlungsdaten_infoma_id")
+		name = "UK_familiensituation_auszahlungsdaten_id")
 })
 public class Familiensituation extends AbstractMutableEntity {
 
@@ -111,15 +109,6 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	private boolean abweichendeZahlungsadresse;
-
-	@Nullable
-	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_familiensituation_auszahlungsdaten_infoma_id"), nullable = true)
-	private Auszahlungsdaten auszahlungsdatenInfoma;
-
-	@Column(nullable = false)
-	private boolean abweichendeZahlungsadresseInfoma = false;
 
 	@Enumerated(value = EnumType.STRING)
 	@Nullable
@@ -268,23 +257,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Auszahlungsdaten getAuszahlungsdatenInfoma() {
-		return auszahlungsdatenInfoma;
-	}
-
-	public void setAuszahlungsdatenInfoma(@Nullable Auszahlungsdaten auszahlungsdatenInfoma) {
-		this.auszahlungsdatenInfoma = auszahlungsdatenInfoma;
-	}
-
-	public boolean isAbweichendeZahlungsadresseInfoma() {
-		return abweichendeZahlungsadresseInfoma;
-	}
-
-	public void setAbweichendeZahlungsadresseInfoma(boolean abweichendeZahlungsadresseInfoma) {
-		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
-	}
-
-	@Nullable
 	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
 		return gesuchstellerKardinalitaet;
 	}
@@ -408,10 +380,6 @@ public class Familiensituation extends AbstractMutableEntity {
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
-			if (this.getAuszahlungsdatenInfoma() != null) {
-				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
-			}
-			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
@@ -428,10 +396,10 @@ public class Familiensituation extends AbstractMutableEntity {
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
-			if (this.getAuszahlungsdatenInfoma() != null) {
-				target.setAuszahlungsdatenInfoma(this.getAuszahlungsdatenInfoma().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
+			if (this.getAuszahlungsdaten() != null) {
+				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
-			target.setAbweichendeZahlungsadresseInfoma(this.isAbweichendeZahlungsadresseInfoma());
+			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			break;
 		}
 		return target;

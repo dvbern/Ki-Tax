@@ -234,15 +234,7 @@ public class FinanzielleSituationResource {
 			familiensituationJA.setKeineMahlzeitenverguenstigungBeantragt(true);
 		}
 
-		if (familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt()) {
-			familiensituationJA.setIban(null);
-			familiensituationJA.setKontoinhaber(null);
-			familiensituationJA.setAbweichendeZahlungsadresse(false);
-			familiensituationJA.setZahlungsadresse(null);
-		}
-
-		Adresse storedAdresseMahlzeit = new Adresse();
-		Adresse storedAdresseInfoma = new Adresse();
+		Adresse storedAdresse = new Adresse();
 		if (jaxFamiliensituationContainer.getId() != null) {
 			Optional<FamiliensituationContainer> storedFamSitContOptional =
 				familiensituationService.findFamiliensituation(jaxFamiliensituationContainer.getId());
@@ -252,12 +244,7 @@ public class FinanzielleSituationResource {
 				if (storedFamSit != null
 					&& storedFamSit.getAuszahlungsdaten() != null
 					&& storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber() != null) {
-					storedAdresseMahlzeit = storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber();
-				}
-				if (storedFamSit != null
-					&& storedFamSit.getAuszahlungsdatenInfoma() != null
-					&& storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber() != null) {
-					storedAdresseInfoma = storedFamSit.getAuszahlungsdatenInfoma().getAdresseKontoinhaber();
+					storedAdresse = storedFamSit.getAuszahlungsdaten().getAdresseKontoinhaber();
 				}
 			}
 		}
@@ -294,12 +281,7 @@ public class FinanzielleSituationResource {
 			familiensituationJA.getKontoinhaber(),
 			familiensituationJA.isAbweichendeZahlungsadresse(),
 			familiensituationJA.getZahlungsadresse() == null ? null :
-				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresseMahlzeit),
-			familiensituationJA.getIbanInfoma(),
-			familiensituationJA.getKontoinhaberInfoma(),
-			familiensituationJA.isAbweichendeZahlungsadresseInfoma(),
-			familiensituationJA.getZahlungsadresseInfoma() == null ? null :
-				converter.adresseToEntity(familiensituationJA.getZahlungsadresseInfoma(), storedAdresseInfoma),
+				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresse),
 			familiensituationJA.getInfomaKreditorennummer(),
 			familiensituationJA.getInfomaBankcode(),
 			gesuchJAXP.getFinSitAenderungGueltigAbDatum()
