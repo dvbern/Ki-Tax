@@ -416,6 +416,29 @@ public class MutationsMergerTest {
 	}
 
 	@Test
+	public void test_ErstgesuchZuSpaetMutation_nichtZuSpaet() {
+		//Erstgesuch 16 Oktober eingreicht => Anspruch am 17.9.
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(TestDataUtil.START_PERIODE.plusMonths(2).plusDays(15), TestDataUtil.createMandantAR());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(0).isZuSpaetEingereicht());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(1).isZuSpaetEingereicht());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(2).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(2).plusDays(15).minusDays(30)));
+		Assert.assertFalse(verfuegungErstGesuch.getZeitabschnitte().get(2).isZuSpaetEingereicht());
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().getFall().setMandant(TestDataUtil.createMandantAR());
+		//Mutation pünktlich eingereicht
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1).plusDays(15));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		//Zeitabschnitt Flag zuSpät = false
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		Assert.assertEquals(3, zeitabschnitteMutation.size());
+		Assert.assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		Assert.assertFalse(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
+		Assert.assertTrue(zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(1).plusDays(15).minusDays(30)));
+		Assert.assertFalse(zeitabschnitteMutation.get(2).isZuSpaetEingereicht());
+		Assert.assertTrue(zeitabschnitteMutation.get(2).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(1)));
+	}
+
+	@Test
 	public void test_Mutation_nichtZuSpaetAR() {
 		//Erstgesuch pünktlich
 		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
@@ -481,7 +504,7 @@ public class MutationsMergerTest {
 		Mandant mandant = TestDataUtil.createMandantAR();
 		//Erstgesuch pünklich
 		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
-		//Mutation 15 Tage zu spät
+		//Mutation 15 (45-30) Tage zu spät
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(30).plusDays(15));
 		mutierteBetreuung.extractGesuch().getFall().setMandant(mandant);
@@ -489,20 +512,25 @@ public class MutationsMergerTest {
 
 		List<VerfuegungZeitabschnitt> zeitaschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
 
-		Assert.assertEquals(2, zeitaschnitteMutation.size());
+		Assert.assertEquals(3, zeitaschnitteMutation.size());
 
 		VerfuegungZeitabschnitt zeitabschnitt1 = zeitaschnitteMutation.get(0);
 		VerfuegungZeitabschnitt zeitabschnitt2 = zeitaschnitteMutation.get(1);
+		VerfuegungZeitabschnitt zeitabschnitt3 = zeitaschnitteMutation.get(2);
 
 		//Zeitabschnitt1 Flag zuSpät = true, Gültig ab 30 Tage vor Einreichedatum, also Start der Periode, Gültig bis Ende des 1. Monats
 		Assert.assertTrue(zeitabschnitt1.isZuSpaetEingereicht());
 		Assert.assertEquals(TestDataUtil.START_PERIODE, zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(TestDataUtil.START_PERIODE.with(TemporalAdjusters.lastDayOfMonth()), zeitabschnitt1.getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusDays(14), zeitabschnitt1.getGueltigkeit().getGueltigBis());
 
 		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 2. Monats und gültig bis Ende der Periode
-		Assert.assertFalse(zeitaschnitteMutation.get(1).isZuSpaetEingereicht());
-		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), zeitabschnitt2.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt2.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(zeitabschnitt3.isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusDays(15), zeitabschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusDays(15).with(TemporalAdjusters.lastDayOfMonth()), zeitabschnitt2.getGueltigkeit().getGueltigBis());
+		//Zeitabschnitt2 Flag zuSpät = false, Gültig ab 1. Tag des 2. Monats und gültig bis Ende der Periode
+		Assert.assertFalse(zeitabschnitt3.isZuSpaetEingereicht());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), zeitabschnitt3.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitt3.getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
@@ -687,6 +715,20 @@ public class MutationsMergerTest {
 
 	private Verfuegung prepareErstGesuchVerfuegung() {
 		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
+		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
+			EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, erstgesuchBetreuung, zabetrErtgesuch);
+		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
+		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
+		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
+		return verfuegungErstgesuch;
+	}
+
+	private Verfuegung prepareErstGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR) {
+		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		erstgesuchBetreuung.extractGesuch().setEingangsdatum(eingangsdatum);
+		erstgesuchBetreuung.extractGesuch().getFall().setMandant(mandantAR);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
