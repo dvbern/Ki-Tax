@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.inbox.handler;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
@@ -44,6 +45,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +76,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	@Inject
 	private MitteilungService mitteilungService;
 
-
 	@Override
 	protected void processEvent(
 		@Nonnull LocalDateTime eventTime,
@@ -82,12 +83,20 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		@Nonnull String key,
 		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
+		Processing processing = attemptProcessing(key, dto);
+		if (!processing.isProcessingSuccess()) {
+			String message = processing.getMessage();
+			LOG.warn("Neue Veranlagung Event für Gesuch: {} nicht verarbeitet: {}", key, message);
+		}
+	}
 
-		Gesuch gesuch = gesuchService.findGesuch(key).orElseThrow(() ->
-			new EbeguEntityNotFoundException(
-				"processEvent",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"GesuchId invalid: " + key));
+	@Nonnull
+	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
+		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
+		if (!gesuchOpt.isPresent()) {
+			return Processing.failure("processEvent NeuVeranlagung GesuchId invalid: " + key);
+		}
+		Gesuch gesuch = gesuchOpt.get();
 
 		// erst die Massgegebenes Einkommens fuer die betroffene Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOrigResult = finanzielleSituationService.calculateResultate(gesuch);
@@ -98,29 +107,30 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		KibonAnfrageContext kibonAnfrageContext = initKibonAnfrageContext(gesuch, dto.getZpvNummer());
 
 		if (kibonAnfrageContext == null) {
-			LOG.error("NeueVeranlagungEventHandler: Die neue Veranlagung Steuerdaten Abfrage fuer ZPV Nummer: "
-				+ dto.getZpvNummer()
-				+ ", mit Geburtsdatum: + "
-				+ dto.getGeburtsdatum()
-				+ ", hat kein mehr gueltige Antragstellende gefunden.");
-			return;
+			return Processing.failure(
+				"NeueVeranlagungEventHandler: Die neue Veranlagung Steuerdaten Abfrage fuer ZPV Nummer: "
+					+ dto.getZpvNummer()
+					+ ", mit Geburtsdatum: + "
+					+ dto.getGeburtsdatum()
+					+ ", hat kein mehr gueltige Antragstellende gefunden.");
 		}
 
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull( gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		boolean gemeinsam = gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null
-			? gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung()
-			: false;
-		kibonAnfrageHandler.handleKibonAnfrage(
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		boolean gemeinsam =
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null
+				? gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung()
+				: false;
+		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(
 			kibonAnfrageContext,
 			gemeinsam);
 
 		// Fehlermeldung behandeln
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
-			LOG.error("NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand: "
-				+ kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			return;
+			return Processing.failure(
+				"NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand: "
+					+ kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 		}
 
 		assert kibonAnfrageContext != null;
@@ -133,36 +143,38 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			gesuch.getGesuchsperiode());
 		if (einstellungList.size() != 1) {
 			throw new EbeguRuntimeException(
-				"NeueVeranlagungEventHandler",
+				"NeueVeranlagungEventHandler: ",
 				"Es sollte exakt eine Einstellung für den VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK und die "
 					+ "Gesuchsperiode "
 					+ gesuch.getGesuchsperiode().getGesuchsperiodeString()
 					+ " gefunden werden");
 		}
-		if (finSitOrigResult.getMassgebendesEinkVorAbzFamGr() != finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) {
-			LOG.info("NeueVeranlagungEventHandler: IT WORKS");
-		} else {
-			LOG.info("NeueVeranlagungEventHandler: IT WORKS the SAME");
+		if (finSitOrigResult.getMassgebendesEinkVorAbzFamGr()
+			.compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0 ||
+			MathUtil.EXACT.subtract(
+				finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
+				finSitOrigResult.getMassgebendesEinkVorAbzFamGr())
+				.compareTo(einstellungList.get(0).getValueAsBigDecimal()) <= 0
+		) {
+			return Processing.failure("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
 		}
-		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden TODO testen ohne
-		context.setRollbackOnly();
 		// Meldung erstellen in einen neuen Transaktion
-		transactionHelper.runInNewTransaction(() -> {
-			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
-			neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
-			Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
-			neueVeranlagungsMitteilung.setSubject("Neue Veranlagung");
-			neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
-			neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
-			mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
-		});
+		//transactionHelper.runInNewTransaction(() -> {
+		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
+		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
+		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
+		neueVeranlagungsMitteilung.setSubject("Neue Veranlagung");
+		neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
+		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
+		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
+		LOG.info("NeueVeranlagungEventHandler: IT WORKS");
+		//});
+		return Processing.success();
 	}
 
 	/**
 	 * Bestimmen ob der Veranlagung Event betrifft der GS1 oder GS2 und das Context entsprechend initialisieren
 	 *
-	 * @param gesuch
-	 * @param zpvNummer
 	 * @return KibonAnfrageContext
 	 */
 	private KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {

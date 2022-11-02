@@ -1,0 +1,224 @@
+/*
+ * Copyright (C) 2022 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.dvbern.ebegu.inbox.handler;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
+import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
+import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.stringContainsInOrder;
+
+@ExtendWith(EasyMockExtension.class)
+public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
+
+	private NeueVeranlagungEventDTO dto;
+	private Gesuch gesuch_1GS = null;
+	private String zpvNummer = "1000001";
+	private SteuerdatenResponse steuerdatenResponse;
+	private KibonAnfrageContext kibonAnfrageContext;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private MitteilungService mitteilungService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private GesuchService gesuchService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private KibonAnfrageHandler kibonAnfrageHandler;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private FinanzielleSituationService finanzielleSituationService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private EinstellungService einstellungService;
+
+	@TestSubject
+	private final NeueVeranlagungEventHandler handler = new NeueVeranlagungEventHandler();
+
+	@BeforeEach
+	void setUp() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
+		Gemeinde gemeinde = TestDataUtil.createGemeindeParis();
+		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		Testfall01_WaeltiDagmar testfall_1GS =
+			new Testfall01_WaeltiDagmar(
+				gesuchsperiode,
+				false,
+				gemeinde,
+				new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
+		testfall_1GS.createFall();
+		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
+		gesuch_1GS = testfall_1GS.fillInGesuch();
+		gesuch_1GS.setEingangsart(Eingangsart.ONLINE);
+		gesuch_1GS.getDossier().getFall().setBesitzer(new Benutzer());
+		Objects.requireNonNull(gesuch_1GS.getDossier().getFall().getBesitzer());
+		gesuch_1GS.getDossier().getFall().getBesitzer().setZpvNummer(zpvNummer);
+		dto = new NeueVeranlagungEventDTO();
+		dto.setZpvNummer(1000001);
+		Objects.requireNonNull(gesuch_1GS.getGesuchsteller1());
+		dto.setGeburtsdatum(gesuch_1GS.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum());
+		dto.setGesuchsperiodeBeginnJahr(gesuchsperiode.getBasisJahrPlus1());
+		dto.setKibonAntragId(gesuch_1GS.getId());
+		steuerdatenResponse = NeueVeranlagungTestUtil.createSteuerdatenResponseAleine(dto);
+		Objects.requireNonNull(gesuch_1GS.getGesuchsteller1()
+			.getFinanzielleSituationContainer());
+		gesuch_1GS.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenResponse(steuerdatenResponse);
+
+		kibonAnfrageContext = NeueVeranlagungTestUtil.initKibonAnfrageContext(gesuch_1GS);
+	}
+
+	@Test
+	void gesuchIdUnbekannt() {
+		expectGesuchNotFound();
+
+		testIgnored("processEvent NeuVeranlagung GesuchId invalid:");
+	}
+
+	@Test
+	void steuerAbfrageNichtErfolgreich() {
+		expectGesuchFound();
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
+		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		testIgnored("NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand:");
+	}
+
+	@Test
+	void finSitUnterschiedGleich() {
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+		expectGesuchFound();
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
+		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
+		findEinstellungMinUnterschied();
+		testIgnored("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
+	}
+
+	@Test
+	void finSitUnterschiedMehrAberNichtGenuegen() {
+		expectEverythingUntilCompare();
+		Einstellung einstellung = findEinstellungMinUnterschied();
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(60));
+		testIgnored("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
+	}
+
+	@Test
+	void createsNeueVeranlagungMitteilung() {
+		expectEverythingUntilCompare();
+		Einstellung einstellung = findEinstellungMinUnterschied();
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
+		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		testProcessingSuccess();
+	}
+
+	private void testIgnored(@Nonnull String message) {
+		replayAll();
+
+		Processing result = handler.attemptProcessing(gesuch_1GS.getId(), dto);
+		assertThat(result, failed(stringContainsInOrder(message)));
+		verifyAll();
+	}
+
+	private void expectGesuchNotFound() {
+		expect(gesuchService.findGesuch(gesuch_1GS.getId())).andReturn(Optional.empty());
+	}
+
+	private void expectGesuchFound() {
+		expect(gesuchService.findGesuch(gesuch_1GS.getId())).andReturn(Optional.of(gesuch_1GS));
+	}
+
+	private void expectEverythingUntilCompare() {
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig = new FinanzielleSituationResultateDTO();
+		finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu = new FinanzielleSituationResultateDTO();
+		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100060));
+		expectGesuchFound();
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTOOrig);
+		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTONeu);
+	}
+
+	private Einstellung findEinstellungMinUnterschied() {
+		Einstellung einstellung = mock(Einstellung.class);
+		List<Einstellung> einstellungs = new ArrayList<>();
+		einstellungs.add(einstellung);
+		expect(einstellungService.findEinstellungen(EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK, gesuch_1GS.getGesuchsperiode()))
+			.andReturn(einstellungs);
+		return einstellung;
+	}
+
+	private void testProcessingSuccess() {
+		replayAll();
+		Processing result = handler.attemptProcessing(gesuch_1GS.getId(), dto);
+		assertThat(result.isProcessingSuccess(), is(true));
+		verifyAll();
+	}
+}
