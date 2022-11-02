@@ -68,6 +68,7 @@ import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourCo
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {DvDatePickerXComponent} from './component/dv-date-picker/dv-date-picker-x.component';
+import {DvDemoFeatureWrapperComponent} from './component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
 import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
@@ -189,7 +190,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvRadioInputXComponent,
         DvCheckboxXComponent,
         WarningComponent,
-        DvNgEnableElementDirective
+        DvNgEnableElementDirective,
+        DvDemoFeatureWrapperComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
