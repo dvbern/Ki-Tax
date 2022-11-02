@@ -47,6 +47,8 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,11 +69,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	@Inject
 	private EinstellungService einstellungService;
 
-	@Resource
-	private EJBContext context;    //fuer rollback
-
 	@Inject
-	private TransactionHelper transactionHelper;
+	private Persistence persistence;
 
 	@Inject
 	private MitteilungService mitteilungService;
@@ -98,6 +97,9 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 		Gesuch gesuch = gesuchOpt.get();
 
+		Session session = persistence.getEntityManager().unwrap(Session.class);
+		session.evict(gesuch);
+
 		// erst die Massgegebenes Einkommens fuer die betroffene Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOrigResult = finanzielleSituationService.calculateResultate(gesuch);
 
@@ -121,6 +123,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null
 				? gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung()
 				: false;
+
 		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(
 			kibonAnfrageContext,
 			gemeinsam);
@@ -158,8 +161,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		) {
 			return Processing.failure("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
 		}
-		// Meldung erstellen in einen neuen Transaktion
-		//transactionHelper.runInNewTransaction(() -> {
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
@@ -168,7 +169,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
 		LOG.info("NeueVeranlagungEventHandler: IT WORKS");
-		//});
+
 		return Processing.success();
 	}
 

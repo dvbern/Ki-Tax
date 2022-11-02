@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Audited
 @Entity
@@ -35,6 +36,7 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 	@Nonnull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_steuerdaten_response_id"))
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
 
 	@Override
