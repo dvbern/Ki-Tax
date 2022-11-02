@@ -19,10 +19,12 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.types.DateRange;
 
 public abstract class AbstractEinreichefristCalculator {
@@ -40,5 +42,12 @@ public abstract class AbstractEinreichefristCalculator {
 
 	protected boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
 		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
+	}
+
+	public boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
+		// Die Frist ist per default relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
+		// neu hinzugekommen ist. Es kann aber sein, dass es zwar einen Vorgaenger gab, dieser aber nicht
+		// verfuegt wurde, darum reicht es nicht, nur die VorgaengerID zu pruefen!
+		return platz.extractGesuch().getTyp().isGesuch() || Objects.isNull(platz.getVorgaengerVerfuegung());
 	}
 }

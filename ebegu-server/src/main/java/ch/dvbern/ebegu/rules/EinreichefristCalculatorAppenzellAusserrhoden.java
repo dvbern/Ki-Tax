@@ -21,6 +21,7 @@ import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.types.DateRange;
 
 public class EinreichefristCalculatorAppenzellAusserrhoden extends AbstractEinreichefristCalculator {
@@ -35,5 +36,10 @@ public class EinreichefristCalculatorAppenzellAusserrhoden extends AbstractEinre
 	@Override
 	public LocalDate getStichtagEinreichefrist(@Nonnull LocalDate einreichedatum) {
 		return einreichedatum.minusDays(30);
+	}
+
+	@Override
+	public boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
+		return true;
 	}
 }
