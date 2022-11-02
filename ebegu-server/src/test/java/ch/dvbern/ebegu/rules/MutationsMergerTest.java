@@ -454,6 +454,23 @@ public class MutationsMergerTest {
 	}
 
 	@Test
+	public void test_Mutation_nichtZuSpaetWegenAlternativDatumAR() {
+		//Erstgesuch pünktlich
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().getFall().setMandant(TestDataUtil.createMandantAR());
+		//Mutation zu spät eingereicht
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(45));
+		//Alternatives Datum rechtzeitig gesetzt
+		mutierteBetreuung.extractGesuch().setRegelnGueltigAb(TestDataUtil.START_PERIODE.minusDays(15));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		//Zeitabschnitt Flag zuSpät = false
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		Assert.assertEquals(1, zeitabschnitteMutation.size());
+		Assert.assertFalse(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+	}
+
+	@Test
 	public void test_Mutation_15TageNachZeitabschnittStart_nichtZuSpaetAR() {
 		//Erstgesuch pünktlich
 		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
