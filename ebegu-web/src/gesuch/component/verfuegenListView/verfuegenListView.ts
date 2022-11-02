@@ -816,7 +816,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private calculateVeraenderung(): void {
-        let veraenderungenTS: Array<number> = [];
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
             kindContainer.betreuungen.forEach(betreuung => {
@@ -825,16 +824,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 }
 
                 if (betreuung.isAngebotTagesschule()) {
-                    veraenderungenTS.push(betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
+                    this.veraenderungTS = this.findAbsoultMax(this.veraenderungTS, betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
                 } else {
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }
             }));
-
-        if (veraenderungenTS.length !== 0) {
-            this.veraenderungTS = veraenderungenTS
-                .reduce((previousValue, currentValue) => this.findAbsoultMax(previousValue, currentValue), 0);
-        }
 
         this.veraenderungBG = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
         this.veraenderungTS = Number(this.veraenderungTS.toFixed(2));
