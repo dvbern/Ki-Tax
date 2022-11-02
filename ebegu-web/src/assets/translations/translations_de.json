@@ -3023,5 +3023,9 @@
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY": "Betrag pro Tag: {{value}} CHF",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY": "Betrag pro Stunde: {{value}} CHF",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY": "Bis zu einem massgebenden Einkommen von: {{value}} CHF",
+    "MUTATION_VERAENDERUNG_1": "Die Mutation führt zu Veränderungen:<ul>",
+    "MUTATION_VERAENDERUNG_BG": "<li>Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF</li>",
+    "MUTATION_VERAENDERUNG_TS": "<li>Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF</li>",
+    "MUTATION_VERAENDERUNG_2": "</ul></br>Sie haben die Möglichkeit, die finanzielle Situation erst ab dem Folgemonat zu ändern.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
