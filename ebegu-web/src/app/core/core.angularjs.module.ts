@@ -138,6 +138,7 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
+import {DemoFeatureRS} from './service/demoFeatureRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -322,5 +323,6 @@ export const CORE_JS_MODULE = angular
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)
+    .service('demoFeatureRS', DemoFeatureRS)
     .filter('arrayToString', () => arrayToString)
     .filter('gemeindenToString', () => gemeindenToString);
