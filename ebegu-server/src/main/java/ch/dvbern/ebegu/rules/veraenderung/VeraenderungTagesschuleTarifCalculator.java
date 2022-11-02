@@ -101,7 +101,7 @@ public class VeraenderungTagesschuleTarifCalculator extends VeraenderungCalculat
 
 		return findRelevanteTarifeInMap(gueltigkeit, gueltikeitTarifeMap)
 			.stream()
-			.map(vorgaengerTarif -> vorgaengerTarif.subtract(aktuellerTarif))
+			.map(vorgaengerTarif -> aktuellerTarif.subtract(vorgaengerTarif))
 			.collect(Collectors.toList());
 	}
 

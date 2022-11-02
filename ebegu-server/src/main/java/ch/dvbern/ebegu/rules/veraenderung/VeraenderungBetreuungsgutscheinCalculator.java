@@ -19,7 +19,7 @@ public class VeraenderungBetreuungsgutscheinCalculator extends VeraenderungCalcu
 		BigDecimal totalVerguenstigungVorgaenger = addUpVerguenstigung(vorgaengerVerfuegung.getZeitabschnitte());
 		BigDecimal totalVerguenstigungAktuell = addUpVerguenstigung(zeitabschnitte);
 
-		return totalVerguenstigungVorgaenger.subtract(totalVerguenstigungAktuell);
+		return totalVerguenstigungAktuell.subtract(totalVerguenstigungVorgaenger);
 	}
 
 	private BigDecimal addUpVerguenstigung(List<VerfuegungZeitabschnitt> zeitabschnitte) {

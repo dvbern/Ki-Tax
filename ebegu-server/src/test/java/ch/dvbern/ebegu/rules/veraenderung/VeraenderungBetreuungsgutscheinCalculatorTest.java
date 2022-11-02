@@ -38,7 +38,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 			.getVeranderungCalculator(false)
 			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
 
-		Assert.assertEquals(BigDecimal.valueOf(10), veraenderung);
+		Assert.assertEquals(BigDecimal.valueOf(-10), veraenderung);
 	}
 
 	private VerfuegungZeitabschnitt createZeitabschnittMitVergunstigung(BigDecimal verguenstiung) {
