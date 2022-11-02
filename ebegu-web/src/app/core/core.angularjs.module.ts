@@ -257,6 +257,7 @@ export const CORE_JS_MODULE = angular
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
     .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
@@ -323,6 +324,5 @@ export const CORE_JS_MODULE = angular
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
     .service('SupportRS', SupportRS)
-    .service('demoFeatureRS', DemoFeatureRS)
     .filter('arrayToString', () => arrayToString)
     .filter('gemeindenToString', () => gemeindenToString);

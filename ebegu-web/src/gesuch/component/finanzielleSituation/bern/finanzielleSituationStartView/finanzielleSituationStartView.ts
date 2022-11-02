@@ -16,11 +16,12 @@
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -66,7 +67,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'DemoFeatureRS'
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -75,6 +77,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
     private triedSavingWithoutForm: boolean = false;
+
+    private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -89,7 +93,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
+        demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -118,6 +123,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                                                                                                     // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
+
+        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAY_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
+            .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -310,7 +318,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     private isDemofeatureAlwaysShowZahlungsdatenEnabled() {
-        return true;
+        return this.isAlwaysShowAuszahlungsdatenActivated;
     }
 
     public changeMahlzeitenGewuenscht(): void {
