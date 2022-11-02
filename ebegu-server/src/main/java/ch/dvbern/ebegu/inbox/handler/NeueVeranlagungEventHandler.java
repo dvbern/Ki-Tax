@@ -19,12 +19,11 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,19 +32,20 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
-import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
@@ -56,9 +56,13 @@ import org.slf4j.LoggerFactory;
 public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagungEventDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NeueVeranlagungEventHandler.class);
+	private static final String BETREFF_KEY = "neue_veranlagung_mitteilung_betreff";
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private FinanzielleSituationService finanzielleSituationService;
@@ -97,11 +101,13 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 		Gesuch gesuch = gesuchOpt.get();
 
+		// Wir werden das Gesuch FinSit ersetzen mit die neue Steuerdaten, es muss unbedingt nicht persistiert werden
+		// deswegen ist das Gesuch als detached gesetzt
 		Session session = persistence.getEntityManager().unwrap(Session.class);
 		session.evict(gesuch);
 
-		// erst die Massgegebenes Einkommens fuer die betroffene Gesuch berechnen
-		FinanzielleSituationResultateDTO finSitOrigResult = finanzielleSituationService.calculateResultate(gesuch);
+		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
+		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
 		// --- Neue Zustand abholen ---
 
@@ -110,11 +116,11 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 		if (kibonAnfrageContext == null) {
 			return Processing.failure(
-				"NeueVeranlagungEventHandler: Die neue Veranlagung Steuerdaten Abfrage fuer ZPV Nummer: "
+				"NeueVeranlagungEventHandler: Die neue Veranlagung fuer ZPV Nummer: "
 					+ dto.getZpvNummer()
 					+ ", mit Geburtsdatum: + "
 					+ dto.getGeburtsdatum()
-					+ ", hat kein mehr gueltige Antragstellende gefunden.");
+					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
 		}
 
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
@@ -128,12 +134,12 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			kibonAnfrageContext,
 			gemeinsam);
 
-		// Fehlermeldung behandeln
+		// Nur RECHTSKRAEFTIGE SteuerResponse sind zu betrachten
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
-			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
+			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().equals(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG)) {
 			return Processing.failure(
-				"NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand: "
-					+ kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+				kibonAnfrageContext.getSteuerdatenAnfrageStatus() != null ? "NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig"
+					: "NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
 		}
 
 		assert kibonAnfrageContext != null;
@@ -152,19 +158,20 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 					+ gesuch.getGesuchsperiode().getGesuchsperiodeString()
 					+ " gefunden werden");
 		}
-		if (finSitOrigResult.getMassgebendesEinkVorAbzFamGr()
+		if (finSitOriginalResult.getMassgebendesEinkVorAbzFamGr()
 			.compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0 ||
 			MathUtil.EXACT.subtract(
 				finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
-				finSitOrigResult.getMassgebendesEinkVorAbzFamGr())
+				finSitOriginalResult.getMassgebendesEinkVorAbzFamGr())
 				.compareTo(einstellungList.get(0).getValueAsBigDecimal()) <= 0
 		) {
 			return Processing.failure("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
 		}
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
-		neueVeranlagungsMitteilung.setSubject("Neue Veranlagung");
+		neueVeranlagungsMitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);

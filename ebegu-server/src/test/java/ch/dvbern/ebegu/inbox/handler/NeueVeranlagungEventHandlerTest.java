@@ -26,11 +26,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -43,16 +45,19 @@ import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,6 +66,7 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.stringContainsInOrder;
@@ -93,6 +99,14 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private EinstellungService einstellungService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private GemeindeService gemeindeService;
+
+	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
+	@Mock
+	private Persistence persistence;
 
 	@TestSubject
 	private final NeueVeranlagungEventHandler handler = new NeueVeranlagungEventHandler();
@@ -146,7 +160,16 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		testIgnored("NeueVeranlagungEventHandler: es gab einen Problem bei abholen die neue Veranlagung Stand:");
+		testIgnored("NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
+	}
+
+	@Test
+	void steuerdatenResponseNichtRechtskraeftig() {
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
+		expectGesuchFound();
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
+		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		testIgnored("NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig");
 	}
 
 	@Test
@@ -173,6 +196,8 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
+		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
+		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
 		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
 		testProcessingSuccess();
 	}
@@ -191,6 +216,11 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 
 	private void expectGesuchFound() {
 		expect(gesuchService.findGesuch(gesuch_1GS.getId())).andReturn(Optional.of(gesuch_1GS));
+		EntityManager em =createMock(EntityManager.class);
+		expect(persistence.getEntityManager()).andReturn(em);
+		Session session = createMock(Session.class);
+		expect(em.unwrap(Session.class)).andStubReturn(session);
+		session.evict(gesuch_1GS);
 	}
 
 	private void expectEverythingUntilCompare() {
