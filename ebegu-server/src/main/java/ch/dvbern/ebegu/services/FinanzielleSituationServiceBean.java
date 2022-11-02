@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Service fuer FinanzielleSituation
@@ -144,7 +145,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setVerguenstigungGewuenscht(finSitStartDTO.getVerguenstigungGewuenscht());
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht());
 		familiensituation.setAbweichendeZahlungsadresse(finSitStartDTO.isAbweichendeZahlungsadresse());
-		if (finSitStartDTO.getIban() != null && finSitStartDTO.getKontoinhaber() != null) {
+		if (StringUtils.isNotBlank(finSitStartDTO.getIban()) && StringUtils.isNotBlank(finSitStartDTO.getKontoinhaber())) {
 			if (familiensituation.getAuszahlungsdaten() == null) {
 				familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
 			}
