@@ -97,8 +97,17 @@
     <p class="ebegu-h3"
        [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
 
-    <div *ngIf="isMutation()" [dvDemoFeature]="demoFeature">
+    <div *ngIf="isMutation()" [dvDemoFeature]="abfrageErneutDurchfuehrenDemoFeature">
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    </div>
+
+    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
+        <dv-checkbox-x
+                [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+                [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
+                [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+                (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
+        ></dv-checkbox-x>
     </div>
 </div>
 

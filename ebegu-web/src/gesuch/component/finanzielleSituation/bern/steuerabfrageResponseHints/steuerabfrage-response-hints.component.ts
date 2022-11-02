@@ -22,7 +22,8 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    Output
+    Output,
+    ViewEncapsulation
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {BehaviorSubject, Subscription} from 'rxjs';
@@ -36,9 +37,12 @@ import {
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {
+    DialogInitZPVNummerVerknuepfen
+} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 
@@ -46,7 +50,8 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
     selector: 'dv-steuerabfrage-response-hints',
     templateUrl: './steuerabfrage-response-hints.component.html',
     styleUrls: ['./steuerabfrage-response-hints.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
@@ -60,10 +65,11 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
 
     public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-    public readonly demoFeature = TSDemoFeature.STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION;
+    public readonly abfrageErneutDurchfuehrenDemoFeature = TSDemoFeature.STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION;
+    public readonly checkboxInformierenDemoFeature = TSDemoFeature.STEUERABFRAGE_NEUE_VERANLAGUNG;
 
     public constructor(
-        private readonly gesuchModelManager: GesuchModelManager,
+        public readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
         private readonly finSitRS: FinanzielleSituationRS
@@ -180,5 +186,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
             panelClass: 'steuerdaten-email-dialog'
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
+    }
+
+    public isGemeindeOrSuperadmin() {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN));
     }
 }
