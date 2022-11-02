@@ -1137,7 +1137,7 @@ public class GesuchResource {
 	@Path("/markiertfuerkontroll/{antragId}/{markiertFuerKontroll}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public JaxGesuch updateMarkiertFuerKontroll(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Nonnull  @NotNull @PathParam("markiertFuerKontroll") boolean markiertFuerKontroll,
