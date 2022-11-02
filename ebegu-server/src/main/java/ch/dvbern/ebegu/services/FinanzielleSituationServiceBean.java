@@ -157,6 +157,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				familiensituation.getAuszahlungsdaten().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 				familiensituation.getAuszahlungsdaten().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 			}
+		} else {
+			// Wenn die IBAN und der Kontoinhaber nicht gesetzt sind, wurden die Auszahlungsdaten resetd
+			familiensituation.setAuszahlungsdaten(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
