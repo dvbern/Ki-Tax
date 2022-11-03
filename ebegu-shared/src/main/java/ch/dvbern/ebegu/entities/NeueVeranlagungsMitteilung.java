@@ -32,6 +32,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 public class NeueVeranlagungsMitteilung extends Mitteilung {
 
+	private static final long serialVersionUID = -8523411439182708718L;
+
 	@NotNull
 	@Nonnull
 	@ManyToOne(optional = false)
