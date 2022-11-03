@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
 import ch.dvbern.ebegu.entities.Verfuegung_;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -92,6 +93,7 @@ import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelper;
 import ch.dvbern.ebegu.util.zahlungslauf.ZahlungslaufHelperFactory;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Preconditions;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,6 +199,19 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		}
 
 		return persistedVerfuegung;
+	}
+
+	@Override
+	public void gesuchAutomatischVerfuegen(@Nonnull Gesuch mutation) {
+		Preconditions.checkArgument(mutation.isMutation());
+		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.IN_BEARBEITUNG_JA);
+		Preconditions.checkArgument(mutation.isNewlyCreatedMutation());
+
+		mutation.getKindContainers().forEach(kindContainer -> {
+			kindContainer.getBetreuungen().forEach(betreuung -> {
+				verfuegen(mutation.getId(), betreuung.getId(), null, false, false, true);
+			});
+		});
 	}
 
 	@Nonnull

@@ -276,6 +276,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	private String begruendungMutation;
 
+	@Transient
+	private boolean newlyCreatedMutation = false;
+
 
 	public Gesuch() {
 	}
@@ -1339,6 +1342,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		mutation.setDossier(dossier);
 		mutation.setGesuchsperiode(gesuchsperiode);
 		mutation.setEingangsdatum(eingangsdatum);
+		mutation.setNewlyCreatedMutation(true);
 		return mutation;
 	}
 
@@ -1407,5 +1411,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setBegruendungMutation(@Nullable String begruendungMutation) {
 		this.begruendungMutation = begruendungMutation;
+	}
+
+	public boolean isNewlyCreatedMutation() {
+		return newlyCreatedMutation;
+	}
+
+	public void setNewlyCreatedMutation(boolean newlyCreatedMutation) {
+		this.newlyCreatedMutation = newlyCreatedMutation;
 	}
 }
