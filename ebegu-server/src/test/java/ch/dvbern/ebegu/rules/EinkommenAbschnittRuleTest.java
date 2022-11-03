@@ -30,9 +30,9 @@ import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 
 /**
  * Tests fuer EinkommenAbschnittRule
@@ -65,7 +65,7 @@ public class EinkommenAbschnittRuleTest {
 
 		// Es gibt nur einen Zeitraum, da keine EKV angenommen
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres 2016. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).");
-		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016);
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
@@ -75,7 +75,7 @@ public class EinkommenAbschnittRuleTest {
 
 		// Es gibt zwei Zeiträume, da die EKV immer nur für das Kalenderjahr gilt! Danach gilt wieder die FinSit!
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_EKV_ANGENOMMEN, 		2017, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse (Art. 34m Abs. 2 ASIV).");
-		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 	2016, "");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 	2016);
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
@@ -187,11 +187,13 @@ public class EinkommenAbschnittRuleTest {
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
-			if(StringUtils.isBlank(expectedResult.bemerkung)) {
+			if(ArrayUtils.isEmpty(expectedResult.bemerkungen)) {
 				Assert.assertTrue(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
 			} else {
-				Assert.assertEquals(1, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
-				Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(0).getBemerkung());
+				Assert.assertEquals(expectedResult.bemerkungen.length, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
+				for (int j = 0; j < expectedResult.bemerkungen.length; j++) {
+					Assert.assertEquals(expectedResult.bemerkungen[j], verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(j).getBemerkung());
+				}
 			}
 		}
 	}
@@ -200,12 +202,12 @@ public class EinkommenAbschnittRuleTest {
 	static class ExpectedResult {
 		public BigDecimal massgebendesEinkommen;
 		public Integer einkommensjahr;
-		public String bemerkung;
+		public String[] bemerkungen;
 
-		public ExpectedResult(BigDecimal massgebendesEinkommen, Integer einkommensjahr, String bemerkung) {
+		public ExpectedResult(BigDecimal massgebendesEinkommen, Integer einkommensjahr, String... bemerkungen) {
 			this.massgebendesEinkommen = massgebendesEinkommen;
 			this.einkommensjahr = einkommensjahr;
-			this.bemerkung = bemerkung;
+			this.bemerkungen = bemerkungen;
 		}
 	}
 
