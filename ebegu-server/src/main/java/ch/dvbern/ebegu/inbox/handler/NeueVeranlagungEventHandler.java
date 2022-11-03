@@ -93,6 +93,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
 		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
@@ -138,8 +139,10 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().equals(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG)) {
 			return Processing.failure(
-				kibonAnfrageContext.getSteuerdatenAnfrageStatus() != null ? "NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig"
-					: "NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
+				kibonAnfrageContext.getSteuerdatenAnfrageStatus() != null ?
+					"NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig"
+					:
+					"NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
 		}
 
 		assert kibonAnfrageContext != null;
@@ -171,7 +174,10 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
-		neueVeranlagungsMitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, gesuch.extractMandant()));
+		neueVeranlagungsMitteilung.setSubject(ServerMessageUtil.getMessage(
+			BETREFF_KEY,
+			locale,
+			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
@@ -220,19 +226,18 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA()
 				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger() != null) {
-				if (gesuch.getGesuchsteller2()
-					.getFinanzielleSituationContainer()
-					.getFinanzielleSituationJA()
-					.getSteuerdatenResponse()
-					.getZpvNrDossiertraeger()
-					.equals(zpvNummer)) {
-					kibonAnfrageContext = new KibonAnfrageContext(
-						gesuch,
-						gesuch.getGesuchsteller2(),
-						gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
-						gesuch.getId());
-				}
+				.getZpvNrDossiertraeger() != null && gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getSteuerdatenResponse()
+				.getZpvNrDossiertraeger()
+				.equals(zpvNummer)) {
+				kibonAnfrageContext = new KibonAnfrageContext(
+					gesuch,
+					gesuch.getGesuchsteller2(),
+					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
+					gesuch.getId());
+
 			}
 		}
 		return kibonAnfrageContext;
