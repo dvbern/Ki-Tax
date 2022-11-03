@@ -166,6 +166,54 @@ public class EinkommenAbschnittRuleTest {
 	}
 
 	@Test
+	public void testEKVForHighEinkommenAndTooSmallReduction_shouldBeIgnoredAndHaveBothMessages() {
+		var ekvLimit = new BigDecimal("80000");
+		initCustomEinkommenCalcRule(ekvLimit);
+
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("900000");
+		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
+		final String formatedYear = "2016";
+		final String formatedYearP1 = "2017";
+		final String formatedYearP2 = "2018";
+		final String EXPECTED_MESSAGE1 =
+			"Ihr Antrag wegen Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ ". Das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ " ist höher als CHF "
+				+ NumberFormat.getInstance().format(ekvLimit)
+				+ " (Art. 57 Abs 2  und Art. 66 Abs. 1 Bst. k FKJV).";
+		final String EXPECTED_MESSAGE2 =
+				"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+						+ formatedYear
+						+ ". Das massgebende Einkommen des Jahres "
+						+ formatedYearP1
+						+ " ohne Abzug"
+						+ " des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das "
+						+ "massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr "
+						+ formatedYear
+						+ ") ohne Abzug des "
+						+ "Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).";
+		final String EXPECTED_MESSAGE3 =
+				"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+						+ formatedYear
+						+ ". Das massgebende Einkommen des Jahres "
+						+ formatedYearP2
+						+ " ohne Abzug"
+						+ " des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das "
+						+ "massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr "
+						+ formatedYear
+						+ ") ohne Abzug des "
+						+ "Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).";
+
+		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
+		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE1, EXPECTED_MESSAGE2);
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE1, EXPECTED_MESSAGE3);
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
+	}
+
+	@Test
 	public void testEKVForSmallEinkommen_shouldNotBeIgnored() {
 		initCustomEinkommenCalcRule(new BigDecimal("80000"));
 
