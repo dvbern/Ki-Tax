@@ -172,6 +172,35 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		}
 	}
 
+
+	@Test
+	public void mutationPositiveBGVeraenderungOnlyFinSitChangesShouldBeIgnorable() {
+		Gesuchsperiode gp = TestDataUtil.createGesuchsperiode1718();
+		Gesuch testgesuch = createGesuch(gp);
+		testgesuch.setGesuchsperiode(gp);
+		testgesuch.setEingangsdatum(testgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
+
+		evaluator.evaluate(testgesuch, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
+		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
+			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				assertNotNull(betreuung);
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+			}
+		}
+
+		Gesuch mutation = setupMutationWithFractionOfEinkommenGS1(testgesuch, 2);
+
+		evaluator.evaluate(mutation, getParameter(), kitaxUebergangsloesungParameter, Constants.DEFAULT_LOCALE);
+		for (KindContainer kindContainer : mutation.getKindContainers()) {
+			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				assertNotNull(betreuung);
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
+				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview().getVeraenderungVerguenstigungGegenueberVorgaenger());
+				assertTrue(betreuung.getVerfuegungOrVerfuegungPreview().getVeraenderungVerguenstigungGegenueberVorgaenger().compareTo(BigDecimal.ZERO) > 0);
+				assertTrue(betreuung.getVerfuegungOrVerfuegungPreview().getIgnorable());
+			}
+		}
+	}
 	private Gesuch createGesuch() {
 		Gesuch gesuch = new Gesuch();
 		final Dossier dossier = TestDataUtil.createDefaultDossier();
