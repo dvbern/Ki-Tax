@@ -17,7 +17,7 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -46,7 +46,7 @@ describe('TraegerschaftEditComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
+                BrowserAnimationsModule,
                 MaterialModule,
                 TraegerschaftModule
             ],
