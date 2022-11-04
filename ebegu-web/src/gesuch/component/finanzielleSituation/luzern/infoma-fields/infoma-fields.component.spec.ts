@@ -24,7 +24,9 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformationen';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 import {InfomaFieldsComponent} from './infoma-fields.component';
@@ -70,6 +72,8 @@ describe('InfomaFieldsComponent', () => {
         gesuchModelManagerSpy.getFamiliensituation.and.returnValue(famSit);
 
         fixture = TestBed.createComponent(InfomaFieldsComponent);
+        component.model = new TSFinanzModel(1, false, 1, 2);
+        component.model.zahlungsinformationen = new TSZahlungsinformationen();
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
