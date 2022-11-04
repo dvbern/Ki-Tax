@@ -77,12 +77,12 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             .subscribe(einstellungen => {
                 const einstellungSteuerschnittstelle = einstellungen
                     .find(e => e.key === TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV);
-                this.steuerSchnittstelleAktivForPeriode = (einstellungSteuerschnittstelle.value === 'true');
+                this.steuerSchnittstelleAktivForPeriode = (einstellungSteuerschnittstelle?.value === 'true');
 
                 const einstellungZahlungsangebenRequired = einstellungen
                     .find(e => e.key === TSEinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED);
                 this.zahlungsangabenRequired =
-                    (einstellungZahlungsangebenRequired.value === 'true');
+                    (einstellungZahlungsangebenRequired?.value === 'true');
             }, error => LOG.error(error));
     }
 

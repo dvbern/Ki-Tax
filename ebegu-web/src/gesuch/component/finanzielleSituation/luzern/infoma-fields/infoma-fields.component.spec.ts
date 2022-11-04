@@ -72,6 +72,7 @@ describe('InfomaFieldsComponent', () => {
         gesuchModelManagerSpy.getFamiliensituation.and.returnValue(famSit);
 
         fixture = TestBed.createComponent(InfomaFieldsComponent);
+        component = fixture.componentInstance;
         component.model = new TSFinanzModel(1, false, 1, 2);
         component.model.zahlungsinformationen = new TSZahlungsinformationen();
         component = fixture.componentInstance;
