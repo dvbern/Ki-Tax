@@ -123,7 +123,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -2608,6 +2607,28 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		authorizer.checkReadAuthorization(gesuch);
 
 		return gesuch;
+	}
+
+	@Override
+	public Gesuch mutationIgnorieren(Gesuch gesuch) {
+		Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
+		this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
+
+		gesuchNachVerfuegungStart.getKindContainers().forEach(kindContainer -> {
+			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
+			for (int i = 0; i < betreuungList.size(); i++) {
+				Betreuung betreuung = betreuungList.get(i);
+				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+			}
+		});
+
+		return gesuchNachVerfuegungStart;
+
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	private Gesuch doVerfuegenStarten(Gesuch gesuch) {
+		return verfuegenStarten(gesuch);
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {

@@ -479,4 +479,6 @@ public interface GesuchService {
 	List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr);
 
 	Gesuch findGesuchOfGS(GesuchstellerContainer container);
+
+	Gesuch mutationIgnorieren(Gesuch gesuch);
 }
