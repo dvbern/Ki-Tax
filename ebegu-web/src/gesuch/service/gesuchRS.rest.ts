@@ -237,4 +237,9 @@ export class GesuchRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
 
     }
+
+    public mutationIgnorieren(gesuchId: string): IPromise<TSGesuch> {
+        return this.$http.put(`${this.serviceURL}/${gesuchId}/ignorieren`, {})
+            .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    }
 }

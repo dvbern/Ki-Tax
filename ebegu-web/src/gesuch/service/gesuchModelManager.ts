@@ -1373,6 +1373,12 @@ export class GesuchModelManager {
         });
     }
 
+    public mutationIgnorieren(): IPromise<void> {
+        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => {
+            return this.reloadGesuch();
+        }).then(() => this.calculateGesuchStatusVerfuegt());
+    }
+
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {
         return this.verfuegungRS.nichtEintreten(
             this.gesuch.id,

@@ -2926,5 +2926,6 @@
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "VERFUEGUNG_EXPORT_ENABLED": "Activer l'export des décisions en format JSON ou XML",
+    "MUTATION_IGNORIEREN": "Mutation ignorieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
