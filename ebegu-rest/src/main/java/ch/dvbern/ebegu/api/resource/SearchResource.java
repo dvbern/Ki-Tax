@@ -55,6 +55,8 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.persistence.TransactionHelper;
+import ch.dvbern.ebegu.services.AlleFaelleViewService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -63,6 +65,8 @@ import ch.dvbern.ebegu.services.SearchService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -87,6 +91,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class SearchResource {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SearchResource.class);
+
 	@Inject
 	private JaxBConverter converter;
 
@@ -107,6 +113,12 @@ public class SearchResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private TransactionHelper transactionHelper;
+
+	@Inject
+	private AlleFaelleViewService alleFaelleViewService;
 
 	/**
 	 * Gibt eine Liste mit allen Pendenzen des Jugendamtes zurueck.
@@ -278,6 +290,37 @@ public class SearchResource {
 		});
 	}
 
+	@ApiOperation(value = "Build der Alle Faelle Sicht von scratch")
+	@Nonnull
+	@POST
+	@Path("/rebuilt")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public Response updateAlleFaelleView(
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		//wir suchen alle Gesuche ohne criterien
+		//Problem Mandant!!! Es muss fuer jede Kanton gemacht werden
+		Thread thread = new Thread(() -> {
+			List<Gesuch> foundAntraege = searchService.searchAllAntraegeAllMandant(new AntragTableFilterDTO());
+			for (Gesuch gesuch : foundAntraege) {
+				try {
+					transactionHelper.runInNewTransaction(
+						() -> {
+							alleFaelleViewService.updateViewWithFullGesuch(gesuch);
+						}
+					);
+				} catch (Exception e) {
+					LOG.error("Es gab eine unerwartete Fehler bei erstellen der Alle Faelle View mit Gesuch: "
+						+ gesuch.getId());
+				}
+			}
+		});
+		thread.start();
+		return Response.ok().build();
+	}
+
 	@Nonnull
 	private List<JaxAntragDTO> convertAntraegeToDTO(List<Gesuch> foundAntraege) {
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
@@ -286,7 +329,6 @@ public class SearchResource {
 		foundAntraege.forEach(gesuch -> {
 			JaxAntragDTO antragDTO =
 				converter.gesuchToAntragDTO(gesuch, principalBean.discoverMostPrivilegedRole(), allowedInst);
-			antragDTO.setFamilienName(gesuch.extractFamiliennamenString());
 			antragDTOList.add(antragDTO);
 		});
 		return antragDTOList;

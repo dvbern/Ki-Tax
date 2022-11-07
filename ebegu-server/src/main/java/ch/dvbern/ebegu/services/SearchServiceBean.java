@@ -123,12 +123,17 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 	@Override
 	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return searchAntraege(antragTableFilterDto, true);
+		return searchAntraege(antragTableFilterDto, true, false);
 	}
 
 	@Override
 	public List<Gesuch> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return searchAntraege(antragTableFilterDto, false);
+		return searchAntraege(antragTableFilterDto, false, false);
+	}
+
+	@Override
+	public List<Gesuch> searchAllAntraegeAllMandant(AntragTableFilterDTO antragTableFilterDto) {
+		return searchAntraege(antragTableFilterDto, false, true);
 	}
 
 	@Override
@@ -142,14 +147,18 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	}
 
 	@Nonnull
-	private List<Gesuch> searchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
-		Pair<Long, List<Gesuch>> searchResult = searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
+	private List<Gesuch> searchAntraege(
+		@Nonnull AntragTableFilterDTO antragTableFilterDto,
+		boolean searchForPendenzen,
+		boolean mandantFilterDeaktivieren) {
+		Pair<Long, List<Gesuch>> searchResult =
+			searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen, mandantFilterDeaktivieren);
 		return searchResult.getRight();
 	}
 
 	@Nonnull
 	private Long countAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
-		Long countResult = searchAntraege(antragTableFilterDto, SearchMode.COUNT, searchForPendenzen).getLeft();
+		Long countResult = searchAntraege(antragTableFilterDto, SearchMode.COUNT, searchForPendenzen, false).getLeft();
 		return countResult;
 	}
 
@@ -157,7 +166,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private Pair<Long, List<Gesuch>> searchAntraege(
 		@Nonnull AntragTableFilterDTO antragTableFilterDto,
 		@Nonnull SearchMode mode,
-		boolean searchForPendenzen) {
+		boolean searchForPendenzen,
+		boolean mandantFilterDeaktivieren) {
 
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
@@ -232,8 +242,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		} else {
 			predicates.add(inClauseStatus);
 		}
-
-		setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
+		if (!mandantFilterDeaktivieren) {
+			setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
+		}
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
@@ -403,7 +414,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				}
 			}
 			if (predicateObjectDto.getGesuchsperiodeString() != null) {
-				Predicate gesuchsperiodeFiler = PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				Predicate gesuchsperiodeFiler = PredicateHelper.getPredicateFilterGesuchsperiode(
+					cb,
 					joinGesuchsperiode,
 					predicateObjectDto.getGesuchsperiodeString());
 				predicates.add(gesuchsperiodeFiler);
@@ -637,7 +649,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen,
 		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule,
 		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
-		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb,
+		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(
+			cb,
 			joinAnmeldungTagesschule,
 			joinAnmeldungFerieninsel,
 			joinInstitutionstammdatenTagesschule,
