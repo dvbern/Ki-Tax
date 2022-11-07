@@ -4711,7 +4711,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
 		antrag.setDossierId(gesuch.getDossier().getId());
-		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
+		antrag.setFamilienName(gesuch.extractFamiliennamenString());
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
 		antrag.setRegelnGueltigAb(gesuch.getRegelnGueltigAb());
 		antrag.setBegruendungMutation(gesuch.getBegruendungMutation());
@@ -4749,6 +4749,7 @@ public class JaxBConverter extends AbstractConverter {
 		} else {
 			antrag.setInternePendenzAbgelaufen(false);
 		}
+
 		return antrag;
 	}
 

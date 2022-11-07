@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Objects;
@@ -49,6 +50,9 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Entity
 @Table(indexes = {
@@ -90,7 +94,8 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
-	private String fallNummer;
+	@Field(bridge = @FieldBridge(impl = LongBridge.class))
+	private long fallNummer;
 
 	@Nullable
 	@Column(nullable = true)
@@ -156,11 +161,11 @@ public class AlleFaelleView {
 
 	@Nullable
 	@Column(nullable = true)
-	private LocalDateTime eingangsdatum;
+	private LocalDate eingangsdatum;
 
 	@Nullable
 	@Column(nullable = true)
-	private LocalDateTime eingangsdatumSTV;
+	private LocalDate eingangsdatumSTV;
 
 	@NotNull
 	@Column(nullable = false)
@@ -209,16 +214,6 @@ public class AlleFaelleView {
 	private String verantwortlicherTS;
 
 	@Nullable
-	@Column(nullable = true)
-	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
-	@Type(type = "string-uuid-binary")
-	private String verantwortlicherGemeindeId;
-
-	@Nullable
-	@Column(nullable = true)
-	private String verantwortlicherGemeinde;
-
-	@Nullable
 	@ManyToMany
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "antrag_id", nullable = false),
@@ -248,7 +243,7 @@ public class AlleFaelleView {
 			&& getAntragId().equals(that.getAntragId())
 			&& getDossierId().equals(that.getDossierId())
 			&& getFallId().equals(that.getFallId())
-			&& getFallNummer().equals(that.getFallNummer())
+			&& getFallNummer() == that.getFallNummer()
 			&& Objects.equals(getBesitzerId(), that.getBesitzerId())
 			&& Objects.equals(getBesitzerUsername(), that.getBesitzerUsername())
 			&& getGemeindeId().equals(that.getGemeindeId())
@@ -272,8 +267,6 @@ public class AlleFaelleView {
 			&& Objects.equals(getVerantwortlicherBG(), that.getVerantwortlicherBG())
 			&& Objects.equals(getVerantwortlicherTSId(), that.getVerantwortlicherTSId())
 			&& Objects.equals(getVerantwortlicherTS(), that.getVerantwortlicherTS())
-			&& Objects.equals(getVerantwortlicherGemeindeId(), that.getVerantwortlicherGemeindeId())
-			&& Objects.equals(getVerantwortlicherGemeinde(), that.getVerantwortlicherGemeinde())
 			&& Objects.equals(getInstitutionen(), that.getInstitutionen());
 	}
 
@@ -305,8 +298,6 @@ public class AlleFaelleView {
 			getVerantwortlicherBG(),
 			getVerantwortlicherTSId(),
 			getVerantwortlicherTS(),
-			getVerantwortlicherGemeindeId(),
-			getVerantwortlicherGemeinde(),
 			getInstitutionen());
 	}
 
@@ -342,11 +333,11 @@ public class AlleFaelleView {
 		this.fallId = fallId;
 	}
 
-	public String getFallNummer() {
+	public long getFallNummer() {
 		return fallNummer;
 	}
 
-	public void setFallNummer(String fallNummer) {
+	public void setFallNummer(long fallNummer) {
 		this.fallNummer = fallNummer;
 	}
 
@@ -355,7 +346,7 @@ public class AlleFaelleView {
 		return besitzerId;
 	}
 
-	public void setBesitzerId(String besitzerId) {
+	public void setBesitzerId(@Nullable String besitzerId) {
 		this.besitzerId = besitzerId;
 	}
 
@@ -529,24 +520,6 @@ public class AlleFaelleView {
 	}
 
 	@Nullable
-	public String getVerantwortlicherGemeindeId() {
-		return verantwortlicherGemeindeId;
-	}
-
-	public void setVerantwortlicherGemeindeId(@Nullable String verantwortlicherGemeindeId) {
-		this.verantwortlicherGemeindeId = verantwortlicherGemeindeId;
-	}
-
-	@Nullable
-	public String getVerantwortlicherGemeinde() {
-		return verantwortlicherGemeinde;
-	}
-
-	public void setVerantwortlicherGemeinde(@Nullable String verantwortlicherGemeinde) {
-		this.verantwortlicherGemeinde = verantwortlicherGemeinde;
-	}
-
-	@Nullable
 	public Set<Institution> getInstitutionen() {
 		return institutionen;
 	}
@@ -556,20 +529,20 @@ public class AlleFaelleView {
 	}
 
 	@Nullable
-	public LocalDateTime getEingangsdatum() {
+	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
 
-	public void setEingangsdatum(@Nullable LocalDateTime eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
 	@Nullable
-	public LocalDateTime getEingangsdatumSTV() {
+	public LocalDate getEingangsdatumSTV() {
 		return eingangsdatumSTV;
 	}
 
-	public void setEingangsdatumSTV(@Nullable LocalDateTime eingangsdatumSTV) {
+	public void setEingangsdatumSTV(@Nullable LocalDate eingangsdatumSTV) {
 		this.eingangsdatumSTV = eingangsdatumSTV;
 	}
 
