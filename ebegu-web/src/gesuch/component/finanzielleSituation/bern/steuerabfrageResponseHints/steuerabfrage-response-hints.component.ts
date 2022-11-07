@@ -29,6 +29,7 @@ import {BehaviorSubject, Subscription} from 'rxjs';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
+import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
@@ -180,5 +181,11 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
             panelClass: 'steuerdaten-email-dialog'
         };
         this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
+    }
+
+    public tryAgainPossible(): boolean {
+        return this.isMutation() &&
+            !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status) &&
+            this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN;
     }
 }
