@@ -27,6 +27,7 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieKeinPensum: boolean;
     private _kategorieNichtEintreten: boolean;
     private _veraenderungVerguenstigungGegenueberVorgaenger: number;
+    private _ignorable: boolean;
 
     public constructor() {
         super();
@@ -94,6 +95,14 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
 
     public set veraenderungVerguenstigungGegenueberVorgaenger(value: number) {
         this._veraenderungVerguenstigungGegenueberVorgaenger = value;
+    }
+
+    public get ignorable(): boolean {
+        return this._ignorable;
+    }
+
+    public set ignorable(value: boolean) {
+        this._ignorable = value;
     }
 
     /**
