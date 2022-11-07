@@ -174,7 +174,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 
 	@Test
-	public void mutationPositiveBGVeraenderungOnlyFinSitChangesShouldBeIgnorable() {
+	public void mutationPositiveBGVeraenderungOnlyFinSitChangesShouldNotBeIgnorable() {
 		Gesuchsperiode gp = TestDataUtil.createGesuchsperiode1718();
 		Gesuch testgesuch = createGesuch(gp);
 		testgesuch.setGesuchsperiode(gp);
@@ -197,7 +197,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview());
 				assertNotNull(betreuung.getVerfuegungOrVerfuegungPreview().getVeraenderungVerguenstigungGegenueberVorgaenger());
 				assertTrue(betreuung.getVerfuegungOrVerfuegungPreview().getVeraenderungVerguenstigungGegenueberVorgaenger().compareTo(BigDecimal.ZERO) > 0);
-				assertTrue(betreuung.getVerfuegungOrVerfuegungPreview().getIgnorable());
+				assertFalse(betreuung.getVerfuegungOrVerfuegungPreview().getIgnorable());
 			}
 		}
 	}

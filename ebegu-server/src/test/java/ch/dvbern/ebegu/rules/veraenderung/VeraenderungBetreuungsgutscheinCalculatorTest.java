@@ -51,7 +51,30 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 	}
 
 	@Test
-	public void positiveVeraenderungWithOnlyFinSitChangeShouldBeIgnorable() {
+	public void negativeVeraenderungWithOnlyFinSitChangeShouldBeIgnorable() {
+		List<VerfuegungZeitabschnitt> zeitaschnitteVorgaenger = Arrays.asList(
+			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(15), august),
+			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(25), september)
+		);
+
+		List<VerfuegungZeitabschnitt> zeitaschnitteAktuell = Arrays.asList(
+				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), august),
+				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(20), september)
+		);
+
+		Verfuegung verfuegung = new Verfuegung();
+		verfuegung.setZeitabschnitte(zeitaschnitteVorgaenger);
+
+		BigDecimal veraenderung = VeraenderungCalculator
+			.getVeranderungCalculator(false)
+			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
+
+		Assert.assertEquals(BigDecimal.valueOf(-10), veraenderung);
+		Assert.assertTrue(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
+	}
+
+	@Test
+	public void positiveVeraenderungWithOnlyFinSitChangeShouldNotBeIgnorable() {
 		List<VerfuegungZeitabschnitt> zeitaschnitteVorgaenger = Arrays.asList(
 			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), august),
 			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(20), september)
@@ -70,7 +93,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
 
 		Assert.assertEquals(BigDecimal.valueOf(10), veraenderung);
-		Assert.assertTrue(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
+		Assert.assertFalse(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
 	}
 
 	@Test
@@ -96,6 +119,32 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
 
 		Assert.assertEquals(BigDecimal.valueOf(10), veraenderung);
+		Assert.assertFalse(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
+	}
+
+	@Test
+	public void negativeVeraenderungWithFinSitAndAnspruchChangeShouldNotBeIgnorable() {
+		List<VerfuegungZeitabschnitt> zeitaschnitteVorgaenger = Arrays.asList(
+			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(15), august),
+			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(25), september)
+		);
+
+		final VerfuegungZeitabschnitt zeitabschnittMitVergunstigung =
+				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), august);
+		zeitabschnittMitVergunstigung.getBgCalculationResultAsiv().setAnspruchspensumProzent(20);
+		List<VerfuegungZeitabschnitt> zeitaschnitteAktuell = Arrays.asList(
+				zeitabschnittMitVergunstigung,
+				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(20), september)
+		);
+
+		Verfuegung verfuegung = new Verfuegung();
+		verfuegung.setZeitabschnitte(zeitaschnitteVorgaenger);
+
+		BigDecimal veraenderung = VeraenderungCalculator
+			.getVeranderungCalculator(false)
+			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
+
+		Assert.assertEquals(BigDecimal.valueOf(-10), veraenderung);
 		Assert.assertFalse(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
 	}
 
@@ -159,7 +208,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 		List<VerfuegungZeitabschnitt> zeitaschnitteAktuell = Arrays.asList(
 				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), august),
 				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), septemberFirstHalf),
-				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), septemberSecondHalf)
+				createZeitabschnittMitVergunstigung(BigDecimal.valueOf(9), septemberSecondHalf)
 		);
 
 		Verfuegung verfuegung = new Verfuegung();
@@ -169,7 +218,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 			.getVeranderungCalculator(false)
 			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
 
-		Assert.assertEquals(BigDecimal.valueOf(0), veraenderung);
+		Assert.assertEquals(BigDecimal.valueOf(-1), veraenderung);
 		Assert.assertFalse(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
 	}
 

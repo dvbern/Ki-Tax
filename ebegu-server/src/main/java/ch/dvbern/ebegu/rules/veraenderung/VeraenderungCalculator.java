@@ -26,7 +26,7 @@ public abstract class VeraenderungCalculator {
 			List<VerfuegungZeitabschnitt> zeitabschnitteAktuell,
 			Verfuegung verfuegung,
 			BigDecimal veraenderung) {
-		if (veraenderung.compareTo(BigDecimal.ZERO) <= 0) {
+		if (veraenderung.compareTo(BigDecimal.ZERO) >= 0) {
 			return false;
 		}
 
