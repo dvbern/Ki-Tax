@@ -22,6 +22,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
 import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
+import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -1461,7 +1462,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = CONSTANTS.getUnknowTFOIdForMandant(this.mandant);
+            this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
             this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
         } else {

@@ -55,21 +55,6 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 export const MAX_FILE_SIZE = 10485760;
 
 // eslint-disable-next-line
-export function getUnknowTFOIdForMandant(mandant: MANDANTS): string {
-    switch (mandant) {
-        case MANDANTS.LUZERN:
-            return '00000000-0000-0000-0000-000000000004';
-        case MANDANTS.SOLOTHURN:
-            return '00000000-0000-0000-0000-000000000007';
-        case MANDANTS.APPENZELL_AUSSERRHODEN:
-            return '00000000-0000-0000-0000-000000000007';
-        case MANDANTS.BERN:
-        default:
-            return '00000000-0000-0000-0000-000000000001';
-    }
-}
-
-// eslint-disable-next-line
 export function getUnknowTagesschuleIdForMandant(mandant: MANDANTS): string {
     switch (mandant) {
         case MANDANTS.LUZERN:
