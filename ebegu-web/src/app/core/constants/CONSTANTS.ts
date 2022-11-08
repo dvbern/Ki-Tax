@@ -54,20 +54,6 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10485760;
 
-export function getUnknowKitaIdForMandant(mandant: MANDANTS): string {
-    switch (mandant) {
-        case MANDANTS.LUZERN:
-            return '00000000-0000-0000-0000-000000000003';
-        case MANDANTS.SOLOTHURN:
-            return '00000000-0000-0000-0000-000000000006';
-        case MANDANTS.APPENZELL_AUSSERRHODEN:
-            return '00000000-0000-0000-0000-000000000006';
-        case MANDANTS.BERN:
-        default:
-            return '00000000-0000-0000-0000-000000000000';
-    }
-}
-
 // eslint-disable-next-line
 export function getUnknowTFOIdForMandant(mandant: MANDANTS): string {
     switch (mandant) {
