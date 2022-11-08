@@ -201,11 +201,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMutationVeranderung(): boolean {
-        if (isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
-            return false;
-        }
-
-        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
+        return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public setMutationIgnorieren(): void {
