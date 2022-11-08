@@ -7,6 +7,7 @@ import {TSMandant} from '../../../models/TSMandant';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {MandantLoginStateVisitor} from '../../core/constants/MandantLoginStateVisitor';
+import {MandantLogoNameVisitor} from '../../core/constants/MandantLogoNameVisitor';
 import {MANDANTS, KiBonMandant} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -217,18 +218,7 @@ export class MandantService {
             );
     }
 
-    public getMandantLogoName(mandant: MANDANTS): string {
-        switch (mandant) {
-            case MANDANTS.BERN:
-                return 'logo-kibon-bern.svg';
-            case MANDANTS.LUZERN:
-                return 'logo-kibon-luzern.svg';
-            case MANDANTS.SOLOTHURN:
-                return 'logo-kibon-solothurn.svg';
-            case MANDANTS.APPENZELL_AUSSERRHODEN:
-                return 'logo-kibon-ar.png';
-            default:
-                return 'logo-kibon-bern.svg';
-        }
+    public getMandantLogoName(mandant: KiBonMandant): string {
+        return new MandantLogoNameVisitor().process(mandant);
     }
 }
