@@ -17,7 +17,10 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,14 +28,15 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.platform.commons.util.StringUtils;
 
 /**
  * Tests fuer EinkommenAbschnittRule
@@ -65,7 +69,7 @@ public class EinkommenAbschnittRuleTest {
 
 		// Es gibt nur einen Zeitraum, da keine EKV angenommen
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres 2016. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).");
-		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016);
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
@@ -75,7 +79,7 @@ public class EinkommenAbschnittRuleTest {
 
 		// Es gibt zwei Zeiträume, da die EKV immer nur für das Kalenderjahr gilt! Danach gilt wieder die FinSit!
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_EKV_ANGENOMMEN, 		2017, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse (Art. 34m Abs. 2 ASIV).");
-		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 	2016, "");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 	2016);
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
@@ -166,6 +170,54 @@ public class EinkommenAbschnittRuleTest {
 	}
 
 	@Test
+	public void testEKVForHighEinkommenAndTooSmallReduction_shouldBeIgnoredAndHaveBothMessages() {
+		var ekvLimit = new BigDecimal("80000");
+		initCustomEinkommenCalcRule(ekvLimit);
+
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("90000");
+		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
+		final String formatedYear = "2016";
+		final String formatedYearP1 = "2017";
+		final String formatedYearP2 = "2018";
+		final String EXPECTED_MESSAGE1 =
+			"Ihr Antrag wegen Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ ". Das massgebende Einkommen des Jahres "
+				+ formatedYear
+				+ " ist höher als CHF "
+				+ NumberFormat.getInstance().format(ekvLimit)
+				+ " (Art. 57 Abs 2  und Art. 66 Abs. 1 Bst. k FKJV).";
+		final String EXPECTED_MESSAGE2 =
+				"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+						+ formatedYear
+						+ ". Das massgebende Einkommen des Jahres "
+						+ formatedYearP1
+						+ " ohne Abzug"
+						+ " des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das "
+						+ "massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr "
+						+ formatedYear
+						+ ") ohne Abzug des "
+						+ "Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).";
+		final String EXPECTED_MESSAGE3 =
+				"Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres "
+						+ formatedYear
+						+ ". Das massgebende Einkommen des Jahres "
+						+ formatedYearP2
+						+ " ohne Abzug"
+						+ " des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das "
+						+ "massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr "
+						+ formatedYear
+						+ ") ohne Abzug des "
+						+ "Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).";
+
+		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
+		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE1, EXPECTED_MESSAGE2);
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_HOCH, 2016, EXPECTED_MESSAGE1, EXPECTED_MESSAGE3);
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
+	}
+
+	@Test
 	public void testEKVForSmallEinkommen_shouldNotBeIgnored() {
 		initCustomEinkommenCalcRule(new BigDecimal("80000"));
 
@@ -187,12 +239,12 @@ public class EinkommenAbschnittRuleTest {
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
-			if(StringUtils.isBlank(expectedResult.bemerkung)) {
-				Assert.assertTrue(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
-			} else {
-				Assert.assertEquals(1, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
-				Assert.assertEquals(expectedResult.bemerkung, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(0).getBemerkung());
-			}
+			Assert.assertEquals(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList()
+				.stream()
+				.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+				.sorted()
+				.collect(Collectors.toList()),
+				Arrays.stream(expectedResult.bemerkungen).sorted().collect(Collectors.toList()));
 		}
 	}
 
@@ -200,19 +252,19 @@ public class EinkommenAbschnittRuleTest {
 	static class ExpectedResult {
 		public BigDecimal massgebendesEinkommen;
 		public Integer einkommensjahr;
-		public String bemerkung;
+		public String[] bemerkungen;
 
-		public ExpectedResult(BigDecimal massgebendesEinkommen, Integer einkommensjahr, String bemerkung) {
+		public ExpectedResult(BigDecimal massgebendesEinkommen, Integer einkommensjahr, String... bemerkungen) {
 			this.massgebendesEinkommen = massgebendesEinkommen;
 			this.einkommensjahr = einkommensjahr;
-			this.bemerkung = bemerkung;
+			this.bemerkungen = bemerkungen;
 		}
 	}
 
-	private List<VerfuegungZeitabschnitt> createTestdataEinkommensverschlechterung(@Nonnull BigDecimal basisjahr, @Nullable BigDecimal ekv1, @Nullable BigDecimal ekv2) {
+	private List<VerfuegungZeitabschnitt> createTestdataEinkommensverschlechterung(@Nonnull BigDecimal massgebendesEk, @Nullable BigDecimal ekv1, @Nullable BigDecimal ekv2) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.setFinanzielleSituation(gesuch, basisjahr);
+		TestDataUtil.setFinanzielleSituation(gesuch, massgebendesEk);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		if (ekv1 != null) {
 			TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), ekv1, true);
