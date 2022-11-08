@@ -18,7 +18,7 @@
 import {HookResult, StateService, Transition, TransitionService} from '@uirouter/core';
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {OnBeforePriorities} from './onBeforePriorities';
@@ -77,8 +77,8 @@ function redirectToMandantSelection(
                 LOG.debug('checking mandant', mandant);
                 const path = transition.router.stateService.href(transition.to(), transition.params());
 
-                if (mandantFromHostname === KiBonMandant.NONE) {
-                    if (mandantRedirectFromCookie === KiBonMandant.NONE) {
+                if (mandantFromHostname === MANDANTS.NONE) {
+                    if (mandantRedirectFromCookie === MANDANTS.NONE) {
                         console.log('redirecting to mandant selection');
                         return $state.target('onboarding.mandant', {path});
                     }
@@ -100,14 +100,14 @@ function setDefaultCookies(
     mandantService: MandantService,
     mandantRedirectFromCookie: KiBonMandant
 ): void {
-    if (!alreadyAlerted && mandantFromHostname !== KiBonMandant.NONE) {
+    if (!alreadyAlerted && mandantFromHostname !== MANDANTS.NONE) {
         alert('Multimandant ist nicht aktiviert');
         alreadyAlerted = true;
     }
-    if (mandant !== KiBonMandant.BE) {
-        mandantService.setMandantCookie(KiBonMandant.BE);
+    if (mandant !== MANDANTS.BERN) {
+        mandantService.setMandantCookie(MANDANTS.BERN);
     }
-    if (mandantRedirectFromCookie !== KiBonMandant.BE) {
-        mandantService.setMandantRedirectCookie(KiBonMandant.BE);
+    if (mandantRedirectFromCookie !== MANDANTS.BERN) {
+        mandantService.setMandantRedirectCookie(MANDANTS.BERN);
     }
 }

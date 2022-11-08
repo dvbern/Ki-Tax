@@ -19,7 +19,7 @@ import {HttpClient} from '@angular/common/http';
 import {TranslateLoader} from '@ngx-translate/core';
 import {forkJoin, iif, Observable, of} from 'rxjs';
 import {catchError, map, mergeMap} from 'rxjs/operators';
-import {KiBonMandant} from '../core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../core/constants/MANDANTS';
 import {LogFactory} from '../core/logging/LogFactory';
 import {MandantService} from '../shared/services/mandant.service';
 
@@ -46,7 +46,7 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     public getTranslation(lang: string): Observable<any> {
         return this.mandantService.mandant$.pipe(
             mergeMap(mandant => iif(() =>
-                mandant !== KiBonMandant.NONE && mandant !== KiBonMandant.BE,
+                mandant !== MANDANTS.NONE && mandant !== MANDANTS.BERN,
                 this.createMultimandantRequests(lang, mandant),
                 this.createBaseTranslationRequest(lang))
             )
@@ -56,7 +56,7 @@ export class MultiMandantHttpLoader implements TranslateLoader {
     private createMultimandantRequests(lang: string, mandant: KiBonMandant): Observable<any> {
         return forkJoin([
                 this.createBaseTranslationRequest(lang),
-                this.http.get(`${this.RESOURCE.prefix}${mandant}_${lang}${this.RESOURCE.suffix}`)
+                this.http.get(`${this.RESOURCE.prefix}${mandant.hostname}_${lang}${this.RESOURCE.suffix}`)
                     .pipe(catchError(err => {
                         LOG.error(err);
                         return of({});

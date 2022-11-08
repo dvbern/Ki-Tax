@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {KiBonMandant} from './MANDANTS';
+import {MANDANTS} from './MANDANTS';
 
 export const CONSTANTS = {
     name: 'EBEGU',
@@ -54,45 +54,45 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10485760;
 
-export function getUnknowKitaIdForMandant(mandant: KiBonMandant): string {
+export function getUnknowKitaIdForMandant(mandant: MANDANTS): string {
     switch (mandant) {
-        case KiBonMandant.LU:
+        case MANDANTS.LUZERN:
             return '00000000-0000-0000-0000-000000000003';
-        case KiBonMandant.SO:
+        case MANDANTS.SOLOTHURN:
             return '00000000-0000-0000-0000-000000000006';
-        case KiBonMandant.AR:
+        case MANDANTS.APPENZELL_AUSSERRHODEN:
             return '00000000-0000-0000-0000-000000000006';
-        case KiBonMandant.BE:
+        case MANDANTS.BERN:
         default:
             return '00000000-0000-0000-0000-000000000000';
     }
 }
 
 // eslint-disable-next-line
-export function getUnknowTFOIdForMandant(mandant: KiBonMandant): string {
+export function getUnknowTFOIdForMandant(mandant: MANDANTS): string {
     switch (mandant) {
-        case KiBonMandant.LU:
+        case MANDANTS.LUZERN:
             return '00000000-0000-0000-0000-000000000004';
-        case KiBonMandant.SO:
+        case MANDANTS.SOLOTHURN:
             return '00000000-0000-0000-0000-000000000007';
-        case KiBonMandant.AR:
+        case MANDANTS.APPENZELL_AUSSERRHODEN:
             return '00000000-0000-0000-0000-000000000007';
-        case KiBonMandant.BE:
+        case MANDANTS.BERN:
         default:
             return '00000000-0000-0000-0000-000000000001';
     }
 }
 
 // eslint-disable-next-line
-export function getUnknowTagesschuleIdForMandant(mandant: KiBonMandant): string {
+export function getUnknowTagesschuleIdForMandant(mandant: MANDANTS): string {
     switch (mandant) {
-        case KiBonMandant.LU:
+        case MANDANTS.LUZERN:
             return '00000000-0000-0000-0000-000000000005';
-        case KiBonMandant.SO:
+        case MANDANTS.SOLOTHURN:
             return '00000000-0000-0000-0000-000000000008';
-        case KiBonMandant.AR:
+        case MANDANTS.APPENZELL_AUSSERRHODEN:
             return '00000000-0000-0000-0000-000000000008';
-        case KiBonMandant.BE:
+        case MANDANTS.BERN:
         default:
             return '00000000-0000-0000-0000-000000000002';
     }
