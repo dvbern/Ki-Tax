@@ -17,7 +17,10 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +28,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -170,7 +174,7 @@ public class EinkommenAbschnittRuleTest {
 		var ekvLimit = new BigDecimal("80000");
 		initCustomEinkommenCalcRule(ekvLimit);
 
-		BigDecimal EINKOMMEN_TIEF = new BigDecimal("900000");
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("90000");
 		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_HOCH, EINKOMMEN_TIEF, EINKOMMEN_TIEF);
 		final String formatedYear = "2016";
@@ -235,14 +239,12 @@ public class EinkommenAbschnittRuleTest {
 			ExpectedResult expectedResult = expectedResults[i++];
 			Assert.assertTrue(MathUtil.isSame(expectedResult.massgebendesEinkommen, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getMassgebendesEinkommen()));
 			Assert.assertEquals(expectedResult.einkommensjahr, verfuegungZeitabschnitt.getRelevantBgCalculationInput().getEinkommensjahr());
-			if(ArrayUtils.isEmpty(expectedResult.bemerkungen)) {
-				Assert.assertTrue(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().isEmpty());
-			} else {
-				Assert.assertEquals(expectedResult.bemerkungen.length, verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().size());
-				for (int j = 0; j < expectedResult.bemerkungen.length; j++) {
-					Assert.assertEquals(expectedResult.bemerkungen[j], verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList().get(j).getBemerkung());
-				}
-			}
+			Assert.assertEquals(verfuegungZeitabschnitt.getVerfuegungZeitabschnittBemerkungList()
+				.stream()
+				.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
+				.sorted()
+				.collect(Collectors.toList()),
+				Arrays.stream(expectedResult.bemerkungen).sorted().collect(Collectors.toList()));
 		}
 	}
 
@@ -259,10 +261,10 @@ public class EinkommenAbschnittRuleTest {
 		}
 	}
 
-	private List<VerfuegungZeitabschnitt> createTestdataEinkommensverschlechterung(@Nonnull BigDecimal basisjahr, @Nullable BigDecimal ekv1, @Nullable BigDecimal ekv2) {
+	private List<VerfuegungZeitabschnitt> createTestdataEinkommensverschlechterung(@Nonnull BigDecimal massgebendesEk, @Nullable BigDecimal ekv1, @Nullable BigDecimal ekv2) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.setFinanzielleSituation(gesuch, basisjahr);
+		TestDataUtil.setFinanzielleSituation(gesuch, massgebendesEk);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		if (ekv1 != null) {
 			TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), ekv1, true);
