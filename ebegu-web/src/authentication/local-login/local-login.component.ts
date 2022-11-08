@@ -16,7 +16,7 @@
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
 import {LOCALLOGIN_DATA, LocalloginDatum} from '../../app/core/constants/LOCALLOGIN_DATA';
-import {KiBonMandant} from '../../app/core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../app/shared/services/mandant.service';
@@ -152,16 +152,16 @@ export class LocalLoginComponent {
     private static getLocalloginDatum(mandant: KiBonMandant): LocalloginDatum {
         let datum: LocalloginDatum;
         switch (mandant) {
-            case KiBonMandant.BE:
+            case MANDANTS.BERN:
                 datum = LOCALLOGIN_DATA.BE;
                 break;
-            case KiBonMandant.LU:
+            case MANDANTS.LUZERN:
                 datum = LOCALLOGIN_DATA.LU;
                 break;
-            case KiBonMandant.SO:
+            case MANDANTS.SOLOTHURN:
                 datum = LOCALLOGIN_DATA.SO;
                 break;
-            case KiBonMandant.AR:
+            case MANDANTS.APPENZELL_AUSSERRHODEN:
                 datum = LOCALLOGIN_DATA.AR;
                 break;
             default:

@@ -17,7 +17,7 @@ import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
 import {EinstellungRS} from '../admin/service/einstellungRS.rest';
-import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../app/core/constants/MANDANTS';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
@@ -111,7 +111,7 @@ class ErrorServiceXMock extends ErrorServiceX {
 
 class MandantServiceMock extends MandantService {
     public get mandant$(): Observable<KiBonMandant> {
-        return of(KiBonMandant.BE);
+        return of(MANDANTS.BERN);
     }
 }
 
