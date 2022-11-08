@@ -2626,11 +2626,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private Gesuch doVerfuegenStarten(Gesuch gesuch) {
-		return verfuegenStarten(gesuch);
-	}
-
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
