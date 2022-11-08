@@ -26,7 +26,7 @@ public abstract class VeraenderungCalculator {
 			List<VerfuegungZeitabschnitt> zeitabschnitteAktuell,
 			Verfuegung verfuegung,
 			BigDecimal veraenderung) {
-		if (veraenderung.compareTo(BigDecimal.ZERO) >= 0) {
+		if (veraenderung.compareTo(BigDecimal.ZERO) > 0) {
 			return false;
 		}
 
@@ -35,8 +35,8 @@ public abstract class VeraenderungCalculator {
 		}
 
 		for (int i = 0; i < zeitabschnitteAktuell.size(); i++) {
-			VerfuegungZeitabschnitt currentZeitabschnitt = zeitabschnitteAktuell.get(0);
-			VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
+			VerfuegungZeitabschnitt currentZeitabschnitt = zeitabschnitteAktuell.get(i);
+			VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(i);
 
 			if (!currentZeitabschnitt.getGueltigkeit().equals(verfuegungZeitabschnitt.getGueltigkeit())) {
 				return false;

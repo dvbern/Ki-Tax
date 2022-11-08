@@ -176,7 +176,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 	}
 
 	@Test
-	public void noVeraenderungShouldNotBeIgnorable() {
+	public void noVeraenderungShouldBeIgnorable() {
 		List<VerfuegungZeitabschnitt> zeitaschnitteVorgaenger = Arrays.asList(
 			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(10), august),
 			createZeitabschnittMitVergunstigung(BigDecimal.valueOf(20), september)
@@ -195,7 +195,7 @@ public class VeraenderungBetreuungsgutscheinCalculatorTest {
 			.calculateVeraenderung(zeitaschnitteAktuell, verfuegung);
 
 		Assert.assertEquals(BigDecimal.valueOf(0), veraenderung);
-		Assert.assertFalse(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
+		Assert.assertTrue(VeraenderungCalculator.getVeranderungCalculator(false).calculateIgnorable(zeitaschnitteAktuell, verfuegung, veraenderung));
 	}
 
 	@Test
