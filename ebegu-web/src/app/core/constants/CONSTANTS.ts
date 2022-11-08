@@ -54,21 +54,6 @@ export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10485760;
 
-// eslint-disable-next-line
-export function getUnknowTagesschuleIdForMandant(mandant: MANDANTS): string {
-    switch (mandant) {
-        case MANDANTS.LUZERN:
-            return '00000000-0000-0000-0000-000000000005';
-        case MANDANTS.SOLOTHURN:
-            return '00000000-0000-0000-0000-000000000008';
-        case MANDANTS.APPENZELL_AUSSERRHODEN:
-            return '00000000-0000-0000-0000-000000000008';
-        case MANDANTS.BERN:
-        default:
-            return '00000000-0000-0000-0000-000000000002';
-    }
-}
-
 export const HTTP_CODES = {
     OK: 200,
     BAD_REQUEST: 400,
