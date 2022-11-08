@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import {TSMandant} from '../../../models/TSMandant';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {MandantLoginStateVisitor} from '../../core/constants/MandantLoginStateVisitor';
 import {MANDANTS, KiBonMandant} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -191,17 +192,8 @@ export class MandantService {
         return MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
     }
 
-    public getMandantLoginState(mandant: MANDANTS): string {
-        switch (mandant) {
-            case MANDANTS.BERN:
-            case MANDANTS.NONE:
-            case MANDANTS.SOLOTHURN:
-            case MANDANTS.APPENZELL_AUSSERRHODEN:
-            case MANDANTS.LUZERN:
-                return 'authentication.login';
-            default:
-                return 'authentication.locallogin';
-        }
+    public getMandantLoginState(mandant: KiBonMandant): string {
+        return new MandantLoginStateVisitor().process(mandant);
     }
 
     public mandantToKibonMandant(mandant: TSMandant): KiBonMandant {
