@@ -99,6 +99,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -1618,7 +1619,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
 			acceptFinSit(mutation);
-			if (mutation.isNewlyCreatedMutation()) {
+			if (mutation.isNewlyCreatedMutation() && mutation.getEingangsart() == Eingangsart.ONLINE) {
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
 			}
 			persistence.getEntityManager().flush();
