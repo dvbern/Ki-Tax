@@ -106,6 +106,8 @@ public enum EinstellungKey {
 	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
+	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
+	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 

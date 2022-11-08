@@ -2776,6 +2776,7 @@
     "GEMEINDE_KENNZAHLEN_NACHFRAGE_DAUER": "Pour les communes qui appliquent un contingent : durée moyenne d’attente pour bénéficier d’un bon",
     "GEMEINDE_KENNZAHLEN_LIMITIERUNG_TFO": "Jusqu’à quel âge votre commune accorde-t-elle des bons pour la prise en charge chez des parents de jour ?",
     "GEMEINDE_KENNZAHLEN_AKTIV": "Chiffres-clés de la commune activé",
+    "GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER": "Keinen Gutschein für Sozialhilfeempfänger ausstellen",
     "MULTIMANDANT_AKTIV": "Multimandant activé",
     "MANDANT_SWITCH": "Changer de mandant",
     "BENUTZENDE_EINGEBEN": "Entrer l'utilisateur/-trice",
