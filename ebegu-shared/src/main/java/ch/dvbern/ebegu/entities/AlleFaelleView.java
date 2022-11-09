@@ -19,10 +19,11 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +61,6 @@ import org.hibernate.search.bridge.builtin.LongBridge;
 	@Index(columnList = "gesuchsperiodeId", name = "IX_alle_faelle_view_gesuchsperiode_id"),
 	@Index(columnList = "verantwortlicherBGId", name = "IX_alle_faelle_view_verantwortlicher_bg_id"),
 	@Index(columnList = "verantwortlicherTSId", name = "IX_alle_faelle_view_verantwortlicher_ts_id"),
-	@Index(columnList = "verantwortlicherGemeindeId", name = "IX_alle_faelle_view_verantwortlicher_gemeinde_id"),
 	@Index(columnList = "fallId", name = "IX_alle_faelle_view_fall_id"),
 	@Index(columnList = "besitzerId", name = "IX_alle_faelle_view_besitzer_id"),
 	@Index(columnList = "sozialdienstId", name = "IX_alle_faelle_view_sozialdienst_id")
@@ -94,8 +94,7 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
-	@Field(bridge = @FieldBridge(impl = LongBridge.class))
-	private long fallNummer;
+	private String fallnummer;
 
 	@Nullable
 	@Column(nullable = true)
@@ -218,14 +217,14 @@ public class AlleFaelleView {
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "antrag_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "institution_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_institution_alle_faelle_view_antrag_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_institution_alle_faelle_view_institution_id"),
+		foreignKey = @ForeignKey(name = "FK_alle_faelle_view_antrag_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_alle_faelle_view_institution_id"),
 		indexes = {
-			@Index(name = "IX_institution_alle_faelle_view_antrag_id", columnList = "antrag_id"),
-			@Index(name = "IX_institution_alle_faelle_view_institution_id", columnList = "institution_id"),
+			@Index(name = "IX_alle_faelle_view_antrag_id", columnList = "antrag_id"),
+			@Index(name = "IX_alle_faelle_view_institution_id", columnList = "institution_id"),
 		}
 	)
-	private Set<Institution> institutionen = new TreeSet<>();
+	private List<Institution> institutionen = new ArrayList<>();
 
 	public AlleFaelleView() {
 	}
@@ -243,7 +242,7 @@ public class AlleFaelleView {
 			&& getAntragId().equals(that.getAntragId())
 			&& getDossierId().equals(that.getDossierId())
 			&& getFallId().equals(that.getFallId())
-			&& getFallNummer() == that.getFallNummer()
+			&& getFallnummer() == that.getFallnummer()
 			&& Objects.equals(getBesitzerId(), that.getBesitzerId())
 			&& Objects.equals(getBesitzerUsername(), that.getBesitzerUsername())
 			&& getGemeindeId().equals(that.getGemeindeId())
@@ -276,7 +275,7 @@ public class AlleFaelleView {
 			getAntragId(),
 			getDossierId(),
 			getFallId(),
-			getFallNummer(),
+			getFallnummer(),
 			getBesitzerId(),
 			getBesitzerUsername(),
 			getGemeindeId(),
@@ -333,12 +332,12 @@ public class AlleFaelleView {
 		this.fallId = fallId;
 	}
 
-	public long getFallNummer() {
-		return fallNummer;
+	public String getFallnummer() {
+		return fallnummer;
 	}
 
-	public void setFallNummer(long fallNummer) {
-		this.fallNummer = fallNummer;
+	public void setFallnummer(String fallnummer) {
+		this.fallnummer = fallnummer;
 	}
 
 	@Nullable
@@ -520,11 +519,11 @@ public class AlleFaelleView {
 	}
 
 	@Nullable
-	public Set<Institution> getInstitutionen() {
+	public List<Institution> getInstitutionen() {
 		return institutionen;
 	}
 
-	public void setInstitutionen(@Nullable Set<Institution> institutionen) {
+	public void setInstitutionen(@Nullable List<Institution> institutionen) {
 		this.institutionen = institutionen;
 	}
 

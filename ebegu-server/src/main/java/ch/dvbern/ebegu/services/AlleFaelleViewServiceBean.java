@@ -17,10 +17,12 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
 @Local(AlleFaelleViewService.class)
+@PermitAll
 public class AlleFaelleViewServiceBean extends AbstractBaseService implements AlleFaelleViewService {
 
 	@Inject
@@ -53,7 +56,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		alleFaelleView.setMandantId(gesuch.getGesuchsperiode().getMandant().getId());
 		alleFaelleView.setDossierId(gesuch.getDossier().getId());
 		alleFaelleView.setFallId(gesuch.getFall().getId());
-		alleFaelleView.setFallNummer(gesuch.getFall().getFallNummer());
+		alleFaelleView.setFallnummer(String.valueOf(gesuch.getFall().getFallNummer()));
 		alleFaelleView.setBesitzerId(gesuch.getFall().getBesitzer() != null ?
 			gesuch.getFall().getBesitzer().getId() :
 			null);
@@ -101,11 +104,11 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		return alleFaelleView;
 	}
 
-	private Set<Institution> createInstitutionenList(Set<KindContainer> kindContainers) {
+	private List<Institution> createInstitutionenList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(Betreuung::getInstitutionStammdaten)
 			.map(InstitutionStammdaten::getInstitution)
-			.collect(Collectors.toSet());
+			.collect(Collectors.toList());
 	}
 }

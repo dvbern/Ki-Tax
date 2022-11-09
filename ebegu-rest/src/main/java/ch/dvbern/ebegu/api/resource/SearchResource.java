@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchService;
+import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -119,6 +120,9 @@ public class SearchResource {
 
 	@Inject
 	private AlleFaelleViewService alleFaelleViewService;
+
+	@Inject
+	private SuperAdminService superAdminService;
 
 	/**
 	 * Gibt eine Liste mit allen Pendenzen des Jugendamtes zurueck.
@@ -292,18 +296,17 @@ public class SearchResource {
 
 	@ApiOperation(value = "Build der Alle Faelle Sicht von scratch")
 	@Nonnull
-	@POST
-	@Path("/rebuilt")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/rebuild")
+	@RolesAllowed(SUPER_ADMIN)
 	public Response updateAlleFaelleView(
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 		//wir suchen alle Gesuche ohne criterien
 		//Problem Mandant!!! Es muss fuer jede Kanton gemacht werden
 		Thread thread = new Thread(() -> {
-			List<Gesuch> foundAntraege = searchService.searchAllAntraegeAllMandant(new AntragTableFilterDTO());
+			List<Gesuch> foundAntraege = superAdminService.searchAllAntraegeAllMandant();
 			for (Gesuch gesuch : foundAntraege) {
 				try {
 					transactionHelper.runInNewTransaction(
