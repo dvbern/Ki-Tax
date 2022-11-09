@@ -104,6 +104,9 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterFor
 @Local(SearchService.class)
 public class SearchServiceBean extends AbstractBaseService implements SearchService {
 
+	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
+
+
 	private static final Logger LOG = LoggerFactory.getLogger(SearchServiceBean.class.getSimpleName());
 
 	@Inject
@@ -168,9 +171,16 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		@Nonnull SearchMode mode,
 		boolean searchForPendenzen,
 		boolean mandantFilterDeaktivieren) {
+		Benutzer user;
+		if(mandantFilterDeaktivieren){
+			user = benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
+				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No Technical User Found"));
+		}
+		else {
+			user = benutzerService.getCurrentBenutzer()
+				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+		}
 
-		Benutzer user = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
 		UserRole role = user.getRole();
 
@@ -248,7 +258,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
-		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
+		AntragPredicateObjectDTO predicateObjectDto =
+			antragTableFilterDto.getSearch() != null ? antragTableFilterDto.getSearch().getPredicateObject() : null;
 
 		// Special role based predicates
 		switch (role) {

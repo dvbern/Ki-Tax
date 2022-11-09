@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.ejb.Asynchronous;
@@ -36,6 +38,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -105,6 +108,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private SearchService searchService;
+
 
 	@Override
 	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
@@ -135,6 +141,13 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser) {
 		return gesuchService.updateGesuch(gesuch, saveInStatusHistory, saveAsUser);
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public List<Gesuch> searchAllAntraegeAllMandant() {
+		return searchService.searchAllAntraegeAllMandant(new AntragTableFilterDTO());
 	}
 
 	@Override

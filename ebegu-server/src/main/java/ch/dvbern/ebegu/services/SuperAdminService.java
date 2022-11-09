@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -67,4 +69,11 @@ public interface SuperAdminService {
 	 * Sendet ein Protokoll im CSV Format an eine konfigurierbare Mailadresse
 	 */
 	void createMutationForEachClosedAntragOfGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
+	 * Search all Antraege als Superadmin
+	 * Noetig zu laden die alle Faelle View Tabelle in different thread where the login context is lost
+	 * @return
+	 */
+	List<Gesuch> searchAllAntraegeAllMandant();
 }
