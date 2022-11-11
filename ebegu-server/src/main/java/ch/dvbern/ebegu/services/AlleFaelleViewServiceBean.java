@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,7 +27,13 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AlleFaelleView;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -35,6 +42,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.hibernate.Criteria;
 
 @Stateless
 @Local(AlleFaelleViewService.class)
@@ -48,6 +56,30 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 	public void updateViewWithFullGesuch(Gesuch gesuch) {
 		AlleFaelleView alleFaelleView = convertGesuchToAlleFaelleView(gesuch);
 		persistence.merge(alleFaelleView);
+	}
+
+	@Override
+	public Long countAllGesuch() {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery query = cb.createQuery(Long.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(cb.countDistinct(root.get(AbstractEntity_.id)));
+		Long count = (Long) persistence.getCriteriaSingleResult(query);
+		return count;
+	}
+
+	@Override
+	public List<String> searchAllGesuchIds(int start, int size) {
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(root.get(AbstractEntity_.id));
+		Path<LocalDateTime> orderByTimestamp = root.get(AbstractEntity_.timestampErstellt);
+		query.orderBy(cb.asc(orderByTimestamp));
+		TypedQuery<String> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setMaxResults(size);
+		typedQuery.setFirstResult(start);
+		return typedQuery.getResultList();
 	}
 
 	private AlleFaelleView convertGesuchToAlleFaelleView(Gesuch gesuch) {
@@ -74,7 +106,9 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			.map(kc -> kc.getKindJA().getVorname())
 			.collect(Collectors.joining(", ")));
 		Objects.requireNonNull(gesuch.getTimestampMutiert());
-
+		alleFaelleView.setAngebotTypen(gesuch.getKindContainers().stream()
+			.flatMap(kc -> kc.getAllPlaetze().stream())
+			.map(b -> b.getInstitutionStammdaten().getBetreuungsangebotTyp().name()).collect(Collectors.joining(", ")));
 
 		alleFaelleView.setAenderungsdatum(gesuch.getTimestampMutiert());
 		alleFaelleView.setEingangsdatum(gesuch.getEingangsdatum());
@@ -109,6 +143,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			.flatMap(kc -> kc.getBetreuungen().stream())
 			.map(Betreuung::getInstitutionStammdaten)
 			.map(InstitutionStammdaten::getInstitution)
+			.distinct()
 			.collect(Collectors.toList());
 	}
 }

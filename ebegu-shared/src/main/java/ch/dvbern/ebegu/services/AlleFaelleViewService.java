@@ -17,9 +17,15 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.util.List;
+
 import ch.dvbern.ebegu.entities.Gesuch;
 
 public interface AlleFaelleViewService {
 
 	void updateViewWithFullGesuch(Gesuch gesuch);
+
+	Long countAllGesuch();
+
+	List<String> searchAllGesuchIds(int start, int size);
 }

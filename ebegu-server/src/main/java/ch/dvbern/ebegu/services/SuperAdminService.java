@@ -75,5 +75,5 @@ public interface SuperAdminService {
 	 * Noetig zu laden die alle Faelle View Tabelle in different thread where the login context is lost
 	 * @return
 	 */
-	List<Gesuch> searchAllAntraegeAllMandant();
+	void rebuiltAllAntraegeForGesuchsperiodeAsSystemUser();
 }

@@ -126,17 +126,12 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 	@Override
 	public List<Gesuch> searchPendenzen(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return searchAntraege(antragTableFilterDto, true, false);
+		return searchAntraege(antragTableFilterDto, true);
 	}
 
 	@Override
 	public List<Gesuch> searchAllAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto) {
-		return searchAntraege(antragTableFilterDto, false, false);
-	}
-
-	@Override
-	public List<Gesuch> searchAllAntraegeAllMandant(AntragTableFilterDTO antragTableFilterDto) {
-		return searchAntraege(antragTableFilterDto, false, true);
+		return searchAntraege(antragTableFilterDto, false);
 	}
 
 	@Override
@@ -152,16 +147,15 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	@Nonnull
 	private List<Gesuch> searchAntraege(
 		@Nonnull AntragTableFilterDTO antragTableFilterDto,
-		boolean searchForPendenzen,
-		boolean mandantFilterDeaktivieren) {
+		boolean searchForPendenzen) {
 		Pair<Long, List<Gesuch>> searchResult =
-			searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen, mandantFilterDeaktivieren);
+			searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
 		return searchResult.getRight();
 	}
 
 	@Nonnull
 	private Long countAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
-		Long countResult = searchAntraege(antragTableFilterDto, SearchMode.COUNT, searchForPendenzen, false).getLeft();
+		Long countResult = searchAntraege(antragTableFilterDto, SearchMode.COUNT, searchForPendenzen).getLeft();
 		return countResult;
 	}
 
@@ -169,18 +163,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	private Pair<Long, List<Gesuch>> searchAntraege(
 		@Nonnull AntragTableFilterDTO antragTableFilterDto,
 		@Nonnull SearchMode mode,
-		boolean searchForPendenzen,
-		boolean mandantFilterDeaktivieren) {
+		boolean searchForPendenzen) {
 		Benutzer user;
-		if(mandantFilterDeaktivieren){
-			user = benutzerService.findBenutzerById(TECHNICAL_BENUTZER_ID)
-				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No Technical User Found"));
-		}
-		else {
-			user = benutzerService.getCurrentBenutzer()
-				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
-		}
 
+		user = benutzerService.getCurrentBenutzer()
+				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
 		UserRole role = user.getRole();
 
@@ -252,9 +239,9 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		} else {
 			predicates.add(inClauseStatus);
 		}
-		if (!mandantFilterDeaktivieren) {
-			setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
-		}
+
+		setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
+
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)

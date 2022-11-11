@@ -144,15 +144,9 @@ public class AlleFaelleView {
 	@Column(nullable = true)
 	private String kinder;
 
-	@ElementCollection(targetClass = BetreuungsangebotTyp.class, fetch = FetchType.EAGER)
-	@CollectionTable(
-		name = "alleFaelleViewBetreuungsangebotTypen",
-		joinColumns = @JoinColumn(name = "alleFaelleViewBetreuungsangebotTypen")
-	)
 	@Column(nullable = true)
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	private Set<BetreuungsangebotTyp> angebotTypen = EnumSet.noneOf(BetreuungsangebotTyp.class);
+	@Nullable
+	private String angebotTypen;
 
 	@NotNull
 	@Column(nullable = false)
@@ -171,7 +165,9 @@ public class AlleFaelleView {
 	private Boolean sozialdienst = false;
 
 	@Nullable
-	@Column()
+	@Column(nullable = true)
+	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type(type = "string-uuid-binary")
 	private String sozialdienstId;
 
 	@NotNull
@@ -424,12 +420,12 @@ public class AlleFaelleView {
 		this.kinder = kinder;
 	}
 
-	@Nonnull
-	public Set<BetreuungsangebotTyp> getAngebotTypen() {
+	@Nullable
+	public String getAngebotTypen() {
 		return angebotTypen;
 	}
 
-	public void setAngebotTypen(@Nonnull Set<BetreuungsangebotTyp> angebotTypen) {
+	public void setAngebotTypen(@Nullable String angebotTypen) {
 		this.angebotTypen = angebotTypen;
 	}
 

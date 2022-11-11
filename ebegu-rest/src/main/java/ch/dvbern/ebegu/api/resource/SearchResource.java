@@ -55,8 +55,6 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.persistence.TransactionHelper;
-import ch.dvbern.ebegu.services.AlleFaelleViewService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -114,12 +112,6 @@ public class SearchResource {
 
 	@Inject
 	private InstitutionService institutionService;
-
-	@Inject
-	private TransactionHelper transactionHelper;
-
-	@Inject
-	private AlleFaelleViewService alleFaelleViewService;
 
 	@Inject
 	private SuperAdminService superAdminService;
@@ -303,25 +295,11 @@ public class SearchResource {
 	public Response updateAlleFaelleView(
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
-		//wir suchen alle Gesuche ohne criterien
-		//Problem Mandant!!! Es muss fuer jede Kanton gemacht werden
-		Thread thread = new Thread(() -> {
-			List<Gesuch> foundAntraege = superAdminService.searchAllAntraegeAllMandant();
-			for (Gesuch gesuch : foundAntraege) {
-				try {
-					transactionHelper.runInNewTransaction(
-						() -> {
-							alleFaelleViewService.updateViewWithFullGesuch(gesuch);
-						}
-					);
-				} catch (Exception e) {
-					LOG.error("Es gab eine unerwartete Fehler bei erstellen der Alle Faelle View mit Gesuch: "
-						+ gesuch.getId());
-				}
-			}
-		});
+		Thread thread = new Thread(() ->
+			superAdminService.rebuiltAllAntraegeForGesuchsperiodeAsSystemUser()
+		);
 		thread.start();
-		return Response.ok().build();
+		return Response.ok("Alle Faelle View rebuild started").build();
 	}
 
 	@Nonnull

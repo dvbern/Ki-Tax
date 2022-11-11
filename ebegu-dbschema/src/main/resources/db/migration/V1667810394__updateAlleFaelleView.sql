@@ -39,6 +39,12 @@ ALTER TABLE alle_faelle_view add column verantwortlicherts VARCHAR(255);
 CREATE INDEX IX_alle_faelle_view_verantwortlicherbg_id ON alle_faelle_view(verantwortlicherbgid);
 CREATE INDEX IX_alle_faelle_view_verantwortlicherts_id ON alle_faelle_view(verantwortlichertsid);
 
+-- Datentyp Problem
+DROP INDEX IX_alle_faelle_view_besitzer_id ON alle_faelle_view;
+ALTER TABLE alle_faelle_view drop column besitzer_id;
+ALTER TABLE alle_faelle_view add column besitzer_id BINARY(16);
+CREATE INDEX IX_alle_faelle_view_besitzer_id ON alle_faelle_view(besitzer_id);
+
 -- Many To Many Table Creation
 CREATE TABLE alle_faelle_view_institution (
 	antrag_id     BINARY(16) NOT NULL,

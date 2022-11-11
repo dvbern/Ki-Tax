@@ -19,7 +19,6 @@ import java.util.List;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service zum Suchen
@@ -42,8 +41,6 @@ public interface SearchService {
 	 * @return Resultatpaar, der erste Wert im Paar ist die Anzahl Resultate, der zweite Wert ist die Resultatliste
 	 */
 	List<Gesuch> searchAllAntraege(AntragTableFilterDTO antragTableFilterDto);
-
-	List<Gesuch> searchAllAntraegeAllMandant(AntragTableFilterDTO antragTableFilterDto);
 
 	Long countAllAntraege(AntragTableFilterDTO antragTableFilterDto);
 
