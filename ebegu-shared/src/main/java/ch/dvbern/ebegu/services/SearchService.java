@@ -42,6 +42,8 @@ public interface SearchService {
 	 */
 	List<Gesuch> searchAllAntraege(AntragTableFilterDTO antragTableFilterDto);
 
+	List<Gesuch> searchAllAntraegeAllMandant(AntragTableFilterDTO antragTableFilterDto);
+
 	Long countAllAntraege(AntragTableFilterDTO antragTableFilterDto);
 
 }
