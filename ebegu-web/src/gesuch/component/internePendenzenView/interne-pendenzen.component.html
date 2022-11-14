@@ -38,6 +38,13 @@
             <span translate>PENDENZ_ERSTELLEN</span>
         </button>
     </div>
+    <div [dvDemoFeature]="demoFeature">
+        <dv-checkbox-x
+            [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
+            [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            (modelChange)="updateGesuchMarkiertFuerKontroll($event)"
+        ></dv-checkbox-x>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="dv-navigation dv-navigation-flex">

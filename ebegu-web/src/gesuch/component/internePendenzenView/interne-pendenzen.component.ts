@@ -18,6 +18,7 @@
 import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -37,12 +38,14 @@ export class InternePendenzenComponent implements OnInit {
 
     public internePendenzen: TSInternePendenz[] = [];
 
+    public readonly demoFeature = TSDemoFeature.STEUERABFRAGE_NEUE_VERANLAGUNG;
+
     public constructor(
         private readonly location: Location,
         private readonly dialog: MatDialog,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly gesuchModelManager: GesuchModelManager
+        public readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
@@ -94,15 +97,19 @@ export class InternePendenzenComponent implements OnInit {
             }, error => this.handleError(error));
     }
 
+    public updateGesuchMarkiertFuerKontroll(value: boolean): void {
+        this.gesuchModelManager.updateGesuchMarkiertFuerKontroll(value);
+    }
+
+    public navigateBack(): void {
+        this.location.back();
+    }
+
     private openPendenzDialog(internePendenz: TSInternePendenz): Promise<TSInternePendenz> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {internePendenz};
         dialogConfig.panelClass = 'interne-pendenzen-dialog';
         return this.dialog.open(InternePendenzDialogComponent, dialogConfig).afterClosed().toPromise();
-    }
-
-    public navigateBack(): void {
-        this.location.back();
     }
 
     private handleError(error: Error): void {

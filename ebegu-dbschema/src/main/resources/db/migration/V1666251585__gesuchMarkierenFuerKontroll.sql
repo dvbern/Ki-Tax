@@ -8,16 +8,13 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSDemoFeature {
-    ALLE_MUTATIONSMELDUNGEN_VERFUEGEN = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN',
-    STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION = 'STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION',
-    STEUERABFRAGE_NEUE_VERANLAGUNG = 'STEUERABFRAGE_NEUE_VERANLAGUNG',
-    VERAENDERUNG_BEI_MUTATION = 'VERAENDERUNG_BEI_MUTATION'
-}
+ALTER TABLE gesuch ADD COLUMN markiert_fuer_kontroll BIT NOT NULL default false;
+
+ALTER TABLE gesuch_aud ADD COLUMN markiert_fuer_kontroll BIT;
