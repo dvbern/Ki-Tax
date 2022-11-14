@@ -322,7 +322,10 @@ public enum EinstellungKey {
 	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll()),
 
 	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
-	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());
+	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll()),
+
+	// Gibt an, ob die Zahlungsangaben für Antragsteller auf der FinSit required oder optional sind (KIBON-2688)
+	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN);
 
 
 	private EinstellungTyp typ;

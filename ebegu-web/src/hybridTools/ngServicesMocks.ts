@@ -13,13 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IPromise} from 'angular';
 import * as angular from 'angular';
 import {CookieService} from 'ngx-cookie-service';
 import {Observable, of} from 'rxjs';
 import {EinstellungRS} from '../admin/service/einstellungRS.rest';
 import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {TSDemoFeature} from '../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../app/core/errors/service/ErrorServiceX';
 import {BenutzerRSX} from '../app/core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../app/core/service/demoFeatureRS.rest';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {VersionService} from '../app/core/service/version/version.service';
 import {WindowRef} from '../app/core/service/windowRef.service';
@@ -144,6 +147,12 @@ class SearchRSMock extends SearchRS {
 class FamiliensituationRSMock extends FamiliensituationRS {
 }
 
+class DemoFeatureRSMock extends DemoFeatureRS {
+    public isDemoFeatureAllowed(dvDemoFeature: TSDemoFeature): IPromise<boolean> {
+        return Promise.resolve(false);
+    }
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
@@ -159,6 +168,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('ErrorServiceX', ErrorServiceXMock);
     $provide.service('SearchRS', SearchRSMock);
     $provide.service('FamiliensituationRS', FamiliensituationRSMock);
+    $provide.service('DemoFeatureRS', DemoFeatureRSMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');
 }
