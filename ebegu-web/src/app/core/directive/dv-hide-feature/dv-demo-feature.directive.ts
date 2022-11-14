@@ -17,6 +17,7 @@
 
 import {Directive, ElementRef, Input, OnInit} from '@angular/core';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../service/demoFeatureRS.rest';
 import {TSDemoFeature} from './TSDemoFeature';
 
 // Directive decorator
@@ -28,7 +29,7 @@ export class DvDemoFeatureDirective implements OnInit {
 
     public constructor(
         private readonly elementRef: ElementRef,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly demofeatureRS: DemoFeatureRS
     ) {
     }
 
@@ -38,12 +39,11 @@ export class DvDemoFeatureDirective implements OnInit {
     }
 
     public checkIfAllowed(): void {
-        this.applicationPropertyRS.getActivatedDemoFeatures().then(
-            allowedElement => {
-                if (allowedElement.includes(this.dvDemoFeature.valueOf())) {
+        this.demofeatureRS.isDemoFeatureAllowed(this.dvDemoFeature)
+            .then(isAllowed => {
+                if(isAllowed) {
                     this.elementRef.nativeElement.style.display = 'block';
                 }
-            }
-        );
+            });
     }
 }

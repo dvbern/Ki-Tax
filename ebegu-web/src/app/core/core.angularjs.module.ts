@@ -77,6 +77,7 @@ import {
     DvDemoFeatureWrapperComponent
 } from '../shared/component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {ColorService} from '../shared/services/color.service';
+import {HttpPendingService} from '../shared/services/http-pending.service';
 import {MandantService} from '../shared/services/mandant.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
@@ -141,6 +142,7 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
+import {DemoFeatureRS} from './service/demoFeatureRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -257,8 +259,10 @@ export const CORE_JS_MODULE = angular
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
+    .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
     .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())

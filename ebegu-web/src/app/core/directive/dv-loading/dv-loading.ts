@@ -23,6 +23,7 @@ import {
     IScope,
     ITimeoutService
 } from 'angular';
+import {HttpPendingService} from '../../../shared/services/http-pending.service';
 
 export class DVLoading implements IDirective {
     public restrict = 'A';
@@ -66,11 +67,11 @@ export class DVLoading implements IDirective {
  */
 export class DVLoadingController {
 
-    public static $inject: string[] = ['$http', '$timeout'];
+    public static $inject: string[] = ['$http', '$timeout', 'HttpPendingService'];
 
     public isLoading: () => {};
 
-    public constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService) {
-        this.isLoading = (): boolean => this.$http.pendingRequests.length > 0;
+    public constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService, private readonly httpPendingService: HttpPendingService) {
+        this.isLoading = (): boolean => this.$http.pendingRequests.length > 0 || this.httpPendingService.hasPendingRequests();
     }
 }

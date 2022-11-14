@@ -17,9 +17,11 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
@@ -195,22 +197,22 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString(),getSchuljahrBasisjahrPlus1AsString()),
-				angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse());
+				getIntValueNullSafe(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()));
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_MIT_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
-				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse());
+				getIntValueNullSafe(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()));
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_VOLKSSCHULANGEBOT, mandant, getSchuljahrBasisjahrPlus1AsString()),
-				angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot());
+				getIntValueNullSafe(angabenGemeinde.getGeleisteteBetreuungsstundenBesondereVolksschulangebot()));
 		table.addRow(
 				translate(LASTENAUSGLEICHBERECHTIGTE_BETREUUNGSSTUNDEN, mandant),
-				angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
+				getIntValueNullSafe(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()));
 		table.addRow(
 				translate(ZU_NORMLOHNKOSTEN_HOCH, mandant, lohnnormkosten.getValue()),
-				angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
+				getIntValueNullSafe(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete()));
 		table.addRow(
 				translate(ZU_NORMLOHNKOSTEN_TIEF, mandant, lohnnormkostenLessThan50.getValue()),
-				angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
+				getIntValueNullSafe(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete()));
 		table.addRow(
 				translate(NORMLOHNKOSTEN_BETREUUNG, mandant),
 				angabenGemeinde.getNormlohnkostenBetreuungBerechnet());
@@ -232,6 +234,14 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
 
 		return pdfPTable;
+	}
+
+	@Nullable
+	private Integer getIntValueNullSafe(@Nullable BigDecimal geleisteteBetreuungsstundenOhneBesondereBeduerfnisse) {
+		if (geleisteteBetreuungsstundenOhneBesondereBeduerfnisse == null) {
+			return null;
+		}
+		return geleisteteBetreuungsstundenOhneBesondereBeduerfnisse.intValue();
 	}
 
 	@Nonnull

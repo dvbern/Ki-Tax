@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Service fuer FinanzielleSituation
@@ -142,55 +143,31 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		}
 		familiensituation.setGemeinsameSteuererklaerung(finSitStartDTO.getGemeinsameSteuererklaerung());
 		familiensituation.setVerguenstigungGewuenscht(finSitStartDTO.getVerguenstigungGewuenscht());
-		if (finSitStartDTO.getVerguenstigungGewuenscht().equals(Boolean.TRUE)) {
-			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht());
-			if (!finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht() && finSitStartDTO.getIban() != null && finSitStartDTO.getKontoinhaber() != null) {
-				//Hier aufpassen, per Default sind die Mahlzeitverguenstigung Gewunscht
-				//aber wenn die Gemeinde keine Mahlzeitverguenstigung anbietet kann der Gesuchsteller oder Gemeinde
-				//gar keinen Iban oder Kontoinhaber eingeben, deswegen waren diese Feldern nullable before!
-				Auszahlungsdaten auszahlungsdaten = new Auszahlungsdaten();
-				auszahlungsdaten.setIban(new IBAN(finSitStartDTO.getIban()));
-				auszahlungsdaten.setKontoinhaber(finSitStartDTO.getKontoinhaber());
-				auszahlungsdaten.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
-				auszahlungsdaten.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-				auszahlungsdaten.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresse());
-				familiensituation.setAuszahlungsdatenMahlzeiten(auszahlungsdaten);
+		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht());
+		familiensituation.setAbweichendeZahlungsadresse(finSitStartDTO.isAbweichendeZahlungsadresse());
+		if (StringUtils.isNotBlank(finSitStartDTO.getIban()) && StringUtils.isNotBlank(finSitStartDTO.getKontoinhaber())) {
+			if (familiensituation.getAuszahlungsdaten() == null) {
+				familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
 			}
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(finSitStartDTO.isAbweichendeZahlungsadresse());
-		} else {
-			// Wenn das Einkommen nicht deklariert wird, kann auch keine Mahlzeitenverguenstigung gewaehrt werden
-			familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-			familiensituation.setAuszahlungsdatenMahlzeiten(null);
-			familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
-		}
+			familiensituation.getAuszahlungsdaten().setIban(new IBAN(finSitStartDTO.getIban()));
+			familiensituation.getAuszahlungsdaten().setKontoinhaber(finSitStartDTO.getKontoinhaber());
+			familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresse());
 
-		if (finSitStartDTO.getIbanInfoma() != null && finSitStartDTO.getKontoinhaberInfoma() != null) {
-			setInfomaFields(finSitStartDTO, familiensituation);
+			// gesuchsteller is not allowed to set those fields
+			if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+				familiensituation.getAuszahlungsdaten().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
+				familiensituation.getAuszahlungsdaten().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
+			}
+		} else {
+			// Wenn die IBAN und der Kontoinhaber nicht gesetzt sind, wurden die Auszahlungsdaten resetd
+			familiensituation.setAuszahlungsdaten(null);
+			familiensituation.setAbweichendeZahlungsadresse(false);
 		}
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
 
 		return gesuchService.updateGesuch(gesuch, false);
-	}
-
-	private void setInfomaFields(FinanzielleSituationStartDTO finSitStartDTO, Familiensituation familiensituation) {
-		Auszahlungsdaten auszahlungsdatenInfoma =
-			(familiensituation.getAuszahlungsdatenInfoma() != null
-				? familiensituation.getAuszahlungsdatenInfoma()
-				: new Auszahlungsdaten()
-			);
-		auszahlungsdatenInfoma.setIban(new IBAN(finSitStartDTO.getIbanInfoma()));
-		Objects.requireNonNull(finSitStartDTO.getKontoinhaberInfoma());
-		auszahlungsdatenInfoma.setKontoinhaber(finSitStartDTO.getKontoinhaberInfoma());
-		familiensituation.setAbweichendeZahlungsadresseInfoma(finSitStartDTO.isAbweichendeZahlungsadresseInfoma());
-		auszahlungsdatenInfoma.setAdresseKontoinhaber(finSitStartDTO.getZahlungsadresseInfoma());
-		// gesuchsteller is not allowed to set those fields
-		if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
-			auszahlungsdatenInfoma.setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
-			auszahlungsdatenInfoma.setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-		}
-		familiensituation.setAuszahlungsdatenInfoma(auszahlungsdatenInfoma);
 	}
 
 	@Nonnull

@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
@@ -63,13 +64,13 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
-		if (isErstgesuchOrNewPlatzInMutation(platz) && startDatum != null) {
-			LocalDate firstOfMonthDesEinreichungsMonats = getStichtagForEreignis(startDatum);
-			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
+		if (applyEinreichungsfristAbschnittStueckelung(platz) && startDatum != null) {
+			LocalDate einreichefristStichtag = getEinreichefristStichtag(startDatum, platz.extractGesuch().extractMandant());
+			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(einreichefristStichtag)) {
 				VerfuegungZeitabschnitt abschnittVorAnspruch =
 					createZeitabschnittBevorEinreichung(
 						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
-						firstOfMonthDesEinreichungsMonats.minusDays(1));
+						einreichefristStichtag.minusDays(1));
 				if (abschnittVorAnspruch != null) {
 					einreichungsfristAbschnitte.add(abschnittVorAnspruch);
 				}
@@ -78,11 +79,15 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		return einreichungsfristAbschnitte;
 	}
 
-	private boolean isErstgesuchOrNewPlatzInMutation(@Nonnull AbstractPlatz platz) {
-		// Die Frist ist relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
+	private boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
+		// Die Frist ist per default relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
 		// neu hinzugekommen ist. Es kann aber sein, dass es zwar einen Vorgaenger gab, dieser aber nicht
 		// verfuegt wurde, darum reicht es nicht, nur die VorgaengerID zu pruefen!
 		return platz.extractGesuch().getTyp().isGesuch() || Objects.isNull(platz.getVorgaengerVerfuegung());
+	}
+
+	private LocalDate getEinreichefristStichtag(LocalDate startDatum, Mandant mandant) {
+		return new EinreichefristVisitor().getEinreichefristCalculator(mandant.getMandantIdentifier()).getStichtagEinreichefrist(startDatum);
 	}
 
 	@Nullable

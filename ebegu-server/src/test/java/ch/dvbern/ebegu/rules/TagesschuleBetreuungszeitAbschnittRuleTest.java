@@ -102,7 +102,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 	}
 
 	@Test
-	public void testZuSpaetEingereicht() {
+	public void testNach10TagenZuSpaetEingereicht() {
 		// Gesuch 10 Tage nach Beginn der GP eingereicht -> Anspruch beginnt im Folgemonat
 		LocalDate startGP = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 		gesuch.setEingangsdatum(startGP.plusDays(10));
@@ -116,6 +116,41 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 
 		VerfuegungZeitabschnitt abschnittVerguenstigt = zeitabschnitte.get(1);
 		Assert.assertEquals(startGP.plusMonths(1), abschnittVerguenstigt.getGueltigkeit().getGueltigAb());
+		assertZeitabschnitt_100000(abschnittVerguenstigt);
+	}
+
+
+	@Test
+	public void testNach10TagenRechtzeitigEingereichtAR() {
+		// Gesuch 10 Tage nach Beginn der GP eingereicht -> Anspruch beginnt im Folgemonat
+		LocalDate startGP = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
+		gesuch.setEingangsdatum(startGP.plusDays(10));
+		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.AKZEPTIERT);
+		Assert.assertEquals(1, zeitabschnitte.size());
+
+		VerfuegungZeitabschnitt abschnittVerguenstigt = zeitabschnitte.get(0);
+		Assert.assertEquals(startGP, abschnittVerguenstigt.getGueltigkeit().getGueltigAb());
+		assertZeitabschnitt_100000(abschnittVerguenstigt);
+	}
+
+	@Test
+	public void testNach45TagenZuSpaetEingereichtAR() {
+		// Gesuch 45 Tage nach Beginn der GP eingereicht -> Anspruch beginnt nach 15 (45-30) Tagen
+		LocalDate startGP = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
+		gesuch.setEingangsdatum(startGP.plusDays(45));
+		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.AKZEPTIERT);
+		Assert.assertEquals(2, zeitabschnitte.size());
+
+		VerfuegungZeitabschnitt abschnittZuSpaet = zeitabschnitte.get(0);
+		Assert.assertEquals(startGP, abschnittZuSpaet.getGueltigkeit().getGueltigAb());
+		assertZeitabschnitt_MaxTarif(abschnittZuSpaet, 100000);
+
+		VerfuegungZeitabschnitt abschnittVerguenstigt = zeitabschnitte.get(1);
+		Assert.assertEquals(startGP.plusDays(15), abschnittVerguenstigt.getGueltigkeit().getGueltigAb());
 		assertZeitabschnitt_100000(abschnittVerguenstigt);
 	}
 

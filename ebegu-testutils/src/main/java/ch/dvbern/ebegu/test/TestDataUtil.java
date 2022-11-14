@@ -278,6 +278,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_S
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EXPORT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
@@ -2032,6 +2033,7 @@ public final class TestDataUtil {
 		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode, persistence);
 		saveEinstellung(BEGRUENDUNG_MUTATION_AKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2735,5 +2737,13 @@ public final class TestDataUtil {
 		gs2.setFinanzielleSituationContainer(finsitGs2);
 		finsitGs2.setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.setGesuchsteller2(gs2);
+	}
+
+	public static Mandant createMandantAR() {
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.APPENZELL_AUSSERRHODEN);
+		mandant.setName("Appenzell Ausserrhoden");
+		mandant.setActivated(true);
+		return mandant;
 	}
 }
