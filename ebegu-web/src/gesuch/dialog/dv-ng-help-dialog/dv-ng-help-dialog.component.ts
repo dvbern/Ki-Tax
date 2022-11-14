@@ -16,7 +16,7 @@
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {KiBonGuidedTourService} from '../../../app/kibonTour/service/KiBonGuidedTourService';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {SupportDialogService} from '../../../app/shared/services/support-dialog.service';
@@ -36,8 +36,8 @@ export class DvNgHelpDialogComponent {
     public hasRoleGemeinde: boolean = false;
     public hasRoleInstitution: boolean = false;
     public hasRoleMandant: boolean = false;
-    public mandant$: Observable<KiBonMandant>;
-    public mandantTypes = KiBonMandant;
+    public mandant$: Observable<MANDANTS>;
+    public mandantTypes = MANDANTS;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,

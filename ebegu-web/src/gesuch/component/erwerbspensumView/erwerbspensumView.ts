@@ -17,7 +17,7 @@ import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'a
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -108,7 +108,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             console.log('kein gesuchsteller gefunden');
         }
         this.initUnbezahlterUrlaub();
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, err => LOG.error(err));
     }

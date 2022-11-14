@@ -20,7 +20,7 @@ import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
-import {KiBonMandantFull} from '../../app/core/constants/MANDANTS';
+import {KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -330,7 +330,7 @@ export class AuthServiceRS {
         return false;
     }
 
-    public setMandant(mandant: KiBonMandantFull): IPromise<any> {
-        return this.$http.post(`${CONSTANTS.REST_API  }auth/set-mandant`, {name: mandant});
+    public setMandant(mandant: KiBonMandant): IPromise<any> {
+        return this.$http.post(`${CONSTANTS.REST_API  }auth/set-mandant`, {name: mandant.fullName});
     }
 }

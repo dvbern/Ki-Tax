@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {TSMandant} from '../../../models/TSMandant';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
+import {MANDANTS} from '../../core/constants/MANDANTS';
 import {MandantService} from '../../shared/services/mandant.service';
 
 import {PortalSelectionComponent} from './portal-selection.component';
@@ -36,7 +36,7 @@ describe('PortalSelectionComponent', () => {
             ['$current']);
 
         mandantService.getAll.and.returnValue(of([new TSMandant()]));
-        mandantService.mandantToKibonMandant.and.returnValue(KiBonMandant.BE);
+        mandantService.mandantToKibonMandant.and.returnValue(MANDANTS.BERN);
         await TestBed.configureTestingModule({
             declarations: [PortalSelectionComponent],
             providers: [

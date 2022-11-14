@@ -19,7 +19,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {BetreuungRS} from '../../../app/core/service/betreuungRS.rest';
@@ -116,7 +116,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public $onInit(): void {
         super.$onInit();
 
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         });
 
