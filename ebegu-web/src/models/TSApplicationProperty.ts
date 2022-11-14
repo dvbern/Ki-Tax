@@ -18,11 +18,17 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 export class TSApplicationProperty extends TSAbstractMutableEntity {
     private _name: string;
     private _value: string;
+    private _erklaerung: string = null;
 
-    public constructor(name?: string, value?: string) {
+    public constructor(
+        name?: string,
+        value?: string,
+        erklaerung?: string
+    ) {
         super();
         this._name = name;
         this._value = value;
+        this._erklaerung = erklaerung;
     }
 
     public set name(name: string) {
@@ -39,5 +45,13 @@ export class TSApplicationProperty extends TSAbstractMutableEntity {
 
     public get value(): string {
         return this._value;
+    }
+
+    public set erklaerung(value: string) {
+        this._erklaerung = value;
+    }
+
+    public get erklaerung(): string {
+        return this._erklaerung;
     }
 }

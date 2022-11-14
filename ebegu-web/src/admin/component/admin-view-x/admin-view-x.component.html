@@ -16,7 +16,9 @@
                                 <span translate>PROPERTY_NAME</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let property">
-                                <span [title]="property.name">{{property.name | translate}}</span>
+                                <span [title]="property.name">{{property.name | translate}}
+                                    <dv-tooltip [text]="property.erklaerung"></dv-tooltip>
+                                </span>
                             </mat-cell>
                         </ng-container>
 

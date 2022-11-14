@@ -415,14 +415,14 @@ public final class EbeguUtil {
 		if(gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt()){
 			valid = gesuch.getFamiliensituationContainer() != null
 				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getInfomaBankcode() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getInfomaKreditorennummer() != null;
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getInfomaBankcode() != null
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getInfomaKreditorennummer() != null;
 		}
 		return valid && gesuch.getFamiliensituationContainer() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdatenInfoma().getIban() != null;
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null
+			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getIban() != null;
 	}
 
 	public static boolean isFamilienSituationVollstaendig(@Nonnull Gesuch gesuch) {
