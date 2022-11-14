@@ -20,7 +20,6 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {CONSTANTS} from '../constants/CONSTANTS';
-import * as moment from "moment";
 
 /**
  * spricht die reportAsync ressource an welche die reports async generiert
