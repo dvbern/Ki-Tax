@@ -436,6 +436,32 @@ public class MutationsMergerTest {
 		Assert.assertTrue(zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(1)));
 	}
 
+	//@Test
+	// TODO hier verloren wir bei AR die Zeitabschnitt von der erstAntrag
+	// Mutation gilt ab 1.10, die Zeitabschnitt von 16.09-30.09 sollten immer bezahlt werden aber ist verloren
+	// zu abklaeren ob Erstantrag kann wirklich mitte Monat eingereicht werden als Frist
+	public void test_ErstgesuchZuSpaetMutationZuSpaetAR() {
+		//Erstgesuch 16 Oktober eingreicht => Anspruch am 17.9.
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(TestDataUtil.START_PERIODE.plusMonths(2).plusDays(15), TestDataUtil.createMandantAR());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(0).isZuSpaetEingereicht());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(1).isZuSpaetEingereicht());
+		Assert.assertTrue(verfuegungErstGesuch.getZeitabschnitte().get(2).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(2).plusDays(15).minusDays(30)));
+		Assert.assertFalse(verfuegungErstGesuch.getZeitabschnitte().get(2).isZuSpaetEingereicht());
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().getFall().setMandant(TestDataUtil.createMandantAR());
+		//Mutation im August eingereicht, BG soltle von 17.9 zu 1.9 rueckwirkend angepasst werden
+		mutierteBetreuung.extractGesuch().setEingangsdatum(TestDataUtil.START_PERIODE.plusMonths(1));
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+		//Zeitabschnitt Flag zuSpät = false
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		Assert.assertEquals(3, zeitabschnitteMutation.size());
+		Assert.assertTrue(zeitabschnitteMutation.get(0).isZuSpaetEingereicht());
+		Assert.assertTrue(zeitabschnitteMutation.get(1).isZuSpaetEingereicht());
+		Assert.assertTrue(zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(2).plusDays(15).minusMonths(1)));
+		Assert.assertFalse(zeitabschnitteMutation.get(2).isZuSpaetEingereicht());
+		Assert.assertTrue(zeitabschnitteMutation.get(2).getGueltigkeit().getGueltigAb().isEqual(TestDataUtil.START_PERIODE.plusMonths(2)));
+	}
+
 	@Test
 	public void test_Mutation_nichtZuSpaetAR() {
 		//Erstgesuch pünktlich
