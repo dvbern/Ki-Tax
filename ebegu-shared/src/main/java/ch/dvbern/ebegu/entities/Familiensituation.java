@@ -429,15 +429,4 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getGeteilteObhut(), otherFamiliensituation.getGeteilteObhut()) &&
 			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung());
 	}
-
-//	@Nullable
-//	public Auszahlungsdaten getAuszahlungsdaten() {
-//		if (getAuszahlungsdatenInfoma() != null) {
-//			return getAuszahlungsdatenInfoma();
-//		}
-//		if (getAuszahlungsdaten() != null) {
-//			return getAuszahlungsdaten();
-//		}
-//		return null;
-//	}
 }
