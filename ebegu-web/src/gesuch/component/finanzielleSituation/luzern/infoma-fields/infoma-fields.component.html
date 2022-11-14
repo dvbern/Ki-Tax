@@ -26,7 +26,7 @@
                     <input id="iban_id" type="text"
                            name="iban"
                            #iban="ngModel"
-                           [(ngModel)]="getFamiliensituation().ibanInfoma"
+                           [(ngModel)]="model.zahlungsinformationen.iban"
                            class="form-control"
                            isNotQrIbanN
                            [disabled]="readonly"
@@ -37,8 +37,8 @@
                     </dv-error-messages>
                     <dv-bisher-x
                         [showBisher]="isKorrekturModusOrFreigegeben()"
-                        [deklaration]="getFamiliensituationGS()?.ibanInfoma"
-                        [korrektur]="getFamiliensituation().ibanInfoma"></dv-bisher-x>
+                        [deklaration]="model.zahlungsinformationenGS?.iban"
+                        [korrektur]="model.zahlungsinformationen.iban"></dv-bisher-x>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
                     <input id="kontoinhaber_id" type="text"
                            name="kontoinhaber"
                            #kontoinhaber="ngModel"
-                           [(ngModel)]="getFamiliensituation().kontoinhaberInfoma"
+                           [(ngModel)]="model.zahlungsinformationen.kontoinhaber"
                            class="form-control"
                            [disabled]="readonly"
                            required>
@@ -60,8 +60,9 @@
                         inputId="kontoinhaber_id">
                     </dv-error-messages>
                     <dv-bisher-x
-                        [showBisher]="isKorrekturModusOrFreigegeben()"[deklaration]="getFamiliensituationGS()?.kontoinhaberInfoma"
-                        [korrektur]="getFamiliensituation().kontoinhaberInfoma"></dv-bisher-x>
+                        [showBisher]="isKorrekturModusOrFreigegeben()"
+                        [deklaration]="model.zahlungsinformationenGS?.kontoinhaber"
+                        [korrektur]="model.zahlungsinformationen.kontoinhaber"></dv-bisher-x>
                 </div>
             </div>
         </div>
@@ -69,7 +70,7 @@
         <div class="row">
             <div class="col-sm-12 dv-input-container-medium">
                 <div class="checkbox">
-                    <mat-checkbox [(ngModel)]="getFamiliensituation().abweichendeZahlungsadresseInfoma"
+                    <mat-checkbox [(ngModel)]="model.zahlungsinformationen.abweichendeZahlungsadresse"
                                   name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
                                   [aria-label]="'INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE' | translate"
                                   (change)="abweichendeZahlungsadresseChanged()">
@@ -79,19 +80,19 @@
             </div>
         </div>
 
-        <div *ngIf="getFamiliensituation().abweichendeZahlungsadresseInfoma">
+        <div *ngIf="model.zahlungsinformationen.abweichendeZahlungsadresse">
             <div class="dv-adresse row">
                 <!--Strasse-->
                 <div class="col-sm-12 dv-input-container-small">
                     <dv-input-container class="form-group">
                         <label class="md-no-float required" for="adresseStrasse">{{'ADRESSE_STRASSE' | translate}}</label>
                         <input id="adresseStrasse" type="text" name="adresseStrasse"
-                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.strasse"
+                               [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.strasse"
                                dv-max-length class="form-control" required>
                         <dv-bisher-x
                             [showBisher]="isKorrekturModusOrFreigegeben()"
-                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.strasse"
-                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.strasse"></dv-bisher-x>
+                            [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.strasse"
+                            [korrektur]="model.zahlungsinformationen.zahlungsadresse.strasse"></dv-bisher-x>
                         <dv-error-messages for="adresseForm.adresseStrasse.$error"
                                            class="error"></dv-error-messages>
                     </dv-input-container>
@@ -102,12 +103,12 @@
                                for="adresseHausnummer">{{'ADRESSE_HAUSNUMMER' | translate}}</label>
                         <input id="adresseHausnummer" type="text"
                                name="adresseHausnummer"
-                               [(ngModel)]="getFamiliensituation()?.zahlungsadresseInfoma.hausnummer"
+                               [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.hausnummer"
                                dv-max-length class="form-control">
                         <dv-bisher-x
                             [showBisher]="isKorrekturModusOrFreigegeben()"
-                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.hausnummer"
-                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.hausnummer"></dv-bisher-x>
+                            [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.hausnummer"
+                            [korrektur]="model.zahlungsinformationen.zahlungsadresse.hausnummer"></dv-bisher-x>
                         <dv-error-messages for="adresseForm.adresseHausnummer.$error"
                                            class="error"></dv-error-messages>
                     </dv-input-container>
@@ -121,12 +122,12 @@
                                for="adresseZusatzzeile">{{'ADRESSE_ZUSATZZEILE' | translate}}</label>
                         <input id="adresseZusatzzeile" type="text"
                                name="adresseZusatzzeile"
-                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.zusatzzeile"
+                               [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.zusatzzeile"
                                dv-max-length class="form-control">
                         <dv-bisher-x
                             [showBisher]="isKorrekturModusOrFreigegeben()"
-                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.zusatzzeile"
-                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.zusatzzeile"></dv-bisher-x>
+                            [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.zusatzzeile"
+                            [korrektur]="model.zahlungsinformationen.zahlungsadresse.zusatzzeile"></dv-bisher-x>
                         <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
                                            class="error"></dv-error-messages>
                     </dv-input-container>
@@ -140,12 +141,12 @@
                                for="adressePlz">{{'ADRESSE_PLZ' | translate}}
                         </label>
                         <input id="adressePlz" type="text" name="adressePlz"
-                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.plz"
+                               [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.plz"
                                dv-max-length class="form-control" required>
                         <dv-bisher-x
                             [showBisher]="isKorrekturModusOrFreigegeben()"
-                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.plz"
-                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.plz"></dv-bisher-x>
+                            [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.plz"
+                            [korrektur]="model.zahlungsinformationen.zahlungsadresse.plz"></dv-bisher-x>
                         <dv-error-messages for="adresseForm.adressePlz.$error"
                                            class="error"></dv-error-messages>
                     </dv-input-container>
@@ -154,12 +155,12 @@
                     <dv-input-container class="form-group secondColumn">
                         <label class="md-no-float required" for="adresseOrt">{{'ADRESSE_ORT' | translate}}</label>
                         <input id="adresseOrt" type="text" name="adresseOrt"
-                               [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.ort"
+                               [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.ort"
                                dv-max-length class="form-control" required>
                         <dv-bisher-x
                             [showBisher]="isKorrekturModusOrFreigegeben()"
-                            [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.ort"
-                            [korrektur]="getFamiliensituation().zahlungsadresseInfoma.ort"></dv-bisher-x>
+                            [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.ort"
+                            [korrektur]="model.zahlungsinformationen.zahlungsadresse.ort"></dv-bisher-x>
                         <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
                     </dv-input-container>
                 </div>
@@ -173,15 +174,15 @@
                         </label>
                         <div class="dv-select-style">
                             <select name="adresseLand" id="adresseLand"
-                                    [(ngModel)]="getFamiliensituation().zahlungsadresseInfoma.land"
+                                    [(ngModel)]="model.zahlungsinformationen.zahlungsadresse.land"
                                     class="form-control"
                                     required>
                                 <option *ngFor="let land of laenderList" [value]="land.code">{{land.translationKey | translate}}</option>
                             </select>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
-                                [deklaration]="getFamiliensituationGS()?.zahlungsadresseInfoma?.land"
-                                [korrektur]="getFamiliensituation().zahlungsadresseInfoma.land"></dv-bisher-x>
+                                [deklaration]="model.zahlungsinformationenGS?.zahlungsadresse?.land"
+                                [korrektur]="model.zahlungsinformationen.zahlungsadresse.land"></dv-bisher-x>
                             <dv-error-messages for="adresseForm.adresseLand.$error"
                                                class="error"></dv-error-messages>
                         </div>
@@ -200,7 +201,7 @@
                         <input id="infoma_kred_id" type="text"
                                name="infoma_kred"
                                #infoma_kred="ngModel"
-                               [(ngModel)]="getFamiliensituation().infomaKreditorennummer"
+                               [(ngModel)]="model.zahlungsinformationen.infomaKreditorennummer"
                                class="form-control"
                                [disabled]="readonly"
                                required>
@@ -220,7 +221,7 @@
                         <input id="infoma_bankcode_id" type="text"
                                name="infoma_bankcode"
                                #infoma_bankcode="ngModel"
-                               [(ngModel)]="getFamiliensituation().infomaBankcode"
+                               [(ngModel)]="model.zahlungsinformationen.infomaBankcode"
                                class="form-control"
                                [disabled]="readonly"
                                required>
