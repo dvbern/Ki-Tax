@@ -16,13 +16,17 @@
  */
 
 ALTER TABLE einstellung
-ADD erklaerung varchar(4000);
+ADD if not exists erklaerung varchar(4000);
 
 ALTER TABLE einstellung_aud
-ADD erklaerung varchar(4000);
+ADD if not exists erklaerung varchar(4000);
 
 ALTER TABLE application_property
-ADD erklaerung varchar(4000);
+ADD if not exists erklaerung varchar(4000);
 
 ALTER TABLE application_property_aud
-ADD erklaerung varchar(4000);
+ADD if not exists erklaerung varchar(4000);
+
+update einstellung
+set erklaerung = 'Auf der Tagesschulanmeldung werden zusätzliche Angaben zu \"Essen\", \"Allergien und Unverträglichkeiten\" sowie \"Notfallnummer\" erfragt.'
+WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG'
