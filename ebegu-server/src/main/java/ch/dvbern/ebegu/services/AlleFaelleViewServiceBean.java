@@ -88,7 +88,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		alleFaelleView.setMandantId(gesuch.getGesuchsperiode().getMandant().getId());
 		alleFaelleView.setDossierId(gesuch.getDossier().getId());
 		alleFaelleView.setFallId(gesuch.getFall().getId());
-		alleFaelleView.setFallnummer(String.valueOf(gesuch.getFall().getFallNummer()));
+		alleFaelleView.setFallNummer(String.valueOf(gesuch.getFall().getFallNummer()));
 		alleFaelleView.setBesitzerId(gesuch.getFall().getBesitzer() != null ?
 			gesuch.getFall().getBesitzer().getId() :
 			null);

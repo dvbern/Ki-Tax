@@ -94,7 +94,7 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
-	private String fallnummer;
+	private String fallNummer;
 
 	@Nullable
 	@Column(nullable = true)
@@ -238,7 +238,7 @@ public class AlleFaelleView {
 			&& getAntragId().equals(that.getAntragId())
 			&& getDossierId().equals(that.getDossierId())
 			&& getFallId().equals(that.getFallId())
-			&& getFallnummer().equals(that.getFallnummer())
+			&& getFallNummer().equals(that.getFallNummer())
 			&& Objects.equals(getBesitzerId(), that.getBesitzerId())
 			&& Objects.equals(getBesitzerUsername(), that.getBesitzerUsername())
 			&& getGemeindeId().equals(that.getGemeindeId())
@@ -271,7 +271,7 @@ public class AlleFaelleView {
 			getAntragId(),
 			getDossierId(),
 			getFallId(),
-			getFallnummer(),
+			getFallNummer(),
 			getBesitzerId(),
 			getBesitzerUsername(),
 			getGemeindeId(),
@@ -328,12 +328,12 @@ public class AlleFaelleView {
 		this.fallId = fallId;
 	}
 
-	public String getFallnummer() {
-		return fallnummer;
+	public String getFallNummer() {
+		return fallNummer;
 	}
 
-	public void setFallnummer(String fallnummer) {
-		this.fallnummer = fallnummer;
+	public void setFallNummer(String fallNummer) {
+		this.fallNummer = fallNummer;
 	}
 
 	@Nullable
