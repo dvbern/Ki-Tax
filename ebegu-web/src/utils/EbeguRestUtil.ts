@@ -207,6 +207,7 @@ export class EbeguRestUtil {
         this.parseAbstractMutableEntity(parsedAppProperty, receivedAppProperty);
         parsedAppProperty.name = receivedAppProperty.name;
         parsedAppProperty.value = receivedAppProperty.value;
+        parsedAppProperty.erklaerung = receivedAppProperty.erklaerung;
         return parsedAppProperty;
     }
 
@@ -224,6 +225,7 @@ export class EbeguRestUtil {
             this.parseDateRangeEntity(tsEinstellung, receivedEinstellung);
             tsEinstellung.key = receivedEinstellung.key;
             tsEinstellung.value = receivedEinstellung.value;
+            tsEinstellung.erklaerung = receivedEinstellung.erklaerung;
             tsEinstellung.gemeindeId = receivedEinstellung.gemeindeId;
             tsEinstellung.gesuchsperiodeId = receivedEinstellung.gesuchsperiodeId;
             // Mandant wird aktuell nicht gemappt
@@ -243,6 +245,7 @@ export class EbeguRestUtil {
             this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
             restEinstellung.key = tsEinstellung.key;
             restEinstellung.value = tsEinstellung.value;
+            restEinstellung.erklaerung = tsEinstellung.erklaerung;
             restEinstellung.gemeindeId = tsEinstellung.gemeindeId;
             restEinstellung.gesuchsperiodeId = tsEinstellung.gesuchsperiodeId;
             // Mandant wird aktuell nicht gemappt
