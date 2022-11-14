@@ -238,7 +238,7 @@ public class AlleFaelleView {
 			&& getAntragId().equals(that.getAntragId())
 			&& getDossierId().equals(that.getDossierId())
 			&& getFallId().equals(that.getFallId())
-			&& getFallnummer() == that.getFallnummer()
+			&& getFallnummer().equals(that.getFallnummer())
 			&& Objects.equals(getBesitzerId(), that.getBesitzerId())
 			&& Objects.equals(getBesitzerUsername(), that.getBesitzerUsername())
 			&& getGemeindeId().equals(that.getGemeindeId())
