@@ -928,7 +928,7 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length">
+                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length" [dvDemoFeature]="demoFeature">
                     <div>
                         <dv-accordion-tab [tabid]="'lastenausgleichBG'">
                             <tab-title>
