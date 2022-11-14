@@ -184,14 +184,6 @@ export class ReportAsyncRS {
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/verrechnungkibon`, {params: reportParams});
     }
 
-    public getLastenausgleichKibonReportExcel(year: number): Observable<{workjobId: string}> {
-        const reportParams = ReportAsyncRS.createParamsFromObject({
-            year
-        });
-        return this.http
-            .get<{workjobId: string}>(`${this.serviceURL}/excel/lastenausgleich`, {params: reportParams});
-    }
-
     public getTagesschuleAnmeldungenReportExcel(stammdatenId: string, gesuchsperiodeId: string):
         Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({

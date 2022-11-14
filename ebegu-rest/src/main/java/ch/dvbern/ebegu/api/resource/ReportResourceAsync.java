@@ -615,39 +615,6 @@ public class ReportResourceAsync {
 	}
 
 	@ApiOperation(
-		value = "Erstellt ein Excel mit der Statistik 'Lastenausgleich kiBon'",
-		response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/lastenausgleich")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.TEXT_PLAIN)
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Response getLastenausgleichKibonReportExcel(
-		@QueryParam("year") @Nonnull String yearString,
-		@Context HttpServletRequest request,
-		@Context UriInfo uriInfo) {
-
-		String ip = downloadResource.getIP(request);
-		final int year = Integer.parseInt(yearString);
-
-		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
-
-		workJob = workjobService.createNewReporting(
-			workJob,
-			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT,
-			LocalDate.ofYearDay(year, 1),
-			null,
-			null,
-			LocaleThreadLocal.get(),
-				Objects.requireNonNull(principalBean.getMandant())
-		);
-
-		return createWorkjobResponse(workJob);
-	}
-
-	@ApiOperation(
 		value = "Erstellt ein Excel mit der Statistik 'Tagesschule kiBon'",
 		response = JaxDownloadFile.class)
 	@Nonnull

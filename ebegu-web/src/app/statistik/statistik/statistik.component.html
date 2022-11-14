@@ -662,50 +662,6 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div *ngIf="isSuperadmin()">
-                    <dv-accordion-tab [tabid]="'lastenausgleich'">
-                        <tab-title>
-                            <span class="uppercase" translate>LASTENAUSGLEICH_KIBON_STATISTIK</span>
-                            <dv-tooltip inputId="lastenausgleich_info"
-                                        (click)="$event.stopPropagation()"
-                                        [text]="'STATISTIK_LASTENAUSGLEICH_KIBON_HINT' | translate">
-                            </dv-tooltip>
-                        </tab-title>
-                        <tab-body>
-                            <form name="lastenausgleich"
-                                  #lastenausgleichRef='ngForm'
-                                  [ngClass]="{'ng-submitted': lastenausgleichRef.submitted}"
-                                  (ngSubmit)="generateStatistik(lastenausgleichRef, TSStatistikParameterType.LASTENAUSGLEICH_KIBON)">
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <div class="form-group">
-                                            <label class="md-no-float required" for="jahr_lastenausgleich"
-                                                   translate>PARAMETER_JAHR</label>
-                                            <div class="dv-select-style">
-                                                <select name="jahr_lastenausgleich" id="jahr_lastenausgleich"
-                                                        [(ngModel)]="statistikParameter.jahr"
-                                                        #jahrLastenausgleich='ngModel'
-                                                        required
-                                                        class="form-control">
-                                                    <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
-                                                    <option *ngFor="let year of years" [value]="year">{{year}}</option>
-                                                </select>
-                                                <dv-error-messages [errorObject]="jahrLastenausgleich.errors"
-                                                                   class="error"></dv-error-messages>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-3 col-xs-offset-6 statistik-button statistik-no-fields">
-                                        <dv-loading-button type="submit">
-                                            <span class="uppercase" translate>GENERIEREN</span>
-                                        </dv-loading-button>
-                                    </div>
-                                </div>
-                            </form>
-                        </tab-body>
-                    </dv-accordion-tab>
-                </div>
-
                 <div>
                     <div *ngIf="showTagesschuleAnmeldungenStatistik()">
                         <dv-accordion-tab [tabid]="'tagesschuleAnmeldungen'">

@@ -299,12 +299,6 @@ export class StatistikComponent implements OnInit, OnDestroy {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
-            case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
-                this.reportAsyncRS.getLastenausgleichKibonReportExcel(this.statistikParameter.jahr)
-                    .subscribe((res: {workjobId: string}) => {
-                        this.informReportGenerationStarted(res);
-                    }, StatistikComponent.handleError);
-                break;
             case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
                     this.statistikParameter.tagesschuleAnmeldungen.id,

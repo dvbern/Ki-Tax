@@ -42,7 +42,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichBGZeitabschnitteService;
-import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
@@ -78,9 +77,6 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportVerrechnungKibonService reportVerrechnungKibonService;
-
-	@Inject
-	private ReportLastenausgleichSelbstbehaltService reportLastenausgleichKibonService;
 
 	@Inject
 	private ReportNotrechtService reportNotrechtService;
@@ -205,9 +201,6 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				boolean doSave = Boolean.parseBoolean(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 				BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale, mandant);
-			}
-			case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
-				return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
 			}
 			case VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN: {
 				Objects.requireNonNull(gesuchPeriodeId);
