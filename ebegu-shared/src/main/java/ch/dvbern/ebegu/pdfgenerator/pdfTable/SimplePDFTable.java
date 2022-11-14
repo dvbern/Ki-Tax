@@ -65,23 +65,24 @@ public class SimplePDFTable {
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		for (int i = 0; i < rows.size(); i++) {
 			SimplePDFTableRow row = rows.get(i);
+			SimplePDFTableRowConfiguration rowConfiguration = row.getConfiguration();
 
-			boolean isHeader = row.isHeader();
 			boolean isFooter = lastLineBold && i == rows.size() - 1;
-			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
 			Font font = isFooter ? pageConfiguration.getFonts().getFontBold() : pageConfiguration.getFonts().getFont();
+			rowConfiguration.setFont(font);
 
-			addRow(table, row, font, bgColor);
+			addRow(table, row, rowConfiguration);
 		}
 		return table;
 	}
 
-	private void addRow(@Nonnull PdfPTable table, @Nonnull SimplePDFTableRow row, @Nonnull Font font, @Nonnull Color bgColor) {
-		addCell(table, row.getLabel(), row.getSupertext(), font, bgColor, alignement[0]);
-		addCell(table, row.getValue(), null, font, bgColor, alignement[1]);
+	private void addRow(@Nonnull PdfPTable table, @Nonnull SimplePDFTableRow row, SimplePDFTableRowConfiguration rowConfiguration) {
+		addCell(table, row.getLabel(), row.getSupertext(), rowConfiguration.getFont(), rowConfiguration.getBgColor(), alignement[0], rowConfiguration.getIdent());
+		addCell(table, row.getValue(), null, rowConfiguration.getFont(), rowConfiguration.getBgColor(), alignement[1], rowConfiguration.getIdent());
 	}
 
-	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nonnull Font font, @Nonnull Color bgColor, int alignment) {
+	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nonnull Font font, @Nonnull Color bgColor, int alignment,
+			int ident) {
 		final Phrase phrase = new Phrase(value, font);
 		if (supertext != null) {
 			phrase.add(PdfUtil.createSuperTextInText(supertext));
@@ -90,6 +91,7 @@ public class SimplePDFTable {
 		cell.setBackgroundColor(bgColor);
 		cell.setHorizontalAlignment(alignment);
 		cell.setLeading(0.0F, PdfUtil.DEFAULT_CELL_LEADING);
+		cell.setIndent(ident);
 		table.addCell(cell);
 	}
 
@@ -111,5 +113,21 @@ public class SimplePDFTable {
 
 	public void addRow(@Nonnull String label, @Nullable Integer value) {
 		this.addRow(new SimplePDFTableRow(label, value));
+	}
+
+	public void addRow(@Nonnull String label, @Nullable String value, int ident) {
+		this.addRow(new SimplePDFTableRow(label, value != null ? value : "", ident));
+	}
+
+	public void addHeaderRow(@Nonnull String label, @Nullable String value, int ident) {
+		this.addRow(new SimplePDFTableRow(label, value != null ? value : "", true, ident));
+	}
+
+	public void addRow(@Nonnull String label, @Nullable BigDecimal value, int ident) {
+		this.addRow(new SimplePDFTableRow(label, value, ident));
+	}
+
+	public void addRow(@Nonnull String label, @Nullable Integer value, int ident) {
+		this.addRow(new SimplePDFTableRow(label, value, ident));
 	}
 }
