@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {isAtLeastFreigegeben} from '../../../../../models/enums/TSAntragStatus';
 import {TSAdresse} from '../../../../../models/TSAdresse';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
+import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSLand} from '../../../../../models/types/TSLand';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -37,6 +38,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 export class InfomaFieldsComponent implements OnInit {
 
     @Input() public readonly: boolean;
+    @Input() public model: TSFinanzModel;
     public laenderList: TSLand[];
 
     public constructor(
@@ -52,21 +54,13 @@ export class InfomaFieldsComponent implements OnInit {
         });
     }
 
-    public getFamiliensituation(): TSFamiliensituation {
-        return this.gesuchModelManager.getFamiliensituation();
-    }
-
-    public getFamiliensituationGS(): TSFamiliensituation {
-        return this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationGS;
-    }
-
     public abweichendeZahlungsadresseChanged(): void {
-        if (!this.getFamiliensituation().abweichendeZahlungsadresseInfoma) {
-            this.getFamiliensituation().zahlungsadresseInfoma = null;
+        if (!this.model.zahlungsinformationen.abweichendeZahlungsadresse) {
+            this.model.zahlungsinformationen.zahlungsadresse = null;
             return;
         }
-        if (EbeguUtil.isNullOrUndefined(this.getFamiliensituation().zahlungsadresseInfoma)) {
-            this.getFamiliensituation().zahlungsadresseInfoma = new TSAdresse();
+        if (EbeguUtil.isNullOrUndefined(this.model.zahlungsinformationen.zahlungsadresse)) {
+            this.model.zahlungsinformationen.zahlungsadresse = new TSAdresse();
         }
     }
 

@@ -142,6 +142,7 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
+import {DemoFeatureRS} from './service/demoFeatureRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -261,6 +262,7 @@ export const CORE_JS_MODULE = angular
     .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
     .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
