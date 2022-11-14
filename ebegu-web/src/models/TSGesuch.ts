@@ -58,6 +58,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     private _datumGewarntFehlendeQuittung: moment.Moment;
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
     private _dokumenteHochgeladen: boolean = false;
+    private _markiertFuerKontroll: boolean = false;
 
     private _timestampVerfuegt: moment.Moment;
     private _gueltig: boolean;
@@ -370,6 +371,14 @@ export class TSGesuch extends TSAbstractAntragEntity {
     public hasNichtBerechenbareBetreuungen(): boolean {
         return this.checkForBetreuungsstatus(TSBetreuungsstatus.ABGEWIESEN)
             || this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN);
+    }
+
+    public get markiertFuerKontroll(): boolean {
+        return this._markiertFuerKontroll;
+    }
+
+    public set markiertFuerKontroll(value: boolean) {
+        this._markiertFuerKontroll = value;
     }
 
     public checkForBetreuungsstatus(status: TSBetreuungsstatus): boolean {

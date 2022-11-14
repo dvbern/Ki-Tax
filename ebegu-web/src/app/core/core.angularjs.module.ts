@@ -73,7 +73,11 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
+import {
+    DvDemoFeatureWrapperComponent
+} from '../shared/component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {ColorService} from '../shared/services/color.service';
+import {HttpPendingService} from '../shared/services/http-pending.service';
 import {MandantService} from '../shared/services/mandant.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
@@ -138,6 +142,7 @@ import {AntragStatusHistoryRS} from './service/antragStatusHistoryRS.rest';
 import {BenutzerRSX} from './service/benutzerRSX.rest';
 import {BetreuungRS} from './service/betreuungRS.rest';
 import {BroadcastService} from './service/broadcast.service';
+import {DemoFeatureRS} from './service/demoFeatureRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import {DVsTPersistService} from './service/dVsTPersistService';
 import {ErwerbspensumRS} from './service/erwerbspensumRS.rest';
@@ -254,8 +259,10 @@ export const CORE_JS_MODULE = angular
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
+    .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
     .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
     .directive('dvMaxLength', DVMaxLength.factory())
@@ -317,6 +324,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
+    .directive('dvDemoFeatureWrapper', downgradeComponent({component: DvDemoFeatureWrapperComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)

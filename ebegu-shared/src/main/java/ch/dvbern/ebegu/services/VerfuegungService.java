@@ -58,6 +58,8 @@ public interface VerfuegungService {
 		boolean ignorierenMahlzeiten,
 		boolean sendEmail);
 
+	void gesuchAutomatischVerfuegen(@Nonnull Gesuch mutation);
+
 	/**
 	 * Schliesst eine Tagesschule-Anmeldung ab. Dies entspricht einer Verfügung bei den BGs, d.h. die
 	 * Verfügung wird definitiv und unveränderbar gespeichert.

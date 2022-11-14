@@ -57,7 +57,6 @@ describe('EditGemeindeComponentBG', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
                 MaterialModule,
                 GemeindeModule
             ],

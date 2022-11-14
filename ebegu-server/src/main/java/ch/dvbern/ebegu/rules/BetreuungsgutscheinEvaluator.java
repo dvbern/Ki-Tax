@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -49,6 +50,7 @@ import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
+import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
@@ -242,11 +244,18 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte);
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+				BigDecimal veraenderung = null;
+
 				if (vorgaengerVerfuegung != null) {
 					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
+					veraenderung = VeraenderungCalculator
+						.getVeranderungCalculator(isTagesschule)
+						.calculateVeraenderung(zeitabschnitte, vorgaengerVerfuegung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
+				verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veraenderung);
+
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte,
 					gesuch.extractMandant(),
 					bgRechnerParameterDTO.isTexteForFKJV());

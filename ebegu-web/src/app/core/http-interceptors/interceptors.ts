@@ -16,6 +16,7 @@
  */
 
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {HttpPendingInterceptor} from '../../shared/interceptors/http-pending/http-pending.interceptor';
 import {HttpErrorInterceptorX} from '../errors/service/HttpErrorInterceptorX';
 import {HttpI18nInterceptorX} from './http-i18n-Interceptor-X';
 import {HttpAuthInterceptorX} from './HttpAuthInterceptorX';
@@ -29,5 +30,7 @@ export const HTTP_INTERCEPTOR_PROVIDERS = [
     { provide: HTTP_INTERCEPTORS, useClass: HttpI18nInterceptorX, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpResponseInterceptorX, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptorX, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorX, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorX, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpPendingInterceptor, multi: true }
+
 ];
