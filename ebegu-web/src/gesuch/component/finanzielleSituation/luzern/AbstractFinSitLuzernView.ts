@@ -250,19 +250,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    public isGesuchValid(form: NgForm): boolean {
-        if (!form.valid) {
-            for (const control in form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
-                    form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-
-        return form.valid;
-    }
-
     protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragsteller2Name(): string {
@@ -295,5 +282,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
         const formatedDate = DateUtil.momentToLocalDateFormat(eingangsdatum, CONSTANTS.DATE_FORMAT);
         return this.translate.instant('FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO', {datum: formatedDate});
+    }
+
+    public isSozialhilfeBezueger(): boolean {
+        return EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
     }
 }

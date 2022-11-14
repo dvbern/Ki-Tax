@@ -112,4 +112,8 @@ public class KibonAnfrageContext {
 		kibonAnfrageContext.isSwitched = true;
 		return kibonAnfrageContext;
 	}
+
+	public boolean isGesuchsteller2() {
+		return this.getGesuchsteller().equals(this.getGesuch().getGesuchsteller2());
+	}
 }

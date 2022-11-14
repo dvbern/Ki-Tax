@@ -235,12 +235,14 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		InstitutionStammdaten institutionStammdatenToRemove = fetchInstitutionStammdatenByInstitution(
 			institutionId,
 			true);
-		if (institutionStammdatenToRemove != null && !institutionStammdatenToRemove.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
+		if (institutionStammdatenToRemove != null) {
 			authorizer.checkWriteAuthorizationInstitutionStammdaten(institutionStammdatenToRemove);
 			rueckforderungFormularService.getRueckforderungFormulareByInstitutionStammdaten(
 							institutionStammdatenToRemove)
 					.forEach(rueckforderungFormularService::remove);
-			event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
+			if (!institutionStammdatenToRemove.getInstitution().getStatus().equals(InstitutionStatus.NUR_LATS)) {
+				event.fire(institutionEventConverter.deleteEvent(institutionStammdatenToRemove));
+			}
 			persistence.remove(institutionStammdatenToRemove);
 		}
 	}
@@ -291,6 +293,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
+		predicates.add(PredicateHelper.createBGInstitutionStammdatenOnlyFromGemeindeOrMandantPredicate(cb, root, gemeindeParam));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);

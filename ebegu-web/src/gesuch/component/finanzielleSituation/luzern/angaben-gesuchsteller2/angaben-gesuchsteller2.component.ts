@@ -35,8 +35,6 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 })
 export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
 
-    @ViewChild(NgForm) private readonly form: NgForm;
-
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
@@ -68,7 +66,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
     }
 
     public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.isGesuchValid(this.form)) {
+        if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
         }

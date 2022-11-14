@@ -143,18 +143,6 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
         return this.model.getFiSiConToWorkWith();
     }
 
-    public isGesuchValid(form: NgForm): boolean {
-        if (!form.valid) {
-            for (const control in form.controls) {
-                if (EbeguUtil.isNotNullOrUndefined(form.controls[control])) {
-                    form.controls[control].markAsTouched({onlySelf: true});
-                }
-            }
-            EbeguUtil.selectFirstInvalid();
-        }
-        return form.valid;
-    }
-
     public abstract notify(): void;
 
     protected save(onResult: Function): Promise<TSFinanzielleSituationContainer> {

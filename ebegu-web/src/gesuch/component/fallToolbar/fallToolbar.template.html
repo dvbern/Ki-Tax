@@ -27,7 +27,7 @@
             </button>
 
             <button
-                *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
+                *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
                 (click)="createNewDossier()" class="dossier-element add-dossier"
                 (mouseover)="toggleGemeindeText()" (mouseout)="toggleGemeindeText()"
                 [disabled]="isNavigationDisabled()">

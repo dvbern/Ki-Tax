@@ -127,12 +127,12 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 		return zeitabschnittFullMonth;
 	}
 
-	private void handleCalculationOfInputValues(VerfuegungZeitabschnitt zeitabschnittSteched, VerfuegungZeitabschnitt zeitabschnittBeforeStretching) {
+	private void handleCalculationOfInputValues(VerfuegungZeitabschnitt zeitabschnittStreched, VerfuegungZeitabschnitt zeitabschnittBeforeStretching) {
 		final int lengthOfMonth = zeitabschnittBeforeStretching.getGueltigkeit().getGueltigAb().lengthOfMonth();
 		final long numberOfDaysBeforeStreching = zeitabschnittBeforeStretching.getGueltigkeit().getDays();
 
 		double percentageOfDays = 100.0 / lengthOfMonth * numberOfDaysBeforeStreching;
-		zeitabschnittSteched.calculateInputValuesProportionaly(percentageOfDays);
+		zeitabschnittStreched.calculateInputValuesProportionaly(percentageOfDays);
 	}
 
 	private VerfuegungZeitabschnitt createZeitabschnittGueltigFullMonth(VerfuegungZeitabschnitt zeitabschnitt) {

@@ -234,6 +234,7 @@ public interface MitteilungService {
 	 * Used for bulk work
 	 */
 	@Nullable
-	Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
+	String applyBetreuungsmitteilungIfPossible(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
+	Optional<Betreuungsmitteilung> findAndRefreshBetreuungsmitteilung(String id);
 }

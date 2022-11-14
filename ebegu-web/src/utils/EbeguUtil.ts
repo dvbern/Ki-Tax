@@ -213,6 +213,10 @@ export class EbeguUtil {
         }
     }
 
+    public static isUndefined(data: any): boolean {
+        return data === undefined;
+    }
+
     public static isNullOrUndefined(data: any): boolean {
         return data === null || data === undefined;
     }

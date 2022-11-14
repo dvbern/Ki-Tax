@@ -29,6 +29,7 @@ import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSFinanzielleSituationContainer} from '../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -142,5 +143,41 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
 
     public einkommenInVereinfachtemVerfarenClicked(): void {
         this.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet = null;
+    }
+
+    protected showZugriffAufSteuerdaten(): boolean {
+        if (!this.steuerSchnittstelleAktivForPeriode) {
+            return false;
+        }
+
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            !this.showZugriffAufSteuerdatenForGemeinde()) {
+            return false;
+        }
+
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+            || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
+            || this.showZugriffAufSteuerdatenForGemeinde();
+    }
+
+    protected showZugriffAufSteuerdatenForGemeinde(): boolean {
+        return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
+            && this.gesuchModelManager.getGesuch().isMutation()
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
+    }
+
+    protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+
+        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        && !this.showZugriffAufSteuerdatenForGemeinde()) {
+            return undefined;
+        }
+
+        return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(isGemeinsam);
     }
 }

@@ -484,4 +484,88 @@ export class EditGemeindeComponentBG implements OnInit {
         }
         return this.dauerBabyTarife.find(einstellung => einstellung.gesuchsperiodeId === gesuchsperiode.id)?.value;
     }
+
+    public changeKonfigHoheEinkommensklassenAktiviert(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT,
+            gk.konfigHoheEinkommensklassenAktiviert, gk
+        );
+        // Falls nicht mehr angewaehlt -> alle betroffenen Daten zuruecksetzen
+        if (EbeguUtil.isNullOrFalse(gk.konfigHoheEinkommensklassenAktiviert)) {
+            this.resetKonfigHoheEinkommensklassen(gk);
+        }
+    }
+
+    private resetKonfigHoheEinkommensklassen(gk: TSGemeindeKonfiguration): void {
+        gk.konfigHoheEinkommensklassenBetragKita = 0;
+        gk.konfigHoheEinkommensklassenBetragTfo = 0;
+        gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = 0;
+        gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = 0;
+        gk.konfigHoheEinkommensklassenMassgebendenEinkommen = 0;
+
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA,
+            gk.konfigHoheEinkommensklassenBetragKita, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO,
+            gk.konfigHoheEinkommensklassenBetragTfo, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule, gk
+        );
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            gk.konfigHoheEinkommensklassenMassgebendenEinkommen, gk
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetragKita(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA,
+            gk.konfigHoheEinkommensklassenBetragKita,
+            gk
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule,
+            gk
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetragTfo(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO,
+            gk.konfigHoheEinkommensklassenBetragTfo,
+            gk
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenBetragTfoAbPrimarschule(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
+            gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule,
+            gk
+        );
+    }
+
+    public changeKonfigHoheEinkommensklassenMassgebendenEinkommen(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            gk.konfigHoheEinkommensklassenMassgebendenEinkommen,
+            gk
+        );
+    }
+
+    public isUndefined(data: any): boolean {
+        return EbeguUtil.isUndefined(data);
+    }
 }

@@ -15,6 +15,7 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
 public abstract class AbstractMutationsMergerFinanzielleSituation {
@@ -39,6 +40,7 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		} else {
 			// Der Spezialfall bei Änderung des Einkommens gilt nur, wenn die FinSit akzeptiert/null war!
 			handleEinkommen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+			handleAnpassungAnspruch(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		}
 	}
 
@@ -47,6 +49,40 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		BGCalculationResult resultVorgaenger,
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum);
+
+	private void handleAnpassungAnspruch(
+		@Nonnull BGCalculationInput inputData,
+		@Nullable BGCalculationResult resultVorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
+	) {
+		DateRange gueltigkeit = inputData.getParent().getGueltigkeit();
+
+		//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
+		if (!isMeldungZuSpaet(gueltigkeit, mutationsEingansdatum)) {
+			return;
+		}
+
+		final int anspruchberechtigtesPensum = inputData.getAnspruchspensumProzent();
+		final int anspruchAufVorgaengerVerfuegung = resultVorangehenderAbschnitt == null
+			? 0
+			: resultVorangehenderAbschnitt.getAnspruchspensumProzent();
+
+		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
+			//Anspruch wird erhöht
+			//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
+			inputData.setAnspruchspensumProzent(anspruchAufVorgaengerVerfuegung);
+			inputData.setRueckwirkendReduziertesPensumRest(anspruchberechtigtesPensum - inputData.getAnspruchspensumProzent());
+			//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
+			//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
+			if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {
+				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
+			}
+
+		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
+			//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
+			inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, getLocale());
+		}
+	}
 
 	private void handleAbgelehnteFinsit(
 		@Nonnull BGCalculationInput inputData,
@@ -93,4 +129,19 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 	protected Locale getLocale() {
 		return locale;
 	}
+
+	private boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
+		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
+	}
+
+
+	private boolean isAnspruchZeroBecauseVorgaengerZuSpaet(BGCalculationResult resultVorangehenderAbschnitt) {
+		if(resultVorangehenderAbschnitt == null) {
+			return false;
+		}
+
+		boolean anspruchsPensumZero = resultVorangehenderAbschnitt.getAnspruchspensumProzent() == 0;
+		return anspruchsPensumZero && resultVorangehenderAbschnitt.isZuSpaetEingereicht();
+	}
+
 }

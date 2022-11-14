@@ -15,11 +15,10 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -28,13 +27,13 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.Constants;
 import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,13 +98,18 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			final LocalDate zeitabschnittStart = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 			VerfuegungZeitabschnitt vorangehenderAbschnitt =
 				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
+			VerfuegungZeitabschnitt vorgaengerZeitabschnittVerfugegungAusbezahlt =
+					getVorgaengerZeitabschnittVerfugegungAusbezahlt(platz, zeitabschnittStart);
 
 			if (vorangehenderAbschnitt != null) {
 				BGCalculationInput inputAsiv = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
 				BGCalculationResult resultAsivVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultAsiv();
 
 				handleMutation(inputAsiv, resultAsivVorangehenderAbschnitt, platz);
-				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt, vorangehenderAbschnitt);
+				handleAuszahlungAnElternFlag(verfuegungZeitabschnitt,
+						vorgaengerZeitabschnittVerfugegungAusbezahlt != null ?
+								vorgaengerZeitabschnittVerfugegungAusbezahlt :
+								vorangehenderAbschnitt);
 
 				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
 					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
@@ -120,6 +124,38 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			}
 		}
 		return zeitabschnitte;
+	}
+
+	@Nullable
+	private VerfuegungZeitabschnitt getVorgaengerZeitabschnittVerfugegungAusbezahlt(
+			AbstractPlatz platz,
+			LocalDate zeitabschnittStart) {
+
+		if (!(platz instanceof Betreuung)) {
+			return null;
+		}
+
+		Map<ZahlungslaufTyp, Verfuegung> allVorgaengerVerfugegungAusbezahlt =
+				((Betreuung) platz).getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
+
+		if (allVorgaengerVerfugegungAusbezahlt == null) {
+			return null;
+		}
+		if (allVorgaengerVerfugegungAusbezahlt.isEmpty()) {
+			return null;
+		}
+
+		Verfuegung vorgaengerVerfugegungAusbezahlt =
+				allVorgaengerVerfugegungAusbezahlt.values().stream().reduce(null, (prev, cur) -> {
+					if (prev == null) {
+						return cur;
+					}
+					Objects.requireNonNull(cur.getTimestampMutiert());
+					Objects.requireNonNull(prev.getTimestampMutiert());
+					return cur.getTimestampMutiert().isBefore(prev.getTimestampMutiert()) ? cur : prev;
+				});
+
+		return findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfugegungAusbezahlt);
 	}
 
 	private void handleMutation(

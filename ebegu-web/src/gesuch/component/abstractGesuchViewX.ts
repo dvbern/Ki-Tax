@@ -15,7 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, Directive} from '@angular/core';
+import {AfterViewInit, Directive, ViewChild} from '@angular/core';
+import {NgForm} from '@angular/forms';
 import {isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import {TSFinanzielleSituationTyp} from '../../models/enums/TSFinanzielleSituationTyp';
@@ -30,6 +31,7 @@ import {WizardStepManager} from '../service/wizardStepManager';
 export class AbstractGesuchViewX<T> implements AfterViewInit {
 
     private _model: T;
+    @ViewChild(NgForm) protected form: NgForm;
 
     public constructor(
         protected gesuchModelManager: GesuchModelManager,
@@ -118,5 +120,34 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
         return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
             && this.isKorrekturModusJugendamtOrFreigegeben();
+    }
+
+    public isMutation(): boolean {
+        return this.getGesuch() ? this.getGesuch().isMutation() : false;
+    }
+    public isKorrekturModusJugendamt(): boolean {
+        return this.gesuchModelManager.isKorrekturModusJugendamt();
+    }
+
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
+
+    /**
+     * Diese Methode prueft, ob die Form valid ist. Sollte sie nicht valid sein wird das erste fehlende Element gesucht
+     * und fokusiert, damit der Benutzer nicht scrollen muss, um den Fehler zu finden.
+     * Am Ende wird this.form.valid zurueckgegeben
+     */
+    public isGesuchValid(): boolean {
+        if (!this.form.valid) {
+            for (const control in this.form.controls) {
+                if (EbeguUtil.isNotNullOrUndefined(this.form.controls[control])) {
+                    this.form.controls[control].markAsTouched({onlySelf: true});
+                }
+            }
+            EbeguUtil.selectFirstInvalid();
+        }
+
+        return this.form.valid;
     }
 }

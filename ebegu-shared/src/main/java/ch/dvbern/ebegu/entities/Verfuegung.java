@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +31,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -87,6 +89,10 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	private @NotNull boolean eventPublished = true;
+
+	@Transient
+	@Nullable
+	private  BigDecimal veraenderungVerguenstigungGegenueberVorgaenger;
 
 	public Verfuegung() {
 	}
@@ -229,4 +235,12 @@ public class Verfuegung extends AbstractMutableEntity {
 			Objects.equals(isKategorieNichtEintreten(), otherVerfuegung.isKategorieNichtEintreten());
 	}
 
+	@Nullable
+	public BigDecimal getVeraenderungVerguenstigungGegenueberVorgaenger() {
+		return veraenderungVerguenstigungGegenueberVorgaenger;
+	}
+
+	public void setVeraenderungVerguenstigungGegenueberVorgaenger(@Nullable BigDecimal veraenderungVerguenstigungGegenueberVorgaenger) {
+		this.veraenderungVerguenstigungGegenueberVorgaenger = veraenderungVerguenstigungGegenueberVorgaenger;
+	}
 }

@@ -45,8 +45,7 @@ describe('ZahlungviewXComponent', () => {
                 TranslateModule,
                 MaterialModule,
                 SharedModule,
-                NotrechtModule,
-                NoopAnimationsModule
+                NotrechtModule
             ],
             declarations: [ZahlungviewXComponent],
             providers: [

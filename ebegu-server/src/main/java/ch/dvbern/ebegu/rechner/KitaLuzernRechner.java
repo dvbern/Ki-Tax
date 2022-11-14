@@ -18,12 +18,14 @@
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
 public class KitaLuzernRechner extends AbstractLuzernRechner {
@@ -37,6 +39,10 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.valueOf(10);
 
 	private static final BigDecimal KITA_PLUS_ZUSCHLAG = BigDecimal.valueOf(32);
+
+	protected KitaLuzernRechner(List<RechnerRule> rechnerRulesForGemeinde) {
+		super(rechnerRulesForGemeinde);
+	}
 
 	@Override
 	public void calculate(
@@ -56,7 +62,7 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 	}
 
 	@Override
-	protected BigDecimal calculateGutscheinProZeitanschnitt(BigDecimal gutschein) {
+	protected BigDecimal calculateGutscheinProZeitabschnitt(BigDecimal gutschein) {
 		//Bei KITA Rechner wird der Gutschein schon pro Zeitabschnitt berechnet
 		return gutschein;
 	}
@@ -189,5 +195,16 @@ public class KitaLuzernRechner extends AbstractLuzernRechner {
 		}
 
 		return BigDecimal.ZERO;
+	}
+
+	protected BigDecimal gemeindeRulesAbhaengigVonVerfuegteZeiteinheit(
+		@Nonnull BigDecimal gutschein
+	) {
+		// Zusaetzlicher Gutschein Gemeinde
+		gutschein = EXACT.addNullSafe(gutschein, MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherGutscheinGemeindeBetrag(), this.verfuegteZeiteinheit));
+		// Zusaetzlicher Baby-Gutschein
+		gutschein = EXACT.addNullSafe(gutschein, MathUtil.EXACT.multiply(rechnerParameter.getZusaetzlicherBabyGutscheinBetrag(), verfuegteZeiteinheit));
+
+		return gutschein;
 	}
 }

@@ -27,6 +27,7 @@ public class MandantLocaleVisitor implements MandantVisitor<Locale> {
 	private static final String VARIANT_BE = "be";
 	private static final String VARIANT_LU = "lu";
 	private static final String VARIANT_SO = "so";
+	private static final String VARIANT_APPENZELL_AUSSERRHODEN = "ar";
 
 	private Locale locale;
 
@@ -51,5 +52,10 @@ public class MandantLocaleVisitor implements MandantVisitor<Locale> {
 	@Override
 	public Locale visitSolothurn() {
 		return new Locale(locale.getLanguage(), locale.getCountry(), VARIANT_SO);
+	}
+
+	@Override
+	public Locale visitAppenzellAusserrhoden() {
+		return new Locale(locale.getLanguage(), locale.getCountry(), VARIANT_APPENZELL_AUSSERRHODEN);
 	}
 }
