@@ -30,7 +30,9 @@ export class ReindexRS {
     ) {}
 
     public reindex(): Observable<any> {
-        return this.$http.get(`${this.serviceURL  }/`);
+        return this.$http.get(`${this.serviceURL}/`, {
+            responseType: 'text'
+        });
     }
 
 }

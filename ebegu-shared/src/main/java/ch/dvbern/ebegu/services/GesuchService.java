@@ -481,4 +481,6 @@ public interface GesuchService {
 	Gesuch findGesuchOfGS(GesuchstellerContainer container);
 
 	Gesuch mutationIgnorieren(Gesuch gesuch);
+
+	Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll);
 }

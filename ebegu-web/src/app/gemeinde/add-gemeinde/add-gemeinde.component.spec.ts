@@ -56,8 +56,7 @@ describe('AddGemeindeComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
-                NoopAnimationsModule
+                SharedModule
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},

@@ -8,7 +8,7 @@ import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Observable} from 'rxjs';
+import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -35,6 +35,7 @@ export class AdminViewXComponent extends AbstractAdminViewX {
     public displayedCollection: MatTableDataSource<TSApplicationProperty>;
     public displayedColumns: string[] =  ['name', 'value', 'timestampErstellt'];
     public filterColumns: string[] =  ['filter'];
+    public reindexInProgress: boolean = false;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -94,8 +95,12 @@ export class AdminViewXComponent extends AbstractAdminViewX {
         });
     }
 
-    public startReindex(): Observable<any> {
-        return this.reindexRS.reindex();
+    public startReindex(): void {
+        // avoid sending double by keeping it disabled until reload
+        this.reindexInProgress = true;
+        this.reindexRS.reindex().subscribe(response => {
+            this.dvDialog.open(DvNgOkDialogComponent, {data: {title: response}});
+        });
     }
 
     public doFilter(value: string): void {

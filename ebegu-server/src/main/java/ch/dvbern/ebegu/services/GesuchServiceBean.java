@@ -364,8 +364,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			return;
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		familiensituation.setAuszahlungsdatenMahlzeiten(null);
-		familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+		familiensituation.setAuszahlungsdaten(null);
+		familiensituation.setAbweichendeZahlungsadresse(false);
 	}
 
 	@Nonnull
@@ -2607,6 +2607,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		authorizer.checkReadAuthorization(gesuch);
 
 		return gesuch;
+	}
+
+	@Override
+	public Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll) {
+		gesuch.setMarkiertFuerKontroll(markiertFuerKontroll);
+		return persistence.merge(gesuch);
 	}
 
 	@Override

@@ -2926,6 +2926,8 @@
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "VERFUEGUNG_EXPORT_ENABLED": "Activer l'export des décisions en format JSON ou XML",
+    "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
+    "CHECKBOX_MARKED_FUER_KONTROLL": "Informieren, sobald eine rechstkräftige Veranlagung zu diesem Fall existiert",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -276,6 +276,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	private String begruendungMutation;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean markiertFuerKontroll = false;
+
 	@Transient
 	private boolean newlyCreatedMutation = false;
 
@@ -979,7 +983,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		// null instead of false because of UK_Constraint UK_gueltiges_gesuch
 		target.setGueltig(null);
 		target.setDokumenteHochgeladen(false);
-
+		target.setMarkiertFuerKontroll(false);
 		copyFamiliensituation(target, copyType, this.isMutation());
 		copyGesuchsteller1(target, copyType);
 
@@ -998,6 +1002,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 				target.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 			}
 			target.setFinSitAenderungGueltigAbDatum(getFinSitAenderungGueltigAbDatum());
+			target.setMarkiertFuerKontroll(this.markiertFuerKontroll);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -1411,6 +1416,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setBegruendungMutation(@Nullable String begruendungMutation) {
 		this.begruendungMutation = begruendungMutation;
+	}
+
+	public Boolean getMarkiertFuerKontroll() {
+		return markiertFuerKontroll;
+	}
+
+	public void setMarkiertFuerKontroll(Boolean markiertFuerKontroll) {
+		this.markiertFuerKontroll = markiertFuerKontroll;
 	}
 
 	public boolean isNewlyCreatedMutation() {

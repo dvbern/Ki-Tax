@@ -16,7 +16,9 @@
                                 <span translate>PROPERTY_NAME</span>
                             </mat-header-cell>
                             <mat-cell *matCellDef="let property">
-                                <span [title]="property.name">{{property.name | translate}}</span>
+                                <span [title]="property.name">{{property.name | translate}}
+                                    <dv-tooltip [text]="property.erklaerung"></dv-tooltip>
+                                </span>
                             </mat-cell>
                         </ng-container>
 
@@ -122,7 +124,7 @@
                 </div>
                 <div class="row margin-top-10">
                     <div class="col-md-12 form-group">
-                       <dv-loading-button forceWaitService="true" (click)="startReindex()">
+                       <dv-loading-button [buttonDisabled]="reindexInProgress" (buttonClick)="startReindex()">
                             <span>{{'CREATE_SEARCHINDEX' | translate}}</span>
                         </dv-loading-button>
                     </div>

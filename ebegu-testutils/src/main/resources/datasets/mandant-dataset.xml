@@ -49,7 +49,8 @@
 				 gesuchsperiode_id="BiH7XaGHWpGrr4qBPE0qqg=="
 				 einstellung_key="PARAM_PENSUM_TAGESELTERN_MIN"
 				 value="20"
-				 mandant_id="43NuuG7vQO+eUparSNjyIA=="/>
+				 mandant_id="43NuuG7vQO+eUparSNjyIA=="
+				 erklaerung="tageseltern min"/>
 	<gemeinde id="TEUyY/mSSK+GtdwEzX6LuA=="
 			  timestamp_erstellt="2016-04-25 16:22:22.0"
 			  timestamp_mutiert="2016-04-25 16:22:26.0"
