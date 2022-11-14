@@ -32,22 +32,4 @@ public abstract class AbstractEinreichefristCalculator {
 	public LocalDate getStichtagEinreichefrist(@Nonnull LocalDate einreichedatum) {
 		return einreichedatum.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 	}
-
-	public void handleEinreichfrist(BGCalculationInput input, LocalDate mutationsEingansdatum) {
-		//Wenn das Eingangsdatum der Meldung nach der Gültigkeit des Zeitabschnitts ist, soll das Flag ZuSpaetEingereicht gesetzt werden
-		if(isMeldungZuSpaet(input.getParent().getGueltigkeit(), mutationsEingansdatum)) {
-			input.setZuSpaetEingereicht(true);
-		}
-	}
-
-	protected boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
-		return !gueltigkeit.getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
-	}
-
-	public boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
-		// Die Frist ist per default relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
-		// neu hinzugekommen ist. Es kann aber sein, dass es zwar einen Vorgaenger gab, dieser aber nicht
-		// verfuegt wurde, darum reicht es nicht, nur die VorgaengerID zu pruefen!
-		return platz.extractGesuch().getTyp().isGesuch() || Objects.isNull(platz.getVorgaengerVerfuegung());
-	}
 }

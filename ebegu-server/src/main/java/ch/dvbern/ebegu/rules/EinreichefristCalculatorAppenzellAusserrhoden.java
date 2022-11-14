@@ -29,17 +29,7 @@ public class EinreichefristCalculatorAppenzellAusserrhoden extends AbstractEinre
 	public EinreichefristCalculatorAppenzellAusserrhoden() { }
 
 	@Override
-	protected boolean isMeldungZuSpaet(@Nonnull DateRange gueltigkeit, @Nonnull LocalDate mutationsEingansdatum) {
-		return gueltigkeit.getGueltigAb().isBefore(mutationsEingansdatum.minusDays(30));
-	}
-
-	@Override
 	public LocalDate getStichtagEinreichefrist(@Nonnull LocalDate einreichedatum) {
 		return einreichedatum.minusDays(30);
-	}
-
-	@Override
-	public boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
-		return true;
 	}
 }

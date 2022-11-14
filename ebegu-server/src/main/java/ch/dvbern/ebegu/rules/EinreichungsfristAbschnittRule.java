@@ -64,10 +64,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> einreichungsfristAbschnitte = new ArrayList<>();
 		Gesuch gesuch = platz.extractGesuch();
 		LocalDate startDatum = gesuch.getRegelStartDatum();
-		boolean runAbschnittStueckelung = new EinreichefristVisitor().getEinreichefristCalculator(platz.extractGesuch()
-				.extractMandant()
-				.getMandantIdentifier()).applyEinreichungsfristAbschnittStueckelung(platz);
-		if (runAbschnittStueckelung && startDatum != null) {
+		if (applyEinreichungsfristAbschnittStueckelung(platz) && startDatum != null) {
 			LocalDate einreichefristStichtag = getEinreichefristStichtag(startDatum, platz.extractGesuch().extractMandant());
 			if (platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().isBefore(einreichefristStichtag)) {
 				VerfuegungZeitabschnitt abschnittVorAnspruch =
@@ -80,6 +77,13 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 			}
 		}
 		return einreichungsfristAbschnitte;
+	}
+
+	private boolean applyEinreichungsfristAbschnittStueckelung(@Nonnull AbstractPlatz platz) {
+		// Die Frist ist per default relevant bei Erstgesuch und "Erst-Betreuung", also wenn ein Platz in einer Mutation
+		// neu hinzugekommen ist. Es kann aber sein, dass es zwar einen Vorgaenger gab, dieser aber nicht
+		// verfuegt wurde, darum reicht es nicht, nur die VorgaengerID zu pruefen!
+		return platz.extractGesuch().getTyp().isGesuch() || Objects.isNull(platz.getVorgaengerVerfuegung());
 	}
 
 	private LocalDate getEinreichefristStichtag(LocalDate startDatum, Mandant mandant) {
