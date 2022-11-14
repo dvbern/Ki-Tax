@@ -48,12 +48,12 @@ public class LastenausgleichGrundlagen extends AbstractEntity {
 	private Integer jahr = 0;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Min(0)
 	private BigDecimal selbstbehaltPro100ProzentPlatz;
 
 	@Nullable
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Min(0)
 	private BigDecimal kostenPro100ProzentPlatz;
 

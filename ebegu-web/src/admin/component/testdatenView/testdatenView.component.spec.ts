@@ -84,7 +84,9 @@ describe('testdatenView', () => {
             ebeguKibonAnfrageTestGuiEnabled: false,
             steuerschnittstelleAktivAb: moment('2020-01-01'),
             zusatzinformationenInstitution: true,
-            activatedDemoFeatures: ''
+            activatedDemoFeatures: '',
+            checkboxAuszahlungInZukunft: false,
+            institutionenDurchGemeindenEinladen: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
@@ -96,8 +98,7 @@ describe('testdatenView', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
-                NoopAnimationsModule
+                SharedModule
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},

@@ -1,12 +1,14 @@
 import {NgModule} from '@angular/core';
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatInputModule} from '@angular/material/input';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSortModule} from '@angular/material/sort';
@@ -18,7 +20,7 @@ import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const MATERIAL_MODULES = [
     MatAutocompleteModule,
-    // MatButtonModule,
+     MatButtonModule,
     // MatButtonToggleModule,
     // MatCardModule,
     MatCheckboxModule,
@@ -33,7 +35,7 @@ const MATERIAL_MODULES = [
     // MatListModule,
     // MatMenuModule,
     MatPaginatorModule,
-    // MatProgressBarModule,
+    MatProgressBarModule,
     // MatProgressSpinnerModule,
     MatRadioModule,
     // MatRippleModule,

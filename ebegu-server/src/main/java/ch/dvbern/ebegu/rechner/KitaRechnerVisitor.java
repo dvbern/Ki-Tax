@@ -43,11 +43,16 @@ public class KitaRechnerVisitor implements MandantVisitor<AbstractRechner> {
 
 	@Override
 	public AbstractRechner visitLuzern() {
-		return new KitaLuzernRechner();
+		return new KitaLuzernRechner(rechnerRulesForGemeinde);
 	}
 
 	@Override
 	public AbstractRechner visitSolothurn() {
+		return new KitaBernRechner(rechnerRulesForGemeinde);
+	}
+
+	@Override
+	public AbstractRechner visitAppenzellAusserrhoden() {
 		return new KitaBernRechner(rechnerRulesForGemeinde);
 	}
 }

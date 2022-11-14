@@ -290,6 +290,10 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     public revertFamiliensituation(other: TSFamiliensituation): void {
         this.familienstatus = other.familienstatus;
         this.startKonkubinat = other.startKonkubinat;
+        this.gesuchstellerKardinalitaet = other.gesuchstellerKardinalitaet;
+        this.unterhaltsvereinbarung = other.unterhaltsvereinbarung;
+        this.geteilteObhut = other.geteilteObhut;
+        this.unterhaltsvereinbarungBemerkung = other.unterhaltsvereinbarungBemerkung;
     }
 
     public get fkjvFamSit(): boolean {

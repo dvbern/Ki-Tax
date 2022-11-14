@@ -20,6 +20,7 @@ export enum KiBonMandant {
     BE = 'be',
     LU = 'stadtluzern',
     SO = 'so',
+    AR = 'ar',
     NONE = ''
 }
 
@@ -28,5 +29,6 @@ export enum KiBonMandantFull {
     BE = 'Kanton Bern',
     LU = 'Stadt Luzern',
     SO = 'Kanton Solothurn',
+    AR = 'Appenzell Ausserrhoden',
     NONE = ''
 }

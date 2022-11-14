@@ -39,6 +39,7 @@ import {BetreuungMonitoringRS} from '../../admin/service/betreuungMonitoringRS.r
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
+import {FerieninselStammdatenRS} from '../../admin/service/ferieninselStammdatenRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import {languageEnabledHookRunBlock} from '../../authentication/state-hooks/onBefore/languageEnabledHookRunBlock';
@@ -53,7 +54,7 @@ import {EinkommensverschlechterungContainerRS} from '../../gesuch/service/einkom
 import {EinkommensverschlechterungInfoRS} from '../../gesuch/service/einkommensverschlechterungInfoRS.rest';
 import {ExportRS} from '../../gesuch/service/exportRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
-import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.rest';
+import {FamiliensituationRS} from '../../gesuch/service/familiensituationRS.service';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {GemeindeRS} from '../../gesuch/service/gemeindeRS.rest';
 import {GesuchGenerator} from '../../gesuch/service/gesuchGenerator';
@@ -72,7 +73,11 @@ import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-
 import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
+import {
+    DvDemoFeatureWrapperComponent
+} from '../shared/component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {ColorService} from '../shared/services/color.service';
+import {HttpPendingService} from '../shared/services/http-pending.service';
 import {MandantService} from '../shared/services/mandant.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
@@ -211,7 +216,6 @@ export const CORE_JS_MODULE = angular
     .service('AdresseRS', AdresseRS)
     .service('ListResourceRS', ListResourceRS)
     .service('FallRS', FallRS)
-    .service('FamiliensituationRS', FamiliensituationRS)
     .service('GesuchModelManager', GesuchModelManager)
     .service('GesuchRS', GesuchRS)
     .service('FinanzielleSituationRS', FinanzielleSituationRS)
@@ -236,6 +240,7 @@ export const CORE_JS_MODULE = angular
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
     .service('NotrechtRS', NotrechtRS)
+    .factory('FamiliensituationRS', downgradeInjectable(FamiliensituationRS) as any)
     .service('EinstellungRS', downgradeInjectable(EinstellungRS) as any)
     .service('SozialhilfeZeitraumRS', SozialhilfeZeitraumRS)
     .service('BetreuungMonitoringRS', BetreuungMonitoringRS)
@@ -253,6 +258,8 @@ export const CORE_JS_MODULE = angular
     .factory('MandantService', downgradeInjectable(MandantService) as any)
     .factory('ColorService', downgradeInjectable(ColorService) as any)
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
+    .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
+    .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
     .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
@@ -315,6 +322,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
+    .directive('dvDemoFeatureWrapper', downgradeComponent({component: DvDemoFeatureWrapperComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)

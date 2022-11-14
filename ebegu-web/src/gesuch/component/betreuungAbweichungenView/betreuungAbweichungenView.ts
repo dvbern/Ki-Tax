@@ -17,10 +17,14 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {BetreuungRS} from '../../../app/core/service/betreuungRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
+import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
@@ -31,7 +35,6 @@ import {TSBetreuungspensumAbweichung} from '../../../models/TSBetreuungspensumAb
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
-import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -72,7 +75,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         'EinstellungRS',
         '$timeout',
         '$translate',
-        'DvDialog'
+        'DvDialog',
+        'MandantService'
     ];
 
     public $translate: ITranslateService;
@@ -82,6 +86,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public isSavingData: boolean; // Semaphore
     public dvDialog: DvDialog;
     private existingMutationsmeldung: TSBetreuungsmitteilung;
+    private isLuzern: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -99,7 +104,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         private readonly einstellungRS: EinstellungRS,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
-        dvDialog: DvDialog
+        dvDialog: DvDialog,
+        private readonly mandantService: MandantService
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.$translate = $translate;
@@ -109,6 +115,10 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
+
+        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+            this.isLuzern = isLuzern;
+        });
 
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
@@ -343,5 +353,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         return (hauptmahlzeiten * abweichung.vertraglicherTarifHaupt) + (nebenmahlzeiten * abweichung.vertraglicherTarifNeben);
 
+    }
+
+    public getStepSize(): string {
+        return this.isLuzern ? '0.01' : '0.25';
     }
 }

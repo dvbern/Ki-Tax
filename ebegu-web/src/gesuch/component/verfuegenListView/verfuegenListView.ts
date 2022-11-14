@@ -18,10 +18,16 @@ import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfMahnung,
+    isAnyStatusOfVerfuegt,
+    isStatusVerfuegenVerfuegt,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -88,6 +94,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
+    public veraenderungBG: number = 0;
+    public veraenderungTS: number = 0;
     public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -95,6 +103,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
+    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
 
     public constructor(
         private readonly $state: StateService,
@@ -183,6 +192,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private refreshKinderListe(): IPromise<any> {
         return this.gesuchModelManager.calculateVerfuegungen().then(() => {
             this.kinderWithBetreuungList = this.gesuchModelManager.getKinderWithBetreuungList();
+            this.calculateVeraenderung();
         });
     }
 
@@ -192,6 +202,14 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public getMahnungList(): Array<TSMahnung> {
         return this.mahnungList;
+    }
+
+    public showMutationVeranderung(): boolean {
+        if (isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+            return false;
+        }
+
+        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
     }
 
     /**
@@ -795,5 +813,32 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isInstitutionRoles(): boolean {
         return this.authServiceRs.isOneOfRoles([TSRole.ADMIN_INSTITUTION, TSRole.SACHBEARBEITER_INSTITUTION]);
+    }
+
+    private calculateVeraenderung(): void {
+
+        this.kinderWithBetreuungList.forEach(kindContainer =>
+            kindContainer.betreuungen.forEach(betreuung => {
+                if (!betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger) {
+                    return;
+                }
+
+                if (betreuung.isAngebotTagesschule()) {
+                    this.veraenderungTS = this.findAbsoultMax(this.veraenderungTS, betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
+                } else {
+                    this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
+                }
+            }));
+
+        this.veraenderungBG = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        this.veraenderungTS = Number(this.veraenderungTS.toFixed(2));
+    }
+
+    private findAbsoultMax(val1: number, val2: number): number {
+        if (Math.abs(val1) >= Math.abs(val2)) {
+            return val1;
+        }
+
+        return val2;
     }
 }

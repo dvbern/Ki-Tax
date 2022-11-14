@@ -37,6 +37,9 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 	private Taetigkeit taetigkeit;
 
 	@Nullable
+	private String erwerbspensumInstitution;
+
+	@Nullable
 	private String bezeichnung;
 
 	@Nullable
@@ -79,5 +82,14 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 
 	public void setUnregelmaessigeArbeitszeiten(@Nullable Boolean unregelmaessigeArbeitszeiten) {
 		this.unregelmaessigeArbeitszeiten = unregelmaessigeArbeitszeiten;
+	}
+
+	@Nullable
+	public String getErwerbspensumInstitution() {
+		return erwerbspensumInstitution;
+	}
+
+	public void setErwerbspensumInstitution(@Nullable String erwerbspensumInstitution) {
+		this.erwerbspensumInstitution = erwerbspensumInstitution;
 	}
 }

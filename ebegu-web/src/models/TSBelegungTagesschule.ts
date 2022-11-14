@@ -17,12 +17,16 @@ import * as moment from 'moment';
 import {TSAbholungTagesschule} from './enums/TSAbholungTagesschule';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBelegungTagesschuleModul} from './TSBelegungTagesschuleModul';
+import {TSFleischOption} from './enums/TSFleischOption';
 
 export class TSBelegungTagesschule extends TSAbstractMutableEntity {
 
     public belegungTagesschuleModule: Array<TSBelegungTagesschuleModul> = [];
     public eintrittsdatum: moment.Moment;
     public planKlasse: string;
+    public fleischOption: TSFleischOption;
+    public allergienUndUnvertraeglichkeiten: string;
+    public notfallnummer: string;
     public abholungTagesschule: TSAbholungTagesschule;
     public bemerkung: string;
     public abweichungZweitesSemester: boolean;

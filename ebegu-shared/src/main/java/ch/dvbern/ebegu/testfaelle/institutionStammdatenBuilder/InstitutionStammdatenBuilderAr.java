@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.testfaelle;
+package ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,14 @@ import java.util.List;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 
-public class InstitutionStammdatenBuilderLu extends InstitutionStammdatenBuilder {
-	public InstitutionStammdatenBuilderLu(InstitutionStammdatenService institutionStammdatenService) {
-		super(institutionStammdatenService, "97882a4e-3261-11ec-a17e-b89a2ae4a038", "6d6afdb2-3261-11ec-a17e-b89a2ae4a038",
-				"16075d77-30a5-11ec-a86f-b89a2ae4a038", "b8e3acdc-3261-11ec-a17e-b89a2ae4a038");
+public class InstitutionStammdatenBuilderAr extends InstitutionStammdatenBuilder {
+	public InstitutionStammdatenBuilderAr(InstitutionStammdatenService institutionStammdatenService) {
+		super(
+				institutionStammdatenService,
+				"51451c92-39a9-11ed-a63d-b05cda43de9c",
+				"56aa13db-39a9-11ed-a63d-b05cda43de9c",
+				"458bee8d-39a9-11ed-a63d-b05cda43de9c",
+				"f89d4bf4-39aa-11ed-a63d-b05cda43de9c");
 	}
 
 	@Override

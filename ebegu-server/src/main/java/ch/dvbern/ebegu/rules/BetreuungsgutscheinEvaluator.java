@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -43,11 +44,13 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungBGRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.MahlzeitenverguenstigungTSRechnerRule;
+import ch.dvbern.ebegu.rechner.rules.MinimalPauschalbetragGemeindeRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
+import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
@@ -74,13 +77,18 @@ public class BetreuungsgutscheinEvaluator {
 
 	private final BetreuungsgutscheinExecutor executor;
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
+	public BetreuungsgutscheinEvaluator(
+		List<Rule> rules,
+		Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
 		this.rules = rules;
 		this.kibonAbschlussRulesParameters = kibonAbschlussRulesParameters;
 		executor = new BetreuungsgutscheinExecutor(true, this.kibonAbschlussRulesParameters);
 	}
 
-	public BetreuungsgutscheinEvaluator(List<Rule> rules, boolean enableDebugOutput, Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
+	public BetreuungsgutscheinEvaluator(
+		List<Rule> rules,
+		boolean enableDebugOutput,
+		Map<EinstellungKey, Einstellung> kibonAbschlussRulesParameters) {
 		this.rules = rules;
 		this.isDebug = enableDebugOutput;
 		this.kibonAbschlussRulesParameters = kibonAbschlussRulesParameters;
@@ -110,14 +118,16 @@ public class BetreuungsgutscheinEvaluator {
 			: gesuch.getFirstBetreuungOrAnmeldungTagesschule();
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
-		List<VerfuegungZeitabschnitt> zeitabschnitte = RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
+		List<VerfuegungZeitabschnitt> zeitabschnitte =
+			RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
 
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule(isDebug);
-			Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
+			Boolean pauschaleRueckwirkendAuszahlen =
+				kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
 			MutationsMerger mutationsMerger = new MutationsMerger(locale, isDebug, pauschaleRueckwirkendAuszahlen);
 			AbschlussNormalizer abschlussNormalizerMitMonate = new AbschlussNormalizer(true, isDebug);
 
@@ -154,7 +164,9 @@ public class BetreuungsgutscheinEvaluator {
 				"Bitte zuerst die Finanzberechnung ausführen! -> FinanzielleSituationRechner.calculateFinanzDaten()");
 		}
 
-		Objects.requireNonNull(kitaxParameter.getStadtBernAsivStartDate(), "Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
+		Objects.requireNonNull(
+			kitaxParameter.getStadtBernAsivStartDate(),
+			"Das Startdatum ASIV fuer Bern muss in den ApplicationProperties definiert werden");
 
 		List<Rule> rulesToRun = findRulesToRunForPeriode(gesuch.getGesuchsperiode());
 		List<RechnerRule> rechnerRulesForGemeinde = rechnerRulesForGemeinde(bgRechnerParameterDTO, locale);
@@ -165,7 +177,9 @@ public class BetreuungsgutscheinEvaluator {
 			// Betreuung den "Restanspruch" merken für die Berechnung der nächsten Betreuung, am Schluss kommt dann
 			// jeweils eine Reduktionsregel die den Anspruch auf den Restanspruch beschraenkt
 			List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte =
-				RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), !rechnerRulesForGemeinde.isEmpty());
+				RestanspruchInitializer.createInitialenRestanspruch(
+					gesuch.getGesuchsperiode(),
+					!rechnerRulesForGemeinde.isEmpty());
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
@@ -188,7 +202,8 @@ public class BetreuungsgutscheinEvaluator {
 					// GESCHLOSSEN_OHNE_VERFUEGUNG sind
 					continue;
 				}
-				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus().isGeschlossenSchulamt()) {
+				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus()
+					.isGeschlossenSchulamt()) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
 					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
 					if (platz.getBetreuungsstatus().isGeschlossenJA()) {
@@ -220,15 +235,30 @@ public class BetreuungsgutscheinEvaluator {
 				platz.setVerfuegungPreview(verfuegungPreview);
 				verfuegungPreview.setPlatz(platz);
 
-				executor.calculateRechner(bgRechnerParameterDTO, kitaxParameter, locale, rechnerRulesForGemeinde, platz, zeitabschnitte);
+				executor.calculateRechner(
+					bgRechnerParameterDTO,
+					kitaxParameter,
+					locale,
+					rechnerRulesForGemeinde,
+					platz,
+					zeitabschnitte);
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
+				BigDecimal veraenderung = null;
+
 				if (vorgaengerVerfuegung != null) {
 					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
+					veraenderung = VeraenderungCalculator
+						.getVeranderungCalculator(isTagesschule)
+						.calculateVeraenderung(zeitabschnitte, vorgaengerVerfuegung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
-				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte, gesuch.extractMandant(), bgRechnerParameterDTO.isTexteForFKJV());
+				verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veraenderung);
+
+				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte,
+					gesuch.extractMandant(),
+					bgRechnerParameterDTO.isTexteForFKJV());
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
 					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
@@ -273,6 +303,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * Fuer das Auszahlen ist es relevant ob in einer VorgaengerVerfuegung schon etwas
 	 * ausbezahlt wurde. Wir schrieben daher den Zahlungsstatus der alten Zeitabschnitte
 	 * in die ueberlappenden neuen Zeitabschnitte
+	 *
 	 * @param betreuung in deren zu berechnenend verfuegung die Zahlungsrelevanten Daten gesetzt wurden
 	 */
 	private void setZahlungRelevanteDaten(
@@ -292,9 +323,13 @@ public class BetreuungsgutscheinEvaluator {
 			// Zahlungsstatus aus vorgaenger uebernehmen
 			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
 			// die Mahlzeiten evtl. spaeter erst enabled werden!
-			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(verfuegungZuBerechnen, vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
-			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder eben nicht)
-			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(verfuegungZuBerechnen,
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(
+				verfuegungZuBerechnen,
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder
+			// eben nicht)
+			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(
+				verfuegungZuBerechnen,
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER),
 				bgRechnerParameterDTO.getMahlzeitenverguenstigungEnabled());
@@ -341,7 +376,9 @@ public class BetreuungsgutscheinEvaluator {
 		return rulesForGesuchsperiode;
 	}
 
-	private List<RechnerRule> rechnerRulesForGemeinde(@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO, @Nonnull Locale locale) {
+	private List<RechnerRule> rechnerRulesForGemeinde(
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		@Nonnull Locale locale) {
 		List<RechnerRule> rechnerRules = new LinkedList<>();
 		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindeZusaetzlicherGutscheinEnabled()) {
 			rechnerRules.add(new ZusaetzlicherGutscheinGemeindeRechnerRule(locale));
@@ -353,6 +390,10 @@ public class BetreuungsgutscheinEvaluator {
 			rechnerRules.add(new MahlzeitenverguenstigungBGRechnerRule(locale));
 			rechnerRules.add(new MahlzeitenverguenstigungTSRechnerRule(locale));
 		}
+		if (bgRechnerParameterDTO.getGemeindeParameter().getGemeindePauschalbetragEnabled()) {
+			rechnerRules.add(new MinimalPauschalbetragGemeindeRechnerRule(locale));
+		}
+
 		return rechnerRules;
 	}
 }

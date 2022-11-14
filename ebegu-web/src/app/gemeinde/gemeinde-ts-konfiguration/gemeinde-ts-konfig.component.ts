@@ -280,8 +280,21 @@ export class GemeindeTsKonfigComponent implements OnInit {
             });
     }
 
+    public changeKonfigTagesschuleZusaetzlicheAngaben(config: TSGemeindeKonfiguration): void {
+        config.konfigurationen
+            .filter(property =>
+                TSEinstellungKey.GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG === property.key)
+            .forEach(property => {
+                property.value = String(config.konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung);
+            });
+    }
+
     public getKonfigTagesschuleTagisEnabledString(): string {
         return this.translate.instant('TAGESSCHULE_TAGIS_ENABLED');
+    }
+
+    public getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung(): string {
+        return this.translate.instant('TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG');
     }
 
     public isSuperAdmin(): boolean {

@@ -86,7 +86,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
-import {FamiliensituationRS} from './familiensituationRS.rest';
+import {FamiliensituationRS} from './familiensituationRS.service';
 import {FinanzielleSituationRS} from './finanzielleSituationRS.rest';
 import {GemeindeRS} from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
@@ -365,7 +365,7 @@ export class GesuchModelManager {
 
         this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
         this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
-            .then((response: TSFamiliensituationContainer) => {
+            .subscribe((response: TSFamiliensituationContainer) => {
                 this.gesuch.familiensituationContainer = response;
             });
     }
@@ -595,9 +595,6 @@ export class GesuchModelManager {
     }
 
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
-        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
-            return undefined;
-        }
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
             this.getStammdatenToWorkWith(),
@@ -1013,7 +1010,8 @@ export class GesuchModelManager {
      * Sucht das KindToWorkWith im Server und aktualisiert es mit dem bekommenen Daten
      */
     private getKindFromServer(): IPromise<TSKindContainer> {
-        return this.kindRS.findKind(this.getKindToWorkWith().id).then(kindResponse => this.setKindToWorkWith(kindResponse));
+        return this.kindRS.findKind(this.getKindToWorkWith().id)
+            .then(kindResponse => this.setKindToWorkWith(kindResponse));
     }
 
     /**
@@ -1541,7 +1539,8 @@ export class GesuchModelManager {
      */
     public saveGesuchStatus(status: TSAntragStatus): IPromise<TSAntragStatus> | undefined {
         if (!this.isGesuchStatus(status)) {
-            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status).then(() => this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
+            return this.gesuchRS.updateGesuchStatus(this.gesuch.id, status)
+                .then(() => this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch()).then(() => {
                     this.gesuch.status = this.calculateNewStatus(status);
 
                     return this.gesuch.status;
@@ -1840,5 +1839,14 @@ export class GesuchModelManager {
     public isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode(): boolean {
         return this.gemeindeKonfiguration
             && this.gemeindeKonfiguration.hasTagesschulenAnmeldung();
+    }
+
+    public updateGesuchMarkiertFuerKontroll(value: boolean): IPromise<TSGesuch> {
+        return this.gesuchRS.markiertFuerKontrollUpdaten(this.getGesuch().id, value).then(
+            gesuch => {
+                this.gesuch = gesuch;
+                return gesuch;
+            }
+        );
     }
 }

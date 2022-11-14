@@ -33,6 +33,7 @@ export class TSGemeindeKonfiguration {
     public konfigMinVerguenstigungProTg: number;
     public konfigMinVerguenstigungProStd: number;
     public konfigTagesschuleTagisEnabled: boolean;
+    public konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung: boolean;
     public konfigFerieninselAktivierungsdatum: moment.Moment;
     public konfigTagesschuleAktivierungsdatum: moment.Moment;
     public konfigTagesschuleErsterSchultag: moment.Moment;
@@ -54,6 +55,12 @@ export class TSGemeindeKonfiguration {
     public konfigMahlzeitenverguenstigungEinkommensstufe3VerguenstigungMahlzeit: number; // only on client
     public konfigMahlzeitenverguenstigungFuerSozialhilfebezuegerEnabled: boolean; // only on client
     public konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit: number; // only on client
+    public konfigHoheEinkommensklassenAktiviert: boolean; // only on client
+    public konfigHoheEinkommensklassenBetragKita: number; // only on client
+    public konfigHoheEinkommensklassenBetragTfo: number; // only on client
+    public konfigHoheEinkommensklassenBetragKitaAbPrimarschule: number; // only on client
+    public konfigHoheEinkommensklassenBetragTfoAbPrimarschule: number; // only on client
+    public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -116,12 +123,6 @@ export class TSGemeindeKonfiguration {
     }
 
     public initProperties(): void {
-        this.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-        this.konfigKontingentierung = false;
-        this.konfigTagesschuleAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigTagesschuleErsterSchultag = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigFerieninselAktivierungsdatum = this.gesuchsperiode.gueltigkeit.gueltigAb;
-        this.konfigTagesschuleTagisEnabled = false;
         this.konfigurationen.forEach(property => {
             // eslint-disable-next-line
             switch (property.key) {
@@ -236,6 +237,10 @@ export class TSGemeindeKonfiguration {
                     this.konfigTagesschuleTagisEnabled = (property.value === 'true');
                     break;
                 }
+                case TSEinstellungKey.GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG: {
+                    this.konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung = (property.value === 'true');
+                    break;
+                }
                 case TSEinstellungKey.GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED: {
                     this.konfigSchnittstelleKitaxEnabled = (property.value === 'true');
                     break;
@@ -246,6 +251,30 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD: {
                     this.konfigMinVerguenstigungProStd = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT: {
+                    this.konfigHoheEinkommensklassenAktiviert = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA: {
+                    this.konfigHoheEinkommensklassenBetragKita = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO: {
+                    this.konfigHoheEinkommensklassenBetragTfo = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE: {
+                    this.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE: {
+                    this.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {
+                    this.konfigHoheEinkommensklassenMassgebendenEinkommen = Number(property.value);
                     break;
                 }
                 default: {

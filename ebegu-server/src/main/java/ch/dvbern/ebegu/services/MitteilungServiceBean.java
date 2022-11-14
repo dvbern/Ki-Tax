@@ -37,6 +37,8 @@ import javax.ejb.EJBAccessException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -99,6 +101,7 @@ import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
@@ -167,6 +170,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@Override
 	@Nonnull
@@ -777,7 +783,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
-			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch, false);
+			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
 		} catch (EJBTransactionRolledbackException exception) {
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
@@ -1606,21 +1612,39 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nullable
 	@Override
-	public Betreuungsmitteilung applyBetreuungsmitteilungIfPossible(
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
-			doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			acceptFinSit(mutation);
+			if (mutation.isNewlyCreatedMutation()) {
+				verfuegungService.gesuchAutomatischVerfuegen(mutation);
+			}
+			persistence.getEntityManager().flush();
 		} catch (EbeguException e) {
-			betreuungsmitteilung.setApplied(false);
 			final Locale locale = LocaleThreadLocal.get();
 			String translatedError = ServerMessageUtil.translateEnumValue(
 				e.getErrorCodeEnum(),
 				locale,
 				principalBean.getMandant()
 			);
-			betreuungsmitteilung.setErrorMessage(translatedError);
+			return translatedError;
 		}
-		return betreuungsmitteilung;
+		return null;
+	}
+
+	private void acceptFinSit(Gesuch mutation) {
+		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		gesuchService.updateGesuch(mutation, false, null);
+	}
+
+	@Override
+	public Optional<Betreuungsmitteilung> findAndRefreshBetreuungsmitteilung(String id) {
+		Betreuungsmitteilung mitteilung = persistence.find(Betreuungsmitteilung.class, id);
+		persistence.getEntityManager().refresh(mitteilung);
+		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		return Optional.ofNullable(mitteilung);
 	}
 }
 
