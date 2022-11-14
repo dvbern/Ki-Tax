@@ -64,8 +64,6 @@ import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -89,8 +87,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Api(description = "Resource für die Verwaltung der Pendenzlisten und die Fall-Suche")
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class SearchResource {
-
-	private static final Logger LOG = LoggerFactory.getLogger(SearchResource.class);
 
 	@Inject
 	private JaxBConverter converter;
