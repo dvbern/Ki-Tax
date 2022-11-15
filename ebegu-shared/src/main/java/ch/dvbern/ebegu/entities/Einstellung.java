@@ -87,13 +87,6 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull String erklaerung) {
-		this.key = key;
-		this.value = value;
-		this.gesuchsperiode = gesuchsperiode;
-		this.erklaerung = erklaerung;
-	}
-
 	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Mandant mandant) {
 		this(key, value, gesuchsperiode);
 		this.mandant = mandant;
