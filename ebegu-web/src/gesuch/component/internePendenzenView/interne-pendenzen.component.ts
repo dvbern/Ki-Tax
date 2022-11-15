@@ -45,7 +45,7 @@ export class InternePendenzenComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly cd: ChangeDetectorRef,
-        public readonly gesuchModelManager: GesuchModelManager
+        private readonly gesuchModelManager: GesuchModelManager
     ) {
     }
 
