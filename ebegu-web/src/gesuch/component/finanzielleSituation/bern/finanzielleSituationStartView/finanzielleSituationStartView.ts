@@ -436,4 +436,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                 }
             );
     }
+
+    protected isNotFinSitStartOrGS2Required(): boolean {
+        return this.gesuchModelManager.isGesuchsteller2Required();
+    }
 }

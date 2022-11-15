@@ -119,8 +119,11 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         return this.steuerSchnittstelleAktivForPeriode
             && this.steuerSchnittstelleAkivAbInPast
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            && this.isNotFinSitStartOrGS2Required()
             && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
+
+    protected abstract isNotFinSitStartOrGS2Required(): boolean;
 
     public showWarningSteuerschnittstelleNotYetActive(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenZugriff && !this.steuerSchnittstelleAkivAbInPast;
