@@ -104,8 +104,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS,
-            true);
+            applicationPropertyRS);
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;
@@ -436,5 +435,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                     this.form.$setDirty();
                 }
             );
+    }
+
+    protected isNotFinSitStartOrGS2Required(): boolean {
+        return this.gesuchModelManager.isGesuchsteller2Required();
     }
 }

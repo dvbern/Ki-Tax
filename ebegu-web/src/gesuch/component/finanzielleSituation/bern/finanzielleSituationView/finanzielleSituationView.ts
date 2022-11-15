@@ -28,7 +28,9 @@ import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
+import {
+    FinanzielleSituationAufteilungDialogController
+} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -96,8 +98,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS,
-            false);
+            applicationPropertyRS);
         this.$stateParams = $stateParams;
         this.copyDataAndInit();
     }
@@ -347,5 +348,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             !this.model.gemeinsameSteuererklaerung &&
             this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
             EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff);
+    }
+
+    protected isNotFinSitStartOrGS2Required(): boolean {
+        return true;
     }
 }

@@ -56,8 +56,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         protected readonly authServiceRS: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
         protected readonly dvDialog: DvDialog,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly isFinSitStart: boolean
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -120,9 +119,11 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         return this.steuerSchnittstelleAktivForPeriode
             && this.steuerSchnittstelleAkivAbInPast
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff
-            && (!this.isFinSitStart || (this.isFinSitStart && this.gesuchModelManager.isGesuchsteller2Required()))
+            && this.isNotFinSitStartOrGS2Required()
             && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
+
+    protected abstract isNotFinSitStartOrGS2Required(): boolean;
 
     public showWarningSteuerschnittstelleNotYetActive(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenZugriff && !this.steuerSchnittstelleAkivAbInPast;
