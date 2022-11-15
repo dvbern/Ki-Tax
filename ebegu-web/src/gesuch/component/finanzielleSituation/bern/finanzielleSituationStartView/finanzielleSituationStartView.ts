@@ -104,7 +104,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            true);
 
         listResourceRS.getLaenderList().then((laenderList: TSLand[]) => {
             this.laenderList = laenderList;

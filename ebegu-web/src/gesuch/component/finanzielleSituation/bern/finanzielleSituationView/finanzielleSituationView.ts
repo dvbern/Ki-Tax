@@ -96,7 +96,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             authServiceRS,
             einstellungRS,
             dvDialog,
-            applicationPropertyRS);
+            applicationPropertyRS,
+            false);
         this.$stateParams = $stateParams;
         this.copyDataAndInit();
     }
