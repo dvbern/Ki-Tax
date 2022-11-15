@@ -94,6 +94,9 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Nullable
 	private  BigDecimal veraenderungVerguenstigungGegenueberVorgaenger;
 
+	@Transient
+	private boolean ignorable;
+
 	public Verfuegung() {
 	}
 
@@ -242,5 +245,13 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public void setVeraenderungVerguenstigungGegenueberVorgaenger(@Nullable BigDecimal veraenderungVerguenstigungGegenueberVorgaenger) {
 		this.veraenderungVerguenstigungGegenueberVorgaenger = veraenderungVerguenstigungGegenueberVorgaenger;
+	}
+
+	public boolean getIgnorable() {
+		return ignorable;
+	}
+
+	public void setIgnorable(boolean ignorable) {
+		this.ignorable = ignorable;
 	}
 }

@@ -22,12 +22,7 @@ import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoF
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {
-    isAnyStatusOfMahnung,
-    isAnyStatusOfVerfuegt,
-    isStatusVerfuegenVerfuegt,
-    TSAntragStatus
-} from '../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -96,6 +91,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kinderWithBetreuungList: Array<TSKindContainer>;
     public veraenderungBG: number = 0;
     public veraenderungTS: number = 0;
+    public allVerfuegungenIgnorable: boolean = true;
     public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -205,11 +201,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMutationVeranderung(): boolean {
-        if (isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status)) {
-            return false;
-        }
+        return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
+    }
 
-        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
+    public setMutationIgnorieren(): void {
+        this.gesuchModelManager.mutationIgnorieren().then(() => {
+            this.refreshKinderListe();
+        });
     }
 
     /**
@@ -819,6 +817,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
             kindContainer.betreuungen.forEach(betreuung => {
+                this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung.ignorable;
                 if (!betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger) {
                     return;
                 }
@@ -840,5 +839,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
 
         return val2;
+    }
+
+    public showIgnoreMutation(): boolean {
+        return this.isMutation() &&
+            this.allVerfuegungenIgnorable &&
+            this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
     }
 }

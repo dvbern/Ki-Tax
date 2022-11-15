@@ -59,6 +59,9 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 	@Nullable
 	private BigDecimal veraenderungVerguenstigungGegenueberVorgaenger;
 
+	@Nonnull
+	private boolean ignorable = false;
+
 	@Nullable
 	public String getGeneratedBemerkungen() {
 		return generatedBemerkungen;
@@ -126,5 +129,13 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 	public void setVeraenderungVerguenstigungGegenueberVorgaenger(
 		@Nullable BigDecimal veraenderungVerguenstigungGegenueberVorgaenger) {
 		this.veraenderungVerguenstigungGegenueberVorgaenger = veraenderungVerguenstigungGegenueberVorgaenger;
+	}
+
+	public boolean isIgnorable() {
+		return ignorable;
+	}
+
+	public void setIgnorable(boolean ignorable) {
+		this.ignorable = ignorable;
 	}
 }
