@@ -59,7 +59,7 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 	private String value;
 
 	@Nullable
-	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String erklaerung;
 
 	@Nullable
@@ -85,13 +85,6 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 		this.key = key;
 		this.value = value;
 		this.gesuchsperiode = gesuchsperiode;
-	}
-
-	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull String erklaerung) {
-		this.key = key;
-		this.value = value;
-		this.gesuchsperiode = gesuchsperiode;
-		this.erklaerung = erklaerung;
 	}
 
 	public Einstellung(@Nonnull EinstellungKey key, @Nonnull String value, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Mandant mandant) {
