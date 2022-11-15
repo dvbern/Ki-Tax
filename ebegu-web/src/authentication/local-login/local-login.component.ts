@@ -16,7 +16,8 @@
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
 import {LOCALLOGIN_DATA, LocalloginDatum} from '../../app/core/constants/LOCALLOGIN_DATA';
-import {KiBonMandant} from '../../app/core/constants/MANDANTS';
+import {MandantLocalloginDatumVisitor} from '../../app/core/constants/MandantLocalloginDatumVisitor';
+import {MANDANTS, KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../app/shared/services/mandant.service';
@@ -150,25 +151,7 @@ export class LocalLoginComponent {
     }
 
     private static getLocalloginDatum(mandant: KiBonMandant): LocalloginDatum {
-        let datum: LocalloginDatum;
-        switch (mandant) {
-            case KiBonMandant.BE:
-                datum = LOCALLOGIN_DATA.BE;
-                break;
-            case KiBonMandant.LU:
-                datum = LOCALLOGIN_DATA.LU;
-                break;
-            case KiBonMandant.SO:
-                datum = LOCALLOGIN_DATA.SO;
-                break;
-            case KiBonMandant.AR:
-                datum = LOCALLOGIN_DATA.AR;
-                break;
-            default:
-                datum = LOCALLOGIN_DATA.BE;
-                break;
-        }
-        return datum;
+        return new MandantLocalloginDatumVisitor().process(mandant);
     }
 
     /**
