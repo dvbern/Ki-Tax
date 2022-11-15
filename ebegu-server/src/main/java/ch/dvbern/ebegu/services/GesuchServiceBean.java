@@ -2615,6 +2615,23 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistence.merge(gesuch);
 	}
 
+	@Override
+	public Gesuch mutationIgnorieren(Gesuch gesuch) {
+		Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
+		this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
+
+		gesuchNachVerfuegungStart.getKindContainers().forEach(kindContainer -> {
+			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
+			for (int i = 0; i < betreuungList.size(); i++) {
+				Betreuung betreuung = betreuungList.get(i);
+				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+			}
+		});
+
+		return gesuchNachVerfuegungStart;
+
+	}
+
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;

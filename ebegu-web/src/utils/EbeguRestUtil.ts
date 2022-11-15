@@ -3365,6 +3365,7 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieNichtEintreten = verfuegungFromServer.kategorieNichtEintreten;
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
             verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
+            verfuegungTS.ignorable = verfuegungFromServer.ignorable;
             return verfuegungTS;
         }
         return undefined;
