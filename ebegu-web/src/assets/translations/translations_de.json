@@ -3024,6 +3024,7 @@
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY": "Betrag pro Stunde: {{value}} CHF",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN_VALUE_READONLY": "Bis zu einem massgebenden Einkommen von: {{value}} CHF",
     "CHECKBOX_MARKED_FUER_KONTROLL": "Informieren, sobald eine rechstkräftige Veranlagung zu diesem Fall existiert",
+    "GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER": "Keinen Gutschein für Sozialhilfeempfänger ausstellen",
     "MUTATION_VERAENDERUNG_1": "Die Mutation führt zu Veränderungen:<ul>",
     "MUTATION_VERAENDERUNG_BG": "<li>Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF</li>",
     "MUTATION_VERAENDERUNG_TS": "<li>Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF</li>",

@@ -194,8 +194,6 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
     }
 
     public tryAgainPossible(): boolean {
-        return this.isMutation() &&
-            !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status) &&
-            this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN;
+        return this.isMutation() && !this.gesuchModelManager.isGesuchReadonly();
     }
 }

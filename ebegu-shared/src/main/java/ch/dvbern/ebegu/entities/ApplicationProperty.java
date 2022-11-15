@@ -67,7 +67,7 @@ public class ApplicationProperty extends AbstractMutableEntity implements HasMan
 	private Mandant mandant;
 
 	@Nullable
-	@Column(nullable = false, length = DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = DB_TEXTAREA_LENGTH)
 	private String erklaerung;
 
 	public ApplicationProperty() {
