@@ -59,7 +59,7 @@ public class Einstellung extends AbstractEntity implements HasMandant {
 	private String value;
 
 	@Nullable
-	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String erklaerung;
 
 	@Nullable
