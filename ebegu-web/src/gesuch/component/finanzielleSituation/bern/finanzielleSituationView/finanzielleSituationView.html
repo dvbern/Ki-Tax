@@ -84,11 +84,13 @@
                             {{'FINANZIELLE_SITUATION_STEUERSCHNITTSTELLE_NOT_YET_ACTIVE' | translate:{date: vm.steuerSchnittstelleAktivAbStr} }}
                         </p>
                     </div>
+                </fieldset>
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
                         [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
 
+                <fieldset ng-disabled="vm.isGesuchReadonly()">
                     <!--Steuerveranlagung -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
@@ -453,6 +455,7 @@
                                                         ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
                                                         ng-required="true"
                                                         ng-click="vm.einkommenInVereinfachtemVerfarenClicked()"
+                                                        dv-enable-expression="!vm.isGesuchReadonly()"
                                                         true-option-label="{{ 'LABEL_JA' | translate}}"
                                                         false-option-label="{{'LABEL_NEIN' | translate}}"
                                                         aria-label="{{ 'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF' |translate}}"

@@ -138,6 +138,7 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean dokumenteHochgeladen;
 
+	private boolean markiertFuerKontroll;
 
 	@NotNull
 	private GesuchBetreuungenStatus gesuchBetreuungenStatus = GesuchBetreuungenStatus.ALLE_BESTAETIGT;
@@ -410,6 +411,14 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setBegruendungMutation(@Nullable String begruendungMutation) {
 		this.begruendungMutation = begruendungMutation;
+	}
+
+	public boolean isMarkiertFuerKontroll() {
+		return markiertFuerKontroll;
+	}
+
+	public void setMarkiertFuerKontroll(boolean markiertFuerKontroll) {
+		this.markiertFuerKontroll = markiertFuerKontroll;
 	}
 }
 

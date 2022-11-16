@@ -6,7 +6,9 @@ import {map} from 'rxjs/operators';
 import {TSMandant} from '../../../models/TSMandant';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
-import {KiBonMandant, KiBonMandantFull} from '../../core/constants/MANDANTS';
+import {MandantLoginStateVisitor} from '../../core/constants/MandantLoginStateVisitor';
+import {MandantLogoNameVisitor} from '../../core/constants/MandantLogoNameVisitor';
+import {MANDANTS, KiBonMandant} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -42,46 +44,31 @@ export class MandantService {
 
     private static hostnameToMandant(hostname: string): KiBonMandant {
         switch (hostname.toLocaleLowerCase()) {
-            case KiBonMandant.BE:
-                return KiBonMandant.BE;
-            case KiBonMandant.LU:
-                return KiBonMandant.LU;
-            case KiBonMandant.SO:
-                return KiBonMandant.SO;
-            case KiBonMandant.AR:
-                return KiBonMandant.AR;
+            case MANDANTS.BERN.hostname:
+                return MANDANTS.BERN;
+            case MANDANTS.LUZERN.hostname:
+                return MANDANTS.LUZERN;
+            case MANDANTS.SOLOTHURN.hostname:
+                return MANDANTS.SOLOTHURN;
+            case MANDANTS.APPENZELL_AUSSERRHODEN.hostname:
+                return MANDANTS.APPENZELL_AUSSERRHODEN;
             default:
-                return KiBonMandant.NONE;
-        }
-    }
-
-    private static shortMandantToFull(short: KiBonMandant): KiBonMandantFull {
-        switch (short) {
-            case KiBonMandant.BE:
-                return KiBonMandantFull.BE;
-            case KiBonMandant.LU:
-                return KiBonMandantFull.LU;
-            case KiBonMandant.SO:
-                return KiBonMandantFull.SO;
-            case KiBonMandant.AR:
-                return KiBonMandantFull.AR;
-            default:
-                return KiBonMandantFull.NONE;
+                return MANDANTS.NONE;
         }
     }
 
     private static cookieToMandant(cookieMandant: string): KiBonMandant {
         switch (cookieMandant) {
-            case KiBonMandantFull.BE:
-                return KiBonMandant.BE;
-            case KiBonMandantFull.SO:
-                return KiBonMandant.SO;
-            case KiBonMandantFull.LU:
-                return KiBonMandant.LU;
-            case KiBonMandantFull.AR:
-                return KiBonMandant.AR;
+            case MANDANTS.BERN.fullName:
+                return MANDANTS.BERN;
+            case MANDANTS.SOLOTHURN.fullName:
+                return MANDANTS.SOLOTHURN;
+            case MANDANTS.LUZERN.fullName:
+                return MANDANTS.LUZERN;
+            case MANDANTS.APPENZELL_AUSSERRHODEN.fullName:
+                return MANDANTS.APPENZELL_AUSSERRHODEN;
             default:
-                return KiBonMandant.NONE;
+                return MANDANTS.NONE;
         }
     }
 
@@ -101,12 +88,12 @@ export class MandantService {
 
     private async initMandantCookie(): Promise<void> {
         if (MandantService.isLegacyBeCookie(this.getDecodeMandantCookie())) {
-            await this.setMandantCookie(KiBonMandant.BE);
+            await this.setMandantCookie(MANDANTS.BERN);
         }
         const mandantFromCookie = MandantService.cookieToMandant(this.getDecodeMandantCookie());
         const mandantFromUrl = this.parseHostnameForMandant();
 
-        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
+        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !==MANDANTS.NONE) {
             await this.setMandantCookie(mandantFromUrl);
             this._mandant$.next(mandantFromUrl);
         } else {
@@ -118,7 +105,7 @@ export class MandantService {
         const mandantFromCookie = MandantService.cookieToMandant(this.getDecodedMandantRedirectCookie());
         const mandantFromUrl = this.parseHostnameForMandant();
 
-        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !== KiBonMandant.NONE) {
+        if (mandantFromCookie !== mandantFromUrl && mandantFromUrl !==MANDANTS.NONE) {
             await this.setMandantRedirectCookie(mandantFromUrl);
         }
     }
@@ -137,7 +124,7 @@ export class MandantService {
             this._multimandantActive$.next(props.mulitmandantAktiv);
             // overwrite cookie if not active
             if (!props.mulitmandantAktiv) {
-                this._mandant$.next(KiBonMandant.NONE);
+                this._mandant$.next(MANDANTS.NONE);
             }
         }, err => LOG.error(err));
     }
@@ -150,15 +137,15 @@ export class MandantService {
         const regex = /(be|so|ar|stadtluzern)(?=.(dvbern|kibon))/g;
         const matches = regex.exec(this.windowRef.nativeWindow.location.hostname);
         if (matches === null) {
-            return KiBonMandant.NONE;
+            return MANDANTS.NONE;
         }
         return MandantService.hostnameToMandant(matches[0]);
     }
 
-    public selectMandant(mandant: string, url: string): void {
-        const parsedMandant = MandantService.hostnameToMandant(mandant);
+    public selectMandant(mandant: KiBonMandant, url: string): void {
+        const parsedMandant = MandantService.hostnameToMandant(mandant.hostname);
 
-        if (parsedMandant !== KiBonMandant.NONE) {
+        if (parsedMandant !== MANDANTS.NONE) {
             this.redirectToMandantSubdomain(parsedMandant, url);
         }
     }
@@ -166,19 +153,19 @@ export class MandantService {
     public setMandantCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
         return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant`,
-            {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
+            {name: mandant.fullName}).toPromise() as Promise<any>;
     }
 
     public setMandantRedirectCookie(mandant: KiBonMandant): Promise<any> {
         // TODO: Restore AuthService once migrated
         return this.http.post(`${CONSTANTS.REST_API  }auth/set-mandant-redirect`,
-            {name: MandantService.shortMandantToFull(mandant)}).toPromise() as Promise<any>;
+            {name: mandant.fullName}).toPromise() as Promise<any>;
     }
 
     public redirectToMandantSubdomain(mandant: KiBonMandant, url: string): void {
         const host = this.removeMandantEnvironmentFromCompleteHost();
         const environment = this.getEnvironmentFromCompleteHost();
-        const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant}` : mandant;
+        const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant.hostname}` : mandant.hostname;
         this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
             '_self');
     }
@@ -207,29 +194,20 @@ export class MandantService {
     }
 
     public getMandantLoginState(mandant: KiBonMandant): string {
-        switch (mandant) {
-            case KiBonMandant.BE:
-            case KiBonMandant.NONE:
-            case KiBonMandant.SO:
-            case KiBonMandant.AR:
-            case KiBonMandant.LU:
-                return 'authentication.login';
-            default:
-                return 'authentication.locallogin';
-        }
+        return new MandantLoginStateVisitor().process(mandant);
     }
 
     public mandantToKibonMandant(mandant: TSMandant): KiBonMandant {
         switch (mandant.mandantIdentifier) {
             case 'SOLOTHURN':
-                return KiBonMandant.SO;
+                return MANDANTS.SOLOTHURN;
             case 'APPENZELL_AUSSERRHODEN':
-                return KiBonMandant.AR;
+                return MANDANTS.APPENZELL_AUSSERRHODEN;
             case 'LUZERN':
-                return KiBonMandant.LU;
+                return MANDANTS.LUZERN;
             case 'BERN':
             default:
-                return KiBonMandant.BE;
+                return MANDANTS.BERN;
         }
     }
 
@@ -241,17 +219,6 @@ export class MandantService {
     }
 
     public getMandantLogoName(mandant: KiBonMandant): string {
-        switch (mandant) {
-            case KiBonMandant.BE:
-                return 'logo-kibon-bern.svg';
-            case KiBonMandant.LU:
-                return 'logo-kibon-luzern.svg';
-            case KiBonMandant.SO:
-                return 'logo-kibon-solothurn.svg';
-            case KiBonMandant.AR:
-                return 'logo-kibon-ar.png';
-            default:
-                return 'logo-kibon-bern.svg';
-        }
+        return new MandantLogoNameVisitor().process(mandant);
     }
 }

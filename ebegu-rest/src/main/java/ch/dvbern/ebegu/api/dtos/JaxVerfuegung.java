@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,12 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 	private boolean kategorieKeinPensum = false;
 
 	private boolean kategorieNichtEintreten = false;
+
+	@Nullable
+	private BigDecimal veraenderungVerguenstigungGegenueberVorgaenger;
+
+	@Nonnull
+	private boolean ignorable = false;
 
 	@Nullable
 	public String getGeneratedBemerkungen() {
@@ -112,5 +119,23 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 
 	public void setKategorieNichtEintreten(boolean kategorieNichtEintreten) {
 		this.kategorieNichtEintreten = kategorieNichtEintreten;
+	}
+
+	@Nullable
+	public BigDecimal getVeraenderungVerguenstigungGegenueberVorgaenger() {
+		return veraenderungVerguenstigungGegenueberVorgaenger;
+	}
+
+	public void setVeraenderungVerguenstigungGegenueberVorgaenger(
+		@Nullable BigDecimal veraenderungVerguenstigungGegenueberVorgaenger) {
+		this.veraenderungVerguenstigungGegenueberVorgaenger = veraenderungVerguenstigungGegenueberVorgaenger;
+	}
+
+	public boolean isIgnorable() {
+		return ignorable;
+	}
+
+	public void setIgnorable(boolean ignorable) {
+		this.ignorable = ignorable;
 	}
 }

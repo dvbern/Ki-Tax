@@ -17,7 +17,7 @@
 
 import {Directive, EventEmitter, Injectable, Input, Output} from '@angular/core';
 import {Observable, of} from 'rxjs';
-import {KiBonMandant} from '../app/core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../app/core/constants/MANDANTS';
 import {NewUserSelectDirective} from '../app/core/new-antrag-list/new-user-select.directive';
 import {WindowRef} from '../app/core/service/windowRef.service';
 import {LoadingButtonDirective} from '../app/shared/directive/loading-button.directive';
@@ -92,7 +92,7 @@ class MockMandantService {
     }
 
     public get mandant$(): Observable<KiBonMandant> {
-        return of(KiBonMandant.BE);
+        return of(MANDANTS.BERN);
     }
 }
 

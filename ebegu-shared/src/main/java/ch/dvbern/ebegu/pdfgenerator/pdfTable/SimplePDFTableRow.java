@@ -35,18 +35,30 @@ public class SimplePDFTableRow {
 	@Nonnull
 	private String value;
 
-	private boolean isHeader = false;
-
+	private final SimplePDFTableRowConfiguration configuration = new SimplePDFTableRowConfiguration();
 
 	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value) {
 		this.label = label;
 		this.value = value;
 	}
 
+	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, int ident) {
+		this.label = label;
+		this.value = value;
+		this.configuration.setIdent(ident);
+	}
+
 	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, boolean isHeader) {
 		this.label = label;
 		this.value = value;
-		this.isHeader = isHeader;
+		this.configuration.setHeader(isHeader);
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nonnull String value, boolean isHeader, int ident) {
+		this.label = label;
+		this.value = value;
+		this.configuration.setHeader(isHeader);
+		this.configuration.setIdent(ident);
 	}
 
 	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value) {
@@ -57,12 +69,31 @@ public class SimplePDFTableRow {
 	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value, boolean isHeader) {
 		this.label = label;
 		this.value = PdfUtil.printBigDecimal(value);
-		this.isHeader = isHeader;
+		this.configuration.setHeader(isHeader);
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value, int ident) {
+		this.label = label;
+		this.value = PdfUtil.printBigDecimal(value);
+		this.configuration.setIdent(ident);
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nullable BigDecimal value, boolean isHeader, int ident) {
+		this.label = label;
+		this.value = PdfUtil.printBigDecimal(value);
+		this.configuration.setHeader(isHeader);
+		this.configuration.setIdent(ident);
 	}
 
 	public SimplePDFTableRow(@Nonnull String label, @Nullable Integer value) {
 		this.label = label;
 		this.value = value != null? String.valueOf(value) : "";
+	}
+
+	public SimplePDFTableRow(@Nonnull String label, @Nullable Integer value, int ident) {
+		this.label = label;
+		this.value = value != null? String.valueOf(value) : "";
+		this.configuration.setIdent(ident);
 	}
 
 	@Nonnull
@@ -92,11 +123,15 @@ public class SimplePDFTableRow {
 		this.value = value;
 	}
 
-	public boolean isHeader() {
-		return isHeader;
+	public void setHeader(boolean header) {
+		configuration.setHeader(header);
 	}
 
-	public void setHeader(boolean header) {
-		isHeader = header;
+	public void setIdent(int ident) {
+		this.configuration.setIdent(ident);
+	}
+
+	public SimplePDFTableRowConfiguration getConfiguration() {
+		return configuration;
 	}
 }

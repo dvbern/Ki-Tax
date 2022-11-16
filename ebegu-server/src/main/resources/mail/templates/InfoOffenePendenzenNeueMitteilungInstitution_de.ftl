@@ -4,8 +4,9 @@
 <#-- @ftlvariable name="offenePendenzen" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="ungelesendeMitteilung" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: ${institutionStammdaten.mail}
+To: ${empfaengerMail}
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> –  <#if offenePendenzen>Offene Pendenzen</#if><#if ungelesendeMitteilung && offenePendenzen> und</#if><#if ungelesendeMitteilung> neue Mitteilungen</#if> (${institutionStammdaten.institution.name}) / <#if offenePendenzen>Confirmation de places en attente</#if><#if ungelesendeMitteilung && offenePendenzen> et</#if><#if ungelesendeMitteilung> nouveau message</#if> (${institutionStammdaten.institution.name})</@base64Header>
 Content-Type: text/html;charset=utf-8
 

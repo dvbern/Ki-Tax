@@ -150,6 +150,8 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
             const result = await this.save();
             onResult(result);
+        } else {
+            onResult(false);
         }
     }
 

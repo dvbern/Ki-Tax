@@ -45,6 +45,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected steuerSchnittstelleAktivForPeriode: boolean;
     public steuerSchnittstelleAktivAbStr: string;
     protected steuerSchnittstelleAkivAbInPast: boolean;
+    protected zahlungsangabenRequired: boolean =  false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -64,16 +65,25 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             TSWizardStepName.FINANZIELLE_SITUATION,
             $timeout);
 
-        this.einstellungRS.findEinstellung(TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV,
-            this.gesuchModelManager.getGemeinde()?.id,
-            this.gesuchModelManager.getGesuchsperiode()?.id)
-            .subscribe(setting => {
-                this.steuerSchnittstelleAktivForPeriode = (setting.value === 'true');
-            }, error => LOG.error(error));
+        this.loadEinstellungen();
         this.applicationPropertyRS.getPublicPropertiesCached().then(properties => {
             this.steuerSchnittstelleAkivAbInPast = moment().isAfter(properties.steuerschnittstelleAktivAb);
             this.steuerSchnittstelleAktivAbStr = properties.steuerschnittstelleAktivAb.format(CONSTANTS.DATE_FORMAT);
         });
+    }
+
+    private loadEinstellungen(): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode()?.id)
+            .subscribe(einstellungen => {
+                const einstellungSteuerschnittstelle = einstellungen
+                    .find(e => e.key === TSEinstellungKey.SCHNITTSTELLE_STEUERN_AKTIV);
+                this.steuerSchnittstelleAktivForPeriode = (einstellungSteuerschnittstelle?.value === 'true');
+
+                const einstellungZahlungsangebenRequired = einstellungen
+                    .find(e => e.key === TSEinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED);
+                this.zahlungsangabenRequired =
+                    (einstellungZahlungsangebenRequired?.value === 'true');
+            }, error => LOG.error(error));
     }
 
     public getModel(): TSFinanzielleSituationContainer {
@@ -109,8 +119,11 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         return this.steuerSchnittstelleAktivForPeriode
             && this.steuerSchnittstelleAkivAbInPast
             && this.getModel().finanzielleSituationJA.steuerdatenZugriff
+            && this.isNotFinSitStartOrGS2Required()
             && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus);
     }
+
+    protected abstract isNotFinSitStartOrGS2Required(): boolean;
 
     public showWarningSteuerschnittstelleNotYetActive(): boolean {
         return this.getModel().finanzielleSituationJA.steuerdatenZugriff && !this.steuerSchnittstelleAkivAbInPast;

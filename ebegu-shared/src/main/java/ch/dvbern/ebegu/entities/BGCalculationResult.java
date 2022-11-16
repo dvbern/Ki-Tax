@@ -715,4 +715,19 @@ public class BGCalculationResult extends AbstractEntity {
 	public void setBabyTarif(boolean babyTarif) {
 		this.babyTarif = babyTarif;
 	}
+
+	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
+	public boolean differsIgnorableFrom(BGCalculationResult otherResult) {
+		return 	MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent) &&
+				this.anspruchspensumProzent == otherResult.anspruchspensumProzent &&
+				MathUtil.isSame(famGroesse, otherResult.famGroesse) &&
+				MathUtil.isSame(vollkosten, otherResult.vollkosten) &&
+				MathUtil.isSame(verguenstigungMahlzeitenTotal, otherResult.verguenstigungMahlzeitenTotal) &&
+				besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
+				babyTarif == otherResult.babyTarif &&
+				((tsCalculationResultMitPaedagogischerBetreuung == null && otherResult.tsCalculationResultMitPaedagogischerBetreuung == null) ||
+				tsCalculationResultMitPaedagogischerBetreuung != null && tsCalculationResultMitPaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultMitPaedagogischerBetreuung)) &&
+				((tsCalculationResultOhnePaedagogischerBetreuung == null && otherResult.tsCalculationResultOhnePaedagogischerBetreuung == null) ||
+						tsCalculationResultOhnePaedagogischerBetreuung != null && tsCalculationResultOhnePaedagogischerBetreuung.differsIgnorableFrom(otherResult.tsCalculationResultOhnePaedagogischerBetreuung));
+	}
 }

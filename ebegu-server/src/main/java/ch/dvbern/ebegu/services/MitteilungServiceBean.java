@@ -101,6 +101,7 @@ import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
@@ -169,6 +170,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@Override
 	@Nonnull
@@ -779,7 +783,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
-			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch, false);
+			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
 		} catch (EJBTransactionRolledbackException exception) {
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
@@ -1612,7 +1616,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
-			doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			acceptFinSit(mutation);
+			if (mutation.isNewlyCreatedMutation()) {
+				verfuegungService.gesuchAutomatischVerfuegen(mutation);
+			}
 			persistence.getEntityManager().flush();
 		} catch (EbeguException e) {
 			final Locale locale = LocaleThreadLocal.get();
@@ -1624,6 +1632,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return translatedError;
 		}
 		return null;
+	}
+
+	private void acceptFinSit(Gesuch mutation) {
+		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		gesuchService.updateGesuch(mutation, false, null);
 	}
 
 	@Override

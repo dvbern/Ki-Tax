@@ -205,6 +205,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FREIGABE_QUITTUNG_EINLESEN_RE
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
@@ -278,6 +279,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHLICHE_INTEGRATION_BIS_S
 import static ch.dvbern.ebegu.enums.EinstellungKey.UNBEZAHLTER_URLAUB_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.VERFUEGUNG_EXPORT_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZEMIS_DISABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
@@ -1991,6 +1993,7 @@ public final class TestDataUtil {
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, "0", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE, "0", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN, "200000", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER, "false", gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN, "10.39",	gesuchsperiode, persistence);
 		saveEinstellung(LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.2",	gesuchsperiode, persistence);
 		String stichtag = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() + "-09-15";
@@ -2032,6 +2035,7 @@ public final class TestDataUtil {
 		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode, persistence);
 		saveEinstellung(BEGRUENDUNG_MUTATION_AKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
@@ -2735,5 +2739,13 @@ public final class TestDataUtil {
 		gs2.setFinanzielleSituationContainer(finsitGs2);
 		finsitGs2.setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.setGesuchsteller2(gs2);
+	}
+
+	public static Mandant createMandantAR() {
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.APPENZELL_AUSSERRHODEN);
+		mandant.setName("Appenzell Ausserrhoden");
+		mandant.setActivated(true);
+		return mandant;
 	}
 }

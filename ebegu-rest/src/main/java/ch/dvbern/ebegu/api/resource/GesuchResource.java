@@ -851,6 +851,34 @@ public class GesuchResource {
 		return Response.ok(converter.gesuchToJAX(closedGesuch)).build();
 	}
 
+	@ApiOperation(value = "Ignoriert die Mutation. Alle TS-Anmeldungen werden abgeschlossen und alle BG-Betreuungen geschlossen ohne Verfügung", response = JaxGesuch.class)
+	@Nullable
+	@PUT
+	@Path("/{antragId}/ignorieren")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public Response mutationIgnorieren(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
+		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT, AntragStatusDTO.VERFUEGEN);
+
+		Objects.requireNonNull(antragJaxId.getId());
+		final String antragId = converter.toEntityId(antragJaxId);
+
+		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("mutationIgnorieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				GESUCH_ID_INVALID + antragId)
+		);
+		Gesuch closedGesuch = gesuchService.mutationIgnorieren(gesuch);
+		Optional<Gesuch> reloadedGesuch = gesuchService.findGesuch(closedGesuch.getId());
+
+		return Response.ok(converter.gesuchToJAX(reloadedGesuch.orElseThrow())).build();
+	}
+
 	@ApiOperation(value = "Ermittelt den Gesamtstatus aller Betreuungen des Gesuchs mit der uebergebenen Id.",
 		response = GesuchBetreuungenStatus.class)
 	@Nullable
@@ -1130,4 +1158,26 @@ public class GesuchResource {
 
 		return converter.gesuchToJAX(gesuch);
 	}
+
+	@ApiOperation(value = "Mark einen Antrag fuer Kontroll", response = JaxGesuch.class)
+	@Nullable
+	@POST
+	@Path("/markiertfuerkontroll/{antragId}/{markiertFuerKontroll}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public JaxGesuch updateMarkiertFuerKontroll(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Nonnull  @NotNull @PathParam("markiertFuerKontroll") boolean markiertFuerKontroll,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(antragJaxId.getId());
+		Gesuch gesuchFromDB = gesuchService.findGesuch(antragJaxId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("updateMarkiertFuerKontroll", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				antragJaxId.getId()));
+		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
+		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
 }

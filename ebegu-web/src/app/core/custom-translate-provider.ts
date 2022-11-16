@@ -19,7 +19,7 @@ import {IHttpResponse, IHttpService, IPromise, IQService} from 'angular';
 import {filter} from 'rxjs/operators';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {MandantService} from '../shared/services/mandant.service';
-import {KiBonMandant} from './constants/MANDANTS';
+import {MANDANTS} from './constants/MANDANTS';
 import {LogFactory} from './logging/LogFactory';
 
 const LOG = LogFactory.createLog('customTranslateLoader');
@@ -34,13 +34,13 @@ export function customTranslateLoader(
         mandantService.mandant$.pipe(filter(mandant => EbeguUtil.isNotNullOrUndefined(mandant))
         ).subscribe(mandant => {
             let translationFiles: IPromise<IHttpResponse<object>[]>;
-            if (mandant === KiBonMandant.NONE || mandant === KiBonMandant.BE) {
+            if (mandant === MANDANTS.NONE || mandant === MANDANTS.BERN) {
                 translationFiles = Promise.all([$http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)]);
             } else {
                 translationFiles = Promise.all(
                     [
                         $http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`),
-                        $http.get<object>(`./assets/translations/translations_${mandant}_${options.key}.json?t=${Date.now()}`)
+                        $http.get<object>(`./assets/translations/translations_${mandant.hostname}_${options.key}.json?t=${Date.now()}`)
                     ]
                 );
             }
