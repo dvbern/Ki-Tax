@@ -82,6 +82,7 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.entities.Zahlungsposition_;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -583,7 +584,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 
 		Gesuch letztesGueltigesGesuch = betreuung.extractGesuch();
-		if (!letztesGueltigesGesuch.isGueltig()) {
+		if (!letztesGueltigesGesuch.isGueltig() && !letztesGueltigesGesuch.getStatus().equals(AntragStatus.VERFUEGEN)) {
 			letztesGueltigesGesuch = gesuchService
 				.getNeustesVerfuegtesGesuchFuerGesuch(
 					letztesGueltigesGesuch.getGesuchsperiode(),
