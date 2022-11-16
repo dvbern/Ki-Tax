@@ -225,6 +225,17 @@
                         </div>
                     </div>
                 </div>
+
+                <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
+                    <div ng-if="vm.showMutationVeranderung()" class="well well-status-bestaetigt margin-top-20">
+                        <span translate>MUTATION_VERAENDERUNG_1</span>
+                        <span data-translate="MUTATION_VERAENDERUNG_BG"
+                              translate-values="{veraenderung: vm.veraenderungBG}"></span>
+                        <span data-translate="MUTATION_VERAENDERUNG_TS"
+                              translate-values="{veraenderung: vm.veraenderungTS}"></span>
+                        <span translate>MUTATION_VERAENDERUNG_2</span>
+                    </div>
+                </dv-demo-feature-wrapper>
             </div>
         </div>
 
@@ -237,6 +248,13 @@
                                    button-disabled="!vm.isFinSitChoosen()">
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
+                <dv-demo-feature-wrapper demo-feature="{{vm.demoFeature}}">
+                    <dv-loading-button input-id="button_mutationIgnorieren" button-click="vm.setMutationIgnorieren()"
+                                       aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
+                                       ng-if="vm.showIgnoreMutation()">
+                        <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
+                    </dv-loading-button>
+                </dv-demo-feature-wrapper>
                 <dv-loading-button input-id="button_verfuegenStarten" button-click="vm.setGesuchStatusVerfuegen()"
                                    aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
                                    ng-if="vm.showVerfuegenStarten()">

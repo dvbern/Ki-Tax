@@ -781,4 +781,11 @@ export class TSRoleUtil {
             .concat(this.getMandantOnlyRoles())
             .concat(this.getGemeindeOrBGRoles());
     }
+
+    public static getGemeindeTSRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_TS
+        ];
+    }
 }

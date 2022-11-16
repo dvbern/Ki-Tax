@@ -26,6 +26,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieMaxEinkommen: boolean;
     private _kategorieKeinPensum: boolean;
     private _kategorieNichtEintreten: boolean;
+    private _veraenderungVerguenstigungGegenueberVorgaenger: number;
+    private _ignorable: boolean;
 
     public constructor() {
         super();
@@ -85,6 +87,22 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
 
     public set kategorieNichtEintreten(value: boolean) {
         this._kategorieNichtEintreten = value;
+    }
+
+    public get veraenderungVerguenstigungGegenueberVorgaenger(): number {
+        return this._veraenderungVerguenstigungGegenueberVorgaenger;
+    }
+
+    public set veraenderungVerguenstigungGegenueberVorgaenger(value: number) {
+        this._veraenderungVerguenstigungGegenueberVorgaenger = value;
+    }
+
+    public get ignorable(): boolean {
+        return this._ignorable;
+    }
+
+    public set ignorable(value: boolean) {
+        this._ignorable = value;
     }
 
     /**

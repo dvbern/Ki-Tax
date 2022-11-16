@@ -19,7 +19,7 @@ import {map} from 'rxjs/operators';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
@@ -175,7 +175,7 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.neuesteGesuchsperiode = response[0];
                 this.antragErneuernPossible();
             });
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, error => this.$log.error(error));
     }

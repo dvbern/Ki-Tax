@@ -176,7 +176,7 @@ public interface GesuchService {
 	 * Es wird nach Erstellungsdatum geschaut
 	 */
 	@Nonnull
-	Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull boolean checkNeusteGesuchAuthorization);
+	Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Alle GesucheIDs des Gesuchstellers zurueckgeben fuer admin
@@ -479,4 +479,8 @@ public interface GesuchService {
 	List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr);
 
 	Gesuch findGesuchOfGS(GesuchstellerContainer container);
+
+	Gesuch mutationIgnorieren(Gesuch gesuch);
+
+	Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll);
 }

@@ -49,13 +49,6 @@ public class FinanzielleSituationStartDTO {
 	final private @Nullable
 	Adresse zahlungsadresse;
 	final private @Nullable
-	String ibanInfoma;
-	final private @Nullable
-	String kontoinhaberInfoma;
-	final private boolean abweichendeZahlungsadresseInfoma;
-	final private @Nullable
-	Adresse zahlungsadresseInfoma;
-	final private @Nullable
 	String infomaKreditorennummer;
 	final private @Nullable
 	String infomaBankcode;
@@ -73,10 +66,6 @@ public class FinanzielleSituationStartDTO {
 		@Nullable String kontoinhaber,
 		boolean abweichendeZahlungsadresse,
 		@Nullable Adresse zahlungsadresse,
-		@Nullable String ibanInfoma,
-		@Nullable String kontoinhaberInfoma,
-		boolean abweichendeZahlungsadresseInfoma,
-		@Nullable Adresse zahlungsadresseInfoma,
 		@Nullable String infomaKreditorennummer,
 		@Nullable String infomaBankcode,
 		@Nullable LocalDate finSitAenderungGueltigAbDatum
@@ -91,10 +80,6 @@ public class FinanzielleSituationStartDTO {
 		this.kontoinhaber = kontoinhaber;
 		this.abweichendeZahlungsadresse = abweichendeZahlungsadresse;
 		this.zahlungsadresse = zahlungsadresse;
-		this.ibanInfoma = ibanInfoma;
-		this.kontoinhaberInfoma = kontoinhaberInfoma;
-		this.abweichendeZahlungsadresseInfoma = abweichendeZahlungsadresseInfoma;
-		this.zahlungsadresseInfoma = zahlungsadresseInfoma;
 		this.infomaKreditorennummer = infomaKreditorennummer;
 		this.infomaBankcode = infomaBankcode;
 		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
@@ -145,25 +130,6 @@ public class FinanzielleSituationStartDTO {
 	@Nullable
 	public Adresse getZahlungsadresse() {
 		return zahlungsadresse;
-	}
-
-	@Nullable
-	public String getIbanInfoma() {
-		return ibanInfoma;
-	}
-
-	@Nullable
-	public String getKontoinhaberInfoma() {
-		return kontoinhaberInfoma;
-	}
-
-	public boolean isAbweichendeZahlungsadresseInfoma() {
-		return abweichendeZahlungsadresseInfoma;
-	}
-
-	@Nullable
-	public Adresse getZahlungsadresseInfoma() {
-		return zahlungsadresseInfoma;
 	}
 
 	@Nullable

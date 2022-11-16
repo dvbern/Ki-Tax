@@ -123,7 +123,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -218,6 +217,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus initialStatus = calculateInitialStatus(gesuchToCreate);
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
 		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
+		boolean newlyCreatedMutation = gesuchToCreate.isNewlyCreatedMutation();
 		StringBuilder logInfo = new StringBuilder();
 		logInfo.append("CREATE GESUCH fuer Gemeinde: ").append(gemeindeOfGesuchToCreate.getName())
 			.append(" Gesuchsperiode: ").append(gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString())
@@ -257,6 +257,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
 		ensureUniqueErstgesuchProDossierAndGesuchsperiode(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
+
+		// restore transient field
+		persistedGesuch.setNewlyCreatedMutation(newlyCreatedMutation);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
@@ -361,8 +364,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			return;
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		familiensituation.setAuszahlungsdatenMahlzeiten(null);
-		familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+		familiensituation.setAuszahlungsdaten(null);
+		familiensituation.setAbweichendeZahlungsadresse(false);
 	}
 
 	@Nonnull
@@ -1469,9 +1472,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
-	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull boolean checkNeusteGesuchAuthorization) {
+	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
-		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), checkNeusteGesuchAuthorization);
+		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
 	}
 
 	@Override
@@ -2604,6 +2607,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		authorizer.checkReadAuthorization(gesuch);
 
 		return gesuch;
+	}
+
+	@Override
+	public Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll) {
+		gesuch.setMarkiertFuerKontroll(markiertFuerKontroll);
+		return persistence.merge(gesuch);
+	}
+
+	@Override
+	public Gesuch mutationIgnorieren(Gesuch gesuch) {
+		Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
+		this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
+
+		gesuchNachVerfuegungStart.getKindContainers().forEach(kindContainer -> {
+			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
+			for (int i = 0; i < betreuungList.size(); i++) {
+				Betreuung betreuung = betreuungList.get(i);
+				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+			}
+		});
+
+		return gesuchNachVerfuegungStart;
+
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {

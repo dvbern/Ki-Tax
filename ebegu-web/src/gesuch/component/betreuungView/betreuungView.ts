@@ -20,7 +20,10 @@ import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
+import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
+import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -200,7 +203,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
 
-        if (this.mandant === KiBonMandant.LU) {
+        if (this.mandant === MANDANTS.LUZERN) {
             this.isTFOKostenBerechnungStuendlich = true;
         }
 
@@ -1367,7 +1370,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().keineDetailinformationen) {
             // Fuer Tagesschule setzen wir eine Dummy-Tagesschule als Institution
             this.instStamm = new TSInstitutionStammdatenSummary();
-            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
+            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
             this.getBetreuungModel().vertrag = false;
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
@@ -1460,11 +1463,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         /* eslint-disable */
         this.instStamm = new TSInstitutionStammdatenSummary();
         if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStamm.id = CONSTANTS.getUnknowTFOIdForMandant(this.mandant);
+            this.instStamm.id = new UnknownTFOIdVisitor().process(this.mandant);
         } else if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            this.instStamm.id = CONSTANTS.getUnknowTagesschuleIdForMandant(this.mandant);
+            this.instStamm.id = new UnknownTagesschuleIdVisitor().process(this.mandant);
         } else {
-            this.instStamm.id = CONSTANTS.getUnknowKitaIdForMandant(this.mandant);
+            this.instStamm.id = new UnknownKitaIdVisitor().process(this.mandant);
         }
     }
 
@@ -1662,11 +1665,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintUntermonatlich(): boolean {
-        return this.getBetreuungspensen().length > 0 && this.mandant !== KiBonMandant.LU;
+        return this.getBetreuungspensen().length > 0 && this.mandant !== MANDANTS.LUZERN;
     }
 
     private showHintEingewoehnung(): boolean {
-        return this.mandant === KiBonMandant.LU
+        return this.mandant === MANDANTS.LUZERN
         && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 

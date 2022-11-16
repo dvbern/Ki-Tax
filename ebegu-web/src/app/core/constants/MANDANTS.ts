@@ -16,19 +16,43 @@
  */
 
 // Corresponds with URL
-export enum KiBonMandant {
-    BE = 'be',
-    LU = 'stadtluzern',
-    SO = 'so',
-    AR = 'ar',
-    NONE = ''
+import {MandantVisitor} from './MandantVisitor';
+
+export abstract class MANDANTS {
+    public static readonly BERN: KiBonMandant = {
+        accept: visitor => visitor.visitBern(),
+        hostname: 'be',
+        fullName: 'Kanton Bern'
+    };
+
+    public static readonly LUZERN: KiBonMandant = {
+        accept: visitor => visitor.visitLuzern(),
+        hostname: 'stadtluzern',
+        fullName: 'Stadt Luzern'
+    };
+
+    public static readonly SOLOTHURN: KiBonMandant = {
+        accept: visitor => visitor.visitSolothurn(),
+        hostname: 'so',
+        fullName: 'Kanton Solothurn'
+    };
+    public static readonly APPENZELL_AUSSERRHODEN: KiBonMandant = {
+        accept: visitor => visitor.visitAppenzellAusserrhoden(),
+        hostname: 'ar',
+        fullName: 'Appenzell Ausserrhoden'
+    };
+    public static readonly NONE: KiBonMandant = {
+        accept: () => {
+            throw new Error('Should never be called for Mandant NONE, make sure mandant is set');
+        },
+        hostname: null,
+        fullName: null
+    };
+
 }
 
-// Corresponds with name in DB
-export enum KiBonMandantFull {
-    BE = 'Kanton Bern',
-    LU = 'Stadt Luzern',
-    SO = 'Kanton Solothurn',
-    AR = 'Appenzell Ausserrhoden',
-    NONE = ''
+export interface KiBonMandant {
+    hostname: string;
+    fullName: string;
+    accept<T>(visitor: MandantVisitor<T>): T;
 }
