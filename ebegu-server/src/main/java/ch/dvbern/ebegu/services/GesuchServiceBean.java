@@ -123,7 +123,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -1867,14 +1866,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Gesuch findOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Gesuch> criteriaResults = findExistingOpenMutationen(dossier, gesuchsperiode);
-		if (criteriaResults.size() > 1) {
-			// It should be impossible that there are more than one open Mutation
-			throw new EbeguRuntimeException("findOnlineMutation", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+		// It should be impossible that there are more than one open Mutation
+		return getExactlyOneGesuchFromResult(criteriaResults, "findOnlineMutation");
+	}
+
+	private Gesuch getExactlyOneGesuchFromResult(@Nonnull List<Gesuch> result, @Nonnull String callingMethodName) {
+		if (result.size() > 1) {
+			throw new EbeguRuntimeException(callingMethodName, ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
-		if (criteriaResults.size() <= 0) {
-			throw new EbeguEntityNotFoundException("findOnlineMutation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		if (result.isEmpty()) {
+			throw new EbeguEntityNotFoundException(callingMethodName, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		return criteriaResults.get(0);
+		return result.get(0);
 	}
 
 	/**
@@ -2601,10 +2604,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		);
 
 		final List<Gesuch> results = persistence.getCriteriaResults(query);
-		if (results.size() != 1) {
-			throw new EbeguRuntimeException("findGesuchOfGS", "Not single unique Gesuch found for GS");
-		}
-		Gesuch gesuch = results.stream().findFirst().orElseThrow();
+		Gesuch gesuch = getExactlyOneGesuchFromResult(results, "findGesuchOfGS");
 		authorizer.checkReadAuthorization(gesuch);
 
 		return gesuch;
