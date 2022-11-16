@@ -302,7 +302,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(lastenausgleich);
 		Assert.assertEquals(2022, lastenausgleich.getJahr().longValue());
 		Assert.assertEquals(1, lastenausgleich.getLastenausgleichDetails().size());
-		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), lastenausgleich.getTotalAlleGemeinden());
+		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), lastenausgleich.getTotalAlleGemeinden());
 
 		LastenausgleichGrundlagen grundlagen = lastenausgleichServiceBean.findLastenausgleichGrundlagen(2022).get();
 		Assert.assertNotNull(grundlagen.getSelbstbehaltPro100ProzentPlatz());
