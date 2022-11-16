@@ -479,4 +479,10 @@ public interface GesuchService {
 	List<Gesuch> findGesucheForZemisList(@Nonnull Integer lastenausgleichJahr);
 
 	Gesuch findGesuchOfGS(GesuchstellerContainer container);
+
+	/**
+	 * Findet für eine Mutation den Erstantrag aus derselben Gesuchsperiode. Der Erstantrag ist entweder vom Typ Erst-
+	 * oder Erneuerungsgesuch.
+	 */
+	Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch);
 }

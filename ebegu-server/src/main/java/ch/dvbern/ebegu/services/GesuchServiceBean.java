@@ -2610,6 +2610,32 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return gesuch;
 	}
 
+	@Override
+	public Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.getTyp().isGesuch()) {
+			return gesuch;
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(cb.equal(root.get(Gesuch_.dossier), gesuch.getDossier()));
+		predicates.add(cb.equal(root.get(Gesuch_.gesuchsperiode), gesuch.getGesuchsperiode()));
+
+		Predicate predicateErstOrErnerungsGesuch = cb.or(
+			cb.equal(root.get(Gesuch_.typ), AntragTyp.ERSTGESUCH),
+			cb.equal(root.get(Gesuch_.typ), AntragTyp.ERNEUERUNGSGESUCH)
+		);
+		predicates.add(predicateErstOrErnerungsGesuch);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		List<Gesuch> queryResult = persistence.getCriteriaResults(query);
+
+		return getExactlyOneGesuchFromResult(queryResult, "findErstgesuchForGesuch");
+	}
+
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
