@@ -136,7 +136,7 @@ export class CreateAngebotListViewController implements IController {
         }
         this.anmeldungDTO.betreuung.institutionStammdaten = this.institution;
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
-
+        this.anmeldungDTO.betreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         if (this.ts) {
             // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
             if (this.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
