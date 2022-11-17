@@ -179,7 +179,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		findEinstellungMinUnterschied();
+		expect(findEinstellungMinUnterschied().getValueAsBigDecimal()).andReturn(new BigDecimal(60));
 		testIgnored("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
 	}
 

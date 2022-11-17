@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -24,12 +25,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -96,24 +99,16 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	@SuppressWarnings("PMD.CloseResource")
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
-		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
-		if (!gesuchOpt.isPresent()) {
+		Gesuch gesuch = findDetachedGesuchByKey(key);
+
+		if (gesuch == null) {
 			return Processing.failure("processEvent NeuVeranlagung GesuchId invalid: " + key);
 		}
-		Gesuch gesuch = gesuchOpt.get();
-
-		// Wir werden das Gesuch FinSit ersetzen mit die neue Steuerdaten, es muss unbedingt nicht persistiert werden
-		// deswegen ist das Gesuch als detached gesetzt
-		Session session = persistence.getEntityManager().unwrap(Session.class);
-		session.evict(gesuch);
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		// --- Neue Zustand abholen ---
-
-		// entscheiden ob es geht um das GS1 oder GS2
-		KibonAnfrageContext kibonAnfrageContext = initKibonAnfrageContext(gesuch, dto.getZpvNummer());
+		KibonAnfrageContext kibonAnfrageContext = requestCurrentSteuerdaten(gesuch, dto.getZpvNummer());
 
 		if (kibonAnfrageContext == null) {
 			return Processing.failure(
@@ -123,17 +118,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 					+ dto.getGeburtsdatum()
 					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
 		}
-
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		boolean gemeinsam =
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung() != null
-				? gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung()
-				: false;
-
-		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(
-			kibonAnfrageContext,
-			gemeinsam);
 
 		// Nur RECHTSKRAEFTIGE SteuerResponse sind zu betrachten
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
@@ -145,31 +129,64 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 					"NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
 		}
 
-		assert kibonAnfrageContext != null;
 		FinanzielleSituationResultateDTO finSitNeuResult =
 			finanzielleSituationService.calculateResultate(kibonAnfrageContext.getGesuch());
 
+		BigDecimal minUnterschiedEinkommen = getEinstelungMinUnterschiedEinkommen(kibonAnfrageContext.getGesuch().getGesuchsperiode());
+
 		// Vergleichen
-		List<Einstellung> einstellungList = einstellungService.findEinstellungen(
-			EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,
-			gesuch.getGesuchsperiode());
-		if (einstellungList.size() != 1) {
-			throw new EbeguRuntimeException(
-				"NeueVeranlagungEventHandler: ",
-				"Es sollte exakt eine Einstellung für den VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK und die "
-					+ "Gesuchsperiode "
-					+ gesuch.getGesuchsperiode().getGesuchsperiodeString()
-					+ " gefunden werden");
-		}
 		if (finSitOriginalResult.getMassgebendesEinkVorAbzFamGr()
 			.compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0 ||
 			MathUtil.EXACT.subtract(
 				finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
 				finSitOriginalResult.getMassgebendesEinkVorAbzFamGr())
-				.compareTo(einstellungList.get(0).getValueAsBigDecimal()) <= 0
+				.compareTo(minUnterschiedEinkommen) <= 0
 		) {
 			return Processing.failure("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
 		}
+
+		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
+
+		return Processing.success();
+	}
+
+	@Nullable
+	private Gesuch findDetachedGesuchByKey(String key) {
+		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
+		if (gesuchOpt.isEmpty()) {
+			return null;
+		}
+
+		Gesuch gesuch = gesuchOpt.get();
+
+		// Wir werden das Gesuch FinSit ersetzen mit die neue Steuerdaten, es muss unbedingt nicht persistiert werden
+		// deswegen ist das Gesuch als detached gesetzt
+		Session session = persistence.getEntityManager().unwrap(Session.class);
+		session.evict(gesuch);
+		return gesuch;
+	}
+
+	@Nullable
+	private KibonAnfrageContext requestCurrentSteuerdaten(Gesuch gesuch, int zpvNummer) {
+		KibonAnfrageContext kibonAnfrageContext = initKibonAnfrageContext(gesuch, zpvNummer);
+
+		if (kibonAnfrageContext == null) {
+			return null;
+		}
+
+		// entscheiden, ob es geht um das GS1 oder GS2
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+
+		boolean gemeinsam =  Boolean.TRUE
+			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+
+		return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gemeinsam);
+	}
+
+	private void createAndSendNeueVeranlagungsMitteilung(KibonAnfrageContext kibonAnfrageContext) {
+		Gesuch gesuch = kibonAnfrageContext.getGesuch();
+
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
@@ -182,8 +199,23 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
 		LOG.info("NeueVeranlagungEventHandler: IT WORKS");
+	}
 
-		return Processing.success();
+	private BigDecimal getEinstelungMinUnterschiedEinkommen(Gesuchsperiode gesuchsperiode) {
+		List<Einstellung> einstellungList = einstellungService.findEinstellungen(
+			EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,
+			gesuchsperiode);
+
+		if (einstellungList.size() != 1) {
+			throw new EbeguRuntimeException(
+				"NeueVeranlagungEventHandler: ",
+				"Es sollte exakt eine Einstellung für den VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK und die "
+					+ "Gesuchsperiode "
+					+ gesuchsperiode.getGesuchsperiodeString()
+					+ " gefunden werden");
+		}
+
+		return einstellungList.get(0).getValueAsBigDecimal();
 	}
 
 	/**
