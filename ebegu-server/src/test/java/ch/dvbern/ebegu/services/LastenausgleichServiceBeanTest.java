@@ -305,8 +305,8 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), lastenausgleich.getTotalAlleGemeinden());
 
 		LastenausgleichGrundlagen grundlagen = lastenausgleichServiceBean.findLastenausgleichGrundlagen(2022).get();
-		Assert.assertNotNull(grundlagen.getSelbstbehaltPro100ProzentPlatz());
-		Assert.assertNotNull(grundlagen.getKostenPro100ProzentPlatz());
+		Assert.assertNull(grundlagen.getSelbstbehaltPro100ProzentPlatz());
+		Assert.assertNull(grundlagen.getKostenPro100ProzentPlatz());
 
 		LastenausgleichDetail detail = lastenausgleich.getLastenausgleichDetails().iterator().next();
 		Assert.assertEquals(gesuch.extractGemeinde(), detail.getGemeinde());
@@ -331,7 +331,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		createGesuch(gp2122);
 		Lastenausgleich lastenausgleich22 = lastenausgleichServiceBean.createLastenausgleichNew(2022,
 			mandant);
-		Assert.assertEquals(2, lastenausgleich22.getLastenausgleichDetails().size());
+		Assert.assertEquals(3, lastenausgleich22.getLastenausgleichDetails().size());
 
 		// lastenausgleich Details 1 müsste nach neuer Berechnung berechnet sein
 		var detail0 = lastenausgleich22.getLastenausgleichDetails().get(0);
