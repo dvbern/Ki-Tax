@@ -56,7 +56,7 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 			return false;
 		}
 		final NeueVeranlagungsMitteilung otherBetreuungsmitteilung = (NeueVeranlagungsMitteilung) other;
-		return getSteuerdatenResponse() == otherBetreuungsmitteilung.getSteuerdatenResponse();
+		return getSteuerdatenResponse().isSame(otherBetreuungsmitteilung.getSteuerdatenResponse());
 	}
 
 	@Nonnull
