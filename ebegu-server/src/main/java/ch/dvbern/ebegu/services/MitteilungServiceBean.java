@@ -1024,8 +1024,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);  // immer an Jugendamt
 		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-		neueVeranlagungsMitteilung.setSender(benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, TECHNICAL_KIBON_BENUTZER_ID)));
+		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
 		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
 
@@ -1033,6 +1032,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
 		return persistence.persist(neueVeranlagungsMitteilung);
+	}
+
+	@Nonnull
+	private Benutzer getTechnicalKibonBenutzer() {
+		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND,
+				TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
 	private void updateMessage(Betreuungsmitteilung mitteilung) {
