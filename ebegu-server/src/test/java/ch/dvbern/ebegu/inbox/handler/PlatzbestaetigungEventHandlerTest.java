@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +46,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -120,31 +118,24 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@TestSubject
 	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungService betreuungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private EinstellungService einstellungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private MitteilungService mitteilungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private GemeindeService gemeindeService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private InstitutionExternalClient institutionExternalClient;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
 
@@ -159,9 +150,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
 		mandant = requireNonNull(gemeinde.getMandant());
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
 			new Testfall01_WaeltiDagmar(
 				gesuchsperiode,
@@ -1364,7 +1352,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {
 		expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
 			.andReturn(Optional.of(mandant));
@@ -1373,7 +1360,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			.andReturn(Optional.of(betreuung));
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void mockClients(@Nonnull DateRange clientGueltigkeit) {
 		mockClients(clientGueltigkeit, Collections.emptyList());
 	}
@@ -1388,6 +1374,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			.andStubReturn(clientGueltigkeit);
 	}
 
+	@Nonnull
 	private InstitutionExternalClient mockClient(@Nonnull DateRange clientGueltigkeit, @Nonnull String clientName) {
 		InstitutionExternalClient client = mock(InstitutionExternalClient.class);
 
@@ -1402,7 +1389,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		return client;
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void withMahlzeitenverguenstigung(boolean enabled) {
 		Einstellung einstellung = mock(Einstellung.class);
 		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
@@ -1410,7 +1396,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private ZeitabschnittDTO defaultZeitabschnittDTO() {
 		return PlatzbestaetigungTestUtil.createZeitabschnittDTO(
@@ -1419,7 +1404,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
 		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);

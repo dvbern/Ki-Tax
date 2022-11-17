@@ -122,8 +122,8 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 		InstitutionExternalClients clients =
 			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), betreuung);
 
-		return clients.getRelevantClient().map(client ->
-				processEventForExternalClient(eventMonitor, betreuung, client.getGueltigkeit()))
+		return clients.getRelevantClient()
+			.map(client -> processEventForExternalClient(eventMonitor, betreuung, client.getGueltigkeit()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), betreuung));
 	}
 
@@ -195,9 +195,9 @@ public class BetreuungStornierenEventHandler extends BaseEventHandler<String> {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(refNummer).orElseThrow(() -> new EbeguRuntimeException(
+		Mandant mandant =
+			betreuungEventHelper.getMandantFromBgNummer(refNummer).orElseThrow(() -> new EbeguRuntimeException(
 				KibonLogLevel.ERROR, "createBetreuungsStornierenMitteilung", "Mandant konnte nicht gefunden werden"));
-
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());

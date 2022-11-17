@@ -99,8 +99,8 @@ public class AnmeldungAblehnenEventHandler extends BaseEventHandler<String> {
 		InstitutionExternalClients clients =
 			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), anmeldungTagesschule);
 
-		return clients.getRelevantClient().map(client ->
-				processEventForExternalClient(eventMonitor, anmeldungTagesschule, client.getGueltigkeit()))
+		return clients.getRelevantClient()
+			.map(client -> processEventForExternalClient(eventMonitor, anmeldungTagesschule, client.getGueltigkeit()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(
 				eventMonitor.getClientName(),
 				anmeldungTagesschule));

@@ -135,8 +135,8 @@ public class AnmeldungBestaetigungEventHandler extends BaseEventHandler<Tagessch
 		InstitutionExternalClients clients =
 			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), anmeldung);
 
-		return clients.getRelevantClient().map(client ->
-				processEventForExternalClient(eventMonitor, dto, anmeldung, client.getGueltigkeit()))
+		return clients.getRelevantClient()
+			.map(client -> processEventForExternalClient(eventMonitor, dto, anmeldung, client.getGueltigkeit()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), anmeldung));
 	}
 

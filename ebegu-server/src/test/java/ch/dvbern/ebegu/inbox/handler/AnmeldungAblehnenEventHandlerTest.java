@@ -221,7 +221,6 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
 

@@ -494,7 +494,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Nonnull
 	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(
 		@Nonnull Locale lang,
-		Mandant mandant) {
+		@Nonnull Mandant mandant) {
+
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_MAHLZEIT_KEY,
 			lang,
@@ -513,7 +514,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	@Nonnull
 	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(
 		@Nonnull Locale lang,
-		Mandant mandant) {
+		@Nonnull Mandant mandant) {
+
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_KEY,
 			lang,
