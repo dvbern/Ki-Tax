@@ -333,7 +333,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 			mandant);
 		Assert.assertEquals(3, lastenausgleich22.getLastenausgleichDetails().size());
 
-		// lastenausgleich Details 1 müsste nach neuer Berechnung berechnet sein
+		// lastenausgleich Details 0 müsste nach neuer Berechnung berechnet sein
 		var detail0 = lastenausgleich22.getLastenausgleichDetails().get(0);
 		Assert.assertEquals(MathUtil.DEFAULT.from(26.67), detail0.getTotalBelegungenMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(5805.20), detail0.getTotalBetragGutscheineMitSelbstbehalt());
@@ -341,7 +341,7 @@ public class LastenausgleichServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(4644.16), detail0.getBetragLastenausgleich());
 
 		// lastenausgleich Details 1 müsste nach alter Berechnung berechnet sein
-		var detail1 = lastenausgleich22.getLastenausgleichDetails().get(0);
+		var detail1 = lastenausgleich22.getLastenausgleichDetails().get(1);
 		Assert.assertEquals(waeltiTotalBelegungHalbjahr1, detail1.getTotalBelegungenMitSelbstbehalt());
 		Assert.assertEquals(waeltiTotalGutscheinHalbjahr1, detail1.getTotalBetragGutscheineMitSelbstbehalt());
 		Assert.assertEquals(MathUtil.DEFAULT.from(1451.30), detail1.getSelbstbehaltGemeinde());
