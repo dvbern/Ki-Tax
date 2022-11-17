@@ -187,6 +187,7 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"
+                                             ng-change="vm.changeMahlzeitenGewuenscht()"
                                              name="keineMahlzeitenverguenstigungBeantragt"
                                              aria-label="{{'MAHLZEITENVERGUENSTIGUNG_NICHT_BEANTRAGT'|translate}}"
                                              ng-disabled="vm.isGesuchReadonly() || vm.isMahlzeitenverguenstigungToggleDisabled()">
@@ -198,7 +199,7 @@
                         </div>
                     </div>
 
-                    <div ng-if="vm.isZahlungsdatenRequired()" >
+                    <div ng-if="vm.showZahlungsdaten()" >
                         <!--IBAN-->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium">
@@ -210,7 +211,8 @@
                                     <input id="iban" type="text" name="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"
                                            dv-is-not-qr-iban
-                                           dv-max-length class="form-control" required>
+                                           dv-max-length class="form-control"
+                                           ng-required="vm.isZahlungsangabenRequired()">
                                     <dv-bisher gs="vm.model.zahlungsinformationenGS.iban"
                                                ja="vm.model.zahlungsinformationen.iban"></dv-bisher>
                                     <dv-error-messages for="vm.form.iban.$error" class="error"
@@ -226,7 +228,8 @@
                                            data-translate="MAHLZEITENVERGUENSTIGUNG_KONTOINHABER"
                                            for="kontoinhaber"></label>
                                     <input id="kontoinhaber" type="text" name="kontoinhaber"
-                                           ng-model="vm.model.zahlungsinformationen.kontoinhaber" required
+                                           ng-model="vm.model.zahlungsinformationen.kontoinhaber"
+                                           ng-required="vm.isZahlungsangabenRequired()"
                                            dv-max-length class="form-control">
                                     <dv-bisher gs="vm.model.zahlungsinformationenGS.kontoinhaber"
                                                ja="vm.model.zahlungsinformationen.kontoinhaber"></dv-bisher>

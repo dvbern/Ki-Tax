@@ -168,4 +168,14 @@ public class TSCalculationResult extends AbstractEntity {
 		betreuungszeitProWoche = this.betreuungszeitProWoche + other.betreuungszeitProWoche;
 		verpflegungskosten = MathUtil.DEFAULT.addNullSafe(this.verpflegungskosten, other.verpflegungskosten);
 	}
+
+	public boolean differsIgnorableFrom(@Nullable TSCalculationResult that) {
+		if (that == null) {
+			return false;
+		}
+		return Objects.equals(betreuungszeitProWoche, that.betreuungszeitProWoche) &&
+				MathUtil.isSame(verpflegungskosten, that.verpflegungskosten) &&
+				MathUtil.isSame(gebuehrProStunde, that.gebuehrProStunde) &&
+				MathUtil.isSame(totalKostenProWoche, that.totalKostenProWoche);
+	}
 }

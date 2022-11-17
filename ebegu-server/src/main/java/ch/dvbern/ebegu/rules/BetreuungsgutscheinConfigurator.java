@@ -50,6 +50,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_TEXTE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN;
@@ -137,7 +138,8 @@ public class BetreuungsgutscheinConfigurator {
 			DAUER_BABYTARIF,
 			KINDERABZUG_TYP,
 			FKJV_TEXTE,
-			FACHSTELLEN_TYP
+			FACHSTELLEN_TYP,
+			GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER
 		);
 	}
 
@@ -436,6 +438,11 @@ public class BetreuungsgutscheinConfigurator {
 		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
 		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kesbPlatzierungCalcRule, einstellungMap);
+
+		// Sozialhilfeempfänger erhalten keinen Anspruch, wenn entsprechend konfiguriert
+		SozialhilfeKeinAnspruchCalcRule
+			sozialhilfeCalcRule = new SozialhilfeKeinAnspruchCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(sozialhilfeCalcRule, einstellungMap);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);

@@ -83,6 +83,7 @@ public final class Constants {
 	public static final DecimalFormatSymbols SYMBOLS_DE_CH = new DecimalFormatSymbols(new Locale("de", "CH"));
 	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN, SYMBOLS_DE_CH);
 	public static final String NO_DECIMAL_PATTERN = "#,##0";
+	public static final String ONE_DECIMAL_PATTERN = "#,##0.0";
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
 	public static final String VALIDATION_MESSAGE_BUNDLE_NAME = "ValidationMessages";

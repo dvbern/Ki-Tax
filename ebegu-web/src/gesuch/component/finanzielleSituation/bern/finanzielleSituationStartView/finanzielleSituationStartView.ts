@@ -16,11 +16,12 @@
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -66,7 +67,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         'EbeguRestUtil',
         'ListResourceRS',
         'EinstellungRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'DemoFeatureRS'
     ];
 
     public finanzielleSituationRequired: boolean;
@@ -75,6 +77,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     private readonly initialModel: TSFinanzModel;
     public laenderList: TSLand[];
     private triedSavingWithoutForm: boolean = false;
+
+    private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -89,7 +93,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         private readonly ebeguRestUtil: EbeguRestUtil,
         listResourceRS: ListResourceRS,
         einstellungRS: EinstellungRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
+        demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -118,6 +123,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                                                                                                     // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
+
+        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAY_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
+            .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -303,8 +311,32 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
     }
 
-    public isZahlungsdatenRequired(): boolean {
-        return this.isMahlzeitenverguenstigungEnabled() && !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
+    public showZahlungsdaten(): boolean {
+        return this.isDemofeatureAlwaysShowZahlungsdatenEnabled() ||
+        (this.isMahlzeitenverguenstigungEnabled() &&
+            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt);
+    }
+
+    private isDemofeatureAlwaysShowZahlungsdatenEnabled() {
+        return this.isAlwaysShowAuszahlungsdatenActivated;
+    }
+
+    public changeMahlzeitenGewuenscht(): void {
+        // Solang dei Funktion noch mit dem Demofeature ausgeblendet ist, sollen die Auszahlungsdaten reseted werden,
+        // wenn die mahlzeitenvergünsitung nicht mehr beantragt wird
+        // das kann gelöscht werden, sobald wir die funktion permanent aktivieren
+        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt &&
+            !this.isDemofeatureAlwaysShowZahlungsdatenEnabled()) {
+            this.model.zahlungsinformationen.iban = undefined;
+            this.model.zahlungsinformationen.kontoinhaber = undefined;
+            this.model.zahlungsinformationen.abweichendeZahlungsadresse = undefined;
+            this.model.zahlungsinformationen.zahlungsadresse = undefined;
+        }
+    }
+
+    public isZahlungsangabenRequired(): boolean {
+        return !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt ||
+            this.zahlungsangabenRequired;
     }
 
     public areZahlungsdatenEditable(): boolean {
@@ -403,5 +435,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                     this.form.$setDirty();
                 }
             );
+    }
+
+    protected isNotFinSitStartOrGS2Required(): boolean {
+        return this.gesuchModelManager.isGesuchsteller2Required();
     }
 }

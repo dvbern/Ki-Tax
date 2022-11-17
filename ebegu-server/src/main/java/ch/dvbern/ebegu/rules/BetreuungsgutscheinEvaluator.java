@@ -245,16 +245,21 @@ public class BetreuungsgutscheinEvaluator {
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
 				BigDecimal veraenderung = null;
+				boolean ignorable = false;
 
 				if (vorgaengerVerfuegung != null) {
 					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
 					veraenderung = VeraenderungCalculator
 						.getVeranderungCalculator(isTagesschule)
 						.calculateVeraenderung(zeitabschnitte, vorgaengerVerfuegung);
+					ignorable = VeraenderungCalculator
+							.getVeranderungCalculator(isTagesschule)
+							.calculateIgnorable(zeitabschnitte, vorgaengerVerfuegung, veraenderung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
 				verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veraenderung);
+				verfuegungPreview.setIgnorable(ignorable);
 
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte,
 					gesuch.extractMandant(),

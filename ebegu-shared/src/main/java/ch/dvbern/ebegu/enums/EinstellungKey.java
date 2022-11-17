@@ -106,6 +106,8 @@ public enum EinstellungKey {
 	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
+	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
+	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
@@ -322,7 +324,10 @@ public enum EinstellungKey {
 	BEGRUENDUNG_MUTATION_AKTIVIERT(MandantIdentifier.getAll()),
 
 	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
-	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll());
+	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll()),
+
+	// Gibt an, ob die Zahlungsangaben für Antragsteller auf der FinSit required oder optional sind (KIBON-2688)
+	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN);
 
 
 	private EinstellungTyp typ;

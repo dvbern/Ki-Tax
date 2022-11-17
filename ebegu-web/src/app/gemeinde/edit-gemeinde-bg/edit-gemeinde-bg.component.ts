@@ -196,6 +196,11 @@ export class EditGemeindeComponentBG implements OnInit {
             gk.konfigMahlzeitenverguenstigungMinimalerElternbeitragMahlzeit, gk);
     }
 
+    public changeKonfigKeineGutscheineFuerSozialhilfeEmpfaenger(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(TSEinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER,
+            gk.konfigKeineGutscheineFuerSozialhilfeEmpfaenger, gk);
+    }
+
     public changeKonfigErwerbspensumZuschlagOverriden(gk: TSGemeindeKonfiguration): void {
         // if the flag is unchecked, we need to restore the original value
         if (!gk.erwerbspensumZuschlagOverriden) {

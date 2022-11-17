@@ -238,6 +238,11 @@ export class GesuchRS implements IEntityRS {
 
     }
 
+    public mutationIgnorieren(gesuchId: string): IPromise<TSGesuch> {
+        return this.$http.put(`${this.serviceURL}/${gesuchId}/ignorieren`, {})
+            .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    }
+
     public markiertFuerKontrollUpdaten(antragId: string, markiertFuerKontroll: boolean): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/markiertfuerkontroll/${encodeURIComponent(antragId)}/${markiertFuerKontroll}`;
         return this.$http.post(url, null).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));

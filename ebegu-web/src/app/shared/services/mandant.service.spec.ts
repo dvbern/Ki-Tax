@@ -3,7 +3,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {TestBed} from '@angular/core/testing';
 import {CookieService} from 'ngx-cookie-service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {KiBonMandant} from '../../core/constants/MANDANTS';
+import {MANDANTS} from '../../core/constants/MANDANTS';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../core/service/windowRef.service';
 
@@ -72,93 +72,93 @@ describe('MandantService', () => {
         describe('local domains', () => {
             it('should parse local url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'local.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse local url with unknown. sudomain to NONE', () => {
                 mockWindow.location.hostname = 'lucerne.local.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse local url with be. sudomain to BE', () => {
                 mockWindow.location.hostname = 'local-be.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.BERN);
             });
 
             it('should parse local url with stadtluzern. sudomain to LU', () => {
                 mockWindow.location.hostname = 'local-stadtluzern.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.LUZERN);
             });
         });
         // eslint-disable-next-line 
         describe('dev-kibon domains', () => {
             it('should parse dev-kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'dev.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse dev-kibon url with unknown. sudomain to NONE', () => {
                 mockWindow.location.hostname = 'lucerne.dev.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse dev-kibon url with be. sudomain to BE', () => {
                 mockWindow.location.hostname = 'dev-be.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.BERN);
             });
 
             it('should parse dev-kibon url with stadtluzern. sudomain to LU', () => {
                 mockWindow.location.hostname = 'dev-stadtluzern.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.LUZERN);
             });
         });
         // eslint-disable-next-line 
         describe('uat-kibon domains', () => {
             it('should parse uat-kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'uat.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse uat-kibon url with unknown. sudomain to NONE', () => {
                 mockWindow.location.hostname = 'lucerne.uat.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse uat-kibon url with be. sudomain to BE', () => {
                 mockWindow.location.hostname = 'uat-be.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.BERN);
             });
 
             it('should parse old uat-be-kibon url with be. sudomain to BE', () => {
                 mockWindow.location.hostname = 'uat-kibon-be.dvbern.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.BERN);
             });
 
             it('should parse uat-kibon url with stadtluzern. sudomain to LU', () => {
                 mockWindow.location.hostname = 'dev-stadtluzern.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.LUZERN);
             });
         });
         // eslint-disable-next-line 
         describe('kibon domains', () => {
             it('should parse kibon url without sudomain to NONE', () => {
                 mockWindow.location.hostname = 'kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse kibon url with unknown. sudomain to NONE', () => {
                 mockWindow.location.hostname = 'lucerne.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.NONE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.NONE);
             });
 
             it('should parse kibon url with be. sudomain to BE', () => {
                 mockWindow.location.hostname = 'be.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.BE);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.BERN);
             });
 
             it('should parse kibon url with stadtluzern. sudomain to LU', () => {
                 mockWindow.location.hostname = 'stadtluzern.kibon.ch';
-                expect(service.parseHostnameForMandant()).toEqual(KiBonMandant.LU);
+                expect(service.parseHostnameForMandant()).toEqual(MANDANTS.LUZERN);
             });
         });
     });

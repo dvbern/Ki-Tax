@@ -16,10 +16,10 @@
 <mat-dialog-content role="document" tabindex="-1" id="dialogContent">
 
     <ng-container [ngSwitch]="mandant$ | async">
-        <ng-container *ngSwitchCase="mandantTypes.BE" [ngTemplateOutlet]="be"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.LU" [ngTemplateOutlet]="lu"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.SO" [ngTemplateOutlet]="so"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.AR" [ngTemplateOutlet]="so"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.BERN" [ngTemplateOutlet]="be"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.LUZERN" [ngTemplateOutlet]="lu"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.SOLOTHURN" [ngTemplateOutlet]="so"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN" [ngTemplateOutlet]="so"></ng-container>
         <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
     </ng-container>
 </mat-dialog-content>

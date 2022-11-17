@@ -61,6 +61,7 @@ export class TSGemeindeKonfiguration {
     public konfigHoheEinkommensklassenBetragKitaAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenBetragTfoAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
+    public konfigKeineGutscheineFuerSozialhilfeEmpfaenger: boolean;
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -275,6 +276,10 @@ export class TSGemeindeKonfiguration {
                 }
                 case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {
                     this.konfigHoheEinkommensklassenMassgebendenEinkommen = Number(property.value);
+                    break;
+                }
+                case TSEinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER: {
+                    this.konfigKeineGutscheineFuerSozialhilfeEmpfaenger = (property.value === 'true');
                     break;
                 }
                 default: {

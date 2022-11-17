@@ -268,6 +268,26 @@ public class VeraenderungTagesschuleCalculatorTest {
 	}
 
 	@Test
+	public void multipleZeitabschnitte_differentGueltigkitenInVorganger_shouldNotBeIgnorable() {
+		List<VerfuegungZeitabschnitt> zaVorgaenger = List.of(
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeit2022, BigDecimal.valueOf(3.5), null)
+		);
+
+		List<VerfuegungZeitabschnitt> zaAktuell = Arrays.asList(
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitAugust, BigDecimal.valueOf(3.3), null),
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitSeptember, BigDecimal.valueOf(3.8), null)
+		);
+
+		Verfuegung verfuegung = new Verfuegung();
+		verfuegung.setZeitabschnitte(zaVorgaenger);
+
+		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(zaAktuell, verfuegung);
+
+		Assert.assertEquals(BigDecimal.valueOf(0.3), veranderung);
+		Assert.assertFalse(veraenderungCalculator.calculateIgnorable(zaAktuell, verfuegung, veranderung));
+	}
+
+	@Test
 	public void multipleZeitabschnitte_MitBetreuung_OhneBetreuung() {
 		List<VerfuegungZeitabschnitt> zaAktuell = Arrays.asList(
 			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitAugust, BigDecimal.valueOf(1.2), BigDecimal.valueOf(2.7)),
@@ -285,6 +305,27 @@ public class VeraenderungTagesschuleCalculatorTest {
 		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(zaAktuell, verfuegung);
 
 		Assert.assertEquals(BigDecimal.valueOf(-1.9), veranderung);
+	}
+
+	@Test
+	public void multipleZeitabschnitte_MitBetreuungAndereTarife_OhneBetreuung_shouldNotBeIgnorable() {
+		List<VerfuegungZeitabschnitt> zaVorgaenger = Arrays.asList(
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitAugust, BigDecimal.valueOf(1.2), BigDecimal.valueOf(2.7)),
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitSeptember, BigDecimal.valueOf(3.7), BigDecimal.valueOf(0.5))
+		);
+
+		List<VerfuegungZeitabschnitt> zaAktuell = Arrays.asList(
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitAugust, BigDecimal.valueOf(3.1), BigDecimal.valueOf(2.2)),
+			createZeitabschnittMitTarifAndGueltigkeit(gueltigkeitSeptember, BigDecimal.valueOf(3.5), BigDecimal.valueOf(1.6))
+		);
+
+		Verfuegung verfuegung = new Verfuegung();
+		verfuegung.setZeitabschnitte(zaVorgaenger);
+
+		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(zaAktuell, verfuegung);
+
+		Assert.assertEquals(BigDecimal.valueOf(1.9), veranderung);
+		Assert.assertFalse(veraenderungCalculator.calculateIgnorable(zaAktuell, verfuegung, veranderung));
 	}
 
 	private VerfuegungZeitabschnitt createZeitabschnittMitTarif(@Nullable BigDecimal tarifMitBetreuung, @Nullable BigDecimal tarifOhneBetreuung) {
