@@ -42,19 +42,10 @@ ALTER TABLE mitteilung
 
 INSERT INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
 					  email, nachname, username, vorname, mandant_id, externaluuid, status)
-					  VALUES (UNHEX(REPLACE('99999999-2222-2222-2222-222222222222', '-', '')), '2020-09-01 00:00:00', '2020-09-01 00:00:00', 'flyway',
+					  VALUES (UNHEX(REPLACE('99999999-2222-2222-2222-222222222222', '-', '')), current_timestamp, current_timestamp, 'flyway',
 	'flyway',0, null, 'kibon.technical@dvbern.ch', 'kibon', 'kibon', '', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220','-', '')), null, 'AKTIV');
 
 INSERT INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 						  vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id)
-						  VALUES (UNHEX(REPLACE('99999999-2222-2222-2222-222222222223', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway',
-																															   'flyway', 0, null, '2020-09-01', '9999-12-31', 'SUPER_ADMIN', UNHEX(REPLACE('99999999-2222-2222-2222-222222222222', '-', '')), null, null);
-
-/*UPDATE einstellung
-	INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id
-	INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
-	SET value = 'true'
-WHERE einstellung_key = 'VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK' AND mandant_identifier = 'BERN';
-
-*/
-
+						  VALUES (UNHEX(REPLACE('99999999-2222-2222-2222-222222222223', '-', '')), current_timestamp, current_timestamp, 'flyway',
+							'flyway', 0, null, '2020-09-01', '9999-12-31', 'SUPER_ADMIN', UNHEX(REPLACE('99999999-2222-2222-2222-222222222222', '-', '')), null, null);
