@@ -92,7 +92,11 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Processing processing = attemptProcessing(key, dto);
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
-			LOG.warn("Neue Veranlagung Event für Gesuch: {} nicht verarbeitet: {}", key, message);
+			LOG.warn("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} nicht verarbeitet: {}",
+				dto.getZpvNummer(), key, message);
+		} else {
+			LOG.info("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} verarbeitet",
+				dto.getZpvNummer(), key);
 		}
 	}
 
@@ -102,7 +106,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Gesuch gesuch = findDetachedGesuchByKey(key);
 
 		if (gesuch == null) {
-			return Processing.failure("processEvent NeuVeranlagung GesuchId invalid: " + key);
+			return Processing.failure("Kein Gesuch für Key gefunen. Key: " + key);
 		}
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
@@ -112,37 +116,37 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 		if (kibonAnfrageContext == null) {
 			return Processing.failure(
-				"NeueVeranlagungEventHandler: Die neue Veranlagung fuer ZPV Nummer: "
-					+ dto.getZpvNummer()
-					+ ", mit Geburtsdatum: + "
+				"Die neue Veranlagung mit Geburtsdatum: "
 					+ dto.getGeburtsdatum()
 					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
 		}
 
+		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null) {
+			return Processing.failure("Keine neue Veranlagung gefunden");
+		}
+
 		// Nur RECHTSKRAEFTIGE SteuerResponse sind zu betrachten
-		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
-			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().equals(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG)) {
-			return Processing.failure(
-				kibonAnfrageContext.getSteuerdatenAnfrageStatus() != null ?
-					"NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig"
-					:
-					"NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
+		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() != SteuerdatenAnfrageStatus.RECHTSKRAEFTIG) {
+			return Processing.failure("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 		}
 
 		FinanzielleSituationResultateDTO finSitNeuResult =
 			finanzielleSituationService.calculateResultate(kibonAnfrageContext.getGesuch());
 
-		BigDecimal minUnterschiedEinkommen = getEinstelungMinUnterschiedEinkommen(kibonAnfrageContext.getGesuch().getGesuchsperiode());
-
 		// Vergleichen
-		if (finSitOriginalResult.getMassgebendesEinkVorAbzFamGr()
-			.compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0 ||
-			MathUtil.EXACT.subtract(
-				finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
-				finSitOriginalResult.getMassgebendesEinkVorAbzFamGr())
-				.compareTo(minUnterschiedEinkommen) <= 0
-		) {
-			return Processing.failure("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
+		if (finSitOriginalResult.getMassgebendesEinkVorAbzFamGr().compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0) {
+			return Processing.failure("Keine Meldung erstellt, da das massgebende Einkommen sich mit der neuen Verfügung nicht verändert hat");
+		}
+
+		BigDecimal minUnterschiedEinkommen = getEinstelungMinUnterschiedEinkommen(kibonAnfrageContext.getGesuch().getGesuchsperiode());
+		BigDecimal unterschiedEinkommen = MathUtil.EXACT.subtract(
+			finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
+			finSitOriginalResult.getMassgebendesEinkVorAbzFamGr());
+		if (unterschiedEinkommen.compareTo(minUnterschiedEinkommen) <= 0) {
+			String unterschiedEinkommenString = unterschiedEinkommen.stripTrailingZeros().toPlainString();
+			return Processing.failure("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
+				" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung aber bei " + minUnterschiedEinkommen +
+				" Franken liegt");
 		}
 
 		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
@@ -198,7 +202,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
-		LOG.info("NeueVeranlagungEventHandler: IT WORKS");
 	}
 
 	private BigDecimal getEinstelungMinUnterschiedEinkommen(Gesuchsperiode gesuchsperiode) {

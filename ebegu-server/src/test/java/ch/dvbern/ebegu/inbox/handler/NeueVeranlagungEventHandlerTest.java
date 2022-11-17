@@ -152,7 +152,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void gesuchIdUnbekannt() {
 		expectGesuchNotFound();
 
-		testIgnored("processEvent NeuVeranlagung GesuchId invalid:");
+		testIgnored("Kein Gesuch für Key gefunen. Key: ");
 	}
 
 	@Test
@@ -160,7 +160,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		testIgnored("NeueVeranlagungEventHandler: die neue Veranlagung war nicht gefunden");
+		testIgnored("Keine neue Veranlagung gefunden");
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		testIgnored("NeueVeranlagungEventHandler: die neue Veranlagung ist noch nicht Rechtskraeftig");
+		testIgnored("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 	}
 
 	@Test
@@ -179,8 +179,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(findEinstellungMinUnterschied().getValueAsBigDecimal()).andReturn(new BigDecimal(60));
-		testIgnored("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
+		testIgnored("Keine Meldung erstellt, da das massgebende Einkommen sich mit der neuen Verfügung nicht verändert hat");
 	}
 
 	@Test
@@ -188,7 +187,8 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(60));
-		testIgnored("NeueVeranlagungEventHandler: die neue VeranlagungStand abweich nicht genugen");
+		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 60 Franken verändert."
+			+ " Der konfigurierte Schwellenwert zur Benachrichtigung aber bei 60 Franken liegt");
 	}
 
 	@Test
