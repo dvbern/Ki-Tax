@@ -22,6 +22,12 @@ public class VeraenderungBetreuungsgutscheinCalculator extends VeraenderungCalcu
 		return totalVerguenstigungAktuell.subtract(totalVerguenstigungVorgaenger);
 	}
 
+	@Override
+	protected boolean isVerfuegungIgnorable(BigDecimal veraenderung) {
+		//Wenn der Betreuungsgutschein sinkt, darf die Verfügung ignoriert werden (BG Veränderung zu Ungusten der Eltern)
+		return veraenderung.compareTo(BigDecimal.ZERO) <= 0;
+	}
+
 	private BigDecimal addUpVerguenstigung(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		return zeitabschnitte.stream()
 			.map(zeitabschnitt -> zeitabschnitt.getRelevantBgCalculationResult().getVerguenstigung())

@@ -37,6 +37,12 @@ public class VeraenderungTagesschuleTarifCalculator extends VeraenderungCalculat
 		return findMaxAbsoluteValue(maxVeraenderungProZeitabschnitt);
 	}
 
+	@Override
+	protected boolean isVerfuegungIgnorable(BigDecimal veraenderung) {
+		//Wenn der Tagesschuletarif steigt, darf die Verfügung ignoriert werden (TS Veränderung zu Ungusten der Eltern)
+		return veraenderung.compareTo(BigDecimal.ZERO) >= 0;
+	}
+
 	private void mapGueltigkeitToTarifOhneBetreuung(Verfuegung verfuegung) {
 		vorgaengerGueltikeitTarifeOhneBetreuungMap = new HashMap<>();
 
