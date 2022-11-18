@@ -3025,8 +3025,8 @@
     "CHECKBOX_MARKED_FUER_KONTROLL": "Informieren, sobald eine rechstkräftige Veranlagung zu diesem Fall existiert",
     "GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER": "Keinen Gutschein für Sozialhilfeempfänger ausstellen",
     "MUTATION_VERAENDERUNG_1": "Die Mutation führt zu Veränderungen:<ul>",
-    "MUTATION_VERAENDERUNG_BG": "<li>Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF</li>",
-    "MUTATION_VERAENDERUNG_TS": "<li>Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF</li>",
+    "MUTATION_VERAENDERUNG_BG": "Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF",
+    "MUTATION_VERAENDERUNG_TS": "Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF",
     "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"

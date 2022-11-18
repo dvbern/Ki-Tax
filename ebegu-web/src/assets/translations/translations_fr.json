@@ -2930,7 +2930,7 @@
     "CHECKBOX_MARKED_FUER_KONTROLL": "Informieren, sobald eine rechstkräftige Veranlagung zu diesem Fall existiert",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
     "MUTATION_VERAENDERUNG_1": "Die Mutation führt zu Veränderungen:<ul>",
-    "MUTATION_VERAENDERUNG_BG": "<li>Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF</li>",
-    "MUTATION_VERAENDERUNG_TS": "<li>Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF</li>",
+    "MUTATION_VERAENDERUNG_BG": "Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF",
+    "MUTATION_VERAENDERUNG_TS": "Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

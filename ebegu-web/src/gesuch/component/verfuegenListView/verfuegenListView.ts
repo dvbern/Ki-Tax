@@ -829,9 +829,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }
             }));
-
-        this.veraenderungBG = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
-        this.veraenderungTS = Number(this.veraenderungTS.toFixed(2));
     }
 
     private findAbsoultMax(val1: number, val2: number): number {
@@ -846,5 +843,25 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.isMutation() &&
             this.allVerfuegungenIgnorable &&
             this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+    }
+
+    public getVeraenderungBgString(): string {
+        let formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
+        return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
+            {veraenderung: formatedString});
+    }
+
+    public getVeraenderungTsString(): string {
+        let formatedString =  this.formatVeraenderungen(this.veraenderungTS);
+        return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
+            {veraenderung: formatedString});
+    }
+
+    private formatVeraenderungen(veraenderungToFormat: number): string {
+        if (veraenderungToFormat > 0) {
+            return `+${veraenderungToFormat.toFixed(2)}`;
+        }
+
+        return veraenderungToFormat.toFixed(2);
     }
 }
