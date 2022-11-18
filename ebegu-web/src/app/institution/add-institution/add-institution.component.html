@@ -51,25 +51,6 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6" *ngIf="selectGemeindeVisible()">
-                        <div class="form-group">
-                            <label [ngClass]="{'required' : selectGemeindeRequired()}" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
-                            <select [(ngModel)]="selectedGemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    [required]="selectGemeindeRequired()">
-                                <option *ngFor="let gemeinde of (gemeinden)"
-                                        [ngValue]="gemeinde">
-                                    {{gemeinde.name}}
-                                </option>
-                            </select>
-                            <dv-error-messages [errorObject]="form.controls.gemeindeId?.errors"
-                                               inputId="gemeinde"
-                                               class="input-error">
-                            </dv-error-messages>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Institutionname | Betreuungsgutscheine akzeptieren ab -->

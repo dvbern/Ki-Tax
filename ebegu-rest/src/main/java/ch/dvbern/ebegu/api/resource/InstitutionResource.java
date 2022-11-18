@@ -243,15 +243,7 @@ public class InstitutionResource {
 		switch (betreuungsangebot) {
 		case KITA:
 		case TAGESFAMILIEN:
-			gemeinde = null;
-			if (gemeindeId != null) {
-				gemeinde = getGemeindeOrThrowException(gemeindeId);
-				// Benutzer muss write berechtigt sein, damit er auf der Gemeinde eine neue Institution erstellen
-				// kann
-				authorizer.checkWriteAuthorization(gemeinde);
-			}
 			InstitutionStammdatenBetreuungsgutscheine bgStammdaten = new InstitutionStammdatenBetreuungsgutscheine();
-			bgStammdaten.setGemeinde(gemeinde);
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(bgStammdaten);
 			break;
 		case TAGESSCHULE:

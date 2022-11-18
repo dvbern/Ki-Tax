@@ -15,29 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {take} from 'rxjs/operators';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
-import {TSRole} from '../../../models/enums/TSRole';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
+import {
+    DvNgGesuchstellerDialogComponent
+} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -49,7 +46,7 @@ const LOG = LogFactory.createLog('AddInstitutionComponent');
     templateUrl: './add-institution.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddInstitutionComponent implements OnInit, OnDestroy {
+export class AddInstitutionComponent implements OnInit {
 
     private readonly log: Log = LogFactory.createLog('AddInstitutionComponent');
 
@@ -66,9 +63,6 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
 
     public isLatsInstitution: boolean;
 
-    private readonly unsubscribe$ = new Subject<void>();
-    private institutionenDurchGemeindenEinladen: boolean = false;
-
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -79,8 +73,6 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
         private readonly gemeindeRS: GemeindeRS,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -102,16 +94,10 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
         });
         this.startDate = this.getStartDate();
 
-        this.loadGemeindenList();
-
-        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
-            this.institutionenDurchGemeindenEinladen = result;
-        });
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
+        // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
+        if (!this.isBGInstitution) {
+            this.loadGemeindenList();
+        }
     }
 
     public cancel(): void {
@@ -218,16 +204,14 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
 
     public loadGemeindenList(): void {
         let obs$;
-        // tslint:disable-next-line:prefer-conditional-expression
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && this.isLatsInstitution) {
             obs$ = this.gemeindeRS.getGemeindenForPrincipal$();
         } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESSCHULE && !this.isLatsInstitution) {
             obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
-        // BG-INSTITUTION or FERIENINSEL
-        } else {
-            obs$ = this.gemeindeRS.getGemeindenForPrincipal$();
+        } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
+            obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
         }
-        obs$.pipe(takeUntil(this.unsubscribe$))
+        obs$.pipe(take(1))
             .subscribe(
                 gemeinden => {
                     this.gemeinden = this.isLatsInstitution ? gemeinden : gemeinden.filter(gemeinde => !gemeinde.nurLats);
@@ -252,21 +236,5 @@ export class AddInstitutionComponent implements OnInit, OnDestroy {
             return nextMonthBegin;
         }
         return TSMandant.earliestDateOfTSAnmeldung;
-    }
-
-    public selectGemeindeVisible(): boolean {
-        if (!this.isBGInstitution) {
-            return true;
-        }
-        if (!this.institutionenDurchGemeindenEinladen) {
-            return false;
-        }
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
-    }
-
-    // das Dropdown ist nur für den Superadmin sichtbar, aber nicht required. für alle
-    // anderen Rollen ist es entweder nicht sichtbar, oder required
-    public selectGemeindeRequired(): boolean {
-        return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

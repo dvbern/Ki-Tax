@@ -1528,10 +1528,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
 
 		Gemeinde gemeinde = null;
-		if (entry.getValue().getInstitutionStammdatenBetreuungsgutscheine() != null
-			&& entry.getValue().getInstitutionStammdatenBetreuungsgutscheine().getGemeinde() != null) {
-			gemeinde = entry.getValue().getInstitutionStammdatenBetreuungsgutscheine().getGemeinde();
-		}
 		if (entry.getValue().getInstitutionStammdatenTagesschule() != null) {
 			gemeinde = entry.getValue().getInstitutionStammdatenTagesschule().getGemeinde();
 		}
@@ -1761,10 +1757,6 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionStammdatenBetreuungsgutscheine jaxInstStammdaten =
 			new JaxInstitutionStammdatenBetreuungsgutscheine();
 		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-
-		if (persistedInstStammdaten.getGemeinde() != null) {
-			jaxInstStammdaten.setGemeinde(gemeindeToJAX(persistedInstStammdaten.getGemeinde()));
-		}
 
 		final IBAN persistedIban = persistedInstStammdaten.extractIban();
 		if (persistedIban != null) {
