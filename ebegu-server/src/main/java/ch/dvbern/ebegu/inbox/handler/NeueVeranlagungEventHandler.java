@@ -100,7 +100,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 	}
 
-	@SuppressWarnings("PMD.CloseResource")
+
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
 		Gesuch gesuch = findDetachedGesuchByKey(key);
@@ -154,6 +154,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		return Processing.success();
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	@Nullable
 	private Gesuch findDetachedGesuchByKey(String key) {
 		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
