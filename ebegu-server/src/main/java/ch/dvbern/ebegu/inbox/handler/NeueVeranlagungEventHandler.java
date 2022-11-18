@@ -100,26 +100,15 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
-		Gesuch gesuch = findGesuchByKey(key);
+		Gesuch gesuch = findDetachedGesuchByKey(key);
 
 		if (gesuch == null) {
 			return Processing.failure("Kein Gesuch für Key gefunen. Key: " + key);
 		}
 
-		// Wir werden das Gesuch FinSit ersetzen mit die neue Steuerdaten, es muss unbedingt nicht persistiert werden
-		// deswegen ist das Gesuch als detached gesetzt
-		Session session = persistence.getEntityManager().unwrap(Session.class);
-		session.evict(gesuch);
-
-		Processing processing = processGesuch(gesuch, dto);
-
-		session.close();
-		return processing;
-	}
-
-	private Processing processGesuch(Gesuch gesuch, NeueVeranlagungEventDTO dto) {
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
@@ -166,9 +155,19 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	}
 
 	@Nullable
-	private Gesuch findGesuchByKey(String key) {
+	private Gesuch findDetachedGesuchByKey(String key) {
 		Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(key);
-		return gesuchOpt.orElse(null);
+		if (gesuchOpt.isEmpty()) {
+			return null;
+		}
+
+		Gesuch gesuch = gesuchOpt.get();
+
+		// Wir werden das Gesuch FinSit ersetzen mit die neue Steuerdaten, es muss unbedingt nicht persistiert werden
+		// deswegen ist das Gesuch als detached gesetzt
+		Session session = persistence.getEntityManager().unwrap(Session.class);
+		session.evict(gesuch);
+		return gesuch;
 	}
 
 	@Nullable

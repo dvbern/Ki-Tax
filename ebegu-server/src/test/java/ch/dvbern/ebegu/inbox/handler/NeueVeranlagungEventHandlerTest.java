@@ -157,31 +157,28 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 
 	@Test
 	void steuerAbfrageNichtErfolgreich() {
-		Session session = expectGesuchFound();
+		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		session.close();
 		testIgnored("Keine neue Veranlagung gefunden");
 	}
 
 	@Test
 	void steuerdatenResponseNichtRechtskraeftig() {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
-		Session session = expectGesuchFound();
+		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		session.close();
 		testIgnored("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 	}
 
 	@Test
 	void finSitUnterschiedGleich() {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
-		Session session = expectGesuchFound();
+		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		session.close();
 		testIgnored("Keine Meldung erstellt, da das massgebende Einkommen sich mit der neuen Verfügung nicht verändert hat");
 	}
 
@@ -191,7 +188,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(60));
 		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 60 Franken verändert."
-			+ " Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei 60 Franken");
+			+ " Der konfigurierte Schwellenwert zur Benachrichtigung aber bei 60 Franken liegt");
 	}
 
 	@Test
@@ -222,7 +219,6 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 
 		Processing result = handler.attemptProcessing(gesuch_1GS.getId(), dto);
 		assertThat(result, failed(stringContainsInOrder(message)));
-
 		verifyAll();
 	}
 
@@ -230,14 +226,13 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expect(gesuchService.findGesuch(gesuch_1GS.getId())).andReturn(Optional.empty());
 	}
 
-	private Session expectGesuchFound() {
+	private void expectGesuchFound() {
 		expect(gesuchService.findGesuch(gesuch_1GS.getId())).andReturn(Optional.of(gesuch_1GS));
 		EntityManager em =createMock(EntityManager.class);
 		expect(persistence.getEntityManager()).andReturn(em);
 		Session session = createMock(Session.class);
 		expect(em.unwrap(Session.class)).andStubReturn(session);
 		session.evict(gesuch_1GS);
-		return session;
 	}
 
 	private void expectEverythingUntilCompare() {
@@ -251,11 +246,10 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu = new FinanzielleSituationResultateDTO();
 		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
-		Session session = expectGesuchFound();
+		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTOOrig);
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTONeu);
-		session.close();;
 	}
 
 	private Einstellung findEinstellungMinUnterschied() {
