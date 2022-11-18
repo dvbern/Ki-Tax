@@ -89,9 +89,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
-    public veraenderungBG: number = 0;
-    public veraenderungTS: number = 0;
-    public allVerfuegungenIgnorable: boolean = true;
+    public veraenderungBG: number;
+    public veraenderungTS: number;
+    public allVerfuegungenIgnorable: boolean = false;
     public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -201,8 +201,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMutationVeranderung(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.veraenderungBG)
+            || EbeguUtil.isNullOrUndefined(this.veraenderungTS)) {
+            return false;
+        }
+
         return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
-            && this.gesuchModelManager.getGesuch()?.isMutation();
+            && this.isMutation();
     }
 
     public setMutationIgnorieren(): void {
@@ -815,6 +820,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private calculateVeraenderung(): void {
+        this.veraenderungBG = 0;
+        this.veraenderungTS = 0;
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
             kindContainer.betreuungen.forEach(betreuung => {
