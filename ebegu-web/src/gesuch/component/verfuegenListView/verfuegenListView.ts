@@ -822,6 +822,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private calculateVeraenderung(): void {
         this.veraenderungBG = 0;
         this.veraenderungTS = 0;
+        this.allVerfuegungenIgnorable = true;
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
             kindContainer.betreuungen.forEach(betreuung => {
