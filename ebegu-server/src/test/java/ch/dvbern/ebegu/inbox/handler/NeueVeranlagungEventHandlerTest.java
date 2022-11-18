@@ -195,7 +195,19 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void createsNeueVeranlagungMitteilung() {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
-		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
+		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
+		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
+		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		testProcessingSuccess();
+	}
+
+	@Test
+	void createsNeueVeranlagungMitteilungWhenZugunstenAntragsteller() {
+		//Einkommen sinkt
+		expectEverythingUntilCompare(BigDecimal.valueOf(40000));
+		Einstellung einstellung = findEinstellungMinUnterschied();
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
 		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
 		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
@@ -224,12 +236,16 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectEverythingUntilCompare() {
+		expectEverythingUntilCompare(BigDecimal.valueOf(100060));
+	}
+
+	private void expectEverythingUntilCompare(BigDecimal einkommenNeu) {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig = new FinanzielleSituationResultateDTO();
 		finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu = new FinanzielleSituationResultateDTO();
-		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100060));
+		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTOOrig);
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
