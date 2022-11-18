@@ -188,7 +188,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(60));
 		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 60 Franken verändert."
-			+ " Der konfigurierte Schwellenwert zur Benachrichtigung aber bei 60 Franken liegt");
+			+ " Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei 60 Franken");
 	}
 
 	@Test
