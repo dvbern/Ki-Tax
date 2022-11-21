@@ -483,4 +483,10 @@ public interface GesuchService {
 	Gesuch mutationIgnorieren(Gesuch gesuch);
 
 	Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll);
+
+	/**
+	 * Findet für eine Mutation den Erstantrag aus derselben Gesuchsperiode. Der Erstantrag ist entweder vom Typ Erst-
+	 * oder Erneuerungsgesuch.
+	 */
+	Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch);
 }
