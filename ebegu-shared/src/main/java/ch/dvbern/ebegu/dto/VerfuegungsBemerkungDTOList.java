@@ -226,6 +226,9 @@ public class VerfuegungsBemerkungDTOList {
 				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_BG_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
 				removeBemerkungForPeriodes(MsgKey.MAHLZEITENVERGUENSTIGUNG_TS_NEIN, getGueltigkeitenByMessageKey(MsgKey.ZUSATZGUTSCHEIN_NEIN_SOZIALHILFE));
 			}
+			if (messagesMap.containsKey(MsgKey.SOZIALHILFEEMPFAENGER_HABEN_KEINEN_ANSPRUCH)) {
+				removeBemerkungForPeriodes(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getGueltigkeitenByMessageKey(MsgKey.SOZIALHILFEEMPFAENGER_HABEN_KEINEN_ANSPRUCH));
+			}
 		}
 
 		/**

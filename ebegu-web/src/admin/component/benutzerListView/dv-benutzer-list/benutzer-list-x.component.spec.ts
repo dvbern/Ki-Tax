@@ -16,7 +16,7 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {BenutzerRSX} from '../../../../app/core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../../../app/core/service/institutionRS.rest';
@@ -56,7 +56,7 @@ describe('DvBenutzerListXComponent', () => {
             ],
             imports: [
                 SharedModule,
-                NoopAnimationsModule
+                BrowserAnimationsModule
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

@@ -15,7 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {NgAdminModule} from '../admin/ng-admin.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
@@ -46,7 +46,7 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
     imports: [
 
         BrowserModule,
-        NoopAnimationsModule, // we don't want material animations in the project yet
+        BrowserAnimationsModule,
         UpgradeModule,
 
         // Core & Shared

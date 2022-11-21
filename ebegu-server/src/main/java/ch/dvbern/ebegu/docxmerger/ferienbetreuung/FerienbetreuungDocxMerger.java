@@ -50,12 +50,12 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new BigDecimalMergeField(
 			"tage",
 			dto.getTotalTage(),
-			Constants.NO_DECIMAL_PATTERN
+			Constants.ONE_DECIMAL_PATTERN
 		));
 		this.mergeFields.add(new BigDecimalMergeField(
 			"tageSonderschueler",
 			dto.getTageSonderschueler(),
-			Constants.NO_DECIMAL_PATTERN
+			Constants.ONE_DECIMAL_PATTERN
 		));
 		this.mergeFields.add(new BigDecimalMergeField(
 			"chfSonderschueler",
@@ -65,7 +65,7 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new BigDecimalMergeField(
 			"tageOhneSonderschueler",
 			dto.getTageOhneSonderschueler(),
-			Constants.NO_DECIMAL_PATTERN
+			Constants.ONE_DECIMAL_PATTERN
 		));
 		this.mergeFields.add(new BigDecimalMergeField(
 			"chfOhneSonderschueler",
@@ -75,7 +75,7 @@ public class FerienbetreuungDocxMerger extends DocxMerger<FerienbetreuungDocxDTO
 		this.mergeFields.add(new BigDecimalMergeField(
 			"totalTage",
 			dto.getTotalTage(),
-			Constants.NO_DECIMAL_PATTERN
+			Constants.ONE_DECIMAL_PATTERN
 		));
 		this.mergeFields.add(new BigDecimalMergeField(
 			"totalChf",

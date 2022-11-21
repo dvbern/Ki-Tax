@@ -40,7 +40,9 @@
                                        class="line-through">{{getKonfigTagesschuleTagisEnabledString()}}</p>
                                     <p *ngIf="konfigurationsListe[i].konfigTagesschuleTagisEnabled">{{getKonfigTagesschuleTagisEnabledString()}}</p>
                                     <p *ngIf="!konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung && isSuperAdmin()"
-                                        class="line-through">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}</p>
+                                        class="line-through">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}
+                                        <dv-tooltip input-id="planKlasse"
+                                                    [text]="'ZUSAETZLICHE_FELDER_TAGESSCHULANMELDUNG' | translate"></dv-tooltip></p>
                                     <p *ngIf="konfigurationsListe[i].konfigTagesschuleZuaesetzlicheAngabenZurAnmeldung">{{getKonfigTagesschuleZusaetzlicheAngabenZurAnmeldung()}}</p>
                                     <!-- Datum Aktivierung Tagesschulen -->
                                     <label>{{'TAGESSCHULE_AKTIVIERUNGSDATUM'|translate}}&nbsp;

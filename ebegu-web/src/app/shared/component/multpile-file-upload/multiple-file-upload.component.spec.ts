@@ -41,7 +41,6 @@ describe('FileUploadComponent', () => {
         TestBed.configureTestingModule({
                 imports: [
                     SharedModule,
-                    NoopAnimationsModule,
                     MaterialModule
                 ],
                 schemas: [CUSTOM_ELEMENTS_SCHEMA],

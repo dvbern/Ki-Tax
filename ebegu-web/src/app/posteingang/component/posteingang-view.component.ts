@@ -496,6 +496,11 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                 });
     }
 
+    public canSeeMutationsmeldungenAutomatischBearbeiten() {
+        //TS-Roles can't see Mutationsmeldungen
+        return !this.isSozialdienstOrInstitution() && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeTSRoles());
+    }
+
     public canBeIgnored(mitteilung: TSMitteilung): boolean {
         return !mitteilung.isErledigt() && !mitteilung.isIgnoriert();
     }

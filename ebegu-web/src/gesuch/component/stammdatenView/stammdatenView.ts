@@ -17,7 +17,7 @@ import {IComponentOptions} from 'angular';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
-import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -143,7 +143,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             $timeout);
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-        this.mandantService.mandant$.pipe(map(mandant => mandant === KiBonMandant.LU)).subscribe(isLuzern => {
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, err => LOG.error(err));
     }

@@ -17,10 +17,13 @@
 
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {$q} from '@uirouter/core';
 import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
 import {InternePendenzenComponent} from './interne-pendenzen.component';
@@ -31,10 +34,14 @@ const internePendenzenRSSpy = jasmine.createSpyObj<InternePendenzenRS>(InternePe
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
     ['getGesuch']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+const applicationPropertyRSSpy = jasmine
+    .createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getActivatedDemoFeatures']);
 
 describe('InternePendenzenComponent', () => {
     let component: InternePendenzenComponent;
     let fixture: ComponentFixture<InternePendenzenComponent>;
+    gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+    applicationPropertyRSSpy.getActivatedDemoFeatures.and.returnValue($q.when(''));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -46,7 +53,8 @@ describe('InternePendenzenComponent', () => {
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: InternePendenzenRS, useValue: internePendenzenRSSpy}
+                {provide: InternePendenzenRS, useValue: internePendenzenRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -63,4 +71,10 @@ describe('InternePendenzenComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    function createGesuch(): TSGesuch {
+        const gesuch = new TSGesuch();
+        gesuch.markiertFuerKontroll = false;
+        return gesuch;
+    }
 });

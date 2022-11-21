@@ -19,12 +19,13 @@ import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 
 export class TSZahlungsinformationen extends TSAbstractEntity {
-
     private _iban: string;
     private _kontoinhaber: string;
     private _abweichendeZahlungsadresse: boolean;
     private _zahlungsadresse: TSAdresse;
     private _keineMahlzeitenverguenstigungBeantragt: boolean;
+    private _infomaKreditorennummer: string;
+    private _infomaBankcode: string;
 
     public constructor() {
         super();
@@ -68,5 +69,20 @@ export class TSZahlungsinformationen extends TSAbstractEntity {
 
     public set keineMahlzeitenverguenstigungBeantragt(value: boolean) {
         this._keineMahlzeitenverguenstigungBeantragt = value;
+    }
+
+    public get infomaBankcode(): string {
+        return this._infomaBankcode;
+    }
+
+    public set infomaBankcode(value: string) {
+        this._infomaBankcode = value;
+    }
+    public get infomaKreditorennummer(): string {
+        return this._infomaKreditorennummer;
+    }
+
+    public set infomaKreditorennummer(value: string) {
+        this._infomaKreditorennummer = value;
     }
 }

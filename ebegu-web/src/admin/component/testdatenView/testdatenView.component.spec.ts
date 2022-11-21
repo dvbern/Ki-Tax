@@ -98,8 +98,7 @@ describe('testdatenView', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
-                NoopAnimationsModule
+                SharedModule
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},

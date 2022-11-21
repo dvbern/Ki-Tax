@@ -287,7 +287,7 @@
                             </li>
                         </ul>
                     </nav>
-                </div> <div *ngIf="!isSozialdienstOrInstitution()" [dvDemoFeature]="mutationsMeldungDemoFeature"
+                </div> <div *ngIf="canSeeMutationsmeldungenAutomatischBearbeiten()" [dvDemoFeature]="mutationsMeldungDemoFeature"
                      class="text-right closed-mitteilungen dv-table-actionButton">
                     <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
                         {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>

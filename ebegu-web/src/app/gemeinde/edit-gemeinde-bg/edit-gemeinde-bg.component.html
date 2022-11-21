@@ -610,6 +610,16 @@
                                                         {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
                                                 </div>
 
+                                                <!-- Keinen Gutschein für Sozialhilfeempfänger ausstellen -->
+                                                <div class="form-group"
+                                                     *ngIf="!isUndefined(konfigurationsListe[i].konfigKeineGutscheineFuerSozialhilfeEmpfaenger)">
+                                                    <mat-checkbox id="keineGutscheineFuerSozialhilfeEmpfaenger_id_{{i}}"
+                                                                  name="keineGutscheineFuerSozialhilfeEmpfaenger_id_{{i}}"
+                                                                  [(ngModel)]="konfigurationsListe[i].konfigKeineGutscheineFuerSozialhilfeEmpfaenger"
+                                                                  (change)="changeKonfigKeineGutscheineFuerSozialhilfeEmpfaenger(konfigurationsListe[i])">
+                                                        {{'GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER'|translate}}</mat-checkbox>
+                                                </div>
+
                                                 <!-- Custom Erwerbspensum Zuschlag -->
                                                 <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum)
                                                 && !konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum">
@@ -1457,6 +1467,13 @@
                                                     <p *ngIf="!konfigurationsListe[i].konfigKontingentierung"
                                                        class="line-through">{{getKonfigKontingentierungString()}}</p>
                                                     <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
+                                                </div>
+                                                <div *ngIf="!isUndefined(konfigurationsListe[i].konfigKeineGutscheineFuerSozialhilfeEmpfaenger)">
+                                                    <p *ngIf="!konfigurationsListe[i].konfigKeineGutscheineFuerSozialhilfeEmpfaenger"
+                                                       class="line-through"
+                                                       translate>GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER</p>
+                                                    <p *ngIf="konfigurationsListe[i].konfigKeineGutscheineFuerSozialhilfeEmpfaenger"
+                                                        translate>GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER</p>
                                                 </div>
 
                                                 <!-- Erwerbspensum Zuschlag -->

@@ -123,7 +123,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.interceptors.UpdateStatusInterceptor;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -218,6 +217,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		AntragStatus initialStatus = calculateInitialStatus(gesuchToCreate);
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
 		LocalDate regelnGueltigAb = gesuchToCreate.getRegelnGueltigAb();
+		boolean newlyCreatedMutation = gesuchToCreate.isNewlyCreatedMutation();
 		StringBuilder logInfo = new StringBuilder();
 		logInfo.append("CREATE GESUCH fuer Gemeinde: ").append(gemeindeOfGesuchToCreate.getName())
 			.append(" Gesuchsperiode: ").append(gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString())
@@ -257,6 +257,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Vor dem Speichern noch pruefen, dass noch kein Gesuch dieses Typs fuer das Dossier und die Periode existiert
 		ensureUniqueErstgesuchProDossierAndGesuchsperiode(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
+
+		// restore transient field
+		persistedGesuch.setNewlyCreatedMutation(newlyCreatedMutation);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
@@ -361,8 +364,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			return;
 		}
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
-		familiensituation.setAuszahlungsdatenMahlzeiten(null);
-		familiensituation.setAbweichendeZahlungsadresseMahlzeiten(false);
+		familiensituation.setAuszahlungsdaten(null);
+		familiensituation.setAbweichendeZahlungsadresse(false);
 	}
 
 	@Nonnull
@@ -1469,9 +1472,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
-	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch, @Nonnull boolean checkNeusteGesuchAuthorization) {
+	public Optional<Gesuch> getNeustesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
-		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), checkNeusteGesuchAuthorization);
+		return getNeustesGesuchForDossierAndGesuchsperiode(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
 	}
 
 	@Override
@@ -1863,14 +1866,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Gesuch findOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Gesuch> criteriaResults = findExistingOpenMutationen(dossier, gesuchsperiode);
-		if (criteriaResults.size() > 1) {
-			// It should be impossible that there are more than one open Mutation
-			throw new EbeguRuntimeException("findOnlineMutation", ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+		// It should be impossible that there are more than one open Mutation
+		return getExactlyOneGesuchFromResult(criteriaResults, "findOnlineMutation");
+	}
+
+	private Gesuch getExactlyOneGesuchFromResult(@Nonnull List<Gesuch> result, @Nonnull String callingMethodName) {
+		if (result.size() > 1) {
+			throw new EbeguRuntimeException(callingMethodName, ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
 		}
-		if (criteriaResults.size() <= 0) {
-			throw new EbeguEntityNotFoundException("findOnlineMutation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		if (result.isEmpty()) {
+			throw new EbeguEntityNotFoundException(callingMethodName, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
-		return criteriaResults.get(0);
+		return result.get(0);
 	}
 
 	/**
@@ -2597,13 +2604,59 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		);
 
 		final List<Gesuch> results = persistence.getCriteriaResults(query);
-		if (results.size() != 1) {
-			throw new EbeguRuntimeException("findGesuchOfGS", "Not single unique Gesuch found for GS");
-		}
-		Gesuch gesuch = results.stream().findFirst().orElseThrow();
+		Gesuch gesuch = getExactlyOneGesuchFromResult(results, "findGesuchOfGS");
 		authorizer.checkReadAuthorization(gesuch);
 
 		return gesuch;
+	}
+
+	@Override
+	public Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll) {
+		gesuch.setMarkiertFuerKontroll(markiertFuerKontroll);
+		return persistence.merge(gesuch);
+	}
+
+	@Override
+	public Gesuch mutationIgnorieren(Gesuch gesuch) {
+		Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
+		this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
+
+		gesuchNachVerfuegungStart.getKindContainers().forEach(kindContainer -> {
+			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
+			for (int i = 0; i < betreuungList.size(); i++) {
+				Betreuung betreuung = betreuungList.get(i);
+				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+			}
+		});
+
+		return gesuchNachVerfuegungStart;
+
+	}
+
+	@Override
+	public Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.getTyp().isGesuch()) {
+			return gesuch;
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(cb.equal(root.get(Gesuch_.dossier), gesuch.getDossier()));
+		predicates.add(cb.equal(root.get(Gesuch_.gesuchsperiode), gesuch.getGesuchsperiode()));
+
+		Predicate predicateErstOrErnerungsGesuch = cb.or(
+			cb.equal(root.get(Gesuch_.typ), AntragTyp.ERSTGESUCH),
+			cb.equal(root.get(Gesuch_.typ), AntragTyp.ERNEUERUNGSGESUCH)
+		);
+		predicates.add(predicateErstOrErnerungsGesuch);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		List<Gesuch> queryResult = persistence.getCriteriaResults(query);
+
+		return getExactlyOneGesuchFromResult(queryResult, "findErstgesuchForGesuch");
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {

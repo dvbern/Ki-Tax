@@ -25,19 +25,22 @@ export class TSEinstellung extends TSAbstractDateRangedEntity {
     private _value: string;
     private _gemeindeId: string = null;
     private _gesuchsperiodeId: string = null;
+    private _erklaerung: string = null;
 
     public constructor(
         gueltigkeit?: TSDateRange,
         key?: TSEinstellungKey,
         value?: string,
         gemeindeId?: string,
-        gesuchsperiodeId?: string
+        gesuchsperiodeId?: string,
+        erklaerung?: string
     ) {
         super(gueltigkeit);
         this._key = key;
         this._value = value;
         this._gemeindeId = gemeindeId;
         this._gesuchsperiodeId = gesuchsperiodeId;
+        this._erklaerung = erklaerung;
     }
 
     public get key(): TSEinstellungKey {
@@ -74,5 +77,12 @@ export class TSEinstellung extends TSAbstractDateRangedEntity {
 
     public getValueAsBoolean(): boolean {
         return 'true' === this._value;
+    }
+
+    public set erklaerung(value: string) {
+        this._erklaerung = value;
+    }
+    public get erklaerung(): string {
+        return this._erklaerung;
     }
 }

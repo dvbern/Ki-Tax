@@ -123,7 +123,7 @@ public class DocxDocument {
 			// store initial run text length
 			int textOfRunLength = textOfRun.length();
 			// check if placeholder starts in current run
-			if (currStringIndex + textOfRunLength >= placeholderIndex) {
+			if (currStringIndex + textOfRunLength - 1 >= placeholderIndex) {
 				// starting point could be at index 0 or somewhere in the middle
 				String textUntilPlaceholder = textOfRun.substring(0, placeholderIndex - currStringIndex);
 				// end point of placeholder can be in this run, but it does not have to be

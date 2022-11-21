@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -101,6 +102,7 @@ import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
@@ -125,7 +127,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Service fuer Mitteilungen
@@ -136,6 +140,8 @@ import static java.util.Objects.requireNonNull;
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
+
+	static final String TECHNICAL_KIBON_BENUTZER_ID = "99999999-2222-2222-2222-222222222222";
 
 	@Inject
 	private Persistence persistence;
@@ -169,6 +175,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@Override
 	@Nonnull
@@ -791,7 +800,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// neustes Gesuch lesen
 		final Optional<Gesuch> neustesGesuchOpt;
 		try {
-			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch, false);
+			neustesGesuchOpt = gesuchService.getNeustesGesuchFuerGesuch(gesuch);
 		} catch (EJBTransactionRolledbackException exception) {
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
@@ -1022,6 +1031,30 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			).collect(Collectors.toList()).isEmpty();
 		}
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
+		Objects.requireNonNull(neueVeranlagungsMitteilung);
+
+		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);  // immer an Jugendamt
+		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
+		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
+
+		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
+
+		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
+		return persistence.persist(neueVeranlagungsMitteilung);
+	}
+
+	@Nonnull
+	private Benutzer getTechnicalKibonBenutzer() {
+		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND,
+				TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
 	private void updateMessage(Betreuungsmitteilung mitteilung) {
@@ -1624,7 +1657,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
-			doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			acceptFinSit(mutation);
+			if (canGesuchBeAutomatischVerfuegt(mutation)) {
+				verfuegungService.gesuchAutomatischVerfuegen(mutation);
+			}
 			persistence.getEntityManager().flush();
 		} catch (EbeguException e) {
 			final Locale locale = LocaleThreadLocal.get();
@@ -1636,6 +1673,21 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return translatedError;
 		}
 		return null;
+	}
+
+	private boolean canGesuchBeAutomatischVerfuegt(Gesuch mutation) {
+		// wenn das Gesuch nicht neu erstellt wurde, darf es nie automatisch verfügt werden
+		if (!mutation.isNewlyCreatedMutation()) {
+			return false;
+		}
+
+		Gesuch erstGesuch = gesuchService.findErstgesuchForGesuch(mutation);
+		return erstGesuch.getEingangsart().isOnlineGesuch();
+	}
+
+	private void acceptFinSit(Gesuch mutation) {
+		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		gesuchService.updateGesuch(mutation, false, null);
 	}
 
 	@Override
