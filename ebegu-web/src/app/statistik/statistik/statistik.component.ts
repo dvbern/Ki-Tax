@@ -62,7 +62,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public readonly TSStatistikParameterType = TSStatistikParameterType;
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
-    public readonly demoFeature: TSDemoFeature.LASTENAUSGLEICH_STATISTIK;
+    public readonly demoFeature = TSDemoFeature.LASTENAUSGLEICH_STATISTIK;
 
     private polling: NodeJS.Timeout;
     public statistikParameter: TSStatistikParameter;
