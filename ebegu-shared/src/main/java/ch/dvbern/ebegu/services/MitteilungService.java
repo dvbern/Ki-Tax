@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.types.DateRange;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -237,4 +238,8 @@ public interface MitteilungService {
 	String applyBetreuungsmitteilungIfPossible(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
 	Optional<Betreuungsmitteilung> findAndRefreshBetreuungsmitteilung(String id);
+
+
+	NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
+
 }

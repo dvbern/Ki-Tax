@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.resource.handler;
+package ch.dvbern.ebegu.nesko.handler;
 
 import java.util.Objects;
 
@@ -24,7 +24,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
@@ -71,6 +70,7 @@ public class KibonAnfrageHandler {
 						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageContext.getKibonAnfrageId(),
 						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
 					assert kibonAnfrageContext.getFinSitContGS2() != null;
 					KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(kibonAnfrageContext, steuerdatenResponse);
 				} catch (KiBonAnfrageServiceException e) {
@@ -102,6 +102,7 @@ public class KibonAnfrageHandler {
 						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
 						kibonAnfrageContext.getKibonAnfrageId(),
 						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS1);
 					KibonAnfrageHelper.handleSteuerdatenResponse(
 						kibonAnfrageContext,
 						steuerdatenResponseGS1);
@@ -150,8 +151,8 @@ public class KibonAnfrageHandler {
 
 	@Nullable
 	private String findZpvNummerFromGesuchBesitzer(KibonAnfrageContext context) {
-		if (principalBean.isCallerInAnyOfRole(UserRole.getBgAndGemeindeRoles())
-			&& context.getGesuch().isMutation()) {
+		if ((principalBean.isCallerInAnyOfRole(UserRole.getBgAndGemeindeRoles())
+			&& context.getGesuch().isMutation()) || principalBean.isAnonymousSuperadmin()) {
 			//Online Fall hat immer ein Besitzer
 			Objects.requireNonNull(context.getGesuch().getFall().getBesitzer());
 			return context.getGesuch().getFall().getBesitzer().getZpvNummer();

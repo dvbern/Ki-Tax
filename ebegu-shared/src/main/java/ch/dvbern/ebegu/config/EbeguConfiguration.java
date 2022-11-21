@@ -371,4 +371,6 @@ public interface EbeguConfiguration {
 	String getKibonAnfrageTestUuid();
 
 	Boolean getEbeguKibonAnfrageTestGuiEnabled();
+
+	Boolean isNeueVeranlagungAPIEnabled();
 }
