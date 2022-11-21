@@ -28,6 +28,7 @@
                                for="jahr">LASTENAUSGLEICH_JAHR</label>
                         <input id="jahr" name="jahr"
                                [(ngModel)]="jahr"
+                               (ngModelChange)="clearSelbstbehaltIfHidden()"
                                type="number"
                                min="2000"
                                step="1"
@@ -38,7 +39,7 @@
                 </div>
 
                 <!-- Selbstbehalt pro 100% Platz -->
-                <div class="flex-grow-3">
+                <div class="flex-grow-3" *ngIf="showLastenausgleichSelbstbehalt()">
                     <div class="form-group">
                         <label class="md-no-float required" translate
                                for="selbstbehaltPro100ProzentPlatz">LASTENAUSGLEICH_SELBSTBEHALT</label>

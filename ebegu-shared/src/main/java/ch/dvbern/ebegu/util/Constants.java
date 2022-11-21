@@ -165,6 +165,9 @@ public final class Constants {
 	public static final int LATS_NUMBER_WEEKS_PER_YEAR = 39;
 	public static final String SPACE = " ";
 
+	// ab dem Jahr 2022 wird der Lastenausgleich ohne Selbstbehalt generiert
+	public static final int FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT = 2022;
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :
