@@ -46,3 +46,6 @@ alter table gemeinde_stammdaten_institution
 add constraint FK_gemeinde_stammdaten_institutionen_gemeinde_stammdaten_id
     foreign key (gemeinde_stammdaten_id)
         references gemeinde_stammdaten (id);
+
+alter table gemeinde_stammdaten ADD COLUMN alle_bg_institutionen_zugelassen BIT NOT NULL DEFAULT 1;
+alter table gemeinde_stammdaten_aud ADD COLUMN alle_bg_institutionen_zugelassen BIT;

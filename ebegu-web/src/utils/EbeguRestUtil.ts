@@ -1149,6 +1149,8 @@ export class EbeguRestUtil {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
             }
+            stammdatenTS.alleBgInstitutionenZugelassen = stammdatenFromServer.alleBgInstitutionenZugelassen;
+            stammdatenTS.zugelasseneBgInstitutionen = this.parseInstitutionen(stammdatenFromServer.zugelasseneBgInstitutionen);
             return stammdatenTS;
         }
         return undefined;

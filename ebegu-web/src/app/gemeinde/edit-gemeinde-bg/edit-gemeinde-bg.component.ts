@@ -46,6 +46,7 @@ import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
 
@@ -81,13 +82,15 @@ export class EditGemeindeComponentBG implements OnInit {
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     public dauerBabyTarife: TSEinstellung[];
+    public institutionenDurchGemeindenEinladen: boolean;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
         private readonly authServiceRs: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
     }
@@ -107,6 +110,7 @@ export class EditGemeindeComponentBG implements OnInit {
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
+        this.initInstitutionenDurchGemeindenEinladen();
     }
 
     private initDauerBabytarifEinstellungen(): void {
@@ -572,5 +576,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public isUndefined(data: any): boolean {
         return EbeguUtil.isUndefined(data);
+    }
+
+    private initInstitutionenDurchGemeindenEinladen(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(res => this.institutionenDurchGemeindenEinladen = res.institutionenDurchGemeindenEinladen);
     }
 }

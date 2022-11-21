@@ -266,6 +266,18 @@
                         <h3 translate>BEGU_START</h3>
                         <p>{{beguStartStr}}</p>
                     </div>
+                    <!-- Welche Institutionen können ausgewählt werden? -->
+                    <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
+                        <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
+                        <mat-radio-group name="alleBgInstitutionenZugelassen"
+                                         [(ngModel)]="stammdaten.alleBgInstitutionenZugelassen"
+                                         required>
+                            <mat-radio-button [value]="true">{{'ALLE_CAPITAL'|translate}}</mat-radio-button>
+                            &nbsp;
+                            <mat-radio-button [value]="false">{{'AUSWAHL'|translate}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
                 </div>
                 <div class="col-sm-6">
                     <!-- Standardverantwortliche BG -->
@@ -1371,6 +1383,12 @@
                             <h3 translate>BEGU_START</h3>
                             <p>{{beguStartStr}}</p>
                         </div>
+                    </div>
+                    <!-- Welche Institutionen können ausgewählt werden? -->
+                    <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
+                        <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
+                        <p translate *ngIf="!stammdaten.alleBgInstitutionenZugelassen">AUSWAHL</p>
+                        <p translate *ngIf="stammdaten.alleBgInstitutionenZugelassen">ALLE_CAPITAL</p>
                     </div>
                 </div>
 
