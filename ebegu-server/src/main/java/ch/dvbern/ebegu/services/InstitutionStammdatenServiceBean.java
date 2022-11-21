@@ -293,7 +293,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 
 		predicates.add(PredicateHelper.excludeUnknownInstitutionStammdatenPredicate(root));
-		predicates.add(PredicateHelper.createBGInstitutionStammdatenOnlyFromGemeindeOrMandantPredicate(cb, root, gemeindeParam));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
