@@ -111,6 +111,12 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	@Nullable
 	private String zusatzText;
 
+	@Nonnull
+	private Boolean alleBgInstitutionenZugelassen;
+
+	@Nonnull
+	private List<JaxInstitution> zugelasseneBgInstitutionen;
+
 	public JaxGemeindeStammdaten() {
 	}
 
@@ -442,5 +448,23 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 
 	public void setZusatzText(@Nullable String zusatzText) {
 		this.zusatzText = zusatzText;
+	}
+
+	@Nonnull
+	public Boolean getAlleBgInstitutionenZugelassen() {
+		return alleBgInstitutionenZugelassen;
+	}
+
+	public void setAlleBgInstitutionenZugelassen(@Nonnull Boolean alleBgInstitutionenZugelassen) {
+		this.alleBgInstitutionenZugelassen = alleBgInstitutionenZugelassen;
+	}
+
+	@Nonnull
+	public List<JaxInstitution> getZugelasseneBgInstitutionen() {
+		return zugelasseneBgInstitutionen;
+	}
+
+	public void setZugelasseneBgInstitutionen(@Nonnull List<JaxInstitution> zugelasseneBgInstitutionen) {
+		this.zugelasseneBgInstitutionen = zugelasseneBgInstitutionen;
 	}
 }

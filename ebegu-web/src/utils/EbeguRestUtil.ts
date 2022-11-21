@@ -1076,6 +1076,10 @@ export class EbeguRestUtil {
             if (stammdaten.gemeindeAusgabestelle) {
                 restStammdaten.gemeindeAusgabestelle = this.gemeindeToRestObject({}, stammdaten.gemeindeAusgabestelle);
             }
+            restStammdaten.alleBgInstitutionenZugelassen = stammdaten.alleBgInstitutionenZugelassen;
+            restStammdaten.zugelasseneBgInstitutionen = stammdaten.zugelasseneBgInstitutionen.map(
+                i => this.institutionToRestObject({}, i)
+            );
 
             return restStammdaten;
         }

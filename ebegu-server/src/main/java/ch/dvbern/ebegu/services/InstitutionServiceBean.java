@@ -527,4 +527,15 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			institution,
 			Berechtigung_.institution);
 	}
+
+	@Override
+	public List<Institution> findAllInstitutionen(@Nonnull List<String> ids) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.distinct(true);
+		Predicate predicate = root.get(Institution_.id).in(ids);
+		query.where(predicate);
+		return persistence.getCriteriaResults(query);
+	}
 }

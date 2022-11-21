@@ -17,3 +17,32 @@
 
 ALTER TABLE institution_stammdaten_betreuungsgutscheine drop column gemeinde_id;
 ALTER TABLE institution_stammdaten_betreuungsgutscheine_aud drop column gemeinde_id;
+
+
+create table gemeinde_stammdaten_institution (
+    gemeinde_stammdaten_id binary(16) not null,
+    institution_id binary(16) not null
+);
+
+create table gemeinde_stammdaten_institution_aud (
+    rev integer not null,
+    gemeinde_stammdaten_id binary(16) not null,
+    institution_id binary(16) not null,
+    revtype tinyint,
+    primary key (rev, gemeinde_stammdaten_id, institution_id)
+);
+
+alter table gemeinde_stammdaten_institution_aud
+add constraint FK_gemeinde_stammdaten_institution_aud_rev
+    foreign key (rev)
+        references revinfo (rev);
+
+alter table gemeinde_stammdaten_institution
+add constraint FK_gemeinde_stammdaten_institutionen_institution_id
+    foreign key (institution_id)
+        references institution (id);
+
+alter table gemeinde_stammdaten_institution
+add constraint FK_gemeinde_stammdaten_institutionen_gemeinde_stammdaten_id
+    foreign key (gemeinde_stammdaten_id)
+        references gemeinde_stammdaten (id);

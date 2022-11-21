@@ -21,6 +21,7 @@ import {TSAdresse} from './TSAdresse';
 import {TSBenutzer} from './TSBenutzer';
 import {TSGemeinde} from './TSGemeinde';
 import {TSGemeindeStammdatenKorrespondenz} from './TSGemeindeStammdatenKorrespondenz';
+import {TSInstitution} from './TSInstitution';
 import {TSTextRessource} from './TSTextRessource';
 
 export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
@@ -61,6 +62,8 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
     public emailBeiGesuchsperiodeOeffnung: boolean;
     public gutscheinSelberAusgestellt: boolean;
     public gemeindeAusgabestelle: TSGemeinde;
+    public alleBgInstitutionenZugelassen: boolean;
+    public zugelasseneBgInstitutionen: TSInstitution[];
 
     /**
      * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist

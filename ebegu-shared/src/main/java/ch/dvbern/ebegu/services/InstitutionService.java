@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -130,4 +131,6 @@ public interface InstitutionService {
 	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenForGemeinde(Gemeinde gemeinde);
 
 	Collection<Institution> findAllInstitutionen(@Nonnull String dossierId);
+
+	List<Institution> findAllInstitutionen(@Nonnull List<String> ids);
 }
