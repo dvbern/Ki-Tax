@@ -358,7 +358,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilungsId,
 			MitteilungStatus.GELESEN,
 			MitteilungStatus.NEU,
-			MitteilungStatus.ERLEDIGT);
+			MitteilungStatus.ERLEDIGT,
+			MitteilungStatus.IGNORIERT);
 	}
 
 	@Nonnull
@@ -375,6 +376,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilungsId,
 			MitteilungStatus.NEU,
 			MitteilungStatus.GELESEN);
+	}
+
+	@Nonnull
+	@Override
+	public Mitteilung setMitteilungIgnoriert(@Nonnull String mitteilungsId) {
+		return setMitteilungsStatusIfBerechtigt(
+				mitteilungsId,
+				MitteilungStatus.IGNORIERT,
+				MitteilungStatus.GELESEN,
+				MitteilungStatus.NEU
+		);
 	}
 
 	@Nonnull

@@ -3031,5 +3031,9 @@
     "MUTATION_VERAENDERUNG_2": "</ul></br>Sie haben die Möglichkeit, die finanzielle Situation erst ab dem Folgemonat zu ändern.",
     "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
+    "IGNORIERT": "Ignoriert",
+    "IGNORIEREN": "Ignorieren",
+    "RUECKGAENGIG": "Rückgängig",
+    "MESSAGE_IGNORED": "Die Meldung wurde ignoriert. ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

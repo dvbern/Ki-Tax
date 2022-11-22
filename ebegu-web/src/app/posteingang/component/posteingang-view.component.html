@@ -122,9 +122,26 @@
                         <mat-cell *matCellDef="let element">
                             <span [title]="element.mitteilungStatus | translate">{{element.mitteilungStatus | translate}}</span>
                             <div class="flex-fill"></div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <!-- Actions / Buttons -->
+                    <ng-container matColumnDef="actions">
+                        <mat-header-cell *matHeaderCellDef>
+                            <span translate></span>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
                             <dv-loading-button (buttonClick)="setUngelesen(element)"
                                                *ngIf="isSuperAdmin() && isStatusGelesen(element)">
                                 <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
+                            </dv-loading-button>
+                            <dv-loading-button (buttonClick)="setIgnoriert(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                               *ngIf="isSuperAdminOrGemeinde() && canBeIgnored(element)">
+                                <span translate>IGNORIEREN</span>
+                            </dv-loading-button>
+                            <dv-loading-button (buttonClick)="setGelesen(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                               *ngIf="isSuperAdminOrGemeinde() && canMitteilungStatusBeReverted(element)">
+                                <span translate>RUECKGAENGIG</span>
                             </dv-loading-button>
                         </mat-cell>
                     </ng-container>
@@ -248,6 +265,11 @@
                         </mat-header-cell>
                     </ng-container>
 
+                    <!-- Actions / Buttons -->
+                    <ng-container matColumnDef="actions-filter">
+                        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    </ng-container>
+
                     <mat-header-row *matHeaderRowDef="displayedColumns"
                                     class="dv-table-mat-header-row"></mat-header-row>
                     <mat-header-row class="dv-table-mat-header-row"
@@ -265,7 +287,7 @@
                             </li>
                         </ul>
                     </nav>
-                </div> <div *ngIf="canSeeMutationsmeldungenAutomatischBearbeiten()" [dvDemoFeature]="demoFeature"
+                </div> <div *ngIf="canSeeMutationsmeldungenAutomatischBearbeiten()" [dvDemoFeature]="mutationsMeldungDemoFeature"
                      class="text-right closed-mitteilungen dv-table-actionButton">
                     <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
                         {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>

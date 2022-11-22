@@ -66,6 +66,9 @@ public interface MitteilungService {
 	@Nonnull
 	Mitteilung setMitteilungUngelesen(@Nonnull String mitteilungsId);
 
+	@Nonnull
+	Mitteilung setMitteilungIgnoriert(@Nonnull String mitteilungsId);
+
 	/**
 	 * Sucht die Mitteilung mit der uebergebenen ID
 	 */

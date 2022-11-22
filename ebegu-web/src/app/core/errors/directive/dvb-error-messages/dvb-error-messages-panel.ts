@@ -23,6 +23,7 @@ import {TSErrorAction} from '../../../../../models/enums/TSErrorAction';
 import {TSMessageEvent} from '../../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {DvDialog} from '../../../directive/dv-dialog/dv-dialog';
 import {BroadcastService} from '../../../service/broadcast.service';
@@ -127,6 +128,13 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         this.clear();
     }
 
+    public executeCallback(error: TSExceptionReport): void {
+        if (EbeguUtil.isNotNullOrUndefined(error.errorMessageCallback)) {
+            error.errorMessageCallback.callback();
+        }
+        this.clear();
+    }
+
     private removeOnlineMutation(objectId: string, gesuchsperiodeId: string): void {
         this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
             title: 'REMOVE_ONLINE_MUTATION_CONFIRMATION',
@@ -151,6 +159,10 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
     public isActionDefined(error: TSExceptionReport): boolean {
         return error.action !== undefined && error.action !== null;
+    }
+
+    public isMessageCallbackDefined(error: TSExceptionReport): boolean {
+        return EbeguUtil.isNotNullOrUndefined(error.errorMessageCallback);
     }
 
     public show(): void {
