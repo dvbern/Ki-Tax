@@ -163,4 +163,6 @@ public interface GesuchsperiodeService {
 		@Nonnull DokumentTyp dokumentTyp);
 
 	Optional<Gesuchsperiode> getVorjahrGesuchsperiode(Gesuchsperiode gesuchsperiode);
+
+	Optional<Gesuchsperiode> getNachfolgendeGesuchsperiode(Gesuchsperiode gesuchsperiode);
 }
