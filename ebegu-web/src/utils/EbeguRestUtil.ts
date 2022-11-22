@@ -24,6 +24,7 @@ import {TSKitaxResponse} from '../models/dto/TSKitaxResponse';
 import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
@@ -5951,6 +5952,13 @@ export class EbeguRestUtil {
             return typ as TSFinanzielleSituationTyp;
         }
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
+    }
+
+    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ)) {
+            return typ as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
+        }
+        throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
     }
 
     public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {
