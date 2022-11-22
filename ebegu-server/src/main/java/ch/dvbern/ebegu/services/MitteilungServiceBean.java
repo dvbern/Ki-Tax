@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -126,7 +127,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Service fuer Mitteilungen
@@ -137,6 +140,8 @@ import static java.util.Objects.requireNonNull;
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
+
+	static final String TECHNICAL_KIBON_BENUTZER_ID = "99999999-2222-2222-2222-222222222222";
 
 	@Inject
 	private Persistence persistence;
@@ -353,7 +358,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilungsId,
 			MitteilungStatus.GELESEN,
 			MitteilungStatus.NEU,
-			MitteilungStatus.ERLEDIGT);
+			MitteilungStatus.ERLEDIGT,
+			MitteilungStatus.IGNORIERT);
 	}
 
 	@Nonnull
@@ -370,6 +376,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilungsId,
 			MitteilungStatus.NEU,
 			MitteilungStatus.GELESEN);
+	}
+
+	@Nonnull
+	@Override
+	public Mitteilung setMitteilungIgnoriert(@Nonnull String mitteilungsId) {
+		return setMitteilungsStatusIfBerechtigt(
+				mitteilungsId,
+				MitteilungStatus.IGNORIERT,
+				MitteilungStatus.GELESEN,
+				MitteilungStatus.NEU
+		);
 	}
 
 	@Nonnull
@@ -1016,6 +1033,30 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return false;
 	}
 
+	@Nonnull
+	@Override
+	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
+		Objects.requireNonNull(neueVeranlagungsMitteilung);
+
+		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);  // immer an Jugendamt
+		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
+		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
+		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
+
+		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
+
+		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
+		return persistence.persist(neueVeranlagungsMitteilung);
+	}
+
+	@Nonnull
+	private Benutzer getTechnicalKibonBenutzer() {
+		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND,
+				TECHNICAL_KIBON_BENUTZER_ID));
+	}
+
 	private void updateMessage(Betreuungsmitteilung mitteilung) {
 		assert mitteilung.getBetreuung() != null;
 		final Locale locale = LocaleThreadLocal.get();
@@ -1618,7 +1659,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
 			acceptFinSit(mutation);
-			if (mutation.isNewlyCreatedMutation()) {
+			if (canGesuchBeAutomatischVerfuegt(mutation)) {
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
 			}
 			persistence.getEntityManager().flush();
@@ -1632,6 +1673,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			return translatedError;
 		}
 		return null;
+	}
+
+	private boolean canGesuchBeAutomatischVerfuegt(Gesuch mutation) {
+		// wenn das Gesuch nicht neu erstellt wurde, darf es nie automatisch verfügt werden
+		if (!mutation.isNewlyCreatedMutation()) {
+			return false;
+		}
+
+		Gesuch erstGesuch = gesuchService.findErstgesuchForGesuch(mutation);
+		return erstGesuch.getEingangsart().isOnlineGesuch();
 	}
 
 	private void acceptFinSit(Gesuch mutation) {

@@ -174,4 +174,14 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     public isErledigt(): boolean {
         return this.mitteilungStatus === TSMitteilungStatus.ERLEDIGT;
     }
+
+    public isIgnoriert() {
+        return this.mitteilungStatus === TSMitteilungStatus.IGNORIERT;
+    }
+
+    // Die Neue Veranlagung Mitteilung sind die einzige Mitteilungen im System mit Sender und Empfeanger Typ = JUGENDAMT
+    public isNeueVeranlagung(): boolean {
+        return this.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT
+        && this.empfaengerTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT;
+    }
 }

@@ -28,6 +28,9 @@ public class LastenausgleichBerechnungDataRow {
 	private String bfsNummer;
 	private String verrechnungsjahr;
 
+	private BigDecimal totalBelegung;
+	private BigDecimal totalGutscheine;
+	private BigDecimal totalEingabeLastenausgleich;
 	private BigDecimal totalBelegungMitSelbstbehalt;
 	private BigDecimal totalGutscheineMitSelbstbehalt;
 	private BigDecimal totalAnrechenbar;
@@ -119,6 +122,30 @@ public class LastenausgleichBerechnungDataRow {
 
 	public void setKorrektur(boolean korrektur) {
 		this.korrektur = korrektur;
+	}
+
+	public BigDecimal getTotalBelegung() {
+		return totalBelegung;
+	}
+
+	public void setTotalBelegung(BigDecimal totalBelegung) {
+		this.totalBelegung = totalBelegung;
+	}
+
+	public BigDecimal getTotalGutscheine() {
+		return totalGutscheine;
+	}
+
+	public void setTotalGutscheine(BigDecimal totalGutscheine) {
+		this.totalGutscheine = totalGutscheine;
+	}
+
+	public BigDecimal getTotalEingabeLastenausgleich() {
+		return totalEingabeLastenausgleich;
+	}
+
+	public void setTotalEingabeLastenausgleich(BigDecimal totalEingabeLastenausgleich) {
+		this.totalEingabeLastenausgleich = totalEingabeLastenausgleich;
 	}
 
 	public BigDecimal getTotalBelegungMitSelbstbehalt() {
