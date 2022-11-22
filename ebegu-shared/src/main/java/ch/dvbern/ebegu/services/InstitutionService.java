@@ -71,8 +71,13 @@ public interface InstitutionService {
 	Collection<Institution> getAllInstitutionen(@Nonnull Mandant mandant);
 
 	/**
-	 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 * @return Alle Institutionen in der DB gefiltert bei BetreuungsangebotTyp
 	 */
+	Collection<Institution> getAllInstitutionenByType(@Nonnull Mandant mandant, @Nonnull List<BetreuungsangebotTyp> typen);
+
+		/**
+		 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+		 */
 	@Nonnull
 	Collection<Institution> getAllInstitutionenForBatchjobs();
 

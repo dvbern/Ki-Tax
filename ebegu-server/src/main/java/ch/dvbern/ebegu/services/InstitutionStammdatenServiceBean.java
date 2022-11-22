@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,8 +43,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -91,7 +94,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Inject
 	private GemeindeService gemeindeService;
-
 	@Inject
 	private PrincipalBean principalBean;
 
@@ -252,14 +254,39 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull String gemeindeId) {
 
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId)
+		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gemeindeId));
 
+		Gemeinde gemeinde = stammdaten.getGemeinde();
+
 		List<Gemeinde> gemeinden = Collections.singletonList(gemeinde);
-		return getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeinden);
+		Collection<InstitutionStammdaten> institutionStammdaten =
+			getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(gesuchsperiodeId, gemeinden);
+		if (stammdaten.getZugelasseneBgInstitutionen().isEmpty()) {
+			return institutionStammdaten;
+		}
+		return filterByZugelasseneInstitutionen(stammdaten, institutionStammdaten);
+	}
+
+	private static List<InstitutionStammdaten> filterByZugelasseneInstitutionen(GemeindeStammdaten stammdaten, Collection<InstitutionStammdaten> institutionStammdaten) {
+		var institutionIds = stammdaten.getZugelasseneBgInstitutionen()
+			.stream()
+			.map(AbstractEntity::getId)
+			.collect(Collectors.toList());
+
+		return institutionStammdaten
+			.stream()
+			.filter(s -> {
+				// tagesschulen und ferieninseln werden nicht weiter gefiltert
+				if (BetreuungsangebotTyp.getSchulamtTypes().contains(s.getBetreuungsangebotTyp())) {
+					return true;
+				}
+				return institutionIds.contains(s.getInstitution().getId());
+			})
+			.collect(Collectors.toList());
 	}
 
 	private Collection<InstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiodeAndGemeinde(

@@ -597,7 +597,8 @@ export class EditGemeindeComponentBG implements OnInit {
         if (!this.institutionenDurchGemeindenEinladen) {
             return;
         }
-        this.institutionRS.getAllInstitutionen().subscribe(institutionen => this.institutionen = institutionen);
+        this.institutionRS.getAllBgInstitutionen()
+            .subscribe(institutionen => this.institutionen = institutionen);
     }
 
     public zugelasseneBgInstitutionenStr(institution: TSInstitution[]): string {
@@ -612,5 +613,11 @@ export class EditGemeindeComponentBG implements OnInit {
             postfix = '...';
         }
         return iShort.join(', ') + postfix;
+    }
+
+    public alleBgInstitutionenZugelassenChanged(stammdaten: TSGemeindeStammdaten): void {
+        if (stammdaten.alleBgInstitutionenZugelassen) {
+            stammdaten.zugelasseneBgInstitutionen = [];
+        }
     }
 }

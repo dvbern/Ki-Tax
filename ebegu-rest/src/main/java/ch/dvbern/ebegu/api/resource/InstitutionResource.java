@@ -426,6 +426,24 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Find and return a list of all BG Institutionen",
+		responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/bg")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxInstitution> getAllBgInstitutionen(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return institutionService.getAllInstitutionenByType(mandant, BetreuungsangebotTyp.getBetreuungsgutscheinTypes()).stream()
+			.map(inst -> converter.institutionToJAX(inst))
+			.collect(Collectors.toList());
+	}
+
 	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "
 		+ "Returns all for admins", responseContainer = "List", response = JaxInstitution.class)
 	@Nonnull

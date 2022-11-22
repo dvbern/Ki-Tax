@@ -272,6 +272,7 @@
                             <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
                             <mat-radio-group name="alleBgInstitutionenZugelassen"
                                              [(ngModel)]="stammdaten.alleBgInstitutionenZugelassen"
+                                             (ngModelChange)="alleBgInstitutionenZugelassenChanged(stammdaten)"
                                              required>
                                 <mat-radio-button [value]="true">{{'ALLE_CAPITAL'|translate}}</mat-radio-button>
                                 &nbsp;
