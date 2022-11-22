@@ -36,7 +36,7 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 
 	@NotNull
 	@Nonnull
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_steuerdaten_response_id"))
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
