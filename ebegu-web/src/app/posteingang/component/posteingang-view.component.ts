@@ -502,7 +502,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     }
 
     public canBeIgnored(mitteilung: TSMitteilung): boolean {
-        return !mitteilung.isErledigt() && !mitteilung.isIgnoriert();
+        return !mitteilung.isErledigt() && !mitteilung.isIgnoriert() && mitteilung.isNeueVeranlagung();
     }
 
     public canMitteilungStatusBeReverted(mitteilung: TSMitteilung): boolean {
