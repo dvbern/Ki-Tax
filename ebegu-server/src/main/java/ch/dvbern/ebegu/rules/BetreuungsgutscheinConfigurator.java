@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
@@ -37,7 +38,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
@@ -129,7 +130,7 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_PAUSCHALE_RUECKWIRKEND,
 			FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF,
 			FKJV_EINGEWOEHNUNG,
-			ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+			ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
 			FKJV_ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
@@ -460,9 +461,10 @@ public class BetreuungsgutscheinConfigurator {
 	}
 
 	private Rule configureErwerbspensumKantonRule(Map<EinstellungKey, Einstellung> einstellungMap) {
-		var anspruchUnabhaengigVonBeschaeftigungspensum = einstellungMap.get(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+		AnspruchBeschaeftigungAbhaengigkeitTyp abhaengigkeitTyp = AnspruchBeschaeftigungAbhaengigkeitTyp
+			.getEnumValue(einstellungMap.get(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
 
-		if (anspruchUnabhaengigVonBeschaeftigungspensum.getValueAsBoolean()) {
+		if (abhaengigkeitTyp.isAnspruchUnabhaengig()) {
 			return new ErwerbspensumNotRelevantForAnspruchCalcRule(
 				RuleKey.ERWERBSPENSUM,
 				RuleType.GRUNDREGEL_CALC,

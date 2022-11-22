@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -78,7 +79,7 @@ import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
-import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
@@ -651,7 +652,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode);
 		saveEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN, "false", gesuchsperiode);
-		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode);
+		saveEinstellung(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name(), gesuchsperiode);
 		saveEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode);
 		saveEinstellung(FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH, "100", gesuchsperiode);
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);

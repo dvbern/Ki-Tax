@@ -32,6 +32,7 @@ import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {getGemeindspezifischeBGConfigKeys, TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
@@ -43,6 +44,7 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -87,7 +89,8 @@ export class EditGemeindeComponentBG implements OnInit {
         private readonly translate: TranslateService,
         private readonly authServiceRs: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
 
     }
@@ -463,10 +466,13 @@ export class EditGemeindeComponentBG implements OnInit {
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
 
-                    const einstellungAnspruchUnabhaengigBeschaeftigung = einstellungen
-                        .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+                    const einstellungAbhaengigkeitAnspruchBeschaeftigung = this.ebeguRestUtil
+                        .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
+                            .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
+
                     config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
-                        einstellungAnspruchUnabhaengigBeschaeftigung.getValueAsBoolean();
+                        einstellungAbhaengigkeitAnspruchBeschaeftigung ===
+                        TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
                 }, error => LOG.error(error));
         });
     }

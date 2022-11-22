@@ -289,7 +289,8 @@ export class ErwerbspensumListViewController
         this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(einstellungen => {
                 const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
+                    .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM);
+
                 this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.value === 'true';
             }, error => LOG.error(error));
     }

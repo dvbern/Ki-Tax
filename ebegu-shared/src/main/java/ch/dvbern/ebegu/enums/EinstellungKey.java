@@ -259,9 +259,9 @@ public enum EinstellungKey {
 	// siehe KIBON-2133
 	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN(MandantIdentifier.getAll()),
 
-	// (Solothurn)
-	// Siehe KIBON-2134
-	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll()),
+	// Es gibt verschiedene Arten, in welcher Abhängigkeit das Beschaeftigungspensum zum Anspruch steht
+	// siehe KIBON-2647
+	ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll()),
 
 	// Kinderabzug Typ (Solothurn und FKJV)
 	// Siehe KIBON-2182

@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -50,7 +51,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
@@ -306,7 +307,8 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF, "null", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_EINGEWOEHNUNG, "false", gesuchsperiode);
-		einstellungenMap.addEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,"false", gesuchsperiode);
+		einstellungenMap.addEinstellung(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name(), gesuchsperiode);
 		einstellungenMap.addEinstellung(MINIMALDAUER_KONKUBINAT, "5", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_ANSPRUCH_MONATSWEISE, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode);

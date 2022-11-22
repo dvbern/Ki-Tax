@@ -116,6 +116,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstStammdaten;
 import ch.dvbern.ebegu.enums.AbholungTagesschule;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
@@ -174,7 +175,7 @@ import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
-import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
@@ -2015,7 +2016,8 @@ public final class TestDataUtil {
 		saveEinstellung(FINANZIELLE_SITUATION_TYP, "BERN", gesuchsperiode, persistence);
 		saveEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN, "false", gesuchsperiode, persistence);
-		saveEinstellung(ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM, "false", gesuchsperiode, persistence);
+		saveEinstellung(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name(), gesuchsperiode, persistence);
 		saveEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode, persistence);
 		saveEinstellung(FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH, "100", gesuchsperiode, persistence);
 		saveEinstellung(AUSSERORDENTLICHER_ANSPRUCH_RULE, "ASIV", gesuchsperiode, persistence);

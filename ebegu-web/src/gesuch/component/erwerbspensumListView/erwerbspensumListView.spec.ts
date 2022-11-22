@@ -69,7 +69,7 @@ describe('erwerbspensumListView', () => {
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(
-            of([new TSEinstellung(null, TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM)])
+            of([new TSEinstellung(null, TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)])
         );
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
