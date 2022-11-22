@@ -22,6 +22,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -29,6 +30,7 @@ import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhalts
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -66,7 +68,8 @@ export class ErwerbspensumListViewController
         '$timeout',
         '$translate',
         'GemeindeRS',
-        'EinstellungRS'
+        'EinstellungRS',
+        'EbeguRestUtil'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -90,7 +93,8 @@ export class ErwerbspensumListViewController
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungenRS: EinstellungRS
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -288,10 +292,12 @@ export class ErwerbspensumListViewController
     private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
         this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(einstellungen => {
-                const einstellung = einstellungen
-                    .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM);
+                const einstellung = this.ebeguRestUtil
+                    .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
+                        .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
 
-                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.value === 'true';
+                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung ===
+                    TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
             }, error => LOG.error(error));
     }
 }

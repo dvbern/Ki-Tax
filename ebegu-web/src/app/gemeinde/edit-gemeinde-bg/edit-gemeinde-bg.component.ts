@@ -83,14 +83,14 @@ export class EditGemeindeComponentBG implements OnInit {
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     public dauerBabyTarife: TSEinstellung[];
+    private ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly translate: TranslateService,
         private readonly authServiceRs: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly cd: ChangeDetectorRef,
-        private readonly ebeguRestUtil: EbeguRestUtil
+        private readonly cd: ChangeDetectorRef
     ) {
 
     }
