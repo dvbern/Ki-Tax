@@ -267,16 +267,35 @@
                         <p>{{beguStartStr}}</p>
                     </div>
                     <!-- Welche Institutionen können ausgewählt werden? -->
-                    <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
-                        <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
-                        <mat-radio-group name="alleBgInstitutionenZugelassen"
-                                         [(ngModel)]="stammdaten.alleBgInstitutionenZugelassen"
-                                         required>
-                            <mat-radio-button [value]="true">{{'ALLE_CAPITAL'|translate}}</mat-radio-button>
-                            &nbsp;
-                            <mat-radio-button [value]="false">{{'AUSWAHL'|translate}}
-                            </mat-radio-button>
-                        </mat-radio-group>
+                    <div *ngIf="institutionenDurchGemeindenEinladen">
+                        <div class="form-group mt-5">
+                            <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
+                            <mat-radio-group name="alleBgInstitutionenZugelassen"
+                                             [(ngModel)]="stammdaten.alleBgInstitutionenZugelassen"
+                                             required>
+                                <mat-radio-button [value]="true">{{'ALLE_CAPITAL'|translate}}</mat-radio-button>
+                                &nbsp;
+                                <mat-radio-button [value]="false">{{'AUSWAHL'|translate}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="form-group" *ngIf="!stammdaten.alleBgInstitutionenZugelassen">
+                            <mat-select class="form-control"
+                                        id="zugelasseneBgInstitutionen"
+                                        [(ngModel)]="stammdaten.zugelasseneBgInstitutionen"
+                                        name="zugelasseneBgInstitutionen"
+                                        [multiple]="true"
+                                        [compareWith]="compareInstitution"
+                                        #zugelasseneBgInstitutionen='ngModel'
+                                        required
+                                        panelClass="mat-select-panel1">
+                                <mat-select-trigger>{{zugelasseneBgInstitutionenShort(stammdaten.zugelasseneBgInstitutionen)}}</mat-select-trigger>
+                                <mat-option *ngFor="let i of institutionen"
+                                            [value]="i"><span>{{i.name}}</span></mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="zugelasseneBgInstitutionen.errors"
+                                               inputId="zusatzTextTitle_id"></dv-error-messages>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -1387,8 +1406,10 @@
                     <!-- Welche Institutionen können ausgewählt werden? -->
                     <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
                         <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
-                        <p translate *ngIf="!stammdaten.alleBgInstitutionenZugelassen">AUSWAHL</p>
                         <p translate *ngIf="stammdaten.alleBgInstitutionenZugelassen">ALLE_CAPITAL</p>
+                        <p [title]="zugelasseneBgInstitutionenStr(stammdaten.zugelasseneBgInstitutionen)">
+                            {{zugelasseneBgInstitutionenShort(stammdaten.zugelasseneBgInstitutionen)}}
+                        </p>
                     </div>
                 </div>
 

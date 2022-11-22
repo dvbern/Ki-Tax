@@ -535,7 +535,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		}
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		Root<Institution> root = query.from(Institution.class);
 		query.distinct(true);
 		Predicate predicate = root.get(Institution_.id).in(ids);
 		query.where(predicate);

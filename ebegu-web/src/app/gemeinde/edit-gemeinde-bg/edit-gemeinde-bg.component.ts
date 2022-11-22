@@ -43,10 +43,12 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 const LOG = LogFactory.createLog('EditGemeindeComponentBG');
 
@@ -79,10 +81,11 @@ export class EditGemeindeComponentBG implements OnInit {
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
-    private navigationDest: StateDeclaration;
-    private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     public dauerBabyTarife: TSEinstellung[];
     public institutionenDurchGemeindenEinladen: boolean;
+    public institutionen: TSInstitution[];
+    private navigationDest: StateDeclaration;
+    private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -90,7 +93,8 @@ export class EditGemeindeComponentBG implements OnInit {
         private readonly authServiceRs: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly institutionRS: InstitutionRS
     ) {
 
     }
@@ -168,6 +172,10 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public compareGemeinde(g1: TSGemeinde, g2: TSGemeinde): boolean {
         return g1 && g2 ? g1.name === g2.name : g1 === g2;
+    }
+
+    public compareInstitution(i1: TSInstitution, i2: TSInstitution): boolean {
+        return i1 && i2 ? i1.id === i2.id : i1 === i2;
     }
 
     public altBGAdresseHasChange(newVal: boolean): void {
@@ -580,6 +588,29 @@ export class EditGemeindeComponentBG implements OnInit {
 
     private initInstitutionenDurchGemeindenEinladen(): void {
         this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(res => this.institutionenDurchGemeindenEinladen = res.institutionenDurchGemeindenEinladen);
+            .then(res => this.institutionenDurchGemeindenEinladen = res.institutionenDurchGemeindenEinladen)
+            .then(() => this.initInstitutionen());
+    }
+
+    private initInstitutionen(): void {
+        // falls die Einstellung dekativiert ist, benötigen wir die Institutionen nicht
+        if (!this.institutionenDurchGemeindenEinladen) {
+            return;
+        }
+        this.institutionRS.getAllInstitutionen().subscribe(institutionen => this.institutionen = institutionen);
+    }
+
+    public zugelasseneBgInstitutionenStr(institution: TSInstitution[]): string {
+        return institution.map(i => i.name).join(', ');
+    }
+
+    public zugelasseneBgInstitutionenShort(institutionen: TSInstitution[]): string {
+        let postfix = '';
+        let iShort = institutionen.map(i => i.name);
+        if (institutionen.length > 5) {
+            iShort = iShort.slice(0, 4);
+            postfix = '...';
+        }
+        return iShort.join(', ') + postfix;
     }
 }
