@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
@@ -24,6 +23,8 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
@@ -52,6 +53,12 @@ describe('EditGemeindeComponentBG', () => {
     const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
         ['findEinstellungByKey', 'findEinstellung']);
 
+    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']);
+    applicationPropertyRSSpy.getPublicPropertiesCached.and.resolveTo({} as any);
+
+    const institutionRSSpy = jasmine.createSpyObj(InstitutionRS.name, ['getAllBgInstitutionen']);
+
     beforeEach(waitForAsync(() => {
 
         TestBed.configureTestingModule({
@@ -65,7 +72,9 @@ describe('EditGemeindeComponentBG', () => {
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungRSSpy}
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
+                {provide: InstitutionRS, useValue: institutionRSSpy}
             ],
             declarations: [
             ]
