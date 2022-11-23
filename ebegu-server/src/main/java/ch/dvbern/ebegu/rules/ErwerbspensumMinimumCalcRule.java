@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -35,9 +37,15 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Es muss mindetens ein Erwerbspensum von 20% resp. 120% für 2 GS erreicht werden. Dann wird 100% Anspruch gewährt sonst keinen
+ * Die Rule wird ausgeführt, wenn die Konfig ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM auf MINIMUM gesetzt ist.
+ * Die Antragsteller müssen ein minimales Beschäftigungspensum haben, um den vollen Anspruch zu erhalten.
+ * Jeder Antragsteller muss mindestens 20% arbeiten.
+ * Die Mindest-Beschäftigung bei Alleinerziehenden ist 20% und bei Paaren 120%. Wenn das Minimum erreicht ist,
+ * wird 100% Anspruch gewährt sonst 0%
  */
 public class ErwerbspensumMinimumCalcRule extends AbstractCalcRule {
+
+	private static final int MINIMUM_EWP_FOR_ONE_GS = 20;
 
 	protected ErwerbspensumMinimumCalcRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull RuleValidity ruleValidity, @Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
@@ -45,7 +53,47 @@ public class ErwerbspensumMinimumCalcRule extends AbstractCalcRule {
 
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+		Gesuch gesuch = platz.extractGesuch();
+		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
+		boolean has2Gs = familiensituation.hasSecondGesuchsteller(inputData.getParent().getGueltigkeit().getGueltigBis());
 
+		if (isMimimumErwerpsmensumErreicht(inputData, has2Gs)) {
+			inputData.setAnspruchspensumProzent(100);
+		} else {
+			inputData.setAnspruchspensumProzent(0);
+			inputData.setAnspruchspensumRest(0);
+			inputData.setMinimalErforderlichesPensum(0);
+			inputData.setMinimalesEwpUnterschritten(true);
+			inputData.addBemerkung(MsgKey.ERWERBSPENSUM_MINIMUM_NICHT_ERRECHT, getLocale());
+		}
+	}
+
+	private boolean isMimimumErwerpsmensumErreicht(BGCalculationInput inputData, boolean has2Gs) {
+		int ewpGS1 = getErwebspensumMax100(inputData.getErwerbspensumGS1());
+		int ewpGS2 = getErwebspensumMax100(inputData.getErwerbspensumGS2());
+		int minimumEWP = getMinimumErwerbspensum(has2Gs);
+
+		if (has2Gs) {
+			return ewpGS1 + ewpGS2 >= minimumEWP;
+		}
+
+		return ewpGS1 >= minimumEWP;
+	}
+
+	private int getMinimumErwerbspensum(boolean has2Gs) {
+		return has2Gs ? 100 + MINIMUM_EWP_FOR_ONE_GS : MINIMUM_EWP_FOR_ONE_GS;
+	}
+
+	private int getErwebspensumMax100(@Nullable Integer erwerbspensum) {
+		if (erwerbspensum == null) {
+			return 0;
+		}
+
+		if (erwerbspensum.compareTo(100) > 0) {
+			return 100;
+		}
+
+		return erwerbspensum;
 	}
 
 	@Override
