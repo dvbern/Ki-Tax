@@ -79,7 +79,7 @@ export class ErwerbspensumListViewController
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
-    public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
+    public konfigAbhaengigkeitAnspruchBeschaeftigungspensum: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
 
     public constructor(
         private readonly $state: StateService,
@@ -130,6 +130,12 @@ export class ErwerbspensumListViewController
     }
 
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
+        if (this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum !==
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING) {
+            this.showInfoAusserordentlichenAnspruch = false;
+            return;
+        }
+
         this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
             this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
             this.showInfoAusserordentlichenAnspruch =
@@ -292,12 +298,14 @@ export class ErwerbspensumListViewController
     private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
         this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(einstellungen => {
-                const einstellung = this.ebeguRestUtil
+                this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum = this.ebeguRestUtil
                     .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
                         .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
-
-                this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung ===
-                    TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
             }, error => LOG.error(error));
+    }
+
+    public anspruchUnabhaengingVomBeschaeftigungspensum(): boolean {
+        return this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 }
