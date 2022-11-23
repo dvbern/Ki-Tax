@@ -176,7 +176,8 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 
 
 		lastenausgleichDetails.forEach(lastenausgleichDetail -> {
-			lastenausgleichDetail.getZeitabschnitte().forEach(zeitabschnitt -> {
+			lastenausgleichDetail.getLastenausgleichDetailZeitabschnitte().forEach(detailZeitabschnitt -> {
+				var zeitabschnitt = detailZeitabschnitt.getZeitabschnitt();
 				var row = new LastenausgleichBGZeitabschnittDataRow();
 
 				Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());

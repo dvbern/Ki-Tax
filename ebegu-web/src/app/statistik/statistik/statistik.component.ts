@@ -132,7 +132,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.cd.markForCheck();
             });
 
-        this.gemeindeRS.getAktiveGemeinden().then(gemeinden => {
+        this.gemeindeRS.getGemeindenForPrincipal$().subscribe(gemeinden => {
             this.gemeinden = gemeinden;
             this.cd.markForCheck();
         });

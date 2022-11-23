@@ -30,10 +30,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.MathUtil;
@@ -101,10 +99,15 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	@Column(nullable = false)
 	private boolean korrektur = false;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "lastenausgleich_detail_zeitabschnitt", joinColumns = @JoinColumn(name = "lastenausgleich_detail_id"), inverseJoinColumns = @JoinColumn(name = "zeitabschnitt_id"))
+	@OneToMany(
+		cascade = CascadeType.ALL,
+		orphanRemoval = true,
+		fetch = FetchType.LAZY,
+		mappedBy = "lastenausgleichDetail"
+	)
 	@Nonnull
-	private @Valid Collection<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
+	@NotNull
+	private Collection<LastenausgleichDetailZeitabschnitt> lastenausgleichDetailZeitabschnitte = new ArrayList<>();
 
 	public LastenausgleichDetail() {
 	}
@@ -232,12 +235,12 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 	}
 
 	@Nonnull
-	public Collection<VerfuegungZeitabschnitt> getZeitabschnitte() {
-		return zeitabschnitte;
+	public Collection<LastenausgleichDetailZeitabschnitt> getLastenausgleichDetailZeitabschnitte() {
+		return lastenausgleichDetailZeitabschnitte;
 	}
 
-	public void setZeitabschnitte(@Nonnull Collection<VerfuegungZeitabschnitt> zeitabschnitte) {
-		this.zeitabschnitte = zeitabschnitte;
+	public void setLastenausgleichDetailZeitabschnitte(@Nonnull Collection<LastenausgleichDetailZeitabschnitt> detailZeitabschnitte) {
+		this.lastenausgleichDetailZeitabschnitte = detailZeitabschnitte;
 	}
 
 	@Override

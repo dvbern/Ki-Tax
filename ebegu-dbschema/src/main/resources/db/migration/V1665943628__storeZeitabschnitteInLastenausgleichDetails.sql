@@ -15,39 +15,42 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE lastenausgleich_detail_zeitabschnitt (
-	lastenausgleich_detail_id BINARY(16) NOT NULL,
-	zeitabschnitt_id BINARY(16) NOT NULL
+create table lastenausgleich_detail_zeitabschnitt (
+    id binary(16) not null,
+    timestamp_erstellt datetime not null,
+    timestamp_mutiert datetime not null,
+    user_erstellt varchar(255) not null,
+    user_mutiert varchar(255) not null,
+    version bigint not null,
+    lastenausgleich_detail_id binary(16) not null,
+    zeitabschnitt_id binary(16),
+    primary key (id)
 );
 
-CREATE TABLE lastenausgleich_detail_zeitabschnitt_aud (
-	rev INTEGER NOT NULL,
-	lastenausgleich_detail_id BINARY(16) NOT NULL,
-	zeitabschnitt_id BINARY(16) NOT NULL,
-	revtype TINYINT,
-	PRIMARY KEY (rev, lastenausgleich_detail_id, zeitabschnitt_id)
+create table lastenausgleich_detail_zeitabschnitt_aud (
+    id binary(16) not null,
+    rev integer not null,
+    revtype tinyint,
+    timestamp_erstellt datetime,
+    timestamp_mutiert datetime,
+    user_erstellt varchar(255),
+    user_mutiert varchar(255),
+    lastenausgleich_detail_id binary(16),
+    zeitabschnitt_id binary(16),
+    primary key (id, rev)
 );
 
-ALTER TABLE lastenausgleich_detail_zeitabschnitt
-	ADD CONSTRAINT UK_lastenausgleich_detail_zeitabschnitt_id UNIQUE (zeitabschnitt_id);
+alter table lastenausgleich_detail_zeitabschnitt_aud
+add constraint FK_lastenausgleich_detail_zeitabschnitt_rev
+    foreign key (rev)
+        references revinfo (rev);
 
-ALTER TABLE lastenausgleich_detail_aud
-	ADD CONSTRAINT FK_lastenausgleich_detail_rev
-		FOREIGN KEY (rev)
-			REFERENCES revinfo (rev);
+alter table lastenausgleich_detail_zeitabschnitt
+add constraint FK_lastenausgleich_dz_lastenausgleich_d_id
+    foreign key (lastenausgleich_detail_id)
+        references lastenausgleich_detail (id);
 
-ALTER TABLE lastenausgleich_detail_zeitabschnitt
-	ADD CONSTRAINT FK_lastenausgleich_detail_verfuegung_zeitabschnitt_id
-		FOREIGN KEY (zeitabschnitt_id)
-			REFERENCES verfuegung_zeitabschnitt (id);
-
-ALTER TABLE lastenausgleich_detail_zeitabschnitt
-	ADD CONSTRAINT FK_lastenausgleich_detail_id
-		FOREIGN KEY (lastenausgleich_detail_id)
-			REFERENCES lastenausgleich_detail (id);
-
-ALTER TABLE lastenausgleich_detail_zeitabschnitt_aud
-	ADD CONSTRAINT FK_lastenausgleich_detail_zeitabschnitt_rev
-		FOREIGN KEY (rev)
-			REFERENCES revinfo (rev);
-
+alter table lastenausgleich_detail_zeitabschnitt
+add constraint FK_lastenausgleich_dz_zeitabschnitt_id
+    foreign key (zeitabschnitt_id)
+        references verfuegung_zeitabschnitt (id);
