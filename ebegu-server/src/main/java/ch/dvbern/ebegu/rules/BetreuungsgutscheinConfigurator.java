@@ -284,7 +284,7 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(storniertCalcRule, einstellungMap);
 
 		// - Erwerbspensum Kanton
-		Rule rule = configureErwerbspensumKantonRule(einstellungMap);
+		Rule rule = new ErwerbspensumCalcRuleVisitor(einstellungMap, locale).getErwerbspesumCalcRule();
 		addToRuleSetIfRelevantForGemeinde(rule, einstellungMap);
 
 		// - KESB Platzierung: Max-Tarif bei Tagesschulen
@@ -458,32 +458,5 @@ public class BetreuungsgutscheinConfigurator {
 		if (rule.isRelevantForGemeinde(einstellungMap)) {
 			rules.add(rule);
 		}
-	}
-
-	private Rule configureErwerbspensumKantonRule(Map<EinstellungKey, Einstellung> einstellungMap) {
-		AnspruchBeschaeftigungAbhaengigkeitTyp abhaengigkeitTyp = AnspruchBeschaeftigungAbhaengigkeitTyp
-			.getEnumValue(einstellungMap.get(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
-
-		if (abhaengigkeitTyp.isAnspruchUnabhaengig()) {
-			return new ErwerbspensumNotRelevantForAnspruchCalcRule(
-				RuleKey.ERWERBSPENSUM,
-				RuleType.GRUNDREGEL_CALC,
-				RuleValidity.ASIV,
-				defaultGueltigkeit,
-				locale
-			);
-		}
-
-		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
-		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
-		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
-		Objects.requireNonNull(minEWP_nichtEingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
-		Objects.requireNonNull(minEWP_eingeschultAsiv, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
-		return new ErwerbspensumAsivCalcRule(
-			defaultGueltigkeit,
-			minEWP_nichtEingeschultAsiv.getValueAsInteger(),
-			minEWP_eingeschultAsiv.getValueAsInteger(),
-			paramMinDauerKonkubinat.getValueAsInteger(),
-			locale);
 	}
 }
