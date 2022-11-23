@@ -18,6 +18,7 @@
 import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from './enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import {TSEinstellung} from './TSEinstellung';
@@ -62,6 +63,7 @@ export class TSGemeindeKonfiguration {
     public konfigHoheEinkommensklassenBetragTfoAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
     public konfigKeineGutscheineFuerSozialhilfeEmpfaenger: boolean;
+    public anspruchUnabhaengingVonBeschaeftigungsPensum: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -77,7 +79,6 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
-    public isAnspruchUnabhaengingVonBeschaeftigungsPensum: boolean;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -292,5 +293,10 @@ export class TSGemeindeKonfiguration {
         this.erwerbspensumMinimumOverriden =
             (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
             (this.erwerbspensumMiminumSchulkinder !== this.erwerbspensumMiminumSchulkinderMax);
+    }
+
+    public isAnspruchUnabhaengingVonBeschaeftigungsPensum(): boolean {
+        return this.anspruchUnabhaengingVonBeschaeftigungsPensum ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 }

@@ -83,7 +83,7 @@ export class EditGemeindeComponentBG implements OnInit {
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     public dauerBabyTarife: TSEinstellung[];
-    private ebeguRestUtil = new EbeguRestUtil();
+    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         private readonly $transition$: Transition,
@@ -466,13 +466,9 @@ export class EditGemeindeComponentBG implements OnInit {
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
 
-                    const einstellungAbhaengigkeitAnspruchBeschaeftigung = this.ebeguRestUtil
+                    config.anspruchUnabhaengingVonBeschaeftigungsPensum = this.ebeguRestUtil
                         .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
                             .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
-
-                    config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
-                        einstellungAbhaengigkeitAnspruchBeschaeftigung ===
-                        TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
                 }, error => LOG.error(error));
         });
     }
