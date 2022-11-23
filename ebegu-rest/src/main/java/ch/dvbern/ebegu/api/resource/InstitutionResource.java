@@ -85,7 +85,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -151,9 +150,6 @@ public class InstitutionResource {
 
 	@Inject
 	private MitteilungService mitteilungService;
-
-	@Inject
-	private Authorizer authorizer;
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
