@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
+import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -173,7 +174,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 	@Nullable
 	private KibonAnfrageContext requestCurrentSteuerdaten(Gesuch gesuch, int zpvNummer) {
-		KibonAnfrageContext kibonAnfrageContext = initKibonAnfrageContext(gesuch, zpvNummer);
+		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(gesuch, zpvNummer);
 
 		if (kibonAnfrageContext == null) {
 			return null;
@@ -183,7 +184,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 
-		boolean gemeinsam =  Boolean.TRUE
+		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 
 		return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gemeinsam);
@@ -220,62 +221,5 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		}
 
 		return einstellungList.get(0).getValueAsBigDecimal();
-	}
-
-	/**
-	 * Bestimmen ob der Veranlagung Event betrifft der GS1 oder GS2 und das Context entsprechend initialisieren
-	 *
-	 * @return KibonAnfrageContext
-	 */
-	private KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
-		KibonAnfrageContext kibonAnfrageContext = null;
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		if (gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse() != null && gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse()
-			.getZpvNrDossiertraeger() != null) {
-			if (gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller1(),
-					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
-					gesuch.getId());
-			}
-		} else {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer());
-			if (gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller2(),
-					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
-					gesuch.getId());
-
-			}
-		}
-		return kibonAnfrageContext;
 	}
 }

@@ -114,6 +114,9 @@ import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
+import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
+import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -403,6 +406,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Betreuungsmitteilung mitteilung = persistence.find(Betreuungsmitteilung.class, key);
+		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		return Optional.ofNullable(mitteilung);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<NeueVeranlagungsMitteilung> findVeranlagungsMitteilungById(@Nonnull String key) {
+		Objects.requireNonNull(key, "id muss gesetzt sein");
+		NeueVeranlagungsMitteilung mitteilung = persistence.find(NeueVeranlagungsMitteilung.class, key);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		return Optional.ofNullable(mitteilung);
 	}
@@ -775,22 +787,46 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		try {
-			return doApplyBetreuungsmitteilung(mitteilung);
+			return doApplymitteilung(mitteilung);
 		} catch (EbeguException e) {
-			throw new EbeguRuntimeException("applyBetreuungsmitteilung", "error while applying betreuungsmitteilungen", e);
+			throw new EbeguRuntimeException(
+				"applyBetreuungsmitteilung",
+				"error while applying betreuungsmitteilungen",
+				e.getErrorCodeEnum(),
+				e);
 		}
 	}
 
 	@Nonnull
-	private Gesuch doApplyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) throws EbeguException {
-		Objects.requireNonNull(mitteilung);
-		Objects.requireNonNull(mitteilung.getBetreuung());
+	public Gesuch neueVeranlagunssmitteilungBearbeiten(@Nonnull NeueVeranlagungsMitteilung mitteilung) {
+		try {
+			return doApplymitteilung(mitteilung);
+		} catch (EbeguException e) {
+			throw new EbeguRuntimeException(
+				"applyBetreuungsmitteilung",
+				"error while applying betreuungsmitteilungen",
+				e.getErrorCodeEnum(),
+				e);
+		}
+	}
 
-		final Gesuch gesuch = mitteilung.getBetreuung().extractGesuch();
+	@Nonnull
+	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung) throws EbeguException {
+		Gesuch gesuch;
+		if (mitteilung instanceof Betreuungsmitteilung) {
+			Objects.requireNonNull(mitteilung.getBetreuung());
+			gesuch = mitteilung.getBetreuung().extractGesuch();
+		} else {
+			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = (NeueVeranlagungsMitteilung) mitteilung;
+			Objects.requireNonNull(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId());
+			gesuch = gesuchService.findGesuch(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId())
+				.orElseThrow();
+		}
+
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
 			throw new EbeguException(
-				"applyBetreuungsmitteilung",
+				"doApplymitteilung",
 				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
 				null,
 				gesuch.getDossier().getId(),
@@ -806,7 +842,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
 				throw new EbeguException(
-					"applyBetreuungsmitteilung",
+					"doApplymitteilung",
 					ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
 					exception,
 					gesuch.getDossier().getId(),
@@ -820,22 +856,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
 				throw new EbeguException(
-					"applyBetreuungsmitteilung",
+					"doApplymitteilung",
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
 					neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
 				throw new EbeguException(
-					"applyBetreuungsmitteilung",
+					"doApplymitteilung",
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 					neustesGesuch.getId());
 			}
 			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
-				//betreuungsaenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
+				// aenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
 				authorizer.checkWriteAuthorization(neustesGesuch);
-				applyBetreuungsmitteilungToMutation(neustesGesuch, mitteilung);
+				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
@@ -844,11 +880,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				authorizer.checkWriteAuthorization(mutation);
-				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
+				applyMitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
 			throw new EbeguException(
-				"applyBetreuungsmitteilung",
+				"doApplymitteilung",
 				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
 				neustesGesuch.getId());
 		}
@@ -1450,6 +1486,70 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return Collections.emptyList();
 	}
 
+	private void applyMitteilungToMutation(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Mitteilung mitteilung
+	) throws EbeguException {
+		if (mitteilung instanceof Betreuungsmitteilung) {
+			Betreuungsmitteilung betreuungsmitteilung = (Betreuungsmitteilung) mitteilung;
+			applyBetreuungsmitteilungToMutation(gesuch, betreuungsmitteilung);
+		} else {
+			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = (NeueVeranlagungsMitteilung) mitteilung;
+			neueVeranlagungsMitteilungImAntragErsetzen(gesuch, neueVeranlagungsMitteilung);
+		}
+	}
+
+	private void neueVeranlagungsMitteilungImAntragErsetzen(
+		@Nonnull Gesuch gesuch,
+		@Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse());
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+		authorizer.checkWriteAuthorization(gesuch);
+		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(
+			gesuch,
+			mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		boolean gemeinsam = Boolean.TRUE
+			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+		boolean hasGS2 = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
+		if (hasGS2 && gemeinsam) {
+			Objects.requireNonNull(kibonAnfrageContext.getFinSitContGS2());
+			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() == null) {
+				throw new EbeguException(
+					"neueVeranlagungsMitteilungImAntragErsetzen",
+					ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
+					gesuch.getId());
+			}
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(kibonAnfrageContext.getFinSitCont()
+					.getFinanzielleSituationJA(),
+				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
+				mitteilung.getSteuerdatenResponse());
+		} else {
+			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
+				throw new EbeguException(
+					"neueVeranlagungsMitteilungImAntragErsetzen",
+					ErrorCodeEnum.ERROR_FIN_SIT_ALLEIN_NEUE_VERANLAGUNG_GEMEINSAM,
+					gesuch.getId());
+			}
+			if (hasGS2
+				&& kibonAnfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getZpvNummer() != null
+				&& kibonAnfrageContext.getGesuch()
+				.getGesuchsteller2()
+				.getGesuchstellerJA()
+				.getZpvNummer()
+				.equals(String.valueOf(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger()))) {
+				kibonAnfrageContext.switchGSContainer();
+			}
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
+				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
+		}
+		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
+		persistence.merge(mitteilung);
+	}
+
 	private void applyBetreuungsmitteilungToMutation(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Betreuungsmitteilung mitteilung
@@ -1505,6 +1605,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			persistence.merge(mitteilung);
 		}
 	}
+
 
 	@Nullable
 	private MitteilungTeilnehmerTyp getMitteilungTeilnehmerTypForCurrentUser() {
@@ -1657,7 +1758,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
-			Gesuch mutation = doApplyBetreuungsmitteilung(betreuungsmitteilung);
+			Gesuch mutation = doApplymitteilung(betreuungsmitteilung);
 			acceptFinSit(mutation);
 			if (canGesuchBeAutomatischVerfuegt(mutation)) {
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);

@@ -400,6 +400,22 @@ export class DVMitteilungListController implements IOnInit {
         return this.canApplyBetreuungsmitteilung(mitteilung) && this.isBetreuungsmitteilungNotApplied(mitteilung);
     }
 
+    public isNeueVeranlagungsmitteilungApplied(mitteilung: TSMitteilung): boolean {
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT;
+    }
+
+    public isNeueVeranlagungsmitteilungNotErledigt(mitteilung: TSMitteilung): boolean {
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT;
+    }
+
+    public canErledigenNeueVeranlagungsmitteilung(_mitteilung: TSMitteilung): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole());
+    }
+
+    public showNeueVeranlagungsmitteilungApply(mitteilung: TSMitteilung): boolean {
+        return this.canErledigenNeueVeranlagungsmitteilung(mitteilung) && this.isNeueVeranlagungsmitteilungNotErledigt(mitteilung);
+    }
+
     public $postLink(): void {
         const selectDelay = 200;
         this.$timeout(() => {
@@ -437,6 +453,34 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
+    public neueVeranlagungsmitteilungBearbeiten(mitteilung: TSMitteilung): void {
+        if (!this.isNeueVeranlagungsmitteilung(mitteilung)) {
+            return;
+        }
+
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
+            deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
+            parentController: this,
+            elementID: 'Intro'
+        }).then(() => {   // User confirmed message
+            this.mitteilungRS.neueVeranlagungsmitteilungBearbeiten(mitteilung.id).then((response: any) => {
+                this.loadAllMitteilungen();
+                if (response.id === this.gesuchModelManager.getGesuch().id) {
+                    // Dies wird gebraucht wenn das Gesuch der Mitteilung schon geladen ist, weil die Daten der
+                    // Betreuung geaendert wurden und deshalb neugeladen werden müssen. reloadGesuch ist einfacher
+                    // als die entsprechende Betreuung neu zu laden
+                    this.gesuchModelManager.reloadGesuch();
+                } else if (response.id) {
+                    // eine neue Mutation wurde aus der Muttationsmitteilung erstellt
+                    // informieren, dass eine neue Mutation erstellt wurde
+                    const event = TSMitteilungEvent[TSMitteilungEvent.MUTATIONSMITTEILUNG_NEUE_MUTATION];
+                    this.$rootScope.$broadcast(event, 'Mutationsmitteilung einer neuen Mutation hinzugefuegt');
+                }
+            });
+        });
+    }
+
     public mitteilungWeitergeleitet(): void {
         this.loadAllMitteilungen();
     }
@@ -451,6 +495,11 @@ export class DVMitteilungListController implements IOnInit {
 
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
         return mitteilung instanceof TSBetreuungsmitteilung;
+    }
+
+    private isNeueVeranlagungsmitteilung(mitteilung: TSMitteilung): boolean {
+        return mitteilung.empfaengerTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT &&
+            mitteilung.senderTyp === TSMitteilungTeilnehmerTyp.JUGENDAMT;
     }
 
     public isCurrentUserAmt(): boolean {
