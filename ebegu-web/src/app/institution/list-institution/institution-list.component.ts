@@ -211,12 +211,10 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     }
 
     public isCreateBGAllowed(): boolean {
-        let allowedRoles: TSRole[] = [];
-        allowedRoles = allowedRoles.concat(TSRoleUtil.getMandantRoles());
         if (this.institutionenDurchGemeindenEinladen) {
-            allowedRoles = allowedRoles.concat([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE]);
+            return this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN]);
         }
-        return this.authServiceRS.isOneOfRoles(allowedRoles);
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public isCreateTSAllowed(): boolean {
