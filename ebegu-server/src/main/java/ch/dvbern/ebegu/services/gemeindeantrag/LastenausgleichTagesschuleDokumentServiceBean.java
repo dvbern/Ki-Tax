@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.docxmerger.lats.LatsDocxMerger;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.PDFService;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -74,6 +76,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 
 	@Inject
 	EinstellungService einstellungService;
+
+	@Inject
+	GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
 	private PDFService pdfService;
@@ -155,7 +160,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		dto.setElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
 		dto.setLastenausgleichsberechtigterBetrag(angabenGemeinde.getLastenausgleichsberechtigerBetrag());
 
-		calculateAndSetPrognoseValues(dto, angabenGemeinde, betreuungsstundenPrognose);
+		calculateAndSetPrognoseValues(dto, angabenGemeinde, container, betreuungsstundenPrognose);
 		calculateAndSetZahlungen(dto, angabenGemeinde);
 
 		return dto;
@@ -174,12 +179,19 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		LastenausgleichTagesschuleAngabenGemeindeContainer container,
 		Sprache sprache) {
 		List<String> normLohnBetrag = new ArrayList<>();
+		List<String> normLohnBetragPrognose = new ArrayList<>();
 		List<String> normLohnText = new ArrayList<>();
+
+		Gesuchsperiode periodeOfPrognose = gesuchsperiodeService
+			.getNachfolgendeGesuchsperiode(container.getGesuchsperiode())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("setNormlohnkosten", "Nachfolgende Periode nicht defniniert"));
 
 		if (angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete() != null
 		&& angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
 			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), container.getGesuchsperiode());
+			Einstellung lohnnormkostenPrognose = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, container.getGemeinde(), periodeOfPrognose);
 			normLohnBetrag.add(lohnnormkosten.getValue());
+			normLohnBetragPrognose.add(lohnnormkostenPrognose.getValue());
 
 			String text = ServerMessageUtil.getMessage(
 				"lats_verfuegung_text_paedagogisch",
@@ -193,7 +205,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		if (angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete() != null
 			&& angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete().compareTo(BigDecimal.ZERO) > 0) {
 			Einstellung lohnnormkosten = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), container.getGesuchsperiode());
+			Einstellung lohnnormkostenPrognose = einstellungService.findEinstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, container.getGemeinde(), periodeOfPrognose);
 			normLohnBetrag.add(lohnnormkosten.getValue());
+			normLohnBetragPrognose.add(lohnnormkostenPrognose.getValue());
 
 			String text = ServerMessageUtil.getMessage(
 				"lats_verfuegung_text_nicht_paedagogisch",
@@ -205,9 +219,9 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 			normLohnText.add(text);
 		}
 		String betragResult = String.join(" / ", normLohnBetrag);
+		String betragResultPrognose = String.join(" / ", normLohnBetragPrognose);
 		dto.setNormlohnkosten(betragResult);
-		// same values used for following periode
-		dto.setNormlohnkostenProg(betragResult);
+		dto.setNormlohnkostenProg(betragResultPrognose);
 
 		String textResult = String.join(" ODER ", normLohnText);
 		dto.setTextPaedagogischOderNicht(textResult);
@@ -216,26 +230,42 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 	private void calculateAndSetPrognoseValues(
 		@Nonnull LatsDocxDTO dto,
 		@Nonnull LastenausgleichTagesschuleAngabenGemeinde angabenGemeinde,
+		@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer container,
 		@Nonnull BigDecimal betreuungsstundenPrognose
 	) {
 
+		Gesuchsperiode periodeOfPrognose = gesuchsperiodeService
+			.getNachfolgendeGesuchsperiode(container.getGesuchsperiode())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("setNormlohnkosten", "Nachfolgende Periode nicht defniniert"));
+
+		Einstellung lohnnormkostenMoreThan50 = einstellungService.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN,
+			container.getGemeinde(),
+			periodeOfPrognose
+		);
+		Einstellung lohnnormkostenLessThan50 = einstellungService.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+			container.getGemeinde(),
+			periodeOfPrognose
+		);
+
 		dto.setBetreuungsstundenProg(betreuungsstundenPrognose);
 
-		// for gemeinden with both normlohnkosten, use same distribution => use same calculated normlohnkosten
-		final boolean islastenausgleichberechtigteBetreuungstundenZero =
-				BigDecimal.ZERO.compareTo(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()) == 0;
+		// falls in der aktuellen Periode nur die tieferen Normlohnkosten verwendet werden, dann werden auch diese für die
+		// Prognose verwendet. Falls nur die höheren oder beide Normlohnkosten verwendet werden, dann werden auch die höheren
+		// für die Prognose verwendet
+		BigDecimal normlohnkosten;
+		if (BigDecimal.ZERO.equals(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete())) {
+			normlohnkosten = lohnnormkostenLessThan50.getValueAsBigDecimal();
+		} else {
+			normlohnkosten = lohnnormkostenMoreThan50.getValueAsBigDecimal();
+		}
 
-		BigDecimal normlohnkostenCalculated =
-				islastenausgleichberechtigteBetreuungstundenZero ?
-						BigDecimal.ZERO :
-						MathUtil.EXACT.divide(
-								angabenGemeinde.getNormlohnkostenBetreuungBerechnet(),
-								angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()
-						);
-
-		Objects.requireNonNull(normlohnkostenCalculated);
-		BigDecimal normlohnkostenProg = normlohnkostenCalculated.multiply(betreuungsstundenPrognose);
+		BigDecimal normlohnkostenProg = normlohnkosten.multiply(betreuungsstundenPrognose);
 		dto.setNormlohnkostenTotalProg(MathUtil.ceilToFrankenRappen(normlohnkostenProg));
+
+		final boolean islastenausgleichberechtigteBetreuungstundenZero =
+			BigDecimal.ZERO.compareTo(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden()) == 0;
 
 		BigDecimal proportion = islastenausgleichberechtigteBetreuungstundenZero ?
 				BigDecimal.ZERO :
