@@ -182,6 +182,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Inject
 	private VerfuegungService verfuegungService;
 
+	@Inject
+	private FinanzielleSituationService finanzielleSituationService;
+
 	@Override
 	@Nonnull
 	public Mitteilung sendMitteilung(@Nonnull Mitteilung mitteilung) {
@@ -880,6 +883,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				authorizer.checkWriteAuthorization(mutation);
+				if(mitteilung instanceof NeueVeranlagungsMitteilung){
+					setSteuerdatenResponseInMutationTemp(gesuch, mutation);
+				}
 				applyMitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
@@ -889,6 +895,24 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				neustesGesuch.getId());
 		}
 		return gesuch;
+	}
+
+	private void setSteuerdatenResponseInMutationTemp(Gesuch gesuch, Gesuch mutation) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(mutation.getGesuchsteller1());
+		Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
+		mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenResponse(
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenResponse()
+		);
+		if(mutation.getGesuchsteller2() != null
+			&& mutation.getGesuchsteller2().getFinanzielleSituationContainer() != null
+			&& gesuch.getGesuchsteller2() != null
+			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null){
+			mutation.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenResponse(
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenResponse()
+			);
+		}
 	}
 
 	@Nonnull
@@ -1527,6 +1551,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					.getFinanzielleSituationJA(),
 				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
+			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitContGS2(), gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
@@ -1545,6 +1571,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
 				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
+			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 		persistence.merge(mitteilung);
