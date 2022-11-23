@@ -283,6 +283,11 @@ export class TSGemeindeKonfiguration {
                     this.konfigKeineGutscheineFuerSozialhilfeEmpfaenger = (property.value === 'true');
                     break;
                 }
+                case TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM: {
+                    this.anspruchUnabhaengingVonBeschaeftigungsPensum =
+                        (TSAnspruchBeschaeftigungAbhaengigkeitTyp as any)[property.value];
+                    break;
+                }
                 default: {
                     break;
                 }

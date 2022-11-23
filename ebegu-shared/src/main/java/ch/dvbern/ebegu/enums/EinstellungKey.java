@@ -261,7 +261,7 @@ public enum EinstellungKey {
 
 	// Es gibt verschiedene Arten, in welcher Abhängigkeit das Beschaeftigungspensum zum Anspruch steht
 	// siehe KIBON-2647
-	ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll()),
+	ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// Kinderabzug Typ (Solothurn und FKJV)
 	// Siehe KIBON-2182

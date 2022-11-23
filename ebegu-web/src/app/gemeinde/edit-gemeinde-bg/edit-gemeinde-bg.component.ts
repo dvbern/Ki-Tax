@@ -80,10 +80,10 @@ export class EditGemeindeComponentBG implements OnInit {
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
+    public anspruchBeschaeftigungAbhaengigkeitTypValues: Array<TSAnspruchBeschaeftigungAbhaengigkeitTyp>;
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
     public dauerBabyTarife: TSEinstellung[];
-    private readonly ebeguRestUtil = new EbeguRestUtil();
 
     public constructor(
         private readonly $transition$: Transition,
@@ -108,6 +108,7 @@ export class EditGemeindeComponentBG implements OnInit {
 
         this.navigationDest = this.$transition$.to();
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
+        this.anspruchBeschaeftigungAbhaengigkeitTypValues = Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp);
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
     }
@@ -188,6 +189,11 @@ export class EditGemeindeComponentBG implements OnInit {
     public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
         const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
         return bgBisStr;
+    }
+
+    public getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(gk: TSGemeindeKonfiguration): string {
+        return this.translate.instant(gk.anspruchUnabhaengingVonBeschaeftigungsPensum.toString());
+
     }
 
     public changeKonfigBeguBisUndMitSchulstufe(gk: TSGemeindeKonfiguration): void {
@@ -465,10 +471,6 @@ export class EditGemeindeComponentBG implements OnInit {
                     const einstellungFKJVTexte = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
-
-                    config.anspruchUnabhaengingVonBeschaeftigungsPensum = this.ebeguRestUtil
-                        .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
-                            .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
                 }, error => LOG.error(error));
         });
     }
@@ -568,6 +570,14 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
             gk.konfigHoheEinkommensklassenMassgebendenEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigAbhaengigkeitAnspruchBeschaeftigung(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+            gk.anspruchUnabhaengingVonBeschaeftigungsPensum,
             gk
         );
     }
