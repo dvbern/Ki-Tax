@@ -137,11 +137,15 @@ export class BetreuungInput implements IController {
             return;
         }
 
+        // Wenn der Input Switch (Toggle) nicht dargestellt ist, wird das Pensum immer in Prozent dargestellt
+        if (!this.showBetreuungInputSwitch) {
+            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        }
+
         this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
 
         if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
-        && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)
-        && this.showBetreuungInputSwitch) {
+            && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)) {
             this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
         }
 
@@ -154,6 +158,7 @@ export class BetreuungInput implements IController {
         }
         if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
             this.pensumContainer.betreuungspensumJA.pensum = this.pensumValue;
+           // this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
             return;
         }
         this.pensumContainer.betreuungspensumJA.pensum =
