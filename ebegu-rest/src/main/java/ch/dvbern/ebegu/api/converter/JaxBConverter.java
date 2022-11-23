@@ -5289,8 +5289,10 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
 		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
-		stammdaten.setHasZusatzText(jaxStammdaten.getHasZusatzText());
-		stammdaten.setZusatzText(jaxStammdaten.getZusatzText());
+		stammdaten.setHasZusatzTextVerfuegung(jaxStammdaten.getHasZusatzTextVerfuegung());
+		stammdaten.setZusatzTextVerfuegung(jaxStammdaten.getZusatzTextVerfuegung());
+		stammdaten.setHasZusatzTextFreigabequittung(jaxStammdaten.getHasZusatzTextFreigabequittung());
+		stammdaten.setZusatzTextFreigabequittung(jaxStammdaten.getZusatzTextVerfuegung());
 
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
@@ -5373,8 +5375,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
-		jaxStammdaten.setHasZusatzText(stammdaten.getHasZusatzText());
-		jaxStammdaten.setZusatzText(stammdaten.getZusatzText());
+		jaxStammdaten.setHasZusatzTextVerfuegung(stammdaten.getHasZusatzTextVerfuegung());
+		jaxStammdaten.setZusatzTextVerfuegung(stammdaten.getZusatzTextVerfuegung());
+		jaxStammdaten.setHasZusatzTextFreigabequittung(stammdaten.getHasZusatzTextFreigabequittung());
+		jaxStammdaten.setZusatzTextFreigabequittung(stammdaten.getZusatzTextFreigabequittung());
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
 		if (stammdaten.getIban() != null) {
