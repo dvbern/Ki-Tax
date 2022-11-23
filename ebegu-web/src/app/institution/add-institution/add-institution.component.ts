@@ -72,7 +72,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog,
+        private readonly dialog: MatDialog
     ) {
     }
 
