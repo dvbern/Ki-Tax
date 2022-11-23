@@ -1250,7 +1250,7 @@
 
                                                 <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
                                                 <div class="form-group"
-                                                     *ngIf="konfigurationsListe[i].anspruchUnabhaengingVonBeschaeftigungsPensum">
+                                                     *ngIf="isSuperAdmin()">
                                                     <label for="anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}"
                                                            class="required"
                                                            translate>ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM
@@ -1593,7 +1593,7 @@
                                                     </p>
                                                 </div>
                                                 <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
-                                                <label>{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
+                                                <label *ngIf="isSuperAdmin()">{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
                                                     konfigurationsListe[i])}}</strong></label>
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
