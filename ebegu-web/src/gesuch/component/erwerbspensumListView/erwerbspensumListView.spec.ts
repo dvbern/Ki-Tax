@@ -19,11 +19,13 @@ import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGemeindeStammdatenLite} from '../../../models/TSGemeindeStammdatenLite';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
@@ -53,6 +55,7 @@ describe('erwerbspensumListView', () => {
     let gesuchsperiode: TSGesuchsperiode;
     let einstellungRS: EinstellungRS;
     let $httpBackend: IHttpBackendService;
+    let ebeguRestUtil: EbeguRestUtil;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         prepareDossier();
@@ -64,6 +67,7 @@ describe('erwerbspensumListView', () => {
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         $httpBackend = $injector.get('$httpBackend');
+        ebeguRestUtil = $injector.get('EbeguRestUtil');
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
@@ -71,6 +75,8 @@ describe('erwerbspensumListView', () => {
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(
             of([new TSEinstellung(null, TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)])
         );
+        spyOn(ebeguRestUtil, 'parseAnspruchBeschaeftigungAbhaengigkeitTyp')
+            .and.returnValue(TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING);
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
