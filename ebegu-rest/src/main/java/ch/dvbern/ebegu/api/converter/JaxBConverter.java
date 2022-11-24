@@ -5292,7 +5292,7 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setHasZusatzTextVerfuegung(jaxStammdaten.getHasZusatzTextVerfuegung());
 		stammdaten.setZusatzTextVerfuegung(jaxStammdaten.getZusatzTextVerfuegung());
 		stammdaten.setHasZusatzTextFreigabequittung(jaxStammdaten.getHasZusatzTextFreigabequittung());
-		stammdaten.setZusatzTextFreigabequittung(jaxStammdaten.getZusatzTextVerfuegung());
+		stammdaten.setZusatzTextFreigabequittung(jaxStammdaten.getZusatzTextFreigabequittung());
 
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());

@@ -185,18 +185,19 @@
                 </div>
                 <!-- Alternatives Kontaktfeld -->
                 <div class="col-sm-6">
-                    <div class="form-group">
-                        <mat-checkbox id="altBGAdresse_id"
-                                      name="altBGAdresse_id"
-                                      [(ngModel)]="stammdaten.hasAltGemeindeKontakt"
-                                      (ngModelChange)="altGemeindeKontaktHasChange($event)">
-                            {{'ALTERNATIVES_KONTAKTFELD'|translate}}&nbsp;
-                            <dv-tooltip inputId='altBGAdresse_id' [text]="'ALTERNATIVES_KONTAKTFELD_INFO' | translate"></dv-tooltip>
-                        </mat-checkbox>
-                    </div>
-                    <div *ngIf="stammdaten.hasAltGemeindeKontakt">
+                    <div class="row">
                         <div class="col-sm-12">
-                            <div class="row">
+                            <div class="form-group">
+                                <mat-checkbox id="altBGAdresse_id"
+                                              name="altBGAdresse_id"
+                                              [(ngModel)]="stammdaten.hasAltGemeindeKontakt"
+                                              (ngModelChange)="altGemeindeKontaktHasChange($event)">
+                                    {{'ALTERNATIVES_KONTAKTFELD'|translate}}&nbsp;
+                                    <dv-tooltip inputId='altBGAdresse_id'
+                                                [text]="'ALTERNATIVES_KONTAKTFELD_INFO' | translate"></dv-tooltip>
+                                </mat-checkbox>
+                            </div>
+                            <div *ngIf="stammdaten.hasAltGemeindeKontakt">
                                 <div class="form-group">
                                     <dv-input-container-x [verticalAlign]="true">
                                         <label class="required"
@@ -213,6 +214,44 @@
                                                                inputId="alternativekontaktdaten_id"></dv-error-messages>
                                         </mat-form-field>
                                     </dv-input-container-x>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="form-group checkbox-with-tooltip">
+                                    <mat-checkbox id="zusatzTextFreigabequittung_id"
+                                                  name="zusatzTextFreigabequittung_name"
+                                                  [(ngModel)]="stammdaten.hasZusatzTextFreigabequittung">
+                                        {{'ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_JA'|translate}}
+                                    </mat-checkbox>
+                                    <dv-tooltip id="zusatzText_tooltip"
+                                                [text]="'ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_HELP'|translate"></dv-tooltip>
+                                </div>
+                                <div *ngIf="stammdaten.hasZusatzTextFreigabequittung">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <dv-input-container-x [verticalAlign]="true">
+                                                    <label class="required"
+                                                           translate for="zusatzText_id">ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_TITEL</label>
+                                                    <mat-form-field floatLabel="always" class="no-margin-left">
+                                            <textarea matInput
+                                                      id="zusatzTextFreigabequittungTitle_id"
+                                                      name="zusatzTextFreigabequittungTitle_name"
+                                                      #nameZusatzText="ngModel"
+                                                      [(ngModel)]="stammdaten.zusatzTextFreigabequittung"
+                                                      type="text"
+                                                      class="form-control" required></textarea>
+                                                        <dv-error-messages [errorObject]="nameZusatzText.errors"
+                                                                           inputId="zusatzTextFreigabequittungTitle_id"></dv-error-messages>
+                                                    </mat-form-field>
+                                                </dv-input-container-x>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
