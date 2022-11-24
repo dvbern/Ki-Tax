@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../../../gesuch/service/gemeindeRS.rest';
@@ -65,6 +65,9 @@ export class PendenzenListViewComponent {
 
     private readonly unsubscribe$ = new Subject<void>();
 
+    // used to cancel the previous subscription so we don't have two data loads racing each other
+    private dataLoadingSubscription: Subscription;
+
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $state: StateService,
@@ -101,7 +104,9 @@ export class PendenzenListViewComponent {
     }
 
     private loadData(): void {
-        this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
+        // cancel previous subscription if not closed
+        this.dataLoadingSubscription?.unsubscribe();
+        this.dataLoadingSubscription = this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
             .subscribe(response => {
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => ({
