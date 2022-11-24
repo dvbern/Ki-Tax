@@ -17,7 +17,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 
-public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhangigkeitTypVisitor<AbstractCalcRule> {
+public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhangigkeitTypVisitor<AbstractErwerbspensumCalcRule> {
 	private final Map<EinstellungKey, Einstellung> einstellungMap;
 	private final Locale locale;
 
@@ -26,14 +26,14 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 		this.locale = locale;
 	}
 
-	public AbstractCalcRule getErwerbspesumCalcRule() {
+	public AbstractErwerbspensumCalcRule getErwerbspesumCalcRule() {
 		AnspruchBeschaeftigungAbhaengigkeitTyp abhaengigkeitTyp = AnspruchBeschaeftigungAbhaengigkeitTyp
 			.getEnumValue(einstellungMap.get(ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
 		return abhaengigkeitTyp.accept(this);
 	}
 
 	@Override
-	public AbstractCalcRule visitUnabhaengig() {
+	public AbstractErwerbspensumCalcRule visitUnabhaengig() {
 		return new ErwerbspensumNotRelevantForAnspruchCalcRule(
 			RuleKey.ERWERBSPENSUM,
 			RuleType.GRUNDREGEL_CALC,
@@ -44,7 +44,7 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 	}
 
 	@Override
-	public AbstractCalcRule visitAbhaengig() {
+	public AbstractErwerbspensumCalcRule visitAbhaengig() {
 		Einstellung minEWP_nichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
 		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
@@ -59,7 +59,7 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 	}
 
 	@Override
-	public AbstractCalcRule visitMinimum() {
+	public AbstractErwerbspensumCalcRule visitMinimum() {
 		return new ErwerbspensumMinimumCalcRule(
 			RuleKey.ERWERBSPENSUM,
 			RuleType.GRUNDREGEL_CALC,
