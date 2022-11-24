@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -34,7 +33,6 @@ import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Die Rule wird ausgeführt, wenn die Konfig ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM auf MINIMUM gesetzt ist.
@@ -43,7 +41,7 @@ import static java.util.Objects.requireNonNull;
  * Die Mindest-Beschäftigung bei Alleinerziehenden ist 20% und bei Paaren 120%. Wenn das Minimum erreicht ist,
  * wird 100% Anspruch gewährt sonst 0%
  */
-public class ErwerbspensumMinimumCalcRule extends AbstractCalcRule {
+public class ErwerbspensumMinimumCalcRule extends AbstractErwerbspensumCalcRule {
 
 	private static final int MINIMUM_EWP_FOR_ONE_GS = 20;
 
@@ -54,8 +52,7 @@ public class ErwerbspensumMinimumCalcRule extends AbstractCalcRule {
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Gesuch gesuch = platz.extractGesuch();
-		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
-		boolean has2Gs = familiensituation.hasSecondGesuchsteller(inputData.getParent().getGueltigkeit().getGueltigBis());
+		boolean has2Gs = hasSecondGSForZeit(gesuch, inputData.getParent().getGueltigkeit());
 
 		if (isMimimumErwerpsmensumErreicht(inputData, has2Gs)) {
 			inputData.setAnspruchspensumProzent(100);
