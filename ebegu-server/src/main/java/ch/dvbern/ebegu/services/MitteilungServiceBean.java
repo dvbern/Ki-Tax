@@ -777,7 +777,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			return doApplyBetreuungsmitteilung(mitteilung);
 		} catch (EbeguException e) {
-			throw new EbeguRuntimeException("applyBetreuungsmitteilung", "error while applying betreuungsmitteilungen", e);
+			throw new EbeguRuntimeException("applyBetreuungsmitteilung",
+				"error while applying betreuungsmitteilungen",
+				e.getErrorCodeEnum(),
+				e);
 		}
 	}
 
