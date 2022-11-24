@@ -158,7 +158,6 @@ export class BetreuungInput implements IController {
         }
         if (EbeguUtil.isNullOrUndefined(this.multiplier)) {
             this.pensumContainer.betreuungspensumJA.pensum = this.pensumValue;
-           // this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
             return;
         }
         this.pensumContainer.betreuungspensumJA.pensum =
