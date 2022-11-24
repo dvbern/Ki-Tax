@@ -393,9 +393,19 @@
                 </div>
                 <!-- Korrespondenzsprache -->
                 <div class="col-sm-6" *ngIf="frenchEnabled">
-                    <div class="form-group">
-                        <h3 translate>KORRESPONDENZSPRACHE</h3>
-                        <p>{{korrespondenzsprache}}</p>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <h3 translate>KORRESPONDENZSPRACHE</h3>
+                                <p>{{korrespondenzsprache}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <!-- Zusätzlicher Text auf der Freigabequittung -->
+                            <h3 *ngIf="stammdaten.hasZusatzTextFreigabequittung">
+                                {{'ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_JA'| translate}}
+                            </h3>
+                        </div>
                     </div>
                 </div>
             </div>
