@@ -13,11 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {DVErrorMessageCallback} from './DVErrorMessageCallback';
 import {TSErrorAction} from './enums/TSErrorAction';
 import {TSErrorLevel} from './enums/TSErrorLevel';
 import {TSErrorType} from './enums/TSErrorType';
 
 export class TSExceptionReport {
+    public get errorMessageCallback(): DVErrorMessageCallback {
+        return this._errorMessageCallback;
+    }
+
+    public set errorMessageCallback(value: DVErrorMessageCallback) {
+        this._errorMessageCallback = value;
+    }
 
     public get type(): TSErrorType {
         return this._type;
@@ -141,6 +149,7 @@ export class TSExceptionReport {
     private _path: string;
 
     private _action: TSErrorAction = undefined;
+    private _errorMessageCallback: DVErrorMessageCallback;
 
     /**
      *
@@ -148,8 +157,10 @@ export class TSExceptionReport {
      * @param severity Severity of the Error
      * @param msgKey This is the message key of the error. can also be the message itself
      * @param args anything
+     * @param errorCallback a text and a Function that can be used in the error message to provide user interaction
      */
-    public constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any) {
+    public constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any, errorCallback?: DVErrorMessageCallback) {
+        this._errorMessageCallback = errorCallback;
         this._type = type || null;
         this._severity = severity || null;
         this._msgKey = msgKey || null;

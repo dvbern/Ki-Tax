@@ -18,6 +18,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
+import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
 import {TSBetreuungsmitteilung} from '../../../../models/TSBetreuungsmitteilung';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
@@ -34,7 +35,8 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 })
 export class DvNgMitteilungResultDialogComponent {
 
-    public betreuungsmitteilungsOk: TSBetreuungsmitteilung[] = [];
+    public betreuungsmitteilungsOkVerfuegt: TSBetreuungsmitteilung[] = [];
+    public betreuungsmitteilungsOkNotVerfuegt: TSBetreuungsmitteilung[] = [];
     public betreuungsmitteilungsKo: TSBetreuungsmitteilung[] = [];
 
     public constructor(
@@ -44,7 +46,10 @@ export class DvNgMitteilungResultDialogComponent {
         @Inject(MAT_DIALOG_DATA) data: TSBetreuungsmitteilung[]
     ) {
         if (data) {
-            this.betreuungsmitteilungsOk = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied);
+            this.betreuungsmitteilungsOkVerfuegt = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied
+                && TSBetreuungsstatus.VERFUEGT === betreuungsmitteilung.betreuung.betreuungsstatus);
+            this.betreuungsmitteilungsOkNotVerfuegt = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied
+                && TSBetreuungsstatus.VERFUEGT !== betreuungsmitteilung.betreuung.betreuungsstatus);
             this.betreuungsmitteilungsKo = data.filter(betreuungsmitteilung => !betreuungsmitteilung.applied);
         }
     }

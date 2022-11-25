@@ -29,7 +29,8 @@ public enum EventType {
 	PLATZBESTAETIGUNG_BETREUUNG("PlatzbestaetigungBetreuung"),
 	BETREUUNG_STORNIERUNG_ANFRAGE("BetreuungStornierungAnfrage"),
 	TAGESSCHULE_ANMELDUNG_BESTAETIGUNG("TagesschuleAnmeldungBestaetigung"),
-	ANMELDUNG_ABLEHNEN_ANFRAGE("AnmeldungAblehnenAnfrage");
+	ANMELDUNG_ABLEHNEN_ANFRAGE("AnmeldungAblehnenAnfrage"),
+	NEUE_VERANLAGUNG("NeueVeranlagung");
 
 	private final String name;
 

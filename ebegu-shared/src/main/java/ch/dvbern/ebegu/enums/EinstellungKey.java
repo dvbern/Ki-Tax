@@ -326,6 +326,9 @@ public enum EinstellungKey {
 	// Aktiviert den JSON/CSV Export der Verfügung (KIBON-2622)
 	VERFUEGUNG_EXPORT_ENABLED(MandantIdentifier.getAll()),
 
+	//Setz das minimal Unterschied zwischen Massgebendeseinkommen um eine FinSit Mitteilung zu erstellen
+	VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK(MandantIdentifier.getAll()),
+
 	// Gibt an, ob die Zahlungsangaben für Antragsteller auf der FinSit required oder optional sind (KIBON-2688)
 	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN);
 

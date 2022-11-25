@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -192,8 +193,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
-			expect(betreuungEventHelper.getExternalClient(CLIENT_NAME, betreuung))
-				.andReturn(Optional.empty());
+			expect(betreuungEventHelper.getExternalClients(CLIENT_NAME, betreuung))
+				.andReturn(new InstitutionExternalClients());
 			expect(betreuungEventHelper.clientNotFoundFailure(CLIENT_NAME, betreuung))
 				.andReturn(Processing.failure("Kein InstitutionExternalClient Namens ist der Institution zugewiesen"));
 
@@ -376,8 +377,8 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
-			.andReturn(Optional.of(institutionExternalClient));
+		expect(betreuungEventHelper.getExternalClients(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
+			.andReturn(new InstitutionExternalClients(institutionExternalClient, Collections.emptyList()));
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andReturn(clientGueltigkeit);

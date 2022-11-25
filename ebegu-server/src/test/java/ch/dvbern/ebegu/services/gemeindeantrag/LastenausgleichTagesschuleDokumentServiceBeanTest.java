@@ -23,15 +23,19 @@ import java.util.Optional;
 
 import ch.dvbern.ebegu.docxmerger.lats.LatsDocxDTO;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.mocks.PrincipalBeanMock;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.types.DateRange;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
@@ -54,7 +58,14 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 	@Mock()
 	private GemeindeService gemeindeServiceMock;
 
+	@Mock()
+	private GesuchsperiodeService gesuchsperiodeServiceMock;
+
+	@Mock()
+	private EinstellungService einstellungServiceMock;
+
 	private static LastenausgleichTagesschuleAngabenGemeindeContainer container;
+	private static Gesuchsperiode gesuchsperiodeOfPrognose = createGesuchsperiode();
 
 	@BeforeAll()
 	public static void beforeAll() {
@@ -64,6 +75,8 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 	@BeforeEach()
 	public void beforeEach() {
 		createGemeindeServiceMock();
+		createGesuchsperiodeServiceMock();
+		createEinstellungServiceMock();
 		replayAll();
 		serviceBean.principalBean = new PrincipalBeanMock();
 	}
@@ -73,11 +86,11 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		LatsDocxDTO dto = serviceBean.toLatsDocxDTO(container, new BigDecimal("2000"), Sprache.DEUTSCH);
 
 		Assertions.assertEquals(new BigDecimal("1000"), dto.getElterngebuehrenProg().setScale(0, RoundingMode.CEILING));
-		Assertions.assertEquals(new BigDecimal("20000"), dto.getNormlohnkostenTotalProg().setScale(0, RoundingMode.CEILING));
-		Assertions.assertEquals(new BigDecimal("19000"), dto.getLastenausgleichsberechtigterBetragProg().setScale(0 , RoundingMode.CEILING));
-		Assertions.assertEquals(new BigDecimal("9500"), dto.getErsteRateProg().setScale(0, RoundingMode.CEILING));
+		Assertions.assertEquals(new BigDecimal("20700"), dto.getNormlohnkostenTotalProg().setScale(0, RoundingMode.CEILING));
+		Assertions.assertEquals(new BigDecimal("19700"), dto.getLastenausgleichsberechtigterBetragProg().setScale(0 , RoundingMode.CEILING));
+		Assertions.assertEquals(new BigDecimal("9850"), dto.getErsteRateProg().setScale(0, RoundingMode.CEILING));
 		Assertions.assertEquals(new BigDecimal("7000"), dto.getZweiteRate().setScale(0, RoundingMode.CEILING));
-		Assertions.assertEquals(new BigDecimal("16500"), dto.getAuszahlungTotal().setScale(0, RoundingMode.CEILING));
+		Assertions.assertEquals(new BigDecimal("16850"), dto.getAuszahlungTotal().setScale(0, RoundingMode.CEILING));
 	}
 
 	private void createGemeindeServiceMock() {
@@ -85,6 +98,33 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 			container.getGemeinde().getId()
 		))
 			.andReturn(Optional.of(createGemeindeStammdaten()))
+			.anyTimes();
+
+	}
+
+	private void createGesuchsperiodeServiceMock() {
+		expect(gesuchsperiodeServiceMock.getNachfolgendeGesuchsperiode(
+			container.getGesuchsperiode()
+		))
+			.andReturn(Optional.of(gesuchsperiodeOfPrognose))
+			.anyTimes();
+
+	}
+	private void createEinstellungServiceMock() {
+		expect(einstellungServiceMock.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN,
+			container.getGemeinde(),
+			gesuchsperiodeOfPrognose
+		))
+			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, "10.35", gesuchsperiodeOfPrognose))
+			.anyTimes();
+
+		expect(einstellungServiceMock.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+			container.getGemeinde(),
+			gesuchsperiodeOfPrognose
+		))
+			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, "5.35", gesuchsperiodeOfPrognose))
 			.anyTimes();
 
 	}
@@ -100,14 +140,19 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		korrektur.setLastenausgleichsberechtigerBetrag(new BigDecimal("10000"));
 		korrektur.setErsteRateAusbezahlt(new BigDecimal("3000"));
 
-		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
-		gesuchsperiode.setGueltigkeit(new DateRange());
+		Gesuchsperiode gesuchsperiode = createGesuchsperiode();
 
 		container.setAngabenKorrektur(korrektur);
 		container.setGemeinde(gemeinde);
 		container.setGesuchsperiode(gesuchsperiode);
 
 		return container;
+	}
+
+	private static Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange());
+		return gesuchsperiode;
 	}
 
 	private GemeindeStammdaten createGemeindeStammdaten() {

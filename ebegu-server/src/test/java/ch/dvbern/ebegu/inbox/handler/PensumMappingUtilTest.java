@@ -93,7 +93,7 @@ class PensumMappingUtilTest {
 			new EventMonitor(monitoringService, LocalDateTime.now(), betreuungEventDTO.getRefnr(), "client");
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true, eventMonitor);
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, true, eventMonitor, true);
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);
@@ -114,7 +114,7 @@ class PensumMappingUtilTest {
 			new EventMonitor(monitoringService, LocalDateTime.now(), betreuungEventDTO.getRefnr(), "client");
 
 		ProcessingContext ctx =
-			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false, eventMonitor);
+			new ProcessingContext(betreuung, betreuungEventDTO, gueltigket, false, eventMonitor, true);
 
 		BetreuungsmitteilungPensum actual =
 			PensumMappingUtil.toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), z, ctx);

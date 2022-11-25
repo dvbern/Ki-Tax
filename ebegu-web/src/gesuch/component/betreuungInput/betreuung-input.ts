@@ -137,11 +137,15 @@ export class BetreuungInput implements IController {
             return;
         }
 
+        // Wenn der Input Switch (Toggle) nicht dargestellt ist, wird das Pensum immer in Prozent dargestellt
+        if (!this.showBetreuungInputSwitch) {
+            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        }
+
         this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;
 
         if (EbeguUtil.isNotNullOrUndefined(this.multiplier)
-        && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)
-        && this.showBetreuungInputSwitch) {
+            && (this.pensumContainer && this.pensumContainer.betreuungspensumJA.unitForDisplay !== TSPensumUnits.PERCENTAGE)) {
             this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
         }
 

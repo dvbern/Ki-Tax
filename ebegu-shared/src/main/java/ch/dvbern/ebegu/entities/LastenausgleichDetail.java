@@ -205,6 +205,21 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		this.kostenFuerSelbstbehalt = kostenFuerSelbstbehalt;
 	}
 
+	@Nonnull
+	public BigDecimal getTotalBelegung() {
+		return MathUtil.DEFAULT.addNullSafe(totalBelegungenOhneSelbstbehalt, totalBelegungenMitSelbstbehalt);
+	}
+
+	@Nonnull
+	public BigDecimal getTotalGutscheine() {
+		return MathUtil.DEFAULT.addNullSafe(totalBetragGutscheineMitSelbstbehalt, totalBetragGutscheineOhneSelbstbehalt);
+	}
+
+	@Nonnull
+	public BigDecimal getTotalEingabeLastenausgleich() {
+		return MathUtil.DEFAULT.addNullSafe(betragLastenausgleich, totalBetragGutscheineOhneSelbstbehalt);
+	}
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")

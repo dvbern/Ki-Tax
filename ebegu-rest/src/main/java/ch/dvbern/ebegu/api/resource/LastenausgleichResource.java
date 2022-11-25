@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
@@ -138,16 +139,24 @@ public class LastenausgleichResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public JaxLastenausgleich createLastenausgleich(
-		@QueryParam("jahr") String sJahr,
-		@QueryParam("selbstbehaltPro100ProzentPlatz") String sSelbstbehaltPro100ProzentPlatz
+		@QueryParam("jahr") @Nonnull String sJahr,
+		@QueryParam("selbstbehaltPro100ProzentPlatz") @Nullable String sSelbstbehaltPro100ProzentPlatz
 	) throws EbeguRuntimeException {
 
+		Objects.requireNonNull(sJahr);
 		int jahr = Integer.parseInt(sJahr);
-		BigDecimal selbstbehaltPro100ProzentPlatz = MathUtil.DEFAULT.from(sSelbstbehaltPro100ProzentPlatz);
 
-		Lastenausgleich lastenausgleich =
-			lastenausgleichService.createLastenausgleich(jahr, selbstbehaltPro100ProzentPlatz,
-					Objects.requireNonNull(principalBean.getMandant()));
+		BigDecimal selbstbehaltPro100ProzentPlatz;
+		Lastenausgleich lastenausgleich;
+		Mandant mandant = Objects.requireNonNull(principalBean.getMandant());
+
+		if (jahr < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
+			Objects.requireNonNull(sSelbstbehaltPro100ProzentPlatz);
+			selbstbehaltPro100ProzentPlatz = MathUtil.DEFAULT.from(sSelbstbehaltPro100ProzentPlatz);
+			lastenausgleich = lastenausgleichService.createLastenausgleichOld(jahr, selbstbehaltPro100ProzentPlatz, mandant);
+		} else {
+			lastenausgleich = lastenausgleichService.createLastenausgleichNew(jahr, mandant);
+		}
 
 		lastenausgleichService.sendEmailsToGemeinden(lastenausgleich);
 

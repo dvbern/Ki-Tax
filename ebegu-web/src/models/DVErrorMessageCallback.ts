@@ -15,3 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export class DVErrorMessageCallback {
+    private _text: string;
+    private _callback: () => any;
+
+    public get text(): string {
+        return this._text;
+    }
+
+    public set text(value: string) {
+        this._text = value;
+    }
+
+    public get callback(): () => void {
+        return this._callback;
+    }
+
+    public set callback(value: () => void) {
+        this._callback = value;
+    }
+
+    public constructor(text: string, callback: () => any) {
+        this._text = text;
+        this._callback = callback;
+    }
+
+}

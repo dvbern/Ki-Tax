@@ -3004,7 +3004,8 @@
     "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Alle Mutationsmeldungen automatisch bearbeiten",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind werden automatisch bearbeitet und falls möglich direkt verfügt.",
-    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Mutationsmeldung die erfolgreich bearbeitet und verfügt wurden:",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "ARBEITGEBER": "Arbeitgeber",
     "BESCHAEFTIGUNGSINSTITUTION": "Beschäftigungsinstitution",
@@ -3029,5 +3030,9 @@
     "MUTATION_VERAENDERUNG_TS": "Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF",
     "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
+    "IGNORIERT": "Ignoriert",
+    "IGNORIEREN": "Ignorieren",
+    "RUECKGAENGIG": "Rückgängig",
+    "MESSAGE_IGNORED": "Die Meldung wurde ignoriert. ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
