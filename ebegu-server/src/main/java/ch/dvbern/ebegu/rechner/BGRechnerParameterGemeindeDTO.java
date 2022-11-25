@@ -68,7 +68,6 @@ public final class BGRechnerParameterGemeindeDTO {
 	// (3) Minimal Betrag-Gutschein
 	private Boolean gemeindePauschalbetragEnabled;
 	private BigDecimal gemeindePauschalbetragKita;
-	private BigDecimal gemeindePauschalbetragKitaPrimarschule;
 	private BigDecimal gemeindePauschalbetragTfo;
 	private BigDecimal gemeindePauschalbetragTfoPrimarschule;
 	private BigDecimal gemeindePauschalbetragMassgebendenEinkommen;
@@ -236,14 +235,6 @@ public final class BGRechnerParameterGemeindeDTO {
 
 	public void setGemeindePauschalbetragMassgebendenEinkommen(BigDecimal gemeindePauschalbetragMassgebendenEinkommen) {
 		this.gemeindePauschalbetragMassgebendenEinkommen = gemeindePauschalbetragMassgebendenEinkommen;
-	}
-
-	public BigDecimal getGemeindePauschalbetragKitaPrimarschule() {
-		return gemeindePauschalbetragKitaPrimarschule;
-	}
-
-	public void setGemeindePauschalbetragKitaPrimarschule(BigDecimal gemeindePauschalbetragKitaPrimarschule) {
-		this.gemeindePauschalbetragKitaPrimarschule = gemeindePauschalbetragKitaPrimarschule;
 	}
 
 	public BigDecimal getGemeindePauschalbetragTfoPrimarschule() {
