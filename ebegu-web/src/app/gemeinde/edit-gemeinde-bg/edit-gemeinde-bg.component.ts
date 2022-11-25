@@ -504,7 +504,6 @@ export class EditGemeindeComponentBG implements OnInit {
     private resetKonfigHoheEinkommensklassen(gk: TSGemeindeKonfiguration): void {
         gk.konfigHoheEinkommensklassenBetragKita = 0;
         gk.konfigHoheEinkommensklassenBetragTfo = 0;
-        gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = 0;
         gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = 0;
         gk.konfigHoheEinkommensklassenMassgebendenEinkommen = 0;
 
@@ -515,10 +514,6 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO,
             gk.konfigHoheEinkommensklassenBetragTfo, gk
-        );
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
-            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule, gk
         );
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
@@ -534,14 +529,6 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA,
             gk.konfigHoheEinkommensklassenBetragKita,
-            gk
-        );
-    }
-
-    public changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
-            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule,
             gk
         );
     }

@@ -97,7 +97,6 @@ public enum EinstellungKey {
 
 	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen KITA
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
-	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
 	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen TFO
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
