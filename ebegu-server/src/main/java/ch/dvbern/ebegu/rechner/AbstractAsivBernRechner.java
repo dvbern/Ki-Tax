@@ -187,7 +187,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal maximaleVerguenstigungProTag =
 			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult);
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
-		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
+		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
 		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
 		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);
