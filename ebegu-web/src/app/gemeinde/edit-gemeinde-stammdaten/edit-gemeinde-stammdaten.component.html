@@ -224,6 +224,7 @@
                                 <div class="form-group checkbox-with-tooltip">
                                     <mat-checkbox id="zusatzTextFreigabequittung_id"
                                                   name="zusatzTextFreigabequittung_name"
+                                                  (change)="hasZusatzTextFreigabequittungChange(stammdaten)"
                                                   [(ngModel)]="stammdaten.hasZusatzTextFreigabequittung">
                                         {{'ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_JA'|translate}}
                                     </mat-checkbox>

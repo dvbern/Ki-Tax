@@ -231,7 +231,7 @@
                             <mat-checkbox id="zusatzTextBG_id"
                                           name="zusatzTextBG_id"
                                           [(ngModel)]="stammdaten.hasZusatzTextVerfuegung"
-                                          (ngModelChange)="zusatzTextBgHasChange($event)">
+                                          (change)="zusatzTextBgHasChange(stammdaten)">
                                 {{'ZUSAETZLICHER_TEXT_VERFUEGUNG_JA'|translate}}
                             </mat-checkbox>
                             <dv-tooltip id="zusatzText_tooltip"

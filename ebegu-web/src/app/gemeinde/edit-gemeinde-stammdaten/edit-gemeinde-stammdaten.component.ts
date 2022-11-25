@@ -156,4 +156,10 @@ export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
             gemeinde.besondereVolksschule = false;
         }
     }
+
+    public hasZusatzTextFreigabequittungChange(stammdaten: TSGemeindeStammdaten) {
+        if (!stammdaten.hasZusatzTextFreigabequittung) {
+            stammdaten.zusatzTextFreigabequittung = undefined;
+        }
+    }
 }

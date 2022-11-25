@@ -170,8 +170,11 @@ export class EditGemeindeComponentBG implements OnInit {
         this.altBGAdresseChange.emit(newVal);
     }
 
-    public zusatzTextBgHasChange(newVal: boolean): void {
-        this.zusatzTextBgChange.emit(newVal);
+    public zusatzTextBgHasChange(stammdaten: TSGemeindeStammdaten): void {
+        if (!stammdaten.hasZusatzTextVerfuegung) {
+            stammdaten.zusatzTextVerfuegung = undefined;
+        }
+        this.zusatzTextBgChange.emit(stammdaten.hasZusatzTextVerfuegung);
     }
 
     public getKonfigKontingentierungString(): string {
