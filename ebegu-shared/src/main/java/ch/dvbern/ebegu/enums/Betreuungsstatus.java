@@ -40,7 +40,8 @@ public enum Betreuungsstatus {
 	SCHULAMT_ANMELDUNG_UEBERNOMMEN,
 	SCHULAMT_ANMELDUNG_ABGELEHNT,
 	SCHULAMT_FALSCHE_INSTITUTION,
-	SCHULAMT_ANMELDUNG_STORNIERT;
+	SCHULAMT_ANMELDUNG_STORNIERT,
+	SCHULAMT_MUTATION_IGNORIERT;
 
 	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
 	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
