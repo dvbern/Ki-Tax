@@ -22,7 +22,7 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {
-    FinanzielleSituationLuzernService,
+    FinanzielleSituationLuzernService
 } from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
 
