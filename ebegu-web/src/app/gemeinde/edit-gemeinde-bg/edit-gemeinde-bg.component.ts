@@ -520,7 +520,7 @@ export class EditGemeindeComponentBG implements OnInit {
             gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule, gk
         );
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG,
             gk.konfigHoheEinkommensklassenMassgebendenEinkommen, gk
         );
     }
@@ -551,7 +551,7 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public changeKonfigHoheEinkommensklassenMassgebendenEinkommen(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG,
             gk.konfigHoheEinkommensklassenMassgebendenEinkommen,
             gk
         );

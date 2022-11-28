@@ -269,7 +269,7 @@ export class TSGemeindeKonfiguration {
                     this.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG: {
                     this.konfigHoheEinkommensklassenMassgebendenEinkommen = Number(property.value);
                     break;
                 }
