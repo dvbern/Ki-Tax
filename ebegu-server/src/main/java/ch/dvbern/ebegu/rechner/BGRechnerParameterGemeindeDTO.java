@@ -66,11 +66,11 @@ public final class BGRechnerParameterGemeindeDTO {
 	private BigDecimal gemeindeZusaetzlicherBabyGutscheinBetragTfo;
 
 	// (3) Minimal Betrag-Gutschein
-	private Boolean gemeindePauschalbetragEnabled;
+	private Boolean gemeindePauschalbetragEnabled = false;
 	private BigDecimal gemeindePauschalbetragKita;
 	private BigDecimal gemeindePauschalbetragTfo;
 	private BigDecimal gemeindePauschalbetragTfoPrimarschule;
-	private BigDecimal gemeindePauschalbetragMassgebendenEinkommen;
+	private BigDecimal gemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung;
 
 	public BGRechnerParameterGemeindeDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		// (1) Zusaetzlicher Gutschein der Gemeinde
@@ -89,7 +89,7 @@ public final class BGRechnerParameterGemeindeDTO {
 		this.setGemeindePauschalbetragTfo(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO, gesuchsperiode, gemeinde));
 		this.setGemeindePauschalbetragTfoPrimarschule(asBigDecimal(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE, gesuchsperiode, gemeinde));
 
-		this.setGemeindePauschalbetragMassgebendenEinkommen(asBigDecimal(paramMap,
+		this.setGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung(asBigDecimal(paramMap,
 			GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG, gesuchsperiode, gemeinde));
 	}
 
@@ -230,12 +230,13 @@ public final class BGRechnerParameterGemeindeDTO {
 		this.gemeindePauschalbetragTfo = gemeindePauschalbetragTfo;
 	}
 
-	public BigDecimal getGemeindePauschalbetragMassgebendenEinkommen() {
-		return gemeindePauschalbetragMassgebendenEinkommen;
+	public BigDecimal getGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung() {
+		return gemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung;
 	}
 
-	public void setGemeindePauschalbetragMassgebendenEinkommen(BigDecimal gemeindePauschalbetragMassgebendenEinkommen) {
-		this.gemeindePauschalbetragMassgebendenEinkommen = gemeindePauschalbetragMassgebendenEinkommen;
+	public void setGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung(BigDecimal gemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung) {
+		this.gemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung =
+			gemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung;
 	}
 
 	public BigDecimal getGemeindePauschalbetragTfoPrimarschule() {

@@ -35,8 +35,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
@@ -89,10 +87,6 @@ public final class BGRechnerParameterDTO {
 
 	private boolean texteForFKJV = false;
 
-
-	private boolean isGemeindePauschalbetragMassgebendesEinkommenAktiviert = false;
-	private BigDecimal gemeindePauschalbetragMaxMassgebendesEinkommenFuerBerechnung;
-
 	private MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter();
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
@@ -128,10 +122,6 @@ public final class BGRechnerParameterDTO {
 		);
 		this.setGemeindeParameter(new BGRechnerParameterGemeindeDTO(paramMap, gesuchsperiode, gemeinde));
 		this.texteForFKJV = asBoolean(paramMap, FKJV_TEXTE, gesuchsperiode, gemeinde);
-
-		this.gemeindePauschalbetragMaxMassgebendesEinkommenFuerBerechnung = asBigDecimal(paramMap,
-			GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG, gesuchsperiode, gemeinde);
-		this.isGemeindePauschalbetragMassgebendesEinkommenAktiviert = asBoolean(paramMap, GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT, gesuchsperiode, gemeinde);
 	}
 
 	public BGRechnerParameterDTO() {
@@ -225,8 +215,8 @@ public final class BGRechnerParameterDTO {
 	}
 
 	public BigDecimal getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit() {
-		if (this.isGemeindePauschalbetragMassgebendesEinkommenAktiviert) {
-			return this.gemeindePauschalbetragMaxMassgebendesEinkommenFuerBerechnung;
+		if (this.gemeindeParameter.getGemeindePauschalbetragEnabled()) {
+			return this.gemeindeParameter.getGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung();
 		}
 
 		return maxMassgebendesEinkommen;

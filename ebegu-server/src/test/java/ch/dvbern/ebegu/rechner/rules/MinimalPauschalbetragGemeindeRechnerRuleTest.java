@@ -51,7 +51,7 @@ public class MinimalPauschalbetragGemeindeRechnerRuleTest {
 		BGRechnerParameterGemeindeDTO aktivRuleGemeinde = new BGRechnerParameterGemeindeDTO();
 		aktivRuleGemeinde.setGemeindePauschalbetragEnabled(true);
 		aktivRuleGemeinde.setGemeindePauschalbetragKita(BigDecimal.TEN);
-		aktivRuleGemeinde.setGemeindePauschalbetragMassgebendenEinkommen(new BigDecimal(200000));
+		aktivRuleGemeinde.setGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung(new BigDecimal(200000));
 
 		aktivRule.setGemeindeParameter(aktivRuleGemeinde);
 	}
