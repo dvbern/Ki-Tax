@@ -140,22 +140,25 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 			ganzerSeptember,
 			100,
 			0,
-			160000,
+			200000,
+			true,
 			onlyVerguenstigungMatcher(0.0));
 		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(true);
 		parameterGemeindeDTO.getGemeindeParameter()
-			.setGemeindePauschalbetragMassgebendenEinkommen(new BigDecimal(200000));
+			.setGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung(new BigDecimal(160000));
 		parameterGemeindeDTO.getGemeindeParameter().setGemeindePauschalbetragKita(new BigDecimal(8));
+		parameterDTO.setMaxMassgebendesEinkommen(new BigDecimal(200000));
 		// Rules aktiv, Max Einkommen erreicht
 		testGemeindeWithParams(
 			geburtstagKind,
 			EinschulungTyp.VORSCHULALTER,
-			true,
-			true,
+			false,
+			false,
 			ganzerSeptember,
 			100,
-			0,
+			100,
 			160000,
+			false,
 			onlyVerguenstigungMatcher(160.0));  //8*20
 		// Rules aktiv, Max Einkommen erreicht und hoeher als der Max erlaubte Pauschal Betrag
 		testGemeindeWithParams(
@@ -167,6 +170,7 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 			100,
 			0,
 			200001,
+			true,
 			onlyVerguenstigungMatcher(0.0));
 	}
 
@@ -273,11 +277,16 @@ public class KitaBernRechnerTest extends AbstractBGRechnerTest {
 		int betreuungspensum,
 		int anspruch,
 		int einkommen,
+		boolean bezahltVollkosten,
 		@Nonnull Matcher<BGCalculationResult> matcher
 	) {
 
 		BGCalculationInput inputAsiv = inputAsivVorbereiten(geburtstag, einschulungTyp, besondereBeduerfnisse,
 			besondereBeduerfnisseBestaetigt, intervall, betreuungspensum, anspruch, einkommen);
+		if (bezahltVollkosten) {
+			inputAsiv.setBezahltVollkostenKomplett();
+		}
+
 		inputAsiv.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		Optional<BGCalculationResult> result = kitaGemeindeRechner.calculateGemeinde(inputAsiv, parameterGemeindeDTO);
 
