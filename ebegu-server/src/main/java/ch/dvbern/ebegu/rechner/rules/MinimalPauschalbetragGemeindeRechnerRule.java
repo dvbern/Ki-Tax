@@ -59,11 +59,12 @@ public class MinimalPauschalbetragGemeindeRechnerRule implements RechnerRule {
 			return false;
 		}
 
-		if (inputGemeinde.getMassgebendesEinkommen()
-			.compareTo(parameterDTO.getGemeindeParameter().getGemeindePauschalbetragMassgebendenEinkommen()) <= 0) {
-			return true;
+		if (inputGemeinde.isBezahltKompletteVollkosten()) {
+			return false;
 		}
-		return false;
+
+		//Rule soll nur ausgeführt werden, wenn grundsätzlich anspruch besteht
+		return inputGemeinde.getAnspruchspensumProzent() != 0;
 	}
 
 	@Override

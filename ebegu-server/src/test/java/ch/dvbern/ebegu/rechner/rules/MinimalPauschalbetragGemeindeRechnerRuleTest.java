@@ -64,40 +64,41 @@ public class MinimalPauschalbetragGemeindeRechnerRuleTest {
 
 	@Test
 	public void isRelevantForVerfuegung() {
-		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(260000)), aktivRule));
-		Assert.assertTrue(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(100000)), aktivRule));
+		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(260000), 0), aktivRule));
+		Assert.assertTrue(rule.isRelevantForVerfuegung(prepareInput(KITA, new BigDecimal(100000), 50), aktivRule));
 	}
 
 	@Test
 	public void isRelevantForZeroBetruungspensum() {
-		BGCalculationInput input = prepareInput(KITA, new BigDecimal(100000));
+		BGCalculationInput input = prepareInput(KITA, new BigDecimal(100000), 80);
 		input.setBetreuungspensumProzent(BigDecimal.ZERO);
 		Assert.assertFalse(rule.isRelevantForVerfuegung(input, aktivRule));
 	}
 
 	@Test
 	public void isRelevantForVerfuegungUngueltigesAngebot() {
-		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(TAGESSCHULE, BigDecimal.ZERO), aktivRule));
+		Assert.assertFalse(rule.isRelevantForVerfuegung(prepareInput(TAGESSCHULE, BigDecimal.ZERO, 80), aktivRule));
 	}
 
 	@Test
 	public void prepareParameter() {
 		RechnerRuleParameterDTO result = new RechnerRuleParameterDTO();
 		// Rule inaktiv: Nichts gesetzt
-		rule.prepareParameter(prepareInput(KITA, BigDecimal.ZERO), unaktivRule, result);
+		rule.prepareParameter(prepareInput(KITA, BigDecimal.ZERO, 0), unaktivRule, result);
 		Assert.assertNull(result.getMinimalPauschalBetrag());
 		// Rule Aktiv: 10
-		rule.prepareParameter(prepareInput(KITA,BigDecimal.ZERO), aktivRule, result);
+		rule.prepareParameter(prepareInput(KITA,BigDecimal.ZERO, 10), aktivRule, result);
 		Assert.assertEquals(BigDecimal.TEN, result.getMinimalPauschalBetrag());
 	}
 
 	private BGCalculationInput prepareInput(@Nonnull
-		BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull BigDecimal massgebendenEinkommen) {
+		BetreuungsangebotTyp betreuungsangebotTyp, @Nonnull BigDecimal massgebendenEinkommen, @Nonnull int anspruchspensum) {
 		BGCalculationInput input = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);
 		input.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		input.setMassgebendesEinkommenVorAbzugFamgr(massgebendenEinkommen);
 		input.setBetreuungInGemeinde(true);
 		input.setBetreuungspensumProzent(BigDecimal.TEN);
+		input.setAnspruchspensumProzent(anspruchspensum);
 		return input;
 	}
 }
