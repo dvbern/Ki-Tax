@@ -21,8 +21,8 @@ ALTER TABLE alle_faelle_view drop column verantwortlicher_gemeinde_id;
 ALTER TABLE alle_faelle_view drop column verantwortlicher_gemeinde;
 
 -- Problemen mit Nomenklatur
-ALTER TABLE alle_faelle_view drop column fallnummer,
-ALTER TABLE alle_faelle_view add column fall_nummer VARCHAR(255) NOT NULL,
+ALTER TABLE alle_faelle_view drop column fallnummer;
+ALTER TABLE alle_faelle_view add column fall_nummer VARCHAR(255) NOT NULL;
 ALTER TABLE alle_faelle_view drop column eingangsdatum;
 ALTER TABLE alle_faelle_view drop column eingangsdatum_stv;
 ALTER TABLE alle_faelle_view add column eingangsdatum DATE;
