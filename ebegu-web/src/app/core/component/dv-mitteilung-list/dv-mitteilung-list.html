@@ -201,16 +201,32 @@
                                     <span ng-if="vm.isBetreuungsmitteilungApplied(mitteilung)"
                                           class="inline-hint applied"
                                           data-translate="MUTATIONSMELDUNG_APPLIED"></span>
-                                    <dv-loading-button button-click="vm.neueVeranlagungsmitteilungBearbeiten(mitteilung)"
-                                                       type="button"
-                                                       button-class="dv-btn-mutation-hinzufuegen"
-                                                       button-disabled="!vm.canErledigenNeueVeranlagungsmitteilung(mitteilung)"
-                                                       ng-if="vm.showNeueVeranlagungsmitteilungApply(mitteilung)">
-                                        <span class="uppercase" data-translate="MUTATIONSMELDUNG_APPLY"></span>
-                                    </dv-loading-button>
-                                    <span ng-if="vm.isNeueVeranlagungsmitteilungErledigt(mitteilung)"
+                                    <div class="col-xs-6 padding-left-0">
+                                        <div class="col-xs-6 padding-left-0">
+                                            <dv-loading-button button-click="vm.neueVeranlagungsmitteilungBearbeiten(mitteilung)"
+                                                               type="button"
+                                                               button-class="dv-btn-mutation-hinzufuegen"
+                                                               button-disabled="!vm.canErledigenNeueVeranlagungsmitteilung(mitteilung)"
+                                                               ng-if="vm.showNeueVeranlagungsmitteilungApply(mitteilung)">
+                                                <span class="uppercase" data-translate="MUTATIONSMELDUNG_APPLY"></span>
+                                            </dv-loading-button>
+                                        </div>
+                                        <div class="col-xs-6 padding-left-0">
+                                            <dv-loading-button button-click="vm.neueVeranlagungsmitteilungIgnorieren(mitteilung)"
+                                                               type="button"
+                                                               button-class="dv-btn-mutation-hinzufuegen"
+                                                               button-disabled="!vm.canErledigenNeueVeranlagungsmitteilung(mitteilung)"
+                                                               ng-if="vm.showNeueVeranlagungsmitteilungApply(mitteilung)">
+                                                <span class="uppercase" data-translate="IGNORIEREN"></span>
+                                            </dv-loading-button>
+                                        </div>
+                                    </div>
+                                    <span ng-if="vm.isNeueVeranlagungErledigt(mitteilung)"
                                           class="inline-hint applied"
                                           data-translate="MUTATIONSMELDUNG_APPLIED"></span>
+                                    <span ng-if="vm.isNeueVeranlagungIgnoriert(mitteilung)"
+                                          class="inline-hint applied"
+                                          data-translate="MUTATIONSMELDUNG_IGNORIERT"></span>
                                 </div>
                             </tab-body>
                         </dv-accordion-tab>

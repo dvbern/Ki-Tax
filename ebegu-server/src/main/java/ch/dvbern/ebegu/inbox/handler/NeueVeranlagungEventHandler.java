@@ -61,6 +61,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 	private static final Logger LOG = LoggerFactory.getLogger(NeueVeranlagungEventHandler.class);
 	private static final String BETREFF_KEY = "neue_veranlagung_mitteilung_betreff";
+	private static final String MESSAGE_KEY = "neue_veranlagung_mitteilung_message";
+
 
 	@Inject
 	private GesuchService gesuchService;
@@ -201,7 +203,10 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			BETREFF_KEY,
 			locale,
 			gesuch.extractMandant()));
-		neueVeranlagungsMitteilung.setMessage("Neue Veranlagung");
+		neueVeranlagungsMitteilung.setMessage(ServerMessageUtil.getMessage(
+			MESSAGE_KEY,
+			locale,
+			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
 	}

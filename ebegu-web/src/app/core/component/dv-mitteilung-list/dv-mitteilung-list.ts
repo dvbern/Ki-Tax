@@ -401,11 +401,12 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public isNeueVeranlagungsmitteilungApplied(mitteilung: TSMitteilung): boolean {
-        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT;
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.isErledigt();
     }
 
     public isNeueVeranlagungsmitteilungNotErledigt(mitteilung: TSMitteilung): boolean {
-        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT;
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && !mitteilung.isErledigt()
+            && !mitteilung.isIgnoriert();
     }
 
     public canErledigenNeueVeranlagungsmitteilung(_mitteilung: TSMitteilung): boolean {
@@ -481,6 +482,22 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
+    public neueVeranlagungsmitteilungIgnorieren(mitteilung: TSMitteilung): void {
+        if (!this.isNeueVeranlagungsmitteilung(mitteilung)) {
+            return;
+        }
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: 'MUTATIONSMELDUNG_IGNORIEREN',
+            deleteText: 'MUTATIONSMELDUNG_IGNORIEREN_BESCHREIBUNG',
+            parentController: this,
+            elementID: 'Intro',
+        }).then(() => {   // User confirmed message
+            this.mitteilungRS.setMitteilungIgnoriert(mitteilung.id).then((response: any) => {
+                this.loadAllMitteilungen();
+            });
+        });
+    }
+
     public mitteilungWeitergeleitet(): void {
         this.loadAllMitteilungen();
     }
@@ -490,7 +507,16 @@ export class DVMitteilungListController implements IOnInit {
             mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.INSTITUTION &&
             mitteilung.empfaengerTyp !== TSMitteilungTeilnehmerTyp.SOZIALDIENST &&
             this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
-            !mitteilung.isErledigt();
+            !mitteilung.isErledigt() &&
+            !mitteilung.isIgnoriert();
+    }
+
+    public isNeueVeranlagungErledigt(mitteilung: TSMitteilung): boolean {
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.isErledigt();
+    }
+
+    public isNeueVeranlagungIgnoriert(mitteilung: TSMitteilung): boolean {
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.isIgnoriert()
     }
 
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
