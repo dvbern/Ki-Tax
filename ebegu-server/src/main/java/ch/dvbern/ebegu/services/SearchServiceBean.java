@@ -164,9 +164,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		@Nonnull AntragTableFilterDTO antragTableFilterDto,
 		@Nonnull SearchMode mode,
 		boolean searchForPendenzen) {
-		Benutzer user;
-
-		user = benutzerService.getCurrentBenutzer()
+		Benutzer user = benutzerService.getCurrentBenutzer()
 				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
 		UserRole role = user.getRole();
@@ -241,7 +239,6 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		}
 
 		setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
-
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
