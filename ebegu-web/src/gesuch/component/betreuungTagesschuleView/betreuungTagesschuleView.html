@@ -20,6 +20,7 @@
         ng-disabled="!vm.isAnmeldungTSEditable()">
 
 
+
         <div
             ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
             	&& !vm.getBetreuungModel().keineDetailinformationen">
@@ -439,7 +440,7 @@
 
                 <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
                                    button-click="vm.saveAnmeldungSchulamtUebernehmen()"
-                                   type="button"
+                                   type="submit"
                                    button-class="save">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
                 </dv-loading-button>
