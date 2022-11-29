@@ -137,9 +137,9 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 /**
  * Service fuer Mitteilungen
  */
+@SuppressWarnings({"PMD.NcssTypeCount", "PMD.AvoidDuplicateLiterals"})
 @Stateless
 @Local(MitteilungService.class)
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
