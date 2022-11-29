@@ -3027,5 +3027,6 @@
     "MUTATION_VERAENDERUNG_BG": "<li>Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF</li>",
     "MUTATION_VERAENDERUNG_TS": "<li>Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF</li>",
     "MUTATION_VERAENDERUNG_2": "</ul></br>Sie haben die Möglichkeit, die finanzielle Situation erst ab dem Folgemonat zu ändern.",
+    "RECREATE_ALLE_FAELLE_VIEW": "Alle Fälle View neu bauen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
