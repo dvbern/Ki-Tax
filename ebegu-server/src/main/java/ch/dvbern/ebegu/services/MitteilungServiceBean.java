@@ -1540,7 +1540,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		boolean hasGS2 = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		if (hasGS2 && gemeinsam) {
-			Objects.requireNonNull(kibonAnfrageContext.getFinSitContGS2());
+			Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() == null) {
 				throw new EbeguException(
 					"neueVeranlagungsMitteilungImAntragErsetzen",
@@ -1549,10 +1549,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(kibonAnfrageContext.getFinSitCont()
 					.getFinanzielleSituationJA(),
-				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
+				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitContGS2(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
