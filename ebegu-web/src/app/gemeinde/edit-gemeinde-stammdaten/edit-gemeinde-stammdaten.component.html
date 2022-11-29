@@ -401,11 +401,12 @@
                                 <p>{{korrespondenzsprache}}</p>
                             </div>
                         </div>
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" *ngIf="stammdaten.hasZusatzTextFreigabequittung">
                             <!-- Zusätzlicher Text auf der Freigabequittung -->
-                            <h3 *ngIf="stammdaten.hasZusatzTextFreigabequittung">
+                            <h3>
                                 {{'ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_JA'| translate}}
                             </h3>
+                            <p>{{stammdaten.zusatzTextFreigabequittung}}</p>
                         </div>
                     </div>
                 </div>
