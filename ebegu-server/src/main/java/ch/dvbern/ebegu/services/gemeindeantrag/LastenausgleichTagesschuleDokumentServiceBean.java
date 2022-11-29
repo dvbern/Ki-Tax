@@ -255,7 +255,7 @@ public class LastenausgleichTagesschuleDokumentServiceBean extends AbstractBaseS
 		// Prognose verwendet. Falls nur die höheren oder beide Normlohnkosten verwendet werden, dann werden auch die höheren
 		// für die Prognose verwendet
 		BigDecimal normlohnkosten;
-		if (BigDecimal.ZERO.equals(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete())) {
+		if (BigDecimal.ZERO.compareTo(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete()) == 0) {
 			normlohnkosten = lohnnormkostenLessThan50.getValueAsBigDecimal();
 		} else {
 			normlohnkosten = lohnnormkostenMoreThan50.getValueAsBigDecimal();
