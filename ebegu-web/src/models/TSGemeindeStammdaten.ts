@@ -54,8 +54,10 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
     public standardDokUnterschriftTitel2: string;
     public standardDokUnterschriftName2: string;
     public tsVerantwortlicherNachVerfuegungBenachrichtigen: boolean;
-    public zusatzText: string;
-    public hasZusatzText: boolean;
+    public zusatzTextVerfuegung: string;
+    public hasZusatzTextVerfuegung: boolean;
+    public zusatzTextFreigabequittung: string;
+    public hasZusatzTextFreigabequittung: boolean;
     public externalClients: string[];
     public usernameScolaris: string;
     public emailBeiGesuchsperiodeOeffnung: boolean;

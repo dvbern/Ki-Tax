@@ -252,11 +252,20 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nonnull
 	@Column(nullable = false)
 	@NotNull
-	private Boolean hasZusatzText = false;
+	private Boolean hasZusatzTextVerfuegung = false;
 
 	@Nullable
 	@Column(nullable = true)
-	private String zusatzText;
+	private String zusatzTextVerfuegung;
+
+	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hasZusatzTextFreigabequittung = false;
+
+	@Nullable
+	@Column(nullable = true)
+	private String zusatzTextFreigabequittung;
 
 
 	@Nullable
@@ -746,16 +755,34 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Boolean getHasZusatzText() { return hasZusatzText; }
+	public Boolean getHasZusatzTextVerfuegung() { return hasZusatzTextVerfuegung; }
 
-	public void setHasZusatzText(@Nonnull Boolean hasZusatzText) {
-		this.hasZusatzText = hasZusatzText;
+	public void setHasZusatzTextVerfuegung(@Nonnull Boolean hasZusatzText) {
+		this.hasZusatzTextVerfuegung = hasZusatzText;
 	}
 
 	@Nullable
-	public String getZusatzText() { return zusatzText; }
+	public String getZusatzTextVerfuegung() { return zusatzTextVerfuegung; }
 
-	public void setZusatzText(@Nullable String zusatzText) {
-		this.zusatzText = zusatzText;
+	public void setZusatzTextVerfuegung(@Nullable String zusatzText) {
+		this.zusatzTextVerfuegung = zusatzText;
+	}
+
+	@Nonnull
+	public Boolean getHasZusatzTextFreigabequittung() {
+		return hasZusatzTextFreigabequittung;
+	}
+
+	public void setHasZusatzTextFreigabequittung(@Nonnull Boolean hasZusatzTextFreigabequittung) {
+		this.hasZusatzTextFreigabequittung = hasZusatzTextFreigabequittung;
+	}
+
+	@Nullable
+	public String getZusatzTextFreigabequittung() {
+		return zusatzTextFreigabequittung;
+	}
+
+	public void setZusatzTextFreigabequittung(@Nullable String zusatzTextFreigabequittung) {
+		this.zusatzTextFreigabequittung = zusatzTextFreigabequittung;
 	}
 }
