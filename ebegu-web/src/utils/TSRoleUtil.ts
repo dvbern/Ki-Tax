@@ -161,7 +161,7 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getBgInstitutionAndTsProfilEditRoles(): ReadonlyArray<TSRole> {
+    public static getTSProfilEditRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_MANDANT,

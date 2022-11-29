@@ -72,6 +72,7 @@ import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennza
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
@@ -82,6 +83,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.GemeindeAntragTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BooleanAuthorizer;
 import ch.dvbern.ebegu.services.DossierService;
@@ -162,6 +164,9 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 
 	@Inject
 	private GemeindeKennzahlenService gemeindeKennzahlenService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	/**
 	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller
@@ -627,7 +632,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return (userHasSameGemeindeAsPrincipal(benutzer))
 				|| (benutzer.getInstitution() != null
 				&& (tagesschuleBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser)
-				|| (bgInstitutionBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))
+				|| (bgInstitutionEinladenAllowedByGemeinde(benutzer.getInstitution().getId()))
 				|| (ferieninselBelongsToGemeinde(benutzer.getInstitution().getId(), gemeindenOfUser))));
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
@@ -666,19 +671,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenTagesschule().getGemeinde());
 	}
 
-	private boolean bgInstitutionBelongsToGemeinde(
-		@Nonnull String institutionId,
-		@Nonnull Collection<Gemeinde> userGemeinden) {
-		InstitutionStammdaten stammdaten =
-			stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
-		if (stammdaten == null
-			|| stammdaten.getInstitutionStammdatenBetreuungsgutscheine() == null
-			|| stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde() == null) {
-			return false;
-		}
-		return userGemeinden.contains(stammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde());
-	}
-
 	private boolean ferieninselBelongsToGemeinde(
 		@Nonnull String institutionId,
 		@Nonnull Collection<Gemeinde> userGemeinden) {
@@ -688,6 +680,20 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		return userGemeinden.contains(stammdaten.getInstitutionStammdatenFerieninsel().getGemeinde());
+	}
+
+	private boolean bgInstitutionEinladenAllowedByGemeinde(
+		@Nonnull String institutionId) {
+		InstitutionStammdaten stammdaten =
+			stammdatenService.fetchInstitutionStammdatenByInstitution(institutionId, false);
+
+		if (stammdaten == null || stammdaten.getInstitutionStammdatenBetreuungsgutscheine() == null) {
+			return false;
+		}
+		return Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+			ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
+			principalBean.getMandant()
+		));
 	}
 
 	private boolean userBelongsToInstitutionOfPrincipal(@Nonnull Benutzer benutzer) {
@@ -1417,33 +1423,28 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				institutionStammdaten.getInstitution());
 		}
 		case ADMIN_GEMEINDE:
-		case SACHBEARBEITER_GEMEINDE:
 		case ADMIN_BG:
+			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
+				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+				// Kitas und Tageseltern dürfen von Gemeinden nur editiert werden, falls
+				// institutionen durch Gemeinde einladen aktiv ist
+				return Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+					ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
+					principalBean.getMandant()
+				));
+			}
+			return tagesschuleOrFerieninselAllowedForGemeindeOrInstitution(institutionStammdaten);
+		case SACHBEARBEITER_GEMEINDE:
 		case SACHBEARBEITER_BG:
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS: {
 			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
 				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-				// Kitas und Tageseltern koennen normalerweise ohne Einschraenkungen gelesen aber nicht editiert werden durch
-				// Gemeinde-Benutzer
-				// falls die Institution aber durch die Gemeinde eingeladen wurde (ApplicationPropopertyKey.INSTITUION_DURCH_GEMEINDE_EINLADEN = true)
-				// dann dürfen die Gemeindebenutzer die InstitutionStammdaten editieren
-				Gemeinde gemeinde = institutionStammdaten.getInstitutionStammdatenBetreuungsgutscheine().getGemeinde();
-				if (gemeinde != null) {
-					return isUserAllowedForGemeinde(gemeinde);
-				}
+				/// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch
+				// Gemeinde-Benutzer,
 				return false;
 			}
-			Gemeinde gemeinde = null;
-			if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
-				gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
-			}
-			if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
-				gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
-			}
-			// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde vorhanden sein und stimmen
-			Objects.requireNonNull(gemeinde, "Gemeinde muss gesetzt sein");
-			return isUserAllowedForGemeinde(gemeinde);
+			return tagesschuleOrFerieninselAllowedForGemeindeOrInstitution(institutionStammdaten);
 		}
 		case REVISOR:
 		case STEUERAMT:
@@ -1463,6 +1464,19 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			return false;
 		}
 		}
+	}
+
+	private boolean tagesschuleOrFerieninselAllowedForGemeindeOrInstitution(InstitutionStammdaten institutionStammdaten) {
+		Gemeinde gemeinde = null;
+		if (institutionStammdaten.getInstitutionStammdatenTagesschule() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenTagesschule().getGemeinde();
+		}
+		if (institutionStammdaten.getInstitutionStammdatenFerieninsel() != null) {
+			gemeinde = institutionStammdaten.getInstitutionStammdatenFerieninsel().getGemeinde();
+		}
+		// Es handelt sich um ein Schulamt-Angebot: Die Gemeinde vorhanden sein und stimmen
+		Objects.requireNonNull(gemeinde, "Gemeinde muss gesetzt sein");
+		return isUserAllowedForGemeinde(gemeinde);
 	}
 
 	@Override

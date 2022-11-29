@@ -18,12 +18,10 @@
 import {TSAbstractEntity} from './TSAbstractEntity';
 import {TSAdresse} from './TSAdresse';
 import {TSBetreuungsstandort} from './TSBetreuungsstandort';
-import {TSGemeinde} from './TSGemeinde';
 import {TSOeffnungstageInstitution} from './TSOeffnungstageInstitution';
 
 export class TSInstitutionStammdatenBetreuungsgutscheine extends TSAbstractEntity {
 
-    public gemeinde: TSGemeinde = undefined;
     public iban: string = undefined;
     public kontoinhaber: string = undefined;
     public adresseKontoinhaber: TSAdresse = undefined;

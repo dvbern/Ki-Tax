@@ -1078,6 +1078,10 @@ export class EbeguRestUtil {
             if (stammdaten.gemeindeAusgabestelle) {
                 restStammdaten.gemeindeAusgabestelle = this.gemeindeToRestObject({}, stammdaten.gemeindeAusgabestelle);
             }
+            restStammdaten.alleBgInstitutionenZugelassen = stammdaten.alleBgInstitutionenZugelassen;
+            restStammdaten.zugelasseneBgInstitutionen = stammdaten.zugelasseneBgInstitutionen.map(
+                i => this.institutionToRestObject({}, i)
+            );
 
             return restStammdaten;
         }
@@ -1149,6 +1153,8 @@ export class EbeguRestUtil {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
             }
+            stammdatenTS.alleBgInstitutionenZugelassen = stammdatenFromServer.alleBgInstitutionenZugelassen;
+            stammdatenTS.zugelasseneBgInstitutionen = this.parseInstitutionen(stammdatenFromServer.zugelasseneBgInstitutionen);
             return stammdatenTS;
         }
         return undefined;
@@ -1733,7 +1739,6 @@ export class EbeguRestUtil {
     ): TSInstitutionStammdatenBetreuungsgutscheine {
         if (institutionStammdatenFromServer) {
             this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenFromServer.gemeinde);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
