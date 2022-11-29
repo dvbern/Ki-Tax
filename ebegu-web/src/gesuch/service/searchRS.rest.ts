@@ -52,6 +52,12 @@ export class SearchRS {
         return this.http.post<number>(`${this.serviceURL}/jugendamt/count`, antragSearch);
     }
 
+    public recreateAlleFaelleView(): Observable<any> {
+        return this.http.get(`${this.serviceURL}/rebuild`, {
+            responseType: 'text'
+        });
+    }
+
     private toAntragSearchresult(response: any): TSAntragSearchresultDTO {
         const tsAntragDTOS = this.ebeguRestUtil.parseAntragDTOs(response.antragDTOs);
 

@@ -3037,5 +3037,6 @@
     "IGNORIEREN": "Ignorieren",
     "RUECKGAENGIG": "Rückgängig",
     "MESSAGE_IGNORED": "Die Meldung wurde ignoriert. ",
+    "RECREATE_ALLE_FAELLE_VIEW": "Alle Fälle View neu bauen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

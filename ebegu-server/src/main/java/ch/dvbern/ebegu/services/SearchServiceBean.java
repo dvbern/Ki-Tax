@@ -104,6 +104,9 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterFor
 @Local(SearchService.class)
 public class SearchServiceBean extends AbstractBaseService implements SearchService {
 
+	static final String TECHNICAL_BENUTZER_ID = "88888888-2222-2222-2222-222222222222";
+
+
 	private static final Logger LOG = LoggerFactory.getLogger(SearchServiceBean.class.getSimpleName());
 
 	@Inject
@@ -142,8 +145,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 	}
 
 	@Nonnull
-	private List<Gesuch> searchAntraege(@Nonnull AntragTableFilterDTO antragTableFilterDto, boolean searchForPendenzen) {
-		Pair<Long, List<Gesuch>> searchResult = searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
+	private List<Gesuch> searchAntraege(
+		@Nonnull AntragTableFilterDTO antragTableFilterDto,
+		boolean searchForPendenzen) {
+		Pair<Long, List<Gesuch>> searchResult =
+			searchAntraege(antragTableFilterDto, SearchMode.SEARCH, searchForPendenzen);
 		return searchResult.getRight();
 	}
 
@@ -158,9 +164,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		@Nonnull AntragTableFilterDTO antragTableFilterDto,
 		@Nonnull SearchMode mode,
 		boolean searchForPendenzen) {
-
 		Benutzer user = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
 		UserRole role = user.getRole();
 
@@ -237,7 +242,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
-		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDto.getSearch().getPredicateObject();
+		AntragPredicateObjectDTO predicateObjectDto =
+			antragTableFilterDto.getSearch() != null ? antragTableFilterDto.getSearch().getPredicateObject() : null;
 
 		// Special role based predicates
 		switch (role) {
@@ -403,7 +409,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				}
 			}
 			if (predicateObjectDto.getGesuchsperiodeString() != null) {
-				Predicate gesuchsperiodeFiler = PredicateHelper.getPredicateFilterGesuchsperiode(cb,
+				Predicate gesuchsperiodeFiler = PredicateHelper.getPredicateFilterGesuchsperiode(
+					cb,
 					joinGesuchsperiode,
 					predicateObjectDto.getGesuchsperiodeString());
 				predicates.add(gesuchsperiodeFiler);
@@ -637,7 +644,8 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		Join<Betreuung, InstitutionStammdaten> joinInstitutionstammdatenBetreuungen,
 		Join<AnmeldungTagesschule, InstitutionStammdaten> joinInstitutionstammdatenTagesschule,
 		Join<AnmeldungFerieninsel, InstitutionStammdaten> joinInstitutionstammdatenFerieninsel) {
-		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(cb,
+		Predicate predicateTSOderFINotAusgelost = createPredicateAusgeloesteSCHAngebote(
+			cb,
 			joinAnmeldungTagesschule,
 			joinAnmeldungFerieninsel,
 			joinInstitutionstammdatenTagesschule,

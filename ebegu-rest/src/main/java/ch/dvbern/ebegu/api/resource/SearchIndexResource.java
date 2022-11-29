@@ -291,11 +291,6 @@ public class SearchIndexResource {
 					jaxAntragDTO = this.converter.gesuchToAntragDTO(gesuch, userRole);
 				}
 				searchEnry.setAntragDTO(jaxAntragDTO);
-				String fullNameGS1 =
-					gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractFullName() : "";
-				if (searchEnry.getAntragDTO() != null) {
-					searchEnry.getAntragDTO().setFamilienName(fullNameGS1);
-				}
 			}
 		}
 		return quickSearch;
