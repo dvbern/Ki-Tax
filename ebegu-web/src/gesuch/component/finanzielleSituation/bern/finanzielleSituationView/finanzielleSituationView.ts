@@ -318,6 +318,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public callKiBonAnfrageAndUpdateFinSit(): void {
        super.callKiBonAnfrage(false).then(() => {
                 this.initAfterKiBonAnfrageUpdate();
+                this.errorService.addMesageAsInfo(this.$translate.instant('SPEICHERN_ERFOLGREICH'));
+                this.form.$setDirty();
             }
         );
     }

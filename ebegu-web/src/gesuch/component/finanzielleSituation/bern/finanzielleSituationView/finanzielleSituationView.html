@@ -88,7 +88,9 @@
                     <dv-steuerabfrage-response-hints
                         ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
+                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"
+                    >
+                    </dv-steuerabfrage-response-hints>
 
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
                     <!--Steuerveranlagung -->
@@ -148,10 +150,11 @@
                             <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
                             <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                         </div>
-
                         <!-- Infotext -->
-                        <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
-                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
+                        <p class="inline-hint margin-bottom-30"
+                           data-translate="FINANZIELLE_SITUATION_HINT1"
+                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}">
+                        </p>
 
                         <!-- Nettolohn -->
                         <div class="row">

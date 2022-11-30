@@ -2901,7 +2901,7 @@
     "FINANZIELLE_SITUATION_AUFTEILUNG_HINT": "Bestimmte Einkommens- und Vermögenswerte müssen in kiBon pro Antragssteller*in angegeben werden. kiBon teilt die Werte bei Paaren automatisch hälftig zu. <br>Auf diesem Bildschirm können Sie die Werte zwischen {{gs1}} und {{gs2}} neu aufteilen. Die Aufteilung ist nur von Bedeutung, wenn im Lauf der Tarifperiode eine Trennung erfolgt. Die Summe der Werte muss dem aus den Steuerdaten abgerufenen Wert entsprechen.",
     "FINANZIELLE_SITUATION_AUFGETEILTE_WERTE": "Einige Werte, die in der Steuererklärung gemeinsam angegeben wurden, wurden 50:50 zwischen beiden Antragstellenden aufgeteilt. Dies betrifft folgende Werte:",
     "AUFTEILUNG_AENDERN": "Aufteilung ändern",
-    "ERNEUT_VERSUCHEN": "Erneut versuchen",
+    "ERNEUT_VERSUCHEN": "Steuerabfrage erneut durchführen",
     "DAUER_BABYTARIF": "Bis zu welchem Alter (in Monaten) soll der Babytarif gewährt werden",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION": "Anrechenbares Vermögen gemäss Selbstdeklaration",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION_HINT": "10% des deklarierten Vermögens gemäss Selbstdeklaration",

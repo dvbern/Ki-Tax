@@ -84,13 +84,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 err => LOG.error(err)
             );
 
-        const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+        const gesuchSteller = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
             this.gesuchModelManager.getGesuch().gesuchsteller1 :
             this.gesuchModelManager.getGesuch().gesuchsteller2;
         // eslint-disable-next-line
         if (this.showZugriffErfolgreich()) {
-            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
-                gs.finanzielleSituationContainer.id).then(isMatching => {
+            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gesuchSteller.gesuchstellerJA.geburtsdatum,
+                gesuchSteller.finanzielleSituationContainer.id).then(isMatching => {
                     this.geburtstagNotMatching$.next(!isMatching);
             });
         }
