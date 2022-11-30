@@ -819,11 +819,21 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (mitteilung instanceof Betreuungsmitteilung) {
 			Objects.requireNonNull(mitteilung.getBetreuung());
 			gesuch = mitteilung.getBetreuung().extractGesuch();
-		} else {
+		} else if (mitteilung instanceof NeueVeranlagungsMitteilung) {
 			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = (NeueVeranlagungsMitteilung) mitteilung;
 			Objects.requireNonNull(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId());
 			gesuch = gesuchService.findGesuch(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId())
-				.orElseThrow();
+				.orElseThrow(() -> new EbeguException(
+					"doApplymitteilung",
+					ERROR_ENTITY_NOT_FOUND,
+					null,
+					neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId()));
+		} else {
+			LOG.warn("Eine Mitteilung wuerde als Betreuung oder neue Veranlagung Mitteilung verwechselt");
+			throw new EbeguException(
+				"doApplymitteilung",
+				ERROR_ENTITY_NOT_FOUND,
+				null, null);
 		}
 
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
@@ -1517,7 +1527,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (mitteilung instanceof Betreuungsmitteilung) {
 			Betreuungsmitteilung betreuungsmitteilung = (Betreuungsmitteilung) mitteilung;
 			applyBetreuungsmitteilungToMutation(gesuch, betreuungsmitteilung);
-		} else {
+		} else if (mitteilung instanceof NeueVeranlagungsMitteilung) {
 			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = (NeueVeranlagungsMitteilung) mitteilung;
 			neueVeranlagungsMitteilungImAntragErsetzen(gesuch, neueVeranlagungsMitteilung);
 		}

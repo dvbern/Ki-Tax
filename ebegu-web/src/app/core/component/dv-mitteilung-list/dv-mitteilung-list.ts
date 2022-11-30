@@ -490,7 +490,7 @@ export class DVMitteilungListController implements IOnInit {
             title: 'MUTATIONSMELDUNG_IGNORIEREN',
             deleteText: 'MUTATIONSMELDUNG_IGNORIEREN_BESCHREIBUNG',
             parentController: this,
-            elementID: 'Intro',
+            elementID: 'Intro'
         }).then(() => {   // User confirmed message
             this.mitteilungRS.setMitteilungIgnoriert(mitteilung.id).then((response: any) => {
                 this.loadAllMitteilungen();
@@ -516,7 +516,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public isNeueVeranlagungIgnoriert(mitteilung: TSMitteilung): boolean {
-        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.isIgnoriert()
+        return this.isNeueVeranlagungsmitteilung(mitteilung) && mitteilung.isIgnoriert();
     }
 
     private isBetreuungsmitteilung(mitteilung: TSMitteilung): boolean {
