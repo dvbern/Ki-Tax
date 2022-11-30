@@ -539,6 +539,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 		persistence.merge(vorgaenger);
 
+		anmeldung.setStatusVorIgnorieren(anmeldung.getBetreuungsstatus());
 		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT);
 		anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.IGNORIERT);
 

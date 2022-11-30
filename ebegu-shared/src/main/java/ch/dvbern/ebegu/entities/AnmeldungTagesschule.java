@@ -159,6 +159,18 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
 			}
+			// falls die Mutation ignoriert wurde, muss der Status in der neuen Mutation wieder auf den
+			// Status gesetzt werden, welcher vor der Mutation gesetzt war. Falls der Status bereits übernommen
+			// war, wird er zurückgesetzt auf MODULE_AKZEPTIERT, wie oben
+			if (this.getBetreuungsstatus().isIgnoriert()) {
+				var oldStatus = this.getStatusVorIgnorieren();
+				Objects.requireNonNull(oldStatus, "statusVorIgnorieren darf nicht null sein, falls ignoriert wurde");
+				if (oldStatus.isSchulamtAnmeldungUebernommen()) {
+					target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+				} else {
+					target.setBetreuungsstatus(oldStatus);
+				}
+			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
 			if (target.isKeineDetailinformationen()) {
 				// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden

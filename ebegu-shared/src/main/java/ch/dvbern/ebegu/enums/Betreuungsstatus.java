@@ -104,6 +104,10 @@ public enum Betreuungsstatus {
 		return STORNIERT == this;
 	}
 
+	public boolean isIgnoriert() {
+		return SCHULAMT_MUTATION_IGNORIERT == this;
+	}
+
 	@SuppressWarnings({"Duplicates", "checkstyle:CyclomaticComplexity"})
 	public static Set<Betreuungsstatus> allowedRoles(UserRole userRole) {
 		switch (userRole) {
