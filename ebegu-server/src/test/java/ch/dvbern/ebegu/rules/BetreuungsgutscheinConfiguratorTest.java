@@ -7,6 +7,7 @@ import java.util.Set;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -140,7 +141,9 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void anspruchUnabhaengigRule() {
-		einstellungenGemaessAsiv.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("true");
+		einstellungenGemaessAsiv
+			.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
+			.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemaessAsiv, kitaxParams, GERMAN);
 		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 1);
 		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 0);
@@ -148,7 +151,9 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void anspruchAsivRule() {
-		einstellungenGemaessAsiv.get(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM).setValue("false");
+		einstellungenGemaessAsiv
+			.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
+			.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemaessAsiv, kitaxParams, GERMAN);
 		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 0);
 		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 1);

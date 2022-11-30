@@ -49,7 +49,7 @@ import static java.util.Objects.requireNonNull;
  * ACHTUNG! Diese Regel gilt nur fuer Angebote vom Typ isAngebotJugendamtKleinkind
  * Verweis 16.9.2
  */
-public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
+public abstract class ErwerbspensumCalcRule extends AbstractErwerbspensumCalcRule {
 
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
@@ -99,13 +99,12 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private boolean isErwerbspensumRelevantForGS2(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		final Gesuch gesuch = platz.extractGesuch();
-		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
-		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
 
-		if(!hasSecondGSForZeit(familiensituation, familiensituationErstGesuch, inputData.getParent().getGueltigkeit())) {
+		if(!hasSecondGSForZeit(gesuch, inputData.getParent().getGueltigkeit())) {
 			return false;
 		}
 
+		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
 		return isErwerbspensumRelevantForExistingGS2(familiensituation, inputData.getParent().getGueltigkeit());
 	}
 
@@ -194,26 +193,6 @@ public abstract class ErwerbspensumCalcRule extends AbstractCalcRule {
 			inputData.addBemerkung(bemerkung, locale);
 		}
 		return erwerbspensum;
-	}
-
-	/**
-	 * Monat Rule, der GS2 ist nach aenderung die Famsit ab Anfang naechste Monat erst berucksichtig
-	 * @param betreuung
-	 * @param gueltigkeit
-	 * @return
-	 */
-	private boolean hasSecondGSForZeit(
-		@Nonnull Familiensituation familiensituation,
-		Familiensituation familiensituationErstGesuch,
-		DateRange gueltigkeit) {
-
-		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
-		if (familiensituationGueltigAb != null
-			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb.plusMonths(1).withDayOfMonth(1))) {
-				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
-		}
-		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 	}
 
 	/**
