@@ -29,4 +29,4 @@ set einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM',
 	value = 'UNABHAENGING',
 	erklaerung = 'Die Einstellung kann 3 Werte haben ABHAENGING, UNABHAENGING oder MINIMUM. Abhängig = Der Anspruch hängt vom Beschäftigungspensum ab (wie in Bern) Unabhängig = Der Anspruch hängt nicht vom Beschäftigungspensum ab (wie in Solothurn) Minimal = Es muss ein minimum an Beschäftigungspensum erreicht werden um einen Anspruch zu erhalten (wie in Grenchen)'
 where einstellung_key = 'ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM'
-		and value = 'true'
+		and value = 'true';
