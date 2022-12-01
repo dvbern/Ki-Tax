@@ -40,6 +40,7 @@ import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Entity for the Belegung of the Tageschulangebote in a Betreuung.
@@ -69,7 +70,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@Column
 	private FleischOption fleischOption;
 
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Size(max = DB_TEXTAREA_LENGTH)
 	@Nullable
 	@Column
 	private String allergienUndUnvertraeglichkeiten;

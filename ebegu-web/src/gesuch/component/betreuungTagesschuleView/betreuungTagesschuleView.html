@@ -97,14 +97,14 @@
                         <dv-input-container class="form-group">
                             <label class="md-no-float" for="planKlasse_ID">
                                 <span data-translate="PLANKLASSE"> </span>
-                                <dv-tooltip input-id="planKlasse" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
+                                <dv-tooltip input-id="planKlasse_ID" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
                             </label>
                             <input aria-describedby="planKlasse_ID-error" id="planKlasse_ID"
                                    type="text" name="planKlasse"
                                    ng-model="vm.betreuung.belegungTagesschule.planKlasse"
                                    dv-max-length class="form-control"
                                    ng-required="vm.isGesuchstellerRole()">
-                            <dv-error-messages input-id="planKlasse"
+                            <dv-error-messages input-id="planKlasse_ID"
                                                for="vm.form.planKlasse.$error"></dv-error-messages>
                         </dv-input-container>
                     </div>
@@ -127,7 +127,7 @@
                                             ng-options="(fleischOption| translate) for fleischOption in vm.getFleischOptionValues()"
                                             ng-required="true">
                                     </select>
-                                    <dv-error-messages input-id="fleischOption"
+                                    <dv-error-messages input-id="fleischOptionen_ID"
                                                        for="vm.form.fleischOption.$error"></dv-error-messages>
                                 </div>
                             </div>
@@ -136,19 +136,19 @@
 
                     <!-- Allergien und Unverträglichkeiten -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="allegergienUndUnvertraeglichkeit_ID">
                                     <span data-translate="ALLERGIEN"> </span>
                                 </label>
-                                <input aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
+                                <textarea aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
                                        id="allegergienUndUnvertraeglichkeit_ID"
-                                       type="text"
-                                       name="allergienUndUnvertraeglichkeiten"
+                                       name="allergienUndUnvertraeglichkeiten" class="form-control " rows="4"
                                        ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
-                                       dv-max-length
+                                       maxlength="4000"
                                        class="form-control">
-                                <dv-error-messages input-id="planKlasse"
+                                </textarea>
+                                <dv-error-messages input-id="allegergienUndUnvertraeglichkeit_ID"
                                                    for="vm.form.allergienUndUnvertraeglichkeiten.$error"></dv-error-messages>
                             </dv-input-container>
                         </div>
@@ -173,7 +173,7 @@
                                        ng-required="true"
                                        ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
                                        autocomplete="mobile">
-                                <dv-error-messages input-id="mobile_ID" for="vm.form.notfallnummer.$error"
+                                <dv-error-messages input-id="notfallnummer_ID" for="vm.form.notfallnummer.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
@@ -196,7 +196,7 @@
                                         ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
                                         ng-required="vm.isGesuchstellerRole()">
                                 </select>
-                                <dv-error-messages input-id="abholungTagesschule"
+                                <dv-error-messages input-id="abholungTagesschule_ID"
                                                    for="vm.form.abholungTagesschule.$error"></dv-error-messages>
                             </div>
                         </div>
@@ -313,7 +313,7 @@
                                       ng-required="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
                                       maxlength="4000">
                                 </textarea>
-                            <dv-error-messages input-id="bemerkung" for="vm.form.bemerkung.$error"></dv-error-messages>
+                            <dv-error-messages input-id="bemerkung_ID" for="vm.form.bemerkung.$error"></dv-error-messages>
                         </dv-input-container>
                     </div>
                 </div>
