@@ -2794,7 +2794,7 @@
     "FKJV_PAUSCHALE_BEI_ANSPRUCH": "FKJV: forfait seulement possible, si il y a un droit de bon",
     "FKJV_PAUSCHALE_RUECKWIRKEND": "FKJV: forfait payer retrospectivement, pour autant qu'il y ait un droit de bon",
     "FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF":  "FKJV: diminution du revenu que pour les revenus en dessous de X CHF",
-    "FKJV_ANSPRUCH_MONATSWEISE": "FKJV: calcul du taux de prise en charge par mois",
+    "ANSPRUCH_MONATSWEISE": "FKJV: calcul du taux de prise en charge par mois",
     "FKJV_TEXTE": "FKJV: changement de texte",
     "FERIENBETREUUNG_CHF_PAUSCHALBETRAG": "Prise en charge de vacances montant forfaitaire par jour",
     "FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER": "Prise en charge de vacances montant forfaitaire par jour pour les élèves des écoles spécialisées",
