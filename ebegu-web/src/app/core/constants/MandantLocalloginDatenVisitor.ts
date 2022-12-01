@@ -15,29 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {LOCALLOGIN_DATA, LocalloginDatum} from './LOCALLOGIN_DATA';
+import {LOCALLOGIN_DATA, LocalLoginDaten} from './LOCALLOGIN_DATA';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class MandantLocalloginDatumVisitor implements MandantVisitor<LocalloginDatum> {
+export class MandantLocalLoginDatenVisitor implements MandantVisitor<LocalLoginDaten> {
 
-    public process(mandant: KiBonMandant): LocalloginDatum {
+    public process(mandant: KiBonMandant): LocalLoginDaten {
         return mandant.accept(this);
     }
 
-    public visitAppenzellAusserrhoden(): LocalloginDatum {
+    public visitAppenzellAusserrhoden(): LocalLoginDaten {
         return LOCALLOGIN_DATA.AR;
     }
 
-    public visitBern(): LocalloginDatum {
+    public visitBern(): LocalLoginDaten {
         return LOCALLOGIN_DATA.BE;
     }
 
-    public visitLuzern(): LocalloginDatum {
+    public visitLuzern(): LocalLoginDaten {
         return LOCALLOGIN_DATA.LU;
     }
 
-    public visitSolothurn(): LocalloginDatum {
+    public visitSolothurn(): LocalLoginDaten {
         return LOCALLOGIN_DATA.SO;
     }
 

@@ -1196,26 +1196,6 @@
                                                                        [errorObject]="hohe_einkommensklassen_betrag_kita.errors">
                                                     </dv-error-messages>
                                                 </div>
-                                                <div class="form-group"
-                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
-                                                    <label for="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="required"
-                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE</label>
-                                                    <input id="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           name="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="form-control"
-                                                           type="number"
-                                                           #hohe_einkommensklassen_betrag_kita_ab_primarschule='ngModel'
-                                                           required
-                                                           customMinMax
-                                                           [minValue]="0"
-                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKitaAbPrimarschule"
-                                                           (change)="changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(konfigurationsListe[i])">
-
-                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita_ab_primarschule.errors">
-                                                    </dv-error-messages>
-                                                </div>
                                                 <!-- Höhere Einkommensklassen Betrag TFO pro Stunde-->
                                                 <div class="form-group"
                                                      *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">

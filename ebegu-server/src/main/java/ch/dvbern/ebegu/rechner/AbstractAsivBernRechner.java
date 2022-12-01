@@ -97,9 +97,6 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
 
-		// Durchfuehren die Rules die unhabaengige von der Anspruch einen Gutschein geben
-		verguenstigung = unhabaengigeAnspruchRegelnDurchfuehren(verguenstigung, betreuungspensumZeiteinheit, input.getBetreuungsangebotTyp());
-
 		BigDecimal elternbeitrag = EXACT.subtract(vollkosten, verguenstigung);
 		elternbeitrag = elternbeitrag.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : elternbeitrag;
 
@@ -131,13 +128,6 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		handleAnteileMahlzeitenverguenstigung(result, anteilMonat, input.getMonatAnteilVollkostenNichtBezahlt());
 
 		return result;
-	}
-
-	protected BigDecimal unhabaengigeAnspruchRegelnDurchfuehren(
-		BigDecimal verguenstigung,
-		BigDecimal betreuungspensumZeiteinheit,
-		BetreuungsangebotTyp betreuungsangebotTyp) {
-		return verguenstigung;
 	}
 
 	/**
@@ -187,7 +177,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal maximaleVerguenstigungProTag =
 			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult);
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
-		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
+		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
 		BigDecimal beruecksichtigtesEinkommen = EXACT.subtract(massgebendesEinkommen, minEinkommen);
 		BigDecimal product = EXACT.multiplyNullSafe(maximaleVerguenstigungProTag, beruecksichtigtesEinkommen);

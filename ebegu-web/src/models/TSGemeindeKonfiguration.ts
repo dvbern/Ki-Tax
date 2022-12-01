@@ -59,7 +59,6 @@ export class TSGemeindeKonfiguration {
     public konfigHoheEinkommensklassenAktiviert: boolean; // only on client
     public konfigHoheEinkommensklassenBetragKita: number; // only on client
     public konfigHoheEinkommensklassenBetragTfo: number; // only on client
-    public konfigHoheEinkommensklassenBetragKitaAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenBetragTfoAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
     public konfigKeineGutscheineFuerSozialhilfeEmpfaenger: boolean;
@@ -267,15 +266,11 @@ export class TSGemeindeKonfiguration {
                     this.konfigHoheEinkommensklassenBetragTfo = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE: {
-                    this.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = Number(property.value);
-                    break;
-                }
                 case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE: {
                     this.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG: {
                     this.konfigHoheEinkommensklassenMassgebendenEinkommen = Number(property.value);
                     break;
                 }
