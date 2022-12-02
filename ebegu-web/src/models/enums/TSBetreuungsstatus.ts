@@ -40,3 +40,8 @@ export function isBetreuungsstatusTSAusgeloest(status: TSBetreuungsstatus): bool
         || status === TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION
         || status === TSBetreuungsstatus.STORNIERT;
 }
+
+export function isBetreuungsstatusStorniert(status: TSBetreuungsstatus): boolean  {
+    return status === TSBetreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT
+        || status === TSBetreuungsstatus.STORNIERT;
+}
