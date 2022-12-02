@@ -572,7 +572,9 @@ public class ReportResourceAsync {
 			inklMischGesucheBoolean,
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
-			null, text,
+			null,
+			null,
+			text,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -605,39 +607,6 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON,
 			doSave,
 			betragProKind,
-			LocaleThreadLocal.get(),
-				Objects.requireNonNull(principalBean.getMandant())
-		);
-
-		return createWorkjobResponse(workJob);
-	}
-
-	@ApiOperation(
-		value = "Erstellt ein Excel mit der Statistik 'Lastenausgleich kiBon'",
-		response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/lastenausgleich")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.TEXT_PLAIN)
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Response getLastenausgleichKibonReportExcel(
-		@QueryParam("year") @Nonnull String yearString,
-		@Context HttpServletRequest request,
-		@Context UriInfo uriInfo) {
-
-		String ip = downloadResource.getIP(request);
-		final int year = Integer.parseInt(yearString);
-
-		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
-
-		workJob = workjobService.createNewReporting(
-			workJob,
-			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT,
-			LocalDate.ofYearDay(year, 1),
-			null,
-			null,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -802,6 +771,7 @@ public class ReportResourceAsync {
 			false,
 			gemeinde,
 			null,
+			null,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -837,6 +807,7 @@ public class ReportResourceAsync {
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			LocaleThreadLocal.get(),
@@ -898,6 +869,49 @@ public class ReportResourceAsync {
 			gesuchsperiodeId,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
+		);
+
+		return createWorkjobResponse(workJob);
+	}
+
+
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Lastenausgleich Betreuungsgutscheine'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/lastenausgleichBGZeitabschnitte")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE,
+		SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG })
+	public Response getLastenausgleichBGZeitabschnitteExcelReport(
+		@QueryParam("gemeindeId") String gemeindeId,
+		@QueryParam("jahr") Integer jahr,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo) {
+
+		String ip = downloadResource.getIP(request);
+
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("getLastenausgleichBGZeitabschnitteExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+		);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE,
+			null,
+			null,
+			null,
+			false,
+			false,
+			false,
+			false,
+			gemeinde,
+			jahr,
+			null,
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
 		);
 
 		return createWorkjobResponse(workJob);

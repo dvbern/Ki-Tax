@@ -38,6 +38,7 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -46,6 +47,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ReportAsyncRS} from '../../core/service/reportAsyncRS.rest';
+import {LastenausgleichRS} from '../../lastenausgleich/services/lastenausgleichRS.rest';
 
 const LOG = LogFactory.createLog('StatistikComponent');
 
@@ -60,6 +62,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public readonly TSStatistikParameterType = TSStatistikParameterType;
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
+    public readonly demoFeature = TSDemoFeature.LASTENAUSGLEICH_STATISTIK;
 
     private polling: NodeJS.Timeout;
     public statistikParameter: TSStatistikParameter;
@@ -71,8 +74,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public userjobs: MatTableDataSource<TSWorkJob>;
     public columndefs: string[] = ['typ', 'erstellt', 'gestartet', 'beendet', 'status', 'icon'];
     public allJobs: Array<TSBatchJobInformation>;
-    public years: string[];
+    public years: number[];
     public tagesschulenStammdatenList: TSInstitutionStammdaten[];
+    public gemeinden: TSGemeinde[];
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     public flagShowErrorNoGesuchSelected: boolean = false;
     public showKantonStatistik: boolean = false;
@@ -80,6 +84,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public lastenausgleichActive: boolean = false;
     public lastenausgleichTagesschulenActive: boolean = false;
     public tagesschulenActive = false;
+    public lastenausgleichYears: number[] = [];
 
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
@@ -93,7 +98,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
         private readonly cd: ChangeDetectorRef,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly lastenausgleichRS: LastenausgleichRS
     ) {
     }
 
@@ -125,6 +131,22 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
                 this.cd.markForCheck();
             });
+
+        this.gemeindeRS.getGemeindenForPrincipal$().subscribe(gemeinden => {
+            this.gemeinden = gemeinden;
+            this.cd.markForCheck();
+        });
+
+        if (this.showLastenausgleichBGStatistikAllowedForRole()) {
+            this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
+                this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr)
+                    .sort((a,b) => a - b);
+                this.cd.markForCheck();
+            }, err => {
+                LOG.error(err);
+            });
+        }
+
         this.updateShowMahlzeitenStatistik();
         this.refreshUserJobs();
         this.initBatchJobPolling();
@@ -280,12 +302,6 @@ export class StatistikComponent implements OnInit, OnDestroy {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
-            case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
-                this.reportAsyncRS.getLastenausgleichKibonReportExcel(this.statistikParameter.jahr)
-                    .subscribe((res: {workjobId: string}) => {
-                        this.informReportGenerationStarted(res);
-                    }, StatistikComponent.handleError);
-                break;
             case TSStatistikParameterType.TAGESSCHULE_ANMELDUNGEN:
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
                     this.statistikParameter.tagesschuleAnmeldungen.id,
@@ -328,6 +344,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
                 this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel(this.statistikParameter.gesuchsperiode)
+                    .subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
+                return;
+            case TSStatistikParameterType.LASTENAUSGLEICH_BG:
+                this.reportAsyncRS.getLastenausgleichBGReportExcel(this.statistikParameter.gemeinde, this.statistikParameter.jahr)
                     .subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
@@ -405,11 +427,11 @@ export class StatistikComponent implements OnInit, OnDestroy {
         this.years = [];
         this.gesuchsperioden
             .forEach(periode => {
-                if (this.years.indexOf(periode.getBasisJahrPlus1().toString()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus1().toString());
+                if (this.years.indexOf(periode.getBasisJahrPlus1()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus1());
                 }
-                if (this.years.indexOf(periode.getBasisJahrPlus2().toString()) < 0) {
-                    this.years.push(periode.getBasisJahrPlus2().toString());
+                if (this.years.indexOf(periode.getBasisJahrPlus2()) < 0) {
+                    this.years.push(periode.getBasisJahrPlus2());
                 }
             });
 
@@ -678,5 +700,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     public showLastenausgleichTagesschulenStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lastenausgleichTagesschulenActive;
+    }
+
+    public showLastenausgleichBGStatistikAllowedForRole() {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()));
     }
 }

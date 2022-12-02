@@ -58,6 +58,7 @@ public interface WorkjobService {
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
+		@Nullable Integer jahr,
 		@Nullable String text,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
