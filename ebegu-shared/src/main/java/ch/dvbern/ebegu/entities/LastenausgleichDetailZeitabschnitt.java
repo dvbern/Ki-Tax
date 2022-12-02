@@ -42,7 +42,7 @@ public class LastenausgleichDetailZeitabschnitt extends AbstractEntity {
 	@JoinColumn(nullable = false)
 	private LastenausgleichDetail lastenausgleichDetail;
 
-	@OneToOne
+	@OneToOne(optional = false, orphanRemoval = false)
 	@Nonnull
 	private @Valid VerfuegungZeitabschnitt zeitabschnitt;
 

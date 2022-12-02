@@ -139,7 +139,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
         if (this.showLastenausgleichBGStatistikAllowedForRole()) {
             this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
-                this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr);
+                this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr)
+                    .sort((a,b) => a - b);
                 this.cd.markForCheck();
             }, err => {
                 LOG.error(err);
