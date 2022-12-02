@@ -232,6 +232,16 @@ public abstract class AbstractBGRechnerTest {
 		return defaultParameter;
 	}
 
+	public static  BGRechnerParameterDTO getRechnerParamterAppenzell() {
+		BGRechnerParameterDTO defaultParameter = getParameter();
+
+		//SET Parameters for AR
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(13.50));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(11.50));
+
+		return defaultParameter;
+	}
+
 	/**
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */
