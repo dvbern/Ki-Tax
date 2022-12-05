@@ -2072,6 +2072,8 @@
     "MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER": "La réduction de repas sera aussi payé aux bénéficiaires de l'aide sociale",
     "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0",
     "UNBEZAHLTER_URLAUB_AKTIV": "Activer le congé non payé",
+    "VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK": "Minimaler Unterschied des massgebenden Einkommens, damit kiBon über neue Veranlagung informiert",
+    "AUSWEIS_NACHWEIS_REQUIRED": "ID Nachweis für Anantragstellende verlangt",
     "FACHSTELLEN_TYP": "Type de service spécialisé",
     "VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT": "Activer l'envoie des décisions par courrier recommandé",
     "BEGRUENDUNG_MUTATION_AKTIVIERT": "Activer le champ motif de mutation",

@@ -2142,6 +2142,8 @@
     "MAHLZEITENVERGUENSTIGUNG_DURCH_GEMEINDE": "Zusätzliche Mahlzeitenvergünstigung anbieten",
     "MAHLZEITENVERGUENSTIGUNG_AUCH_FUER_SOZIALHILFEEMPFAENGER": "Mahlzeitenvergünstigung wird auch an Sozialhilfebeziehende ausbezahlt",
     "UNBEZAHLTER_URLAUB_AKTIV": "Unbezahlter Urlaub aktiv",
+    "VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK": "Minimaler Unterschied des massgebenden Einkommens, damit kiBon über neue Veranlagung informiert",
+    "AUSWEIS_NACHWEIS_REQUIRED": "ID Nachweis für Anantragstellende verlangt",
     "FACHSTELLEN_TYP": "Fachstellen Typ",
     "BETREUUNG_INPUT_SWITCH_ENABLED": "Wechsel des Betreuungspensum von Prozent zu Tagen erlauben",
     "VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT": "Verfügung eingeschrieben Versenden aktiv",
