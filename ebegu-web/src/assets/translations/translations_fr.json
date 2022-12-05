@@ -2932,7 +2932,7 @@
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind werden automatisch bearbeitet und falls möglich direkt verfügt.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Mutationsmeldung die erfolgreich bearbeitet und verfügt wurden:",
-    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Mutationsmeldung die erfolgreich bearbeitet wurden:",
+    "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Mutationsmeldung die erfolgreich bearbeitet wurden und noch manuell verfügt werden müssen:",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldung die eine manuelle Überprüfung benötigen:",
     "VERFUEGUNG_EXPORT_ENABLED": "Activer l'export des décisions en format JSON ou XML",
     "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
