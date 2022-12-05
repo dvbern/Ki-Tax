@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
-import ch.dvbern.ebegu.reporting.ReportLastenausgleichSelbstbehaltService;
+import ch.dvbern.ebegu.reporting.ReportLastenausgleichBGZeitabschnitteService;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichTagesschulenService;
 import ch.dvbern.ebegu.reporting.ReportMahlzeitenService;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
@@ -79,9 +79,6 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 	private ReportVerrechnungKibonService reportVerrechnungKibonService;
 
 	@Inject
-	private ReportLastenausgleichSelbstbehaltService reportLastenausgleichKibonService;
-
-	@Inject
 	private ReportNotrechtService reportNotrechtService;
 
 	@Inject
@@ -92,6 +89,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichTagesschulenService reportLastenausgleichTagesschulenService;
+
+	@Inject
+	private ReportLastenausgleichBGZeitabschnitteService reportLastenausgleichBGZeitabschnitteService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -145,8 +145,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
+		String methodName = "generateReport";
+
 		Mandant mandant = mandantService.findMandant(getParameters().getProperty(WorkJobConstants.REPORT_MANDANT_ID))
-				.orElseThrow(() -> new EbeguEntityNotFoundException("generateReport"));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(methodName));
 
 		switch (workJobType) {
 
@@ -200,9 +202,6 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
 				return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale, mandant);
 			}
-			case VORLAGE_REPORT_LASTENAUSGLEICH_SELBSTBEHALT: {
-				return this.reportLastenausgleichKibonService.generateExcelReportLastenausgleichKibon(dateFrom, locale);
-			}
 			case VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN: {
 				Objects.requireNonNull(gesuchPeriodeId);
 				final String stammdatenId = getParameters().getProperty(WorkJobConstants.STAMMDATEN_ID_PARAM);
@@ -217,7 +216,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			case VORLAGE_REPORT_MAHLZEITENVERGUENSTIGUNG: {
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
 				if (gemeindeId == null) {
-					throw new EbeguRuntimeException("generateReport", "gemeindeId not defined");
+					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
 				}
 				return this.reportMahlzeitenService.generateExcelReportMahlzeiten(dateFrom, dateTo, locale, gemeindeId);
 			}
@@ -229,6 +228,21 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_TAGESSCHULEN: {
 				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen(gesuchPeriodeId);
+			}
+			case VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE: {
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
+				if (gemeindeId == null) {
+					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
+				}
+				final String lastenausgleichJahr = getParameters().getProperty(WorkJobConstants.JAHR_PARAM);
+				if (lastenausgleichJahr == null) {
+					throw new EbeguRuntimeException(methodName, "lastenausgleichJahr not defined");
+				}
+				return this.reportLastenausgleichBGZeitabschnitteService.generateExcelReportLastenausgleichBGZeitabschnitte(
+					locale,
+					gemeindeId,
+					Integer.parseInt(lastenausgleichJahr, 10)
+				);
 			}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

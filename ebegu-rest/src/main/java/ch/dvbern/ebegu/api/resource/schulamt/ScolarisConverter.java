@@ -87,15 +87,20 @@ public class ScolarisConverter {
 		throws ScolarisException {
 		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
 
-		List<LocalDate> datumList = new ArrayList<>();
+		List<LocalDate> tage = new ArrayList<>();
 		betreuung.getBelegungFerieninsel()
 			.getTage()
-			.forEach(belegungFerieninselTag -> datumList.add(belegungFerieninselTag.getTag()));
+			.forEach(belegungFerieninselTag -> tage.add(belegungFerieninselTag.getTag()));
+
+		List<LocalDate> morgenmodule = new ArrayList<>();
+		betreuung.getBelegungFerieninsel()
+			.getTageMorgenmodul()
+			.forEach(belegungFerieninselTag -> morgenmodule.add(belegungFerieninselTag.getTag()));
 
 		JaxExternalFerienName jaxExternalFerienName =
 			feriennameToScolaris(betreuung.getBelegungFerieninsel().getFerienname());
 		JaxExternalFerieninsel ferieninsel =
-			new JaxExternalFerieninsel(jaxExternalFerienName, datumList);
+			new JaxExternalFerieninsel(jaxExternalFerienName, tage, morgenmodule);
 
 		return new JaxExternalAnmeldungFerieninsel(
 			betreuung.getBGNummer(),

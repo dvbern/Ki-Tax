@@ -16,7 +16,6 @@
  */
 
 import {Directive, ElementRef, Input, OnInit} from '@angular/core';
-import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {DemoFeatureRS} from '../../service/demoFeatureRS.rest';
 import {TSDemoFeature} from './TSDemoFeature';
 

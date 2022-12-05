@@ -40,10 +40,15 @@ public class JaxExternalFerieninsel implements Serializable {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private List<LocalDate> tage;
 
+	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private List<LocalDate> morgenmodule;
 
-	public JaxExternalFerieninsel(@Nonnull JaxExternalFerienName ferien, @Nonnull List<LocalDate> tage) {
+
+	public JaxExternalFerieninsel(@Nonnull JaxExternalFerienName ferien, @Nonnull List<LocalDate> tage, @Nonnull List<LocalDate> morgenmodule) {
 		this.ferien = ferien;
 		this.tage = tage;
+		this.morgenmodule = morgenmodule;
 	}
 
 	@Nonnull
@@ -62,5 +67,14 @@ public class JaxExternalFerieninsel implements Serializable {
 
 	public void setTage(@Nonnull List<LocalDate> tage) {
 		this.tage = tage;
+	}
+
+	@Nonnull
+	public List<LocalDate> getMorgenmodule() {
+		return morgenmodule;
+	}
+
+	public void setMorgenmodule(@Nonnull List<LocalDate> morgenmodule) {
+		this.morgenmodule = morgenmodule;
 	}
 }

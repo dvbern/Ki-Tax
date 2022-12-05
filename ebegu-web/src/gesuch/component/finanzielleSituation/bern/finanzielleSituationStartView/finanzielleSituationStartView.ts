@@ -124,7 +124,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
 
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAY_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
+        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
             .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
     }
 

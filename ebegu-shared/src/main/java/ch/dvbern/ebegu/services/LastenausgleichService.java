@@ -97,4 +97,9 @@ public interface LastenausgleichService {
 	 * @param storedLastenausgleich
 	 */
 	void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich);
+
+	/*
+	Findet Lastenausgleich des übergebenen Jahres, falls vorhanden
+	 */
+	Optional<Lastenausgleich> findLastenausgleich(@Nonnull Integer year);
 }

@@ -536,6 +536,9 @@ export class DossierToolbarController implements IDVFocusableController {
                 && this.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.GESCHLOSSEN) {
                 return false;
             }
+            if (!this.gesuchModelManager.isNeuestesGesuch()) {
+                return false;
+            }
         }
         return this.mutierenPossibleForCurrentAntrag;
     }
