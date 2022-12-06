@@ -27,7 +27,7 @@ import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-bas
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
-import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
+import {DvBenutzerEntryComponent} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
 import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
@@ -44,7 +44,7 @@ import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchst
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
 import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
-import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
+import {DvNgMultiSelectDialogComponent} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
@@ -132,7 +132,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
         DvNgMitteilungResultDialogComponent,
-        DvBenutzerEntry,
+        DvBenutzerEntryComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
@@ -142,7 +142,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
-        DvNgMultiSelectDialog,
+        DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
@@ -217,7 +217,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgMitteilungResultDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
-        DvBenutzerEntry,
+        DvBenutzerEntryComponent,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
@@ -225,7 +225,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
-        DvNgMultiSelectDialog,
+        DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,

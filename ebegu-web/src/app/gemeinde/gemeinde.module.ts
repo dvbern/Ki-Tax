@@ -20,7 +20,7 @@ import {NgxIbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
-import {EditGemeindeComponentBG} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
+import {EditGemeindeBGComponent} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
 import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
 import {EditGemeindeComponentKorrespondenz} from './edit-gemeinde-korrespondenz/edit-gemeinde-korrespondenz.component';
 import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
@@ -47,7 +47,7 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
-        EditGemeindeComponentBG,
+        EditGemeindeBGComponent,
         EditGemeindeComponentFI,
         EditGemeindeComponentStammdaten,
         EditGemeindeComponentTS,

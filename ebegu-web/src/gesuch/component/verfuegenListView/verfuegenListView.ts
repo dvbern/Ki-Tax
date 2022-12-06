@@ -854,13 +854,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public getVeraenderungBgString(): string {
-        let formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
+        const formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
         return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
             {veraenderung: formatedString});
     }
 
     public getVeraenderungTsString(): string {
-        let formatedString =  this.formatVeraenderungen(this.veraenderungTS);
+        const formatedString =  this.formatVeraenderungen(this.veraenderungTS);
         return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
             {veraenderung: formatedString});
     }

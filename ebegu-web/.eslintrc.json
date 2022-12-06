@@ -39,7 +39,10 @@
           ],
           "prefer-const": "error",
           "no-console": "error",
-          "arrow-body-style": ["error","as-needed"],
+          "arrow-body-style": [
+              "error",
+              "as-needed"
+          ],
           "@angular-eslint/prefer-output-readonly": "error",
           "@typescript-eslint/no-unused-expressions": "warn",
           "@angular-eslint/no-host-metadata-property": "error",
@@ -49,17 +52,25 @@
           "@angular-eslint/use-lifecycle-interface": "warn",
           "@angular-eslint/component-class-suffix": "error",
           "@typescript-eslint/adjacent-overload-signatures": "warn",
-          "@typescript-eslint/ban-types": "error",
+          "@typescript-eslint/ban-types": [
+              "error",
+              {
+                  "extendDefaults": true,
+                  "types": {
+                      "{}": false
+                  }
+              }
+          ],
           "@typescript-eslint/consistent-type-definitions": "error",
           "@typescript-eslint/explicit-member-accessibility": [
               "error",
-          {
-            "accessibility": "explicit",
-            "overrides": {
-              "accessors": "explicit",
-              "constructors": "explicit"
-            }
-          }
+              {
+                  "accessibility": "explicit",
+                  "overrides": {
+                      "accessors": "explicit",
+                      "constructors": "explicit"
+                  }
+              }
         ],
         "@typescript-eslint/member-ordering": "warn",
         "@typescript-eslint/naming-convention": [

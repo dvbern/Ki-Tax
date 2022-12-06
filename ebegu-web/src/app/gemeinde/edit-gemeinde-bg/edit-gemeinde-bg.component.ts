@@ -52,7 +52,7 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
-const LOG = LogFactory.createLog('EditGemeindeComponentBG');
+const LOG = LogFactory.createLog('EditGemeindeBGComponent');
 
 @Component({
     selector: 'dv-edit-gemeinde-bg',
@@ -61,7 +61,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentBG');
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class EditGemeindeComponentBG implements OnInit {
+export class EditGemeindeBGComponent implements OnInit {
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() public beguStartStr: string;
     @Input() private readonly gemeindeId: string;

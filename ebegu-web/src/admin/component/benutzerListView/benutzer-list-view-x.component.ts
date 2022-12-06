@@ -27,7 +27,7 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
     selector: 'dv-benutzer-list-view-x',
     templateUrl: './benutzer-list-view-x.component.html',
     styleUrls: ['./benutzer-list-view-x.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerListViewXComponent implements OnInit {
 
