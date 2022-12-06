@@ -4,7 +4,6 @@ import {TSDemoFeature} from '../../../core/directive/dv-hide-feature/TSDemoFeatu
 @Component({
     selector: 'dv-dv-demo-feature-wrapper',
     templateUrl: './dv-demo-feature-wrapper.component.html',
-    styleUrls: ['./dv-demo-feature-wrapper.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DvDemoFeatureWrapperComponent {
