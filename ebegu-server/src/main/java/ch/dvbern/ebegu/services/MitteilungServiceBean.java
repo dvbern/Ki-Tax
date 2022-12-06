@@ -788,9 +788,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
+	@Override
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		try {
-			return doApplymitteilung(mitteilung);
+			Objects.requireNonNull(mitteilung.getBetreuung());
+			return doApplymitteilung(mitteilung,  mitteilung.getBetreuung().extractGesuch());
 		} catch (EbeguException e) {
 			throw new EbeguRuntimeException(
 				"applyBetreuungsmitteilung",
@@ -801,9 +803,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
+	@Override
 	public Gesuch neueVeranlagunssmitteilungBearbeiten(@Nonnull NeueVeranlagungsMitteilung mitteilung) {
 		try {
-			return doApplymitteilung(mitteilung);
+			Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getKibonAntragId());
+			Gesuch gesuch = gesuchService.findGesuch(mitteilung.getSteuerdatenResponse().getKibonAntragId())
+				.orElseThrow(() -> new EbeguException(
+					"neueVeranlagunssmitteilungBearbeiten",
+					ERROR_ENTITY_NOT_FOUND,
+					null,
+					mitteilung.getSteuerdatenResponse().getKibonAntragId()));
+			return doApplymitteilung(mitteilung, gesuch);
 		} catch (EbeguException e) {
 			throw new EbeguRuntimeException(
 				"applyBetreuungsmitteilung",
@@ -814,28 +824,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung) throws EbeguException {
-		Gesuch gesuch;
-		if (mitteilung instanceof Betreuungsmitteilung) {
-			Objects.requireNonNull(mitteilung.getBetreuung());
-			gesuch = mitteilung.getBetreuung().extractGesuch();
-		} else if (mitteilung instanceof NeueVeranlagungsMitteilung) {
-			NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = (NeueVeranlagungsMitteilung) mitteilung;
-			Objects.requireNonNull(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId());
-			gesuch = gesuchService.findGesuch(neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId())
-				.orElseThrow(() -> new EbeguException(
-					"doApplymitteilung",
-					ERROR_ENTITY_NOT_FOUND,
-					null,
-					neueVeranlagungsMitteilung.getSteuerdatenResponse().getKibonAntragId()));
-		} else {
-			LOG.warn("Eine Mitteilung wuerde als Betreuung oder neue Veranlagung Mitteilung verwechselt");
-			throw new EbeguException(
-				"doApplymitteilung",
-				ERROR_ENTITY_NOT_FOUND,
-				null, null);
-		}
-
+	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
 			throw new EbeguException(
@@ -1795,7 +1784,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public String applyBetreuungsmitteilungIfPossible(
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
-			Gesuch mutation = doApplymitteilung(betreuungsmitteilung);
+			Objects.requireNonNull(betreuungsmitteilung.getBetreuung());
+			Gesuch mutation = doApplymitteilung(betreuungsmitteilung, betreuungsmitteilung.getBetreuung().extractGesuch());
 			acceptFinSit(mutation);
 			if (canGesuchBeAutomatischVerfuegt(mutation)) {
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
