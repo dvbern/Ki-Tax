@@ -127,7 +127,7 @@
 													   #fileInput
                                                        accept="application/pdf"
                                                        (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.DEUTSCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
-                                                <button mat-raised-button
+                                                <button
                                                         type="button"
                                                         (click)="fileInput.click()"
                                                         class="dv-btn fa fa-upload dv-btn-operation"
@@ -184,7 +184,7 @@
 													   #fileInput
                                                        accept="application/pdf"
                                                        (change)="uploadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, $event,sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"/>
-                                                <button mat-raised-button
+                                                <button
                                                         type="button"
                                                         (click)="fileInput.click()"
                                                         class="dv-btn fa fa-upload dv-btn-operation"
@@ -201,8 +201,8 @@
                                                     (click)="downloadGemeindeGesuchsperiodeDokument(konfigurationsListe[i].gesuchsperiode.id, sprache.FRANZOESISCH,dokumentTyp.MERKBLATT_ANMELDUNG_TS);$event.stopPropagation()"
                                                     [disabled]="!merkblattAnmeldungTSFR[konfigurationsListe[i].gesuchsperiode.id]"
                                                     class="dv-btn fa fa-eye dv-btn-operation"
-                                                    title="{{'DOKUMENT_DOWNLOAD' | translate}}"
-                                                    [attr.aria-label]="'DOKUMENT_DOWNLOAD' | translate"
+                                                    title="{{'VORLAGE_DOWNLOAD' | translate}}"
+                                                    [attr.aria-label]="'VORLAGE_DOWNLOAD' | translate"
                                                     aria-hidden="true"
                                                     tabindex="0"></button>
                                             </td>

@@ -81,6 +81,16 @@
                 </button>
             </div>
 
+            <!-- Mutieren -->
+            <div dv-show-element
+                 dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
+                 dv-show-expression="vmgs.showButtonMutieren()">
+                <button ng-click="vmgs.antragMutieren()"
+                        aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;">
+                    <span class="uppercase" data-translate="TOOLBAR_MUTIEREN"></span>
+                </button>
+            </div>
+
             <!-- Alle Verfuegungen -->
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()">
@@ -154,8 +164,17 @@
         </button>
     </div>
 
-
     <span flex=""></span>
+    <!-- Mutieren -->
+    <div dv-show-element
+         dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
+         dv-show-expression="vmgs.showButtonMutieren()" class="gesuchsperioden-container">
+        <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.antragMutieren()"
+                aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" class="dv-btn gesuchsperiode-button">
+            <span data-translate="TOOLBAR_MUTIEREN"></span>
+        </button>
+    </div>
+    <!-- Mitteilung-->
     <div dv-show-element
          dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()" class="gesuchsperioden-container">
         <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.openMitteilungen()"
