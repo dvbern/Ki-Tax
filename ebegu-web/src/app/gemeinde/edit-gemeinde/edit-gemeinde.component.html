@@ -34,7 +34,7 @@
             [editMode]="editMode"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 
-        <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab">
+        <mat-tab-group dynamicHeight [(selectedIndex)]="currentTab" animationDuration="0ms">
             <mat-tab label="{{'GEMEINDE_TAB_STAMMDATEN' | translate}}" ngForm="gemeinde_stammdaten">
                 <dv-edit-gemeinde-stammdaten [stammdaten$]="stammdaten$"
                                              [gemeindeId]="gemeindeId"
