@@ -17,8 +17,14 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
-                <span data-translate="GESUCHSTELLERIN"></span> {{vm.gesuchModelManager.getGesuchstellerNumber()}} {{vm.gesuchModelManager.getFamilienSituationDisplayValue() |translate}}
+            <h2 ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
+                <span data-translate="GESUCHSTELLERIN"></span>
+                {{vm.gesuchModelManager.getGesuchstellerNumber()}}
+            </h2>
+            <h2 ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 2">
+                <span data-translate="GESUCHSTELLERIN"></span>
+                {{vm.gesuchModelManager.getGesuchstellerNumber()}}
+                ({{vm.gesuchModelManager.getFamilienSituationDisplayValue() |translate}})
             </h2>
             <dv-bisher gs="vm.getModel().gesuchstellerGS"
                        ja="vm.getModel().gesuchstellerJA"
