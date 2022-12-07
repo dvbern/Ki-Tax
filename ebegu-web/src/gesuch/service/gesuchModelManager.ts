@@ -37,7 +37,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -54,6 +54,7 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
+import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -1107,10 +1108,20 @@ export class GesuchModelManager {
             return '';
         }
         const familienstatus: TSFamilienstatus = this.getFamiliensituation().familienstatus;
-        const startKonkubinat: moment.Moment = this.getFamiliensituation().startKonkubinat;
-
-        if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
-            return "ANDERER_ELTERNTEIL"
+        switch (familienstatus) {
+            case TSFamilienstatus.KONKUBINAT:
+                return familienstatus;
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                const startKonkubinat: moment.Moment = this.getFamiliensituation().startKonkubinat;
+                if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
+                    return "ANDERER_ELTERNTEIL"
+                }
+                return familienstatus;
+            case TSFamilienstatus.ALLEINERZIEHEND:
+                if(! this.getFamiliensituation().geteilteObhut &&
+                    this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                    return "ANDERER_ELTERNTEIL"
+                }
         }
         return familienstatus;
     }

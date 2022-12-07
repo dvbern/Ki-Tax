@@ -451,6 +451,7 @@
     "ALLEINERZIEHEND": "Non",
     "VERHEIRATET": "Oui, épouse/époux ou partenaire enregistré-e",
     "KONKUBINAT": "Oui, concubin-e avec enfant commun",
+    "ANDERER_ELTERNTEIL": "Autre Parent",
     "KONKUBINAT_KEIN_KIND": "Oui, concubin-e sans enfant commun",
     "FAMILIENSITUATION_FRAGE_1": "D'autres adultes vivent-ils dans votre ménage ?",
     "FAMILIENSITUATION_FRAGE_1_NEU_INFO": "Par adulte, on entend une personne avec qui vous avez des liens étroits (épouse/époux ou concubin·e). <br>Si vous vivez par exemple avec vos parents, vos frères et sœurs ou un·e colocataire, veuillez sélectionner \"Non\".",
