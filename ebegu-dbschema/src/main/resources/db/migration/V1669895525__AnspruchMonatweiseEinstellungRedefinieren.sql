@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-UPDATE EINSTELLUNG
+UPDATE einstellung
 SET value = 'true'
 WHERE einstellung_key = 'FKJV_ANSPRUCH_MONATSWEISE' AND
 		gesuchsperiode_id IN (SELECT id
 							  FROM gesuchsperiode
 							  WHERE mandant_id = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', '')));
 
-UPDATE EINSTELLUNG
+UPDATE einstellung
 SET einstellung_key = 'ANSPRUCH_MONATSWEISE'
 WHERE einstellung_key = 'FKJV_ANSPRUCH_MONATSWEISE';
