@@ -68,5 +68,6 @@
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Anleitung für Antragstellende</b><br><a target='_blank' href='assets/pdf/Anleitung_Antragstellende_Solothurn.pdf'>Anleitung für Antragstellende</a>.<br><b><br>Benötigen Sie Hilfe?</b><br>Als Antragsteller/in melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten.<br>",
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
+    "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

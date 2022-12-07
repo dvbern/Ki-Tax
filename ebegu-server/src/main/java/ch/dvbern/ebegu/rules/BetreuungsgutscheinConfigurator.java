@@ -43,7 +43,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_R
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLEN_TYP;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_ANSPRUCH_MONATSWEISE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM;
@@ -132,7 +132,7 @@ public class BetreuungsgutscheinConfigurator {
 			FKJV_EINGEWOEHNUNG,
 			ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
 			MINIMALDAUER_KONKUBINAT,
-			FKJV_ANSPRUCH_MONATSWEISE,
+			ANSPRUCH_MONATSWEISE,
 			KITAPLUS_ZUSCHLAG_AKTIVIERT,
 			GESCHWISTERNBONUS_AKTIVIERT,
 			AUSSERORDENTLICHER_ANSPRUCH_RULE,

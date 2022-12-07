@@ -225,7 +225,7 @@ public enum EinstellungKey {
 
 	// "FKJV: Anspruchsberechnung monatsweise"
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
-	FKJV_ANSPRUCH_MONATSWEISE(MandantIdentifier.getAll()),
+	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN)),
 
 	// "FKJV: Textanpassungen"
 	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
