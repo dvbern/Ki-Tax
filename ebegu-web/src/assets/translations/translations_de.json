@@ -523,6 +523,7 @@
     "ALLEINERZIEHEND": "Nein",
     "VERHEIRATET": "Ja, Ehepartner/in oder eingetragene(r) Partner/in",
     "KONKUBINAT": "Ja, Konkubinatspartner/in mit gemeinsamem Kind",
+    "ANDERER_ELTERNTEIL": "Anderer Elternteil",
     "KONKUBINAT_KEIN_KIND": "Ja, Konkubinatspartner/in ohne gemeinsames Kind",
     "FAMILIENSITUATION_FRAGE_1": "Wohnen in Ihrem Haushalt noch weitere erwachsene Personen?",
     "FAMILIENSITUATION_FRAGE_1_NEU_INFO": "Es sind erwachsene Personen gemeint, die in enger Beziehung mit Ihnen stehen (Ehe- oder Konkubinatspartner/in).<br>Wohnen Sie mit anderen erwachsenen Personen zusammen, zum Beispiel mit Ihren Eltern, Geschwistern oder mit WG-Partnern? Wählen Sie bitte \"Nein\".",

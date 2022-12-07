@@ -1099,6 +1099,22 @@ export class GesuchModelManager {
         return this.gesuchstellerNumber;
     }
 
+    public getFamilienSituationDisplayValue(): string {
+        if (this.getGesuchstellerNumber() === 1) {
+            return '';
+        }
+        if (this.getFamiliensituation() === null && this.getFamiliensituation() === undefined) {
+            return '';
+        }
+        const familienstatus: TSFamilienstatus = this.getFamiliensituation().familienstatus;
+        const startKonkubinat: moment.Moment = this.getFamiliensituation().startKonkubinat;
+
+        if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
+            return "ANDERER_ELTERNTEIL"
+        }
+        return familienstatus;
+    }
+
     public getBasisJahrPlusNumber(): number {
         return this.basisJahrPlusNumber;
     }
