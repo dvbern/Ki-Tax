@@ -94,7 +94,6 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
-
 const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
@@ -129,6 +128,7 @@ export class GesuchModelManager {
 
     private subscription: Subscription;
 
+
     public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly gesuchstellerRS: GesuchstellerRS,
@@ -155,7 +155,8 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS
+        private readonly einstellungenRS: EinstellungRS,
+
     ) {
     }
 
@@ -1100,31 +1101,6 @@ export class GesuchModelManager {
         return this.gesuchstellerNumber;
     }
 
-    public getFamilienSituationDisplayValue(): string {
-        if (this.getGesuchstellerNumber() === 1) {
-            return '';
-        }
-        if (this.getFamiliensituation() === null && this.getFamiliensituation() === undefined) {
-            return '';
-        }
-        const familienstatus: TSFamilienstatus = this.getFamiliensituation().familienstatus;
-        switch (familienstatus) {
-            case TSFamilienstatus.KONKUBINAT:
-                return familienstatus;
-            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                const startKonkubinat: moment.Moment = this.getFamiliensituation().startKonkubinat;
-                if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
-                    return "ANDERER_ELTERNTEIL"
-                }
-                return familienstatus;
-            case TSFamilienstatus.ALLEINERZIEHEND:
-                if(! this.getFamiliensituation().geteilteObhut &&
-                    this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
-                    return "ANDERER_ELTERNTEIL"
-                }
-        }
-        return familienstatus;
-    }
 
     public getBasisJahrPlusNumber(): number {
         return this.basisJahrPlusNumber;
