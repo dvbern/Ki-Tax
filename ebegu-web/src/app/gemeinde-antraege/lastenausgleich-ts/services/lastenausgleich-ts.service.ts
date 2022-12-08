@@ -50,9 +50,9 @@ export class LastenausgleichTSService {
 
     public updateLATSAngabenGemeindeContainerStore(id: string): void {
         const url = `${this.API_BASE_URL}/find/${encodeURIComponent(id)}`;
-        this.http.get<TSLastenausgleichTagesschuleAngabenGemeinde[]>(url)
+        this.http.get<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(url)
             .subscribe(container => {
-                this.next(container);
+               this.next(container);
             }, error => LOG.error(error));
     }
 
@@ -61,7 +61,7 @@ export class LastenausgleichTSService {
     }
 
     public lATSAngabenGemeindeFuerInstitutionenFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-        this.http.put(
+        this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/freigebenInstitution`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
@@ -71,7 +71,7 @@ export class LastenausgleichTSService {
 
     public saveLATSAngabenGemeindeContainer(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         this.errorService.clearAll();
-        this.http.put(
+        this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/save`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => {
@@ -105,7 +105,7 @@ export class LastenausgleichTSService {
             new ReplaySubject<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(1);
     }
 
-    private next(result: any): void {
+    private next(result: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
         const savedContainer = this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenGemeindeContainer(
             new TSLastenausgleichTagesschuleAngabenGemeindeContainer(),
             result
@@ -114,8 +114,8 @@ export class LastenausgleichTSService {
     }
 
     // eslint-disable-next-line max-len
-    public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<Object> {
-        return this.http.put(
+    public latsGemeindeAntragFreigeben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
+        return this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/einreichen`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(tap(result => {
@@ -127,7 +127,7 @@ export class LastenausgleichTSService {
     public latsGemeindeAntragGeprueft(
         container: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
-        return this.http.put(
+        return this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/geprueft`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).pipe(
@@ -144,7 +144,7 @@ export class LastenausgleichTSService {
 
     // eslint-disable-next-line max-len
     public latsAngabenGemeindeFormularAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): Observable<TSLastenausgleichTagesschuleAngabenGemeindeContainer> {
-        return this.http.put(
+        return this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/gemeinde/abschliessen`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         )
@@ -155,7 +155,7 @@ export class LastenausgleichTSService {
     }
 
     public falscheAngaben(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-        this.http.put(
+        this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/falsche-angaben`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(reopenendContainer => {
@@ -241,7 +241,7 @@ export class LastenausgleichTSService {
     }
 
     public latsGemeindeAntragAbschliessen(container: TSLastenausgleichTagesschuleAngabenGemeindeContainer): void {
-        this.http.put(
+        this.http.put<TSLastenausgleichTagesschuleAngabenGemeindeContainer>(
             `${this.API_BASE_URL}/abschliessen`,
             this.ebeguRestUtil.lastenausgleichTagesschuleAngabenGemeindeContainerToRestObject({}, container)
         ).subscribe(result => this.next(result), error => LOG.error(error));
