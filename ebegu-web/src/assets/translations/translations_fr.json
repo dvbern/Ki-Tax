@@ -2947,6 +2947,7 @@
     "MUTATION_VERAENDERUNG_1": "Die Mutation führt zu Veränderungen:<ul>",
     "MUTATION_VERAENDERUNG_BG": "Die rückwirkende Veränderung der Betreuungsgutscheine beträgt kumuliert {{veraenderung}} CHF",
     "MUTATION_VERAENDERUNG_TS": "Die rückwirkende Veränderung der Tagesschultarife pro Stunde beträgt maximal {{veraenderung}} CHF",
+    "MUTATION_VERAENDERUNG_NICHT_MOEGLICH": "In dieser Mutation wurden Betreuungen hinzugefügt oder storniert. Die Mutation kann desshalb nicht ignoriert werden",
     "IGNORIERT": "Ignoriert",
     "IGNORIEREN": "Ignorieren",
     "RUECKGAENGIG": "Rückgängig",
