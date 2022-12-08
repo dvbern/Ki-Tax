@@ -63,8 +63,6 @@ public class AppenzellRechner extends AbstractRechner {
 		BigDecimal vollkostenGekuerzt = calculateVollkostenGekuerztByPensumAndMonatAnteil(bgPensumInStunden, betreuungspensumInStunden);
 		BigDecimal gutscheinGemaessFormel = calculateGutschein(vollkostenGekuerzt, bgPensumInStunden);
 
-		//TODO Gemeinderules ?
-
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 		result.setZeiteinheit(PensumUnits.HOURS);
