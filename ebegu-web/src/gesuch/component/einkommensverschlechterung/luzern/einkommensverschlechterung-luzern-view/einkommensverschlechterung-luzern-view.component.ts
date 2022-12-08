@@ -64,7 +64,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
-    public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(onResult: any): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

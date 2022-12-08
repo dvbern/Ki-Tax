@@ -114,7 +114,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
-    public async confirmAndSave(onResult: Function): Promise<void> {
+    public async confirmAndSave(onResult: any): Promise<void> {
         this.savedClicked = true;
         if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
             if (!this.form.dirty) {

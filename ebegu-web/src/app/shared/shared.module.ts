@@ -75,7 +75,7 @@ import {ExternalClientAssignmentComponent} from './component/external-client-ass
 import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
-import {SavingInfo} from './component/save-input-info/saving-info.component';
+import {SavingInfoComponent} from './component/save-input-info/saving-info.component';
 import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {WarningComponent} from './component/warning/warning.component';
@@ -174,7 +174,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
-        SavingInfo,
+        SavingInfoComponent,
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
@@ -251,7 +251,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
-        SavingInfo,
+        SavingInfoComponent,
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,

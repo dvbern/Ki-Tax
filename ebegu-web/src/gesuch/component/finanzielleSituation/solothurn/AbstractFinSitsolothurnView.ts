@@ -119,7 +119,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract getSubStepName(): string;
 
-    public abstract prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+    public abstract prepareSave(onResult: any): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.getAntragstellerNummer() === 0) {

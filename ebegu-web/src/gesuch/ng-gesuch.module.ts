@@ -18,7 +18,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
-import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
+import {DvFinanzielleSituationRequireXComponent} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
@@ -73,7 +73,7 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         EinkommensverschlechterungLuzernResultateViewComponent,
         EinkommensverschlechterungSolothurnResultateViewComponent,
         EinkommensverschlechterungResultateViewComponent,
-        DvFinanzielleSituationRequireX,
+        DvFinanzielleSituationRequireXComponent,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
         VeranlagungComponent,
