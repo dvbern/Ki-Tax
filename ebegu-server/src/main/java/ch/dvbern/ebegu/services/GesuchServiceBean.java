@@ -2630,9 +2630,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
-			for (AnmeldungFerieninsel anmeldung : kindContainer.getAnmeldungenFerieninsel()) {
-				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
-			}
 			// anmeldungen des Vorgesuchs zurücksetzen
 			resetMutierteAnmeldungen(gesuch);
 		});

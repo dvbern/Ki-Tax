@@ -17,6 +17,3 @@
 
 ALTER TABLE anmeldung_tagesschule ADD COLUMN status_vor_ignorieren varchar(255);
 ALTER TABLE anmeldung_tagesschule_aud ADD COLUMN status_vor_ignorieren varchar(255);
-
-ALTER TABLE anmeldung_ferieninsel ADD COLUMN status_vor_ignorieren varchar(255);
-ALTER TABLE anmeldung_ferieninsel_aud ADD COLUMN status_vor_ignorieren varchar(255);

@@ -47,11 +47,6 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 	@Column(nullable = true)
 	private AnmeldungMutationZustand anmeldungMutationZustand = AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN;
 
-	@Nullable
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
-	private Betreuungsstatus statusVorIgnorieren;
-
 
 	public AbstractAnmeldung() {
 	}
@@ -64,15 +59,6 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 
 	public void setAnmeldungMutationZustand(@Nullable AnmeldungMutationZustand anmeldungMutationZustand) {
 		this.anmeldungMutationZustand = anmeldungMutationZustand;
-	}
-
-	@Nullable
-	public Betreuungsstatus getStatusVorIgnorieren() {
-		return statusVorIgnorieren;
-	}
-
-	public void setStatusVorIgnorieren(@Nullable Betreuungsstatus statusVorIgnorieren) {
-		this.statusVorIgnorieren = statusVorIgnorieren;
 	}
 
 	public AbstractAnmeldung copyAbstractAnmeldung(
