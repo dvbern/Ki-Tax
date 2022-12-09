@@ -87,7 +87,7 @@ public class InstitutionStammdatenResource {
 	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
 	 */
 	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren und aktiv "
-		+ "sind und welche (falls TS oder FI) zur angegebenen Gemeinde gehören",
+		+ "sind und welche (falls TS oder FI oder BG mit Filterung durch Gemeinde) zur angegebenen Gemeinde gehören",
 		responseContainer = "List", response = JaxInstitutionStammdaten.class)
 	@Nonnull
 	@GET

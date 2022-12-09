@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -252,11 +254,20 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nonnull
 	@Column(nullable = false)
 	@NotNull
-	private Boolean hasZusatzText = false;
+	private Boolean hasZusatzTextVerfuegung = false;
 
 	@Nullable
 	@Column(nullable = true)
-	private String zusatzText;
+	private String zusatzTextVerfuegung;
+
+	@Nonnull
+	@Column(nullable = false)
+	@NotNull
+	private Boolean hasZusatzTextFreigabequittung = false;
+
+	@Nullable
+	@Column(nullable = true)
+	private String zusatzTextFreigabequittung;
 
 
 	@Nullable
@@ -274,6 +285,20 @@ public class GemeindeStammdaten extends AbstractEntity {
 	)
 	private @Valid @NotNull Set<@ExternalClientOfType(type = GEMEINDE_SCOLARIS_SERVICE)ExternalClient> externalClients =
 		new HashSet<>();
+
+	@Nonnull
+	@Column(nullable = false)
+	private Boolean alleBgInstitutionenZugelassen = true;
+
+	@Nonnull
+	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "gemeinde_stammdaten_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "institution_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_institutionen_gemeinde_stammdaten_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_institutionen_institution_id")
+	)
+	private List<Institution> zugelasseneBgInstitutionen = new ArrayList<>();
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -746,16 +771,52 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	@Nonnull
-	public Boolean getHasZusatzText() { return hasZusatzText; }
+	public Boolean getHasZusatzTextVerfuegung() { return hasZusatzTextVerfuegung; }
 
-	public void setHasZusatzText(@Nonnull Boolean hasZusatzText) {
-		this.hasZusatzText = hasZusatzText;
+	public void setHasZusatzTextVerfuegung(@Nonnull Boolean hasZusatzText) {
+		this.hasZusatzTextVerfuegung = hasZusatzText;
 	}
 
 	@Nullable
-	public String getZusatzText() { return zusatzText; }
+	public String getZusatzTextVerfuegung() { return zusatzTextVerfuegung; }
 
-	public void setZusatzText(@Nullable String zusatzText) {
-		this.zusatzText = zusatzText;
+	public void setZusatzTextVerfuegung(@Nullable String zusatzText) {
+		this.zusatzTextVerfuegung = zusatzText;
+	}
+
+	@Nonnull
+	public Boolean getHasZusatzTextFreigabequittung() {
+		return hasZusatzTextFreigabequittung;
+	}
+
+	public void setHasZusatzTextFreigabequittung(@Nonnull Boolean hasZusatzTextFreigabequittung) {
+		this.hasZusatzTextFreigabequittung = hasZusatzTextFreigabequittung;
+	}
+
+	@Nullable
+	public String getZusatzTextFreigabequittung() {
+		return zusatzTextFreigabequittung;
+	}
+
+	public void setZusatzTextFreigabequittung(@Nullable String zusatzTextFreigabequittung) {
+		this.zusatzTextFreigabequittung = zusatzTextFreigabequittung;
+	}
+
+	@Nonnull
+	public Boolean getAlleBgInstitutionenZugelassen() {
+		return alleBgInstitutionenZugelassen;
+	}
+
+	public void setAlleBgInstitutionenZugelassen(@Nonnull Boolean alleBgInstitutionenZugelassen) {
+		this.alleBgInstitutionenZugelassen = alleBgInstitutionenZugelassen;
+	}
+
+	@Nonnull
+	public List<Institution> getZugelasseneBgInstitutionen() {
+		return zugelasseneBgInstitutionen;
+	}
+
+	public void setZugelasseneBgInstitutionen(@Nonnull List<Institution> zugelasseneBgInstitutionen) {
+		this.zugelasseneBgInstitutionen = zugelasseneBgInstitutionen;
 	}
 }

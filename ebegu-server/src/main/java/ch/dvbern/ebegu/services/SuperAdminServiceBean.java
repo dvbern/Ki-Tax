@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.RunAs;
 import javax.ejb.Asynchronous;
@@ -52,6 +54,7 @@ import ch.dvbern.ebegu.errors.BenutzerExistException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.util.CsvCreator;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -105,6 +108,11 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	@Inject
 	private Persistence persistence;
 
+	@Inject
+	private TransactionHelper transactionHelper;
+
+	@Inject
+	private AlleFaelleViewService alleFaelleViewService;
 
 	@Override
 	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_SOZIALDIENST })
@@ -138,13 +146,39 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	@Nonnull
+	@PermitAll
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer){
-		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove, eingeloggterBenutzer.getMandant()).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"removeBenutzer",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			benutzernameToRemove));
+	public void rebuiltAllAntraegeForGesuchsperiodeAsSystemUser() {
+		final int batchSize = 100;
+		Long count = alleFaelleViewService.countAllGesuch();
+		for (int i = 0; i < count; i = i + batchSize) {
+			List<String> foundAntraege = alleFaelleViewService.searchAllGesuchIds(i, batchSize);
+			transactionHelper.runInNewTransaction(
+				() -> {
+					try {
+						for (String gesuchId : foundAntraege) {
+							Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
+							alleFaelleViewService.updateViewWithFullGesuch(gesuch);
+						}
+					} catch (Exception e) {
+						LOG.error(
+							"Es gab eine unerwartete Fehler bei erstellen der Alle Faelle View: "
+								+ e.getMessage());
+					}
+				});
+		}
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void removeFallAndBenutzer(@Nonnull String benutzernameToRemove, @Nonnull Benutzer eingeloggterBenutzer) {
+		Benutzer benutzer = benutzerService.findBenutzer(benutzernameToRemove, eingeloggterBenutzer.getMandant())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"removeBenutzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				benutzernameToRemove));
 		try {
 			benutzerService.checkBenutzerIsNotGesuchstellerWithFreigegebenemGesuch(benutzer);
 			// Keine Exception: Es ist kein Gesuchsteller: Wir können immer löschen
@@ -160,8 +194,11 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private void removeFallAndBenutzerForced(@Nonnull Benutzer benutzerToRemove, @Nonnull Benutzer eingeloggterBenutzer) {
-		LOG.warn("Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
+	private void removeFallAndBenutzerForced(
+		@Nonnull Benutzer benutzerToRemove,
+		@Nonnull Benutzer eingeloggterBenutzer) {
+		LOG.warn(
+			"Der Benutzer mit Benutzername: {} und Rolle {} wird gelöscht durch Benutzer {} mit Rolle {}",
 			benutzerToRemove.getUsername(),
 			benutzerToRemove.getRole(),
 			eingeloggterBenutzer.getUsername(),
@@ -169,8 +206,9 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 		Optional<Fall> fallOpt = fallService.findFallByBesitzer(benutzerToRemove);
 		fallOpt.ifPresent(this::removeFall);
-		benutzerService.removeBenutzer(benutzerToRemove.getUsername(),
-				Objects.requireNonNull(benutzerToRemove.getMandant()));
+		benutzerService.removeBenutzer(
+			benutzerToRemove.getUsername(),
+			Objects.requireNonNull(benutzerToRemove.getMandant()));
 	}
 
 	@Override

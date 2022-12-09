@@ -21,6 +21,7 @@ import {TSAdresse} from './TSAdresse';
 import {TSBenutzer} from './TSBenutzer';
 import {TSGemeinde} from './TSGemeinde';
 import {TSGemeindeStammdatenKorrespondenz} from './TSGemeindeStammdatenKorrespondenz';
+import {TSInstitution} from './TSInstitution';
 import {TSTextRessource} from './TSTextRessource';
 
 export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
@@ -54,13 +55,17 @@ export class TSGemeindeStammdaten extends TSAbstractGemeindeStammdaten {
     public standardDokUnterschriftTitel2: string;
     public standardDokUnterschriftName2: string;
     public tsVerantwortlicherNachVerfuegungBenachrichtigen: boolean;
-    public zusatzText: string;
-    public hasZusatzText: boolean;
+    public zusatzTextVerfuegung: string;
+    public hasZusatzTextVerfuegung: boolean;
+    public zusatzTextFreigabequittung: string;
+    public hasZusatzTextFreigabequittung: boolean;
     public externalClients: string[];
     public usernameScolaris: string;
     public emailBeiGesuchsperiodeOeffnung: boolean;
     public gutscheinSelberAusgestellt: boolean;
     public gemeindeAusgabestelle: TSGemeinde;
+    public alleBgInstitutionenZugelassen: boolean;
+    public zugelasseneBgInstitutionen: TSInstitution[];
 
     /**
      * Wir suchen einen Defaultbenutzer mit der Rolle BG oder GEMEINDE, falls ein spezifischer gesetzt ist

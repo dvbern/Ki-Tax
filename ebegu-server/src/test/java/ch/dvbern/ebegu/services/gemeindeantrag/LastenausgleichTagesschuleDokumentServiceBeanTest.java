@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
@@ -114,6 +116,22 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		expect(einstellungServiceMock.findEinstellung(
 			EinstellungKey.LATS_LOHNNORMKOSTEN,
 			container.getGemeinde(),
+			container.getGesuchsperiode()
+		))
+			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, "10.35", gesuchsperiodeOfPrognose))
+			.anyTimes();
+
+		expect(einstellungServiceMock.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50,
+			container.getGemeinde(),
+			container.getGesuchsperiode()
+		))
+			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.35", gesuchsperiodeOfPrognose))
+			.anyTimes();
+
+		expect(einstellungServiceMock.findEinstellung(
+			EinstellungKey.LATS_LOHNNORMKOSTEN,
+			container.getGemeinde(),
 			gesuchsperiodeOfPrognose
 		))
 			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, "10.35", gesuchsperiodeOfPrognose))
@@ -124,7 +142,7 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 			container.getGemeinde(),
 			gesuchsperiodeOfPrognose
 		))
-			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN, "5.35", gesuchsperiodeOfPrognose))
+			.andReturn(new Einstellung(EinstellungKey.LATS_LOHNNORMKOSTEN_LESS_THAN_50, "5.35", gesuchsperiodeOfPrognose))
 			.anyTimes();
 
 	}
@@ -133,12 +151,17 @@ public class LastenausgleichTagesschuleDokumentServiceBeanTest extends EasyMockS
 		LastenausgleichTagesschuleAngabenGemeindeContainer container = new LastenausgleichTagesschuleAngabenGemeindeContainer();
 		LastenausgleichTagesschuleAngabenGemeinde korrektur = new LastenausgleichTagesschuleAngabenGemeinde();
 		Gemeinde gemeinde = new Gemeinde();
+		Mandant mandant = new Mandant();
+		mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		mandant.setName("Kanton Bern");
+		gemeinde.setMandant(mandant);
 
 		korrektur.setLastenausgleichberechtigteBetreuungsstunden(new BigDecimal("1000"));
 		korrektur.setNormlohnkostenBetreuungBerechnet(new BigDecimal("10000"));
 		korrektur.setEinnahmenElterngebuehren(new BigDecimal("500"));
 		korrektur.setLastenausgleichsberechtigerBetrag(new BigDecimal("10000"));
 		korrektur.setErsteRateAusbezahlt(new BigDecimal("3000"));
+		korrektur.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(new BigDecimal("1000"));
 
 		Gesuchsperiode gesuchsperiode = createGesuchsperiode();
 

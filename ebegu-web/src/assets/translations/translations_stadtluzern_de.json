@@ -134,9 +134,9 @@
     "KORREKTURZAHLUNG_DIALOG_FRAGE": "Sie sind dabei, eine Mutation zu bestätigen, welche zu Korrekturen an bereits ausbezahlten Beträgen führt. Möchten Sie fortfahren?",
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, BG bestätigen",
     "ABWEICHUNGEN_HELP": "Auf dieser Eingabemaske können Sie für {{vorname}} {{name}} Abweichungen zum vertraglich definierten Betreuungspensum der Institution {{institution}} erfassen und freigeben. Die einmal erfassten Werte bleiben bis zur Freigabe zwischengespeichert. Erst durch die Freigabe, werden die Daten an die Gemeinde gesendet. Die Gemeinde wird die Änderungen dann prüfen und einen angepassten Betreuungsgutschein ausstellen. Die bereits bestätigten Daten sind bereits grau hinterlegt. Sie müssen nun die Abweichungen erfassen indem Sie die effektiven Betreuungspensen und Betreuungskosten der entsprechenden Monate eintragen (d.h. das gesamte und nicht die Differenzen).",
-    "ZUSAETZLICHER_TEXT_JA": "Zusätzlicher Text in der PDF-Datei der BG Bestätigung",
-    "ZUSAETZLICHER_TEXT_HELP": "Dieses Textfeld ermöglicht einen zusätzlichen Text zu hinterlegen, welcher in der PDF-Datei der BG Bestätigung abgebildet wird. Der Text wird unterhalb der Bemerkungen abgebildet.",
-    "ZUSAETZLICHER_TEXT_TITEL": "Zusatztext in BG Bestätigung",
+    "ZUSAETZLICHER_TEXT_VERFUEGUNG_JA": "Zusätzlicher Text in der PDF-Datei der BG Bestätigung",
+    "ZUSAETZLICHER_TEXT_VERFUEGUNG_HELP": "Dieses Textfeld ermöglicht einen zusätzlichen Text zu hinterlegen, welcher in der PDF-Datei der BG Bestätigung abgebildet wird. Der Text wird unterhalb der Bemerkungen abgebildet.",
+    "ZUSAETZLICHER_TEXT_VERFUEGUNG_TITEL": "Zusatztext in BG Bestätigung",
     "STANDARD_DOK_SIGNATURE": "Standard Fusszeile bei BG Bestätigungen verwenden",
     "STANDARD_DOK_SIGNATURE_HELP": "Standardmässig wird am Ende einer BG Bestätigung eine elektronische Signatur generiert. Die so entstehenden Dokumente sind rechtskräftig. Empfohlene Einstellung: An.",
     "STANDARD_DOK_SIGNATURE_NEIN": "Fusszeile die bei BG Bestätigungen verwendet wird:",
@@ -179,5 +179,6 @@
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
+    "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

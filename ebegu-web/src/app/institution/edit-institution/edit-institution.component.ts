@@ -34,7 +34,7 @@ import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {
-    getBgInstitutionenAndTsBetreuungsangebote,
+    getBgInstitutionenBetreuungsangebote,
     isJugendamt,
     TSBetreuungsangebotTyp
 } from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -62,8 +62,12 @@ import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import {EditInstitutionBetreuungsgutscheineComponent} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
-import {EditInstitutionTagesschuleComponent} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
+import {
+    EditInstitutionBetreuungsgutscheineComponent
+} from '../edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
+import {
+    EditInstitutionTagesschuleComponent
+} from '../edit-institution-tagesschule/edit-institution-tagesschule.component';
 
 const LOG = LogFactory.createLog('EditInstitutionComponent');
 
@@ -207,9 +211,18 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isStammdatenEditable(): boolean {
-        return getBgInstitutionenAndTsBetreuungsangebote().includes(this.stammdaten.betreuungsangebotTyp) ?
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getBgInstitutionAndTsProfilEditRoles()) :
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        if (getBgInstitutionenBetreuungsangebote().includes(this.stammdaten.betreuungsangebotTyp)) {
+            return this.authServiceRS.isOneOfRoles(
+                TSRoleUtil.getMandantRoles().concat(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            );
+        }
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESSCHULE) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTSProfilEditRoles());
+        }
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        }
+        throw new Error('Institution type not supported');
     }
 
     public isDateStartEndDisabled(): boolean {

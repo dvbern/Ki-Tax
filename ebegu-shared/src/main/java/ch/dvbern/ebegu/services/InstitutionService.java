@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -70,8 +71,13 @@ public interface InstitutionService {
 	Collection<Institution> getAllInstitutionen(@Nonnull Mandant mandant);
 
 	/**
-	 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+	 * @return Alle Institutionen in der DB gefiltert bei BetreuungsangebotTyp
 	 */
+	Collection<Institution> getAllInstitutionenByType(@Nonnull Mandant mandant, @Nonnull List<BetreuungsangebotTyp> typen);
+
+		/**
+		 * @return Alle Institutionen in der DB ohne Berechtigungspruefung, nur fuer Batchjob.
+		 */
 	@Nonnull
 	Collection<Institution> getAllInstitutionenForBatchjobs();
 
@@ -130,4 +136,6 @@ public interface InstitutionService {
 	Map<Institution, InstitutionStammdaten> getInstitutionenInstitutionStammdatenForGemeinde(Gemeinde gemeinde);
 
 	Collection<Institution> findAllInstitutionen(@Nonnull String dossierId);
+
+	List<Institution> findAllInstitutionen(@Nonnull List<String> ids);
 }

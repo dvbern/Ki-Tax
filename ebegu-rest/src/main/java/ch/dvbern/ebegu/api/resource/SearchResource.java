@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchService;
+import ch.dvbern.ebegu.services.SuperAdminService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -107,6 +108,9 @@ public class SearchResource {
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private SuperAdminService superAdminService;
 
 	/**
 	 * Gibt eine Liste mit allen Pendenzen des Jugendamtes zurueck.
@@ -278,6 +282,22 @@ public class SearchResource {
 		});
 	}
 
+	@ApiOperation(value = "Build der Alle Faelle Sicht von scratch")
+	@Nonnull
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/rebuild")
+	@RolesAllowed(SUPER_ADMIN)
+	public Response updateAlleFaelleView(
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+		Thread thread = new Thread(() ->
+			superAdminService.rebuiltAllAntraegeForGesuchsperiodeAsSystemUser()
+		);
+		thread.start();
+		return Response.ok("Alle Faelle View rebuild started").build();
+	}
+
 	@Nonnull
 	private List<JaxAntragDTO> convertAntraegeToDTO(List<Gesuch> foundAntraege) {
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
@@ -286,7 +306,6 @@ public class SearchResource {
 		foundAntraege.forEach(gesuch -> {
 			JaxAntragDTO antragDTO =
 				converter.gesuchToAntragDTO(gesuch, principalBean.discoverMostPrivilegedRole(), allowedInst);
-			antragDTO.setFamilienName(gesuch.extractFamiliennamenString());
 			antragDTOList.add(antragDTO);
 		});
 		return antragDTOList;

@@ -74,12 +74,12 @@ import static ch.dvbern.ebegu.enums.WorkJobConstants.DO_SAVE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_TS_GESUCHE;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.KANTON_SELBSTBEHALT;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.LANGUAGE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_MANDANT_ID;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.TEXT;
-import static ch.dvbern.ebegu.enums.WorkJobConstants.KANTON_SELBSTBEHALT;
 
 /**
  * Data Acess Object Bean zum zugriff auf Workjoben in der DB
@@ -144,6 +144,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
+		@Nullable Integer jahr,
 		@Nullable String text,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
@@ -160,6 +161,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			inklTsGesuche,
 			ohneErneuerungsgesuch,
 			gemeinde,
+			jahr,
 			text,
 			false,
 			BigDecimal.ZERO,
@@ -181,6 +183,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
+		@Nullable Integer jahr,
 		@Nullable String text,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
@@ -223,6 +226,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		if (gemeinde != null) {
 			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_PARAM, gemeinde.getId());
 		}
+		if (jahr != null) {
+			jobParameters.setProperty(WorkJobConstants.JAHR_PARAM, jahr.toString());
+		}
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
 		jobParameters.setProperty(WorkJobConstants.REPORT_MANDANT_ID, Objects.requireNonNull(principalBean.getMandant())
 				.getId());
@@ -262,7 +268,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
-			null, null,
+			null,
+			null,
+			null,
 			locale,
 			mandant);
 	}
@@ -306,6 +314,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			null,
 			null,
+			null,
 			false,
 			BigDecimal.ZERO,
 			kantonSelbstbehalt,
@@ -328,6 +337,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			doSave,
@@ -357,6 +367,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			false,

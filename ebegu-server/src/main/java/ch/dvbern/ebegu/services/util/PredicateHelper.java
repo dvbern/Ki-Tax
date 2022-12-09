@@ -38,8 +38,6 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine_;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel_;
 import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
@@ -99,18 +97,6 @@ public final class PredicateHelper<V> {
 		return root.get(AbstractEntity_.id)
 			.in(Constants.ALL_UNKNOWN_INSTITUTION_IDS)
 			.not();
-	}
-
-	public static Predicate createBGInstitutionStammdatenOnlyFromGemeindeOrMandantPredicate(
-			CriteriaBuilder cb, Root<InstitutionStammdaten> root,
-			ParameterExpression<Collection> gemeindeParam) {
-		Join<InstitutionStammdaten, InstitutionStammdatenBetreuungsgutscheine> joinStamdatenBG = root.join(InstitutionStammdaten_.institutionStammdatenBetreuungsgutscheine, JoinType.LEFT);
-
-		Predicate isGemeinde = joinStamdatenBG.get(InstitutionStammdatenBetreuungsgutscheine_.gemeinde).in(gemeindeParam);
-		// if gemeinde is null, then the insti was created from and for the mandant
-		Predicate isGemeindeNull = cb.isNull(joinStamdatenBG.get(InstitutionStammdatenBetreuungsgutscheine_.gemeinde));
-
-		return cb.or(isGemeinde, isGemeindeNull);
 	}
 
 	public static Predicate getPredicateBerechtigteInstitutionStammdaten(

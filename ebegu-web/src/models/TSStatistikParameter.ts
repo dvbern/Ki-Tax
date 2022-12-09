@@ -19,7 +19,7 @@ import {TSGemeinde} from './TSGemeinde';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
-    private _jahr: string;
+    private _jahr: number;
     private _gesuchsperiode: string;
     private _stichtag: moment.Moment;
     private _von: moment.Moment;
@@ -34,6 +34,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _tagesschuleAnmeldungen: TSInstitutionStammdaten;
     private _gemeindeMahlzeitenverguenstigungen: TSGemeinde;
     private _kantonSelbstbehalt: number;
+    private _gemeinde: TSGemeinde;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment
@@ -133,11 +134,11 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
         this._betragProKind = value;
     }
 
-    public get jahr(): string {
+    public get jahr(): number {
         return this._jahr;
     }
 
-    public set jahr(value: string) {
+    public set jahr(value: number) {
         this._jahr = value;
     }
 
@@ -163,5 +164,13 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set kantonSelbstbehalt(value: number) {
         this._kantonSelbstbehalt = value;
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 }

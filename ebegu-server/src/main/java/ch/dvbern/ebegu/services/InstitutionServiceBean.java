@@ -158,6 +158,12 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Override
 	@Nonnull
 	public Collection<Institution> getAllInstitutionen(@Nonnull Mandant mandant) {
+		return getAllInstitutionenByType(mandant, List.of(BetreuungsangebotTyp.values()));
+	}
+
+	@Override
+	@Nonnull
+	public Collection<Institution> getAllInstitutionenByType(@Nonnull Mandant mandant, @Nonnull List<BetreuungsangebotTyp> typen) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
@@ -175,6 +181,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			ParameterExpression<Collection> gemeindeParam = cb.parameter(Collection.class, GEMEINDEN);
 			predicates.add(PredicateHelper.getPredicateBerechtigteInstitutionStammdaten(cb, root, gemeindeParam));
 		}
+
+		Predicate betreuungsangebotTypPredicate = root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(typen);
+		predicates.add(betreuungsangebotTypPredicate);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
@@ -526,5 +535,19 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			Berechtigung.class,
 			institution,
 			Berechtigung_.institution);
+	}
+
+	@Override
+	public List<Institution> findAllInstitutionen(@Nonnull List<String> ids) {
+		if (ids.isEmpty()) {
+			return new ArrayList<>();
+		}
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<Institution> root = query.from(Institution.class);
+		query.distinct(true);
+		Predicate predicate = root.get(Institution_.id).in(ids);
+		query.where(predicate);
+		return persistence.getCriteriaResults(query);
 	}
 }

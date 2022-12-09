@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.lastenausgleich;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
+import ch.dvbern.ebegu.entities.LastenausgleichDetailZeitabschnitt;
 import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -80,6 +82,11 @@ public class LastenausgleichRechnerOld extends AbstractLastenausgleichRechner {
 		detail.setTotalBelegungenOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalBelegungOhneSelbstbeahltInProzent));
 		detail.setTotalBetragGutscheineOhneSelbstbehalt(MathUtil.toTwoKommastelle(totalGutscheineOhneSelbstbeahlt));
 		detail.setKostenFuerSelbstbehalt(MathUtil.toTwoKommastelle(kostenOhneSelbstbehaltGemeinde));
+		var detailZeitabschnitte = abschnitteProGemeindeUndJahr
+			.stream()
+			.map(a -> new LastenausgleichDetailZeitabschnitt(a, detail))
+			.collect(Collectors.toList());
+		detail.setLastenausgleichDetailZeitabschnitte(detailZeitabschnitte);
 
 		return detail;
 	}

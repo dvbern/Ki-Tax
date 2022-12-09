@@ -17,11 +17,13 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,6 +51,9 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Entity
 @Table(indexes = {
@@ -56,7 +61,6 @@ import org.hibernate.annotations.Type;
 	@Index(columnList = "gesuchsperiodeId", name = "IX_alle_faelle_view_gesuchsperiode_id"),
 	@Index(columnList = "verantwortlicherBGId", name = "IX_alle_faelle_view_verantwortlicher_bg_id"),
 	@Index(columnList = "verantwortlicherTSId", name = "IX_alle_faelle_view_verantwortlicher_ts_id"),
-	@Index(columnList = "verantwortlicherGemeindeId", name = "IX_alle_faelle_view_verantwortlicher_gemeinde_id"),
 	@Index(columnList = "fallId", name = "IX_alle_faelle_view_fall_id"),
 	@Index(columnList = "besitzerId", name = "IX_alle_faelle_view_besitzer_id"),
 	@Index(columnList = "sozialdienstId", name = "IX_alle_faelle_view_sozialdienst_id")
@@ -140,15 +144,9 @@ public class AlleFaelleView {
 	@Column(nullable = true)
 	private String kinder;
 
-	@ElementCollection(targetClass = BetreuungsangebotTyp.class, fetch = FetchType.EAGER)
-	@CollectionTable(
-		name = "alleFaelleViewBetreuungsangebotTypen",
-		joinColumns = @JoinColumn(name = "alleFaelleViewBetreuungsangebotTypen")
-	)
 	@Column(nullable = true)
-	@Enumerated(EnumType.STRING)
-	@NotNull
-	private Set<BetreuungsangebotTyp> angebotTypen = EnumSet.noneOf(BetreuungsangebotTyp.class);
+	@Nullable
+	private String angebotTypen;
 
 	@NotNull
 	@Column(nullable = false)
@@ -156,18 +154,20 @@ public class AlleFaelleView {
 
 	@Nullable
 	@Column(nullable = true)
-	private LocalDateTime eingangsdatum;
+	private LocalDate eingangsdatum;
 
 	@Nullable
 	@Column(nullable = true)
-	private LocalDateTime eingangsdatumSTV;
+	private LocalDate eingangsdatumSTV;
 
 	@NotNull
 	@Column(nullable = false)
 	private Boolean sozialdienst = false;
 
 	@Nullable
-	@Column()
+	@Column(nullable = true)
+	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type(type = "string-uuid-binary")
 	private String sozialdienstId;
 
 	@NotNull
@@ -209,28 +209,18 @@ public class AlleFaelleView {
 	private String verantwortlicherTS;
 
 	@Nullable
-	@Column(nullable = true)
-	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
-	@Type(type = "string-uuid-binary")
-	private String verantwortlicherGemeindeId;
-
-	@Nullable
-	@Column(nullable = true)
-	private String verantwortlicherGemeinde;
-
-	@Nullable
 	@ManyToMany
 	@JoinTable(
 		joinColumns = @JoinColumn(name = "antrag_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "institution_id", nullable = false),
-		foreignKey = @ForeignKey(name = "FK_institution_alle_faelle_view_antrag_id"),
-		inverseForeignKey = @ForeignKey(name = "FK_institution_alle_faelle_view_institution_id"),
+		foreignKey = @ForeignKey(name = "FK_alle_faelle_view_antrag_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_alle_faelle_view_institution_id"),
 		indexes = {
-			@Index(name = "IX_institution_alle_faelle_view_antrag_id", columnList = "antrag_id"),
-			@Index(name = "IX_institution_alle_faelle_view_institution_id", columnList = "institution_id"),
+			@Index(name = "IX_alle_faelle_view_antrag_id", columnList = "antrag_id"),
+			@Index(name = "IX_alle_faelle_view_institution_id", columnList = "institution_id"),
 		}
 	)
-	private Set<Institution> institutionen = new TreeSet<>();
+	private List<Institution> institutionen = new ArrayList<>();
 
 	public AlleFaelleView() {
 	}
@@ -272,8 +262,6 @@ public class AlleFaelleView {
 			&& Objects.equals(getVerantwortlicherBG(), that.getVerantwortlicherBG())
 			&& Objects.equals(getVerantwortlicherTSId(), that.getVerantwortlicherTSId())
 			&& Objects.equals(getVerantwortlicherTS(), that.getVerantwortlicherTS())
-			&& Objects.equals(getVerantwortlicherGemeindeId(), that.getVerantwortlicherGemeindeId())
-			&& Objects.equals(getVerantwortlicherGemeinde(), that.getVerantwortlicherGemeinde())
 			&& Objects.equals(getInstitutionen(), that.getInstitutionen());
 	}
 
@@ -305,8 +293,6 @@ public class AlleFaelleView {
 			getVerantwortlicherBG(),
 			getVerantwortlicherTSId(),
 			getVerantwortlicherTS(),
-			getVerantwortlicherGemeindeId(),
-			getVerantwortlicherGemeinde(),
 			getInstitutionen());
 	}
 
@@ -355,7 +341,7 @@ public class AlleFaelleView {
 		return besitzerId;
 	}
 
-	public void setBesitzerId(String besitzerId) {
+	public void setBesitzerId(@Nullable String besitzerId) {
 		this.besitzerId = besitzerId;
 	}
 
@@ -434,12 +420,12 @@ public class AlleFaelleView {
 		this.kinder = kinder;
 	}
 
-	@Nonnull
-	public Set<BetreuungsangebotTyp> getAngebotTypen() {
+	@Nullable
+	public String getAngebotTypen() {
 		return angebotTypen;
 	}
 
-	public void setAngebotTypen(@Nonnull Set<BetreuungsangebotTyp> angebotTypen) {
+	public void setAngebotTypen(@Nullable String angebotTypen) {
 		this.angebotTypen = angebotTypen;
 	}
 
@@ -529,47 +515,29 @@ public class AlleFaelleView {
 	}
 
 	@Nullable
-	public String getVerantwortlicherGemeindeId() {
-		return verantwortlicherGemeindeId;
-	}
-
-	public void setVerantwortlicherGemeindeId(@Nullable String verantwortlicherGemeindeId) {
-		this.verantwortlicherGemeindeId = verantwortlicherGemeindeId;
-	}
-
-	@Nullable
-	public String getVerantwortlicherGemeinde() {
-		return verantwortlicherGemeinde;
-	}
-
-	public void setVerantwortlicherGemeinde(@Nullable String verantwortlicherGemeinde) {
-		this.verantwortlicherGemeinde = verantwortlicherGemeinde;
-	}
-
-	@Nullable
-	public Set<Institution> getInstitutionen() {
+	public List<Institution> getInstitutionen() {
 		return institutionen;
 	}
 
-	public void setInstitutionen(@Nullable Set<Institution> institutionen) {
+	public void setInstitutionen(@Nullable List<Institution> institutionen) {
 		this.institutionen = institutionen;
 	}
 
 	@Nullable
-	public LocalDateTime getEingangsdatum() {
+	public LocalDate getEingangsdatum() {
 		return eingangsdatum;
 	}
 
-	public void setEingangsdatum(@Nullable LocalDateTime eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
 	@Nullable
-	public LocalDateTime getEingangsdatumSTV() {
+	public LocalDate getEingangsdatumSTV() {
 		return eingangsdatumSTV;
 	}
 
-	public void setEingangsdatumSTV(@Nullable LocalDateTime eingangsdatumSTV) {
+	public void setEingangsdatumSTV(@Nullable LocalDate eingangsdatumSTV) {
 		this.eingangsdatumSTV = eingangsdatumSTV;
 	}
 

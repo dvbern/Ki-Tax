@@ -15,7 +15,9 @@
 
 import * as moment from 'moment';
 import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
-import {TSFerienbetreuungBerechnung} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
+import {
+    TSFerienbetreuungBerechnung
+} from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSBenutzerTableFilterDTO} from '../models/dto/TSBenutzerTableFilterDTO';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
 import {TSFinanzielleSituationAufteilungDTO} from '../models/dto/TSFinanzielleSituationAufteilungDTO';
@@ -24,6 +26,7 @@ import {TSKitaxResponse} from '../models/dto/TSKitaxResponse';
 import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
@@ -35,16 +38,28 @@ import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnit
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
-import {TSFerienbetreuungAngabenKostenEinnahmen} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {
+    TSFerienbetreuungAngabenKostenEinnahmen
+} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
-import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
-import {TSLastenausgleichTagesschuleAngabenInstitution} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
-import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeinde
+} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenInstitution
+} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
+import {
+    TSLastenausgleichTagesschuleAngabenInstitutionContainer
+} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {
+    TSLastenausgleichTagesschulenStatusHistory
+} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
@@ -1051,8 +1066,10 @@ export class EbeguRestUtil {
             restStammdaten.emailBeiGesuchsperiodeOeffnung = stammdaten.emailBeiGesuchsperiodeOeffnung;
             restStammdaten.hasAltGemeindeKontakt = stammdaten.hasAltGemeindeKontakt;
             restStammdaten.altGemeindeKontaktText = stammdaten.altGemeindeKontaktText;
-            restStammdaten.zusatzText = stammdaten.zusatzText;
-            restStammdaten.hasZusatzText = stammdaten.hasZusatzText;
+            restStammdaten.zusatzTextVerfuegung = stammdaten.zusatzTextVerfuegung;
+            restStammdaten.hasZusatzTextVerfuegung = stammdaten.hasZusatzTextVerfuegung;
+            restStammdaten.zusatzTextFreigabequittung = stammdaten.zusatzTextFreigabequittung;
+            restStammdaten.hasZusatzTextFreigabequittung = stammdaten.hasZusatzTextFreigabequittung;
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
@@ -1062,6 +1079,10 @@ export class EbeguRestUtil {
             if (stammdaten.gemeindeAusgabestelle) {
                 restStammdaten.gemeindeAusgabestelle = this.gemeindeToRestObject({}, stammdaten.gemeindeAusgabestelle);
             }
+            restStammdaten.alleBgInstitutionenZugelassen = stammdaten.alleBgInstitutionenZugelassen;
+            restStammdaten.zugelasseneBgInstitutionen = stammdaten.zugelasseneBgInstitutionen.map(
+                i => this.institutionToRestObject({}, i)
+            );
 
             return restStammdaten;
         }
@@ -1125,12 +1146,16 @@ export class EbeguRestUtil {
             stammdatenTS.usernameScolaris = stammdatenFromServer.usernameScolaris;
             stammdatenTS.emailBeiGesuchsperiodeOeffnung = stammdatenFromServer.emailBeiGesuchsperiodeOeffnung;
             stammdatenTS.gutscheinSelberAusgestellt = stammdatenFromServer.gutscheinSelberAusgestellt;
-            stammdatenTS.zusatzText = stammdatenFromServer.zusatzText;
-            stammdatenTS.hasZusatzText = stammdatenFromServer.hasZusatzText;
+            stammdatenTS.zusatzTextVerfuegung = stammdatenFromServer.zusatzTextVerfuegung;
+            stammdatenTS.hasZusatzTextVerfuegung = stammdatenFromServer.hasZusatzTextVerfuegung;
+            stammdatenTS.zusatzTextFreigabequittung = stammdatenFromServer.zusatzTextFreigabequittung;
+            stammdatenTS.hasZusatzTextFreigabequittung = stammdatenFromServer.hasZusatzTextFreigabequittung;
             if (stammdatenFromServer.gemeindeAusgabestelle) {
                 stammdatenTS.gemeindeAusgabestelle =
                     this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeindeAusgabestelle);
             }
+            stammdatenTS.alleBgInstitutionenZugelassen = stammdatenFromServer.alleBgInstitutionenZugelassen;
+            stammdatenTS.zugelasseneBgInstitutionen = this.parseInstitutionen(stammdatenFromServer.zugelasseneBgInstitutionen);
             return stammdatenTS;
         }
         return undefined;
@@ -1715,7 +1740,6 @@ export class EbeguRestUtil {
     ): TSInstitutionStammdatenBetreuungsgutscheine {
         if (institutionStammdatenFromServer) {
             this.parseAbstractEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), institutionStammdatenFromServer.gemeinde);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
@@ -5951,6 +5975,13 @@ export class EbeguRestUtil {
             return typ as TSFinanzielleSituationTyp;
         }
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
+    }
+
+    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ)) {
+            return typ as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
+        }
+        throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
     }
 
     public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {

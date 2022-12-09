@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {MatDialog} from '@angular/material/dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {ReindexRS} from '../../service/reindexRS.rest';
 
 import { AdminViewXComponent } from './admin-view-x.component';
@@ -20,12 +21,15 @@ describe('AdminViewXComponent', () => {
 
   const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
-  beforeEach(async () => {
+  const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['recreateAlleFaelleView']);
+
+    beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ AdminViewXComponent ],
       providers: [
           {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
           {provide: ReindexRS, useValue: reindexRSSpy},
+          {provide: SearchRS, useValue: searchRSSpy},
           {provide: MatDialog, useValue: matDialogSpy},
           {provide: AuthServiceRS, useValue: authServiceSpy}
       ]

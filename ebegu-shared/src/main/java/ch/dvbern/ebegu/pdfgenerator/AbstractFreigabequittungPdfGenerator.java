@@ -21,6 +21,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -104,6 +105,7 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 			dokumenteParagraph.setSpacingAfter(1 * DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
+			addZusatzTextIfAvailable(document);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
 			seite2Paragraphs.add(PdfUtil.createParagraph(
@@ -117,6 +119,12 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
 		};
+	}
+
+	protected void addZusatzTextIfAvailable(Document document) {
+		if (getGemeindeStammdaten().getHasZusatzTextFreigabequittung()) {
+			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzTextFreigabequittung())));
+		}
 	}
 
 	@Nonnull

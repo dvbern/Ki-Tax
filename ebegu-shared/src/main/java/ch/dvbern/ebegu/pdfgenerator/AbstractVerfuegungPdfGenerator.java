@@ -341,8 +341,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	}
 
 	protected void addZusatzTextIfAvailable(Document document) {
-		if (getGemeindeStammdaten().getHasZusatzText()) {
-			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzText())));
+		if (getGemeindeStammdaten().getHasZusatzTextVerfuegung()) {
+			document.add(PdfUtil.createParagraph(Objects.requireNonNull(gemeindeStammdaten.getZusatzTextVerfuegung())));
 		}
 	}
  	@Override

@@ -375,6 +375,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichGrundlagen"/>
 	<entity class="ch.dvbern.ebegu.entities.Lastenausgleich"/>
 	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetail"/>
+	<entity class="ch.dvbern.ebegu.entities.LastenausgleichDetailZeitabschnitt"/>
 	<entity class="ch.dvbern.ebegu.entities.BGCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.TSCalculationResult"/>
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode"/>
@@ -415,4 +416,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.SteuerdatenRequest"/>
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz"/>
 	<entity class="ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung"/>
+	<entity class="ch.dvbern.ebegu.entities.AlleFaelleView"/>
 </entity-mappings>

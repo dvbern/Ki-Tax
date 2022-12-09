@@ -15,8 +15,8 @@
 
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
-import {LocalloginDatum} from '../../app/core/constants/LOCALLOGIN_DATA';
-import {MandantLocalloginDatumVisitor} from '../../app/core/constants/MandantLocalloginDatumVisitor';
+import {LocalLoginDaten} from '../../app/core/constants/LOCALLOGIN_DATA';
+import {MandantLocalLoginDatenVisitor} from '../../app/core/constants/MandantLocalLoginDatenVisitor';
 import {KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
@@ -118,7 +118,7 @@ export class LocalLoginComponent {
     private sozialdienst: TSSozialdienst;
     public hasSecondGemeinde: boolean;
 
-    public localLoginDatum: LocalloginDatum;
+    public localLoginDaten: LocalLoginDaten;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -129,16 +129,16 @@ export class LocalLoginComponent {
     ) {
         this.mandantService.mandant$.subscribe(mandant => {
             this.mandantHostname = mandant.hostname;
-            this.localLoginDatum = LocalLoginComponent.getLocalloginDatum(mandant);
-            this.hasSecondGemeinde = EbeguUtil.isNotNullOrUndefined(this.localLoginDatum.second_gemeinde);
-            this.createLocalloginInstances(this.localLoginDatum);
+            this.localLoginDaten = LocalLoginComponent.getLocalLoginDaten(mandant);
+            this.hasSecondGemeinde = EbeguUtil.isNotNullOrUndefined(this.localLoginDaten.second_gemeinde);
+            this.createLocalLoginInstances(this.localLoginDaten);
 
             this.gemeindeRS.getAktiveGemeinden().then(aktiveGemeinden => {
                 this.defaultGemeinde = aktiveGemeinden
-                    .find(gemeinde => gemeinde.id === this.localLoginDatum.default_gemeinde.id);
+                    .find(gemeinde => gemeinde.id === this.localLoginDaten.default_gemeinde.id);
                 if (this.hasSecondGemeinde) {
                     this.secondGemeinde = aktiveGemeinden
-                        .find(gemeinde => gemeinde.id === this.localLoginDatum.second_gemeinde.id);
+                        .find(gemeinde => gemeinde.id === this.localLoginDaten.second_gemeinde.id);
                 }
 
                 this.initUsers(this.hasSecondGemeinde);
@@ -150,8 +150,8 @@ export class LocalLoginComponent {
         });
     }
 
-    private static getLocalloginDatum(mandant: KiBonMandant): LocalloginDatum {
-        return new MandantLocalloginDatumVisitor().process(mandant);
+    private static getLocalLoginDaten(mandant: KiBonMandant): LocalLoginDaten {
+        return new MandantLocalLoginDatenVisitor().process(mandant);
     }
 
     /**
@@ -208,7 +208,7 @@ export class LocalLoginComponent {
         return sozialdienst;
     }
 
-    private createLocalloginInstances(datum: LocalloginDatum): void {
+    private createLocalLoginInstances(datum: LocalLoginDaten): void {
         this.mandant = LocalLoginComponent.getMandant(datum.mandant);
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern(datum.traegerschaft);
         this.institution =

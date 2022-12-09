@@ -85,7 +85,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.ExternalClientService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -151,9 +150,6 @@ public class InstitutionResource {
 
 	@Inject
 	private MitteilungService mitteilungService;
-
-	@Inject
-	private Authorizer authorizer;
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -243,15 +239,7 @@ public class InstitutionResource {
 		switch (betreuungsangebot) {
 		case KITA:
 		case TAGESFAMILIEN:
-			gemeinde = null;
-			if (gemeindeId != null) {
-				gemeinde = getGemeindeOrThrowException(gemeindeId);
-				// Benutzer muss write berechtigt sein, damit er auf der Gemeinde eine neue Institution erstellen
-				// kann
-				authorizer.checkWriteAuthorization(gemeinde);
-			}
 			InstitutionStammdatenBetreuungsgutscheine bgStammdaten = new InstitutionStammdatenBetreuungsgutscheine();
-			bgStammdaten.setGemeinde(gemeinde);
 			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(bgStammdaten);
 			break;
 		case TAGESSCHULE:
@@ -430,6 +418,24 @@ public class InstitutionResource {
 		var mandant = mandantService.findMandantByCookie(mandantCookie);
 
 		return institutionService.getAllInstitutionen(mandant).stream()
+			.map(inst -> converter.institutionToJAX(inst))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Find and return a list of all BG Institutionen",
+		responseContainer = "List", response = JaxInstitution.class)
+	@Nonnull
+	@GET
+	@Path("/bg")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Oeffentliche Daten
+	public List<JaxInstitution> getAllBgInstitutionen(
+			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		var mandant = mandantService.findMandantByCookie(mandantCookie);
+
+		return institutionService.getAllInstitutionenByType(mandant, BetreuungsangebotTyp.getBetreuungsgutscheinTypes()).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
 	}

@@ -165,4 +165,9 @@ export class MitteilungRS {
     public applyAlleBetreuungsmitteilungen(antragSearch: any): IPromise<Array<TSMitteilung>> {
         return this.$http.post(`${this.serviceURL}/applyAlleBetreuungsmitteilungen`, antragSearch).then((response: any) => this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen));
     }
+
+    public neueVeranlagungsmitteilungBearbeiten(mitteilungId: string): IPromise<string> {
+        return this.$http.put(`${this.serviceURL}/neueVeranlagungsmitteilungBearbeiten/${mitteilungId}`,
+            null).then((response: any) => response.data);
+    }
 }

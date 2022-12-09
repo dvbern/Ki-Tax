@@ -1,10 +1,29 @@
+/*
+ * Copyright (C) 2022 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+SET @mandant_id_luzern = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+
 # GESUCHSPERIODE 20/21
 
-UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
-UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id =  @mandant_id_luzern;
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id =  @mandant_id_luzern;
 
 # noinspection SqlWithoutWhere
-UPDATE gesuchsperiode SET status = 'AKTIV' WHERE mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+UPDATE gesuchsperiode SET status = 'AKTIV' WHERE mandant_id =  @mandant_id_luzern;
 
 # Gemeinden Bern und Ostermundigen erstellen, inkl. Adressen und Gemeindestammdaten. Sequenz anpassen
 INSERT IGNORE INTO gemeinde (
@@ -12,7 +31,7 @@ INSERT IGNORE INTO gemeinde (
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
                       angebotts, angebotfi, gueltig_bis)
 SELECT UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
-	   'Testgemeinde Luzern', max(gemeinde_nummer)+1, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', 99997,
+	   'Testgemeinde Luzern', max(gemeinde_nummer)+1,  @mandant_id_luzern, 'AKTIV', 99997,
 	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, '9999-12-31' from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
@@ -37,18 +56,18 @@ VALUES (UNHEX(REPLACE('fd91477c-3263-11ec-a17e-b89a2ae4a038', '-', '')), '2018-1
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
-	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true, UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
+	VALUES (UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Luzern', true,  @mandant_id_luzern);
 
 # Kita und Tagesfamilien
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
 	VALUES (UNHEX(REPLACE('f5ceae4a-30a5-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'Brünnen LU',
-	        UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', false);
+	         @mandant_id_luzern, UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', false);
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
 	VALUES (UNHEX(REPLACE('6a06f59b-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'Tageseltern Luzern',
-	        UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), null, 'AKTIV', false);
+	         @mandant_id_luzern, null, 'AKTIV', false);
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
 	VALUES (UNHEX(REPLACE('7c436811-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'Weissenstein LU',
-	        UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', false);
+	         @mandant_id_luzern, UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', false);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)	
 	VALUES (UNHEX(REPLACE('abd8ec9b-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '4', 'CH', 'Tageseltern Bern', 'Bern', '3005', 'Gasstrasse', null);
@@ -145,7 +164,7 @@ VALUES (UNHEX(REPLACE('6d6afdb2-3261-11ec-a17e-b89a2ae4a038', '-', '')), '2016-0
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 								vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
 VALUES (UNHEX(REPLACE('3db43c9b-30a6-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
-		'flyway', 'flyway', 0, NULL, 'Tagesschule LU', UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')),
+		'flyway', 'flyway', 0, NULL, 'Tagesschule LU',  @mandant_id_luzern,
 		NULL, 'AKTIV', FALSE);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
@@ -174,7 +193,7 @@ INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_
 								event_published)
 VALUES (UNHEX(REPLACE('9d668709-30aa-11ec-a86f-b89a2ae4a038', '-', '')), '2020-02-28 09:48:18', '2020-02-28 10:11:35',
 		'flyway', 'flyway', 0, NULL, 'Tagesschule Luzern', 'AKTIV',
-		UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')), NULL, FALSE, TRUE);
+		 @mandant_id_luzern, NULL, FALSE, TRUE);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 							vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz,
@@ -204,7 +223,7 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  gp.id   							 as gesuchsperiode_id,
 		  UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
-	  from gesuchsperiode as gp where gp.mandant_id = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''))) as tmp;
+	  from gesuchsperiode as gp where gp.mandant_id =  @mandant_id_luzern) as tmp;
 
 # Tagis fuer Paris aktivieren
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
@@ -296,7 +315,7 @@ INSERT IGNORE INTO sozialdienst (id, timestamp_erstellt, timestamp_mutiert, user
 								 vorgaenger_id, name, status, mandant_id)
 VALUES (UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')), '2021-02-15 09:48:18', '2021-02-15 10:11:35',
 		'flyway', 'flyway', 0, NULL, 'LuzernerSozialdienst', 'AKTIV',
-		UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', '')));
+		 @mandant_id_luzern);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 							vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz,
@@ -312,3 +331,5 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		'flyway', 'flyway', 0, NULL, 'test-lu@mailbucket.dvbern.ch', '078 898 98 98', 'http://test.dvbern.ch',
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')));
+
+UPDATE ebegu.mandant SET ebegu.mandant.activated=true where id = @mandant_id_luzern;

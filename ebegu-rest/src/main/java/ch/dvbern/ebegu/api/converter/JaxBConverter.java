@@ -45,6 +45,7 @@ import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
@@ -1528,10 +1529,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstitutionListDTO.setBetreuungsangebotTyp(entry.getValue().getBetreuungsangebotTyp());
 
 		Gemeinde gemeinde = null;
-		if (entry.getValue().getInstitutionStammdatenBetreuungsgutscheine() != null
-			&& entry.getValue().getInstitutionStammdatenBetreuungsgutscheine().getGemeinde() != null) {
-			gemeinde = entry.getValue().getInstitutionStammdatenBetreuungsgutscheine().getGemeinde();
-		}
 		if (entry.getValue().getInstitutionStammdatenTagesschule() != null) {
 			gemeinde = entry.getValue().getInstitutionStammdatenTagesschule().getGemeinde();
 		}
@@ -1761,10 +1758,6 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitutionStammdatenBetreuungsgutscheine jaxInstStammdaten =
 			new JaxInstitutionStammdatenBetreuungsgutscheine();
 		convertAbstractFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-
-		if (persistedInstStammdaten.getGemeinde() != null) {
-			jaxInstStammdaten.setGemeinde(gemeindeToJAX(persistedInstStammdaten.getGemeinde()));
-		}
 
 		final IBAN persistedIban = persistedInstStammdaten.extractIban();
 		if (persistedIban != null) {
@@ -4671,7 +4664,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
 		antrag.setDossierId(gesuch.getDossier().getId());
-		antrag.setFamilienName(gesuch.getGesuchsteller1() != null ? gesuch.getGesuchsteller1().extractNachname() : "");
+		antrag.setFamilienName(gesuch.extractFamiliennamenString());
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
 		antrag.setRegelnGueltigAb(gesuch.getRegelnGueltigAb());
 		antrag.setBegruendungMutation(gesuch.getBegruendungMutation());
@@ -4709,6 +4702,7 @@ public class JaxBConverter extends AbstractConverter {
 		} else {
 			antrag.setInternePendenzAbgelaufen(false);
 		}
+
 		return antrag;
 	}
 
@@ -5289,8 +5283,10 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
 		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
 
-		stammdaten.setHasZusatzText(jaxStammdaten.getHasZusatzText());
-		stammdaten.setZusatzText(jaxStammdaten.getZusatzText());
+		stammdaten.setHasZusatzTextVerfuegung(jaxStammdaten.getHasZusatzTextVerfuegung());
+		stammdaten.setZusatzTextVerfuegung(jaxStammdaten.getZusatzTextVerfuegung());
+		stammdaten.setHasZusatzTextFreigabequittung(jaxStammdaten.getHasZusatzTextFreigabequittung());
+		stammdaten.setZusatzTextFreigabequittung(jaxStammdaten.getZusatzTextFreigabequittung());
 
 		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
 		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
@@ -5311,6 +5307,18 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
 
 		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
+
+		stammdaten.setAlleBgInstitutionenZugelassen(jaxStammdaten.getAlleBgInstitutionenZugelassen());
+		if (jaxStammdaten.getAlleBgInstitutionenZugelassen()) {
+			stammdaten.setZugelasseneBgInstitutionen(new ArrayList<>());
+		} else {
+			var ids = jaxStammdaten.getZugelasseneBgInstitutionen()
+				.stream()
+				.map(JaxAbstractDTO::getId)
+				.collect(Collectors.toList());
+			List<Institution> institutionen = institutionService.findAllInstitutionen(ids);
+			stammdaten.setZugelasseneBgInstitutionen(institutionen);
+		}
 
 		return stammdaten;
 	}
@@ -5373,8 +5381,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
 		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
 		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
-		jaxStammdaten.setHasZusatzText(stammdaten.getHasZusatzText());
-		jaxStammdaten.setZusatzText(stammdaten.getZusatzText());
+		jaxStammdaten.setHasZusatzTextVerfuegung(stammdaten.getHasZusatzTextVerfuegung());
+		jaxStammdaten.setZusatzTextVerfuegung(stammdaten.getZusatzTextVerfuegung());
+		jaxStammdaten.setHasZusatzTextFreigabequittung(stammdaten.getHasZusatzTextFreigabequittung());
+		jaxStammdaten.setZusatzTextFreigabequittung(stammdaten.getZusatzTextFreigabequittung());
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
 		if (stammdaten.getIban() != null) {
@@ -5406,6 +5416,13 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
 		convertAbstractFieldsToJAX(stammdaten.getGemeindeStammdatenKorrespondenz(), jaxStammdaten.getGemeindeStammdatenKorrespondenz());
+
+		jaxStammdaten.setAlleBgInstitutionenZugelassen(stammdaten.getAlleBgInstitutionenZugelassen());
+		var jaxInstitutionen = stammdaten.getZugelasseneBgInstitutionen()
+			.stream()
+			.map(this::institutionToJAX)
+			.collect(Collectors.toList());
+		jaxStammdaten.setZugelasseneBgInstitutionen(jaxInstitutionen);
 
 		return jaxStammdaten;
 	}

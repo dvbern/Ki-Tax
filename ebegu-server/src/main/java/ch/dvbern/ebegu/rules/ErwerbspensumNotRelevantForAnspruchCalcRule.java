@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
-public class ErwerbspensumNotRelevantForAnspruchCalcRule extends AbstractCalcRule {
+public class ErwerbspensumNotRelevantForAnspruchCalcRule extends AbstractErwerbspensumCalcRule {
 
 	protected ErwerbspensumNotRelevantForAnspruchCalcRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull RuleValidity ruleValidity, @Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
