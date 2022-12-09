@@ -221,7 +221,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showAnyNewOrStornierteBetreuungen(): boolean {
-        return this.isMutation() && this.hasAnyNewOrStornierteBetreuung;
+        return this.isMutation() && this.hasAnyNewOrStornierteBetreuung
+            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public setMutationIgnorieren(): void {
