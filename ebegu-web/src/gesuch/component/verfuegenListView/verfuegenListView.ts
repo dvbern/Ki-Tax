@@ -212,6 +212,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return false;
         }
 
+        if (this.veraenderungBG === 0 && this.veraenderungTS === 0) {
+            return false;
+        }
+
         return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
             && this.isMutation();
     }
