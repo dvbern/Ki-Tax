@@ -24,10 +24,8 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {
-    isBetreuungsstatusStorniert,
-    TSBetreuungsstatus
-} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
@@ -832,12 +830,18 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private calculateVeraenderung(): void {
+        if (this.hasOnlyFerienbetreuung()) {
+            return;
+        }
+
         this.veraenderungBG = 0;
         this.veraenderungTS = 0;
         this.allVerfuegungenIgnorable = true;
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
-            kindContainer.betreuungen.forEach(betreuung => {
+            kindContainer.betreuungen
+                .filter(betreuung => betreuung.getAngebotTyp() !== TSBetreuungsangebotTyp.FERIENINSEL)
+                .forEach(betreuung => {
                 this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung?.ignorable;
                 if (EbeguUtil.isNullOrUndefined(betreuung.verfuegung?.veraenderungVerguenstigungGegenueberVorgaenger)
                 || isBetreuungsstatusStorniert(betreuung.betreuungsstatus)) {
@@ -851,6 +855,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }
             }));
+    }
+
+    private hasOnlyFerienbetreuung(): boolean {
+        return this.kinderWithBetreuungList.every(kindcontainer =>
+            kindcontainer.betreuungen
+                .every(betreuung => betreuung.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL));
     }
 
     private findAbsoultMax(val1: number, val2: number): number {
