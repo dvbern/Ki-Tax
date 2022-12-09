@@ -124,7 +124,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
 		}
 
-		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null) {
+		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
+			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
 			return Processing.failure("Keine neue Veranlagung gefunden");
 		}
 
