@@ -239,6 +239,12 @@ public interface BetreuungService {
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtModuleAkzeptieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 
+	/**
+	 Setzt die Schulamt-Anmeldung auf SCHULAMT_MUTATION_IGNORIERT
+	 */
+	@Nonnull
+	AnmeldungTagesschule anmeldungMutationIgnorieren(@Valid @Nonnull AnmeldungTagesschule anmeldung);
+
 	@Nonnull
 	AbstractAnmeldung anmeldungSchulamtStornieren(@Valid @Nonnull AbstractAnmeldung anmeldung);
 

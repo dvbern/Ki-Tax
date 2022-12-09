@@ -523,6 +523,30 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		return persistedBetreuung;
 	}
 
+	@Override
+	@Nonnull
+	public AnmeldungTagesschule anmeldungMutationIgnorieren(@Nonnull @Valid AnmeldungTagesschule anmeldung) {
+		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
+		authorizer.checkWriteAuthorization(anmeldung);
+
+		// vorgänger zurücksetzen
+		Objects.requireNonNull(anmeldung.getVorgaengerId(), "Eine Anmeldung kann nicht ignoriert werden, wenn sie neu ist");
+		AnmeldungTagesschule vorgaenger = findAnmeldungTagesschule(anmeldung.getVorgaengerId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"resetMutierteAnmeldungen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				anmeldung.getVorgaengerId()));
+		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		persistence.merge(vorgaenger);
+
+		anmeldung.setGueltig(false);
+		anmeldung.setStatusVorIgnorieren(anmeldung.getBetreuungsstatus());
+		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT);
+		anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.IGNORIERT);
+
+		return persistence.merge(anmeldung);
+	}
+
 	/**
 	 * Generiert das Anmeldebestaetigungsdokument.
 	 *

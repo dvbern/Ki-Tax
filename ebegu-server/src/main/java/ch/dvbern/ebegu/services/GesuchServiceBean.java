@@ -2627,6 +2627,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				Betreuung betreuung = betreuungList.get(i);
 				this.betreuungService.schliessenOhneVerfuegen(betreuung);
 			}
+			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
+				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
+			}
+			// anmeldungen des Vorgesuchs zurücksetzen
+			resetMutierteAnmeldungen(gesuch);
 		});
 
 		return gesuchNachVerfuegungStart;
