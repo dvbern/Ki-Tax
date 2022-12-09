@@ -84,10 +84,8 @@ export class LastenausgleichTSComponent implements OnInit, OnDestroy {
     }
 
     private openDownloadForFile(response: BlobPart): void {
-        let file;
-        let filename;
-        file = new Blob([response], {type: 'application/pdf'});
-        filename = this.translate.instant('LATS_REPORT_NAME',
+        const file = new Blob([response], {type: 'application/pdf'});
+        const filename = this.translate.instant('LATS_REPORT_NAME',
             {
                 gemeinde: this.lATSAngabenGemeindeContainer.gemeinde.name,
                 gp: this.lATSAngabenGemeindeContainer.gesuchsperiode.gesuchsperiodeString

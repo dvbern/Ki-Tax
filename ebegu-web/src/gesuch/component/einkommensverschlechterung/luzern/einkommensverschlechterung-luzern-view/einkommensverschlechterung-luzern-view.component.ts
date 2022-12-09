@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
@@ -64,7 +63,7 @@ export class EinkommensverschlechterungLuzernViewComponent extends AbstractGesuc
             TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
-    public save(onResult: any): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(onResult: (arg: TSEinkommensverschlechterungContainer) => void): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

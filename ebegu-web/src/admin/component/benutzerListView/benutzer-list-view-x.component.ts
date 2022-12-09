@@ -31,8 +31,8 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
 })
 export class BenutzerListViewXComponent implements OnInit {
 
-    @HostBinding('class') class = 'overflow-scroll';
-    @HostBinding('flex') flex = 'auto';
+     @HostBinding('class') public class = 'overflow-scroll';
+     @HostBinding('flex') public flex = 'auto';
 
     public constructor(
         private readonly state: StateService,

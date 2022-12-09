@@ -45,7 +45,7 @@ export class DvNavigationXComponent implements OnInit {
 
     @Input() public dvPrevious: boolean;
     @Input() public dvNext: boolean;
-    @Output() public readonly dvSave = new EventEmitter<{ onResult: any }>();
+    @Output() public readonly dvSave = new EventEmitter<{onResult: (arg: any) => void }>();
     @Output() public readonly dvCancel: EventEmitter<any> = new EventEmitter<any>();
     @Input() public readonly dvNextDisabled: boolean;
     @Input() public dvSubStep: number;

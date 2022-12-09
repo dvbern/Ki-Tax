@@ -65,7 +65,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return TSFinanzielleSituationSubStepName.LUZERN_GS2;
     }
 
-    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: TSFinanzielleSituationContainer) => void): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
