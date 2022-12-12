@@ -51,7 +51,7 @@ describe('stammdatenView', () => {
     let downloadRS: DownloadRS;
     let dokumentRS: DokumenteRS;
     let mandantService: MandantService;
-    let demoFeatureRS: DemoFeatureRS
+    let demoFeatureRS: DemoFeatureRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -74,7 +74,7 @@ describe('stammdatenView', () => {
         downloadRS = $injector.get('DownloadRS');
         dokumentRS = $injector.get('DokumenteRS');
         mandantService = $injector.get('MandantService');
-        demoFeatureRS = $injector.get('DemoFeatureRS')
+        demoFeatureRS = $injector.get('DemoFeatureRS');
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,

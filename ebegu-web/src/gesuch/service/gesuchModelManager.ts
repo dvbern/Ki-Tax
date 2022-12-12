@@ -37,7 +37,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -128,7 +128,6 @@ export class GesuchModelManager {
 
     private subscription: Subscription;
 
-
     public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly gesuchstellerRS: GesuchstellerRS,
@@ -155,7 +154,7 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS,
+        private readonly einstellungenRS: EinstellungRS
 
     ) {
     }
@@ -1377,9 +1376,7 @@ export class GesuchModelManager {
     }
 
     public mutationIgnorieren(): IPromise<void> {
-        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => {
-            return this.reloadGesuch();
-        }).then(() => this.calculateGesuchStatusVerfuegt());
+        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch()).then(() => this.calculateGesuchStatusVerfuegt());
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {

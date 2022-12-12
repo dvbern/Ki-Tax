@@ -230,6 +230,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                     this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
                     return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   } )`;
                 }
+                break;
+            default:
+                break;
         }
         return `2 (${ this.$translate.instant(familienstatus)   } )`;
     }
