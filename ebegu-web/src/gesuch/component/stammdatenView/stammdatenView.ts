@@ -218,20 +218,20 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         const familienstatus: TSFamilienstatus = this.getGesuch().extractFamiliensituation().familienstatus;
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT:
-                return '2 ('+ this.$translate.instant(TSFamilienstatus.KONKUBINAT) + ' )'
+                return `2 (${ this.$translate.instant(TSFamilienstatus.KONKUBINAT)  } )`;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 const startKonkubinat: moment.Moment = this.getGesuch().extractFamiliensituation().startKonkubinat;
                 if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
-                    return '2 ('+ this.$translate.instant('ANDERER_ELTERNTEIL') + ' )'
+                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')  } )`;
                 }
                 return familienstatus;
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if(! this.getGesuch().extractFamiliensituation().geteilteObhut &&
                     this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
-                    return '2 ('+ this.$translate.instant('ANDERER_ELTERNTEIL')  + ' )'
+                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   } )`;
                 }
         }
-        return '2 ('+ this.$translate.instant(familienstatus)  + ' )';
+        return `2 (${ this.$translate.instant(familienstatus)   } )`;
     }
 
     public korrespondenzAdrClicked(): void {

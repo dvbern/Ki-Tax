@@ -17,6 +17,7 @@ import {waitForAsync} from '@angular/core/testing';
 import {IQService, IScope, ITimeoutService} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
@@ -50,6 +51,7 @@ describe('stammdatenView', () => {
     let downloadRS: DownloadRS;
     let dokumentRS: DokumenteRS;
     let mandantService: MandantService;
+    let demoFeatureRS: DemoFeatureRS
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -72,6 +74,7 @@ describe('stammdatenView', () => {
         downloadRS = $injector.get('DownloadRS');
         dokumentRS = $injector.get('DokumenteRS');
         mandantService = $injector.get('MandantService');
+        demoFeatureRS = $injector.get('DemoFeatureRS')
         stammdatenViewController = new StammdatenViewController($stateParams,
             undefined,
             gesuchModelManager,
@@ -91,7 +94,8 @@ describe('stammdatenView', () => {
             downloadRS,
             applicationPropertyRS,
             dokumentRS,
-            mandantService);
+            mandantService,
+            demoFeatureRS);
     })));
 
     describe('disableWohnadresseFor2GS', () => {

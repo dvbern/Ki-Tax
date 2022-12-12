@@ -1101,7 +1101,6 @@ export class GesuchModelManager {
         return this.gesuchstellerNumber;
     }
 
-
     public getBasisJahrPlusNumber(): number {
         return this.basisJahrPlusNumber;
     }
