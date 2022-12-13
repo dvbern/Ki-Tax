@@ -5978,8 +5978,8 @@ export class EbeguRestUtil {
     }
 
     public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
-        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ)) {
-            return typ as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value)) {
+            return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
     }
