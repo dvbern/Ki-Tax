@@ -26,12 +26,12 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
-import {EditGemeindeComponentTS} from './edit-gemeinde-ts.component';
+import {EditGemeindeTSComponent} from './edit-gemeinde-ts.component';
 
-describe('EditGemeindeComponentTS', () => {
+describe('EditGemeindeTSComponent', () => {
 
-    let component: EditGemeindeComponentTS;
-    let fixture: ComponentFixture<EditGemeindeComponentTS>;
+    let component: EditGemeindeTSComponent;
+    let fixture: ComponentFixture<EditGemeindeTSComponent>;
 
     const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForGemeinde']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
@@ -41,7 +41,7 @@ describe('EditGemeindeComponentTS', () => {
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations:
-                [EditGemeindeComponentTS],
+                [EditGemeindeTSComponent],
             imports: [MaterialModule, TranslateModule.forRoot(), UpgradeModule, BrowserAnimationsModule],
             schemas:
                 [CUSTOM_ELEMENTS_SCHEMA],
@@ -56,7 +56,7 @@ describe('EditGemeindeComponentTS', () => {
     }));
 
     beforeEach(waitForAsync(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponentTS);
+        fixture = TestBed.createComponent(EditGemeindeTSComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

@@ -696,7 +696,7 @@ export class TagesschulenAngabenComponent {
     }
 
     public manageSaveErrorCodes(errors: TSExceptionReport[]): void {
-        console.info(errors.map(error => error.customMessage).join('; '));
+        LOG.error(errors.map(error => error.customMessage).join('; '));
     }
 
     public allAnzahlFieldsFilledOut(): boolean {

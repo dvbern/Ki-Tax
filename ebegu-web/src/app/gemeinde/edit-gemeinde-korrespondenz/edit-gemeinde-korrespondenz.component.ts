@@ -29,7 +29,7 @@ import {DownloadRS} from '../../core/service/downloadRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class EditGemeindeComponentKorrespondenz  {
+export class EditGemeindeKorrespondenzComponent  {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() public editMode: boolean;
