@@ -111,6 +111,7 @@ import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
@@ -794,6 +795,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Objects.requireNonNull(mitteilung.getBetreuung());
 			return doApplymitteilung(mitteilung,  mitteilung.getBetreuung().extractGesuch());
 		} catch (EbeguException e) {
+			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
+				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
+				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
+				throw new EbeguExistingAntragException(
+					"applyBetreuungsmitteilung",
+					e.getErrorCodeEnum(),
+					e.getCause(),
+					e.getArgs().get(1).toString(),
+					e.getArgs().get(2).toString());
+			}
 			throw new EbeguRuntimeException(
 				"applyBetreuungsmitteilung",
 				"error while applying betreuungsmitteilungen",
@@ -804,20 +815,31 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	@Override
-	public Gesuch neueVeranlagunssmitteilungBearbeiten(@Nonnull NeueVeranlagungsMitteilung mitteilung) {
+	public Gesuch neueVeranlagungssmitteilungBearbeiten(@Nonnull NeueVeranlagungsMitteilung mitteilung) {
 		try {
 			Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getKibonAntragId());
 			Gesuch gesuch = gesuchService.findGesuch(mitteilung.getSteuerdatenResponse().getKibonAntragId())
 				.orElseThrow(() -> new EbeguException(
-					"neueVeranlagunssmitteilungBearbeiten",
+					"neueVeranlagungssmitteilungBearbeiten",
 					ERROR_ENTITY_NOT_FOUND,
 					null,
 					mitteilung.getSteuerdatenResponse().getKibonAntragId()));
 			return doApplymitteilung(mitteilung, gesuch);
 		} catch (EbeguException e) {
+			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
+				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
+				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
+				throw new EbeguExistingAntragException(
+					"neueVeranlagungssmitteilungBearbeiten",
+					e.getErrorCodeEnum(),
+					e.getCause(),
+					e.getArgs().get(1).toString(),
+					e.getArgs().get(2).toString());
+			}
+
 			throw new EbeguRuntimeException(
-				"applyBetreuungsmitteilung",
-				"error while applying betreuungsmitteilungen",
+				"neueVeranlagungssmitteilungBearbeiten",
+				"error while applying neueVeranlagungsmitteilungen",
 				e.getErrorCodeEnum(),
 				e);
 		}

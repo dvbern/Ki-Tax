@@ -706,7 +706,7 @@ public class MitteilungResource {
 			throw new EbeguEntityNotFoundException("neueVeranlagungsmitteilungBearbeiten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"NeueVeranlagungsmitteilungId invalid: " + neueVeranlagungsmitteilungId.getId());
 		}
-		final Gesuch mutiertesGesuch = this.mitteilungService.neueVeranlagunssmitteilungBearbeiten(mitteilung.get());
+		final Gesuch mutiertesGesuch = this.mitteilungService.neueVeranlagungssmitteilungBearbeiten(mitteilung.get());
 		return converter.toJaxId(mutiertesGesuch);
 	}
 }

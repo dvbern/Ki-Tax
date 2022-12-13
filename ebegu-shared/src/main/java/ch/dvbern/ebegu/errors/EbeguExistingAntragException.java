@@ -30,17 +30,17 @@ public class EbeguExistingAntragException extends EbeguRuntimeException {
 
 	private static final long serialVersionUID = 7990451269130155438L;
 
-	private final String gesuchId;
+	private final String dossierId;
 
 	public EbeguExistingAntragException(@Nullable String methodName, @Nonnull ErrorCodeEnum code,
-		@Nullable Throwable cause, @Nonnull String gesuchID, @Nonnull Serializable... args
+		@Nullable Throwable cause, @Nonnull String dossierId, @Nonnull Serializable... args
 	) {
 		super(methodName, code, cause, args);
 		super.setLogLevel(KibonLogLevel.INFO);
-		this.gesuchId = gesuchID;
+		this.dossierId = dossierId;
 	}
 
-	public String getGesuchId() {
-		return gesuchId;
+	public String getDossierId() {
+		return dossierId;
 	}
 }

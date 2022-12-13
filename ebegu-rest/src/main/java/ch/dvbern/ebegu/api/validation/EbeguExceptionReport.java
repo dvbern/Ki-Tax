@@ -62,26 +62,6 @@ public class EbeguExceptionReport {
 	@Nullable
 	private List<Serializable> argumentList = new ArrayList<>();
 
-	//	public EbeguExceptionReport(EbeguException exception) {
-	//		if (exception != null) {
-	//			this.exceptionName = exception.getClass().getSimpleName();
-	//			this.translatedMessage = exception.getMessage();
-	//			this.customMessage = exception.getCustomMessage();
-	//			this.methodName = exception.getMethodName();
-	//			this.argumentList.addAll(exception.getArgs());
-	//		}
-	//	}
-	//
-	//	public EbeguExceptionReport(EbeguRuntimeException exception) {
-	//		if (exception != null) {
-	//			this.exceptionName = exception.getClass().getSimpleName();
-	//			this.translatedMessage = exception.getMessage();
-	//			this.customMessage = exception.getCustomMessage();
-	//			this.methodName = exception.getMethodName();
-	//			this.argumentList.addAll(exception.getArgs());
-	//		}
-	//	}
-
 	public EbeguExceptionReport(
 		@Nullable String exceptionName,
 		@Nullable ErrorCodeEnum errorCodeEnum,
@@ -211,7 +191,7 @@ public class EbeguExceptionReport {
 
 		String objectId = null;
 		if (ex instanceof EbeguExistingAntragException) {
-			objectId = ((EbeguExistingAntragException) ex).getGesuchId();
+			objectId = ((EbeguExistingAntragException) ex).getDossierId();
 		}
 
 		Object[] args = ex.getArgs().toArray();
