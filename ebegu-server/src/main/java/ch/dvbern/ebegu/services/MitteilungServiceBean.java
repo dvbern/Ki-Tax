@@ -111,6 +111,7 @@ import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
@@ -794,17 +795,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			Objects.requireNonNull(mitteilung.getBetreuung());
 			return doApplymitteilung(mitteilung,  mitteilung.getBetreuung().extractGesuch());
+		} catch (EbeguExistingAntragException e) {
+			throw new EbeguExistingAntragRuntimeException(
+				"applyBetreuungsmitteilung",
+				e.getErrorCodeEnum(),
+				e.getCause(),
+				e.getDossierId(),
+				e.getGesuchperiodeId());
 		} catch (EbeguException e) {
-			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
-				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
-				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
-				throw new EbeguExistingAntragRuntimeException(
-					"applyBetreuungsmitteilung",
-					e.getErrorCodeEnum(),
-					e.getCause(),
-					e.getArgs().get(1).toString(),
-					e.getArgs().get(2).toString());
-			}
 			throw new EbeguRuntimeException(
 				"applyBetreuungsmitteilung",
 				"error while applying betreuungsmitteilungen",
@@ -825,18 +823,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					null,
 					mitteilung.getSteuerdatenResponse().getKibonAntragId()));
 			return doApplymitteilung(mitteilung, gesuch);
+		} catch (EbeguExistingAntragException e) {
+			throw new EbeguExistingAntragRuntimeException(
+				"neueVeranlagungssmitteilungBearbeiten",
+				e.getErrorCodeEnum(),
+				e.getCause(),
+				e.getDossierId(),
+				e.getGesuchperiodeId());
 		} catch (EbeguException e) {
-			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
-				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
-				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
-				throw new EbeguExistingAntragRuntimeException(
-					"neueVeranlagungssmitteilungBearbeiten",
-					e.getErrorCodeEnum(),
-					e.getCause(),
-					e.getArgs().get(1).toString(),
-					e.getArgs().get(2).toString());
-			}
-
 			throw new EbeguRuntimeException(
 				"neueVeranlagungssmitteilungBearbeiten",
 				"error while applying neueVeranlagungsmitteilungen",
@@ -849,10 +843,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
-			throw new EbeguException(
+			throw new EbeguExistingAntragException(
 				"doApplymitteilung",
 				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
-				null,
 				gesuch.getDossier().getId(),
 				gesuch.getGesuchsperiode().getId());
 		}
@@ -865,12 +858,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
-				throw new EbeguException(
+				throw new EbeguExistingAntragException(
 					"doApplymitteilung",
 					ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-					exception,
 					gesuch.getDossier().getId(),
-					gesuch.getGesuchsperiode().getId());
+					gesuch.getGesuchsperiode().getId(),
+					exception);
 			}
 			throw exception;
 		}
