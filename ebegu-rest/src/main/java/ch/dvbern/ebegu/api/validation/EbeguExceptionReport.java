@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.resteasy.api.validation.Validation;
@@ -190,8 +190,8 @@ public class EbeguExceptionReport {
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
 
 		String objectId = null;
-		if (ex instanceof EbeguExistingAntragException) {
-			objectId = ((EbeguExistingAntragException) ex).getDossierId();
+		if (ex instanceof EbeguExistingAntragRuntimeException) {
+			objectId = ((EbeguExistingAntragRuntimeException) ex).getDossierId();
 		}
 
 		Object[] args = ex.getArgs().toArray();

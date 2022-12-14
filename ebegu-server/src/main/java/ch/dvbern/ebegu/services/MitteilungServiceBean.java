@@ -111,7 +111,7 @@ import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
@@ -798,7 +798,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
 				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
 				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
-				throw new EbeguExistingAntragException(
+				throw new EbeguExistingAntragRuntimeException(
 					"applyBetreuungsmitteilung",
 					e.getErrorCodeEnum(),
 					e.getCause(),
@@ -829,7 +829,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (e.getErrorCodeEnum() != null && (e.getErrorCodeEnum()
 				.equals(ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG) ||
 				e.getErrorCodeEnum().equals(ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION))) {
-				throw new EbeguExistingAntragException(
+				throw new EbeguExistingAntragRuntimeException(
 					"neueVeranlagungssmitteilungBearbeiten",
 					e.getErrorCodeEnum(),
 					e.getCause(),
