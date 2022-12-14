@@ -799,7 +799,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			throw new EbeguExistingAntragRuntimeException(
 				"applyBetreuungsmitteilung",
 				e.getErrorCodeEnum(),
-				e.getCause(),
+				e,
 				e.getDossierId(),
 				e.getGesuchperiodeId());
 		} catch (EbeguException e) {
@@ -827,7 +827,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			throw new EbeguExistingAntragRuntimeException(
 				"neueVeranlagungssmitteilungBearbeiten",
 				e.getErrorCodeEnum(),
-				e.getCause(),
+				e,
 				e.getDossierId(),
 				e.getGesuchperiodeId());
 		} catch (EbeguException e) {
