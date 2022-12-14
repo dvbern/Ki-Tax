@@ -226,9 +226,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setMutationIgnorieren(): void {
-        this.gesuchModelManager.mutationIgnorieren().then(() => {
-            this.refreshKinderListe();
-        });
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
+            deleteText: '',
+            parentController: undefined,
+            elementID: undefined
+        })
+            .then(() => this.gesuchModelManager.mutationIgnorieren())
+            .then(() => {
+                this.refreshKinderListe();
+            });
     }
 
     /**

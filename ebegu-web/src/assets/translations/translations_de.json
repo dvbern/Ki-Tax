@@ -1182,6 +1182,7 @@
     "ABGESCHLOSSEN": "Abgeschlossen",
     "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Möchten Sie den Antrag wirklich als \"geprüft\" setzen?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "Möchten Sie den Verfügungsprozess wirklich starten?",
+    "CONFIRM_GESUCH_STATUS_IGNORIEREN": "Möchten Sie die Mutation wirklich ignorieren?",
     "CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT": "Möchten Sie den Antrag wirklich ohne Angebot beenden?",
     "BESCHREIBUNG_GESUCH_STATUS_WECHSELN": "Diese Änderung können Sie nicht mehr rückgängig machen",
     "BESCHREIBUNG_GESUCH_KEIN_ANGEBOT": "Die Korrespondenz mit den Antragstellenden muss ausserhalb kiBons erfolgen! Diese Änderung können Sie nicht mehr rückgängig machen",

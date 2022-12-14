@@ -1111,6 +1111,7 @@
     "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Voulez-vous vraiment terminer votre demande ? Si vous cliquez sur \"oui\", le statut de la demande passe à \"Tarif calculé\" et ne peut plus être modifié.",
     "ABGESCHLOSSEN": "Terminé",
     "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Voulez-vous vraiment marquer la demande comme \"vérifiée\" ?",
+    "CONFIRM_GESUCH_STATUS_IGNORIEREN": "Möchten Sie die Mutation wirklich ignorieren?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "Voulez-vous vraiment démarrer le processus de décision ?",
     "CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT": "Voulez-vous vraiment clore la demande sans offre ?",
     "BESCHREIBUNG_GESUCH_STATUS_WECHSELN": "Vous ne pourrez plus annuler cette modification.",
