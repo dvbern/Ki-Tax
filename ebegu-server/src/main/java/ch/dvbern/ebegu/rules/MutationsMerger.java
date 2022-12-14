@@ -145,7 +145,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			return null;
 		}
 
-		Verfuegung vorgaengerVerfugegungAusbezahlt =
+		Verfuegung vorgaengerVerfuegungAusbezahlt =
 				allVorgaengerVerfugegungAusbezahlt.values().stream().reduce(null, (prev, cur) -> {
 					if (prev == null) {
 						return cur;
@@ -155,7 +155,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 					return cur.getTimestampMutiert().isBefore(prev.getTimestampMutiert()) ? cur : prev;
 				});
 
-		return findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfugegungAusbezahlt);
+		return findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegungAusbezahlt);
 	}
 
 	private void handleMutation(

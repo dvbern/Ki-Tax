@@ -106,7 +106,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	bgPensumStdTitle(new SimpleMergeField<>("bgPensumStdTitle", STRING_CONVERTER)),
 	bgPensumZeiteinheitTitle(new SimpleMergeField<>("bgPensumZeiteinheitTitle", STRING_CONVERTER)),
 	bgMonatspensumTitle(new SimpleMergeField<>("bgMonatspensumTitle", STRING_CONVERTER)),
-	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
 	elternbeitragTitle(new SimpleMergeField<>("elternbeitragTitle", STRING_CONVERTER)),
 	gutscheinKantonTitel(new SimpleMergeField<>("gutscheinKantonTitel", STRING_CONVERTER)),
 	gutscheinGemeindeTitel(new SimpleMergeField<>("gutscheinGemeindeTitel", STRING_CONVERTER)),
