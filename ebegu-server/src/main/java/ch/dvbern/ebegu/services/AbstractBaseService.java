@@ -109,7 +109,28 @@ public abstract class AbstractBaseService {
 		if (vorgaengerPlatzOptional.isPresent()) {
 			AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
 			vorgaengerPlatz.setGueltig(false);
+			// falls der Vorgänger im Status SCHULAMT_MUTATION_IGNORIERT ist
+			// müssen wir weiter zurück, weil die letzte gültige Betreuung dann möglicherweise
+			// älter als die Vormutation ist
+			updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 		}
+	}
+
+	/**
+	Setzt rekursiv die Vorgängerplätze von plätzen im Status SCHULAMT_MUTATION_IGNORIERT
+	zurück
+	 */
+	private void updateVorgaengerPlatzOfSchulamtIgnoriert(@Nonnull AbstractPlatz platz) {
+		if (platz.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+			return;
+		}
+		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
+		if (vorgaengerPlatzOptional.isEmpty()) {
+			return;
+		}
+		AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
+		vorgaengerPlatz.setGueltig(false);
+		updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 	}
 
 	/**
