@@ -38,6 +38,7 @@ public interface ReceivedEventService {
 	/**
 	 * Persists a sucessfully processed event
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	void processingSuccess(@Nonnull ReceivedEvent receivedEvent);
 
 	/**

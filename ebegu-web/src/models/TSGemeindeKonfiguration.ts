@@ -18,6 +18,7 @@
 import * as moment from 'moment';
 import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from './enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import {TSEinstellung} from './TSEinstellung';
@@ -58,10 +59,10 @@ export class TSGemeindeKonfiguration {
     public konfigHoheEinkommensklassenAktiviert: boolean; // only on client
     public konfigHoheEinkommensklassenBetragKita: number; // only on client
     public konfigHoheEinkommensklassenBetragTfo: number; // only on client
-    public konfigHoheEinkommensklassenBetragKitaAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenBetragTfoAbPrimarschule: number; // only on client
     public konfigHoheEinkommensklassenMassgebendenEinkommen: number; // only on client
     public konfigKeineGutscheineFuerSozialhilfeEmpfaenger: boolean;
+    public anspruchUnabhaengingVonBeschaeftigungsPensum: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
     public erwerbspensumMinimumOverriden: boolean;
     public erwerbspensumMiminumVorschule: number;
     public erwerbspensumMiminumVorschuleMax: number;
@@ -77,7 +78,6 @@ export class TSGemeindeKonfiguration {
     public ferieninselStammdaten: TSFerieninselStammdaten[];
     public gemeindespezifischeBGKonfigurationen: TSEinstellung[] = [];
     public isTextForFKJV: boolean;
-    public isAnspruchUnabhaengingVonBeschaeftigungsPensum: boolean;
 
     /**
      * Wir muessen TS Anmeldungen nehmen ab das TagesschuleAktivierungsdatum
@@ -266,20 +266,21 @@ export class TSGemeindeKonfiguration {
                     this.konfigHoheEinkommensklassenBetragTfo = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE: {
-                    this.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = Number(property.value);
-                    break;
-                }
                 case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE: {
                     this.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = Number(property.value);
                     break;
                 }
-                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN: {
+                case TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG: {
                     this.konfigHoheEinkommensklassenMassgebendenEinkommen = Number(property.value);
                     break;
                 }
                 case TSEinstellungKey.GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER: {
                     this.konfigKeineGutscheineFuerSozialhilfeEmpfaenger = (property.value === 'true');
+                    break;
+                }
+                case TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM: {
+                    this.anspruchUnabhaengingVonBeschaeftigungsPensum =
+                        (TSAnspruchBeschaeftigungAbhaengigkeitTyp as any)[property.value];
                     break;
                 }
                 default: {
@@ -292,5 +293,10 @@ export class TSGemeindeKonfiguration {
         this.erwerbspensumMinimumOverriden =
             (this.erwerbspensumMiminumVorschule !== this.erwerbspensumMiminumVorschuleMax) ||
             (this.erwerbspensumMiminumSchulkinder !== this.erwerbspensumMiminumSchulkinderMax);
+    }
+
+    public isAnspruchUnabhaengingVonBeschaeftigungsPensum(): boolean {
+        return this.anspruchUnabhaengingVonBeschaeftigungsPensum ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 }

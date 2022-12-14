@@ -32,6 +32,7 @@ import {Moment} from 'moment';
 import {Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {getGemeindspezifischeBGConfigKeys, TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
@@ -43,6 +44,7 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -84,6 +86,7 @@ export class EditGemeindeComponentBG implements OnInit {
     public dauerBabyTarife: TSEinstellung[];
     public institutionenDurchGemeindenEinladen: boolean;
     public institutionen: TSInstitution[];
+    public anspruchBeschaeftigungAbhaengigkeitTypValues: Array<TSAnspruchBeschaeftigungAbhaengigkeitTyp>;
     private navigationDest: StateDeclaration;
     private gesuchsperiodeIdsGemeindespezifischeKonfigForBGMap: Map<string, boolean>;
 
@@ -112,6 +115,7 @@ export class EditGemeindeComponentBG implements OnInit {
 
         this.navigationDest = this.$transition$.to();
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
+        this.anspruchBeschaeftigungAbhaengigkeitTypValues = Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp);
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
         this.initInstitutionenDurchGemeindenEinladen();
@@ -200,6 +204,11 @@ export class EditGemeindeComponentBG implements OnInit {
     public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
         const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
         return bgBisStr;
+    }
+
+    public getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(gk: TSGemeindeKonfiguration): string {
+        return this.translate.instant(gk.anspruchUnabhaengingVonBeschaeftigungsPensum.toString());
+
     }
 
     public changeKonfigBeguBisUndMitSchulstufe(gk: TSGemeindeKonfiguration): void {
@@ -477,11 +486,6 @@ export class EditGemeindeComponentBG implements OnInit {
                     const einstellungFKJVTexte = einstellungen
                         .find(e => e.key === TSEinstellungKey.FKJV_TEXTE);
                     config.isTextForFKJV = einstellungFKJVTexte.getValueAsBoolean();
-
-                    const einstellungAnspruchUnabhaengigBeschaeftigung = einstellungen
-                        .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
-                    config.isAnspruchUnabhaengingVonBeschaeftigungsPensum =
-                        einstellungAnspruchUnabhaengigBeschaeftigung.getValueAsBoolean();
                 }, error => LOG.error(error));
         });
     }
@@ -519,7 +523,6 @@ export class EditGemeindeComponentBG implements OnInit {
     private resetKonfigHoheEinkommensklassen(gk: TSGemeindeKonfiguration): void {
         gk.konfigHoheEinkommensklassenBetragKita = 0;
         gk.konfigHoheEinkommensklassenBetragTfo = 0;
-        gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule = 0;
         gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule = 0;
         gk.konfigHoheEinkommensklassenMassgebendenEinkommen = 0;
 
@@ -532,15 +535,11 @@ export class EditGemeindeComponentBG implements OnInit {
             gk.konfigHoheEinkommensklassenBetragTfo, gk
         );
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
-            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule, gk
-        );
-        this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE,
             gk.konfigHoheEinkommensklassenBetragTfoAbPrimarschule, gk
         );
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG,
             gk.konfigHoheEinkommensklassenMassgebendenEinkommen, gk
         );
     }
@@ -549,14 +548,6 @@ export class EditGemeindeComponentBG implements OnInit {
         this.changeKonfig(
             TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA,
             gk.konfigHoheEinkommensklassenBetragKita,
-            gk
-        );
-    }
-
-    public changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(gk: TSGemeindeKonfiguration): void {
-        this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE,
-            gk.konfigHoheEinkommensklassenBetragKitaAbPrimarschule,
             gk
         );
     }
@@ -579,8 +570,16 @@ export class EditGemeindeComponentBG implements OnInit {
 
     public changeKonfigHoheEinkommensklassenMassgebendenEinkommen(gk: TSGemeindeKonfiguration): void {
         this.changeKonfig(
-            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN,
+            TSEinstellungKey.GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG,
             gk.konfigHoheEinkommensklassenMassgebendenEinkommen,
+            gk
+        );
+    }
+
+    public changeKonfigAbhaengigkeitAnspruchBeschaeftigung(gk: TSGemeindeKonfiguration): void {
+        this.changeKonfig(
+            TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+            gk.anspruchUnabhaengingVonBeschaeftigungsPensum,
             gk
         );
     }

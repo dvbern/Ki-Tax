@@ -21,11 +21,12 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable, Subject} from 'rxjs';
-import {map, mergeMap, takeUntil} from 'rxjs/operators';
+import {filter, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../../models/TSLastenausgleich';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -126,6 +127,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
+                filter(q => EbeguUtil.isNotNullOrUndefined(q)), // break if dialog is canceled
                 mergeMap(() =>
                     this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz))
             )

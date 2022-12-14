@@ -25,9 +25,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -91,11 +91,11 @@ public class DokumentenverzeichnisEvaluator {
 	private boolean isErwerbpensumDokumenteRequired(Gesuch gesuch) {
 		var anspruchUnabhaengig = einstellungService
 			.findEinstellung(
-				EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+				EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
 				gesuch.extractGemeinde(),
 				gesuch.getGesuchsperiode()
-			).getValueAsBoolean();
-		return !anspruchUnabhaengig;
+			);
+		return !AnspruchBeschaeftigungAbhaengigkeitTyp.getEnumValue(anspruchUnabhaengig).isAnspruchUnabhaengig();
 	}
 
 	public void addSonstige(Set<DokumentGrund> dokumentGrunds) {

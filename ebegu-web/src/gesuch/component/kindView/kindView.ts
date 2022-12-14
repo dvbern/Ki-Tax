@@ -23,6 +23,7 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {
     getTSEinschulungTypValues,
     getTSEinschulungTypValuesLuzern,
@@ -575,9 +576,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private loadEinstellungAnspruchUnabhaengig(einstellungen: TSEinstellung[]): void {
-        const einstellung = einstellungen
-            .find(e => e.key === TSEinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM);
-        this.anspruchUnabhaengingVomBeschaeftigungspensum = einstellung.getValueAsBoolean();
+        const einstellungAbhaengigkeitAnspruchBeschaeftigung = this.ebeguRestUtil
+            .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
+                .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
+
+        this.anspruchUnabhaengingVomBeschaeftigungspensum =
+            einstellungAbhaengigkeitAnspruchBeschaeftigung ===
+            TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 
     private loadEinstellungFachstellenTyp(einstellungen: TSEinstellung[]): void {

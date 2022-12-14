@@ -96,6 +96,10 @@ export const LOCALLOGIN_DATA = {
         default_gemeinde: {
             id: '47c4b3a8-5379-11ec-98e8-f4390979fa3e',
             name: 'Testgemeinde Solothurn'
+        },
+        second_gemeinde: {
+            id: '47c4b3a8-5371-11ec-98e8-f4390979fa3e',
+            name: 'Testgemeinde Grenchen'
         }
     },
     AR: {
@@ -126,7 +130,7 @@ export const LOCALLOGIN_DATA = {
     }
 };
 
-export interface LocalloginDatum {
+export interface LocalLoginDaten {
     mandant: {
         id: string;
         name: string;

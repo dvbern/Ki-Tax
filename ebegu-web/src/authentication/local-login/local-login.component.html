@@ -40,7 +40,7 @@
             </tr>
             <!-- Mandant Kanton Bern -->
             <tr>
-                <td>Administrator/in {{localLoginDatum?.mandant.name}}</td>
+                <td>Administrator/in {{localLoginDaten?.mandant.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -49,7 +49,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in {{localLoginDatum?.mandant.name}}</td>
+                <td>Sachbearbeiter/in {{localLoginDaten?.mandant.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -77,7 +77,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Administrator/in Tagesschule: {{localLoginDatum?.tagesschule.name}}</td>
+                <td>Administrator/in Tagesschule: {{localLoginDaten?.tagesschule.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -86,7 +86,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in Tagesschule: {{localLoginDatum?.tagesschule.name}}</td>
+                <td>Sachbearbeiter/in Tagesschule: {{localLoginDaten?.tagesschule.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -95,7 +95,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Administrator/in Tägerschaft: {{localLoginDatum?.traegerschaft.name}}</td>
+                <td>Administrator/in Tägerschaft: {{localLoginDaten?.traegerschaft.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -104,7 +104,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter/in Tägerschaft: {{localLoginDatum?.traegerschaft.name}}</td>
+                <td>Sachbearbeiter/in Tägerschaft: {{localLoginDaten?.traegerschaft.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -114,7 +114,7 @@
             </tr>
             <!-- Sozialdienst -->
             <tr>
-                <td>Administrator Unterstützungsdienst: {{localLoginDatum?.sozialdienst.name}}</td>
+                <td>Administrator Unterstützungsdienst: {{localLoginDaten?.sozialdienst.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -123,7 +123,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Sachbearbeiter Unterstützungsdienst: {{localLoginDatum?.sozialdienst.name}}</td>
+                <td>Sachbearbeiter Unterstützungsdienst: {{localLoginDaten?.sozialdienst.name}}</td>
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
@@ -171,9 +171,9 @@
             </tr>
 
             <th><h2 class="local-login-h2">Gemeinde:</h2></th>
-            <th><h2 class="local-login-h2">{{localLoginDatum?.default_gemeinde.name}}</h2></th>
-            <th><h2 class="local-login-h2" *ngIf="hasSecondGemeinde">{{localLoginDatum?.second_gemeinde?.name}}</h2></th>
-            <th><h2 class="local-login-h2" *ngIf="hasSecondGemeinde">{{localLoginDatum?.default_gemeinde.name}} & {{localLoginDatum?.second_gemeinde.name}}</h2></th>
+            <th><h2 class="local-login-h2">{{localLoginDaten?.default_gemeinde.name}}</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasSecondGemeinde">{{localLoginDaten?.second_gemeinde?.name}}</h2></th>
+            <th><h2 class="local-login-h2" *ngIf="hasSecondGemeinde">{{localLoginDaten?.default_gemeinde.name}} & {{localLoginDaten?.second_gemeinde.name}}</h2></th>
 
             <!-- Admin BG -->
             <tr>

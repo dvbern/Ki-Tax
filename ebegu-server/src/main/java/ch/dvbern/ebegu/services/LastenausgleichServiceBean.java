@@ -354,6 +354,13 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		persistence.remove(lastenausgleichToRemove);
 	}
 
+	@Override
+	@Nonnull
+	public Optional<Lastenausgleich> findLastenausgleich(@Nonnull Integer jahr) {
+		return criteriaQueryHelper.getEntityByUniqueAttribute(Lastenausgleich.class, jahr,
+				Lastenausgleich_.jahr);
+	}
+
 	private Collection<LastenausgleichDetail> findLastenausgleichDetailForKorrekturen(
 		int jahr,
 		@Nonnull Gemeinde gemeinde) {

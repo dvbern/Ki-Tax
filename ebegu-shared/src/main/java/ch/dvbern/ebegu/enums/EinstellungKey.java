@@ -97,14 +97,13 @@ public enum EinstellungKey {
 
 	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen KITA
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
-	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
 	// Die Gemeinde Zusatzbetrag für hohere Einkommensklassen TFO
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
-	// Die Gemeinde gewährt einen Zusatzbetrag für hohere Einkommensklassen bis zu einer Massgebenden Einkommen von
-	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MASSGEBENDEN_EINKOMMEN(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+	// Der Betrag welcher für die Berechnung des Gutscheines pro Zeiteinheit als maximal maasgebendes Einkommen verwendet werden soll
+	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
 	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
 	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
@@ -226,7 +225,7 @@ public enum EinstellungKey {
 
 	// "FKJV: Anspruchsberechnung monatsweise"
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
-	FKJV_ANSPRUCH_MONATSWEISE(MandantIdentifier.getAll()),
+	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN)),
 
 	// "FKJV: Textanpassungen"
 	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
@@ -259,9 +258,9 @@ public enum EinstellungKey {
 	// siehe KIBON-2133
 	GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN(MandantIdentifier.getAll()),
 
-	// (Solothurn)
-	// Siehe KIBON-2134
-	ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll()),
+	// Es gibt verschiedene Arten, in welcher Abhängigkeit das Beschaeftigungspensum zum Anspruch steht
+	// siehe KIBON-2647
+	ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
 	// Kinderabzug Typ (Solothurn und FKJV)
 	// Siehe KIBON-2182

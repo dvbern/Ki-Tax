@@ -402,6 +402,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                             <div class="row">
                                 <!-- Alternative Email -->
                                 <div class="col-sm-12">
@@ -436,7 +437,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                         <!-- Alternative Beschwerde-Adresse -->
                         <div class="mt-5">
                             <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
@@ -1196,26 +1197,6 @@
                                                                        [errorObject]="hohe_einkommensklassen_betrag_kita.errors">
                                                     </dv-error-messages>
                                                 </div>
-                                                <div class="form-group"
-                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
-                                                    <label for="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="required"
-                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE</label>
-                                                    <input id="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           name="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="form-control"
-                                                           type="number"
-                                                           #hohe_einkommensklassen_betrag_kita_ab_primarschule='ngModel'
-                                                           required
-                                                           customMinMax
-                                                           [minValue]="0"
-                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKitaAbPrimarschule"
-                                                           (change)="changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(konfigurationsListe[i])">
-
-                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita_ab_primarschule.errors">
-                                                    </dv-error-messages>
-                                                </div>
                                                 <!-- Höhere Einkommensklassen Betrag TFO pro Stunde-->
                                                 <div class="form-group"
                                                      *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
@@ -1280,6 +1261,26 @@
                                                     </dv-error-messages>
                                                 </div>
 
+                                                <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
+                                                <div class="form-group"
+                                                     *ngIf="isSuperAdmin()">
+                                                    <label for="anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}"
+                                                           class="required"
+                                                           translate>ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM
+                                                        <dv-tooltip id="anspruch_unabhaenging_von_beschaeftigungs_pensum-tooltip"
+                                                                    [text]="'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM_HELP'|translate"></dv-tooltip>
+                                                    </label>
+                                                    <mat-select
+                                                        [(ngModel)]="konfigurationsListe[i].anspruchUnabhaengingVonBeschaeftigungsPensum"
+                                                        (selectionChange)="changeKonfigAbhaengigkeitAnspruchBeschaeftigung(konfigurationsListe[i])"
+                                                        id="anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}"
+                                                        name=anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}
+                                                        class="form-control">
+                                                        <mat-option *ngFor="let value of anspruchBeschaeftigungAbhaengigkeitTypValues"
+                                                                    [value]="value">{{value | translate}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row"
@@ -1612,6 +1613,9 @@
                                                         ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY
                                                     </p>
                                                 </div>
+                                                <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
+                                                <label *ngIf="isSuperAdmin()">{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
+                                                    konfigurationsListe[i])}}</strong></label>
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div
