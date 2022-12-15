@@ -19,8 +19,7 @@ import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
-import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
@@ -72,6 +71,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {TSPensumAnzeigeTyp} from "../../../models/enums/TSPensumAnzeigeTyp";
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -327,9 +327,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
                 });
-            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
+            response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
                 .forEach(einstellung => {
-                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
+                    this.loadPensumAnzeigeTyp(einstellung);
                 });
         }, error => LOG.error(error));
 
@@ -348,6 +348,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         }, error => LOG.error(error));
+    }
+
+    private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
+        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
+            .parsePensumAnzeigeTyp(einstellung);
+
+        this.isSwitchBetreuungspensumEnabled =
+            einstellungPensumAnzeigeTyp ===
+            TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     private loadInfomaZahlungenActive(): void {
