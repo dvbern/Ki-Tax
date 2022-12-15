@@ -28,7 +28,7 @@ import {EinkommensverschlechterungSolothurnViewComponent} from './component/eink
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
-import {DialogInitZPVNummerVerknuepfen} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {DialogInitZPVNummerVerknuepfenComponent} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
@@ -92,7 +92,7 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         FinanzielleSituationAufteilungComponent,
         AufteilungComponent,
         SteuerabfrageResponseHintsComponent,
-        DialogInitZPVNummerVerknuepfen,
+        DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
         FamiliensituationViewXComponent
     ],

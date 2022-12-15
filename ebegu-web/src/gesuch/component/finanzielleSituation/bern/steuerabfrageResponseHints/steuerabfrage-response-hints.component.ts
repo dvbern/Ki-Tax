@@ -42,7 +42,7 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {
-    DialogInitZPVNummerVerknuepfen
+    DialogInitZPVNummerVerknuepfenComponent
 } from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
@@ -186,7 +186,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
             },
             panelClass: 'steuerdaten-email-dialog'
         };
-        this.dialog.open(DialogInitZPVNummerVerknuepfen, dialogOptions);
+        this.dialog.open(DialogInitZPVNummerVerknuepfenComponent, dialogOptions);
     }
 
     public isGemeindeOrSuperadmin() {

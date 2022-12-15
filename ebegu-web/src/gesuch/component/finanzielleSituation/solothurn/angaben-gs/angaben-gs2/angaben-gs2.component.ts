@@ -41,7 +41,7 @@ export class AngabenGs2Component extends AbstractFinSitsolothurnView {
     public notify(): void {
     }
 
-    public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

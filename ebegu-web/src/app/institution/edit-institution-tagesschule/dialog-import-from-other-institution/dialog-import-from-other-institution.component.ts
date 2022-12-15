@@ -28,7 +28,7 @@ import {InstitutionStammdatenRS} from '../../../core/service/institutionStammdat
     templateUrl: './dialog-import-from-other-institution.template.html',
     styleUrls: ['./dialog-import-from-other-institution.component.less']
 })
-export class DialogImportFromOtherInstitution implements OnInit {
+export class DialogImportFromOtherInstitutionComponent implements OnInit {
 
     public selectedInstitutionStammdaten: TSInstitutionStammdaten;
     public institutionStammdatenList: TSInstitutionStammdaten[];
@@ -36,7 +36,7 @@ export class DialogImportFromOtherInstitution implements OnInit {
     public einstellungenTagesschule: TSEinstellungenTagesschule[];
 
     public constructor(
-        private readonly dialogRef: MatDialogRef<DialogImportFromOtherInstitution>,
+        private readonly dialogRef: MatDialogRef<DialogImportFromOtherInstitutionComponent>,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
         @Inject(MAT_DIALOG_DATA) data: any
     ) {

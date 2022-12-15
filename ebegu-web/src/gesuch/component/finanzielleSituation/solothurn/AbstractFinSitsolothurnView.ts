@@ -119,7 +119,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract getSubStepName(): string;
 
-    public abstract prepareSave(onResult: (arg: TSFinanzielleSituationContainer) => void): IPromise<TSFinanzielleSituationContainer>;
+    public abstract prepareSave(onResult: (arg: any) => void): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.getAntragstellerNummer() === 0) {
@@ -145,7 +145,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public abstract notify(): void;
 
-    protected save(onResult: Function): Promise<TSFinanzielleSituationContainer> {
+    protected save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {

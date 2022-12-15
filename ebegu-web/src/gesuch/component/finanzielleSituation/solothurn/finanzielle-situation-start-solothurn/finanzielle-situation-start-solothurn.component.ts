@@ -59,7 +59,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     public notify(): void {
     }
 
-    public prepareSave(onResult: (arg: TSFinanzielleSituationContainer) => void): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -67,7 +67,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
         return this.save(onResult);
     }
 
-    protected save(onResult: (arg: TSFinanzielleSituationContainer) => void): Promise<TSFinanzielleSituationContainer> {
+    protected save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then(async () => {

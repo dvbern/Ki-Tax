@@ -32,7 +32,7 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 @Directive({
     selector: 'dv-loading-button'
 })
-export class MockDvLoadingButton {
+export class MockDvLoadingButtonDirective {
 
     @Input() public type: string;
     @Input() public delay: string;
@@ -103,8 +103,8 @@ export const SHARED_MODULE_OVERRIDES = {
         providers: [MandantService]
     },
     add: {
-        declarations: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
-        exports: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
+        declarations: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
+        exports: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
         providers: [
             WindowRef,
             {
