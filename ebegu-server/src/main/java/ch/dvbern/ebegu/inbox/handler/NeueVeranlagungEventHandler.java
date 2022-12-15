@@ -146,7 +146,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		BigDecimal unterschiedEinkommen = MathUtil.EXACT.subtract(
 			finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
 			finSitOriginalResult.getMassgebendesEinkVorAbzFamGr());
-		if (unterschiedEinkommen.compareTo(minUnterschiedEinkommen) >= 0) {
+		if (unterschiedEinkommen.compareTo(minUnterschiedEinkommen) <= 0) {
 			String unterschiedEinkommenString = unterschiedEinkommen.stripTrailingZeros().toPlainString();
 			return Processing.failure("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
 				" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +

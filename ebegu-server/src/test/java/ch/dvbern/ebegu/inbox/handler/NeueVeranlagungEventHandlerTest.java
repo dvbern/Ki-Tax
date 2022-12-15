@@ -195,7 +195,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void createsNeueVeranlagungMitteilung() {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
-		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
 		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
 		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
