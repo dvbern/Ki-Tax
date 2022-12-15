@@ -82,27 +82,27 @@
           "error",
           {
             "ignoreParameters": true,
-            "ignoreProperties": true
+              "ignoreProperties": true
           }
         ],
-        "@typescript-eslint/no-this-alias": "error",
-        "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
-        "@typescript-eslint/no-unnecessary-qualifier": "error",
-        "@typescript-eslint/no-unnecessary-type-arguments": "error",
-        "@typescript-eslint/prefer-readonly": "error",
-        "@typescript-eslint/restrict-plus-operands": "error",
-        "@typescript-eslint/triple-slash-reference": "error",
-        "@typescript-eslint/unbound-method": "warn",
-        "arrow-parens": [
-          "error",
-          "as-needed"
-        ],
-        "brace-style": [
-          "error",
-          "1tbs"
-        ],
-        "comma-dangle": "error",
-        "default-case": "error",
+          "@typescript-eslint/no-this-alias": "error",
+          "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+          "@typescript-eslint/no-unnecessary-qualifier": "error",
+          "@typescript-eslint/no-unnecessary-type-arguments": "error",
+          "@typescript-eslint/prefer-readonly": "error",
+          "@typescript-eslint/restrict-plus-operands": "error",
+          "@typescript-eslint/triple-slash-reference": "error",
+          "@typescript-eslint/unbound-method": "warn",
+          "arrow-parens": [
+              "error",
+              "as-needed"
+          ],
+          "brace-style": [
+              "error",
+              "1tbs"
+          ],
+          "comma-dangle": "error",
+          "default-case": "error",
         "eqeqeq": [
           "error",
           "always"
@@ -115,27 +115,7 @@
           }
         ],
         "import/no-internal-modules": [
-          "warn",
-          {
-            "allow": [
-              "@uirouter/core/*",
-              "@angular/core/testing/*",
-              "@angular/cdk/*",
-              "@angular/common/http/*",
-              "@angular/common/locales/*",
-              "@angular/platform-browser/*",
-              "@angular/platform-browser-dynamic/testing/*",
-              "@angular/router/testing/*",
-              "@angular/upgrade/static/*",
-              "@angular/material/*",
-              "angular-i18n/angular-locale_de-ch/*",
-              "core-js/*",
-              "raven-js/*",
-              "rxjs/operators/*",
-              "webpack/lib/*",
-              "zone.js/*"
-            ]
-          }
+            "off"
         ],
         "import/no-unassigned-import": "warn",
         "max-len": [
@@ -150,30 +130,7 @@
         "no-invalid-this": "error",
         "no-irregular-whitespace": "error",
         "no-magic-numbers": [
-          "warn",
-          {
-            "ignore": [
-              -1,
-              0,
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-              7,
-              8,
-              9,
-              10,
-              11,
-              12,
-              31,
-              100,
-              1000,
-              1024,
-              4096
-            ]
-          }
+            "off"
         ],
         "no-multiple-empty-lines": [
           "error",
@@ -213,8 +170,8 @@
         "plugin:@angular-eslint/template/recommended"
       ],
       "rules": {
-        "@angular-eslint/template/eqeqeq": "warn",
-        "@angular-eslint/template/no-negated-async": "warn"
+        "@angular-eslint/template/eqeqeq": "error",
+        "@angular-eslint/template/no-negated-async": "error"
       }
     }
   ]

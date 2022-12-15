@@ -346,7 +346,7 @@
                          [selectedUser]="initialBgGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheBG($event.user)"></div>
+                         (userChanged)="filterVerantwortlicheBG($event.user)"></div>
                 </mat-header-cell>
             </ng-container>
 
@@ -357,7 +357,7 @@
                          [selectedUser]="initialGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
+                         (userChanged)="filterVerantwortlicheGemeinde($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
             </ng-container>
@@ -370,7 +370,7 @@
                      [initialAll]="true"
                      [userList]="userListGemeindeantraege"
                      [useDefaultUserLists]="false"
-                     (onUserChanged)="filterVerantwortlicherGemeindeantraege($event.user)"></div>
+                     (userChanged)="filterVerantwortlicherGemeindeantraege($event.user)"></div>
             </mat-header-cell>
             </ng-container>
 
