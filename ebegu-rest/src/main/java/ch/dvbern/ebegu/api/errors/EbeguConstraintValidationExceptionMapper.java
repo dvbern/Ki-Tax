@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.api.validation.EbeguExceptionReport;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.StaleObjectStateException;
@@ -85,11 +85,13 @@ public class EbeguConstraintValidationExceptionMapper
 			} catch (IllegalArgumentException e){
 				errorCodeEnum = ErrorCodeEnum.ERROR_UNBEKANNTE_DB_CONSTRAINT;
 			}
-			EbeguExistingAntragException ebeguExistingAntragException = new EbeguExistingAntragException(null, errorCodeEnum,
+			EbeguExistingAntragRuntimeException
+				ebeguExistingAntragRuntimeException = new EbeguExistingAntragRuntimeException(null, errorCodeEnum,
 				constraintViolationException, "", constraintName);
 			//No Mandant specific Exception possible for the constraints
 			Mandant mandant = mandantService.getMandantBern();
-			return EbeguExceptionReport.buildResponse(Status.CONFLICT, ebeguExistingAntragException, getLocaleFromHeader(), mandant, false);
+			return EbeguExceptionReport.buildResponse(Status.CONFLICT,
+				ebeguExistingAntragRuntimeException, getLocaleFromHeader(), mandant, false);
 		}
 		// wir bauen hier auch eine eigene response fuer EJBTransactionRolledbackException die wir nicht erwarten
 		// die unwrapped exception sollten wir nur zurueckgeben wenn wir im dev mode sind um keine infos zu leaken
