@@ -458,9 +458,6 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle, ServerMessageUtil.getMessage("Reports_bgMonatspensumTitle",locale, mandant));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.vollkostenTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkostenTitle, ServerMessageUtil.getMessage("Reports_vollkostenTitle",locale, mandant));
-
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle, ServerMessageUtil.getMessage("Reports_elternbeitragTitle",locale, mandant));
 
