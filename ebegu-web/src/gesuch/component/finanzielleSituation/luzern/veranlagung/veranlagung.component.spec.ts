@@ -20,7 +20,7 @@ import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '../../../../../app/shared/material.module';
 import {SharedModule} from '../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';

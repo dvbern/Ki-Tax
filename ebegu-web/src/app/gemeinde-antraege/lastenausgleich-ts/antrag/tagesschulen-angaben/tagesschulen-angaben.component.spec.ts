@@ -23,7 +23,7 @@ import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSOeffnungszeitenTagesschule} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';

@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {SharedModule} from '../../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedDirective';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {NgGesuchModule} from '../../../../../ng-gesuch.module';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';

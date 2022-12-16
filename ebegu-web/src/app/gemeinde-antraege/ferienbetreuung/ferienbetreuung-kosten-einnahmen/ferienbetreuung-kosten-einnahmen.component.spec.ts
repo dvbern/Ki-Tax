@@ -23,7 +23,7 @@ import {UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSFerienbetreuungAngabenKostenEinnahmen} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';

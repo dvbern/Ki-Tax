@@ -22,7 +22,7 @@ import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 

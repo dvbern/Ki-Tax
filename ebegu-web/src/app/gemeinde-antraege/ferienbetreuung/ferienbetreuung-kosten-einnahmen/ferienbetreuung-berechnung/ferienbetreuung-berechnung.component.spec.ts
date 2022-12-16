@@ -19,7 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 /* eslint-disable no-magic-numbers */
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {SharedModule} from '../../../../shared/shared.module';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
 

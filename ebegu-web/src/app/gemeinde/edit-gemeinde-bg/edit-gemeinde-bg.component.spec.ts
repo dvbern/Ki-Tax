@@ -20,7 +20,7 @@ import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';

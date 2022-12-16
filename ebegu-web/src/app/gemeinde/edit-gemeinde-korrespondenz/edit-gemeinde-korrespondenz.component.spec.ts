@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateService} from '@ngx-translate/core';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
