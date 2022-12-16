@@ -380,6 +380,7 @@ public class Familiensituation extends AbstractMutableEntity {
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setVerguenstigungGewuenscht(this.verguenstigungGewuenscht);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
