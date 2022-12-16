@@ -25,7 +25,9 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 		BGCalculationResult resultVorgaenger,
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
-		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
+		LocalDate mutationsFinSitDate = finSitGueltigAb != null ? finSitGueltigAb : mutationsEingansdatum;
+		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsFinSitDate);
 	}
 
 	private void handleVerminderungEinkommen(
