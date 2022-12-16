@@ -35,7 +35,7 @@
                                                   form="vm.form">
                 </dv-finanzielle-situation-require>
 
-                <div ng-if="vm.isFinanziellesituationRequired()" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()">
+                <div ng-if="vm.isFinanziellesituationRequired() && vm.isFKJV()" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()">
                     <div class="col-xs-12 dv-input-container-question">
                         <div class="checkbox">
                             <md-checkbox ng-model="vm.model.finanzielleSituationRueckwirkendAnpassen"

@@ -10,8 +10,8 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.types.DateRange;
 
 public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMergerFinanzielleSituation {
 
@@ -25,9 +25,11 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 		BGCalculationResult resultVorgaenger,
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
-		LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
-		LocalDate mutationsFinSitDate = finSitGueltigAb != null ? finSitGueltigAb : mutationsEingansdatum;
-		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsFinSitDate);
+		if (platz.extractGesuch().getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)){
+			LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
+			mutationsEingansdatum = finSitGueltigAb != null ? finSitGueltigAb : mutationsEingansdatum;
+		}
+		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
 
 	private void handleVerminderungEinkommen(
