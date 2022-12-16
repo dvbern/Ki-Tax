@@ -194,7 +194,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
-import {TSPensumAnzeigeTyp} from "../models/enums/TSPensumAnzeigeTyp";
+import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 
 export class EbeguRestUtil {
 
@@ -5989,7 +5989,7 @@ export class EbeguRestUtil {
         if (Object.values(TSPensumAnzeigeTyp).includes(typ.value)) {
             return typ.value as TSPensumAnzeigeTyp;
         }
-        throw new Error(`TSPensumAnzeigeTyp ${typ.value} not defined`)
+        throw new Error(`TSPensumAnzeigeTyp ${typ.value} not defined`);
     }
 
     public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {
