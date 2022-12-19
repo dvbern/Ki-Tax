@@ -417,7 +417,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
-                },
+                }
             );
     }
 
