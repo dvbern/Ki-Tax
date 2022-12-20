@@ -80,6 +80,29 @@
     ></p>
 </div>
 
+<div *ngIf="showZugriffErfolgreich()"
+     class="well well-status-bestaetigt minus-margin">
+    <p class="ebegu-h3"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
+
+    <div *ngIf="tryAgainPossible()" >
+        <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    </div>
+    <div > <!-- FIXME: spmi hier muss auf den Status geschaut werde ob der Request schon läuft -->
+        <p > {{steuerAbfrageRequestRunning}}  -{{steuerAbfrageResponeHintStatusText}}</p>
+    </div>
+    <p>
+
+    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
+        <dv-checkbox-x
+            [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
+            [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
+        ></dv-checkbox-x>
+    </div>
+</div>
+
 <div *ngIf="showRetry()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
@@ -90,25 +113,6 @@
             (buttonClick)="tryAgain()">
         {{'STEUERDATEN_ABHOLEN' | translate}}
     </dv-loading-button>
-</div>
-
-<div *ngIf="showZugriffErfolgreich()"
-     class="well well-status-bestaetigt minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
-
-    <div *ngIf="tryAgainPossible()" >
-        <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-    </div>
-
-    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
-        <dv-checkbox-x
-                [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
-                [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
-                [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
-                (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
-        ></dv-checkbox-x>
-    </div>
 </div>
 
 <div *ngIf="geburtstagNotMatching$ | async"

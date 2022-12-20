@@ -411,15 +411,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.resetKiBonAnfrageFinSitIfRequired();
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
-            .then(() => {
-                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                    this.form.$setDirty();
-                }
-            );
-    }
-
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }

@@ -152,7 +152,7 @@ export const GESUCH_JS_MODULE =
         .directive('dvSteuerabfrageResponseHints',
             downgradeComponent({
                 component: SteuerabfrageResponseHintsComponent,
-                inputs: ['status'],
+                inputs: ['status', 'finSitRequestState','finSitRequestRunning'],  // SPMI: FIXME
                 outputs: ['tryAgainEvent']
             }))
 ;

@@ -17,24 +17,25 @@
 
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input,
+    Input, OnChanges,
     OnDestroy,
     OnInit,
     Output,
-    ViewEncapsulation
+    SimpleChanges,
+    ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus
+    TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -42,7 +43,7 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {
-    DialogInitZPVNummerVerknuepfen
+    DialogInitZPVNummerVerknuepfen,
 } from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
@@ -52,12 +53,18 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
     templateUrl: './steuerabfrage-response-hints.component.html',
     styleUrls: ['./steuerabfrage-response-hints.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
+export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
+
+    @Input()
+    public steuerAbfrageResponeHintStatusText: string;
+
+    @Input()
+    public steuerAbfrageRequestRunning: boolean;
 
     @Output()
     private readonly tryAgainEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -73,8 +80,13 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly finSitRS: FinanzielleSituationRS
+        private readonly finSitRS: FinanzielleSituationRS,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.changeDetectorRef.markForCheck();
     }
 
     public ngOnInit(): void {
@@ -94,6 +106,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                     this.geburtstagNotMatching$.next(!isMatching);
             });
         }
+
     }
 
     public ngOnDestroy(): void {

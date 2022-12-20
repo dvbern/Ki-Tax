@@ -20,7 +20,10 @@
 
             <h2>
             <span data-translate="FINANZIELLE_SITUATION"
-                  translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr(), gesuchsteller: vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
+                  translate-values="{
+                    basisjahr: vm.gesuchModelManager.getBasisjahr(),
+                    gesuchsteller: vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()
+                  }"></span>
             </h2>
             <dv-bisher gs="vm.getModel().finanzielleSituationGS"
                        ja="vm.getModel().finanzielleSituationJA"
@@ -64,9 +67,9 @@
                         <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
                             <div class="col-xs-12">
                                 <dv-loading-button
-                                        button-disabled="!vm.isGesuchsteller()"
-                                        type="button"
-                                        button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                    button-disabled="!vm.isGesuchsteller()"
+                                    type="button"
+                                    button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
                                     {{'STEUERDATEN_ABHOLEN' | translate}}
                                 </dv-loading-button>
                                 <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
@@ -74,7 +77,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
+                        <div class="margin-top-05 col-xs-12"
+                             ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
                             <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
                         </div>
                     </div>
@@ -85,12 +89,15 @@
                         </p>
                     </div>
                 </fieldset>
-                    <dv-steuerabfrage-response-hints
-                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"
-                    >
-                    </dv-steuerabfrage-response-hints>
+                <dv-steuerabfrage-response-hints
+                    ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                    (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                    [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"
+                    [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState| translate"
+                    [steuer-abfrage-request-running]="vm.finSitRequestRunning"
+                >
+
+                </dv-steuerabfrage-response-hints>
 
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
                     <!--Steuerveranlagung -->
@@ -147,8 +154,12 @@
 
                         <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
                              class="well well-status-warten minus-margin">
-                            <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
-                            <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                            <p ng-if="vm.isFKJV()"
+                               class="ebegu-h3"
+                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
+                            <p ng-if="!vm.isFKJV()"
+                               class="ebegu-h3"
+                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                         </div>
                         <!-- Infotext -->
                         <p class="inline-hint margin-bottom-30"
@@ -612,8 +623,12 @@
                 </div>
 
                 <!--Buttons-->
-                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()" dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()"
-                               dv-sub-step="2" dv-sub-step-name="{{vm.subStepName()}}">
+                <dv-navigation dv-previous="true"
+                               dv-next="true"
+                               dv-save="vm.save()"
+                               dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()"
+                               dv-sub-step="2"
+                               dv-sub-step-name="{{vm.subStepName()}}">
                 </dv-navigation>
             </form>
         </div>
